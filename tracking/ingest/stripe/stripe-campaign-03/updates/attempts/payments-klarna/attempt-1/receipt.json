@@ -1,0 +1,182 @@
+{
+  "job_id": "payments-klarna",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-klarna.md": {
+      "job_id": "payments-klarna",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Klarna Payments\"\ntype: source\ndate_ingested: 2026-05-06\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/klarna\"\nraw_files:\n  - \"stripe-payments-klarna-2026-11-07.md\"\n  - \"stripe-klarna-2025.md\"\ntags: [stripe, bnpl, klarna, buy-now-pay-later, installments, subscriptions, connect, cross-border]\n---\n\n## Overview\n\nStripe's Klarna payment-method overview covers customer payment options, geographic and amount conditions, cross-border presentment, refunds, Connect, and country filtering. A customer is redirected to Klarna to choose an offered option and returns to the merchant site to complete the order. When a payment is accepted, the merchant receives the order amount minus fees in the Stripe account; Klarna collects from the customer and bears loss if that customer cannot repay. The page separately specifies **standard payout timing**, so the accepted-payment description is not an instant-payout or settlement promise. See [[stripe-klarna]], [[stripe-bnpl]], and [[stripe]].\n\n## Key takeaways\n\n- The 2026-11-07 capture lists 23 customer countries, 32 Stripe-account business countries and 13 presentment currencies (raw lines 15-101). These are dated documentation lists, not proof of a particular merchant or customer's eligibility. The same high-level lists appear in the 2026-05-06 capture (old raw lines 14-100).\n- Klarna presents Pay in full, Pay later, Pay in 3 or 4, and Financing subject to customer location, currency, transaction amount, payment use case and Klarna's changeable geographic and cart ranges (new raw lines 135-143, 614-763). Financing may include interest and is subject to creditworthiness; a listed range does not establish approval (new raw lines 735-753).\n- In the November country and all-country tables, Italy has **one-time Financing at 35-3,000 EUR**; the May Financing row omits Italy (new raw lines 452-468, 735-753; old raw lines 242-258). The November Pay in 3 EUR ceiling for France, Ireland, Italy and Spain is **3,000**, versus **1,500** in May (new raw lines 721-725; old raw lines 228-241). Read these as dated table changes, not guaranteed live options.\n- Recurring use cases are documented, with country and plan restrictions. Setting `setup_future_usage` classifies a Klarna payment as recurring and limits visible options; otherwise eligible plans might not display on hosted, embedded or Elements payment pages (new raw lines 135-143). The May footnote described the parameter as making the payment no longer one-time and named Payment Method Messaging Element and Payment Element (old raw line 260). It does **not** make all recurring Klarna payments unavailable.\n- The get-started section directs merchants to Klarna rules and gives B2B as an unsupported example. It points to Checkout hosted or embedded pages and Elements with PaymentIntents for integrations. Klarna on Stripe Terminal is identified only as a **private preview** with an access-request route (new raw lines 107-133); this does not establish preview access.\n\n## Availability conflicts and limits\n\n> [!warning] Contradiction in the 2026-11-07 capture\n> Multiple individual country **Pay later** rows list short- or long-term subscriptions (for example Austria, Belgium and the UK: new raw lines 251-282, 403-415), but the same page's all-country footnote and limitations say **only Germany, Sweden and the United States** support Pay later for subscriptions and on-demand payments (new raw lines 755-775). The May footnote also gives only those three (old raw line 266). Do not treat the country rows as an established expansion of subscription eligibility; resolve this conflict before making a country-specific launch claim.\n\nThe November limitations also restrict US territories to Puerto Rico; exclude specified US states for Pay later, Pay in 4 and Financing; limit Pay in full to one-time payments in Australia, Norway and Poland; and limit Pay in 3 or 4 to one-time payments in Australia, New Zealand and Poland (new raw lines 755-777). The May footnote additionally named Finland in the last restriction, although Finland was absent from its Pay in 3 or 4 country row (old raw lines 207-241, 268). November's Finland country table has Pay in full, Pay later and Financing, not Pay in 3 or 4 (new raw lines 371-384); footnote removal alone does not establish Finnish installment availability.\n\n## Cross-border, refunds and Connect\n\n- The EEA, United Kingdom and Switzerland business rows allow customers in the EEA, UK or Switzerland with presentment in the **customer location currency**. The \"other countries\" row requires customer location to match the business location and uses the business location currency (new raw lines 779-794; old raw lines 272-288). This table is a documented rule, not account eligibility.\n- Refunds can be made within 180 days after payment completion, usually take 5-7 business days but can take longer, and may be full or partial, including multiple partial refunds up to the original charge (new raw lines 796-803; old raw lines 290-297). For a partial refund **greater than** the remaining order balance, Klarna reduces the outstanding balance and returns the difference; for one **less than** the remaining balance, it reduces the balance and spreads refunds across remaining payments. A payment escalated to a dispute cannot be refunded.\n- Connect platforms can use all charge types. Connected accounts with full Dashboard access, including Standard, may enable Klarna there; `klarna_payments` being `active` identifies enabled capability. Accounts without full Dashboard access, including Express and Custom, require a capability request (new raw lines 805-815; old raw lines 299-309).\n- For dynamic payment methods in Payment Element or Checkout Session, the method displays only if the customer country is supported. Stripe determines that country first from the two-letter shipping-address country, then geocoded client IP (new raw lines 817-824; old raw lines 311-318).\n\n## Detail locators\n\n- November customer/business locations, currencies, product and payment properties: new raw lines 15-101.\n- November region/country selectors and per-country option/use-case/amount tables: new raw lines 135-614; all-country table and footnotes: new raw lines 614-763.\n- May all-country option/use-case/amount table and footnotes: old raw lines 121-270.\n- Cross-border, refunds, Connect and country filtering: new raw lines 779-824; old raw lines 272-318.\n\n## Raw Sources\n\n- [[raw/stripe-payments-klarna-2026-11-07|Klarna payments \u2014 2026-11-07 capture]]\n- [[raw/stripe-klarna-2025|Klarna payments \u2014 2026-05-06 capture (historical filename)]]\n",
+      "quotes": [
+        {
+          "text": "When the payment is accepted, you receive the entire order amount (minus fees) in your Stripe account. Klarna collects the initial payment from your customer and any future installment payments. If the customer can\u2019t repay Klarna, Klarna takes loss liability.",
+          "location": "raw/stripe-payments-klarna-2026-11-07.md:13"
+        },
+        {
+          "text": "(Private preview) [Stripe Terminal](https://docs.stripe.com/terminal.md) supports using Klarna in-store with [additional payment methods](https://docs.stripe.com/terminal/payments/additional-payment-methods.md?payment-method=klarna).",
+          "location": "raw/stripe-payments-klarna-2026-11-07.md:119"
+        },
+        {
+          "text": "If a Klarna payment uses the `setup_future_usage` parameter, it\u2019s considered a recurring payment, which limits the available payment options.",
+          "location": "raw/stripe-payments-klarna-2026-11-07.md:143"
+        },
+        {
+          "text": "- One-time payments | 35-3,000 EUR",
+          "location": "raw/stripe-payments-klarna-2026-11-07.md:468"
+        },
+        {
+          "text": "Germany, Sweden, and the United States are the only countries that support Pay Later for subscription and on-demand payments.",
+          "location": "raw/stripe-payments-klarna-2026-11-07.md:759"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "klarna-overview-bnpl-row",
+            "target_path": "wiki/concepts/stripe-bnpl.md",
+            "update_kind": "durable_fact",
+            "anchor": "| Klarna | `klarna` | 22 countries | $10+ | SetupIntents, Express Checkout, setup_future_usage, Subscriptions |",
+            "proposed_markdown": "| Klarna | `klarna` | 23 customer countries (May/November 2026 overview) | See dated country/currency tables | SetupIntents, Express Checkout, setup_future_usage, Subscriptions |",
+            "quote_indexes": [
+              2,
+              3
+            ],
+            "warnings": [
+              "Replace the existing unsupported 22-country/$10+ row. New raw lines 17-23, 614-753 list 23 customer locations and country/currency-specific ranges; old raw lines 16-22, 125-258 also list 23 customer locations and dated ranges. This overview alone does not revalidate the other integration features in the row."
+            ]
+          },
+          {
+            "update_id": "klarna-overview-concept-route",
+            "target_path": "wiki/concepts/stripe-klarna.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-subscriptions-klarna]] \u2014 2026-05-13 Klarna subscription guide: hosted Checkout and advanced Payment Element; 2026-11-07 capture is a variant index; country tables are sandbox test data",
+            "proposed_markdown": "- [[source-stripe-subscriptions-klarna]] \u2014 2026-05-13 Klarna subscription guide: hosted Checkout and advanced Payment Element; 2026-11-07 capture is a variant index; country tables are sandbox test data\n- [[source-stripe-klarna]] \u2014 May and November 2026 full Klarna payment-method overviews: options, geography, cross-border rules, refunds and Connect; dated table conflict and limits apply",
+            "quote_indexes": [
+              0,
+              2,
+              4
+            ],
+            "warnings": [
+              "Existing concept sources omit the overview despite describing its hosted redirect and options. New raw lines 9-13, 135-143, 614-824; old raw lines 8-12, 121-318. The overview's November country Pay later subscription rows conflict with its only-DE/SE/US footnote (new raw lines 251-282, 759, 775; old raw line 266)."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-klarna-2026-11-07.md",
+      "raw_sha256": "07de036890bc42cd8c82aae500449ff3c14fcd22badc0aa8e22ee24b69c83b3c",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-klarna-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 210
+      },
+      {
+        "start": 211,
+        "end": 420
+      },
+      {
+        "start": 421,
+        "end": 630
+      },
+      {
+        "start": 631,
+        "end": 824
+      }
+    ],
+    "raw/stripe-klarna-2025.md": [
+      {
+        "start": 1,
+        "end": 170
+      },
+      {
+        "start": 171,
+        "end": 318
+      }
+    ],
+    "wiki/sources/source-stripe-klarna.md": [
+      {
+        "start": 1,
+        "end": 41
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/4e9e3f85f5a425f3bc2af611/content.diff": [
+      {
+        "start": 1,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 767
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-klarna/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 204
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 35
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 325,
+        "end": 345
+      },
+      {
+        "start": 675,
+        "end": 695
+      }
+    ],
+    "wiki/concepts/stripe-klarna.md": [
+      {
+        "start": 1,
+        "end": 46
+      }
+    ],
+    "wiki/concepts/stripe-bnpl.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 245,
+        "end": 280
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "When you set the [setup_future_usage](https://docs.stripe.com/api/payment_intents/object.md#payment_intent_object-setup_future_usage) parameter, a Klarna payment isn\u2019t considered a one-time payment.",
+      "location": "raw/stripe-klarna-2025.md:260"
+    },
+    {
+      "text": "- France, Ireland, Italy, Spain: 1-1,500",
+      "location": "raw/stripe-klarna-2025.md:234"
+    },
+    {
+      "text": "4 Germany, Sweden, and the United States are the only countries that support Pay Later for subscription and on-demand payments.",
+      "location": "raw/stripe-klarna-2025.md:266"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/klarna, the complete November capture documents a customer-initiated Klarna redirect to choose location-, currency-, amount- and use-case-dependent plans; return to the merchant precedes completing the order. On acceptance the merchant receives the amount minus fees in Stripe, Klarna collects from the customer and bears repayment loss, and standard payout timing applies (new raw lines 7-55; old raw lines 4-54). It lists 23 customer and 32 business countries, 13 currencies, four payment families, cross-border presentment, conditional refunds, Connect capability paths and country filtering (new raw lines 15-101, 614-824; old raw lines 14-100, 121-318). B2B is excluded; Financing needs credit approval, and the Terminal mention is private preview. Italy one-time Financing and higher FR/IE/IT/ES Pay in 3 ceilings are November table deltas. The mapped source-stripe-klarna.md retains May facts but wrongly declares setup_future_usage unavailable and simplifies cross-border and partial refunds. No redirect or accepted-payment statement proves buyer approval or instant payout.",
+    "Q2": "At https://docs.stripe.com/payments/klarna, region and country toggles, table reformatting and buyer-to-customer wording are mainly presentation (new raw lines 135-251, 614-763; old raw lines 121-270). Substantive November changes include Italy Financing at 35-3,000 EUR, FR/IE/IT/ES Pay in 3 ceiling increasing from 1,500 to 3,000 EUR, and a Terminal private preview invitation (new raw lines 119-133, 452-468, 721-753; old raw lines 107-119, 228-258). The revised source-stripe-klarna.md must keep the May capture dated and add the full November raw, correct the setup_future_usage recurring classification, preserve UK and Switzerland cross-border business rows, and distinguish both partial-refund branches (old raw lines 260-295; new raw lines 143, 779-803). November country Pay later subscription rows conflict with its only-Germany/Sweden/US footnote and limitations, which the old footnote also states (new raw lines 251-282, 759-775; old raw lines 266-268). The old Finland footnote and its omission in November do not establish Finnish installment availability. Display, account eligibility, credit approval, acceptance and payout remain separate outcomes."
+  }
+}

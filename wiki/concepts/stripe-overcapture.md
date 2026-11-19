@@ -63,3 +63,4 @@ If `amount_to_capture` needs to exceed `maximum_amount_capturable`, use incremen
 
 - [[source-stripe-overcapture]] — full guide with percent limit tables, SCA rules, test cards, all 3 integration paths
 - [[source-stripe-payment-line-items-flexible]] — overcapture with payment line items
+- [[source-stripe-flexible-features-migration]] — 2026-05-11 full beta-to-GA migration guide for pre-confirmation request and conditional charge maximum; November capture is variant navigation only

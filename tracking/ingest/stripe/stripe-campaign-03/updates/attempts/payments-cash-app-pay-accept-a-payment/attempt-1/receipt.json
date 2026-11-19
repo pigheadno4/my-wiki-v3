@@ -1,0 +1,205 @@
+{
+  "job_id": "payments-cash-app-pay-accept-a-payment",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-cash-app-pay-accept-payment.md": {
+      "job_id": "payments-cash-app-pay-accept-a-payment",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Accept a Cash App Pay Payment\"\ntype: source\ndate_ingested: 2026-05-07\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/cash-app-pay/accept-a-payment\"\nraw_files:\n  - \"stripe-cash-app-pay-accept-payment-2025.md\"\ntags: [stripe, wallets, cash-app-pay, checkout, elements, direct-api, ios, android, react-native, manual-capture, authentication, qr-code]\n---\n\n## Overview\n\n[[stripe]] Cash App Pay acceptance guide. The 2026-05-07 capture contains Checkout, Elements with Checkout Sessions or Payment Intents, Direct API, iOS, Android, and React Native instructions. The 2026-11-07 base-URL capture is a seven-route variant index only. The detailed integration facts below remain dated to May; the newer index does not establish current prerequisites, timing, SDK behavior, eligibility, or payment outcomes. See [[stripe-wallets]].\n\n## Key takeaways \u2014 2026-05-07 detailed capture\n\n- **Checkout:** The captured compatibility section lists US business locations, USD currency/presentment, and payment, setup, and subscription modes. Checkout Sessions need USD line-item Prices; the manual configuration example adds cashapp to payment_method_types. These are dated guide claims, not current account eligibility.\n- **Distinct objects and handoffs:** Hosted Checkout creates a Checkout Session. Elements with Checkout Sessions creates a Session on the server and passes its client secret to the front end. Elements with Payment Intents and Direct API create a PaymentIntent on the server, then confirm from the client. The Direct API guide enables cashapp in Dashboard settings. See raw headings at lines 16-56, 134-175, 635-699, and 1247-1294.\n- **Authentication and state:** The Payment Intents and Direct API sections describe mobile Cash App redirect and desktop QR authentication. Their 60-minute period is an authentication-session expiry; the desktop QR can be refreshed up to 20 times before the PaymentIntent returns to the guide's stated require_payment_method spelling. Separate failed-payment sections say a requires_action customer must finish within 10 minutes after redirect or the PaymentMethod detaches and the PaymentIntent becomes requires_payment_method. The two historical timing statements have different wording and are not resolved by the November index (lines 1130-1144, 1226-1234, 1404-1416).\n- **Manual capture:** The web PaymentIntent and Direct API guides describe capture_method: manual, a seven-day capture window, and requires_capture after authorization; uncaptured intents are canceled. The React Native section also says seven days, but its test section says an uncaptured test manual-capture PaymentIntent auto-expires 60 minutes after authorization. Keep this unresolved historical conflict; do not apply one deadline to every path or mode (lines 1146-1176, 1495-1525, 2446-2476, 2512-2518).\n- **Outcome boundary:** The May guide describes sandbox approval/decline controls and says live redirect has no in-app approval choice. It also documents declined or timed-out payments, PaymentIntent status checks after return, and payment_intent.succeeded/payment_failed events. Redirect, QR display, client callback, and that live-mode wording alone do not establish payment success, capture, fulfillment, or settlement (lines 1013-1066, 1194-1198, 1212-1234, 1487-1493).\n\n## Path details and locators \u2014 2026-05-07\n\n- **Direct API:** The ordinary client stripe.confirmCashappPayment example passes payment_method: { type: 'cashapp' } and return_url after server creation of a PaymentIntent. A separate optional handleActions: false manual-redirect example passes payment_method_data: { type: 'cashapp' }, return_url, then inspects requires_action and next_action. The latter parameter is not the ordinary client example. The guide says automatic return_url redirect is mobile-browser only; desktop can redirect after the returned promise resolves (lines 1271-1294, 1384-1402, 1418-1463).\n- **Manual next action:** In the optional Direct API branch, mobile_auth_url and desktop QR payloads each have a stated 30-second expiry; retrieve the PaymentIntent for fresh action data. The guide says wait for a webhook outcome or poll PaymentIntent status on the desktop QR page (lines 1465-1493).\n- **Mobile SDKs:** The iOS custom-form section uses STPPaymentHandler and an app return URL; the Android custom-form section uses PaymentLauncher. The React Native section uses useConfirmPayment with paymentMethodType CashApp; its iOS-only return setup requires a custom URL scheme and says universal links are unsupported. SDK/version details in these sections are historical examples (lines 1596-1623, 1750-1809, 1927-1973, 2055-2103, 2203-2212, 2347-2355, 2409-2435).\n\n## Related\n\n- [[stripe-wallets]] \u2014 Cash App Pay wallet context and reciprocal route.\n- [[stripe-cash-app-pay]] \u2014 provider concept; subscription and setup flow is separate from accepting a payment.\n- [[source-stripe-cash-app-pay]] \u2014 method overview and eligibility context.\n- [[source-stripe-cash-app-pay-set-up-payment]] \u2014 saving for future payments.\n\n## Raw Sources\n\n- [[raw/stripe-cash-app-pay-accept-payment-2025|Cash App Pay acceptance detailed capture, 2026-05-07]] \u2014 factual basis for the dated flows and unresolved internal timing conflict.\n\n## Related raw API references\n\n- [[raw/stripe-payments-cash-app-pay-accept-a-payment-2026-11-07|Cash App Pay acceptance variant index, 2026-11-07]] \u2014 navigation only: Checkout; Elements with Checkout Sessions or Payment Intents; Direct API; iOS; Android; React Native. Variant bodies were not in this pin.\n",
+      "quotes": [
+        {
+          "text": "Add support for Cash App Pay to your integration.",
+          "location": "raw/stripe-payments-cash-app-pay-accept-a-payment-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-cash-app-pay-accept-a-payment-2026-11-07.md:11"
+        },
+        {
+          "text": "- [Direct API](https://docs.stripe.com/payments/cash-app-pay/accept-a-payment.md?payment-ui=direct-api)",
+          "location": "raw/stripe-payments-cash-app-pay-accept-a-payment-2026-11-07.md:17"
+        },
+        {
+          "text": "  - [React Native](https://docs.stripe.com/payments/cash-app-pay/accept-a-payment.md?payment-ui=mobile&platform=react-native)",
+          "location": "raw/stripe-payments-cash-app-pay-accept-a-payment-2026-11-07.md:21"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "cashapp-accept-wallets-integration",
+            "target_path": "wiki/concepts/stripe-wallets.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Integration**: 4 web paths + iOS/Android. Checkout supports setup + subscription modes. **60-minute authorization window** (desktop QR refreshable 20\u00d7). **Separate auth+capture**: `capture_method: 'manual'`, 7-day window. **Live mode auto-approves** after redirect \u2014 no in-app approval option (sandbox shows approve/decline test page).",
+            "proposed_markdown": "**Integration (dated 2026-05-07 guide):** Checkout, Elements with Checkout Sessions or Payment Intents, Direct API, iOS, Android, and React Native. Checkout compatibility text lists setup and subscription modes. The 60-minute period describes an authentication session with up to 20 desktop QR refreshes; a separate requires_action failure section says 10 minutes after redirect, an unresolved historical timing distinction. The web PaymentIntent/Direct API manual-capture sections describe a seven-day window, while the React Native test section says uncaptured test manual-capture PaymentIntents auto-expire after 60 minutes; do not treat seven days as universal. Live-mode wording says there is no in-app approve/decline control after redirect, but the guide also documents declines, timeouts, and status/event checks, so redirect does not prove payment success. The 2026-11-07 base capture is a variant index only. See [[source-stripe-cash-app-pay-accept-payment]].",
+            "quote_indexes": [
+              1,
+              3
+            ],
+            "warnings": [
+              "Replace only the exact existing integration paragraph. Historical authority: raw/stripe-cash-app-pay-accept-payment-2025.md:16-32,1130-1148,1226-1234,1384-1463,2203-2212,2446-2476,2512-2528. The November index at raw/stripe-payments-cash-app-pay-accept-a-payment-2026-11-07.md:9-21 is navigation only; React Native seven-day versus test 60-minute capture statements remain unresolved."
+            ]
+          },
+          {
+            "update_id": "cashapp-accept-wallets-route",
+            "target_path": "wiki/concepts/stripe-wallets.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-cash-app-pay-accept-payment]] \u2014 Cash App Pay integration: 4 paths + mobile, 60-min auth, 20\u00d7 QR refresh, manual capture, live auto-approves",
+            "proposed_markdown": "- [[source-stripe-cash-app-pay-accept-payment]] \u2014 May 2026 detailed Cash App Pay acceptance guide with seven paths, scoped authentication/capture timing and outcome checks; November 2026 base capture supplies variant navigation only.",
+            "quote_indexes": [
+              1,
+              3
+            ],
+            "warnings": [
+              "Replace only the exact source-list line; old detailed authority is raw/stripe-cash-app-pay-accept-payment-2025.md:134-140,635-639,1247-1255,1596-1604,1927-1935,2203-2212."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-cash-app-pay-accept-a-payment-2026-11-07.md",
+      "raw_sha256": "9040cfe37e19f44c7695917e048d16614350f82b491d3bf3e0ea6bc6aa765440",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-cash-app-pay-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 21
+      }
+    ],
+    "raw/stripe-cash-app-pay-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 900
+      },
+      {
+        "start": 701,
+        "end": 800
+      },
+      {
+        "start": 901,
+        "end": 1200
+      },
+      {
+        "start": 1201,
+        "end": 1500
+      },
+      {
+        "start": 1501,
+        "end": 1800
+      },
+      {
+        "start": 1801,
+        "end": 2100
+      },
+      {
+        "start": 2101,
+        "end": 2400
+      },
+      {
+        "start": 2101,
+        "end": 2202
+      },
+      {
+        "start": 2401,
+        "end": 2541
+      }
+    ],
+    "wiki/sources/source-stripe-cash-app-pay-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 33
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/4e31341fe83dd694238ac916/content.diff": [
+      {
+        "start": 1,
+        "end": 500
+      },
+      {
+        "start": 501,
+        "end": 1000
+      },
+      {
+        "start": 1001,
+        "end": 1500
+      },
+      {
+        "start": 1501,
+        "end": 2000
+      },
+      {
+        "start": 2001,
+        "end": 2550
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 60
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 390,
+        "end": 405
+      },
+      {
+        "start": 680,
+        "end": 690
+      }
+    ],
+    "wiki/concepts/stripe-wallets.md": [
+      {
+        "start": 120,
+        "end": 165
+      },
+      {
+        "start": 395,
+        "end": 410
+      }
+    ],
+    "wiki/concepts/stripe-cash-app-pay.md": [
+      {
+        "start": 1,
+        "end": 71
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-cash-app-pay-accept-a-payment/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 214
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "**Supported business locations**: US",
+      "location": "raw/stripe-cash-app-pay-accept-payment-2025.md:18"
+    },
+    {
+      "text": "An authentication session expires after 60 minutes. You can refresh the QR code up to 20 times before the PaymentIntent\u2019s status transitions back to `require_payment_method`.",
+      "location": "raw/stripe-cash-app-pay-accept-payment-2025.md:1144"
+    },
+    {
+      "text": "For test [manual capture](https://docs.stripe.com/payments/cash-app-pay/accept-a-payment.md#manual-capture) PaymentIntents, the uncaptured PaymentIntent auto-expires 60 minutes after successful authorization.",
+      "location": "raw/stripe-cash-app-pay-accept-payment-2025.md:2518"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/cash-app-pay/accept-a-payment, the complete November capture (new raw lines 5-21) establishes the Cash App Pay purpose and seven variant routes: Checkout, two Elements API choices, Direct API, iOS, Android, and React Native. It contains no variant body, current prerequisites, PaymentIntent states, authentication timing, capture rules, or success claim. The older May capture supplies those dated details: US/USD Checkout compatibility and setup/subscription modes (old raw lines 16-32); server Checkout Session versus PaymentIntent creation and client handoffs (old raw lines 171-175, 654-699, 1271-1294); browser redirect/QR authentication and PaymentIntent states (old raw lines 1013-1066, 1130-1176); and iOS, Android, React Native paths (old raw lines 1596-1604, 1927-1935, 2203-2212). source-stripe-cash-app-pay-accept-payment.md previously omits React Native and overstates timing, Direct API parameters, and live outcome at lines 13-29.",
+    "Q2": "At https://docs.stripe.com/payments/cash-app-pay/accept-a-payment, the observed November change is a navigation-only presentation of seven variant URLs (new raw lines 9-21), while the collection diff (lines 1-14 and 2542-2550) removes the old body; it does not prove a substantive behavior change. source-stripe-cash-app-pay-accept-payment.md must keep its May date and factual raw, with the November pin linked only as Related raw API references. Its old 60-minute authentication session and separate 10-minute requires_action failure language need scoped historical treatment (old raw lines 1138-1144, 1230-1234). The seven-day manual-capture account conflicts with a React Native test 60-minute auto-expiry (old raw lines 2446-2476, 2518). The ordinary Direct API client example uses payment_method plus return_url, whereas optional handleActions: false uses payment_method_data (old raw lines 1384-1463). Old SDK/version and client/server examples cannot establish current support. Live redirect wording coexists with declines and requires PaymentIntent status/event checks, so no success, capture, or settlement inference follows."
+  }
+}

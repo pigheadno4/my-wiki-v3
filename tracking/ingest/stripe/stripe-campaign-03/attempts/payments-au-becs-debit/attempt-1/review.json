@@ -1,0 +1,89 @@
+{
+  "job_id": "payments-au-becs-debit",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "Independent full numbered reads and SHA-256 checks confirm all four pins, all quotes and original-answer form requirements. The worker correctly identifies the notification-bound change, scheme versus account limits, mandate and Connect boundaries, retry qualifications, and two source/concept errors. Two material evidence classifications need correction: pending-refund Charge transitions were already in the May capture, and the current source turns the May illustrative T+0 debit into an unconditional claim despite estimated debit-date qualifications in both captures.",
+  "required_changes": [
+    "Correct the raw-delta classification for refunds in findings and any affected answer/source-assessment wording. Old raw lines 189-199, especially line 193, already state that a pending refund starts only when Charge succeeds and is canceled if Charge fails. New raw lines 79-107 retain this behavior and newly add Refund status retrieval, refund.updated/refund.failed webhooks, signature verification, failed-refund balance return and alternate refund method. Do not describe the shared pending-refund transition as newly added.",
+    "Add the current-source T+0 debit-date overstatement to findings/conflicts, the sole source assessment, and affected Q1/Q2 qualification. Source line 19 and concept line 26 assert customer funds are debited at T+0 as a general rule, while old raw lines 132-139 present T+0 only in a sample timeline and old raw line 124 and new raw lines 198-208 say expected_debit_date is estimated, can vary, and submission can follow creation after a cutoff or non-business day. Preserve the dated example without treating T+0 as a guaranteed debit or success date."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "read_ranges": {
+    "raw/stripe-payments-au-becs-debit-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 140
+      },
+      {
+        "start": 141,
+        "end": 279
+      }
+    ],
+    "raw/stripe-au-becs-debit-2025.md": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 234
+      }
+    ],
+    "wiki/sources/source-stripe-au-becs-debit.md": [
+      {
+        "start": 1,
+        "end": 41
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/bf780be9fc70ed7dfe3dc3e2/content.diff": [
+      {
+        "start": 1,
+        "end": 170
+      },
+      {
+        "start": 171,
+        "end": 340
+      },
+      {
+        "start": 341,
+        "end": 489
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 60
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 250,
+        "end": 260
+      },
+      {
+        "start": 737,
+        "end": 743
+      }
+    ],
+    "wiki/concepts/stripe-au-becs-debit.md": [
+      {
+        "start": 1,
+        "end": 102
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/proposed-queries.md": [
+      {
+        "start": 124,
+        "end": 129
+      }
+    ]
+  },
+  "source_assessment_decisions": [
+    {
+      "source_target": "wiki/sources/source-stripe-au-becs-debit.md",
+      "verdict": "changes_requested",
+      "reason": "The update-needed disposition is sound, but the assessment must distinguish retained pending-refund behavior from new refund status/webhook detail and explicitly identify source line 19's unsupported universal T+0 debit-date claim."
+    }
+  ]
+}

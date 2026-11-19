@@ -2,40 +2,54 @@
 title: "Stripe Docs — Payments optimization"
 type: source
 date_ingested: 2026-05-08
+date_updated: 2026-11-15
+canonical_url: https://docs.stripe.com/payments/analytics/optimization
 original_format: webpage
 raw_files:
+  - "stripe-payments-analytics-optimization-2026-11-07.md"
   - "stripe-payments-optimization-2025.md"
 tags: [stripe, authorization-boost, adaptive-acceptance, card-account-updater, network-tokens, ic-plus, payment-optimization, cnp]
 ---
 
 ## Summary
 
-Overview of Stripe Authorization Boost — three AI-driven features for improving CNP payment success rates and reducing network costs for IC+ customers.
+The Optimization Dashboard reports **estimated** effects of Authorization Boost features on card-not-present (CNP) payment attempts: recovered payment volume and count, success-rate increase, and network cost savings. The May 8 and November 7, 2026 captures describe the same behavior. Stripe says these estimates do not guarantee outcomes. This page does not establish that a feature is enabled for a particular merchant, that any individual payment would otherwise have failed, or that displayed savings were realized in the account's fees.
 
-## Three Authorization Boost Features
+## Three Authorization Boost features
 
-| Feature | Recovery | Cost Savings (IC+) |
+| Feature | Documented recovery mechanism | Conditional network cost mechanism |
 | --- | --- | --- |
-| Adaptive Acceptance | Retry declined payments; PINless network retries (US) | Excessive retry prevention, decline prevention, Data Only 3DS |
-| Card account updater | Updated card info (PAN/expiry) | None |
-| Network tokens | Higher approval with current credentials | Visa interchange discounts, Mastercard CCP fee prevention |
+| Adaptive Acceptance | AI reformats requests before authorization or after decline and selectively reattempts; in the US an eligible debit transaction might be retried on a PINless network after a Visa/Mastercard decline. | For IC+ businesses, excessive-retry prevention, decline prevention, and Data Only 3DS may avoid network or scheme fees. |
+| Card account updater | Major card-network updater services retrieve changed saved-card PAN or expiry; a later successful payment can use updated information. | None listed. |
+| Network tokens | Network-issued credentials substitute for card numbers and can stay current after underlying card data changes. | For eligible interchange pricing and markets, tokens can qualify for lower interchange or avoid outdated-credential scheme penalties. |
 
-## Probabilistic Calculation Methodology
+The guide explicitly describes AI for Adaptive Acceptance. It describes separate network updater and token mechanisms for the other two; calling all three “AI-driven” overstates the evidence.
 
-Stripe assigns likelihood estimates per optimization → recovered volume = payments × amount × probability. Multi-feature payments attributed to most responsible feature. Cost savings estimated using network fee rules (not reconciled with actual account fees).
+## Attribution and estimate boundaries
 
-**Cost savings shown**: IC+ only; only if ≥ $100 USD equivalent in last 12 months.
+For each optimized payment, Stripe estimates the likelihood that the optimization caused an approval that otherwise would not have happened. If multiple features touch one payment, it attributes the benefit to the feature most likely responsible. The guide's example is 100 payments × 50 USD × 20% estimated causal likelihood = 1,000 USD estimated recovered volume; it is an illustration, not observed incremental revenue.
 
-## CDN Assets
+Cost savings for IC+ businesses are modeled from interchange and scheme-fee rules and counterfactual network costs. Stripe explicitly says it does **not** reconcile those estimates directly with the fees applied to the account. The Dashboard shows cost-saving estimates only for domestic payments in the US and Canada, though savings may occur elsewhere. It omits possible network-token-use fees such as Visa's VDCU fee, which can reduce net benefit. Adaptive Acceptance and network tokens are the named cost-savings drivers; card account updater has no cost-savings row.
 
-- `raw/assets/stripe-authorization-boost.png` — Authorization Boost overview (228 KB)
-- `raw/assets/stripe-payment-success-rate.png` — Success rate chart with optimization baseline (75 KB)
+## Dashboard report and chart
 
-## Related Pages
+Date-range and weekly/monthly aggregation filters apply to charts, metrics, and tables. The per-feature report shows estimated recovered volume, recovered payments, success-rate increase, and cost savings; `Show summary` provides an aggregate view. The download lists payments where optimization features were applied for acceptance-rate benefits and Stripe's estimated contribution likelihood. Its presence is not proof of an actual counterfactual outcome.
 
-- [[stripe-authorization-boost]] — concept page
-- [[stripe]] — Stripe company page
+The guide says cost savings appear in the Dashboard when the business has at least 100 USD equivalent in estimated savings across Adaptive Acceptance and network tokens over the last 12 months. This display threshold is distinct from the domestic US/Canada scope of cost-estimate display and from merchant eligibility.
+
+The payment-success-rate chart is for **CNP payments only**. It shows the raw attempt rate, which counts repeat attempts for the same purchase, rather than the deduplicated rate based on final purchase outcomes. Its dotted blue line is an **estimated** rate without optimizations, not a measured control group.
+
+## Capture and asset provenance
+
+The two 136-line captures differ in local versus remote image references, italics, heading whitespace, and Markdown table layout. The May capture's downloaded assets, `raw/assets/stripe-authorization-boost.png` and `raw/assets/stripe-payment-success-rate.png`, are historical capture artifacts. The November capture references CDN image URLs; that presentation change supplies no evidence of a changed chart or feature rollout.
+
+## Related
+
+- Company: [[stripe]]
+- Concept: [[stripe-authorization-boost]]
+- Related source: [[source-stripe-authorization-boost-ab-test]], [[source-stripe-payments-recommendations]]
 
 ## Raw Sources
 
-- [[stripe-payments-optimization-2025]] — verbatim webpage content (136 lines; Adaptive Acceptance table reformatted by linter)
+- [[raw/stripe-payments-analytics-optimization-2026-11-07|November 7, 2026 optimization guide]] — full page with CDN image references.
+- [[raw/stripe-payments-optimization-2025|May 8, 2026 optimization guide]] — full page with downloaded local image references.

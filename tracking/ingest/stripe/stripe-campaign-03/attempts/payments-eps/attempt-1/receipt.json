@@ -1,0 +1,170 @@
+{
+  "job_id": "payments-eps",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-eps-2026-11-07.md",
+  "raw_sha256": "191290a30d2d2be1a57de5b6173afedf2b915802633cec0613e18f479a4695b6",
+  "prior_raw_path": "raw/stripe-eps-2025.md",
+  "prior_raw_sha256": "af8859a422f2380937f5cb9ea478a08fc13baa9b9ccbaf01c2debdd6bb2070f1",
+  "source_targets": [
+    "wiki/sources/source-stripe-eps.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-eps.md": "517222c26a8c6303e631dfce4eabd1f34bb8a7d275a17fff907efb04316cabc2"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-eps-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 75
+      },
+      {
+        "start": 76,
+        "end": 149
+      }
+    ],
+    "raw/stripe-eps-2025.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 156
+      }
+    ],
+    "wiki/sources/source-stripe-eps.md": [
+      {
+        "start": 1,
+        "end": 28
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/3e175d37a181e8efa2d9a194/content.diff": [
+      {
+        "start": 1,
+        "end": 125
+      },
+      {
+        "start": 126,
+        "end": 250
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 18
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 260,
+        "end": 280
+      },
+      {
+        "start": 740,
+        "end": 756
+      }
+    ],
+    "wiki/concepts/stripe-eps.md": [
+      {
+        "start": 1,
+        "end": 47
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/proposed-queries.md": [
+      {
+        "start": 502,
+        "end": 508
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Transaction limits: Minimum amount: 1.00 EUR",
+      "location": "raw/stripe-payments-eps-2026-11-07.md:40"
+    },
+    {
+      "text": "You can\u2019t cancel an EPS refund after submitting it.",
+      "location": "raw/stripe-payments-eps-2026-11-07.md:68"
+    },
+    {
+      "text": "You must refund the customer using another method.",
+      "location": "raw/stripe-payments-eps-2026-11-07.md:78"
+    },
+    {
+      "text": "1. Only supports send_invoice collection method.",
+      "location": "raw/stripe-payments-eps-2026-11-07.md:112"
+    },
+    {
+      "text": "The customer has up to 1 hour to complete bank authorization",
+      "location": "raw/stripe-payments-eps-2026-11-07.md:129"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "2Available by invite only.",
+      "location": "raw/stripe-eps-2025.md:111"
+    },
+    {
+      "text": "EPS payments can be refunded up to 180 days after the original payment date.",
+      "location": "raw/stripe-eps-2025.md:156"
+    },
+    {
+      "text": "EPS redirects customers to their bank\u2019s website to",
+      "location": "raw/stripe-eps-2025.md:12"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The November EPS page describes a single-use Austrian customer bank redirect: EUR presentment, instant provisional access, immediate payment result notification and standard payout schedule (new raw lines 5-15, 32-42, 113-137). The account can be in the listed 40 business locations and a merchant or Connect platform, while the EPS customer location is AT; the new page adds B2B/B2C and domestic/cross-border classifications, a 1.00 EUR minimum and possible post-activation account eligibility review (new raw lines 16-40). The May page also gave Austrian customers, EUR, redirect, immediate notification, 40 account locations, no recurring and standard payout (old raw lines 8-12, 14-54, 56-99). Neither account-list inclusion nor activation proves merchant-specific eligibility or a successful transaction.",
+    "The November payment flow spells out bank choice, redirect to bank login, customer-entered bank credentials, bank authorization within one hour, immediate result and optional return to the business (new raw lines 113-137). May documented the same redirect and six-stage flow without the one-hour limit (old raw lines 12, 113-132). The customer-facing result and optional browser return are distinct from merchant payout or Stripe balance settlement; the page's immediate confirmation and standard payout are separate states (new raw lines 12-14, 129-137). Current source lines 13, 17, 24 and concept lines 10, 14-25 summarize this core flow, though their wording should retain those state boundaries.",
+    "The 180-day refund submission window persists (old raw lines 154-156; new raw lines 57-68), while November adds full and multiple partial refunds, bank-dependent typical 1\u20133-day customer receipt with no guaranteed maximum, non-cancelability, separate-credit rather than reversal treatment, bank-statement labeling caveat, and status tracking through Refund.status and refund.updated/refund.failed events (new raw lines 57-78). A succeeded Refund object is a final outcome; a failed refund returns money to the Stripe balance and requires another customer refund method (new raw lines 76-78). Source lines 13 and 20 and concept line 28 accurately retain 180 days but lack these consequential qualifications.",
+    "EPS still excludes recurring and manual capture, and the November matrix explicitly excludes extended, incremental, decremental, re-authorizations, partial/multicapture/overcapture, SetupIntents, PaymentIntents with setup_future_usage and off-session payments (old raw lines 32-54; new raw lines 41-65, 105-110). It marks Checkout full page, Payment Links, embedded form, Payment Element, in-app, Billing, Invoicing, Radar and Connect supported, with Express Checkout Element, Payment Method Messaging Element, Customer Portal, Terminal and Managed Payments unsupported (new raw lines 86-112). The old product list was shorter, so its omissions are not blanket unsupported marks (old raw lines 101-111). Do not infer automatic recurring billing or subscription-mode Checkout from the Billing/Invoicing product names.",
+    "The May EPS page explicitly described Invoicing as invite-only (old raw lines 101-111), repeated by source line 22 and concept line 30. November marks Invoicing supported and places a send_invoice-only collection-method footnote after the product/API matrix, without repeating an invite restriction (new raw lines 96-112). This is a dated documentation conflict requiring reciprocal warning, not proof that invitations ceased for every account. The text capture does not unambiguously attach the footnote to one product row, so route-specific integration confirmation remains necessary; source and concept should not present the old invite-only claim as undated current eligibility.",
+    "Both captures say EPS's direct bank authentication avoids the standard chargeback dispute route (old raw lines 44-46, 150-152; new raw lines 63-65, 80-84). November clarifies that a customer who contacts the bank is directed to the merchant, who can issue a refund; it does not establish that all customer complaints are impossible (new raw lines 80-84). November adds non-card statement_descriptor behavior, account-level fallback, and destination-charge platform descriptor versus on_behalf_of connected-account descriptor (new raw lines 139-143). These are payment/Connect identity rules, not proof of the descriptor shown by a particular bank.",
+    "Current source-stripe-eps.md is a May-only summary with a May raw file (source lines 4-8, 11-28). It remains broadly right on Austria/EUR, single use, 180 days and no standard disputes but needs November provenance, the 1.00 EUR minimum, one-hour authorization, consequential refund failure and non-cancellation behavior, and dated Invoicing warning. The source's 'authentication prevents chargebacks' is directionally consistent with the raw's no-standard-dispute statement but should not imply zero fraud or every customer complaint impossible (old raw lines 150-152; new raw lines 80-84). Stripe index lines 275 and 752 and concept lines 10-47 route the source and repeat the undated invite-only status in concept line 30."
+  ],
+  "substantive_changes": [
+    "November explicitly documents account review/eligibility, B2B/B2C and cross-border classification, 1.00 EUR minimum, and one-hour bank authorization; these are new documented qualifications beyond May's Austrian customer/EUR/40-account-country and redirect overview (old raw lines 8-12, 14-99, 113-132; new raw lines 16-40, 113-137).",
+    "November expands refund lifecycle guidance to multiple partial refunds, non-cancelability, separate bank credit, typical-but-unguaranteed 1\u20133-day receipt, Refund.status/webhook outcomes and alternative refund on failure, while retaining the 180-day submission window (old raw lines 154-156; new raw lines 57-78).",
+    "The product/API matrix newly makes several supported and unsupported routes explicit; May's Invoicing invite-only footnote versus November's supported mark/send_invoice footnote is a dated documentation conflict, with no account-level rollout conclusion (old raw lines 101-111; new raw lines 86-112). May's old product-list omissions alone do not prove capability changes."
+  ],
+  "historical_claims_to_preserve": [
+    "Preserve May 3, 2026 as the provenance for the EPS old raw and its Austrian-customer/EUR/40-business-location, single-use, no-standard-dispute, no-recurring, no-manual-capture, six-step redirect and 180-day refund statements (old raw lines 1-2, 8-12, 14-99, 113-156). The November capture documents many of these again (new raw lines 5-15, 18-68, 80-84, 113-137).",
+    "Preserve May's Invoicing invite-only footnote as dated wording rather than erase it or present it as present eligibility; November says Invoicing supported with a send_invoice-only footnote, but the capture alone cannot establish every account's entitlement or exact integration route (old raw lines 101-111; new raw lines 96-112).",
+    "Preserve May's diagram-based six-step flow and invite-only presentation as dated examples; November uses prose steps and broader matrices. A diagram/image removal is not evidence of a changed payment authorization contract (old raw lines 113-132; new raw lines 113-137; diff lines 196-226)."
+  ],
+  "conflicts": [
+    "Source-stripe-eps.md line 22 and wiki/concepts/stripe-eps.md line 30 state Invoicing invite-only based on May raw line 111; November's product matrix marks Invoicing supported with a send_invoice-only footnote at new raw lines 96-112. Date both claims and add reciprocal warning; neither absence of 'invite-only' in November nor the supported mark proves universal entitlement or automatic recurring billing.",
+    "The source line 24 and concept lines 16-21 label the six-step payment flow as if optional return is a confirmation step; November distinguishes immediate result from optional return (new raw lines 129-137), as May did (old raw lines 126-132). Preserve that distinction rather than treating browser return as payment success or payout.",
+    "Source line 19's absolute 'authentication prevents chargebacks' should track the narrower documented scope: EPS lacks the standard dispute/chargeback process, while bank customer contact can still route back to the merchant for refund (old raw lines 150-152; new raw lines 80-84)."
+  ],
+  "unresolved_questions": [
+    "Whether the November Invoicing supported mark means the prior invitation gate was lifted for all accounts, and precisely which product row the send_invoice footnote qualifies, is not settled by these captures (old raw lines 101-111; new raw lines 96-112).",
+    "The page does not verify a specific account's EPS capability, cross-border settlement currency, website review result, bank acceptance, payment outcome, bank-statement descriptor, refund completion time or actual customer receipt (new raw lines 18-40, 68-78, 129-143)."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-eps.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-eps.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add November canonical/raw provenance while retaining the May capture and its dated 180-day/no-recurring/no-standard-dispute facts (source lines 4-8, 13-28; old raw lines 1-2, 32-54, 150-156; new raw lines 1-3, 41-68, 80-84).",
+        "Add the new 1.00 EUR minimum, account review and one-hour bank authorization as captured qualifications, keeping Austrian customer/EUR scope distinct from 40 supported business countries (source lines 13, 17, 21, 24; old raw lines 56-99, 113-132; new raw lines 16-40, 113-137).",
+        "Add non-cancelable separate-credit refund lifecycle, multiple partial refunds, 1\u20133-day typical bank timing without guaranteed maximum, Refund.status/webhook final outcomes and alternative method after failure; submission remains 180 days (source lines 13, 20; old raw lines 154-156; new raw lines 57-78).",
+        "Qualify the broader November product/API matrix and no off-session/setup_future_usage/SetupIntents support; source line 22's May Invoicing invite-only fact conflicts with November's supported mark and send_invoice footnote, so date both and reciprocally qualify concept line 30 (old raw lines 101-111; new raw lines 86-112)."
+      ],
+      "conflicts": [
+        "May Invoicing invite-only at old raw line 111 underlies source line 22 and concept line 30, while November marks Invoicing supported and gives send_invoice-only footnote at new raw lines 96-112; exact account entitlement and footnote attachment remain uncertain.",
+        "Source line 19 should not broaden no-standard-dispute process into an assurance of zero fraud/customer complaints; new raw lines 80-84 explicitly describe bank contact returning to the merchant."
+      ],
+      "reason": "The core EPS redirect and 180-day refund facts remain, but November adds material eligibility, minimum, authorization and refund-state details and conflicts with the undated May Invoicing eligibility wording in the source and concept."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/eps, the November capture describes a single-use Austrian customer bank redirect in EUR, with Stripe accounts in 40 listed business locations, merchant and Connect eligibility, B2B/B2C and cross-border classification, a 1.00 EUR minimum, possible account review and no recurring/manual-capture support (new raw lines 5-65). The customer chooses a bank, authenticates there within one hour, sees an immediate result and may optionally return to the business; immediate notification and standard payout are distinct states, and browser return is no proof of settled funds (new raw lines 113-137). The May capture had the same core Austrian/EUR/redirect, no-recurring, 40-business-location and 180-day-refund model, but omitted the new minimum and authorization window (old raw lines 8-12, 14-99, 113-156). source-stripe-eps.md captures those core facts but retains May-only provenance and an undated Invoicing invite-only statement despite November's supported/send_invoice wording (source lines 4-28; new raw lines 96-112).",
+    "Q2": "For https://docs.stripe.com/payments/eps, the substantive new documentation is the 1.00 EUR minimum, one-hour bank authorization window, possible eligibility review, explicit API/product limits and detailed refund lifecycle, including non-cancelability, separate bank credit, status webhooks and alternative refund after failure (new raw lines 16-78, 86-112, 113-137). The 180-day submission window, Austrian customer/EUR scope and lack of standard chargebacks remain aligned with May (old raw lines 14-54, 150-156; new raw lines 32-68, 80-84). The May invite-only Invoicing footnote conflicts with November's supported mark and send_invoice footnote; source-stripe-eps.md line 22 and concept line 30 need reciprocal dated warnings, with exact account entitlement and footnote attachment unresolved (old raw lines 101-111; new raw lines 96-112). The replacement of old flow diagrams with prose, expanded tables and pricing URL change are presentation/navigation differences, not payment success evidence (old raw lines 113-148; new raw lines 113-149). Distinguish front-end enablement from account eligibility, bank authorization/result from optional browser return and payout, and Billing/Invoicing send_invoice from subscription-mode Checkout or off-session recurring capability."
+  }
+}

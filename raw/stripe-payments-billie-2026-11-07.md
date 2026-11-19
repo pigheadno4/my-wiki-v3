@@ -1,0 +1,226 @@
+<!-- Source URL: https://docs.stripe.com/payments/billie -->
+<!-- Fetched: 2026-11-07 -->
+<!-- Discovery: reconciled llms.txt,sitemap.xml -->
+
+# Billie payments
+
+Offer businesses "Pay in 30" payment terms while getting paid instantly.
+
+[Billie](https://billie.io/) is a buy now, pay later payment method available to businesses in Germany, France, the Netherlands, Sweden, Norway, Finland, Austria, Spain, Denmark, Switzerland, and the UK. It lets your customers pay by invoice while you receive the total payment immediately.
+
+When a customer selects Billie, Stripe redirects them to Billie to authorize the payment and then returns them to your website or app.
+Payment method family: Buy now, pay later
+Usability: Single-use
+Access type: Instant provisional access
+Payment confirmation timing: Immediate
+Settlement timing: Standard payout schedule
+Pricing: https://stripe.com/de-de/pricing/local-payment-methods#billie
+## Eligibility and availability 
+
+### Account eligibility
+Business location: AT, CH, DE, DK, ES, FI, FR, GB, NL, NO, SE
+Account type: ✓ Merchant, ✓ Platform or marketplace (Connect)
+Business model: ✓ B2B, ✗ B2C
+Business category: View list of prohibited and restricted business categories
+Review the list of *merchant category codes* (A Merchant Category Code (MCC) is a four-digit number that classifies the type of goods or services a business offers) that are prohibited or restricted for Billie.
+
+- **Prohibited**: You can’t use this payment method with these MCCs.
+- **Restricted**: You might be able to use this payment method with these MCCs, but you must provide additional information when you create the account.
+
+| MCC | Description | Type |
+| --- | --- | --- |
+| 1520 | General Services | Prohibited |
+| 1623 | Water, Sewer, Pipeline, and Power Line Construction | Prohibited |
+| 3483 | Car Rental Agencies | Prohibited |
+| 3484 | Car Rental Agencies | Prohibited |
+| 5094 | Precious Stones and Metals, Watches and Jewelry | Prohibited |
+| 5967 | Adult Content and Services | Prohibited |
+| 6012 | Financial Institutions | Prohibited |
+| 6051 | Cryptocurrency exchanges and wallets | Prohibited |
+| 7995 | Betting and Casino Gambling | Prohibited |
+| 7997 | Country Clubs | Prohibited |
+| 8811 | Real Estate Agents and Managers - Rentals | Prohibited |
+| 9402 | Postal Services - Government Only | Prohibited |
+| 9711 | Tax Payments | Prohibited |
+
+Stripe accounts in the following countries can accept Billie payments that settle in a supported currency.
+
+EMEA: AT, CH, DE, DK, ES, FI, FR, GB, NL, NO, SE
+
+Customers in the following countries can use Billie.
+
+EMEA: AT, CH, DE, DK, ES, FI, FR, GB, NL, NO, SE
+
+### Payment support
+Customer location: AT, CH, DE, DK, ES, FI, FR, GB, NL, NO, SE
+Presentment currency: CHF, DKK, EUR, GBP, NOK, SEK
+Geographic coverage: ✓ Domestic, ✗ Crossborder
+Transaction limits: Minimum amount: 0.01 EUR
+Billie payments have a minimum amount of 0.01 EUR. Maximum transaction amounts vary by country and currency.
+
+Billie supports the following account-country and settlement-currency combinations:
+
+| Currency | Account countries |
+| --- | --- |
+| EUR, SEK, NOK, DKK | DE, FR, NL, SE, NO, FI, AT, ES, DK |
+| GBP | GB |
+| CHF | CH |
+
+## Capabilities 
+Recurring payments: ✗ Not supported
+
+Payment authorizations:
+  ✗ Extended authorizations
+  ✗ Flexible extended authorizations
+  ✗ Incremental authorizations
+  ✗ Decremental authorizations
+  ✗ Re-authorizations
+
+Payment captures:
+  ✓ Manual capture
+  ✓ Partial capture
+  ✗ Multi-capture
+  ✗ Over-capture
+
+Refunds:
+  ✓ Partial refunds
+  ✓ Full refunds
+  Submission window: 1 year
+  Processing time: 5 minutes
+
+Disputes:
+  ✗ Partial disputes
+  ✓ Full disputes
+  Submission window: 365 days
+### Refunds 
+
+Billie requires that you submit a refund within 365 days from the original payment using the [Dashboard](https://dashboard.stripe.com/payments) or [Refunds API](https://docs.stripe.com/api/refunds/create.md). This is the maximum the payment method allows. Your return policy determines what you offer customers.
+
+Refunds for Billie payments are asynchronous and take up to 5 minutes to complete. You can’t cancel Billie refunds.
+
+#### Refund process 
+
+When you refund a Billie payment, Billie updates the customer’s payment terms. For a full refund, Billie cancels the remaining payment obligation. For a partial refund, Billie adjusts the payment obligation to the lower order total.
+
+#### Tracking refunds 
+
+To check a refund’s status, open the payment in the [Dashboard](https://dashboard.stripe.com/payments) and click **View details** on the refund entry. You can also [retrieve the Refund object](https://docs.stripe.com/api/refunds/retrieve.md) and check its `status` field.
+
+Stripe notifies you of the final status through a `refund.updated` or `refund.failed` *webhook* (A webhook is a real-time push notification sent to your application as a JSON payload through HTTPS requests) event. [Verify webhook signatures](https://docs.stripe.com/webhooks.md#verify-events) to confirm that events came from Stripe. You can also use Stripe’s [public IP addresses](https://docs.stripe.com/ips.md) for network allowlisting. When a refund succeeds, the [Refund object](https://docs.stripe.com/api/refunds/object.md) status changes to `succeeded`. If the refund fails, the status changes to `failed` and Stripe returns the amount to your Stripe balance. You must refund the customer using another method.
+
+### Disputes 
+
+Customers have up to 365 calendar days from the date of purchase to file Billie disputes.
+
+#### Dispute process 
+
+1. **Dispute opened**: Billie opens a dispute. Stripe immediately withholds the disputed amount from your balance. You have 35 calendar days to submit evidence.
+2. **Decision**: Billie reviews your evidence and issues a final decision within seven calendar days after you submit evidence.
+
+#### Dispute notifications 
+
+When Billie disputes are opened, Stripe notifies you through:
+
+- Email
+- The [Stripe Dashboard](https://dashboard.stripe.com/disputes)
+- A [charge.dispute.created](https://docs.stripe.com/api/events/types.md#event_types-charge.dispute.created) event
+
+The dispute reason is available in the Dashboard and in the `reason` field of the [Dispute object](https://docs.stripe.com/api/disputes/object.md). The evidence submission deadline is available in the Dashboard and in the `evidence_details.due_by` field of the Dispute object.
+
+#### Responding to disputes 
+
+You have 35 calendar days from dispute creation to submit evidence.
+
+Submit evidence in the Stripe Dashboard that shows you fulfilled the order. Evidence can include tracking information, shipping and delivery dates, order records, customer communications, and proof of a refund when you have already refunded the payment.
+
+You can submit evidence and manage Billie disputes in the [Dashboard](https://dashboard.stripe.com/disputes) or programmatically using the [Disputes API](https://docs.stripe.com/api/disputes/update.md). In the Dashboard, go to the **Needs response** tab, click the disputed payment, then click **Counter dispute** to submit your evidence, or **Accept dispute** to accept the loss. To submit evidence through the API, upload supporting files using the [Files API](https://docs.stripe.com/api/files/create.md) and include the returned file IDs when you update the [Dispute Evidence object](https://docs.stripe.com/api/disputes/update.md).
+
+#### Dispute outcomes 
+
+If Billie resolves the dispute in your favor, Stripe returns the disputed amount to your Stripe balance.
+
+If they rule in favor of the customer, the balance charge becomes permanent.
+
+## Stripe product support 
+Checkout UIs:
+  ✓ Full page (Recommended)
+  ✓ Payment Links
+  ✓ Embedded form
+  ✓ Payment Element
+  ✗ Express Checkout Element
+  ✗ Payment Method Messaging Element
+  ✓ In-app payments
+
+Products:
+  ✗ Managed Payments
+  ✓ Billing
+  ✓ Invoicing
+  ✗ Customer Portal
+  ✗ Radar
+  ✗ Terminal
+  ✓ Connect
+
+APIs:
+  ✓ Checkout Sessions (Recommended)
+  ✓ Payment Intents
+  ✗ Payment Intents with setup_future_usage
+  ✗ Setup Intents
+  ✗ Off-session payments
+
+1. Only supports send_invoice collection method.
+### Product limitations 
+
+Review these limitations before you add Billie to your integration:
+
+- Checkout doesn’t support Billie in subscription mode or setup mode.
+- Express Checkout Element doesn’t support Billie.
+
+## Connect 
+
+If you use *Connect* (Connect is Stripe's solution for multi-party businesses, such as marketplace or software platforms, to route payments between sellers, customers, and other recipients), you must consider the following before you enable and use Billie.
+
+### Request Billie capabilities for your connected accounts
+
+Set the `billie_payments` capability to `active` on your platform account, and on any connected accounts you want to enable Billie for. You can also [request more account capabilities](https://docs.stripe.com/connect/account-capabilities.md#requesting-unrequesting).
+
+### Merchant of record and statement descriptors 
+
+The [charge type](https://docs.stripe.com/connect/charges.md) of Connect payments might change the default statement descriptor and the merchant name that appears on the customer’s banking application and confirmation emails.
+
+| Charge type | Descriptor taken from |
+| --- | --- |
+| Direct | Connected account |
+| Destination | Platform |
+| Separate charge and transfer | Platform |
+| Destination (with `on_behalf_of`) | Connected account |
+| Separate charge and transfer (with `on_behalf_of`) | Connected account |
+
+To check or update your statement descriptor, go to your [account settings](https://docs.stripe.com/get-started/account/statement-descriptors.md). For Connect integrations, see [setting statement descriptors with Connect](https://docs.stripe.com/connect/statement-descriptors.md).
+
+## Customer experience 
+
+#### 1. Select payment method
+
+The customer selects Billie at checkout.
+
+#### 2. Redirect to Billie
+
+The customer is redirected from your website or app to Billie to authorize the payment.
+
+#### 3. Authorize payment
+
+The customer provides the required information and accepts the payment terms with Billie.
+
+#### 4. Payment complete
+
+The customer returns to your website or app after the payment is authorized. Stripe immediately notifies you whether the payment succeeded or failed.
+
+### Transaction identifiers 
+
+After a Billie payment succeeds, expand `latest_charge` on the PaymentIntent to retrieve the Billie transaction ID from `latest_charge.payment_method_details.billie.transaction_id`. Share it with customers when they contact Billie support.
+
+## Enable Billie 
+
+If you use Stripe front-end products, enable Billie in your [payment method settings](https://dashboard.stripe.com/settings/payment_methods). Stripe automatically determines which payment methods are most relevant to each customer.
+
+If your integration requires manually listing payment methods, you can [configure Billie as an accepted payment method](https://docs.stripe.com/payments/billie/accept-a-payment.md).

@@ -1,0 +1,170 @@
+{
+  "job_id": "payments-boleto-accept-a-payment",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-boleto-accept-payment.md": {
+      "job_id": "payments-boleto-accept-a-payment",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Accept a Boleto Payment\"\ntype: source\ndate_ingested: 2026-05-07\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/boleto/accept-a-payment\"\nraw_files:\n  - \"stripe-boleto-accept-payment-2025.md\"\ntags: [stripe, vouchers, boleto, brazil, brl, checkout, elements, direct-api, webhooks, expires-after-days]\n---\n\n## Overview\n\nThe 2026-05-07 Boleto guide covers four ways to create and display a Brazil/BRL cash voucher: hosted or embedded Checkout, Elements with the Checkout Sessions API, Elements with the Payment Intents API, and Direct API. Voucher creation, customer payment, later payment notification, and funds availability are separate states. The 2026-11-07 capture at the canonical URL is a variant navigation index with no integration instructions; the behavior below remains dated May evidence. See [[stripe]] and [[stripe-vouchers]].\n\n## Key details from the 2026-05-07 guide\n\n- **Compatibility and expiry:** The Checkout and Checkout Sessions API variants list supported business location Brazil, currency and presentment BRL, payment and subscription modes, but no setup mode. Their line items must use one currency. The Direct API section says Stripe users in Brazil can accept Boleto from customers in Brazil. Checkout and Direct API allow optional `payment_method_options.boleto.expires_after_days` from 0 to 60 calendar days, default 3, with expiry at 23:59 America/Sao_Paulo; the account default can be adjusted in Dashboard. Those are May-capture rules, not current account eligibility findings.\n- **Hosted or embedded Checkout:** The server creates a Checkout Session with BRL line items and Boleto enabled, either by the illustrated manual `payment_method_types` list or a dynamic-method integration. After submitting the form, the Boleto customer goes to `hosted_voucher_url`, not `success_url`. `checkout.session.completed` means the voucher was generated and the merchant can resend its link; it does not mean the customer paid. `checkout.session.async_payment_succeeded` follows payment and supports fulfillment. `checkout.session.async_payment_failed` covers expiry **or another failure** and the PaymentIntent returns to `requires_payment_method`.\n- **Elements with Checkout Sessions API:** The server creates a Checkout Session with `ui_mode: 'elements'` and returns its client secret. The client uses the Checkout Elements SDK or React provider, collects a valid email and payment details, and calls Checkout `confirm`. The old web example names `@stripe/stripe-js` 7.0.0 or later for its HTML/JS module path, and React Stripe.js 5.0.0 or later with Stripe.js loader 8.0.0 or later for the React path; these are dated example requirements. In the old guide's live-mode description, Pay redirects to the Boleto website; its sandbox path redirects to a test page with approval or decline controls.\n- **Elements with Payment Intents API:** The server determines the BRL amount and creates a PaymentIntent; the dated examples show `customer_account` for Accounts v2 and `customer` for Customers v1 when saving/retrieving methods. The client uses the Payment Element, `elements.submit()`, then `stripe.confirmPayment({elements, clientSecret, confirmParams: {return_url}})`. The live-mode test section likewise says Pay redirects to the Boleto website. The old generic client snippet mentions an iDEAL intermediate redirect as an example; it does not define Boleto's final paid state. The guide advises Stripe payment events instead of relying on client callbacks for business actions.\n- **Direct API:** The merchant creates a BRL Boleto PaymentIntent server-side and collects the customer's name, email, CPF or CNPJ `tax_id`, street address, city, two-letter Brazilian state and postal code. The old guide specifies formats and an ASCII character condition for name, street and city; see raw lines 1331-1345. Its recommended client path passes the PaymentIntent client secret and details to `stripe.confirmBoletoPayment()`, which opens a voucher modal by default. `handleActions: false` lets the client display the number, expiry and PDF itself; `next_action.boleto_display_details` also contains a `hosted_voucher_url` for optional emailing. A separate optional server path creates and confirms the PaymentIntent with `confirm: true` and Boleto payment method data. Voucher creation yields `requires_action`, not a paid intent.\n- **Delayed outcome and limits:** For a voucher the customer actually paid, the dated Direct API guide says Stripe sends `payment_intent.succeeded` on the next business day, Monday-Friday excluding Brazilian holidays; funds are not immediately available. For nonpayment by expiry, it says `payment_intent.payment_failed` is sent after one business day. Boleto payments cannot be refunded or disputed by the customer. A Boleto voucher cannot be canceled before expiry; afterward the PaymentIntent returns to `requires_payment_method`, allowing another payment method or cancellation.\n\n## Optional and test details\n\nThe May guide describes voucher branding through Dashboard Branding Settings and opt-in payment instruction emails through Dashboard Email Settings; in test environments those emails go only to addresses linked to the Stripe account. Its test email patterns simulate payment after about three minutes, immediate success, immediate or delayed expiry, and never paid. CPF `000.000.000-00` and CNPJ `00.000.000/0000-00` are sandbox validation-bypass values, not production tax identifiers. These simulations do not establish live payment success or settlement.\n\n## Detail locators\n\n- Old raw lines 8-36, 44-106, 171-197: Checkout compatibility, Session settings, voucher redirect and distinct webhooks.\n- Old raw lines 251-290, 367-394, 492-543, 658-742: Elements with Checkout Sessions API, email identity alternatives, SDK versions, client confirmation and live/sandbox redirect.\n- Old raw lines 744-771, 975-1109, 1150-1157, 1252-1274: Elements with Payment Intents API, Accounts v2/Customers v1 examples, `return_url`, event handling and redirect.\n- Old raw lines 1288-1345, 1412-1483, 1518-1625: Direct API prerequisites, client modal and manual actions, voucher and payment states, optional server confirmation, expiry and cancellation.\n- Old raw lines 199-244 and 1485-1516: sandbox tests, refunds, disputes and instruction emails.\n\n## Related raw API references\n\n- [[raw/stripe-payments-boleto-accept-a-payment-2026-11-07|2026-11-07 variant navigation index]] \u2014 links Checkout, Elements/Checkout Sessions API, Elements/Payment Intents API and Direct API variants. Their current bodies were not captured in this order.\n\n## Raw Sources\n\n- [[raw/stripe-boleto-accept-payment-2025|2026-05-07 full four-variant guide]] \u2014 dated factual authority for the flow, limits and examples above.\n",
+      "quotes": [
+        {
+          "text": "Learn how to accept Boleto, a common payment method in Brazil.",
+          "location": "raw/stripe-payments-boleto-accept-a-payment-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-boleto-accept-a-payment-2026-11-07.md:11"
+        },
+        {
+          "text": "- [Checkout](https://docs.stripe.com/payments/boleto/accept-a-payment.md?payment-ui=checkout)",
+          "location": "raw/stripe-payments-boleto-accept-a-payment-2026-11-07.md:13"
+        },
+        {
+          "text": "  - [Payment Intents API](https://docs.stripe.com/payments/boleto/accept-a-payment.md?payment-ui=elements&api-integration=paymentintents)",
+          "location": "raw/stripe-payments-boleto-accept-a-payment-2026-11-07.md:16"
+        },
+        {
+          "text": "- [Direct API](https://docs.stripe.com/payments/boleto/accept-a-payment.md?payment-ui=direct-api)",
+          "location": "raw/stripe-payments-boleto-accept-a-payment-2026-11-07.md:17"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "boleto-accept-vouchers-redirect-scope",
+            "target_path": "wiki/concepts/stripe-vouchers.md",
+            "update_kind": "durable_fact",
+            "anchor": "**No manual capture. No redirect required.** All use PaymentIntents.",
+            "proposed_markdown": "**No manual capture.** Voucher presentation depends on the method and integration. In the dated Boleto guide, Checkout redirects to `hosted_voucher_url`; live Elements/Checkout Sessions API and Elements/Payment Intents API Pay flows redirect to the Boleto website; Direct API `stripe.confirmBoletoPayment()` opens a voucher modal by default. See [[source-stripe-boleto-accept-payment]].",
+            "quote_indexes": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "The existing 'No redirect required' statement conflicts with raw/stripe-boleto-accept-payment-2025.md:171-175,738-742,1270-1274. Direct modal: old raw lines 1412-1414. November index raw/stripe-payments-boleto-accept-a-payment-2026-11-07.md:9-17 does not renew UI behavior. Scope replacement to dated Boleto; other voucher methods remain their own authorities."
+            ]
+          },
+          {
+            "update_id": "boleto-accept-vouchers-integration-scope",
+            "target_path": "wiki/concepts/stripe-vouchers.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Integration**: 4 paths (Checkout, Checkout Sessions API, Payment Intents API, Direct API). Checkout: customer redirected to `hosted_voucher_url` (not `success_url`). Three async Checkout webhook events: `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.async_payment_failed`. `expires_after_days`: 0\u201360 days (default 3), in `payment_method_options.boleto`. Expiry at 23:59 America/Sao_Paulo. Direct API: `stripe.confirmBoletoPayment()`; `payment_intent.succeeded` fires next business day Mon\u2013Fri excl. Brazilian holidays.",
+            "proposed_markdown": "**Integration (2026-05-07 guide)**: 4 paths (Checkout, Elements/Checkout Sessions API, Elements/Payment Intents API, Direct API). Checkout redirects to `hosted_voucher_url` rather than `success_url`; `checkout.session.completed` means voucher creation, `checkout.session.async_payment_succeeded` means payment, and `checkout.session.async_payment_failed` includes expiry or another failure. Both live Elements variants say Pay redirects to the Boleto website; the Payment Intents API client call uses `stripe.confirmPayment` with a `return_url`. Direct API recommends client `stripe.confirmBoletoPayment()` with a voucher modal, permits optional server confirmation, and requires name, email, CPF/CNPJ and Brazilian address. `expires_after_days` is 0\u201360 days (default 3), expiring at 23:59 America/Sao_Paulo. For a voucher already paid, Direct API says `payment_intent.succeeded` arrives next business day, Monday-Friday excluding Brazilian holidays; funds are not immediately available. The 2026-11-07 capture is variant navigation only. [[source-stripe-boleto-accept-payment]]",
+            "quote_indexes": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Old raw authority: raw/stripe-boleto-accept-payment-2025.md:104-106,171-197,738-742,1103-1109,1270-1274,1331-1345,1412-1478,1581-1613. New raw/stripe-payments-boleto-accept-a-payment-2026-11-07.md:9-17 only names variants."
+            ]
+          },
+          {
+            "update_id": "boleto-accept-vouchers-source-route",
+            "target_path": "wiki/concepts/stripe-vouchers.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-boleto-accept-payment]] \u2014 Boleto integration: 4 paths, hosted_voucher_url, expires_after_days, confirmBoletoPayment(), next-biz-day webhook",
+            "proposed_markdown": "- [[source-stripe-boleto-accept-payment]] \u2014 2026-05-07 Boleto integration guide: four distinct UI/API paths, voucher creation versus paid state, expiry, Direct API billing/tax ID and cancellation limits; 2026-11-07 capture is variant navigation only",
+            "quote_indexes": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Dated authority: raw/stripe-boleto-accept-payment-2025.md:171-197,1331-1345,1412-1478,1581-1625. New raw/stripe-payments-boleto-accept-a-payment-2026-11-07.md:9-17 does not establish current behavioral details."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-boleto-accept-a-payment-2026-11-07.md",
+      "raw_sha256": "c7194cf2d91d0fd0430b2ac3b9b10ce55586f1f9b076837dbb156482dbb46d5d",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-boleto-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "raw/stripe-boleto-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 1625
+      }
+    ],
+    "wiki/sources/source-stripe-boleto-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 38
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/7b35a5d4e212548ec348a3e7/content.diff": [
+      {
+        "start": 1,
+        "end": 1630
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-boleto-accept-a-payment/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 224
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 368,
+        "end": 378
+      }
+    ],
+    "wiki/concepts/stripe-vouchers.md": [
+      {
+        "start": 1,
+        "end": 123
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "After submitting the Checkout form successfully, the customer is redirected to the `hosted_voucher_url`.",
+      "location": "raw/stripe-boleto-accept-payment-2025.md:175"
+    },
+    {
+      "text": "The Boleto voucher has expired, or the payment has failed for some other reason.",
+      "location": "raw/stripe-boleto-accept-payment-2025.md:197"
+    },
+    {
+      "text": "Boleto payments can\u2019t be refunded.",
+      "location": "raw/stripe-boleto-accept-payment-2025.md:234"
+    },
+    {
+      "text": "When a Boleto voucher is created successfully, the value of the returned PaymentIntent\u2019s `status` property is `requires_action`.",
+      "location": "raw/stripe-boleto-accept-payment-2025.md:1456"
+    },
+    {
+      "text": "Boleto vouchers can\u2019t be canceled before expiration.",
+      "location": "raw/stripe-boleto-accept-payment-2025.md:1623"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/boleto/accept-a-payment, the complete November capture names Boleto in Brazil and links Checkout, Elements with Checkout Sessions API, Elements with Payment Intents API, and Direct API; it establishes no new prerequisites, identities or payment state rules (new raw lines 5-17). The 2026-05-07 guide supplies dated BRL and Brazil scope, Checkout voucher creation and hosted-voucher redirect, Elements live Boleto-site redirects, and Direct API name, email, CPF/CNPJ and Brazilian address fields, default voucher modal or optional server confirmation (old raw lines 18-36,171-197,738-742,1270-1274,1288-1345,1412-1460,1581-1613). Voucher creation yields requires_action; paid-voucher success is a later event and funds are not immediately available (old raw lines 1454-1478). source-stripe-boleto-accept-payment.md listed the four paths but merged their UI and outcome boundaries.",
+    "Q2": "At https://docs.stripe.com/payments/boleto/accept-a-payment, the November change is navigation only, with four variant links and no behavioral replacement or SDK update (new raw lines 9-17; comparison diff lines 3-17 and 1621-1630). source-stripe-boleto-accept-payment.md should preserve May-dated Checkout hosted_voucher_url, 0-60-day expiry, separate completed/async succeeded/async failed webhooks, Elements' live Boleto-site redirects and Payment Intents API return_url, Direct API recommended client confirmBoletoPayment modal plus optional server confirmation, required CPF/CNPJ and address, nonrefundability, and no cancellation before expiry (old raw lines 104-106,171-197,232-238,738-742,1103-1109,1270-1274,1331-1345,1412-1478,1581-1625). Its expiry-only failure and unscoped next-business-day payment confirmation need correction. The stripe-vouchers concept's 'No redirect required' conflicts with those dated UI paths. Unread November variants do not prove current requirements, eligibility, settlement or payment execution."
+  }
+}

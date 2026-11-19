@@ -1,0 +1,181 @@
+{
+  "job_id": "payments-jp-installments",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-jp-installments.md": {
+      "job_id": "payments-jp-installments",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Japan Card Installments (\u5206\u5272\u6255\u3044)\"\ntype: source\ndate_ingested: 2026-05-01\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/jp-installments\"\nraw_files:\n  - \"stripe-payments-jp-installments-2026-11-07.md\"\n  - \"stripe-jp-installments-2025.md\"\ntags: [stripe, japan, installments, jpy, bonus-payments, visa, mastercard, jcb]\n---\n\n## Overview\n\nStripe's May 1 and November 7, 2026 captures describe Japanese credit-card installments (\u5206\u5272\u6255\u3044): the customer splits a purchase over billing statements while the card issuer extends credit and collects installments. A Japan Stripe account can use the Payment Intents and Payment Methods APIs for eligible JPY transactions on credit cards issued in Japan. The November property label says **Card issuing country: Japan** where May said **Customer locations: Japan**; both captures already require a Japanese-issued credit card. See [[stripe]], [[stripe-jp-installments]] and [[stripe-installments]].\n\n## Key takeaways\n\n- The merchant receives the full transaction amount as with a standard card payment, while the issuer collects from the cardholder over time. Funds become available on the **same schedule as other card payments**, and the property list says standard payout timing. Full principal is not an instant availability or payout promise. See November raw lines 9, 37\u201339, 67\u201369; May raw lines 8, 36\u201338, 66\u201368.\n- Accepting installments adds **no additional merchant installment fee**. That statement does not waive ordinary card-processing fees. The cardholder **might** pay issuer interest; interest **typically** does not apply to two-installment or bonus plans, but can for other plans. The issuer determines actual cardholder charges. See November raw line 65 and May raw line 64.\n- Stripe marks recurring installment payments **No**. Its separate instruction says not to use installments for other off-session payments **where the customer does not select the installment plan when making the payment**. The conditional wording supplies no affirmative support for a different off-session case and does not make recurring payments supported. See November raw lines 33\u201335, 75\u201382; May raw lines 32\u201334, 74\u201381.\n- Stripe determines eligibility after setup. A Japanese-issued **credit** card is required; debit and prepaid cards are excluded; currency is JPY and the Stripe account must be in Japan. A listed brand or a displayed option does not establish an individual card's eligibility or successful confirmation. See November raw lines 57\u201361, 75\u201394; May raw lines 56\u201360, 74\u201393.\n\n## Plans and display\n\nThe November and May brand matrices align: Visa/Mastercard list up to 60 fixed installments plus revolving and bonus; JCB lists up to 24 plus revolving and bonus; Diners Club lists revolving and bonus but no fixed installments; American Express and Discover list none. The guide says American Express stopped installments on self-issued cards in December 2022 and mentions its separate post-checkout \u3042\u3068\u5206\u5272 product. These are captured plan descriptions, subject to Stripe's eligibility decision. See November raw lines 84\u201394 and May raw lines 83\u201393.\n\nIn Stripe-hosted payment UI, the installment option appears after a supported card number is entered. For a custom Direct API UI, Stripe **recommends** collecting the card number first and then showing available plans. The linked Checkout Demo/test card is a test route, not payment or eligibility proof. See November raw lines 71\u201377 and May raw lines 70\u201376. The guide's separate accept-a-payment link is a navigation route to implementation details.\n\n## Bonus plan timing and outcomes\n\nThe captured live bonus cycles are **December 16\u2013June 15** and **July 16\u2013November 15**. Bonus plans are unavailable June 16\u2013July 15 and November 16\u2013December 15. Sandboxes can still return bonus plans in a live-off period. When unavailable, Stripe omits bonus plans from available options, and an attempted bonus payment confirmation fails with `payment_intent_invalid_parameter`. Crossing the cutoff between viewing checkout and completing payment also fails. With separate authorization and capture, capturing after the bonus window can show as a normal card payment or in a later bonus cycle. These statements do not guarantee a particular issuer's plan or a successful capture. See November raw lines 96\u2013117 and May raw lines 95\u2013116.\n\nThe captures also list customer authentication, Connect, disputes, manual capture and full/partial refunds as supported properties; recurring is marked No. Their property table is a snapshot, not evidence of this merchant's account access or an executed payment. See November raw lines 15\u201355 and May raw lines 14\u201354.\n\n## Related\n\n- [[stripe-jp-installments]] \u2014 Japan-specific concept.\n- [[stripe-installments]] \u2014 broader Stripe installment products.\n- [[source-stripe-jp-installments-accept-payment]] \u2014 separate implementation guide; linked here for navigation, with its own evidence.\n\n## Raw Sources\n\n- [[raw/stripe-payments-jp-installments-2026-11-07|November 7, 2026 full capture]] \u2014 current pinned page, 117 lines.\n- [[raw/stripe-jp-installments-2025|May 1, 2026 full capture]] \u2014 earlier matched page, 116 lines.\n",
+      "quotes": [
+        {
+          "text": "You receive the full amount as with standard card payments, and the customer\u2019s card company provides credit and collects the funds over time.",
+          "location": "raw/stripe-payments-jp-installments-2026-11-07.md:9"
+        },
+        {
+          "text": "Accepting installments doesn\u2019t result in any additional fees for you.",
+          "location": "raw/stripe-payments-jp-installments-2026-11-07.md:65"
+        },
+        {
+          "text": "Interest typically doesn\u2019t apply when paying in two installments or with bonus installment plans, but does for others.",
+          "location": "raw/stripe-payments-jp-installments-2026-11-07.md:65"
+        },
+        {
+          "text": "Payments using installments become available on the same schedule as other card payments.",
+          "location": "raw/stripe-payments-jp-installments-2026-11-07.md:69"
+        },
+        {
+          "text": "the Payment Intent confirmation fails with a `payment_intent_invalid_parameter` error.",
+          "location": "raw/stripe-payments-jp-installments-2026-11-07.md:113"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "jp-installments-direct-principal-timing",
+            "target_path": "wiki/concepts/stripe-jp-installments.md",
+            "update_kind": "durable_fact",
+            "anchor": "Japan card installments (\u5206\u5272\u6255\u3044) allow customers to split credit card purchases over multiple billing statements. Merchant receives full amount upfront; card company handles credit and collection.",
+            "proposed_markdown": "Japan card installments (\u5206\u5272\u6255\u3044) let customers split credit-card purchases over multiple billing statements. The merchant receives the full transaction amount as with a standard card payment, while the card issuer provides credit and collects installments; funds become available on the same schedule as other card payments, with standard payout timing.",
+            "quote_indexes": [
+              0,
+              3
+            ],
+            "warnings": [
+              "Both raw/stripe-jp-installments-2025.md:8,36-38,66-68 and raw/stripe-payments-jp-installments-2026-11-07.md:9,37-39,67-69 distinguish full principal from funds availability. Do not infer instant payout."
+            ]
+          },
+          {
+            "update_id": "jp-installments-direct-offsession",
+            "target_path": "wiki/concepts/stripe-jp-installments.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Restrictions**: Japan Stripe accounts only; JP-issued credit cards only (no debit/prepaid); JPY only; no recurring/off-session use.",
+            "proposed_markdown": "**Restrictions**: Japan Stripe accounts, Japanese-issued credit cards (not debit or prepaid) and JPY. Recurring installment payments are marked unsupported. The guide also says not to use installments for other off-session payments where the customer does not choose the plan when making the payment; it does not establish support for another off-session case.",
+            "quote_indexes": [
+              0,
+              1
+            ],
+            "warnings": [
+              "Old raw/stripe-jp-installments-2025.md:32-34,78-81 and new raw/stripe-payments-jp-installments-2026-11-07.md:33-35,79-82 distinguish the independent recurring No property from the conditional other-off-session warning."
+            ]
+          },
+          {
+            "update_id": "jp-installments-family-principal-timing",
+            "target_path": "wiki/concepts/stripe-installments.md",
+            "update_kind": "durable_fact",
+            "anchor": "Japan-only card installment feature for JP Stripe accounts processing JPY. Merchant receives full amount upfront; card company handles collection.",
+            "proposed_markdown": "Japan card installment feature for Japan Stripe accounts processing JPY on Japanese-issued credit cards. The merchant receives full transaction principal as with standard card payments, while the issuer extends credit and collects installments; funds become available on the ordinary card schedule, with standard payout timing.",
+            "quote_indexes": [
+              0,
+              3
+            ],
+            "warnings": [
+              "Old raw/stripe-jp-installments-2025.md:8,36-38,66-68 and new raw/stripe-payments-jp-installments-2026-11-07.md:9,37-39,67-69 do not promise instant funds or payout."
+            ]
+          },
+          {
+            "update_id": "jp-installments-family-offsession",
+            "target_path": "wiki/concepts/stripe-installments.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Restrictions**: JP-issued credit cards only (no debit/prepaid); JPY; no recurring/off-session.",
+            "proposed_markdown": "**Restrictions**: Japan Stripe account, Japanese-issued credit card (no debit/prepaid) and JPY. Recurring installment payments are unsupported. For other off-session payments, the guide warns against use when the customer does not select the plan at payment; it does not affirm support in any other off-session case.",
+            "quote_indexes": [
+              0,
+              1
+            ],
+            "warnings": [
+              "Old raw/stripe-jp-installments-2025.md:32-34,78-81 and new raw/stripe-payments-jp-installments-2026-11-07.md:33-35,79-82 establish separate recurring and conditionally worded other-off-session limits."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-jp-installments-2026-11-07.md",
+      "raw_sha256": "97a3c4196393abdf27199fca0d1181a68fb85848b1799eea1928ce3204422ad5",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-jp-installments-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 117
+      }
+    ],
+    "raw/stripe-jp-installments-2025.md": [
+      {
+        "start": 1,
+        "end": 116
+      }
+    ],
+    "wiki/sources/source-stripe-jp-installments.md": [
+      {
+        "start": 1,
+        "end": 29
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/b0cbd48c7035bff3816d7a69/content.diff": [
+      {
+        "start": 1,
+        "end": 63
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-jp-installments/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 221
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 25
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 225,
+        "end": 235
+      },
+      {
+        "start": 755,
+        "end": 765
+      }
+    ],
+    "wiki/concepts/stripe-installments.md": [
+      {
+        "start": 1,
+        "end": 49
+      }
+    ],
+    "wiki/concepts/stripe-jp-installments.md": [
+      {
+        "start": 1,
+        "end": 53
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "Accepting installments doesn\u2019t result in any additional fees for you.",
+      "location": "raw/stripe-jp-installments-2025.md:64"
+    },
+    {
+      "text": "Interest typically doesn\u2019t apply when paying in two installments or with bonus installment plans, but does for others.",
+      "location": "raw/stripe-jp-installments-2025.md:64"
+    },
+    {
+      "text": "Payments using installments become available on the same schedule as other card payments.",
+      "location": "raw/stripe-jp-installments-2025.md:68"
+    },
+    {
+      "text": "The payment method must be a credit card issued in Japan.",
+      "location": "raw/stripe-jp-installments-2025.md:79"
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/jp-installments, the complete November capture describes Japan Stripe accounts taking JPY installment payments on Japanese-issued credit cards through Payment Intents and Payment Methods; debit and prepaid cards are excluded (new raw lines 9-13, 75-82). The issuer provides credit and collects installments; the merchant receives full transaction principal on the ordinary card funds-availability and standard payout schedule, not instant cash (new raw lines 9, 37-39, 67-69; old raw lines 8, 36-38, 66-68). Recurring installments are independently marked No, while the separate other-off-session warning applies when the customer does not select the plan at payment and affirms no alternative supported case (new raw lines 33-35, 79-82; old raw lines 32-34, 78-81). The mapped source-stripe-jp-installments.md captures the brand and bonus outline but its 'No merchant fees' and interest-free wording overstate both captures (source lines 13-23; new raw line 65; old raw line 64).",
+    "Q2": "For https://docs.stripe.com/payments/jp-installments, the November content change is chiefly a more precise Card issuing country label for Japan in place of May's Customer locations label; both raws already require a Japanese-issued credit card, Japan account and JPY (old raw lines 16-22, 56-60, 78-81; new raw lines 17-23, 57-61, 79-82). Table spacing, heading whitespace and a sandboxes link are presentational. In source-stripe-jp-installments.md, correct the pre-existing fee statement to no additional installment merchant fee, without claiming all card fees are waived; issuer interest is only typically absent for two-installment and bonus plans (old raw line 64; new raw line 65). The full principal statement is distinct from standard card availability/payout timing (old raw lines 8, 36-38, 66-68; new raw lines 9, 37-39, 67-69). Hosted plan display follows a supported card number; custom Direct API card-first display is advice, not a required successful outcome (new raw lines 71-77). Bonus plan windows, sandbox/live difference, cutoff confirmation error and late capture uncertainty remain dated (old raw lines 95-116; new raw lines 96-117). Neither capture makes card-specific eligibility, payment success or a positively supported off-session path certain."
+  }
+}

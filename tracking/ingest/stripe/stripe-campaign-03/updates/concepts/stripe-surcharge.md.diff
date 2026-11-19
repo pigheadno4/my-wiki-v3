@@ -1,0 +1,48 @@
+--- wiki/concepts/stripe-surcharge.md
++++ tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-surcharge.md
+@@ -7,7 +7,7 @@
+ 
+ ## Overview
+ 
+-Stripe surcharging (public preview) lets merchants offset card processing costs. Available in US/CA/AU/NZ. Merchant is **fully responsible** for compliance with laws, regulations, and card network rules.
++Stripe surcharging (public preview) lets merchants offset card processing costs. The November 7, 2026 table lists US/Canada/New Zealand; the May 11, 2026 table also listed Australia. The omission does not establish current Australian permission or prohibition. Merchant is **fully responsible** for compliance with laws, regulations, and card network rules.
+ 
+ ## Availability
+ 
+@@ -15,7 +15,7 @@
+ | --- | --- | --- |
+ | US | Credit cards only | 3% |
+ | CA | Credit cards only | 2.4% |
+-| AU | All cards | 4% |
++| AU (May 11, 2026 table only; omitted November 7) | All cards | 4% |
+ | NZ | All cards | 4% |
+ 
+ Requires API version `2026-03-25.preview`.
+@@ -29,7 +29,7 @@
+ | Value | Effect |
+ | --- | --- |
+ | `enabled` | Technical max enforced; `maximum_amount` returned |
+-| `disabled` | No technical max; no `maximum_amount` |
++| `disabled` | No Stripe technical maximum validation or `maximum_amount`; card-funding, regional, legal, and card-network restrictions still apply |
+ | `automatic` | Default (same as enabled) |
+ 
+ Cannot change after setting.
+@@ -37,15 +37,15 @@
+ ## Compliance Obligations
+ 
+ - Disclose surcharge amount before purchase; show separately on receipt
+-- Notify acquirer/card network of intent to surcharge
++- Notify the acquirer or card network of intent to surcharge if required by the jurisdiction or card network; the page frames its listed duties as obligations that might apply.
+ - Surcharge consistently across networks
+ - Allow customer to cancel or choose different PM after disclosure
+ - Merchant bears full responsibility for fines/penalties
+ 
+ ## Refund Rules
+ 
+-- **Full refund**: return entire surcharge
+-- **Partial refund**: return prorated surcharge (refund % × surcharge)
++- **Full refund**: implement return of the entire surcharge where required by card-network rules or applicable law.
++- **Partial refund**: implement a prorated surcharge return where required (refunded order share × surcharge).
+ 
+ ## Feature Compatibility
+ 

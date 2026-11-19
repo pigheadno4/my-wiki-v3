@@ -1,0 +1,196 @@
+{
+  "job_id": "payments-countries-korea",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-korea-payment-methods.md": {
+      "job_id": "payments-countries-korea",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe Docs \u2014 South Korean payment methods\"\ntype: source\ndate_ingested: 2026-05-08\ndate_updated: 2026-11-15\ncanonical_url: https://docs.stripe.com/payments/countries/korea\noriginal_format: webpage\nraw_files:\n  - \"stripe-payments-countries-korea-2026-11-07.md\"\n  - \"stripe-korea-payment-methods-2025.md\"\ntags: [stripe, south-korea, krw, local-payment-methods, kakao-pay, naver-pay, samsung-pay, payco, wallets, installments]\n---\n\n## Summary\n\nThe May 8 and November 7, 2026 Stripe overviews describe KRW payments from South Korean customers through local cards and wallets, using Stripe and a local processor partner without requiring a local South Korean entity. They do not designate a legal merchant-of-record role. The November capture adds an optional early-access interest form for more descriptive decline codes; it does not document access being granted or actual decline-code output.\n\n## Key Facts\n\n- **Market and enablement**: The guide lists 28 merchant account countries for KRW payments and South Korean customer location. For Stripe front-end products, enable South Korean payment methods in Dashboard payment-method settings; Stripe then selects relevant methods to display. The separate decline-code preview registration is not this enablement step. The guide also links Checkout, Elements, Invoicing, Payment Links, Subscriptions, and a Payment Intents API path. It cautions businesses to meet applicable South Korean legal and tax requirements; the page alone does not determine a merchant's legal role or compliance.\n- **Payment stages**: In the described Checkout flow, a Pay click redirects the customer to the local processor or method provider, where the customer authenticates. This is not itself proof of approval. The page says funds become available in the Stripe account four days **after payment approval**. The property panel separately lists payout timing of T+4 for US accounts and T+7 outside the US; Stripe-balance availability and external payout are distinct stages.\n- **Method matrix**: All local South Korean cards, Kakao Pay, and Naver Pay support one-time and recurring payments in the overview. Samsung Pay and PAYCO are listed one-time only. Kakao Pay is unavailable in Singapore. The general \u201cRecurring payments: Yes\u201d property applies to the group, not each method. The guide lists Connect and manual capture support but no partial capture. Links to individual methods are routes to their own requirements, not details established by this overview.\n- **Preview decline codes**: The November page invites users to register interest, with an email and preview identifier, in more descriptive South Korean decline codes. It gives no enrollment criteria, provisioned-access confirmation, rollout date, response schema, or observed code. No preview registration was performed.\n- **Installments**: For local card purchases of at least 50,000 KRW, issuers can offer installments to customers. Stripe says the business receives the full purchase amount \u201cup front\u201d relative to the customer's installments and keeps it if the customer cannot complete repayment to the issuer. This does not replace the guide's four-day post-approval Stripe-balance availability or the account's payout schedule.\n- **Refunds**: Full and partial refunds can be submitted within 365 calendar days of the original charge. The captures describe South Korean customers as **generally** entitled to a full refund within seven days of receiving goods or services, except when used or damaged, and give other contract-mismatch and unused-subscription conditions. They describe prorated cancellation during a subscription. These are dated provider statements with conditions, not a legal determination for a specific transaction.\n- **Disputes**: The captures list a 365-calendar-day customer filing window, seven days for the merchant to respond and submit evidence, a decision within 45 days after evidence, and a final outcome. Seven listed reason codes include credit not processed, duplicate, fraudulent, general, product not received, product unacceptable, and subscription canceled. Strong authentication is described as reducing fraud/unrecognized-payment risk, not eliminating disputes.\n- **Subscription changes**: Both captures say a merchant offering subscriptions to South Korean customers must **notify and obtain customer consent at least 30 days** before a price increase or charging for a previously free service, and remind the customer seven days before actual payment by email, text, or mail. The page advises making cancellation easy to minimize disputes; a checkout checkbox is an illustrative best practice, not a sole mandated implementation in this page.\n\n## Captured asset\n\n- `raw/assets/stripe-korea-payment-flow.mp4` \u2014 video asset referenced in the May capture. The November capture uses a remote video URL; that presentation change is not evidence of a different authorization flow.\n\n## Related Pages\n\n- [[stripe]] \u2014 Stripe company route.\n- [[stripe-korea-payment-methods]] \u2014 concept and reciprocal timing, legal-wording, and consent qualifications.\n- [[source-stripe-local-payment-methods-by-country]] \u2014 regional hub.\n- [[stripe-wallets]] \u2014 wallet context.\n\n## Raw Sources\n\n- [[raw/stripe-payments-countries-korea-2026-11-07|2026-11-07 full South Korean methods overview]] \u2014 newer factual capture, 214 lines; contains the decline-code preview-interest invitation.\n- [[raw/stripe-korea-payment-methods-2025|2026-05-08 South Korean methods overview]] \u2014 retained historical factual capture, 203 lines.\n",
+      "quotes": [
+        {
+          "text": "Accept wallets and all local cards in South Korea without a local entity.",
+          "location": "raw/stripe-payments-countries-korea-2026-11-07.md:7-7"
+        },
+        {
+          "text": "More descriptive decline codes give you better insight into why payment wasn't completed. If you're interested in this preview feature, provide your email address below.",
+          "location": "raw/stripe-payments-countries-korea-2026-11-07.md:21-21"
+        },
+        {
+          "text": "After the payment is approved, funds are available in your Stripe account after 4 days.",
+          "location": "raw/stripe-payments-countries-korea-2026-11-07.md:152-152"
+        },
+        {
+          "text": "| [Kakao Pay](https://docs.stripe.com/payments/kakao-pay/accept-a-payment.md) (not available in Singapore) | Yes | Yes |",
+          "location": "raw/stripe-payments-countries-korea-2026-11-07.md:161-161"
+        },
+        {
+          "text": "If you offer subscriptions to South Korean customers, you must notify your customers and obtain their consent at least 30 days before any price increase or before charging for a previously free service.",
+          "location": "raw/stripe-payments-countries-korea-2026-11-07.md:208-208"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "payments-countries-korea-processor-role",
+            "target_path": "wiki/concepts/stripe-korea-payment-methods.md",
+            "update_kind": "durable_fact",
+            "anchor": "Stripe enables acceptance of South Korean local payment methods (all locally-issued cards + major wallets) without a local South Korean entity, via a **local processor partner**. Distinct from the Nigerian MoR model \u2014 Stripe describes this as a \"local processor partner\" arrangement rather than merchant of record.",
+            "proposed_markdown": "Stripe describes acceptance of South Korean local cards and wallets without a local South Korean entity through Stripe and a **local processor partner**. The Korea overview does not expressly designate a merchant-of-record role; any comparison with the separate Nigerian arrangement is an inference, not a legal classification established here.",
+            "quote_indexes": [
+              0
+            ],
+            "warnings": [
+              "Both old raw lines 4-8 and new raw lines 5-9 say local processor partner/no local entity, without assigning a merchant-of-record role."
+            ]
+          },
+          {
+            "update_id": "payments-countries-korea-installments",
+            "target_path": "wiki/concepts/stripe-korea-payment-methods.md",
+            "update_kind": "durable_fact",
+            "anchor": "Local card issuers offer installments on purchases \u226550,000 KRW. Merchant receives full amount upfront; customer repays issuer over time. If customer can't complete installments, merchant keeps funds.",
+            "proposed_markdown": "Local card issuers can offer installments on purchases of at least 50,000 KRW. The customer repays the issuer while the business receives the full purchase amount up front relative to those installments; this is not a promise of immediate external payout. The overview separately says funds enter the Stripe balance four days after approval and lists T+4 US/T+7 non-US payout timing. It says the business keeps funds if the customer cannot complete issuer installments.",
+            "quote_indexes": [
+              2
+            ],
+            "warnings": [
+              "Old raw lines 60-64, 138-158 and new raw lines 72-76, 150-170 distinguish approval, Stripe-balance availability, installment relationship, and payout."
+            ]
+          },
+          {
+            "update_id": "payments-countries-korea-consumer-refunds",
+            "target_path": "wiki/concepts/stripe-korea-payment-methods.md",
+            "update_kind": "durable_fact",
+            "anchor": "- 7-day right to full refund for goods/services (unless used/damaged)",
+            "proposed_markdown": "- The May and November 2026 Stripe overviews say customers are **generally** entitled to a full refund within seven days of receiving goods or services, unless used or damaged; applicability is conditional and this overview is not a transaction-specific legal determination.",
+            "quote_indexes": [
+              2
+            ],
+            "warnings": [
+              "Old raw lines 160-164 and new raw lines 172-176 give the general rule and stated conditions."
+            ]
+          },
+          {
+            "update_id": "payments-countries-korea-subscription-consent",
+            "target_path": "wiki/concepts/stripe-korea-payment-methods.md",
+            "update_kind": "durable_fact",
+            "anchor": "- **30-day notice** before price increase or first charge on previously free service\n- **7-day payment reminder** before charge date (email, SMS, or mail)\n- Easy cancellation button or clear instructions required",
+            "proposed_markdown": "- The dated Korea overviews say to **notify and obtain customer consent at least 30 days** before a subscription price increase or first charge for a previously free service.\n- Remind customers **7 days before payment** by email, text, or mail.\n- The page advises an easy cancellation button or clear instructions to minimize disputes; it does not itself establish a mandatory button implementation.",
+            "quote_indexes": [
+              4
+            ],
+            "warnings": [
+              "Old raw lines 195-203 and new raw lines 206-214 both require notice AND consent, give the reminder, and frame easy cancellation as advice to minimize disputes."
+            ]
+          },
+          {
+            "update_id": "payments-countries-korea-source-route",
+            "target_path": "wiki/concepts/stripe-korea-payment-methods.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-korea-payment-methods]] \u2014 South Korea overview: local processor model, payment methods, installments, refunds, disputes, subscription rules",
+            "proposed_markdown": "- [[source-stripe-korea-payment-methods]] \u2014 May 8 and November 7, 2026 full South Korea overviews: local processor partner, Dashboard enablement, KRW method matrix, redirect/approval/balance/payout stages, conditional refunds, disputes, and 30-day notice-plus-consent subscription rule. November adds only an interest-registration preview for descriptive decline codes; enrollment and returned codes are unverified.",
+            "quote_indexes": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Old raw lines 119-140, 142-203 and new raw lines 19-29, 131-214 support the route. Preview registration is not method enablement or provisioned access."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-countries-korea-2026-11-07.md",
+      "raw_sha256": "df69c41760ae28c04a78f086b50e5ab9cbc35546b7810109ca9ccf58d28307d9",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-countries-korea-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 110
+      },
+      {
+        "start": 111,
+        "end": 214
+      }
+    ],
+    "raw/stripe-korea-payment-methods-2025.md": [
+      {
+        "start": 1,
+        "end": 105
+      },
+      {
+        "start": 106,
+        "end": 203
+      }
+    ],
+    "wiki/sources/source-stripe-korea-payment-methods.md": [
+      {
+        "start": 1,
+        "end": 45
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/3cad5616010fd1013c7d2204/content.diff": [
+      {
+        "start": 1,
+        "end": 90
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-countries-korea/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 110
+      },
+      {
+        "start": 111,
+        "end": 206
+      }
+    ],
+    "wiki/concepts/stripe-korea-payment-methods.md": [
+      {
+        "start": 1,
+        "end": 151
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 12
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 422,
+        "end": 428
+      },
+      {
+        "start": 787,
+        "end": 792
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "After the payment is approved, funds are available in your Stripe account after 4 days.",
+      "location": "raw/stripe-korea-payment-methods-2025.md:140-140"
+    },
+    {
+      "text": "Customers have up to 365 calendar days from the date of purchase to file a dispute.",
+      "location": "raw/stripe-korea-payment-methods-2025.md:172-172"
+    },
+    {
+      "text": "If you offer subscriptions to South Korean customers, you must notify your customers and obtain their consent at least 30 days before any price increase or before charging for a previously free service.",
+      "location": "raw/stripe-korea-payment-methods-2025.md:197-197"
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/countries/korea, raw/stripe-payments-countries-korea-2026-11-07.md (new raw lines 5-29, 50-164, 166-214) documents Stripe and a local processor partner serving South Korean customers without a local South Korean entity. Front-end merchants enable methods in Dashboard; Stripe then selects relevant methods. A checkout Pay click redirects to the method provider/processor for customer authentication; approval precedes four-day Stripe-balance availability, while T+4 US and T+7 non-US payout timing is a separate stage. The matrix gives recurring support to local cards, Kakao Pay and Naver Pay but only one-time support to Samsung Pay/PAYCO, with Kakao Pay excluded in Singapore. raw/stripe-korea-payment-methods-2025.md (old raw lines 4-17, 119-152, 154-203) already contained those core conditions and a 30-day subscription notice AND consent requirement plus seven-day reminder. source-stripe-korea-payment-methods.md preserved the broad matrix but omitted Dashboard enablement and consent and overstated legal-role/refund/installment wording.",
+    "Q2": "For https://docs.stripe.com/payments/countries/korea, the material addition in raw/stripe-payments-countries-korea-2026-11-07.md (new raw lines 19-29) is an invitation to register interest in more descriptive decline codes. It does not prove enrollment, account access, a returned decline code or payment-method activation. The changed video URL, Elements quickstart and table formatting are presentation/navigation against raw/stripe-korea-payment-methods-2025.md (old raw lines 14-17, 119-152). Both dates retain dashboard enablement, redirect authorization, KRW method limits, refund/dispute timing and the 30-day notice-plus-consent and seven-day reminder rule (old raw lines 119-203; new raw lines 131-214). source-stripe-korea-payment-methods.md and the Korean concept need reciprocal corrections to distinguish local-processor wording from a legal MoR designation, general conditional consumer refunds from universal law, issuer installments from Stripe-balance availability/payout, and advised easy cancellation from a mandatory button. Neither registration nor a Pay click establishes approved or paid funds."
+  }
+}

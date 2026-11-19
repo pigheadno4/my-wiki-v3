@@ -1,0 +1,192 @@
+{
+  "audit_id": "concept-audit-01-retry",
+  "targets": [
+    {
+      "target": "wiki/concepts/stripe-bacs-direct-debit.md",
+      "before_sha256": "6e0f06c5e32122431ae8afdeba25fc17a34423d62b15701803ed53b5aaae4a3f",
+      "candidate": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-bacs-direct-debit.md",
+      "candidate_sha256": "fc30f202531f28bbbc70b60eff2753c265e8cc5282944c15c60eca4e5e218d97",
+      "diff": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-bacs-direct-debit.md.diff",
+      "updates": [
+        {
+          "update_id": "bacs-overview-definition",
+          "target_path": "wiki/concepts/stripe-bacs-direct-debit.md",
+          "update_kind": "durable_fact",
+          "anchor": "Bacs Direct Debit lets UK businesses pull funds from customers' UK bank accounts. API enum: `bacs_debit`. Business-initiated, delayed notification, reusable. Disputes are final and uncontestable.",
+          "proposed_markdown": "Bacs Direct Debit lets businesses in the November 2026 supported-location list debit customers' UK bank accounts in GBP under a Direct Debit Instruction mandate. API enum: `bacs_debit`. It is reusable and delayed; disputes are final and cannot be countered or appealed. The May guide described UK Stripe businesses and an outside-UK platform path for UK connected accounts; see [[source-stripe-bacs-direct-debit]] for the dated change.",
+          "quote_indexes": [
+            0,
+            1
+          ],
+          "warnings": [
+            "November raw/stripe-payments-bacs-debit-2026-11-07.md:9-31,65-85,136-154; May raw/stripe-bacs-direct-debit-2025.md:8-14,58-65,138-146. Do not infer account approval from listed country."
+          ],
+          "job_id": "payments-bacs-debit",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bacs-debit/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "bacs-overview-country",
+          "target_path": "wiki/concepts/stripe-bacs-direct-debit.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Currency**: GBP only. **Country**: UK customers; UK business accounts only (platforms outside UK can initiate on behalf of UK connected accounts).",
+          "proposed_markdown": "**Currency/customer**: GBP presentment and GB bank-account customers. **Merchant location**: May listed UK Stripe accounts plus outside-UK platforms for UK connected accounts; November lists additional supported merchant countries and cross-border coverage, subject to approval, identity verification and account/MCC conditions.",
+          "quote_indexes": [
+            0,
+            2
+          ],
+          "warnings": [
+            "Old raw/stripe-bacs-direct-debit-2025.md:8,58-80; new raw/stripe-payments-bacs-debit-2026-11-07.md:16-85. The supported-country list does not establish individual merchant access."
+          ],
+          "job_id": "payments-bacs-debit",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bacs-debit/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "bacs-overview-limit",
+          "target_path": "wiki/concepts/stripe-bacs-direct-debit.md",
+          "update_kind": "durable_fact",
+          "anchor": "- Per transaction: 100,000 GBP\n- New users: 10,000 GBP weekly (increases as you process more)",
+          "proposed_markdown": "- Per transaction: November default **10,000 GBP**; May said **100,000 GBP** (dated conflict). Contact support for higher limits.\n- New users: separate **10,000 GBP weekly** limit, which increases as they process more Bacs payments.",
+          "quote_indexes": [
+            0
+          ],
+          "warnings": [
+            "New raw/stripe-payments-bacs-debit-2026-11-07.md:81-85 versus old raw/stripe-bacs-direct-debit-2025.md:12. Do not conflate per-transaction default and weekly new-user limit."
+          ],
+          "job_id": "payments-bacs-debit",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bacs-debit/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "bacs-overview-notices",
+          "target_path": "wiki/concepts/stripe-bacs-direct-debit.md",
+          "update_kind": "durable_fact",
+          "anchor": "Stripe auto-emails customers when mandate is created and before each debit. Custom email templates require approval from Stripe.",
+          "proposed_markdown": "Bacs requires notice when bank details are collected/confirmed and before each debit. May said Stripe emailed by default; November excepts enterprise accounts with a custom service user number (SUN) from Stripe's default sending. Sending your own notices requires eligibility and approval. These mandate/advance-debit notices are not payment-success receipts; the SUN exception does not remove the notice duty.",
+          "quote_indexes": [
+            3,
+            4
+          ],
+          "warnings": [
+            "Old raw/stripe-bacs-direct-debit-2025.md:127-136; new raw/stripe-payments-bacs-debit-2026-11-07.md:298-302,344-350. November line 350's shorthand default statement must be read with the explicit enterprise custom-SUN exception at line 300."
+          ],
+          "job_id": "payments-bacs-debit",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bacs-debit/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "bacs-overview-connect",
+          "target_path": "wiki/concepts/stripe-bacs-direct-debit.md",
+          "update_kind": "durable_fact",
+          "anchor": "- `bacs_debit_payments` capability required for `on_behalf_of`\n- UK platforms don't need capability for destination charges\n- `settings.bacs_debit_payments.display_name` enables Custom Branding",
+          "proposed_markdown": "- November: supported-location platforms can use destination charges with or without `on_behalf_of`, but must first enable Bacs Direct Debit on the platform before accepting payments. Omitting `on_behalf_of` makes the platform settlement merchant; with it, the supported-location connected account additionally needs `bacs_debit_payments` capability. Platform enablement and connected-account capability do not by themselves establish account approval or identity verification.\n- May: UK-platform destination charges for UK connected accounts were described as capability-exempt, while outside-UK platforms needed it; keep this as dated and scope-specific.\n- `settings.bacs_debit_payments.display_name` enables Custom Branding on the connected account.",
+          "quote_indexes": [
+            0
+          ],
+          "warnings": [
+            "New raw/stripe-payments-bacs-debit-2026-11-07.md:249-257 versus May raw/stripe-bacs-direct-debit-2025.md:181-199. No general capability exemption or account approval inferred.",
+            "New raw/stripe-payments-bacs-debit-2026-11-07.md:249-255 explicitly requires platform Bacs enablement before Connect acceptance, then separately requires connected-account bacs_debit_payments capability with on_behalf_of. New raw lines 16,27-31 still gate access on approval and verification."
+          ],
+          "job_id": "payments-bacs-debit",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bacs-debit/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "bacs-overview-branding",
+          "target_path": "wiki/concepts/stripe-bacs-direct-debit.md",
+          "update_kind": "durable_fact",
+          "anchor": "- Business name appears on new mandates 5 business days after request",
+          "proposed_markdown": "- May said the name appears on new mandates five business days after request; November says Custom Branding typically activates in ten business days and appears on mandates created after activation. A request is not proof of activation.",
+          "quote_indexes": [
+            4
+          ],
+          "warnings": [
+            "Old raw/stripe-bacs-direct-debit-2025.md:200-214; new raw/stripe-payments-bacs-debit-2026-11-07.md:304-308. Preserve both dated timing claims."
+          ],
+          "job_id": "payments-bacs-debit",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bacs-debit/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "bacs-overview-retries",
+          "target_path": "wiki/concepts/stripe-bacs-direct-debit.md",
+          "update_kind": "durable_fact",
+          "anchor": "Private preview. Automatic retry of failed payments caused by insufficient funds. Works for subscription invoices and one-off invoices.",
+          "proposed_markdown": "May labeled Direct Debit retries private preview. November omits that label and describes insufficient-funds retries for subscription and/or one-off invoices: up to two automatic retries within 30 days of the original attempt, with no debit-failure fee for Stripe-initiated retries. The capture does not prove account-specific availability.",
+          "quote_indexes": [
+            0
+          ],
+          "warnings": [
+            "Old raw/stripe-bacs-direct-debit-2025.md:216-218; new raw/stripe-payments-bacs-debit-2026-11-07.md:310-316. Removal of preview wording is not an account entitlement."
+          ],
+          "job_id": "payments-bacs-debit",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bacs-debit/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "bacs-overview-route",
+          "target_path": "wiki/concepts/stripe-bacs-direct-debit.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-bacs-direct-debit]] \u2014 primary source: settlement, mandates, disputes, refunds, Connect, Custom Branding",
+          "proposed_markdown": "- [[source-stripe-bacs-direct-debit]] \u2014 2026-05-02 and 2026-11-07 Bacs overview: dated merchant scope and limits, DDI mandate/notice conditions, delayed outcomes, refunds/disputes, Connect, branding and retries",
+          "quote_indexes": [
+            0,
+            1,
+            3,
+            4
+          ],
+          "warnings": [
+            "Source route includes the November capture raw/stripe-payments-bacs-debit-2026-11-07.md:9-85,112-316 and retained May raw/stripe-bacs-direct-debit-2025.md:8-218."
+          ],
+          "job_id": "payments-bacs-debit",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bacs-debit/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "payments-bacs-debit-accept-a-payment-optional-save",
+          "target_path": "wiki/concepts/stripe-bacs-direct-debit.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Checkout**: `payment_method_types: ['bacs_debit']`, `mode: 'payment'` + `setup_future_usage: 'off_session'`. Handle 3 async events: `checkout.session.completed` \u2192 `checkout.session.async_payment_succeeded` (fulfill) / `checkout.session.async_payment_failed` (retry).",
+          "proposed_markdown": "**Checkout (May 2, 2026 guide)**: A manually configured payment-mode Session example selects `payment_method_types: ['bacs_debit']`; `payment_intent_data.setup_future_usage: 'off_session'` is in its optional save-for-later example. Handle `checkout.session.completed` as debit authorization, then `checkout.session.async_payment_succeeded` for later payment success and fulfillment or `checkout.session.async_payment_failed` for follow-up. A `success_url` redirect does not prove payment success.",
+          "quote_indexes": [
+            0,
+            1,
+            2
+          ],
+          "warnings": [
+            "Old raw lines 116-139 attach setup_future_usage to the can-save example; lines 148-174 distinguish redirect, authorization, asynchronous success, and delayed funds. New raw lines 9-14 are variant navigation only."
+          ],
+          "job_id": "payments-bacs-debit-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bacs-debit-accept-a-payment/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "payments-bacs-debit-accept-a-payment-reciprocal-source",
+          "target_path": "wiki/concepts/stripe-bacs-direct-debit.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-bacs-accept-payment]] \u2014 integration guide: Checkout + Elements paths, 11 test accounts, 6 failure codes, target_date, mandate reference prefix",
+          "proposed_markdown": "- [[source-stripe-bacs-accept-payment]] \u2014 May 2, 2026 full Checkout and web Elements Bacs payment guide, including delayed payment states, sandbox cases, optional target dates, and mandate prefix rules; November 7 capture is a Checkout/Elements variant index for navigation only.",
+          "quote_indexes": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "warnings": [
+            "Old raw lines 16-18 and 326-330 identify the two dated paths; lines 270-324 and 887-1055 contain detailed sandbox, target-date, and prefix material. New raw lines 9-14 provide only variant navigation."
+          ],
+          "job_id": "payments-bacs-debit-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bacs-debit-accept-a-payment/attempt-1/receipt.json"
+        }
+      ],
+      "contributions": [
+        {
+          "job_id": "payments-bacs-debit",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bacs-debit/attempt-2/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bacs-debit/attempt-2/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bacs-debit/attempt-2/input.json"
+        },
+        {
+          "job_id": "payments-bacs-debit-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bacs-debit-accept-a-payment/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bacs-debit-accept-a-payment/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bacs-debit-accept-a-payment/attempt-1/input.json"
+        }
+      ]
+    }
+  ],
+  "prior_audit": "tracking/ingest/stripe/stripe-campaign-03/updates/audits/concepts/cohort-01-submitted-review.json",
+  "reason": "Refreshed merge manifest after all approved contributions; exact update-ID coverage checked for all13 closedtargets. Twelve unchanged candidates retain prioraudit."
+}

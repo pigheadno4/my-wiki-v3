@@ -1,0 +1,172 @@
+{
+  "job_id": "payments-ideal-save-during-payment",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-ideal-save-during-payment.md": {
+      "job_id": "payments-ideal-save-during-payment",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Save Bank Details During an iDEAL | Wero Payment\"\ntype: source\ndate_ingested: 2026-05-03\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/ideal/save-during-payment\"\nraw_files:\n  - \"stripe-ideal-save-during-payment-2025.md\"\ntags: [stripe, ideal, wero, netherlands, eur, sepa-debit, iban, mandates, save-payment-method, ios, android, react-native]\n---\n\n## Overview\n\nThe 2026-05-03 guide describes saving a customer's IBAN from an initial iDEAL | Wero payment as a generated SEPA Direct Debit PaymentMethod for later payments. It covers Elements, iOS, Android and React Native. The 2026-11-07 capture at the canonical URL is a variant index with the same stated purpose; it contains no integration details. Its linked variants were not captured here, so the detailed flow below remains dated May evidence. See [[stripe]], [[stripe-ideal]], [[stripe-sepa-debit]] and [[stripe-saved-payment-methods]].\n\n## Key details from the 2026-05-03 guide\n\n- The guide says to activate SEPA Direct Debit in the Dashboard and comply with both iDEAL and SEPA Direct Debit terms before using this setup. Its server flow creates a Customer, then an initial EUR PaymentIntent with `payment_method_types: [\"ideal\"]`, that `customer`, and `setup_future_usage: \"off_session\"`. It says there is no minimum charge amount and iDEAL | Wero supports no other currency. These are historical instructions, not evidence of November account eligibility.\n- The Elements variant uses the Payment Element and web `stripe.confirmPayment({elements, confirmParams: {return_url}})`. It describes collecting payment details and mandate acknowledgement, but does not print the seven-language standard authorization text in that web section. For live checkout it calls for HTTPS and Stripe.js loaded from js.stripe.com. See the old raw's Elements section and return-page status examples.\n- The iOS, Android and React Native variants collect full name and email and explicitly direct the merchant to obtain a SEPA mandate agreement and display standard authorization text, shown in seven languages (de, en, es, fi, fr, it, nl); the text's business name must be replaced and terms communicated in the form or by email. These dated mobile examples use `STPPaymentHandler.shared().confirmPayment`, Android `stripe.confirmPayment(this, confirmParams)` (the captured Gradle sample pins `stripe-android:23.5.0`), and React Native `confirmPayment(clientSecret, {paymentMethodType: 'Ideal', ...})`, respectively. React Native's captured bank-return example uses a custom URL scheme and `handleURLCallback`. Do not apply a single web SDK call or mandate presentation snippet to every platform.\n- After the initial iDEAL payment, the guide locates the generated SEPA method by retrieving that PaymentIntent with `expand: [\"latest_charge\"]` and reading `latest_charge.payment_method_details.ideal.generated_sepa_debit`. A later debit uses a distinct `sepa_debit` PaymentIntent with that PaymentMethod and `confirm: true`; its examples use `customer_account` for Accounts v2 or `customer` for Customers v1. The generated ID is a lookup from the relevant completed initial flow, not something established by creating or redirecting an intent.\n- A bank redirect or `requires_action` response is not payment success. The web return page retrieves the initial PaymentIntent and distinguishes `succeeded`, `processing` and `requires_payment_method`. The later SEPA intent has its own asynchronous outcome. The guide advises listening for Stripe payment events instead of relying on a client callback for business actions.\n\n## Test patterns in the 2026-05-03 guide\n\nThe old raw gives test-mode authorization/failure actions for the initial iDEAL intent and six generated SEPA email and PaymentMethod patterns for later-intent transitions: succeed, delayed success, fail, delayed failure, succeeded then disputed, and insufficient funds. These are test cases; neither confirming a later intent nor a test token proves a live debit succeeds. Exact emails, tokens and state descriptions are in the old raw's \u201cTest your SEPA Direct Debit integration\u201d sections.\n\n## Detail locators\n\n- Old raw lines 8-22: purpose, recommendation, SEPA activation and terms, Elements scope.\n- Old raw lines 37-65: Customer and initial EUR iDEAL PaymentIntent with future usage.\n- Old raw lines 138-212 and 288-319: web Payment Element setup and `stripe.confirmPayment`; lines 388-440: return-page status inspection.\n- Old raw lines 505-590: generated method lookup and separate Accounts v2/Customers v1 later intent; lines 593-632: test states and event handling.\n- Old raw lines 877-951, 1204-1305 and 1565-1661: iOS, Android and React Native billing details, mandate text and distinct confirmation calls; lines 1812-1872: React Native deep linking.\n\n## Related raw API references\n\n- [[raw/stripe-payments-ideal-save-during-payment-2026-11-07|2026-11-07 variant navigation index]] \u2014 routes to Elements, iOS, Android and React Native; the linked variants were not captured in this order, and this index supplies no behavioral update.\n\n## Raw Sources\n\n- [[raw/stripe-ideal-save-during-payment-2025|2026-05-03 full guide, Elements and mobile variants]] \u2014 dated factual authority for the flow and examples above.\n",
+      "quotes": [
+        {
+          "text": "Learn how to save your customer's IBAN bank details from an iDEAL | Wero payment.",
+          "location": "raw/stripe-payments-ideal-save-during-payment-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-ideal-save-during-payment-2026-11-07.md:11"
+        },
+        {
+          "text": "- [Elements](https://docs.stripe.com/payments/ideal/save-during-payment.md?payment-ui=elements)",
+          "location": "raw/stripe-payments-ideal-save-during-payment-2026-11-07.md:13"
+        },
+        {
+          "text": "  - [iOS](https://docs.stripe.com/payments/ideal/save-during-payment.md?payment-ui=mobile&platform=ios)",
+          "location": "raw/stripe-payments-ideal-save-during-payment-2026-11-07.md:15"
+        },
+        {
+          "text": "  - [React Native](https://docs.stripe.com/payments/ideal/save-during-payment.md?payment-ui=mobile&platform=react-native)",
+          "location": "raw/stripe-payments-ideal-save-during-payment-2026-11-07.md:17"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "ideal-save-during-ideal-route",
+            "target_path": "wiki/concepts/stripe-ideal.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-ideal-save-during-payment]] \u2014 save IBAN as SEPA mandate: setup_future_usage + generated_sepa_debit, SEPA mandate text (7 languages), 6 test patterns",
+            "proposed_markdown": "- [[source-stripe-ideal-save-during-payment]] \u2014 2026-05-03 full guide for iDEAL-to-SEPA saving: off-session future usage, generated SEPA method, mobile mandate text and test patterns; 2026-11-07 capture is a variant navigation index only.",
+            "quote_indexes": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Old factual authority: raw/stripe-ideal-save-during-payment-2025.md:14-22,49-65,505-590,892-951,1216-1305,1593-1661. Seven-language text is explicit in mobile sections, not web Elements; new raw/stripe-payments-ideal-save-during-payment-2026-11-07.md:9-17 only supplies navigation."
+            ]
+          },
+          {
+            "update_id": "ideal-save-during-saved-pm-route",
+            "target_path": "wiki/concepts/stripe-saved-payment-methods.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "When saved for future use, these redirect-based methods generate a `sepa_debit` PaymentMethod. Query saved PMs as `type: 'sepa_debit'`.",
+            "proposed_markdown": "When saved for future use, these redirect-based methods generate a `sepa_debit` PaymentMethod. Query saved PMs as `type: 'sepa_debit'`. The dated iDEAL | Wero payment flow in [[source-stripe-ideal-save-during-payment]] retrieves `generated_sepa_debit` from the initial PaymentIntent's expanded `latest_charge`; its 2026-11-07 capture is a variant navigation index only.",
+            "quote_indexes": [
+              0,
+              1
+            ],
+            "warnings": [
+              "Existing generic claim derives from other sources; this addition only routes the iDEAL-specific dated flow. Old authority: raw/stripe-ideal-save-during-payment-2025.md:505-590. New raw: raw/stripe-payments-ideal-save-during-payment-2026-11-07.md:9-17."
+            ]
+          },
+          {
+            "update_id": "ideal-save-during-sepa-route",
+            "target_path": "wiki/concepts/stripe-sepa-debit.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-subscriptions-ideal]] \u2014 2026-05-13 iDEAL\u2192SEPA subscription variants: hosted Checkout and Direct API setup with generated_sepa_debit retrieval; setup success differs from the later SEPA payment outcome. 2026-11-07 capture is a variant index only.",
+            "proposed_markdown": "- [[source-stripe-subscriptions-ideal]] \u2014 2026-05-13 iDEAL\u2192SEPA subscription variants: hosted Checkout and Direct API setup with generated_sepa_debit retrieval; setup success differs from the later SEPA payment outcome. 2026-11-07 capture is a variant index only.\n- [[source-stripe-ideal-save-during-payment]] \u2014 2026-05-03 initial iDEAL payment to generated SEPA method and distinct later SEPA intent; mobile mandate examples and asynchronous outcome caveat. 2026-11-07 capture is variant navigation only.",
+            "quote_indexes": [
+              0,
+              1
+            ],
+            "warnings": [
+              "Old authority: raw/stripe-ideal-save-during-payment-2025.md:14-16,505-632,892-924,1216-1248,1593-1625. New raw: raw/stripe-payments-ideal-save-during-payment-2026-11-07.md:9-17."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-ideal-save-during-payment-2026-11-07.md",
+      "raw_sha256": "b326694cdb76c49817ef89e91c248bd34ff5f12da4985912fa97b4fb835bfd21",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-ideal-save-during-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "raw/stripe-ideal-save-during-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 1877
+      }
+    ],
+    "wiki/sources/source-stripe-ideal-save-during-payment.md": [
+      {
+        "start": 1,
+        "end": 34
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/b2970cfe40fb74c653072cab/content.diff": [
+      {
+        "start": 1,
+        "end": 1882
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-ideal-save-during-payment/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 168
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 268,
+        "end": 294
+      },
+      {
+        "start": 745,
+        "end": 762
+      }
+    ],
+    "wiki/concepts/stripe-ideal.md": [
+      {
+        "start": 1,
+        "end": 47
+      }
+    ],
+    "wiki/concepts/stripe-sepa-debit.md": [
+      {
+        "start": 1,
+        "end": 117
+      }
+    ],
+    "wiki/concepts/stripe-saved-payment-methods.md": [
+      {
+        "start": 1,
+        "end": 160
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "To use iDEAL | Wero to set up SEPA Direct Debit payments, you must activate SEPA Direct Debit in the [Dashboard]",
+      "location": "raw/stripe-ideal-save-during-payment-2025.md:16"
+    },
+    {
+      "text": "The SEPA Direct Debit payment method ID is the `generated_sepa_debit` ID under [payment_method_details]",
+      "location": "raw/stripe-ideal-save-during-payment-2025.md:522"
+    },
+    {
+      "text": "Listen for these events rather than waiting on a callback from the client.",
+      "location": "raw/stripe-ideal-save-during-payment-2025.md:632"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/ideal/save-during-payment, the complete 2026-11-07 capture establishes the purpose of saving IBAN bank details from iDEAL | Wero and identifies Elements, iOS, Android and React Native variant URLs, but no detailed prerequisites, object identities or successful state boundaries (new raw lines 5-17). The 2026-05-03 capture instead documents Dashboard SEPA activation and terms, a Customer linked to an initial EUR iDEAL PaymentIntent with setup_future_usage=off_session, a generated_sepa_debit lookup from expanded latest_charge, and a distinct later SEPA PaymentIntent (old raw lines 12-22,37-65,505-590). It differentiates web and mobile confirmation and processing states (old raw lines 288-319,397-440,892-951,1216-1305,1593-1661). source-stripe-ideal-save-during-payment.md originally compressed those into one universal sequence, so the candidate dates and scopes them.",
+    "Q2": "For https://docs.stripe.com/payments/ideal/save-during-payment, the observed new capture is presentational and navigational: an index points to four unvisited variants, without substantive replacement instructions (new raw lines 9-17; full diff lines 3-23 and 1874-1882). The dated 2026-05-03 details in source-stripe-ideal-save-during-payment.md should remain historical, including server identity and future-use parameters, mobile mandate wording, platform-specific calls and test patterns (old raw lines 49-65,505-632,892-951,1216-1305,1593-1661). The original source's universal seven-language mandate and stripe.confirmPayment steps conflict with old web versus mobile sections; a redirect, confirmation call, test token or later intent creation does not prove settlement. Current variant behavior, SDK versions, legal terms and account eligibility cannot be inferred from the November index."
+  }
+}

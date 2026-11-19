@@ -1,0 +1,198 @@
+{
+  "job_id": "payments-afterpay-clearpay",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-afterpay-clearpay.md": {
+      "job_id": "payments-afterpay-clearpay",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Afterpay and Clearpay Payments\"\ntype: source\ndate_ingested: 2026-05-06\ndate_updated: 2026-11-15\ncanonical_url: \"https://docs.stripe.com/payments/afterpay-clearpay\"\noriginal_format: webpage\nraw_files:\n  - \"stripe-payments-afterpay-clearpay-2026-11-07.md\"\n  - \"stripe-afterpay-clearpay-2025.md\"\ntags: [stripe, bnpl, afterpay, clearpay, cash-app, buy-now-pay-later, installments, connect, disputes]\n---\n\n## Summary\n\nAfterpay (Clearpay in the UK) is a single-use buy now, pay later method. Stripe redirects the customer to Afterpay for authentication, plan selection and approval; Afterpay collects installments from the customer after an accepted payment. The 2026-11-07 page labels access “instant provisional,” payment confirmation “immediate,” and settlement on the standard payout schedule. Merchant upfront funding after acceptance is distinct from a completed customer return, a succeeded PaymentIntent and bank payout.\n\n## Eligibility and coverage\n\n- Stripe merchant or Connect platform/marketplace accounts in AU, CA, GB, NZ and US can accept supported domestic customers and currencies (AUD, CAD, GBP, NZD, USD); B2C is supported, B2B is not. Check Payment methods settings. Stripe may review eligibility after activation, and the account website must meet Stripe's activation requirements.\n- **General availability is domestic only**: the customer and business must be in the same country. The 2026-11-07 capture additionally marks cross-border transactions **private preview**. This qualifies the older page's unqualified “domestic only”; it does not establish general cross-border availability or a merchant's preview access.\n- For dynamic methods in Checkout Sessions or the Payment Element, Stripe filters by customer country, using the two-letter shipping country then geocoded client IP. With manually listed `payment_method_types`, the integration must present Afterpay only to eligible customers or use dynamic methods.\n- The short prohibited list is alcohol, donations, pre-orders, NFTs and B2B. The new page separately distinguishes **prohibited** MCCs, which cannot use Afterpay, from **restricted** MCCs that can require additional account information; consult its MCC table and terms for the complete list. The older 2026-05-06 short list also named bars/lounges. Its omission from the new short list is not permission for that business category.\n\n## Payment options and limits\n\n| Market | Currency | Pay in 4 | Monthly installments |\n| --- | --- | --- | --- |\n| AU | AUD | 1–4,000; four interest-free bi-weekly payments | — |\n| CA | CAD | 1–2,000; four interest-free bi-weekly payments | — |\n| NZ | NZD | 1–4,000; four interest-free bi-weekly payments | — |\n| GB | GBP | 1–1,200; four interest-free bi-weekly payments | — |\n| US | USD | 1–2,000; four interest-free bi-weekly payments | 400–4,000; 6 or 12 months, interest-bearing |\n\nThe page's top-level AUD 1–4,000 limit is an AU example, not a universal limit. In the US, Pay in 4 and monthly overlap from USD 400–2,000; monthly alone applies above USD 2,000 to USD 4,000. Non-US markets list Pay in 4 only.\n\n## Payment flow and capabilities\n\nOn desktop, the customer goes to the Afterpay site to create or sign in to an account; on mobile, the installed app opens, otherwise the site. The customer chooses a plan and accepts repayment terms within **3 hours**, then returns to checkout when authorized. A redirect/return alone does not prove a succeeded PaymentIntent. The overview's 3-hour customer authorization window should not be substituted for the separate accept-a-payment guide's PaymentIntent `requires_action` expiry.\n\nManual and partial capture are supported. Multi-capture, over-capture, recurring payments, extended/flexible/incremental/decremental/re-authorizations are not. The new matrix supports full-page and embedded Checkout, Payment Links, Payment Element, in-app payments, Payment Method Messaging Element, Managed Payments and Connect; APIs include Checkout Sessions and PaymentIntents. It marks Billing, Invoicing, Customer Portal, Radar, Terminal, Express Checkout Element, SetupIntents, PaymentIntents with `setup_future_usage`, and off-session payments unsupported.\n\n**Dated product-support conflict:** the 2026-05-06 capture listed **one-time Invoicing in private preview**, explicitly excluding subscription invoices; the 2026-11-07 matrix marks Invoicing unsupported. Neither page explains the change or establishes current preview access. Keep the older private-preview fact dated rather than generalizing either matrix to another date.\n\nAfter a completed payment, expand the PaymentIntent's `latest_charge` and read `latest_charge.payment_method_details.afterpay_clearpay.order_id` for the Afterpay order ID. The customer's bank/card statement shows *AFTERPAY* with the merchant descriptor; set a custom descriptor on the PaymentIntent before confirmation if needed. The Payment Method Messaging Element can display Afterpay branding; use Clearpay branding for UK consumers.\n\n## Refunds and disputes\n\nSubmit full or partial refunds through the Dashboard or Refunds API within **120 days** of the original payment. They are asynchronous, take up to **10 business days**, cannot be canceled, and are not reversals: Afterpay cancels remaining scheduled installments and returns amounts already paid. Check Refund `status` in Dashboard/API and final `refund.updated` or `refund.failed` events. A failed refund returns the amount to the Stripe balance and requires another customer refund method. Submission is not proof of success.\n\nCustomers have **120 calendar days from purchase** to open one full-amount dispute per payment; partial disputes are unsupported. Stripe withholds the disputed amount. The merchant has **14 calendar days from creation** to submit evidence through the Dashboard or the Disputes API with Files API uploads; the Dashboard and Dispute `evidence_details.due_by` show the deadline. The 2026-11-07 page says Afterpay decides within **30 calendar days of dispute creation**. A win returns the funds; a loss makes the balance charge permanent. Afterpay covers losses from customer fraud or inability to repay installments, while Stripe may ask the merchant to stop or pause shipment.\n\n**Dated dispute-clock conflict:** the 2026-05-06 page says the 30 calendar days run **from evidence submission**. Both captures agree on the 120-day filing and 14-day evidence windows; do not silently treat the two decision clocks as equivalent.\n\n## Dated integration and Connect notes\n\nThe 2026-05-06 page reports the US rebrand to **Cash App Afterpay** and says no integration changes are needed **unless the merchant has custom Afterpay components**. The November page omits that notice; omission alone does not reverse it. The older page also explicitly supports Connect direct, destination, and separate charges and transfers, with correct MCCs for connected accounts using Express Dashboard or a dashboard not hosted by Stripe. The November page confirms Connect generally and expands prohibited/restricted MCC eligibility, but does not re-enumerate charge types. The integration guide has its own billing-details, shipping and PaymentIntent-state details.\n\n## Raw Sources\n\n- [[raw/stripe-payments-afterpay-clearpay-2026-11-07]] — full webpage capture fetched 2026-11-07 (302 lines).\n- [[raw/stripe-afterpay-clearpay-2025]] — earlier full webpage capture fetched 2026-05-06 (196 lines); fixed `_Connect_` → `*Connect*`; MP4 video CDN URL left as-is.\n",
+      "quotes": [
+        {
+          "text": "Cross-border transactions are available in private preview.",
+          "location": "raw/stripe-payments-afterpay-clearpay-2026-11-07.md:118-118"
+        },
+        {
+          "text": "Refunds for Afterpay payments are asynchronous and take up to 10 business days to complete. You can’t cancel Afterpay refunds.",
+          "location": "raw/stripe-payments-afterpay-clearpay-2026-11-07.md:192-192"
+        },
+        {
+          "text": "Afterpay reviews your evidence and issues a final decision within 30 calendar days of dispute creation.",
+          "location": "raw/stripe-payments-afterpay-clearpay-2026-11-07.md:211-211"
+        },
+        {
+          "text": "Your account might be reviewed after activation to confirm eligibility.",
+          "location": "raw/stripe-payments-afterpay-clearpay-2026-11-07.md:35-35"
+        },
+        {
+          "text": "After the payment completes, expand `latest_charge` on the PaymentIntent to retrieve the Afterpay order ID from `latest_charge.payment_method_details.afterpay_clearpay.order_id`.",
+          "location": "raw/stripe-payments-afterpay-clearpay-2026-11-07.md:296-296"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "afterpay-coverage-a1",
+            "target_path": "wiki/concepts/stripe-bnpl.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Domestic only** across 5 countries. Transaction limits: AU $4k AUD, CA $2k CAD, NZ $4k NZD, UK £1.2k GBP, US $4k USD.",
+            "proposed_markdown": "**Coverage**: AU, CA, GB, NZ and US merchants and customers. General availability is domestic only; the 2026-11-07 overview lists cross-border transactions in private preview. Dynamic Checkout/Payment Element eligibility uses shipping country then geocoded client IP; manually listed payment methods require merchant-side eligibility filtering. Pay in 4 maxima: AU AUD 4k, CA CAD 2k, NZ NZD 4k, GB GBP 1.2k, US USD 2k; US monthly installments reach USD 4k.",
+            "quote_indexes": [
+              0
+            ],
+            "warnings": [
+              "New raw lines 111-160; old raw line 80 states unqualified domestic-only. Preview is not general availability or account access."
+            ]
+          },
+          {
+            "update_id": "afterpay-dispute-a1",
+            "target_path": "wiki/concepts/stripe-bnpl.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Disputes**: 120-day customer window; 14-day merchant evidence; 30-day decision. Afterpay covers fraud.",
+            "proposed_markdown": "**Disputes**: one full dispute per payment, within 120 days of purchase; 14 calendar days from dispute creation for merchant evidence. The 2026-11-07 page says the final decision comes within 30 calendar days **of dispute creation**; the 2026-05-06 page says **of evidence submission**. Stripe withholds the amount, returning it on a merchant win and making the charge permanent on a loss. Afterpay covers customer fraud or installment nonpayment losses, subject to shipment stop/pause requests.",
+            "quote_indexes": [
+              2
+            ],
+            "warnings": [
+              "New raw lines 184-239; old raw lines 151-173 retain conflicting decision-clock origin."
+            ]
+          },
+          {
+            "update_id": "afterpay-refund-a1",
+            "target_path": "wiki/concepts/stripe-bnpl.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Refunds**: 120-day window; async.",
+            "proposed_markdown": "**Refunds**: full or partial submission within 120 days; asynchronous completion can take up to 10 business days and refunds cannot be canceled. Check Refund `status` and `refund.updated`/`refund.failed`; a failed amount returns to the Stripe balance and requires another customer refund method. Submission is not success.",
+            "quote_indexes": [
+              1
+            ],
+            "warnings": [
+              "New raw lines 178-202; old raw lines 175-177 supply the earlier 120-day/async baseline."
+            ]
+          },
+          {
+            "update_id": "afterpay-prohibited-a1",
+            "target_path": "wiki/concepts/stripe-bnpl.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Prohibited**: alcohol, bars, donations, pre-orders, NFTs, B2B.",
+            "proposed_markdown": "**Eligibility**: B2C is supported, B2B is not. The 2026-11-07 short prohibited list names alcohol, donations, pre-orders and NFTs, plus B2B; its MCC table separately distinguishes prohibited from restricted categories. The 2026-05-06 short list also named bars/lounges. Omission in November does not establish permission; check the full MCC list and terms.",
+            "quote_indexes": [
+              3
+            ],
+            "warnings": [
+              "New raw lines 18-93; old raw prohibited list must be dated, not silently dropped."
+            ]
+          },
+          {
+            "update_id": "afterpay-source-route-a1",
+            "target_path": "wiki/concepts/stripe-bnpl.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-afterpay-clearpay]] — Afterpay/Clearpay: Cash App rebrand, country limits, US installment tiers, dispute/refund windows, prohibited categories",
+            "proposed_markdown": "- [[source-stripe-afterpay-clearpay]] — Afterpay/Clearpay overview: November 2026 eligibility, private-preview cross-border, payment options, refund/dispute states; dated May 2026 rebrand, Invoicing and dispute-clock conflicts",
+            "quote_indexes": [
+              0,
+              2
+            ],
+            "warnings": [
+              "Route preserves same existing source; new raw lines 111-119 and 204-211; old raw lines 8, 78 and 173."
+            ]
+          },
+          {
+            "update_id": "afterpay-rebrand-a1",
+            "target_path": "wiki/concepts/stripe-bnpl.md",
+            "update_kind": "durable_fact",
+            "anchor": "**US rebrand**: Afterpay → Cash App Afterpay (no integration changes needed). UK name: Clearpay.",
+            "proposed_markdown": "**US rebrand (2026-05-06 capture)**: Afterpay → Cash App Afterpay; the older page says no integration changes are needed **unless custom Afterpay components are used**. UK name: Clearpay. The 2026-11-07 overview does not repeat the US notice.",
+            "quote_indexes": [
+              4
+            ],
+            "warnings": [
+              "Old raw line 8 is the authority for the qualified US rebrand note; new raw lines 5-9 and 268-270 establish current captured naming but omission is not reversal."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-afterpay-clearpay-2026-11-07.md",
+      "raw_sha256": "1d2880ea722cc8c62249a33681f15eb8080e87a73c2526c75b0ddf7f203274d9",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-afterpay-clearpay-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 302
+      }
+    ],
+    "raw/stripe-afterpay-clearpay-2025.md": [
+      {
+        "start": 1,
+        "end": 196
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/e84fc26ae22310d675199687/content.diff": [
+      {
+        "start": 1,
+        "end": 471
+      }
+    ],
+    "wiki/sources/source-stripe-afterpay-clearpay.md": [
+      {
+        "start": 1,
+        "end": 48
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-afterpay-clearpay/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 190
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 321,
+        "end": 329
+      },
+      {
+        "start": 747,
+        "end": 747
+      }
+    ],
+    "wiki/concepts/stripe-bnpl.md": [
+      {
+        "start": 1,
+        "end": 90
+      },
+      {
+        "start": 250,
+        "end": 258
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "Afterpay and Clearpay only support domestic transactions",
+      "location": "raw/stripe-afterpay-clearpay-2025.md:80-80"
+    },
+    {
+      "text": "Private preview for one-time invoices. Not supported for subscription invoices.",
+      "location": "raw/stripe-afterpay-clearpay-2025.md:78-78"
+    },
+    {
+      "text": "Afterpay makes a decision within 30 calendar days of evidence submission.",
+      "location": "raw/stripe-afterpay-clearpay-2025.md:173-173"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/afterpay-clearpay, the November capture establishes a single-use redirected Afterpay/Clearpay checkout, merchant eligibility in five countries, B2C scope, country/currency limits, three-hour customer authorization, capture/refund/dispute capabilities, and an order ID available on latest_charge only after payment completion (new raw lines 5-21, 111-160, 162-296). The merchant receives upfront funds after acceptance, while confirmation and standard payout are separate states; return is not PaymentIntent success. The matched old capture gives domestic-only coverage and one-time Invoicing private preview (old raw lines 68-80), while the new capture adds cross-border private preview and calls Invoicing unsupported. The sole mapped summary, source-stripe-afterpay-clearpay.md, compresses these and needs its unqualified domestic, refund, dispute and prohibited claims corrected, while retaining dated US rebrand and Connect details.",
+    "Q2": "At https://docs.stripe.com/payments/afterpay-clearpay, substantive deltas are cross-border private preview versus old domestic-only (old raw lines 78-80; new raw lines 111-119), Invoicing unsupported versus dated one-time private preview (old raw lines 68-78; new raw lines 241-265), and a dispute decision measured from creation versus the older evidence-submission clock (old raw lines 151-173; new raw lines 204-211). The revised source-stripe-afterpay-clearpay.md and bounded stripe-bnpl suggestions retain both dated authorities and warn about conflict. The omitted US Cash App rebrand, older Connect charge-type detail and bars/lounges short-list item are historical, not proof of reversal; the new layout, links and country table are largely presentational where values agree. Dynamic method filtering and manually configured eligibility are different integration paths; a three-hour customer authorization or redirect does not by itself establish PaymentIntent state or successful settlement. Refund submission similarly needs terminal status, and order_id is stated for a completed payment (new raw lines 190-202, 272-296)."
+  }
+}

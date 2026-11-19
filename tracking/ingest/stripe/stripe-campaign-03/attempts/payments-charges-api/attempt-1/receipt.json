@@ -1,0 +1,144 @@
+{
+  "job_id": "payments-charges-api",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-charges-api-2026-11-07.md",
+  "raw_sha256": "f2849177e58b70c4135df3cb9b36218549a174fbaab446da6b19f89d79dc30bb",
+  "prior_raw_path": "raw/stripe-charges-api-legacy-2025.md",
+  "prior_raw_sha256": "f30dab166fccd4e81e6dd2bfc3dc56a5f4dd03daffde0c8260dc1723c87ee7ad",
+  "source_targets": [
+    "wiki/sources/source-stripe-legacy-apis.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-legacy-apis.md": "fe47e3d161179962ef17bbf24755d2bae5e1656ea20ce8aa6f90b175d5e8fc4b"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-charges-api-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 160
+      }
+    ],
+    "raw/stripe-charges-api-legacy-2025.md": [
+      {
+        "start": 1,
+        "end": 95
+      },
+      {
+        "start": 96,
+        "end": 182
+      }
+    ],
+    "wiki/sources/source-stripe-legacy-apis.md": [
+      {
+        "start": 1,
+        "end": 70
+      },
+      {
+        "start": 71,
+        "end": 136
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/7401e9cedac333e40575821d/content.diff": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 193
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 168,
+        "end": 177
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "We\u2019ve deprecated use of the Charges API to create card payments and plan to remove support.",
+      "location": "raw/stripe-payments-charges-api-2026-11-07.md:17"
+    },
+    {
+      "text": "New integrations can\u2019t use the Charges API to create payments.",
+      "location": "raw/stripe-payments-charges-api-2026-11-07.md:17"
+    },
+    {
+      "text": "The Charges API doesn\u2019t support the following features, many of which are required for credit card compliance:",
+      "location": "raw/stripe-payments-charges-api-2026-11-07.md:19"
+    },
+    {
+      "text": "If using both the Payment Intent and Charge objects, you\u2019re not guaranteed to see consistent values for these fields.",
+      "location": "raw/stripe-payments-charges-api-2026-11-07.md:133"
+    },
+    {
+      "text": "Don\u2019t store any sensitive information (personally identifiable information, card details, and so on) as metadata or in the charge\u2019s `description` parameter.",
+      "location": "raw/stripe-payments-charges-api-2026-11-07.md:153"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "The content of this section refers to a _Legacy_ (Technology that's no longer recommended) feature.",
+      "location": "raw/stripe-charges-api-legacy-2025.md:10"
+    },
+    {
+      "text": "Use [PaymentIntents](https://docs.stripe.com/payments/accept-a-payment.md) for new integrations.",
+      "location": "raw/stripe-charges-api-legacy-2025.md:19"
+    },
+    {
+      "text": "If using both the Payment Intent and Charge objects, you\u2019re not guaranteed to see consistent values for these fields.",
+      "location": "raw/stripe-charges-api-legacy-2025.md:147"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The November page adds an explicit, scoped lifecycle status: use of Charges API to create card payments is deprecated, Stripe plans to remove support, and new integrations cannot use Charges API to create payments (new raw lines 5-25). The April page called Charges/Tokens legacy and recommended PaymentIntents for new integrations but did not say support was planned for removal or that new integration creation is barred (old raw lines 4-21). Neither page gives a removal date or proves existing charge retrieval/refund operations are removed.",
+    "The mapped multi-raw source says 'Charges + ACH APIs: unsupported but not being removed; no future development' (source-stripe-legacy-apis.md:23-26), directly conflicting with the November Charges card-payment-creation warning. Correct the Charges part with the exact new scope and date while preserving separate ACH and Sources claims as their own dated evidence; do not project this card-specific notice onto all Charges operations or legacy APIs.",
+    "Charges flow remains browser Elements collection, Stripe.js tokenization, token sent to merchant server, server Charge amount/currency and fulfillment only after successful payment. PaymentIntents flow uses a server-created Intent/client secret, client 3DS via Stripe.js/mobile SDK and success webhook before fulfillment (old raw lines 23-39; new raw lines 27-41). Token generation, API acceptance or charge creation alone is not a successful payment or fulfillment instruction.",
+    "Both captures retain charge-ID Refund creation/full-or-partial amount, legacy iOS Apple Pay PKPayment to Token to server Charge, dynamic statement descriptor constraints, Charge metadata and decline outcome/API error or charge.failed webhook (old raw lines 41-182; new raw lines 43-160). November swaps Node examples for curl in refunds, descriptor and metadata, preserving server secret-key boundary; it does not establish SDK deprecation or actual Apple Pay support for new Charges integration.",
+    "Both captures warn PaymentIntent and Charge metadata/description can differ and require updates to the Intent object when using Payment Intents (old raw lines 145-153; new raw lines 131-139). The summary source lines 40-46 omits that identity warning even though it summarizes Charges metadata; add it to prevent cross-object reconciliation errors.",
+    "Source frontmatter/Raw Sources list the April Charges raw among seven legacy captures but not November (source lines 1-14,128-136). Add exact canonical URL and November raw route specifically to the Charges section, retaining all other raw provenance. The company Stripe page's Charges API table also says unsupported but available/no future development (wiki/companies/stripe.md:175); flag a reciprocal dated warning rather than assume every table row is superseded."
+  ],
+  "substantive_changes": [
+    "November states planned removal of support for Charges API card-payment creation and disallows new integrations using Charges API to create payments, beyond April's legacy/not-recommended language (old raw lines 8-21; new raw lines 5-25)."
+  ],
+  "historical_claims_to_preserve": [
+    "April 20, 2026 Charges/Tokens legacy and PaymentIntents recommendation, token-to-server Charge flow, Refund/Apple Pay/descriptor/metadata/decline examples remain dated technical evidence (old raw lines 4-182). New lifecycle notice narrows new card-payment creation but does not retroactively erase example content.",
+    "The multi-raw source's older Sources API and ACH status claims derive from separate raw routes and must not be generalized from the November Charges card-payment page (source-stripe-legacy-apis.md:6-14,23-26,128-136)."
+  ],
+  "conflicts": [
+    "source-stripe-legacy-apis.md:25 says Charges API is not being removed; November says Stripe plans to remove support for Charges API card-payment creation (new raw line 17). Add reciprocal dated/scope warning in that source and company table at wiki/companies/stripe.md:175, without asserting a removal date or blanket API shutdown.",
+    "The summary's legacy payment-method use table at source lines 47-54 can sound like Charges remain a choice for new US/Canada integrations, but November says new integrations cannot use Charges API to create payments (new raw line 17). Mark that table historical/legacy-only."
+  ],
+  "unresolved_questions": [
+    "No removal date, migration cutoff, exact grandfathered access policy, or fate of Charges read/refund APIs is given by this page (new raw lines 15-25,43-60).",
+    "November still includes server Charge creation examples for existing legacy context; they do not override the explicit new-integration prohibition (new raw lines 17,100-150)."
+  ],
+  "affected_concepts": [],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-legacy-apis.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add exact Charges page URL and November raw route while retaining seven older legacy raw links (source lines 1-14,128-136; new raw lines 1-2).",
+        "Correct source line 25's broad Charges-not-being-removed language with November's planned removal of Charges card-payment creation and no new integration creation (new raw lines 15-25), leaving separate ACH status dated and unasserted by this page.",
+        "Date/qualify the source lines 47-54 Charges use-case table as existing legacy context only; retain charge-versus-Intent flow at lines 28-38 and add PaymentIntent-versus-Charge metadata/description identity warning (old raw lines 145-153; new raw lines 131-139)."
+      ],
+      "conflicts": [
+        "Source line 25 conflicts with new raw line 17 on Charges card-payment creation removal plan.",
+        "Source lines 47-54 imply new US/Canada Charges use despite new raw line 17's new-integration bar."
+      ],
+      "reason": "The November page adds a material Charges card-payment lifecycle restriction and exposes a direct current-summary contradiction; other legacy API claims and existing-operation examples remain separately dated."
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/charges-api, the November capture explicitly calls Charges API card-payment creation deprecated, says Stripe plans to remove support, and bars new integrations from using Charges API to create payments; it recommends Checkout or Payment Intents (new raw lines 5-25). The old April guide called Charges/Tokens legacy and recommended PaymentIntents but did not state that removal plan or bar (old raw lines 4-21). Both show a legacy browser Elements/Stripe.js Token sent to the merchant server for a Charge, versus a server-created PaymentIntent/client secret and client authentication, with fulfillment only after successful payment/webhook (old raw lines 23-39; new raw lines 27-41). The mapped source-stripe-legacy-apis.md incorrectly says Charges are not being removed and offers a historical US/Canada Charges use-case table without the new integration bar (source lines 23-25,47-54). It must keep ACH/Sources claims separate and date the Charges correction. Tokenization, charge creation and a client return do not establish payment success.",
+    "Q2": "For https://docs.stripe.com/payments/charges-api, the substantive November change is the explicit plan to remove Charges API card-payment creation and the prohibition for new Charges payment integrations (old raw lines 8-21; new raw lines 15-25). Node-to-curl example changes for refunds, descriptors and metadata, reordered headings and replacement links are presentation; legacy Apple Pay PKPayment-to-Token and Charge-ID Refund examples remain dated and do not prove new-integration eligibility (old raw lines 41-175; new raw lines 43-153). source-stripe-legacy-apis.md needs dual raw provenance, a scoped contradiction warning for its 'not being removed' line 25 and a historical-only label on its Charges use-case table (source lines 1-14,23-25,47-54,128-136). Preserve the PaymentIntent versus Charge metadata/description identity distinction, server token/secret-key versus client authentication roles, and fulfillment-after-success state (old raw lines 23-39,145-153; new raw lines 27-41,131-139). No removal date or blanket shutdown of Charges retrieval/refunds or other legacy APIs follows."
+  }
+}

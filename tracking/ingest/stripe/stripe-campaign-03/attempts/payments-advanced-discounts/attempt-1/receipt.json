@@ -1,0 +1,179 @@
+{
+  "job_id": "payments-advanced-discounts",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-advanced-discounts-2026-11-07.md",
+  "raw_sha256": "76c610b98a6377366675e6586f603aeef264e9c6f63eecee29b2c8f345c2ba60",
+  "prior_raw_path": "raw/stripe-checkout-add-discounts-2025.md",
+  "prior_raw_sha256": "dfd515ae04494e4ceeaf67ecdf4bc3d63fbcab5d63b9d3e33293e69cbbf79f01",
+  "source_targets": [
+    "wiki/sources/source-stripe-checkout-add-discounts.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-checkout-add-discounts.md": "3ba97a216973b1017141b763e96f27e16c8dad51bb99fe652ff3671f29635642"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-advanced-discounts-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 227
+      }
+    ],
+    "raw/stripe-checkout-add-discounts-2025.md": [
+      {
+        "start": 1,
+        "end": 130
+      },
+      {
+        "start": 131,
+        "end": 256
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-add-discounts.md": [
+      {
+        "start": 1,
+        "end": 66
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/7cde221a48eedd21ec117075/content.diff": [
+      {
+        "start": 1,
+        "end": 105
+      },
+      {
+        "start": 106,
+        "end": 202
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 30
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 35,
+        "end": 95
+      }
+    ],
+    "wiki/concepts/stripe-checkout.md": [
+      {
+        "start": 1,
+        "end": 115
+      },
+      {
+        "start": 138,
+        "end": 160
+      },
+      {
+        "start": 255,
+        "end": 272
+      },
+      {
+        "start": 60,
+        "end": 100
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-discounts.md": [
+      {
+        "start": 1,
+        "end": 81
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Checkout Sessions support up to one coupon or promotion code.",
+      "location": "/Users/tengtao/Development/wiki-v2/raw/stripe-payments-advanced-discounts-2026-11-07.md:33"
+    },
+    {
+      "text": "On your server, enable customer-redeemable promotion codes using the",
+      "location": "/Users/tengtao/Development/wiki-v2/raw/stripe-payments-advanced-discounts-2026-11-07.md:91"
+    },
+    {
+      "text": "import {useCheckoutElements} from '@stripe/react-stripe-js/checkout';",
+      "location": "/Users/tengtao/Development/wiki-v2/raw/stripe-payments-advanced-discounts-2026-11-07.md:144"
+    },
+    {
+      "text": "Since promotion code restrictions are checked at redemption time, the minimum transaction amount only applies to the initial payment for a subscription.",
+      "location": "/Users/tengtao/Development/wiki-v2/raw/stripe-payments-advanced-discounts-2026-11-07.md:207"
+    },
+    {
+      "text": "You can\u2019t reactivate these promotion codes.",
+      "location": "/Users/tengtao/Development/wiki-v2/raw/stripe-payments-advanced-discounts-2026-11-07.md:223"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "import {useCheckout} from '@stripe/react-stripe-js/checkout';",
+      "location": "/Users/tengtao/Development/wiki-v2/raw/stripe-checkout-add-discounts-2025.md:176"
+    },
+    {
+      "text": "const PromotionCode = () => {const checkoutState = useCheckout();",
+      "location": "/Users/tengtao/Development/wiki-v2/raw/stripe-checkout-add-discounts-2025.md:178"
+    },
+    {
+      "text": "Checkout Sessions support up to one coupon or promotion code.",
+      "location": "/Users/tengtao/Development/wiki-v2/raw/stripe-checkout-add-discounts-2025.md:36"
+    },
+    {
+      "text": "Since promotion code restrictions are checked at redemption time, the minimum transaction amount only applies to the initial payment for a subscription.",
+      "location": "/Users/tengtao/Development/wiki-v2/raw/stripe-checkout-add-discounts-2025.md:236"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "New raw lines 5-18 and old raw lines 4-17 retain the Checkout Sessions discount purpose and separate Payment Intents route: calculate the discounted amount server-side and create or update the PaymentIntent. This is not a coupon parameter on a PaymentIntent.",
+    "New raw lines 20-66 and old raw lines 19-81 retain coupon identity and behavior: a Coupon defines percent/fixed amount and product/redemption/expiry limits; a Checkout Session's discounts array accepts a coupon ID, with at most one coupon or promotion code. Deleting a Coupon prevents future applications, not retroactive reversal.",
+    "New raw lines 68-106 and old raw lines 83-133 retain promotion codes as customer-facing aliases to an existing Coupon. Code uniqueness applies across active codes, with customer-restricted reuse distinguished from general-use codes. Server-created Sessions enable allow_promotion_codes, then browser Checkout Elements actions apply/remove an entered code.",
+    "The substantive documented sample change is React's import/useCheckout() in old raw lines 172-191 to import/useCheckoutElements() in new raw lines 140-161; both reference the same @stripe/react-stripe-js/checkout entrypoint and checkoutState.checkout action methods. The pinned page does not prove removal of useCheckout or broad SDK runtime compatibility. Related wiki/concepts/stripe-checkout.md lines 69-81,93-98 separately records versioned provider-specific hook evidence and a retained alias.",
+    "Node-to-curl creation examples in old raw lines 23-59,108-131 versus new raw lines 24-44,93-104 retain corresponding percent_off/duration, discounts[0][coupon], mode=payment, ui_mode=elements, return_url and allow_promotion_codes values. Diff lines 3-111 shows presentation, not changed server discount behavior; JS formatting and invoice emphasis in diff lines 114-202 are also presentational apart from the React hook rename.",
+    "New raw lines 191-227 and old raw lines 220-256 retain customer or customer_account restriction, first-time qualification including guest Sessions, minimum amount checked at redemption and only initial subscription payment, coupon-constrained expiration/redemption limits, and permanent inactivation after invalid coupon or max/expiry. A successful apply action is discount application, not proof of completed payment.",
+    "Current source lines 11-57 accurately summarizes the older core coupon/promotion mechanics, server Session setup, client actions and lifecycle. Its line 29 generic React equivalents omit the old hook name and therefore do not directly conflict with the new example; update is needed to add November provenance and explicitly distinguish the dated React hook examples. Current source lines 4-7,64-66 point only to April old raw.",
+    "Main concept route is wiki/index.md lines 5-8 to wiki/stripe-index.md line 89 to wiki/concepts/stripe-checkout.md lines 148-149,264 and current source line 62. The concept already states discount mechanics and has a separate versioned hook discussion at lines 69-98; any reciprocal adjustment should point to this reviewed source without collapsing date/version boundaries."
+  ],
+  "substantive_changes": [
+    "React example changes the imported and called Checkout Elements hook from useCheckout() (old raw lines 176-178) to useCheckoutElements() (new raw lines 144-147); the promotion-code action methods and checkoutState loading/error pattern remain the same. This is a developer-facing SDK sample change, not evidence that the older hook ceased to exist."
+  ],
+  "historical_claims_to_preserve": [
+    "2026-04-21 old raw lines 15-17,34-59: Payment Intents manual server-side adjusted amount and Node Checkout Session sample with discounts[0].",
+    "2026-04-21 old raw lines 104-133: Node Session example enabling allow_promotion_codes and client applyPromotionCode/removePromotionCode route.",
+    "2026-04-21 old raw lines 172-218: React useCheckout() example, retained as dated sample rather than silently rewritten or declared removed.",
+    "2026-04-21 old raw lines 224-256: customer/first-time/minimum/expiry/redemption and permanent-inactivation qualifiers.",
+    "2026-04-20 separate source-stripe-checkout-discounts.md lines 63-70 covers no-cost order API-version and fulfillment qualifications; the current page is the Elements promotion-code guide and should not absorb that behavior without its separate dated authority."
+  ],
+  "conflicts": [
+    "Only a dated example difference is established: old raw lines 176-178 use useCheckout(), new raw lines 144-147 use useCheckoutElements(). The related concept wiki/concepts/stripe-checkout.md lines 75,97-98 says the older alias remained exported in retained v7 code despite a JSDoc removal plan. Do not turn the new example into a removal claim."
+  ],
+  "unresolved_questions": [
+    "The pinned website captures do not identify a minimum @stripe/react-stripe-js package version for the new hook or prove runtime availability for any particular integration; consult versioned package evidence before giving migration requirements.",
+    "No live Checkout Session, coupon redemption, client action or payment outcome was exercised in this review."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-checkout.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-checkout-add-discounts.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add the 2026-11-07 pinned full raw and retain April raw provenance (current source lines 4-7,64-66; new raw lines 1-3).",
+        "Describe the exact dated React example delta, old useCheckout() at old raw lines 176-178 and new useCheckoutElements() at new raw lines 144-147, while retaining the stable apply/remove methods summarized by current source lines 15-33.",
+        "Keep current source lines 35-57 coupon/Session/lifecycle behavior as dated baseline; new raw lines 20-106,191-227 support its central claims. Distinguish payment completion from discount application."
+      ],
+      "conflicts": [
+        "No direct source-summary contradiction is established because current source line 29 does not name the hook. A warning is needed against interpreting the new sample as proof that the old hook was removed; related concept lines 75,97-98 retain alias evidence."
+      ],
+      "reason": "The current summary is materially accurate but lacks November provenance and discoverability of the one developer-facing React hook delta; the Node-to-curl changes do not require a new behavior claim."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/advanced/discounts, new raw lines 5-106 and 140-227 describe Checkout Sessions discounts: a server applies a Coupon ID through discounts or enables allow_promotion_codes so a customer can enter a Promotion Code mapped to a Coupon. The Elements client applies or removes the code; a Session supports at most one coupon or promotion code. Coupons and codes have product, customer, redemption, expiry, first-time and minimum-amount limits, while Payment Intents require server-side discounted amount calculation. Compared with old raw lines 4-133 and 172-256, source-stripe-checkout-add-discounts.md correctly summarizes the core flow, but has only April provenance and no dated React hook distinction. Discount application does not establish payment success.",
+    "Q2": "For https://docs.stripe.com/payments/advanced/discounts, the substantive sample delta is old raw lines 176-178 importing and calling useCheckout() versus new raw lines 144-147 using useCheckoutElements() from the same React checkout entrypoint. source-stripe-checkout-add-discounts.md should add November provenance and label both dated examples, while preserving its coupon, promotion-code and client-action baseline. The Node-to-curl request examples in old raw lines 23-59 and 108-131 versus new raw lines 24-44 and 93-104 carry the same material parameters; formatting and link changes are presentational. The new example does not prove useCheckout removal, an SDK compatibility floor, payment completion, or a new PaymentIntent coupon API; the separate versioned checkout concept retains the alias qualification."
+  }
+}

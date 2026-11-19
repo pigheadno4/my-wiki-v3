@@ -1,0 +1,190 @@
+{
+  "job_id": "payments-incremental-authorization",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-incremental-authorization-2026-11-07.md",
+  "raw_sha256": "66e4ab2c78fb5fee6fa3fb22494dec326853a68482c0eb6f1a50208e8fbc9089",
+  "prior_raw_path": "raw/stripe-incremental-authorization-2026.md",
+  "prior_raw_sha256": "c6ba7ee75d925c3ae971b85063eb204f6d4e2338ea809f502c0b2c5020dc8e17",
+  "source_targets": [
+    "wiki/sources/source-stripe-incremental-authorization.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-incremental-authorization.md": "94eb9bc2e5dd1289ae826a85bdcce58b7eaa84948977e2b55ecc32aea482a73e"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-incremental-authorization-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-incremental-authorization-2026.md": [
+      {
+        "start": 1,
+        "end": 130
+      },
+      {
+        "start": 131,
+        "end": 260
+      },
+      {
+        "start": 261,
+        "end": 390
+      },
+      {
+        "start": 391,
+        "end": 520
+      },
+      {
+        "start": 521,
+        "end": 650
+      },
+      {
+        "start": 651,
+        "end": 771
+      }
+    ],
+    "wiki/sources/source-stripe-incremental-authorization.md": [
+      {
+        "start": 1,
+        "end": 64
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/17a543403c1b0b9aa78e1ff1/content.diff": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 250
+      },
+      {
+        "start": 251,
+        "end": 380
+      },
+      {
+        "start": 381,
+        "end": 510
+      },
+      {
+        "start": 511,
+        "end": 640
+      },
+      {
+        "start": 641,
+        "end": 774
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 45
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 568,
+        "end": 576
+      },
+      {
+        "start": 706,
+        "end": 713
+      }
+    ],
+    "wiki/concepts/stripe-incremental-authorization.md": [
+      {
+        "start": 1,
+        "end": 67
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Increase an existing authorization on a confirmed PaymentIntent before you capture it.",
+      "location": "raw/stripe-payments-incremental-authorization-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-incremental-authorization-2026-11-07.md:11"
+    },
+    {
+      "text": "- [Stripe-hosted page](https://docs.stripe.com/payments/incremental-authorization.md?platform=web&ui=stripe-hosted)",
+      "location": "raw/stripe-payments-incremental-authorization-2026-11-07.md:13"
+    },
+    {
+      "text": "- [Full embedded page](https://docs.stripe.com/payments/incremental-authorization.md?platform=web&ui=embedded-page)",
+      "location": "raw/stripe-payments-incremental-authorization-2026-11-07.md:14"
+    },
+    {
+      "text": "- [Advanced integration](https://docs.stripe.com/payments/incremental-authorization.md?platform=web&ui=elements)",
+      "location": "raw/stripe-payments-incremental-authorization-2026-11-07.md:15"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "- [mode](https://docs.stripe.com/api/checkout/sessions/create.md#create_checkout_session-mode) is set to `payment` and [capture_method](https://docs.stripe.com/api/checkout/sessions/create.md#create_checkout_session-payment_intent_data-capture_method) is set to `manual` on the [CheckoutSession](https://docs.stripe.com/api/checkout/sessions/.md).",
+      "location": "raw/stripe-incremental-authorization-2026.md:20"
+    },
+    {
+      "text": "You have a maximum of 10 incremental authorization attempts per PaymentIntent.",
+      "location": "raw/stripe-incremental-authorization-2026.md:337"
+    },
+    {
+      "text": "You can only perform incremental authorizations on uncaptured payments after [PaymentIntent confirmation](https://docs.stripe.com/api/payment_intents/confirm.md). To adjust the amount of a payment before confirmation, use [update method](https://docs.stripe.com/api/payment_intents/update.md) instead.",
+      "location": "raw/stripe-incremental-authorization-2026.md:678"
+    },
+    {
+      "text": "The PaymentIntent object remains capturable for the previously authorized amount.",
+      "location": "raw/stripe-incremental-authorization-2026.md:347"
+    },
+    {
+      "text": "incremental authorizations don\u2019t extend [the validity period](https://docs.stripe.com/payments/place-a-hold-on-a-payment-method.md)",
+      "location": "raw/stripe-incremental-authorization-2026.md:353"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "November 7, 2026 raw lines 5-15 retain only the common purpose statement and links to three web UI variants. The May 11, 2026 capture contains full Stripe-hosted, full embedded and advanced/Elements variants (old raw lines 8-771). Diff lines 3-774 reflect variant collapse to an index; no new eligibility, request parameter, limit or lifecycle change is established.",
+    "Old guide distinguishes a confirmed uncaptured PaymentIntent from a Checkout Session and its latest Charge: Checkout Session payment mode plus manual capture are explicit requirements (old raw lines 16-26, 383-395), and advanced path uses a card PaymentIntent with confirm:true, capture_method:manual and if_available (old raw lines 668-701). Requesting if_available does not guarantee availability; check latest_charge.payment_method_details.card.incremental_authorization.status (old raw lines 163-187, 515-540, 701-727). The current source's API section lines 40-44 omits the manual-capture and post-confirmation boundaries.",
+    "The May guide says up to 10 incremental authorization attempts per PaymentIntent, including attempted failures, not ten successful increments (old raw lines 333-349, 542-558, 729-745). Current source line 47 and concept line 41 say '10 increments'; both need a baseline correction. The request amount is the new total rather than the delta; successful increment increases authorization, failed card_declined leaves the previous amount capturable and unsaved ancillary updates, and separate capture remains necessary before the original hold expires (old raw lines 333-363, 729-758).",
+    "The old hosted and embedded Checkout Session examples set payment mode and if_available but omit capture_method:manual (old raw lines 134-155, 484-507), despite the guide's explicit manual capture prerequisite (old raw lines 16-26, 383-395). Treat this as a dated internal example/prerequisite conflict, not evidence that automatic capture works. Its hosted section also includes embedded mount/return material (old raw lines 190-331); the November index does not resolve that presentation ambiguity.",
+    "The related concept collapses beta networks into 'CNP only' (wiki/concepts/stripe-incremental-authorization.md:22), while the old table gives Diners Club card-present support in US/CA/UK and card-not-present support elsewhere, and UnionPay/JCB card-not-present support only (old raw lines 46-55, 623-632). That is a pre-existing concept error, distinct from the November raw change."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "May 11, 2026 IC+ pricing access, network/merchant category and beta limits including Mastercard MX/JP-JPY and AmEx issuer status: old raw lines 14-55, 592-633.",
+    "May 11, 2026 SCA-country 3DS initial authorization, automatic off-session configuration, later MIT potentially SCA-exempt without MIT liability shift, customer disclosure and applicable consent duties: old raw lines 57-91, 634-666.",
+    "May 11, 2026 request/status/attempt/cap/failure/capture lifecycle: old raw lines 163-187, 333-375, 515-584, 668-771. These are dated guide claims, not renewed by the November variant index.",
+    "May 11, 2026 statement presentation: separate pending entries before capture, one final captured entry afterward (old raw lines 12, 381, 590); not proof of settlement or funds availability."
+  ],
+  "conflicts": [
+    "Old guide says Checkout requires capture_method:manual (old raw lines 20, 389), but its own hosted and embedded creation samples omit that parameter (old raw lines 134-155, 484-507). Add reciprocal qualification around prose and samples; do not infer eligibility from the snippets.",
+    "Current source says max 10 'increments' (wiki/sources/source-stripe-incremental-authorization.md:47), and concept repeats that (wiki/concepts/stripe-incremental-authorization.md:41), while old raw explicitly says max 10 attempts (old raw lines 337, 546, 733).",
+    "Concept's beta-networks 'CNP only' statement (wiki/concepts/stripe-incremental-authorization.md:22) conflicts with Diners Club card-present beta row in old raw lines 52 and 629; current source line 29 preserves the card-present row. Reciprocal correction needed."
+  ],
+  "unresolved_questions": [
+    "The three November variant URLs (new raw lines 13-15) were not captured here; current availability, actual UI samples and API behavior at those URLs are unverified."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-incremental-authorization.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-incremental-authorization.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add November base-URL index as navigation-only provenance while preserving May detailed guide; change source line 47 from ten increments to ten attempts; add Checkout payment/manual-capture and advanced confirmed/uncaptured prerequisites from old raw lines 20, 389, 668-701; preserve availability status check and separate capture boundary."
+      ],
+      "conflicts": [
+        "Disclose old guide's own manual-capture prose versus Checkout code-example omission (old raw lines 20, 134-155, 389, 484-507); coordinate concept correction of its beta CNP-only line 22 against the Diners card-present row (old raw line 52)."
+      ],
+      "reason": "The November raw establishes only navigation, but the mapped summary has material baseline accuracy and provenance gaps."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/incremental-authorization, the complete November capture establishes only that incremental authorization increases an existing authorization on a confirmed PaymentIntent before capture, plus links to Stripe-hosted, full embedded and advanced web variants (new raw lines 5-15). The May guide says IC+ access, eligible card networks and merchant categories, Checkout payment mode with manual capture, or an advanced confirmed uncaptured card PaymentIntent with if_available requested (old raw lines 14-55, 668-701). Check the latest Charge's card incremental_authorization.status before attempting the PaymentIntent increment endpoint; send a new total, not a delta. A successful increment changes the authorized amount, while failure retains the previous capturable amount; a separate capture must occur before the original authorization expires (old raw lines 163-187, 333-363, 701-758). source-stripe-incremental-authorization.md mostly summarizes the May guide but omits key prerequisite boundaries and incorrectly calls ten attempts ten increments.",
+    "Q2": "The November change at https://docs.stripe.com/payments/incremental-authorization is navigation and capture presentation: new raw lines 9-15 list variants; old raw lines 8-771 contain detailed examples, tables and limits. No substantive eligibility or API change is demonstrated. Keep the May-dated IC+ and network conditions, SCA/3DS and MIT qualifications, ten-attempt limit, per-increment cap, separate capture and unchanged expiration (old raw lines 14-91, 333-375, 592-666, 729-771). source-stripe-incremental-authorization.md needs November index provenance and baseline correction. The old Checkout samples omit manual capture despite its explicit prerequisite, and the concept wrongly labels all beta-network support CNP only; both need reciprocal warnings or correction. A Checkout return, availability status or increased authorization does not establish capture, settlement or funds availability; linked variants were not read here."
+  }
+}

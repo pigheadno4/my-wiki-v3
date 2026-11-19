@@ -1,0 +1,178 @@
+{
+  "job_id": "payments-ideal",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-ideal.md": {
+      "job_id": "payments-ideal",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: iDEAL | Wero Payments\"\ntype: source\ndate_ingested: 2026-05-03\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/ideal\"\nraw_files:\n  - \"stripe-payments-ideal-2026-11-07.md\"\n  - \"stripe-ideal-2025.md\"\ntags: [stripe, ideal, wero, netherlands, eur, bank-redirect, authenticated, sepa-debit, kvk]\n---\n\n## Overview\n\nThe May 3 and November 7, 2026 full captures describe iDEAL | Wero (formerly iDEAL) as a Netherlands-based, customer-initiated online bank payment method. A Dutch customer pays in **EUR**, redirects to their bank to authenticate with a second factor, and Stripe describes immediate notification of payment success or failure. The bank experience varies. The captured merchant-location list includes 40 Stripe account countries; this differs from the Netherlands customer location. Listing an account country or product does not establish a particular merchant's enablement, buyer authentication, payment execution, settlement, or a specific SDK flow.\n\n## Migration notice, dated to the captures\n\nBoth captures repeat Stripe's notice that Wero acquired iDEAL, integrations should be rebranded to **iDEAL | Wero in Q1 2026**, and merchants should **switch to Wero during 2026 and 2027** to continue accepting bank redirects from Dutch customers. The Q1 instruction was already in the May 3 capture and is past relative to the November 7 capture. The repeated notice does not establish a later exact cutoff, completion for any merchant, or replacement of a particular API or SDK. See the separately linked Wero migration guide for implementation details.\n\n## Method properties and setup\n\n- **Customer and currency**: customers in the Netherlands; presentment in EUR. The captured page lists 40 eligible Stripe account locations separately from payer location.\n- **Bank flow**: customer-initiated authenticated bank transfer with redirect, second-factor authentication, and immediate payment outcome notification. Manual capture support is **No**.\n- **Recurring**: the overview points to **SEPA Direct Debit** for recurring payments; it does not itself specify a saved mandate, later off-session charge, or subscription implementation.\n- **Products**: Connect, Checkout, Payment Links, Subscriptions, Invoicing, and Elements are listed. Standard payout timing is stated; no specific payout date is guaranteed.\n- **Front-end display**: for Stripe front-end products, enable iDEAL in the Stripe Dashboard payment-method settings. Stripe then determines relevant methods to display. The page routes to hosted Checkout and Elements quickstarts, with Invoicing and Payment Links also configurable from Dashboard. This setup/display step does not authenticate the buyer or prove payment success. The November Elements quickstart link differs from May's link, without evidence here of SDK or endpoint removal.\n- **Manual or future-use paths**: the overview links separate accept-a-payment and save-details guides and a GitHub sample. Their links are navigation; this overview alone does not define their client/server or version conditions.\n\n## Disputes, refunds, and registration\n\nThe captures say customers cannot dispute iDEAL | Wero payments with their bank and should contact the merchant with concerns. Full and partial refunds are supported. A payment can be refunded up to **180 days after the original payment**; a refund can remain `pending` for **up to seven days**, and is considered successful after seven days only **if no failure signal is received**. Immediate payment outcome notification is distinct from refund finality and from settlement.\n\nFor website registration, a Netherlands-based business must clearly show its **KVK Chamber of Commerce company registration number**; a business based elsewhere must display its equivalent local official registration number. For Connect, the connected account's name must map to its **actual business**, not the platform, because customers see that name during the payment flow.\n\n## November 7, 2026 eligibility category addition\n\nThe November capture adds a list **in addition to** Stripe's general prohibited and restricted business categories. It says the following are **prohibited or restricted** from using iDEAL | Wero: adult content, entertainment and sex-related products or services; cannabis businesses except cannabidiol (CBD); NFTs; payment facilitators processing for sub-merchants; peer-to-peer money transfers; contracts for difference; weapons and firearms; donation-based crowdfunding; creator economy and live-streaming businesses; open-loop gaming; traders in precious metals or minerals; and businesses whose activities are prohibited by applicable law or regulation, with examples including terrorist financing, human trafficking, illegal narcotics dealing, and shell banks (new raw lines 165-180). The page groups these under one combined label; it does **not** classify each listed category individually as prohibited versus restricted or establish any particular merchant's eligibility. The older full capture ends after its Connect section and has no such list (old raw lines 153-159).\n\n## Related\n\n- [[stripe]] \u2014 company context.\n- [[stripe-ideal]] \u2014 iDEAL | Wero concept and connected source routes.\n- [[stripe-sepa-debit]] \u2014 SEPA Direct Debit used for recurring payments.\n\n## Raw Sources\n\n- [[raw/stripe-payments-ideal-2026-11-07|November 7, 2026 iDEAL | Wero overview]] \u2014 full 180-line page, including the new eligibility category section.\n- [[raw/stripe-ideal-2025|May 3, 2026 iDEAL | Wero overview]] \u2014 prior 159-line page; MP4 payment-flow demonstration remains an external URL.\n",
+      "quotes": [
+        {
+          "text": "Rebrand your integration in the first quarter of 2026 to iDEAL | Wero.",
+          "location": "raw/stripe-payments-ideal-2026-11-07.md:15"
+        },
+        {
+          "text": "Manual capture support",
+          "location": "raw/stripe-payments-ideal-2026-11-07.md:60"
+        },
+        {
+          "text": "Go to the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods) and enable iDEAL.",
+          "location": "raw/stripe-payments-ideal-2026-11-07.md:128"
+        },
+        {
+          "text": "Refunds can remain in a pending state for up to 7 days.",
+          "location": "raw/stripe-payments-ideal-2026-11-07.md:153"
+        },
+        {
+          "text": "the following categories are prohibited or restricted from using iDEAL | Wero:",
+          "location": "raw/stripe-payments-ideal-2026-11-07.md:167"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "s03-ideal-migration-dated",
+            "target_path": "wiki/concepts/stripe-ideal.md",
+            "update_kind": "durable_fact",
+            "anchor": "> **Migration in progress**: Wero acquired iDEAL. Rebrand to \"iDEAL | Wero\" by Q1 2026; fully switch to Wero API in 2026\u20132027. See also [[stripe-wero]] \u2014 Wero as a standalone German payment method (separate from iDEAL|Wero).",
+            "proposed_markdown": "> **Capture-dated migration notice**: The May 3 and November 7, 2026 iDEAL overviews both say Wero acquired iDEAL, instruct rebranding to \"iDEAL | Wero\" in Q1 2026, and direct a switch to Wero during 2026\u20132027. Q1 was already past by the November capture; these pages do not establish completion for a merchant or a specific API replacement. See [[source-stripe-ideal]] and [[stripe-wero]] for the separate Wero route.",
+            "quote_indexes": [
+              0
+            ],
+            "warnings": [
+              "The existing 'fully switch to Wero API' is more specific than new raw lines 11-18 and old raw lines 8-15; those say switch to Wero and repeat a Q1 2026 timetable, without an API replacement conclusion."
+            ]
+          },
+          {
+            "update_id": "s03-ideal-no-manual-capture",
+            "target_path": "wiki/concepts/stripe-ideal.md",
+            "update_kind": "durable_fact",
+            "anchor": "- **Refunds**: 180 days; up to 7 days pending; after 7 days without failure \u2192 considered successful",
+            "proposed_markdown": "- **Refunds**: 180 days; up to 7 days pending; after 7 days without failure \u2192 considered successful\n- **Manual capture**: No (both May 3 and November 7 overviews).",
+            "quote_indexes": [
+              1
+            ],
+            "warnings": [
+              "Append only this explicit limitation; new raw lines 56-66 and old raw lines 53-63 both say manual capture support No."
+            ]
+          },
+          {
+            "update_id": "s03-ideal-eligibility-categories",
+            "target_path": "wiki/concepts/stripe-ideal.md",
+            "update_kind": "durable_fact",
+            "anchor": "- **Connect**: Connected account name must match actual business, not platform \u2014 required for regulatory compliance and customer trust",
+            "proposed_markdown": "- **Connect**: Connected account name must match actual business, not platform \u2014 required for regulatory compliance and customer trust\n- **Business categories (November 7, 2026 capture)**: [[source-stripe-ideal]] adds a list described collectively as **prohibited or restricted** for iDEAL | Wero, including adult content, cannabis except CBD, NFTs, submerchant payment facilitators, P2P transfers, CFDs, weapons, donation crowdfunding, creator/live-streaming, open-loop gaming, and precious metals/minerals. It does not assign a separate prohibition grade to each category or establish a merchant's eligibility.",
+            "quote_indexes": [
+              4
+            ],
+            "warnings": [
+              "The new capture groups the entire list as prohibited or restricted (new raw lines 165-180); do not grade individual categories or infer a merchant-specific compliance outcome. Old raw ends at line 159 without this section."
+            ]
+          },
+          {
+            "update_id": "s03-ideal-reciprocal-source",
+            "target_path": "wiki/concepts/stripe-ideal.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-ideal]] \u2014 primary source: properties, migration notice, disputes, refunds, KVK requirement, Connect rules",
+            "proposed_markdown": "- [[source-stripe-ideal]] \u2014 May/November 2026 overviews: properties, dated Wero migration notice, Dashboard enablement, no manual capture, disputes, refunds, KVK/Connect rules, and November prohibited-or-restricted categories",
+            "quote_indexes": [
+              0,
+              1,
+              2,
+              4
+            ],
+            "warnings": [
+              "Update the existing source-list description only; preserve other iDEAL source routes."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-ideal-2026-11-07.md",
+      "raw_sha256": "f0c13515a367dacff7819e65d4cdfea4b5c5134c5a267f11fa6daacd538870bd",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-ideal-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 180
+      }
+    ],
+    "raw/stripe-ideal-2025.md": [
+      {
+        "start": 1,
+        "end": 85
+      },
+      {
+        "start": 86,
+        "end": 159
+      }
+    ],
+    "wiki/sources/source-stripe-ideal.md": [
+      {
+        "start": 1,
+        "end": 27
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/c5512c02546798e7259bfd20/content.diff": [
+      {
+        "start": 1,
+        "end": 86
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-ideal/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 176
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 279,
+        "end": 282
+      },
+      {
+        "start": 754,
+        "end": 754
+      }
+    ],
+    "wiki/concepts/stripe-ideal.md": [
+      {
+        "start": 1,
+        "end": 47
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "Rebrand your integration in the first quarter of 2026 to iDEAL | Wero.",
+      "location": "raw/stripe-ideal-2025.md:12"
+    },
+    {
+      "text": "Manual capture support",
+      "location": "raw/stripe-ideal-2025.md:57"
+    },
+    {
+      "text": "Refunds can remain in a pending state for up to 7 days.",
+      "location": "raw/stripe-ideal-2025.md:151"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/ideal, the complete November capture documents iDEAL | Wero for Netherlands customers paying EUR with a customer-initiated bank redirect, second-factor authentication and immediate payment outcome notification. New raw lines 20-120 and old raw lines 17-117 agree on 40 merchant account locations, recurring through SEPA Direct Debit, Connect/Checkout/Payment Links/Subscriptions/Invoicing/Elements support, no manual capture and no bank disputes. For front-end products, Dashboard iDEAL enablement precedes Stripe's relevant-method display (new raw lines 126-131; old raw lines 124-129); display does not prove buyer authentication or payment. Refund initiation is limited to 180 days; pending can last seven days before success is considered absent a failure signal. Website KVK or equivalent registration display and the connected account's actual-business name are separate requirements. source-stripe-ideal.md retains most baseline facts but omits manual capture, Dashboard enablement and the November category section, and its migration wording needs dating.",
+    "Q2": "At https://docs.stripe.com/payments/ideal, the substantive November addition is a combined prohibited-or-restricted business-category list (new raw lines 165-180), absent when the old raw ends at lines 153-159. It does not classify each category individually or prove any merchant's eligibility. The Q1 2026 iDEAL | Wero rebrand and 2026-2027 Wero switch notice appears in both old raw lines 8-15 and new raw lines 9-18; November repetition does not make Q1 a future deadline, prove completion, or establish replacement of a Wero API endpoint. source-stripe-ideal.md should retain the stable Dutch/EUR redirect, SEPA recurring, seven-day conditional refund and website/Connect qualifications while dating the notice. The Elements quickstart link and headings changed as navigation or presentation. Product support and Dashboard display do not establish a specific client/server SDK, successful charge, settlement or later SEPA payment."
+  }
+}

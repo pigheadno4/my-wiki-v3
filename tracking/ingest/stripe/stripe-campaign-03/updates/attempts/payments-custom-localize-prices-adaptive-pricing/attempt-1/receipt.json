@@ -1,0 +1,236 @@
+{
+  "job_id": "payments-custom-localize-prices-adaptive-pricing",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-adaptive-pricing-elements.md": {
+      "job_id": "payments-custom-localize-prices-adaptive-pricing",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Adaptive Pricing \u2014 Elements Integration Guide\"\ntype: source\ndate_ingested: 2026-04-21\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/payments/custom/localize-prices/adaptive-pricing\nraw_files:\n  - \"stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md\"\n  - \"stripe-adaptive-pricing-elements-2025.md\"\ntags: [stripe, adaptive-pricing, checkout-sessions, currency-selector, localization, elements, local-payment-methods]\n---\n\n## Summary\n\n[[stripe]]'s April and November 2026 guides describe Adaptive Pricing for Checkout Sessions with Elements: Stripe chooses a relevant presentment currency, calculates a localized price, and handles conversion. The November guide says Stripe uses machine learning; April said it inferred currency from public IP. The wording change does not establish whether IP can still be an input. This is a Checkout Sessions API path, not a Payment Intents API integration. The guide says the feature reaches customers in more than 150 countries; that is not account-specific eligibility. See [[stripe-adaptive-pricing]] and [[stripe-currency-selector-element]].\n\n## Enablement and price display\n\n- The November guide separates **client readiness** (`adaptivePricing: { allowed: true }` in `stripe.initCheckoutElementsSdk` or `CheckoutElementsProvider` options) from **Checkout Session enablement** (`adaptive_pricing.enabled` per Session or Adaptive Pricing settings in the Dashboard). Both are required for the eligible Elements flow. The integration or price currency must be one of the merchant's settlement currencies; on a platform it must be a settlement currency of the merchant of record. Dashboard enablement alone, a client flag alone, or a successfully created Session does not establish local-currency presentment.\n- The guide says merchants using Adaptive Pricing with Elements **must render** the Currency Selector Element, and separately says they are responsible for applicable price-localization laws. In HTML/JS, create and mount it with `checkout.createCurrencySelectorElement()`; in React mount `CurrencySelectorElement` within `CheckoutElementsProvider`. If `currencyOptions` is empty, a mounted selector displays nothing. The November troubleshooting checklist says to check client readiness, merchant-of-record settlement eligibility, cross-border customer status, and the supported currency pair. Its checklist calls `adaptivePricing.allowed` a Checkout Session field, while its explicit code and configuration sections put that camel-case property in client options and use `adaptive_pricing.enabled` for the Session. Treat the checklist wording as an internal documentation inconsistency, not a third verified Session field.\n- Keep line items, shipping, discounts, tax and totals formatted consistently in the selected currency. The Elements Session can contain localized formatted values, including `session.total.total.amount`; HTML/JS reads them with `checkout.loadActions()` and `actions.getSession()`. The November React example uses `useCheckoutElements()`; April used `useCheckout()`. These are capture-specific examples, not proof the old hook was deprecated or broken.\n- For one-time payments, the November guide says the selector shows local and integration amounts. For subscriptions it does not show those amounts, so display the total elsewhere on the page. Its placement guidance favors the selector near the Payment Element or total, and above Express Checkout when used. Disabling Adaptive Pricing does not affect already-converted Sessions or active subscriptions already paid in local currency, according to the November guide.\n\n## Eligibility, local methods, and limits\n\n- The **April 2026 capture** said Adaptive Pricing was unsupported for Indian businesses. The **November 2026 capture** instead says it supports only Indian businesses that accept international payments. This is a substantive documentary change; it does not verify a particular Indian merchant's permission, settlement currency, or currency pair.\n- The November guide lists **26** local-currency payment methods, versus 20 in April: Alipay, Amazon Pay, Bacs Debit, Bancontact, Bizum, BLIK, EPS, iDEAL, Link, P24, Pix, South Korean cards, MB WAY, Naver Pay, Kakao Pay, Pay by Bank, PAYCO, PayPal, Revolut Pay, Samsung Pay, Satispay, SEPA Debit, TWINT, WeChat Pay, Klarna (EU+UK only), and UPI. Alipay, Bacs Debit, Bizum, Pay by Bank, Satispay and SEPA Debit are the six added names. This is the page's list, not a guarantee of every method for every merchant or customer. For **cross-border subscriptions**, both captures limit Adaptive Pricing to cards, Link, Apple Pay and Google Pay.\n- The November restriction section excludes Elements with the Payment Intents API and Checkout Sessions with `capture_method: manual`; it also skips conversion for a customer's local currency already provided in a Price's `currency_options`, while other currencies may still convert. Unsupported Sessions show the original price currency. The April guide additionally excluded custom amounts; November omits that bullet. Preserve the custom-amount exclusion as an April-only statement with unresolved November applicability, not evidence of new support.\n- In the November guide, Stripe says it uses a 24-hour guaranteed rate and lists customer-paid conversion fees of 2\u20134% embedded in the presented exchange rate, with no direct additional merchant fee. Choosing the integration currency avoids that Adaptive Pricing fee, though bank exchange fees may apply. It says the merchant refunds in integration currency and the customer receives their original paid currency at the original exchange rate. These are dated guide statements, not a quote for a particular transaction.\n\n## Session representation conflict\n\nThe November price-display section says the **Elements Session** can hold localized amounts while the **API Checkout Session** remains in integration currency with customer presentment under `presentment_details` (new raw line 38). Its testing section instead says, when local currency is possible, the **Checkout Session** object's `currency`, `payment_method_types`, and `amount_total` reflect the local currency and price (new raw line 203). The April capture has the same tension at old raw lines 39 and 180. These passages are not reconciled in the captures. Inspect the actual object and context before relying on either as an unconditional rule; a localized Elements Session and an API Checkout Session are different representations.\n\n## Testing\n\nThe guide offers the Stripe.js testing assistant and a `customer_email` suffix `+location_XX` (for example, `test+location_FR@example.com`) on a Checkout Session with `ui_mode=elements` to simulate a customer location. April's example used the Node SDK; November's uses curl. A simulated location or changed Session field in a test is not proof of a merchant's live eligibility, payment-method availability, exchange quote, or successful payment.\n\n## Related\n\n- [[stripe-adaptive-pricing]] \u2014 broader Adaptive Pricing concept and dated feature bounds.\n- [[stripe-currency-selector-element]] \u2014 selector UI and client/Session configuration distinction.\n- [[source-stripe-adaptive-pricing]] \u2014 separately captured Adaptive Pricing source; do not use it to erase the dated contradictions on this Elements path.\n\n## Raw Sources\n\n- [[raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07|stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07]] \u2014 November 2026 full Checkout Sessions/Elements guide.\n- [[raw/stripe-adaptive-pricing-elements-2025|stripe-adaptive-pricing-elements-2025]] \u2014 April 2026 full guide; preserves prior India, hook, IP, testing and custom-amount wording.\n",
+      "quotes": [
+        {
+          "text": "Stripe uses machine learning to determine the most relevant presentment currency",
+          "location": "raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md:11"
+        },
+        {
+          "text": "You must configure this client-side setting and also enable Adaptive Pricing in the Checkout Session for an [eligible currency](https://docs.stripe.com/payments/custom/localize-prices/adaptive-pricing.md#restrictions).",
+          "location": "raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md:134"
+        },
+        {
+          "text": "If `currencyOptions` is empty, verify that the transaction meets all of the following criteria:",
+          "location": "raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md:110"
+        },
+        {
+          "text": "Adaptive Pricing only supports Indian businesses that [accept international payments](https://docs.stripe.com/india-accept-international-payments.md).",
+          "location": "raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md:232"
+        },
+        {
+          "text": "For cross-border subscriptions, Adaptive Pricing supports only card payments, Link, Apple Pay, and Google Pay.",
+          "location": "raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md:197"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "adaptive_pricing_compliance_scope",
+            "target_path": "wiki/concepts/stripe-adaptive-pricing.md",
+            "update_kind": "durable_fact",
+            "anchor": "ML-based feature that automatically presents prices in customers' local currencies at checkout. Covers 150+ countries. Stripe handles currency selection, conversion, exchange rate guarantees, and compliance. Zero additional cost to merchants.",
+            "proposed_markdown": "In the 2026-11-07 Checkout Sessions/Elements guide, Stripe says Adaptive Pricing uses machine learning to select a relevant local presentment currency, calculates converted prices and offers an exchange rate guaranteed for 24 hours across more than 150 customer markets. Stripe says the feature can facilitate compliance when presenting supported currencies; merchants remain responsible for applicable price-localization laws, and Stripe requires the Currency Selector Element for this Elements flow. The guide lists no direct additional merchant Adaptive Pricing fee, with a 2\u20134% customer conversion fee embedded in the presented rate. These are dated guide claims, not a guarantee of a merchant's eligibility or legal compliance. See [[source-stripe-adaptive-pricing-elements]].",
+            "quote_indexes": [
+              0
+            ],
+            "warnings": [
+              "New raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md:11-18,74-78,419-424 says facilitate compliance and separately assigns price-localization-law responsibility to the merchant; old raw/stripe-adaptive-pricing-elements-2025.md:12-17,73-75 has the same distinction."
+            ]
+          },
+          {
+            "update_id": "adaptive_pricing_methods_26",
+            "target_path": "wiki/concepts/stripe-adaptive-pricing.md",
+            "update_kind": "durable_fact",
+            "anchor": "Adaptive Pricing unlocks 20 payment methods that require local currency presentation:\n\niDEAL \u00b7 Bancontact \u00b7 BLIK \u00b7 EPS \u00b7 P24 \u00b7 Pix \u00b7 Amazon Pay \u00b7 Link \u00b7 South Korean cards \u00b7 MB WAY \u00b7 Naver Pay \u00b7 Kakao Pay \u00b7 PAYCO \u00b7 PayPal \u00b7 Revolut Pay \u00b7 Samsung Pay \u00b7 TWINT \u00b7 WeChat Pay \u00b7 Klarna (EU+UK) \u00b7 UPI",
+            "proposed_markdown": "The 2026-11-07 Checkout Sessions/Elements guide lists 26 methods that require local-currency presentment, six more than its 2026-04-21 list: Alipay \u00b7 Amazon Pay \u00b7 Bacs Debit \u00b7 Bancontact \u00b7 Bizum \u00b7 BLIK \u00b7 EPS \u00b7 iDEAL \u00b7 Link \u00b7 P24 \u00b7 Pix \u00b7 South Korean cards \u00b7 MB WAY \u00b7 Naver Pay \u00b7 Kakao Pay \u00b7 Pay by Bank \u00b7 PAYCO \u00b7 PayPal \u00b7 Revolut Pay \u00b7 Samsung Pay \u00b7 Satispay \u00b7 SEPA Debit \u00b7 TWINT \u00b7 WeChat Pay \u00b7 Klarna (EU+UK only) \u00b7 UPI. This is a guide list, not a guarantee of availability for each merchant, market or customer. See [[source-stripe-adaptive-pricing-elements]].",
+            "quote_indexes": [
+              4
+            ],
+            "warnings": [
+              "New raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md:166-197 lists 26 names; old raw/stripe-adaptive-pricing-elements-2025.md:149-174 lists 20. Cross-border subscriptions remain card, Link, Apple Pay and Google Pay at new line 197."
+            ]
+          },
+          {
+            "update_id": "adaptive_pricing_flow_currency_warning",
+            "target_path": "wiki/concepts/stripe-adaptive-pricing.md",
+            "update_kind": "durable_fact",
+            "anchor": "5. After payment: session/PaymentIntent objects reflect integration currency; `presentment_details` hash shows what customer actually paid",
+            "proposed_markdown": "5. After payment: the November Elements guide distinguishes localized values in the client Elements Session from an API Checkout Session described as retaining integration currency with customer context under `presentment_details`; its testing paragraph conflicts by saying API Checkout Session `currency`, `payment_method_types` and `amount_total` reflect the local currency. Treat the API-object result as unresolved in these captures; see [[source-stripe-adaptive-pricing-elements]].",
+            "quote_indexes": [
+              0
+            ],
+            "warnings": [
+              "Internal source conflict: new raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md:38 versus 203, also old raw/stripe-adaptive-pricing-elements-2025.md:39 versus 180. Do not resolve by inference."
+            ]
+          },
+          {
+            "update_id": "adaptive_pricing_reporting_currency_warning",
+            "target_path": "wiki/concepts/stripe-adaptive-pricing.md",
+            "update_kind": "durable_fact",
+            "anchor": "Session/PaymentIntent `amount_total` and `currency` always remain in integration currency.",
+            "proposed_markdown": "The April and November Elements guides say in their display sections that the API Checkout Session remains in integration currency with localized customer context under `presentment_details`, while their testing sections say the Checkout Session's `currency`, `payment_method_types` and `amount_total` reflect local currency when local presentment is possible (April raw lines 39, 180; November raw lines 38, 203). The client Elements Session can contain localized amounts. These API Checkout Session statements conflict in the captures; do not assert an unconditional currency or amount value. See [[source-stripe-adaptive-pricing-elements]].",
+            "quote_indexes": [
+              0
+            ],
+            "warnings": [
+              "Internal source conflict: new raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md:38,203; old raw/stripe-adaptive-pricing-elements-2025.md:39,180."
+            ]
+          },
+          {
+            "update_id": "adaptive_pricing_eligibility_restrictions",
+            "target_path": "wiki/concepts/stripe-adaptive-pricing.md",
+            "update_kind": "durable_fact",
+            "anchor": "Not supported for:\n- Elements + Payment Intents API integrations\n- Indian businesses\n- `capture_method: 'manual'`\n- `custom_unit_amount` (pay-what-you-want)\n- When local currency already in price `currency_options` (that currency skipped, others still converted)\n- Price currency must be a settlement currency",
+            "proposed_markdown": "The 2026-11-07 Checkout Sessions/Elements guide excludes Elements + Payment Intents API and Checkout Sessions with `capture_method: 'manual'`. It skips conversion only for local currencies already defined in Price `currency_options`; other currencies may convert. The integration or price currency must be a settlement currency of the merchant of record, and Indian businesses are supported only if they accept international payments. The 2026-04-21 guide instead said Indian businesses were unsupported and excluded custom amounts; the November restriction list omits custom amounts, so their current applicability is unresolved. These guide conditions do not establish account-specific eligibility. See [[source-stripe-adaptive-pricing-elements]].",
+            "quote_indexes": [
+              3
+            ],
+            "warnings": [
+              "India condition changed: old raw/stripe-adaptive-pricing-elements-2025.md:217 versus new raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md:232. Old custom-amount exclusion at line 227 is omitted from new lines 238-243; omission does not establish support. Merchant-of-record settlement condition new lines 234-236."
+            ]
+          },
+          {
+            "update_id": "adaptive_pricing_elements_reciprocal_route",
+            "target_path": "wiki/concepts/stripe-adaptive-pricing.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-adaptive-pricing-elements]] \u2014 Elements integration guide: adaptivePricing.allowed flag, CurrencySelectorElement React component, currencyOptions guard, +location_XX testing",
+            "proposed_markdown": "- [[source-stripe-adaptive-pricing-elements]] \u2014 April and November 2026 Checkout Sessions/Elements guide: separate client `adaptivePricing.allowed` and Session/Dashboard enablement, 26 named local methods, conditional India support, selector troubleshooting, unresolved API Checkout Session currency wording, and dated April-only custom-amount restriction.",
+            "quote_indexes": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Route to own mapped source for the 2026-11-07 full guide; new raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md:108-115,132-197,228-243."
+            ]
+          },
+          {
+            "update_id": "adaptive_pricing_selector_client_session_fix",
+            "target_path": "wiki/concepts/stripe-currency-selector-element.md",
+            "update_kind": "durable_fact",
+            "anchor": "To display currency options on this Checkout Sessions Elements path, the November 2026 guide says to enable Adaptive Pricing, set `adaptivePricing.allowed` to `true` **in the Checkout Session**, and use an integration or price currency eligible for settlement by the merchant of record. The April capture already restricted the selector to Checkout Sessions; these new display prerequisites do not imply PaymentIntents support or account-specific eligibility. See [[source-stripe-currency-selector-element]] (https://docs.stripe.com/elements/currency-selector-element; April `raw/stripe-currency-selector-element-2025.md:8-10`; November `raw/stripe-elements-currency-selector-element-2026-11-07.md:11-21`).",
+            "proposed_markdown": "To display currency options on this Checkout Sessions Elements path, the November Adaptive Pricing configuration section puts client readiness at `adaptivePricing: { allowed: true }` in `initCheckoutElementsSdk` or `CheckoutElementsProvider` options, and uses Dashboard settings or per-Session `adaptive_pricing.enabled` to enable Adaptive Pricing. The integration or price currency must be eligible for settlement by the merchant of record, the customer cross-border, and the currency pair supported. Its troubleshooting bullet says the Checkout Session includes camel-case `adaptivePricing.allowed`, which conflicts with the explicit client versus Session configuration; treat that bullet's field placement as unresolved rather than a separate verified Session recipe. These conditions do not imply Payment Intents support or account-specific eligibility. See [[source-stripe-currency-selector-element]] for the selector guide and [[source-stripe-adaptive-pricing-elements]] for the November configuration (`raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md:108-115,132-164`).",
+            "quote_indexes": [
+              1,
+              2
+            ],
+            "warnings": [
+              "New raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md:112 checklist wording conflicts with client init/provider code at lines 132-161 and per-Session adaptive_pricing.enabled at line 164; preserve distinction and uncertainty."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md",
+      "raw_sha256": "2df8d3f2829f5371bf9bee4af500714992cb9940bcd5997e368de488385c2eb2",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 440
+      }
+    ],
+    "raw/stripe-adaptive-pricing-elements-2025.md": [
+      {
+        "start": 1,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 426
+      }
+    ],
+    "wiki/sources/source-stripe-adaptive-pricing-elements.md": [
+      {
+        "start": 1,
+        "end": 97
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/908bc0067b7896029b220886/content.diff": [
+      {
+        "start": 1,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 278
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-custom-localize-prices-adaptive-pricing/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 194
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 85,
+        "end": 99
+      }
+    ],
+    "wiki/concepts/stripe-adaptive-pricing.md": [
+      {
+        "start": 1,
+        "end": 79
+      }
+    ],
+    "wiki/concepts/stripe-currency-selector-element.md": [
+      {
+        "start": 1,
+        "end": 67
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "Stripe infers the presentment currency from the customer\u2019s public IP address",
+      "location": "raw/stripe-adaptive-pricing-elements-2025.md:10"
+    },
+    {
+      "text": "Adaptive Pricing isn\u2019t supported for Indian businesses.",
+      "location": "raw/stripe-adaptive-pricing-elements-2025.md:217"
+    },
+    {
+      "text": "- Use [custom amounts](https://docs.stripe.com/payments/checkout/pay-what-you-want.md).",
+      "location": "raw/stripe-adaptive-pricing-elements-2025.md:227"
+    },
+    {
+      "text": "The [useCheckout](https://docs.stripe.com/js/react_stripe_js/checkout/use_checkout) hook",
+      "location": "raw/stripe-adaptive-pricing-elements-2025.md:55"
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/custom/localize-prices/adaptive-pricing, the complete raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md at new raw lines 1-440 documents Adaptive Pricing through Checkout Sessions API with Elements, not Payment Intents API. Stripe selects a presentment currency, converts prices, and supplies formatted client Elements Session values. Client adaptivePricing.allowed readiness, Dashboard or Checkout Session adaptive_pricing.enabled activation, selector rendering, eligible merchant-of-record settlement currency, cross-border customer and supported pair are separate prerequisites. The matched raw/stripe-adaptive-pricing-elements-2025.md at old raw lines 1-426 said Indian businesses were unsupported, listed 20 local methods, used an IP-inference description and a useCheckout React example. November makes Indian support conditional on accepting international payments, lists 26 methods, and uses useCheckoutElements. The mapped wiki/sources/source-stripe-adaptive-pricing-elements.md still had a blanket India exclusion, 20-method list, and incomplete activation wording; the source and authorized concepts receive dated corrections. Neither capture proves account-specific eligibility or payment success.",
+    "Q2": "For https://docs.stripe.com/payments/custom/localize-prices/adaptive-pricing, substantive documentary changes in raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md at new raw lines 11,108-115,132-197,228-243 include ML currency-selection wording, separate client and Session enablement, four empty-currencyOptions checks, 26 rather than 20 listed methods, and conditional Indian-business support. The React hook changes from useCheckout in old raw lines 53-69 of raw/stripe-adaptive-pricing-elements-2025.md to useCheckoutElements in November; this does not prove deprecation. The earlier custom-amount exclusion at old raw line 227 is omitted in November, so wiki/sources/source-stripe-adaptive-pricing-elements.md retains it only as dated history with unresolved current status. The November guide itself conflicts: new raw line 38 says API Checkout Session stays in integration currency with presentment_details, while line 203 says its currency and amount_total reflect local values; April had the same tension. A second inconsistency places camel-case adaptivePricing.allowed on a Checkout Session in the checklist but on the client in code, with snake-case adaptive_pricing.enabled controlling the Session. The source and concepts expose both rather than infer a resolved runtime rule. Fees, refund rate, 24-hour guarantee, cross-border subscription method limit, and +location_XX test remain capture-scoped; simulated location, rendering, or Session creation is not a completed charge."
+  }
+}

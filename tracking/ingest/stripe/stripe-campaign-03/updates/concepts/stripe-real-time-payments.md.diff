@@ -1,0 +1,34 @@
+--- wiki/concepts/stripe-real-time-payments.md
++++ tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-real-time-payments.md
+@@ -186,17 +186,17 @@
+ 
+ ## Bizum Details
+ 
+-**Real-time payment** — Spain customers only, EUR only. **No Connect**. **No manual capture**. Phone-number authentication via buyer's bank app.
++**Real-time payment** — Spain customers only, EUR only, no recurring or manual capture. The customer enters a Bizum-registered phone number and approves in the bank app. **Connect changed by capture**: the 2026-05-06 overview listed No; the 2026-11-07 overview lists Yes and requires `bizum_payments` active on the platform and each accepting connected account. The capability can remain `pending` until onboarding verification, so support does not prove account activation. Direct charges use the connected-account descriptor; destination and separate charges/transfers use the platform's unless `on_behalf_of` selects the connected account. See [[source-stripe-bizum]].
+ 
+ **Transaction limits**: €0.50–€5,000. 28 merchant countries.
+ 
+ **Onboarding**: must provide tax/national ID and set `business_type` before capability activates.
+ 
+-**Disputes**: 120-day customer window; **40-day** merchant evidence (longest of any method reviewed); 90-day decision.
+-
+-**Refunds**: **395-day** window (longest of any payment method reviewed).
+-
+-**Integration**: four paths (Checkout, Checkout Sessions API, PaymentIntents API, Direct API). Direct API requires collecting the customer's Bizum-registered phone number (`billing_details[phone]`); no redirect needed — Stripe.js polls for result. Mobile supported via iOS (StripePaymentsUI) and Android (Compose) SDKs.
++**Disputes**: 120-day customer initiation window; **40-calendar-day** merchant evidence deadline; Bizum decision within 90 calendar days. Submission does not resolve the dispute.
++
++**Refunds**: Full and partial refunds up to **395 days** after purchase; asynchronous, up to five minutes, with final `refund.updated` or `refund.failed` status. Neither raw overview proves a comparison against every reviewed payment method.
++
++**Integration (2026-05-06 guide)**: four web variants—hosted Checkout, Elements Checkout Sessions API, Elements Payment Intents API, and Direct API. In the dated Direct API path, collect the customer's Bizum-registered phone number as `billing_details[phone]`; Stripe.js polls by default after confirmation until the PaymentIntent is `succeeded` or failed at `requires_payment_method`. This does not guarantee that no redirect occurs; the old Direct API text mentions redirect handling, and the Elements Payment Intents variant uses a `return_url` with possible intermediate redirect. The old guide also contains iOS StripePaymentsUI/webview and Android Kotlin `PaymentLauncher` examples. The 2026-11-07 canonical capture only indexes the four web variants and does not revalidate mobile support or SDK versions. See [[source-stripe-bizum-accept-payment]].
+ 
+ ## Sources
+ 
+@@ -218,5 +218,5 @@
+ - [[source-stripe-pay-by-bank-accept-payment]] — Pay by Bank integration: Checkout + Elements paths, statement_descriptor required, DE/GB only for Checkout
+ - [[source-stripe-paynow]] — PayNow: SG-only QR code, 1.3% pricing, T+1 payout, 90-day refunds, no statement descriptor, Terminal support
+ - [[source-stripe-paynow-accept-payment]] — PayNow integration: Checkout + Direct API, confirmPayNowPayment(), inline QR (no redirect)
+-- [[source-stripe-bizum]] — Bizum: Spain-only phone auth, 395-day refunds, 40-day evidence window, onboarding requirements
+-- [[source-stripe-bizum-accept-payment]] — Bizum integration guide: 4 paths, Direct API phone-number collection, mobile SDK support, test data
++- [[source-stripe-bizum]] — Bizum overview, May and November 2026 full captures: Spain customer/EUR scope, identity onboarding, disputes/refunds, and dated Connect No-to-Yes change with platform and connected-account `bizum_payments` capability and charge-type descriptor rules; pending capability is not active acceptance.
++- [[source-stripe-bizum-accept-payment]] — Bizum acceptance: 2026-05-06 detailed Checkout, Elements, Direct API and mobile guide; 2026-11-07 web-variant navigation index only

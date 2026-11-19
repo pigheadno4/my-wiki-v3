@@ -1,0 +1,141 @@
+{
+  "job_id": "payments-eps-accept-a-payment",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-eps-accept-a-payment-2026-11-07.md",
+  "raw_sha256": "29d60c18fe2c97dc898d259bac2e4980b032add5faddaecdab41f360fe0d0231",
+  "prior_raw_path": "raw/stripe-eps-accept-payment-2025.md",
+  "prior_raw_sha256": "ed35769f67800c6a5e94910bcda0106e503017b089ca081e24b7f0d8c9785737",
+  "source_targets": [
+    "wiki/sources/source-stripe-eps-accept-payment.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-eps-accept-payment.md": "1ffeae59c2d8cec68f968e12ba0e9a3e397f88378aba97c5c8d39de624f39178"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-eps-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 18
+      }
+    ],
+    "raw/stripe-eps-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 1623
+      }
+    ],
+    "wiki/sources/source-stripe-eps-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 42
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/f2a7e957d13e1b9a9de47b71/content.diff": [
+      {
+        "start": 1,
+        "end": 1629
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 22
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 268,
+        "end": 278
+      },
+      {
+        "start": 748,
+        "end": 755
+      }
+    ],
+    "wiki/concepts/stripe-eps.md": [
+      {
+        "start": 1,
+        "end": 47
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Learn how to accept EPS, a common payment method in Austria.",
+      "location": "raw/stripe-payments-eps-accept-a-payment-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-eps-accept-a-payment-2026-11-07.md:11"
+    },
+    {
+      "text": "- [Checkout](https://docs.stripe.com/payments/eps/accept-a-payment.md?payment-ui=checkout)",
+      "location": "raw/stripe-payments-eps-accept-a-payment-2026-11-07.md:13"
+    },
+    {
+      "text": "- [Elements](https://docs.stripe.com/payments/eps/accept-a-payment.md?payment-ui=elements)",
+      "location": "raw/stripe-payments-eps-accept-a-payment-2026-11-07.md:14"
+    },
+    {
+      "text": "  - [React Native](https://docs.stripe.com/payments/eps/accept-a-payment.md?payment-ui=mobile&platform=react-native)",
+      "location": "raw/stripe-payments-eps-accept-a-payment-2026-11-07.md:18"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "**Payment mode**: Yes",
+      "location": "raw/stripe-eps-accept-payment-2025.md:38"
+    },
+    {
+      "text": "**Setup mode**: No",
+      "location": "raw/stripe-eps-accept-payment-2025.md:40"
+    },
+    {
+      "text": "You can\u2019t reuse EPS *PaymentMethods* (PaymentMethods represent your customer's payment instruments, used with the Payment Intents or Setup Intents APIs) or save them to customers.",
+      "location": "raw/stripe-eps-accept-payment-2025.md:1544"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "New raw lines 5-18 contain only an EPS purpose sentence and five variant links. Diff lines 3-17 and 1624-1629 show the older body replaced by an index in this root capture; no behavioral removal or renewal of detailed examples is established. Source lines 4-7 and 40-42 currently cite only the May 3, 2026 raw and need separate November index provenance.",
+    "The May guide says EPS is single-use, requires bank authentication/redirect, and must follow EPS terms (old raw lines 26-28). Checkout supports EUR payment mode only, with one-time EUR line items and no setup/subscription mode (old raw lines 30-47); hosted success_url and embedded return_url are distinct (old raw lines 69-112). Source lines 13, 19 summarize core restrictions but omit terms, supported business locations and same-currency one-time line-item conditions.",
+    "Source line 13 says EPS requires customer name in billing details without a UI qualifier. The old mobile variants collect a name (old raw lines 267-306, 472-480, 678-720) and legacy Elements requires accountholder name (old raw lines 979-1003, 1129-1156), but hosted Checkout instructions at old raw lines 49-121 do not impose a manual name-field instruction. Qualify this by path rather than assert all-path requirement.",
+    "The legacy Elements route explicitly says epsBank is no longer available in latest Stripe.js and recommends Payment Element (old raw lines 830-835, 970-973). It also documents an optional server-side manual redirect with requires_action/redirect_to_url (old raw lines 1447-1540). Source lines 35-38 correctly label legacy and single-use but do not surface manual redirect or its pending outcome boundary.",
+    "Old raw lines 332-336, 532-536, 742-746 and 1391-1401 distinguish payment_intent.succeeded event from client callback and test-only requires_action transitions; return_url query parameters at old raw lines 1330-1340 enable status retrieval, not proof of payment. The JSON examples include source/Charge status pending at old raw lines 1343-1388 and 1475-1528, which must not be promoted as a successful live result."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "Retain May 3, 2026 EPS payment-mode, EUR and one-time Checkout conditions, supported business locations, terms, refund/no-dispute claims (old raw lines 26-47, 123-127).",
+    "Retain dated iOS, Android, React Native and legacy Elements implementation examples with server PaymentIntent/client secret separation, manual redirect option, deep links and Stripe.js/SDK version context (old raw lines 231-336, 430-536, 636-746, 768-835, 953-973, 1129-1156, 1447-1544).",
+    "Keep the May test-only success/failure status transitions, 27-bank value table and single-use PaymentMethod limit as dated evidence (old raw lines 1391-1395, 1542-1544, 1593-1623)."
+  ],
+  "conflicts": [
+    "Source line 13 implies a universal customer-name billing requirement; old raw lines 49-121 give no such manual Checkout instruction, while old raw lines 267-306, 472-480, 678-720 and 979-1003 explicitly require collecting it in native/legacy Elements paths. Scope the summary by UI; wiki/concepts/stripe-eps.md lines 34-40 already does so."
+  ],
+  "unresolved_questions": [
+    "The five November variant URLs at new raw lines 13-18 are links only in the pinned packet; November details, current SDK support, latest bank list and whether the linked Elements variant remains legacy are unverified."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-eps.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-eps-accept-payment.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add the November root-index raw reference while retaining the May detailed guide and its date (source lines 4-7, 40-42; new raw lines 9-18).",
+        "Qualify source line 13's name requirement to native and legacy Elements input; Checkout's old raw lines 49-121 do not state a manual name-field requirement.",
+        "Preserve Checkout EUR/one-time conditions and terms (old raw lines 26-47), legacy-only epsBank warning (old raw lines 830-835, 970-973), and event-versus-browser-return boundary (old raw lines 1330-1401)."
+      ],
+      "conflicts": [
+        "Unqualified source line 13 name requirement conflates UI-specific mobile/legacy collection with hosted Checkout."
+      ],
+      "reason": "The new raw changes navigation only, but a new raw citation and a path-specific baseline accuracy correction are needed; old detailed claims remain dated rather than superseded."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/eps/accept-a-payment, the complete November capture (new raw lines 5-18) says EPS is an Austrian payment method and links Checkout, Elements, iOS, Android and React Native variants; it establishes no current API prerequisites, state transitions or successful outcome. The May guide (old raw lines 26-47, 49-112, 231-248, 1129-1156, 1391-1401, 1542-1544) documents EPS terms, EUR and one-time Checkout payment mode, a server Checkout Session or PaymentIntent, client secret and bank redirect authentication, success/failure event boundaries, and single-use PaymentMethods. source-stripe-eps-accept-payment.md captures the routes and legacy caveat but its line 13 overgeneralizes manually collected billing name across hosted Checkout.",
+    "Q2": "At https://docs.stripe.com/payments/eps/accept-a-payment, the captured change is navigation/presentation: the May full guide (old raw lines 8-1623) became a five-variant root index (new raw lines 9-18), with no substantive behavioral replacement proven. source-stripe-eps-accept-payment.md should add November provenance while retaining May-dated EUR, Checkout line-item, legacy Elements, mobile SDK, optional manual redirect and 27-bank claims. Its name-field statement at source line 13 needs a UI qualification because old raw lines 49-121 do not require manual hosted Checkout collection while old raw lines 267-306 and 979-1003 do for native/legacy Elements. Account v2 preview wording, Stripe.js dahlia, SDK examples and test states remain dated; PaymentIntent creation, bank return, or a pending sample Charge is not payment success, which the older guide ties to payment_intent.succeeded (old raw lines 1330-1401)."
+  }
+}

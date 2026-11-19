@@ -1,0 +1,254 @@
+{
+  "job_id": "payments-bacs-debit",
+  "attempt": 2,
+  "source_results": {
+    "wiki/sources/source-stripe-bacs-direct-debit.md": {
+      "job_id": "payments-bacs-debit",
+      "attempt": 2,
+      "source_page": "---\ntitle: \"Stripe: Bacs Direct Debit Payments\"\ntype: source\ndate_ingested: 2026-05-02\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/bacs-debit\"\nraw_files:\n  - \"stripe-payments-bacs-debit-2026-11-07.md\"\n  - \"stripe-bacs-direct-debit-2025.md\"\ntags: [stripe, bacs, bank-debit, uk, gbp, mandates, disputes, connect, custom-branding]\n---\n\n## Summary\n\n[[stripe]] Bacs Direct Debit is a reusable, delayed GBP debit from a customer's UK bank account, authorized by a Direct Debit Instruction (DDI) mandate. The 2026-11-07 guide lists many supported merchant business locations, including cross-border business-to-GB-customer coverage, while the 2026-05-02 guide described UK business accounts and outside-UK platforms acting for UK connected accounts. Access requires Stripe approval and additional identity verification; neither a supported location nor enabled UI proves a particular merchant is approved. See [[stripe-bacs-direct-debit]].\n\n## Geography, eligibility, and limits\n\nThe November guide lists business locations in the Americas (CA, US), APAC (AU, SG), and multiple EMEA countries, while customer location remains **GB** and presentment currency **GBP**. Its matrix permits merchants and Connect platforms, B2B and B2C, with domestic or cross-border coverage. Stripe may review the account after activation and has prohibited and restricted MCC rows; a restricted MCC may need more account information. The exact location and MCC inventory is at `raw/stripe-payments-bacs-debit-2026-11-07.md:22-80`.\n\n> [!warning] Dated transaction-limit and location change\n> May described UK Stripe business accounts, an outside-UK platform path for UK connected accounts, and **100,000 GBP per transaction**. November lists broader merchant locations and a **default 10,000 GBP per transaction**. The separate **10,000 GBP weekly limit for new users** remains; it can increase with processing, and support can consider higher limits. Do not conflate that weekly limit with the default transaction limit or infer account-specific access.\n\n## Mandate and notification boundaries\n\nA debit needs customer mandate acceptance with sort code, account number, name, email, and full address. The Mandate object records business name, acceptance and Bacs reference; `Mandate.payment_method_details.bacs_debit.reference` is a **mandate-level** identifier, not a transaction descriptor. `mandate.updated` requires inspecting `mandate.status` (usable when active); `payment_method.automatically_updated` reports bank-detail changes. A customer can cancel through the business or bank; cancellation invalidates future debits, so a new mandate and details are needed for later payments.\n\nCheckout collects bank details and mandate acceptance; Payment Element cannot create Bacs SetupIntents, for which the guide gives Checkout setup mode as an alternative. **Custom API mandate collection separately requires Stripe approval** and compliance with the exact prescribed checkbox and form requirements, including advance notice and Direct Debit Guarantee content. A mandate/setup confirmation authorizes future debits; it is not payment success.\n\nBacs requires customer notice when details are collected and confirmed and before each debit. May says Stripe sends both email types by default. November expressly excepts **enterprise accounts with a custom service user number (SUN)** from Stripe's default sending; merchant-sent notices need eligibility and approval. The exception does not remove notification duties or imply every Stripe email is suppressed. Mandate and advance-debit notices are not payment-success receipts.\n\n## Payment processing and outcome\n\nAn existing-mandate payment typically takes four business days to confirm; a new-mandate payment can take seven. T+x is measured from submission, which can differ from creation. With an existing mandate, customer debit is typically T+2, **PaymentIntent success** T+3 at 21:00 UTC, and funds available in the Stripe balance T+4 at 00:00 UTC, with a 20:00 London-time cutoff. With a new mandate: mandate submitted T+0, active and payment submitted T+3, customer debit T+5, and funds available T+7. `Charge.payment_method_details` can provide `expected_debit_date`, an estimate rather than a guarantee. A later bank failure can be reported as a dispute even after Stripe marked payment successful.\n\nUse integration-specific events: PaymentIntents have `payment_intent.processing` then `payment_intent.succeeded` or `payment_intent.payment_failed`; Checkout has `checkout.session.completed` then `checkout.session.async_payment_succeeded` or `checkout.session.async_payment_failed`. `checkout.session.completed` means the customer submitted and authorized the form, **not** that the delayed debit succeeded. A Checkout return page should say processing until the success event. Checkout Session expiration defaults to 24 hours and can be configured from 30 minutes to 24 hours; it is separate from the four-to-seven-business-day processing period. The overview gives no distinct custom-integration authorization timeout. These timelines do not prove a specific debit, funds arrival, or native mobile SDK support.\n\n## Refunds and disputes\n\nSubmit full or partial refunds within **180 days** of the original payment. They usually take 3\u20134 business days. Stripe issues a separate credit outside the Bacs scheme, not a debit reversal; if the original Charge is still processing, the refund waits for success or is canceled on Charge failure. A bank dispute after refund can produce a double loss, so avoid simultaneous refund and bank-dispute credits. `refund.failed` with Refund `status`/`failure_reason` is a webhook failure route, not guaranteed email; `refund.updated` with `status=succeeded` or a retrieved Refund status establishes Stripe's refund outcome. `refund.created` and `charge.refunded` alone do not prove success or bank posting. Stripe says it does not emit `refund.succeeded`.\n\nCustomers have **no fixed time limit** to dispute, but one Bacs payment can be disputed only once. Stripe gives no fixed lag from bank contact to Stripe dispute creation. On creation, `charge.dispute.created` reports the dispute and Stripe deducts amount plus applicable fee; Dashboard and Dispute `reason` show a reported category, not necessarily detailed customer facts. The business cannot submit evidence, counter, or appeal; the bank's decision is final and the fee is not refunded. A customer who agrees to return funds must make a new payment.\n\n## Product, Connect, branding, and retries\n\nThe November matrix lists recurring payments, Billing, Invoicing, Customer Portal, Connect, Checkout Sessions, PaymentIntents, and PaymentIntents with `setup_future_usage`; it excludes SetupIntents and off-session payments, as well as Express Checkout Element, native in-app payments, manual/partial/multi/over-capture, and partial disputes. **Scope tension:** this same page describes recurring mandates, Checkout setup mode, and Subscriptions while its API matrix marks off-session payments and SetupIntents unsupported. Preserve the API/UI distinctions and do not infer that recurring Bacs or the Checkout setup path has been removed, or that Payment Element can create a Bacs SetupIntent.\n\nFor Stripe front-end products, the November guide separately directs merchants to **enable Bacs Direct Debit in Payment methods settings**. An integration that manually lists payment methods can configure Bacs as an accepted method. This settings step is scoped to those front-end products; it does not replace platform enablement for Connect or Stripe approval and identity verification for the account.\n\nThe **November Connect** description permits supported-location platforms to use destination charges with or without `on_behalf_of`, but says to **enable Bacs Direct Debit on the platform before accepting payments**. Without `on_behalf_of`, the platform is settlement merchant; with it, the connected account must be in a supported business location and have `bacs_debit_payments` capability. Platform enablement, connected-account capability, and Stripe's account approval/identity verification are distinct conditions; satisfying one does not prove the others. The **May guide** separately says UK platforms did not need that capability for UK connected-account destination charges, while outside-UK platforms did, and either needed it with `on_behalf_of`. These are dated, differently scoped statements, not a universal present-day exemption.\n\nCustom Branding shows a business name on bank statements, Checkout and customer emails, and costs **50 GBP per active month**. On Connect, `settings.bacs_debit_payments.display_name` enables it; omitting the display name or using `Stripe` retains Stripe branding. May said new mandates showed the name five business days after request. November says activation **typically takes ten business days** and new mandates after activation show the name. A request is not proof of activation. Bacs has no transaction-level statement descriptor.\n\nThe **May** Billing retries section was labeled private preview. The **November** section has no preview label and describes automatic insufficient-funds retries for subscription and/or one-off invoices: at most **two retries within 30 days** of the original attempt, with no debit-failure fee for Stripe-initiated retries. Omission of the old preview label does not prove access for an account. The separate **Pay by Bank Recurring** initial Pay by Bank payment plus Bacs mandate is explicitly **private preview** for Elements/PaymentIntents users; its claimed instant first payment does not change ordinary Bacs confirmation timing.\n\n## Raw Sources\n\n- [[raw/stripe-payments-bacs-debit-2026-11-07|2026-11-07 Bacs overview]] \u2014 full newer guide capture (364 lines).\n- [[raw/stripe-bacs-direct-debit-2025|2026-05-02 Bacs overview]] \u2014 prior full guide capture (218 lines); historical limit, location, Connect, branding and retry claims retained.\n",
+      "quotes": [
+        {
+          "text": "Bacs Direct Debit transactions have a default limit of 10,000 GBP each.",
+          "location": "raw/stripe-payments-bacs-debit-2026-11-07.md:83"
+        },
+        {
+          "text": "You can\u2019t submit evidence or counter a Bacs Direct Debit dispute.",
+          "location": "raw/stripe-payments-bacs-debit-2026-11-07.md:150"
+        },
+        {
+          "text": "Custom API mandate collection requires Stripe approval.",
+          "location": "raw/stripe-payments-bacs-debit-2026-11-07.md:168"
+        },
+        {
+          "text": "The `checkout.session.completed` event confirms that the customer submitted and authorized the Checkout form. It doesn\u2019t mean the asynchronous Bacs payment succeeded.",
+          "location": "raw/stripe-payments-bacs-debit-2026-11-07.md:296"
+        },
+        {
+          "text": "Stripe sends these emails by default, except for enterprise accounts with a custom service user number (SUN).",
+          "location": "raw/stripe-payments-bacs-debit-2026-11-07.md:300"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "bacs-overview-definition",
+            "target_path": "wiki/concepts/stripe-bacs-direct-debit.md",
+            "update_kind": "durable_fact",
+            "anchor": "Bacs Direct Debit lets UK businesses pull funds from customers' UK bank accounts. API enum: `bacs_debit`. Business-initiated, delayed notification, reusable. Disputes are final and uncontestable.",
+            "proposed_markdown": "Bacs Direct Debit lets businesses in the November 2026 supported-location list debit customers' UK bank accounts in GBP under a Direct Debit Instruction mandate. API enum: `bacs_debit`. It is reusable and delayed; disputes are final and cannot be countered or appealed. The May guide described UK Stripe businesses and an outside-UK platform path for UK connected accounts; see [[source-stripe-bacs-direct-debit]] for the dated change.",
+            "quote_indexes": [
+              0,
+              1
+            ],
+            "warnings": [
+              "November raw/stripe-payments-bacs-debit-2026-11-07.md:9-31,65-85,136-154; May raw/stripe-bacs-direct-debit-2025.md:8-14,58-65,138-146. Do not infer account approval from listed country."
+            ]
+          },
+          {
+            "update_id": "bacs-overview-country",
+            "target_path": "wiki/concepts/stripe-bacs-direct-debit.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Currency**: GBP only. **Country**: UK customers; UK business accounts only (platforms outside UK can initiate on behalf of UK connected accounts).",
+            "proposed_markdown": "**Currency/customer**: GBP presentment and GB bank-account customers. **Merchant location**: May listed UK Stripe accounts plus outside-UK platforms for UK connected accounts; November lists additional supported merchant countries and cross-border coverage, subject to approval, identity verification and account/MCC conditions.",
+            "quote_indexes": [
+              0,
+              2
+            ],
+            "warnings": [
+              "Old raw/stripe-bacs-direct-debit-2025.md:8,58-80; new raw/stripe-payments-bacs-debit-2026-11-07.md:16-85. The supported-country list does not establish individual merchant access."
+            ]
+          },
+          {
+            "update_id": "bacs-overview-limit",
+            "target_path": "wiki/concepts/stripe-bacs-direct-debit.md",
+            "update_kind": "durable_fact",
+            "anchor": "- Per transaction: 100,000 GBP\n- New users: 10,000 GBP weekly (increases as you process more)",
+            "proposed_markdown": "- Per transaction: November default **10,000 GBP**; May said **100,000 GBP** (dated conflict). Contact support for higher limits.\n- New users: separate **10,000 GBP weekly** limit, which increases as they process more Bacs payments.",
+            "quote_indexes": [
+              0
+            ],
+            "warnings": [
+              "New raw/stripe-payments-bacs-debit-2026-11-07.md:81-85 versus old raw/stripe-bacs-direct-debit-2025.md:12. Do not conflate per-transaction default and weekly new-user limit."
+            ]
+          },
+          {
+            "update_id": "bacs-overview-notices",
+            "target_path": "wiki/concepts/stripe-bacs-direct-debit.md",
+            "update_kind": "durable_fact",
+            "anchor": "Stripe auto-emails customers when mandate is created and before each debit. Custom email templates require approval from Stripe.",
+            "proposed_markdown": "Bacs requires notice when bank details are collected/confirmed and before each debit. May said Stripe emailed by default; November excepts enterprise accounts with a custom service user number (SUN) from Stripe's default sending. Sending your own notices requires eligibility and approval. These mandate/advance-debit notices are not payment-success receipts; the SUN exception does not remove the notice duty.",
+            "quote_indexes": [
+              3,
+              4
+            ],
+            "warnings": [
+              "Old raw/stripe-bacs-direct-debit-2025.md:127-136; new raw/stripe-payments-bacs-debit-2026-11-07.md:298-302,344-350. November line 350's shorthand default statement must be read with the explicit enterprise custom-SUN exception at line 300."
+            ]
+          },
+          {
+            "update_id": "bacs-overview-connect",
+            "target_path": "wiki/concepts/stripe-bacs-direct-debit.md",
+            "update_kind": "durable_fact",
+            "anchor": "- `bacs_debit_payments` capability required for `on_behalf_of`\n- UK platforms don't need capability for destination charges\n- `settings.bacs_debit_payments.display_name` enables Custom Branding",
+            "proposed_markdown": "- November: supported-location platforms can use destination charges with or without `on_behalf_of`, but must first enable Bacs Direct Debit on the platform before accepting payments. Omitting `on_behalf_of` makes the platform settlement merchant; with it, the supported-location connected account additionally needs `bacs_debit_payments` capability. Platform enablement and connected-account capability do not by themselves establish account approval or identity verification.\n- May: UK-platform destination charges for UK connected accounts were described as capability-exempt, while outside-UK platforms needed it; keep this as dated and scope-specific.\n- `settings.bacs_debit_payments.display_name` enables Custom Branding on the connected account.",
+            "quote_indexes": [
+              0
+            ],
+            "warnings": [
+              "New raw/stripe-payments-bacs-debit-2026-11-07.md:249-257 versus May raw/stripe-bacs-direct-debit-2025.md:181-199. No general capability exemption or account approval inferred.",
+              "New raw/stripe-payments-bacs-debit-2026-11-07.md:249-255 explicitly requires platform Bacs enablement before Connect acceptance, then separately requires connected-account bacs_debit_payments capability with on_behalf_of. New raw lines 16,27-31 still gate access on approval and verification."
+            ]
+          },
+          {
+            "update_id": "bacs-overview-branding",
+            "target_path": "wiki/concepts/stripe-bacs-direct-debit.md",
+            "update_kind": "durable_fact",
+            "anchor": "- Business name appears on new mandates 5 business days after request",
+            "proposed_markdown": "- May said the name appears on new mandates five business days after request; November says Custom Branding typically activates in ten business days and appears on mandates created after activation. A request is not proof of activation.",
+            "quote_indexes": [
+              4
+            ],
+            "warnings": [
+              "Old raw/stripe-bacs-direct-debit-2025.md:200-214; new raw/stripe-payments-bacs-debit-2026-11-07.md:304-308. Preserve both dated timing claims."
+            ]
+          },
+          {
+            "update_id": "bacs-overview-retries",
+            "target_path": "wiki/concepts/stripe-bacs-direct-debit.md",
+            "update_kind": "durable_fact",
+            "anchor": "Private preview. Automatic retry of failed payments caused by insufficient funds. Works for subscription invoices and one-off invoices.",
+            "proposed_markdown": "May labeled Direct Debit retries private preview. November omits that label and describes insufficient-funds retries for subscription and/or one-off invoices: up to two automatic retries within 30 days of the original attempt, with no debit-failure fee for Stripe-initiated retries. The capture does not prove account-specific availability.",
+            "quote_indexes": [
+              0
+            ],
+            "warnings": [
+              "Old raw/stripe-bacs-direct-debit-2025.md:216-218; new raw/stripe-payments-bacs-debit-2026-11-07.md:310-316. Removal of preview wording is not an account entitlement."
+            ]
+          },
+          {
+            "update_id": "bacs-overview-route",
+            "target_path": "wiki/concepts/stripe-bacs-direct-debit.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-bacs-direct-debit]] \u2014 primary source: settlement, mandates, disputes, refunds, Connect, Custom Branding",
+            "proposed_markdown": "- [[source-stripe-bacs-direct-debit]] \u2014 2026-05-02 and 2026-11-07 Bacs overview: dated merchant scope and limits, DDI mandate/notice conditions, delayed outcomes, refunds/disputes, Connect, branding and retries",
+            "quote_indexes": [
+              0,
+              1,
+              3,
+              4
+            ],
+            "warnings": [
+              "Source route includes the November capture raw/stripe-payments-bacs-debit-2026-11-07.md:9-85,112-316 and retained May raw/stripe-bacs-direct-debit-2025.md:8-218."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-bacs-debit-2026-11-07.md",
+      "raw_sha256": "6a029fb33b30db0035e843927f1adea1e1ef2f817f6053c6fcf1dbc71af6665d",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-bacs-debit-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 364
+      }
+    ],
+    "raw/stripe-bacs-direct-debit-2025.md": [
+      {
+        "start": 1,
+        "end": 218
+      }
+    ],
+    "wiki/sources/source-stripe-bacs-direct-debit.md": [
+      {
+        "start": 1,
+        "end": 41
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/c533236fd934ce002b5587f2/content.diff": [
+      {
+        "start": 1,
+        "end": 553
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-bacs-debit/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 219
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 23
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 237,
+        "end": 253
+      },
+      {
+        "start": 734,
+        "end": 742
+      }
+    ],
+    "wiki/concepts/stripe-bacs-direct-debit.md": [
+      {
+        "start": 1,
+        "end": 119
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bacs-debit/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 229
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bacs-debit/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 157
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bacs-debit/attempt-1/candidates/source-stripe-bacs-direct-debit.md": [
+      {
+        "start": 1,
+        "end": 58
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bacs-debit/attempt-1/diffs/source-stripe-bacs-direct-debit.md.diff": [
+      {
+        "start": 1,
+        "end": 77
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "BACS Direct Debit transactions have a limit of 100,000 GBP each.",
+      "location": "raw/stripe-bacs-direct-debit-2025.md:12"
+    },
+    {
+      "text": "Stripe users in the UK can accept Bacs Direct Debit payments from customers with a UK bank account.",
+      "location": "raw/stripe-bacs-direct-debit-2025.md:8"
+    },
+    {
+      "text": "By default, Stripe automatically sends emails to the customer for the above cases.",
+      "location": "raw/stripe-bacs-direct-debit-2025.md:134"
+    },
+    {
+      "text": "Your business name is shown for new mandates created 5 business days after your request.",
+      "location": "raw/stripe-bacs-direct-debit-2025.md:212"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/bacs-debit, the November guide establishes a reusable, approval-gated GBP debit from a UK bank account under a DDI mandate with customer sort code, account number, name, email and address. It lists many merchant business countries but GB customers/GBP presentment, identity checks and a default GBP 10,000 per-transaction limit with a separate GBP 10,000 weekly new-user limit (new raw lines 5-31,65-85,156-195). Existing-mandate outcome takes about four business days and new-mandate outcome up to seven; Checkout session.completed is submission, not payment success, and PaymentIntent success precedes funds availability (new raw lines 259-296). Notices are required at collection/confirmation and before debit, with an enterprise custom-SUN exception to Stripe's default sending (new raw lines 298-302). For Connect destination charges, November requires platform Bacs enablement before acceptance and, with on_behalf_of, a supported-location connected account with bacs_debit_payments capability; Stripe approval and identity checks remain separate (new raw lines 16,27-31,249-255). Stripe front-end products separately call for enabling Bacs in Payment methods settings (new raw lines 360-364). The May capture described UK businesses and GBP 100,000 per transaction, and lacked that email exception (old raw lines 8-14,127-136). source-stripe-bacs-direct-debit.md retains those dated claims and needs the newer scope, limits, and state boundaries.",
+    "Q2": "For https://docs.stripe.com/payments/bacs-debit, November materially broadens merchant geography, changes the default transaction limit from May GBP 100,000 to GBP 10,000, changes typical Custom Branding activation from five to ten business days, qualifies default email sending for enterprise custom-SUN accounts, and adds custom-mandate approval, refund/dispute detail, bounded retries and integration-specific asynchronous events (old raw lines 8-12,127-179,181-218; new raw lines 22-85,112-195,249-316). source-stripe-bacs-direct-debit.md should preserve May's UK/Connect/limit/branding/retry statements as historical with explicit November contrasts. The new matrix's recurring and PaymentIntent setup_future_usage checkmarks coexist with SetupIntent and off-session crosses and a Checkout setup-mode route (new raw lines 156-168,210-247); do not flatten them into a universal prohibition. Pay by Bank Recurring is a distinct private preview (new raw lines 197-208). Connect platform Bacs enablement precedes acceptance, while the connected-account capability is conditional on on_behalf_of; front-end-product settings enablement is a separate path, and neither step establishes account approval (new raw lines 16,27-31,249-255,360-364). Bacs notices remain required despite the SUN exception, but notices are not payment receipts (new raw lines 298-302,344-352). A Checkout return, mandate acceptance, refund.created, or expected debit date cannot establish payment success, bank posting, funds availability, or refund completion; use the corresponding later events and statuses (new raw lines 130-134,259-296)."
+  }
+}

@@ -1,0 +1,221 @@
+{
+  "job_id": "payments-custom-localize-prices-fx-quotes-api",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-fx-quotes-api.md": {
+      "job_id": "payments-custom-localize-prices-fx-quotes-api",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Enable Currency Conversion Using the FX Quotes API\"\ntype: source\ndate_ingested: 2026-04-21\ndate_updated: 2026-11-15\ncanonical_url: \"https://docs.stripe.com/payments/custom/localize-prices/fx-quotes-api\"\noriginal_format: webpage\nraw_files:\n  - \"stripe-payments-custom-localize-prices-fx-quotes-api-2026-11-07.md\"\n  - \"stripe-fx-quotes-api-2025.md\"\ntags: [stripe, fx-quotes, currency-conversion, localization, payment-intents, exchange-rate, preview]\n---\n\n## Summary\n\n[[stripe]] offers the FX Quotes API as a **preview** service to retrieve live exchange-rate information or extended rate quotes for currency pairs. A merchant can use `exchange_rate` to pass the Stripe FX fee into a localized price or `base_rate` to absorb it, then attach an eligible quote ID to a PaymentIntent or Transfer for supported usage. A quote is not an FX transaction offer, permanent lock guarantee, completed payment or settlement. It may be withdrawn or invalidated. The feature is limited by access, MCC, currency pair, region, usage type and lock duration.\n\n## Access, examples and terms\n\nRequest access through Stripe's form; certain MCCs are unsupported. Use must relate to commercial goods and services sold on Stripe; selective use of extended quotes only when favorable is prohibited. Stripe may change supported currencies without notice. The page's **Ruby beta SDK example** uses `stripe 14.0.0-beta.1` and `2025-07-30.preview`; the **direct secret-key curl example** instead sends `Stripe-Version: 2025-03-31.preview`. These are separate documented examples, not proof that either version is interchangeable across interfaces or that the beta SDK is required for direct curl. Secret-key operations belong on a server.\n\nThe quote request example uses `POST /v1/fx_quotes` with `to_currency`, `from_currencies[]` and `lock_duration`. The returned `fx_quote` identity has `rates[currency].exchange_rate`, `rate_details.base_rate`, `fx_fee_rate`, `duration_premium`, `lock_expires_at`, `lock_status`, and a usage type. The US-merchant example divides 100 USD by EUR\u2192USD `exchange_rate` 1.06053 to show 94.29 EUR with FX fee passed to the customer, or by `base_rate` 1.08295 to show 92.34 EUR while absorbing it. Cross-border payment-method fees can also apply separately.\n\n## Locks, fees and usage\n\n| `lock_duration` | Group 1 fee | Group 2 fee |\n| --- | --- | --- |\n| `none` | no extended-rate fee; current live informational quote | no extended-rate fee |\n| `five_minutes` | 0.07% | 0.12% |\n| `hour` | 0.10% | 0.15% |\n| `day` | 0.20% | 0.30% |\n\nA pair involving a Group 2 currency uses the Group 2 premium; same-group pairs use that group's premium. **INR is Group 1 in both captures**, alongside USD, EUR, GBP and others. BRL, CNY, KRW, MXN and PLN are Group 2 examples. The older source summary mistakenly put INR in Group 2. The table is a fee-group list, not proof that a given merchant may lock a given pair.\n\nUse a locked quote before `lock_expires_at`; significant rate movement can invalidate it sooner and change `lock_status` to `expired`. `fx_quote.expired` covers natural expiry **or** significant drift. Attaching an expired quote to a PaymentIntent or Transfer returns HTTP 400 with `payment_intent_fx_quote_invalid` or `transfers_fx_quote_invalid`, respectively; create a new quote and update prices. A mid-market fallback applies in some non-card payment methods taking more than 24 hours when an extended quote expires or becomes unusable; it is not a general lock guarantee. Disputes and refunds use the **current** exchange rate, not the former locked rate.\n\n### Example inconsistency and minor units\n\nThe UK/US sample prose asks for `hour` but its curl quote request sends `lock_duration=day`. It says 125 USD, while the PaymentIntent request sends `amount=125`, which is **125 minor units**, not 125 USD for a two-decimal currency. Stripe API `amount` requires integer minor units; convert and round for the target currency, including zero-decimal currencies, before using an example. The sample PaymentIntent attaches `fx_quote=fxq_...` but does not prove creation, confirmation or settlement.\n\n## Preview availability by region and usage (2026-11-07)\n\nThe earlier **2026-04-21** capture listed 33 countries in one flat preview list. The newer capture uses the following region/usage/duration matrix; `EU` is an aggregate row and does not alone prove withdrawal of individual EU countries from the older list. A listed preview region is not merchant-specific approval. `none` informational quotes are available for a usage type wherever a lock for that usage type is listed.\n\n| Region | Payment locks | Transfer locks |\n| --- | --- | --- |\n| AU | five minutes, hour | five minutes, hour |\n| BR | five minutes, hour | unsupported |\n| CA | five minutes, hour, day | five minutes, hour |\n| EU | five minutes, hour, day | five minutes, hour |\n| GI | five minutes, hour, day | five minutes, hour |\n| HK | five minutes, hour | five minutes, hour |\n| IN | five minutes, hour | unsupported |\n| JP | five minutes, hour | unsupported |\n| MY | five minutes, hour | unsupported |\n| MX | five minutes, hour | five minutes, hour |\n| NZ | five minutes, hour | five minutes, hour |\n| NO | five minutes, hour, day | five minutes, hour |\n| SG | five minutes, hour | five minutes, hour |\n| CH | five minutes, hour, day | five minutes, hour |\n| TH | five minutes, hour | unsupported |\n| AE | five minutes, hour | five minutes, hour |\n| GB | five minutes, hour, day | five minutes, hour |\n| US | five minutes, hour, day | five minutes, hour |\n\nThe November wording says the two fee groups cover currencies **supported by the API**, while the earlier page described currencies **supported for locking**; their lists and fees otherwise match. This wording change does not by itself establish account-specific presentment or payment acceptance.\n\n## Related\n\n- [[stripe]] \u2014 Stripe company page.\n- [[stripe-fx-quotes-api]] \u2014 concept overview.\n- [[source-stripe-checkout-local-currency]] \u2014 local-currency options.\n- [[stripe-adaptive-pricing]] \u2014 automatic localization alternative.\n\n## Raw Sources\n\n- [[raw/stripe-payments-custom-localize-prices-fx-quotes-api-2026-11-07]] \u2014 full webpage capture fetched 2026-11-07 (229 lines).\n- [[raw/stripe-fx-quotes-api-2025]] \u2014 earlier full webpage capture fetched 2026-04-21 (229 lines); filename's year is not the fetch date.\n",
+      "quotes": [
+        {
+          "text": "The following table shows which regions support payment and transfer usage types, along with their available lock durations.",
+          "location": "raw/stripe-payments-custom-localize-prices-fx-quotes-api-2026-11-07.md:196-196"
+        },
+        {
+          "text": "| BR | `five_minutes`, `hour` | Not supported |",
+          "location": "raw/stripe-payments-custom-localize-prices-fx-quotes-api-2026-11-07.md:201-201"
+        },
+        {
+          "text": "Any region that supports locking for a given usage type, also supports the `none` lock duration to retrieve informational quotes.",
+          "location": "raw/stripe-payments-custom-localize-prices-fx-quotes-api-2026-11-07.md:196-196"
+        },
+        {
+          "text": "The FX Quote API only supports the currencies in the following two groups:",
+          "location": "raw/stripe-payments-custom-localize-prices-fx-quotes-api-2026-11-07.md:187-187"
+        },
+        {
+          "text": "Stripe sends an `fx_quote.expired` webhook when a quote expires or becomes invalid because of significant rate drifts.",
+          "location": "raw/stripe-payments-custom-localize-prices-fx-quotes-api-2026-11-07.md:175-175"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "fx-merchant-fee-a1",
+            "target_path": "wiki/concepts/stripe-fx-quotes-api.md",
+            "update_kind": "durable_fact",
+            "anchor": "| Merchant fee | 0% (pay duration premium only) | 0% |",
+            "proposed_markdown": "| Merchant fee | FX fee can be absorbed by merchant using `base_rate` or passed to customer using `exchange_rate`; extended locks add duration premium | 0% |",
+            "quote_indexes": [
+              3
+            ],
+            "warnings": [
+              "Both old raw lines 66-68, 83-87, 181-184 and new raw lines 67-69, 84-88, 182-185 contradict universal 0% merchant FX cost."
+            ]
+          },
+          {
+            "update_id": "fx-inr-a1",
+            "target_path": "wiki/concepts/stripe-fx-quotes-api.md",
+            "update_kind": "durable_fact",
+            "anchor": "- **Group 2**: Emerging market currencies (BRL, CNY, INR, KRW, MXN, PLN, etc.)",
+            "proposed_markdown": "- **Group 2**: Currencies including BRL, CNY, KRW, MXN and PLN (INR belongs to Group 1).",
+            "quote_indexes": [
+              3
+            ],
+            "warnings": [
+              "Both old raw line 190 and new raw line 191 put INR in Group 1; this fixes an existing concept error."
+            ]
+          },
+          {
+            "update_id": "fx-example-a1",
+            "target_path": "wiki/concepts/stripe-fx-quotes-api.md",
+            "update_kind": "durable_fact",
+            "anchor": "# 3. Attach to PaymentIntent\nPOST /v1/payment_intents\n  amount=125\n  currency=usd\n  fx_quote=fxq_...\n```",
+            "proposed_markdown": "# 3. Attach to PaymentIntent (illustrative fields only)\nPOST /v1/payment_intents\n  amount=<integer minor units for the USD price>\n  currency=usd\n  fx_quote=fxq_...\n```\n\n**Example caveat:** both captured guides say 125 USD in prose but send `amount=125`, which is 125 cents for USD. Their quote prose says `hour` while curl sends `lock_duration=day`. Compute minor units and use the intended lock duration before implementing.",
+            "quote_indexes": [
+              0
+            ],
+            "warnings": [
+              "Old raw lines 136-166 and new raw lines 137-167 show both sample inconsistencies. Do not treat the excerpt as an executed transaction."
+            ]
+          },
+          {
+            "update_id": "fx-expiry-a1",
+            "target_path": "wiki/concepts/stripe-fx-quotes-api.md",
+            "update_kind": "durable_fact",
+            "anchor": "When a quote expires due to market drift, `lock_status` becomes `expired`. Using an expired quote on a PaymentIntent returns `payment_intent_fx_quote_invalid`. Subscribe to `fx_quote.expired` webhook to create a new quote and update prices.",
+            "proposed_markdown": "A quote can expire at `lock_expires_at` or be invalidated early by significant rate drift; `lock_status` becomes `expired` and `fx_quote.expired` can notify either case. Attaching an expired quote to a PaymentIntent or Transfer returns HTTP 400 with `payment_intent_fx_quote_invalid` or `transfers_fx_quote_invalid`, respectively. Create a new quote and update prices; a mid-market fallback is limited to some non-card methods that take more than 24 hours.",
+            "quote_indexes": [
+              4
+            ],
+            "warnings": [
+              "Old raw lines 130-132, 172-178 and new raw lines 131-133, 173-179 distinguish expiry causes, resources and fallback scope."
+            ]
+          },
+          {
+            "update_id": "fx-availability-a1",
+            "target_path": "wiki/concepts/stripe-fx-quotes-api.md",
+            "update_kind": "durable_fact",
+            "anchor": "- Available in 33 countries: all EU + CH, GB, CA, NO, US",
+            "proposed_markdown": "- Preview availability: the 2026-04-21 capture gave a flat list of 33 countries; the 2026-11-07 capture replaces it with an 18-region matrix by payment versus transfer usage and duration. BR, IN, JP, MY and TH have payment locks but no transfer support; day appears for payment in CA, EU, GI, NO, CH, GB and US, and nowhere for transfer. `none` informational quotes follow supported usage types. The EU aggregate row does not establish withdrawal of earlier individually listed EU countries or any merchant's access.",
+            "quote_indexes": [
+              0,
+              1,
+              2
+            ],
+            "warnings": [
+              "Old raw lines 193-229; new raw lines 194-217. Region/usage/duration matrix must not be flattened into universal availability."
+            ]
+          },
+          {
+            "update_id": "fx-versions-a1",
+            "target_path": "wiki/concepts/stripe-fx-quotes-api.md",
+            "update_kind": "durable_fact",
+            "anchor": "- Preview: requires API version `2025-03-31.preview` or `2025-07-30.preview`",
+            "proposed_markdown": "- Preview access and versioned examples: Ruby beta SDK shows `2025-07-30.preview`; direct secret-key curl sends `Stripe-Version: 2025-03-31.preview`. These are distinct integration examples, not proof of cross-surface version interchangeability or beta SDK requirement for direct curl.",
+            "quote_indexes": [
+              0
+            ],
+            "warnings": [
+              "Old raw lines 35-59 and new raw lines 36-60; secret key should remain server-side."
+            ]
+          },
+          {
+            "update_id": "fx-source-route-a1",
+            "target_path": "wiki/concepts/stripe-fx-quotes-api.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-fx-quotes-api]] \u2014 primary reference: rate fields, lock durations, pricing tiers, integration, webhooks, restrictions",
+            "proposed_markdown": "- [[source-stripe-fx-quotes-api]] \u2014 primary reference: preview FX rates, payment/transfer duration matrix, fee groups, versioned examples, minor-unit and expiry caveats",
+            "quote_indexes": [
+              0,
+              4
+            ],
+            "warnings": [
+              "New raw lines 194-217 and 131-179; old raw lines 193-229 preserve dated flat availability."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-custom-localize-prices-fx-quotes-api-2026-11-07.md",
+      "raw_sha256": "56afdebda5b866dda046d320c8882bef134efa63a3f360ce6c1974e6870e9d7e",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-custom-localize-prices-fx-quotes-api-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 115
+      },
+      {
+        "start": 116,
+        "end": 229
+      }
+    ],
+    "raw/stripe-fx-quotes-api-2025.md": [
+      {
+        "start": 1,
+        "end": 115
+      },
+      {
+        "start": 116,
+        "end": 229
+      }
+    ],
+    "wiki/sources/source-stripe-fx-quotes-api.md": [
+      {
+        "start": 1,
+        "end": 88
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/643534407e51319715c2302c/content.diff": [
+      {
+        "start": 1,
+        "end": 95
+      },
+      {
+        "start": 96,
+        "end": 180
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-custom-localize-prices-fx-quotes-api/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 197
+      }
+    ],
+    "wiki/concepts/stripe-fx-quotes-api.md": [
+      {
+        "start": 1,
+        "end": 84
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 90,
+        "end": 96
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "The FX Quotes API is currently available in the following countries:",
+      "location": "raw/stripe-fx-quotes-api-2025.md:195-195"
+    },
+    {
+      "text": "The FX Quote API only supports locking the currencies in the following two groups:",
+      "location": "raw/stripe-fx-quotes-api-2025.md:186-186"
+    },
+    {
+      "text": "  -d amount=125",
+      "location": "raw/stripe-fx-quotes-api-2025.md:159-159"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/custom/localize-prices/fx-quotes-api, the FX Quotes API is a preview service for current or extended exchange-rate information and fee detail. A secret-key server request names a currency pair and duration, returning an fx_quote identity with exchange_rate, base_rate, lock expiry/status and fee fields; an eligible quote can be attached to a PaymentIntent or Transfer, but expiry or drift can invalidate it (new raw lines 9-60, 63-179). Access, MCC, region, usage type, duration and currency support remain conditional. The November page replaces the April flat preview country list (old raw lines 193-229) with a payment-versus-transfer duration matrix (new raw lines 194-217). source-stripe-fx-quotes-api.md retains the flat 33-country summary, conflates SDK and direct-curl preview versions, misclassifies INR and omits the sample's minor-unit contradiction (source lines 13-20, 43, 57-70). A quote or attachment request does not prove payment or transfer success.",
+    "Q2": "For https://docs.stripe.com/payments/custom/localize-prices/fx-quotes-api, the substantive delta is the 2026-11-07 region/usage/duration availability matrix replacing the 2026-04-21 flat 33-country list (old raw lines 193-229; new raw lines 194-217), plus wording that the two groups cover supported API currencies rather than only lockable currencies (old raw lines 186-191; new raw lines 187-192). Markdown spacing, headings and interest registration are presentation/contact changes, not proof of account access. Preserve both dates in source-stripe-fx-quotes-api.md. Both captures place INR in Group 1, contradicting existing source/concept text; both say hour in prose while curl requests day, and describe 125 USD while PaymentIntent curl sends amount=125 minor units (old raw lines 136-166; new raw lines 137-167). The Ruby beta SDK uses 2025-07-30.preview and direct secret-key curl uses 2025-03-31.preview (new raw lines 36-60), without cross-surface version guarantee. Expiry may occur at time or drift and has separate PaymentIntent/Transfer errors; fee absorption is possible, so the concept's universal 0% merchant fee is wrong. Neither a displayed rate nor a request establishes settlement or a guaranteed lock."
+  }
+}

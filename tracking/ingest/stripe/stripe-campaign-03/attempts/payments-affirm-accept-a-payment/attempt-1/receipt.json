@@ -1,0 +1,163 @@
+{
+  "job_id": "payments-affirm-accept-a-payment",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-affirm-accept-a-payment-2026-11-07.md",
+  "raw_sha256": "a451f539c3f9f6eca39627e93c6dcddc70c6dffae073c74199aaaf4adb8b76aa",
+  "prior_raw_path": "raw/stripe-affirm-accept-payment-2025.md",
+  "prior_raw_sha256": "1c11ea66e132e1a86297401944a818589d797f5a892a9927467f944f15575202",
+  "source_targets": [
+    "wiki/sources/source-stripe-affirm-accept-payment.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-affirm-accept-payment.md": "caa81260d2f63ec3661427cf209e4e2f8dbc4a1671719b42de736a7d4aef4ab2"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-affirm-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 20
+      }
+    ],
+    "raw/stripe-affirm-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 1723
+      }
+    ],
+    "wiki/sources/source-stripe-affirm-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 41
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/2a7b1f71b9d048880a81d5f2/content.diff": [
+      {
+        "start": 1,
+        "end": 1731
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 315,
+        "end": 327
+      },
+      {
+        "start": 743,
+        "end": 748
+      }
+    ],
+    "wiki/concepts/stripe-bnpl.md": [
+      {
+        "start": 1,
+        "end": 45
+      },
+      {
+        "start": 220,
+        "end": 255
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 518,
+        "end": 526
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Learn how to accept Affirm, a buy now and pay later payment method.",
+      "location": "raw/stripe-payments-affirm-accept-a-payment-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-affirm-accept-a-payment-2026-11-07.md:11"
+    },
+    {
+      "text": "- [Checkout](https://docs.stripe.com/payments/affirm/accept-a-payment.md?payment-ui=checkout)",
+      "location": "raw/stripe-payments-affirm-accept-a-payment-2026-11-07.md:13"
+    },
+    {
+      "text": "- [Payment Intents API](https://docs.stripe.com/payments/affirm/accept-a-payment.md?payment-ui=elements&api-integration=paymentintents)",
+      "location": "raw/stripe-payments-affirm-accept-a-payment-2026-11-07.md:16"
+    },
+    {
+      "text": "- [Android](https://docs.stripe.com/payments/affirm/accept-a-payment.md?payment-ui=mobile&platform=android)",
+      "location": "raw/stripe-payments-affirm-accept-a-payment-2026-11-07.md:20"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Before you start the integration, make sure your account is eligible for Affirm by navigating to your [Payment methods settings]",
+      "location": "raw/stripe-affirm-accept-payment-2025.md:22"
+    },
+    {
+      "text": "A Checkout Session must satisfy all of the following conditions to support Affirm payments:",
+      "location": "raw/stripe-affirm-accept-payment-2025.md:38"
+    },
+    {
+      "text": "The customer successfully authorized the payment by submitting the Checkout form.",
+      "location": "raw/stripe-affirm-accept-payment-2025.md:203"
+    },
+    {
+      "text": "If the customer takes no action within 12 hours, the [PaymentMethod](https://docs.stripe.com/api/payment_methods/object.md) is detached and the [PaymentIntent](https://docs.stripe.com/api/payment_intents/object.md) object\u2019s status automatically transitions to `requires_payment_method`.",
+      "location": "raw/stripe-affirm-accept-payment-2025.md:227"
+    },
+    {
+      "text": "**You must capture an authorized Affirm payment within 30 days of the authorization**.",
+      "location": "raw/stripe-affirm-accept-payment-2025.md:1558"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Semantic raw delta: new raw lines 5-20 give title, purpose and navigation to six variants: Checkout; Elements with Checkout Sessions API or Payment Intents API; Direct API; iOS; Android. The old May capture lines 10-1723 contains four detailed web/API variants and no iOS or Android section. Diff lines 3-21 and 1724-1731 show replacement by navigation, not established deprecation or current mobile behavior.",
+    "May guide prerequisites are dated: Checkout account eligibility check (old raw line 22), US/Canada customers and CAD/USD currencies (old raw lines 24-36), payment mode/one-time line items/domestic currency for Checkout Sessions (old raw lines 38-42, 259-276). Checkout Session is distinct from PaymentIntent: old raw lines 289-321 create ui_mode=elements Session; old raw lines 976-1102 create PaymentIntent server-side, with alternative customer_account Accounts v2/customer Customers v1 identities; old raw lines 1366-1388 create a direct API PaymentIntent. New raw lines 13-20 do not restate these conditions.",
+    "May client flows are distinct: Checkout Elements uses Checkout Session client secret, valid email, Payment Element and checkout.confirm (old raw lines 289-323, 493-545, 593-737); Payment Intents Elements uses elements.submit, server PaymentIntent creation and stripe.confirmPayment (old raw lines 976-1108, 1124-1169); Direct API uses confirmAffirmPayment or server confirm plus next_action.redirect_to_url (old raw lines 1490-1537, 1600-1669). New raw lines 13-20 only identify paths.",
+    "Outcome boundary: old raw lines 195-205 says checkout.session.completed is authorization and instructs waiting for payment_intent.succeeded or payment_failed; old raw lines 1634-1669 show requires_action redirect prior to completion. Session/client-secret creation and browser return are not succeeded payment. Test sandbox transitions at old raw lines 209-219 are test-only; no live transaction or account eligibility was verified.",
+    "Baseline summary errors independent of the navigation delta: current source line 23 says the 12-hour requires_action expiry starts after PaymentIntent creation. Old prose lines 227 and 1701 says after redirect to Affirm, while error table lines 239 and 1713 says 12 hours after initial checkout creation; preserve this internal timing conflict. Current source lines 27-35 puts affirm_checkout_canceled among error codes although old raw lines 244-249 and 1718-1723 identify it as charge outcome reason. Current source line 13 collapses four old detailed web/API variants into three paths; new raw adds iOS/Android routes without fetched content.",
+    "Manual-capture conflict is material even though the current source mentions only test mode: old Payment Intents Elements text lines 1271-1275 says 7-day capture window and lines 1301-1313 allows partial capture, while Direct API lines 1556-1562 says capture within 30 days and lines 1587-1589 says full amount only. Old Checkout test instruction line 219 says uncaptured test-mode PaymentIntent expires 10 minutes after authorization. These are conflicting dated path/environment claims and must not be flattened into a universal capture rule.",
+    "Main route: wiki/index.md line 7 -> wiki/stripe-index.md lines 321-324 -> wiki/concepts/stripe-bnpl.md lines 249-254 -> current source. Company route at wiki/companies/stripe.md lines 522-525 also names the source."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "Retain the 2026-05-06 dated detailed guide as historical source: account eligibility, US/CA and CAD/USD Checkout conditions, one-time domestic-currency line items, and optional shipping data for acceptance (old raw lines 2, 20-42, 51-55, 116). The November index is not renewed authority for any of them (new raw lines 1-20).",
+    "Retain separate old Checkout Session/PaymentIntent/Direct API identity and confirmation flows, May-era Stripe.js dahlia and React/loader version examples only as version-scoped history (old raw lines 289-321, 368-399, 493-545, 976-1108, 1337-1495).",
+    "Retain old timeout and manual-capture windows with their internal conflicts explicitly visible: 12-hour redirect prose versus initial-checkout-creation error table (old raw lines 227-239 and 1701-1713); 7-day/partial-capture Payment Intents Elements versus 30-day/full-only Direct API (old raw lines 1271-1313 and 1556-1589); separate test-mode 10-minute condition (old raw line 219)."
+  ],
+  "conflicts": [
+    "Old raw lines 227 and 1701 start the no-action 12-hour clock after redirect, while old raw lines 239 and 1713 describe expiration 12 hours after initial checkout creation. Current source line 23 asserts creation timing alone; reciprocal warning should preserve both dated formulations rather than choose one without further authority.",
+    "Old raw lines 1271-1313 describe a 7-day authorization/capture window and partial capture in the Payment Intents Elements section, but old raw lines 1556-1589 describe a 30-day window and full-only capture in Direct API. Current source line 13 says it covers manual capture yet offers no warning; scope any retention by section and flag the contradiction.",
+    "Old raw lines 244-249 and 1718-1723 categorize affirm_checkout_canceled as an outcome reason that can conflate customer cancellation with loan rejection. Current source lines 27-35 labels it an error code; repair this category without inventing a newly changed provider rule."
+  ],
+  "unresolved_questions": [
+    "The six November variant URLs at new raw lines 13-20 were not fetched under this pinned order. Their current integration specifics, iOS/Android APIs, merchant eligibility, and any resolution of May capture/expiry contradictions remain unverified."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-bnpl.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-affirm-accept-payment.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add November navigation raw to provenance while retaining May full raw (current source lines 4-7, 39-41; new raw lines 1-20; old raw lines 1-2). Route all six November listed variants, but do not ascribe mobile behavior from the index.",
+        "Correct 12-hour start wording with the internal old-source conflict (current source line 23; old raw lines 227-239, 1701-1713), categorize affirm_checkout_canceled as outcome reason (current source lines 27-35; old raw lines 244-249), and warn of path-specific 7-day/partial versus 30-day/full-only manual capture text plus separate test-mode 10-minute condition (current source lines 13, 25; old raw lines 219, 1271-1313, 1556-1589).",
+        "Keep Checkout authorization distinct from PaymentIntent success and server/client identity distinctions (old raw lines 195-205, 289-321, 976-1108, 1634-1669)."
+      ],
+      "conflicts": [
+        "May guide contains competing 12-hour start formulations and manual capture windows/amount rules; current summary chooses one timeout formulation and omits the capture conflict."
+      ],
+      "reason": "The November raw is navigation-only but adds iOS/Android routes. A source update is needed for provenance and material preexisting summary corrections, not to claim a new Affirm payment rule."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/affirm/accept-a-payment, the November capture establishes only the BNPL purpose and six variant routes, including new iOS and Android navigation, without detailed requirements or payment outcomes (new raw lines 5-20). The May capture documents account eligibility checks, US/Canada and CAD/USD Checkout constraints, one-time domestic-currency Checkout line items, distinct Checkout Session versus PaymentIntent server objects and client secrets, and redirect-based customer authentication (old raw lines 20-55, 289-323, 976-1108, 1337-1495). It distinguishes Checkout authorization from PaymentIntent success/failure and keeps test-mode behavior separate (old raw lines 195-219). source-stripe-affirm-accept-payment.md summarizes those historical paths but has timing, capture-conflict and outcome-reason categorization issues at lines 13-35.",
+    "Q2": "For https://docs.stripe.com/payments/affirm/accept-a-payment, the observed change is presentation/navigation: November replaces the May full text with six route links, and the iOS/Android links establish discoverability only (new raw lines 9-20). No substantive rule change, deprecation, mobile API, eligibility or live payment result follows. source-stripe-affirm-accept-payment.md should retain May claims as dated, distinguish Checkout Session authorization from PaymentIntent succeeded, correct affirm_checkout_canceled as an outcome reason, and warn that May prose/table disagree on the 12-hour start and May Elements versus Direct API sections disagree on 7-day/partial versus 30-day/full-only capture (old raw lines 195-239, 1271-1313, 1556-1589, 1701-1723). The 10-minute uncaptured timeout is test mode only (old raw lines 209-219)."
+  }
+}

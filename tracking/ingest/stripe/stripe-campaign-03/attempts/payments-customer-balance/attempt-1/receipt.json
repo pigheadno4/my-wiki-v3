@@ -1,0 +1,150 @@
+{
+  "job_id": "payments-customer-balance",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-customer-balance-2026-11-07.md",
+  "raw_sha256": "65d0eb1c1b1e31f8db94bd3c6fc5181617fded3c4c533b9ac64f3b73a0f93de1",
+  "prior_raw_path": "raw/stripe-customer-balance-2025.md",
+  "prior_raw_sha256": "0856e307a6c6f04f19ba5c4bbbbed067476e1502dc9dc1753ecccfd0dbd719c7",
+  "source_targets": [
+    "wiki/sources/source-stripe-customer-balance.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-customer-balance.md": "67083e4f383ecc9c11f0d85601b3749a2400244304934d017108ee90a0d3ac12"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-customer-balance-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 187
+      }
+    ],
+    "raw/stripe-customer-balance-2025.md": [
+      {
+        "start": 1,
+        "end": 185
+      }
+    ],
+    "wiki/sources/source-stripe-customer-balance.md": [
+      {
+        "start": 1,
+        "end": 49
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/78b0dbe9d36039870e5b4955/content.diff": [
+      {
+        "start": 1,
+        "end": 219
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 310,
+        "end": 312
+      },
+      {
+        "start": 749,
+        "end": 749
+      }
+    ],
+    "wiki/concepts/stripe-customer-balance.md": [
+      {
+        "start": 1,
+        "end": 82
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "You can\u2019t add funds to the customer cash balance directly.",
+      "location": "raw/stripe-payments-customer-balance-2026-11-07.md:17"
+    },
+    {
+      "text": "The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users.",
+      "location": "raw/stripe-payments-customer-balance-2026-11-07.md:29"
+    },
+    {
+      "text": "[Enable bank transfers](https://dashboard.stripe.com/settings/payment_methods) as a payment method in your Dashboard before creating the intent.",
+      "location": "raw/stripe-payments-customer-balance-2026-11-07.md:129"
+    },
+    {
+      "text": "The payment succeeds if the cash balance has sufficient funds, and fails otherwise.",
+      "location": "raw/stripe-payments-customer-balance-2026-11-07.md:165"
+    },
+    {
+      "text": "Changes to the customer\u2019s cash balance are modeled as a list of [cash balance transactions](https://docs.stripe.com/api/cash_balance_transactions/object.md).",
+      "location": "raw/stripe-payments-customer-balance-2026-11-07.md:171"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "To view the balance for a customer-configured `Account`, use the Customers API endpoint with the Account ID as the path parameter, for example `v1/customers/acct_xxxxx`.",
+      "location": "raw/stripe-customer-balance-2025.md:26"
+    },
+    {
+      "text": "payment_method_types: [\"customer_balance\"]",
+      "location": "raw/stripe-customer-balance-2025.md:131"
+    },
+    {
+      "text": "The payment succeeds if the cash balance has sufficient funds, and fails otherwise.",
+      "location": "raw/stripe-customer-balance-2025.md:163"
+    },
+    {
+      "text": "| `transferred_to_balance` | Funds have been moved from the cash balance to your Stripe balance due to failed refunds or insufficient refund details.",
+      "location": "raw/stripe-customer-balance-2025.md:185"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Cash balance and invoice balance remain distinct: unreconciled or excess bank-transfer funds enter the customer's per-currency cash balance for later payments to that same customer or return up to the available amount; it cannot be directly topped up or used as a wallet. Invoice balance is a liability/credit offset for future invoices, adjusted by Customer Balance Transactions, not spendable cash (old raw lines 8-20; new raw lines 9-21; source lines 17-19).",
+    "Viewing cash balance still means retrieving a Customer and expanding cash_balance, or viewing the Customer page. A customer-configured Account in Accounts v2 is addressed through the Customers API with its acct_ ID as path parameter; the new capture adds generally available Accounts v2 for Connect users versus public preview for others, with preview-version specification for preview participants. Do not collapse the v1 Customer and customer-configured Account identities or infer universal availability (old raw lines 22-37, 113; new raw lines 23-38, 123; source line 21).",
+    "Paying from available cash balance still uses a customer_balance PaymentIntent and sufficient funds; insufficient funds cause failure, with separate bank-transfer funding as a route for more funds. The new page explicitly says to enable bank transfers in Dashboard before intent creation, and its curl examples distinguish customer_account for Accounts v2 from customer for Customers v1. PaymentIntent creation/confirm=true and return_url in the illustrative request do not independently prove success or a redirect requirement; check actual intent state (old raw lines 115-165; new raw lines 125-167; source lines 23-33).",
+    "The seven cash-balance transaction types and their causes are unchanged: funded, applied_to_payment, unapplied_from_payment, refunded_from_payment, return_initiated, return_canceled and transferred_to_balance. Funded may auto-apply depending on reconciliation; return_initiated is not completed bank return, and transferred_to_balance refers to failed returns/insufficient details, not a merchant top-up path (old raw lines 167-185; new raw lines 169-187; source lines 35-45).",
+    "The source's line 49 labels the old raw as 186 lines, but the pinned old file is 185 lines. This is a pre-existing metadata error, distinct from the semantic change (source line 49; old raw lines 1-185)."
+  ],
+  "substantive_changes": [
+    "New Accounts v2 availability and preview-version qualifier scopes the already documented customer-configured Account lookup (old raw lines 22-26; new raw lines 23-31).",
+    "New explicit bank-transfer Dashboard enablement prerequisite before creating the cash-balance PaymentIntent (old raw lines 115-117; new raw lines 125-129)."
+  ],
+  "historical_claims_to_preserve": [
+    "Preserve the 2026-05-05 Node.js retrieval and PaymentIntent examples, including payment_method_types, as dated examples rather than treating their absence from the 2026-11-07 curl examples as proof of API removal or invalidity (old raw lines 28-37, 119-157; new raw lines 33-38, 131-159).",
+    "Preserve the same-customer, per-currency, no-direct-top-up and seven-transaction-type definitions because both captures retain them (old raw lines 8-20, 167-185; new raw lines 9-21, 169-187)."
+  ],
+  "conflicts": [
+    "The current source and concept state that Accounts v2 retrieval works but omit its distinct Connect-general-availability versus other-user-public-preview and preview-version conditions; qualify both routes (source line 21; wiki/concepts/stripe-customer-balance.md line 23; new raw lines 27-31).",
+    "The current source/concept payment snippet lacks the new Dashboard bank-transfer enablement prerequisite and can imply an unqualified immediate success; qualify it with sufficient available funds and actual PaymentIntent state (source lines 23-33; wiki/concepts/stripe-customer-balance.md line 25; new raw lines 125-167).",
+    "The old Node.js example includes payment_method_types while the new curl examples omit it; this is an example-language/shape difference, not evidence of a universally removed request field (old raw lines 127-156; new raw lines 135-159)."
+  ],
+  "unresolved_questions": [
+    "The two captures do not prove which particular account is in Accounts v2 preview, has bank transfers enabled, or has available cash balance; actual account and PaymentIntent states remain external to these snapshots (new raw lines 27-31, 125-167).",
+    "The overview's illustrative curl return_url does not explain whether a specific cash-balance payment flow redirects or what client return means for success; avoid inferring either from the sample alone (new raw lines 135-159)."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-customer-balance.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-customer-balance.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add exact canonical URL and 2026-11-07 raw provenance while retaining the 2026-05-05 old raw; add Accounts v2 availability/preview-version qualifier and the bank-transfer Dashboard enablement prerequisite (source lines 1-13, 21-33, 47-49; new raw lines 1-2, 27-31, 125-129).",
+        "Keep cash/invoice distinctions and seven transaction types, with payment success conditioned on available funds and observed intent state (source lines 17-45; old raw lines 8-20, 159-185; new raw lines 9-21, 161-187)."
+      ],
+      "conflicts": [
+        "Existing unqualified Accounts v2 and payment code route omits newer availability and enablement prerequisites (source lines 21-33; new raw lines 27-31, 125-129).",
+        "The old raw line count in source line 49 is off by one (old raw lines 1-185)."
+      ],
+      "reason": "Two material documented prerequisites/availability qualifiers changed, and the existing source omits them despite otherwise accurately summarizing the stable balance model."
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/customer-balance, the new capture continues to distinguish per-customer, per-currency cash balance created by unreconciled or excess bank transfers from invoice balance, an invoice-liability offset that cannot fund direct payments. Cash cannot be topped up or used as a wallet, and the seven cash-balance transaction types preserve their causes and state transitions (new raw lines 9-21, 169-187; old raw lines 8-20, 167-185). A Customer's cash_balance is retrieved with expansion; a customer-configured Accounts v2 Account uses its acct_ ID at the Customers endpoint, with Connect general availability, other-user public preview and a preview-version requirement for preview participants (new raw lines 23-31). A customer_balance PaymentIntent requires bank transfers enabled and succeeds only if sufficient cash is available (new raw lines 125-167). source-stripe-customer-balance.md covers the stable model but omits those new qualifiers and overstates the old file length (source lines 21-33, 49).",
+    "Q2": "For https://docs.stripe.com/payments/customer-balance, the substantive additions are Accounts v2's Connect-versus-other-user availability and preview-version condition, plus explicit Dashboard bank-transfer enablement before creating an intent (new raw lines 27-31, 125-129; old raw lines 22-26, 115-117). The Node.js-to-curl switch, JSON whitespace and trailing commas, heading spaces and table formatting are presentation or example differences, and omission of payment_method_types in the curl sample does not repeal the older Node.js example (old raw lines 28-37, 119-157; new raw lines 33-121, 131-159). source-stripe-customer-balance.md should keep the 2026-05-05 Node.js material dated, add the new qualification and correct its line count. The customer_account versus customer parameters mark different account identities; confirm=true, return_url and a created PaymentIntent are not proof of a successful payment, refund completion, bank-transfer enablement or available funds."
+  }
+}

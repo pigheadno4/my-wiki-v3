@@ -1,0 +1,49 @@
+---
+title: "Stripe: Konbini Payments"
+type: source
+date_ingested: 2026-05-07
+date_updated: 2026-11-15
+canonical_url: https://docs.stripe.com/payments/konbini
+original_format: webpage
+raw_files:
+  - "stripe-payments-konbini-2026-11-07.md"
+  - "stripe-konbini-2025.md"
+tags: [stripe, vouchers, konbini, japan, jpy, cash, convenience-store, connect, billing, prohibited-categories]
+---
+
+## Summary
+
+Konbini is a single-use, Japan-domestic JPY cash voucher method for Japan-based businesses and customers. Customers receive store-specific payment codes and a confirmation number, then pay cash at FamilyMart, Lawson, Ministop, or Seicomart. Instructions give provisional access, not a completed payment. The November 7, 2026 guide labels payment confirmation delayed until cash is paid; after store payment Stripe confirms asynchronously, advances the PaymentIntent to `succeeded`, and notifies the merchant. It says funds become available for payout after four business days, while actual settlement follows the standard payout schedule. Amount range: 120–300,000 JPY.
+
+## Eligibility and account prerequisites (November 7, 2026)
+
+- Business and customer location: JP; domestic transactions only. The account matrix lists merchant and platform/marketplace (Connect) accounts and B2B/B2C models. Enable Konbini in Dashboard payment-method settings for Stripe front-end products. Availability still depends on account eligibility and the financial partner and store chains' discretion; activation can be reviewed later.
+- The business website must be public and show the business address, contact email and phone, products/services, shipping fees, support hours, returns/refunds, payment flow, and complete Specified Commercial Transactions Act disclosure; its details must match onboarding. A sole proprietor must also show a photo of the physical store or office exterior at the registered address. Subscription-invoice sellers must disclose recurring charges, cancellation terms, fee assessment at start and cancellation, how to cancel, and the treatment of fees already paid.
+- The November page prohibits RMT, information selling, MLM/pyramid schemes, gore, superstition or unscientific offerings, prohibited medical products, public-order offenses, import forwarding, foreign money transfer, loans, e-cigarettes/shisha, and fortune-telling. Its MCC table labels service stations 5541, fuel dispensers 5542, travel direct marketing 5962, door-to-door 5963, outbound telemarketing 5966, cigar stores 5993, cash disbursement 6010, financial services/institutions 6011/6012, 6050, 6537, dating/escort 7273, buying/shopping 7278, credit reporting 7321, financial service 7322, parking 7523/7524, lottery/gambling 7800–7802 and 7994–7995, fines/bail 9222–9223, federal agencies 9405, lodging 9754, and intra-company purchases 9950 as **Prohibited**. The generic definition of Restricted MCCs does not turn any listed prohibited row into an approval path.
+- The May 7, 2026 capture separately listed sole proprietors operating for less than three years and dating sites among prohibited categories. The November prose omits those broad formulations but adds the sole-proprietor photo condition and still lists dating/escort MCC 7273 as prohibited. Treat May restrictions as dated and do not infer that all sole proprietors or dating businesses became eligible. Stripe says a rejected applicant may receive reasons and reapply or appeal a Konbini capability restriction.
+
+## Product and Billing scope
+
+- The November matrix lists full-page and embedded Checkout, Payment Links, Payment Element, in-app payments, Billing, Invoicing, Radar, Connect, Checkout Sessions and PaymentIntents. It excludes Express Checkout Element, Payment Method Messaging Element, Customer Portal, Terminal, Managed Payments, PaymentIntents with `setup_future_usage`, SetupIntents, and off-session payments. The May capture already listed Elements while excluding Express Checkout Element.
+- Hosted invoices, including subscription invoices, use `collection_method=send_invoice`; the customer makes a new cash payment for each invoice. Automatic charging and Checkout subscription mode are unsupported. Thus the November capability row “Recurring payments: Not supported” describes automatic/reusable payment behavior, while Billing supports manually paid subscription invoices.
+
+## Connect paths and dated limitation
+
+The November guide describes a Japanese platform settling destination charges or separate charges and transfers on its **own account** using its own Konbini activation. For this path, do not set `on_behalf_of`; the connected account need not activate Konbini. The May guide described partial Connect support with an invite to create charges **on behalf of** other accounts. These are different charge/account configurations. The November own-account path does not prove that the dated invite requirement disappeared or that any specific platform is eligible.
+
+## Customer, payment, and refund states
+
+The customer supplies name and email and may use a phone number as confirmation number. Stripe shows a payment code, confirmation number, and expiration for each supported chain; the customer presents the appropriate details and pays cash before expiry. The codes are instruction data at `PaymentIntent.next_action.konbini_display_details.stores.<store>.payment_code` and `.confirmation_number`, not transaction IDs or proof of payment. No card or bank statement descriptor appears for the cash payment. Fulfill only after the asynchronous payment confirmation and `PaymentIntent.status=succeeded`; code creation, provisional access, or store visit alone is not success.
+
+Full and partial refunds are supported through Dashboard or Refunds API, but cash cannot return to the original payment source. Stripe emails the customer to collect bank details, and the customer must respond before Stripe can process a bank-transfer refund. Check `Refund.status`; `refund.updated` or `refund.failed` conveys the final outcome. A failed refund returns funds to the Stripe balance and requires another refund method. A refund request is not a completed bank transfer. Standard customer chargebacks/disputes are unsupported; rare store-reported irregularities can still prompt Stripe follow-up.
+
+## Related
+
+- Company: [[stripe]]
+- Concept: [[stripe-vouchers]]
+- Integration: [[source-stripe-konbini-accept-payment]]
+
+## Raw Sources
+
+- [[raw/stripe-payments-konbini-2026-11-07|November 7, 2026 Konbini guide]] — eligibility, states, product matrix, Connect path, refunds and instruction fields.
+- [[raw/stripe-konbini-2025|May 7, 2026 Konbini guide]] — prior properties, invite-scoped Connect note, Billing, and dated prohibited categories.

@@ -1,0 +1,1376 @@
+{
+  "audit_id": "concept-audit-04a",
+  "targets": [
+    {
+      "target": "wiki/concepts/stripe-adaptive-pricing.md",
+      "before_sha256": "e5a3ba98b33437f9794931d57df106b4871934c6e4022739fa2a1915e40eeb9c",
+      "candidate": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-adaptive-pricing.md",
+      "candidate_sha256": "9780b5429216cf3e402b0b3c70e5d4aca968fad7e32942504a63d746ee0ba212",
+      "diff": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-adaptive-pricing.md.diff",
+      "updates": [
+        {
+          "update_id": "adaptive_pricing_compliance_scope",
+          "target_path": "wiki/concepts/stripe-adaptive-pricing.md",
+          "update_kind": "durable_fact",
+          "anchor": "ML-based feature that automatically presents prices in customers' local currencies at checkout. Covers 150+ countries. Stripe handles currency selection, conversion, exchange rate guarantees, and compliance. Zero additional cost to merchants.",
+          "proposed_markdown": "In the 2026-11-07 Checkout Sessions/Elements guide, Stripe says Adaptive Pricing uses machine learning to select a relevant local presentment currency, calculates converted prices and offers an exchange rate guaranteed for 24 hours across more than 150 customer markets. Stripe says the feature can facilitate compliance when presenting supported currencies; merchants remain responsible for applicable price-localization laws, and Stripe requires the Currency Selector Element for this Elements flow. The guide lists no direct additional merchant Adaptive Pricing fee, with a 2\u20134% customer conversion fee embedded in the presented rate. These are dated guide claims, not a guarantee of a merchant's eligibility or legal compliance. See [[source-stripe-adaptive-pricing-elements]].",
+          "quote_indexes": [
+            0
+          ],
+          "warnings": [
+            "New raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md:11-18,74-78,419-424 says facilitate compliance and separately assigns price-localization-law responsibility to the merchant; old raw/stripe-adaptive-pricing-elements-2025.md:12-17,73-75 has the same distinction."
+          ],
+          "job_id": "payments-custom-localize-prices-adaptive-pricing",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-adaptive-pricing/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "adaptive_pricing_methods_26",
+          "target_path": "wiki/concepts/stripe-adaptive-pricing.md",
+          "update_kind": "durable_fact",
+          "anchor": "Adaptive Pricing unlocks 20 payment methods that require local currency presentation:\n\niDEAL \u00b7 Bancontact \u00b7 BLIK \u00b7 EPS \u00b7 P24 \u00b7 Pix \u00b7 Amazon Pay \u00b7 Link \u00b7 South Korean cards \u00b7 MB WAY \u00b7 Naver Pay \u00b7 Kakao Pay \u00b7 PAYCO \u00b7 PayPal \u00b7 Revolut Pay \u00b7 Samsung Pay \u00b7 TWINT \u00b7 WeChat Pay \u00b7 Klarna (EU+UK) \u00b7 UPI",
+          "proposed_markdown": "The 2026-11-07 Checkout Sessions/Elements guide lists 26 methods that require local-currency presentment, six more than its 2026-04-21 list: Alipay \u00b7 Amazon Pay \u00b7 Bacs Debit \u00b7 Bancontact \u00b7 Bizum \u00b7 BLIK \u00b7 EPS \u00b7 iDEAL \u00b7 Link \u00b7 P24 \u00b7 Pix \u00b7 South Korean cards \u00b7 MB WAY \u00b7 Naver Pay \u00b7 Kakao Pay \u00b7 Pay by Bank \u00b7 PAYCO \u00b7 PayPal \u00b7 Revolut Pay \u00b7 Samsung Pay \u00b7 Satispay \u00b7 SEPA Debit \u00b7 TWINT \u00b7 WeChat Pay \u00b7 Klarna (EU+UK only) \u00b7 UPI. This is a guide list, not a guarantee of availability for each merchant, market or customer. See [[source-stripe-adaptive-pricing-elements]].",
+          "quote_indexes": [
+            4
+          ],
+          "warnings": [
+            "New raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md:166-197 lists 26 names; old raw/stripe-adaptive-pricing-elements-2025.md:149-174 lists 20. Cross-border subscriptions remain card, Link, Apple Pay and Google Pay at new line 197."
+          ],
+          "job_id": "payments-custom-localize-prices-adaptive-pricing",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-adaptive-pricing/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "adaptive_pricing_flow_currency_warning",
+          "target_path": "wiki/concepts/stripe-adaptive-pricing.md",
+          "update_kind": "durable_fact",
+          "anchor": "5. After payment: session/PaymentIntent objects reflect integration currency; `presentment_details` hash shows what customer actually paid",
+          "proposed_markdown": "5. After payment: the November Elements guide distinguishes localized values in the client Elements Session from an API Checkout Session described as retaining integration currency with customer context under `presentment_details`; its testing paragraph conflicts by saying API Checkout Session `currency`, `payment_method_types` and `amount_total` reflect the local currency. Treat the API-object result as unresolved in these captures; see [[source-stripe-adaptive-pricing-elements]].",
+          "quote_indexes": [
+            0
+          ],
+          "warnings": [
+            "Internal source conflict: new raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md:38 versus 203, also old raw/stripe-adaptive-pricing-elements-2025.md:39 versus 180. Do not resolve by inference."
+          ],
+          "job_id": "payments-custom-localize-prices-adaptive-pricing",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-adaptive-pricing/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "adaptive_pricing_reporting_currency_warning",
+          "target_path": "wiki/concepts/stripe-adaptive-pricing.md",
+          "update_kind": "durable_fact",
+          "anchor": "Session/PaymentIntent `amount_total` and `currency` always remain in integration currency.",
+          "proposed_markdown": "The April and November Elements guides say in their display sections that the API Checkout Session remains in integration currency with localized customer context under `presentment_details`, while their testing sections say the Checkout Session's `currency`, `payment_method_types` and `amount_total` reflect local currency when local presentment is possible (April raw lines 39, 180; November raw lines 38, 203). The client Elements Session can contain localized amounts. These API Checkout Session statements conflict in the captures; do not assert an unconditional currency or amount value. See [[source-stripe-adaptive-pricing-elements]].",
+          "quote_indexes": [
+            0
+          ],
+          "warnings": [
+            "Internal source conflict: new raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md:38,203; old raw/stripe-adaptive-pricing-elements-2025.md:39,180."
+          ],
+          "job_id": "payments-custom-localize-prices-adaptive-pricing",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-adaptive-pricing/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "adaptive_pricing_eligibility_restrictions",
+          "target_path": "wiki/concepts/stripe-adaptive-pricing.md",
+          "update_kind": "durable_fact",
+          "anchor": "Not supported for:\n- Elements + Payment Intents API integrations\n- Indian businesses\n- `capture_method: 'manual'`\n- `custom_unit_amount` (pay-what-you-want)\n- When local currency already in price `currency_options` (that currency skipped, others still converted)\n- Price currency must be a settlement currency",
+          "proposed_markdown": "The 2026-11-07 Checkout Sessions/Elements guide excludes Elements + Payment Intents API and Checkout Sessions with `capture_method: 'manual'`. It skips conversion only for local currencies already defined in Price `currency_options`; other currencies may convert. The integration or price currency must be a settlement currency of the merchant of record, and Indian businesses are supported only if they accept international payments. The 2026-04-21 guide instead said Indian businesses were unsupported and excluded custom amounts; the November restriction list omits custom amounts, so their current applicability is unresolved. These guide conditions do not establish account-specific eligibility. See [[source-stripe-adaptive-pricing-elements]].",
+          "quote_indexes": [
+            3
+          ],
+          "warnings": [
+            "India condition changed: old raw/stripe-adaptive-pricing-elements-2025.md:217 versus new raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md:232. Old custom-amount exclusion at line 227 is omitted from new lines 238-243; omission does not establish support. Merchant-of-record settlement condition new lines 234-236."
+          ],
+          "job_id": "payments-custom-localize-prices-adaptive-pricing",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-adaptive-pricing/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "adaptive_pricing_elements_reciprocal_route",
+          "target_path": "wiki/concepts/stripe-adaptive-pricing.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-adaptive-pricing-elements]] \u2014 Elements integration guide: adaptivePricing.allowed flag, CurrencySelectorElement React component, currencyOptions guard, +location_XX testing",
+          "proposed_markdown": "- [[source-stripe-adaptive-pricing-elements]] \u2014 April and November 2026 Checkout Sessions/Elements guide: separate client `adaptivePricing.allowed` and Session/Dashboard enablement, 26 named local methods, conditional India support, selector troubleshooting, unresolved API Checkout Session currency wording, and dated April-only custom-amount restriction.",
+          "quote_indexes": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "warnings": [
+            "Route to own mapped source for the 2026-11-07 full guide; new raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md:108-115,132-197,228-243."
+          ],
+          "job_id": "payments-custom-localize-prices-adaptive-pricing",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-adaptive-pricing/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "manual_currency_a1_override_route",
+          "target_path": "wiki/concepts/stripe-adaptive-pricing.md",
+          "update_kind": "durable_fact",
+          "anchor": "- When local currency already in price `currency_options` (that currency skipped, others still converted)",
+          "proposed_markdown": "- When a local currency is manually defined in Price `currency_options`, that fixed currency amount overrides Adaptive Pricing for that currency. Other currencies can still be handled by Adaptive Pricing where the feature and Checkout configuration support it; see [[source-stripe-manual-currency-prices]] for the Checkout Session path and its localization prerequisites.",
+          "quote_indexes": [
+            0,
+            1,
+            4
+          ],
+          "warnings": [
+            "The manual-price guide new raw/stripe-payments-custom-localize-prices-manual-currency-prices-2026-11-07.md:9-18,106-114 and old raw/stripe-manual-currency-prices-2025.md:8-17,141-149 support this scoped relationship. Neither capture proves merchant-specific Adaptive Pricing eligibility."
+          ],
+          "job_id": "payments-custom-localize-prices-manual-currency-prices",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-manual-currency-prices/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "manual_currency_a1_source_link",
+          "target_path": "wiki/concepts/stripe-adaptive-pricing.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-adaptive-pricing-elements]] \u2014 Elements integration guide: adaptivePricing.allowed flag, CurrencySelectorElement React component, currencyOptions guard, +location_XX testing",
+          "proposed_markdown": "- [[source-stripe-adaptive-pricing-elements]] \u2014 Elements integration guide: adaptivePricing.allowed flag, CurrencySelectorElement React component, currencyOptions guard, +location_XX testing\n- [[source-stripe-manual-currency-prices]] \u2014 manually fixed Price currency_options on Checkout Sessions override Adaptive Pricing for those currencies; November 2026 adds a customer-configured Account testing option",
+          "quote_indexes": [
+            1,
+            2
+          ],
+          "warnings": [
+            "New raw/stripe-payments-custom-localize-prices-manual-currency-prices-2026-11-07.md:9-18,60-81 is authority for the added route; old raw/stripe-manual-currency-prices-2025.md:8-17,79-108 remains dated."
+          ],
+          "job_id": "payments-custom-localize-prices-manual-currency-prices",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-manual-currency-prices/attempt-2/receipt.json"
+        }
+      ],
+      "contributions": [
+        {
+          "job_id": "payments-custom-localize-prices-adaptive-pricing",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-adaptive-pricing/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-adaptive-pricing/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-adaptive-pricing/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-custom-localize-prices-manual-currency-prices",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-manual-currency-prices/attempt-2/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-manual-currency-prices/attempt-2/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-manual-currency-prices/attempt-2/input.json"
+        }
+      ]
+    },
+    {
+      "target": "wiki/concepts/stripe-bank-redirects.md",
+      "before_sha256": "40ba4798d2bab768bb88d747cbd3a7bb7f64e5f6294abd94dc848fb384b6fc8b",
+      "candidate": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-bank-redirects.md",
+      "candidate_sha256": "6e17148d4fca980f17388046de3093c950434dc189f4feb988307e779a87845e",
+      "diff": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-bank-redirects.md.diff",
+      "updates": [
+        {
+          "update_id": "payments-bancontact-bank-redirect-matrix",
+          "target_path": "wiki/concepts/stripe-bank-redirects.md",
+          "update_kind": "durable_fact",
+          "anchor": "| Bancontact | `bancontact` | Yes | Yes (`off_session` only) | Yes |",
+          "proposed_markdown": "| Bancontact | `bancontact` | May setup guide: Yes; November overview: \u2717 | May save guide: Yes (`off_session`); November overview: \u2717 | Yes |",
+          "quote_indexes": [
+            0,
+            3
+          ],
+          "warnings": [
+            "Old Bancontact setup raw lines 16-28,50-85 and save raw lines 12-16,49-64 document SEPA-generated paths; new Bancontact overview raw lines 109-114 marks setup exclusions. See [[source-stripe-bancontact]] for unresolved dated scope."
+          ],
+          "job_id": "payments-bancontact",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bancontact/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "payments-bancontact-bank-redirect-invoicing",
+          "target_path": "wiki/concepts/stripe-bank-redirects.md",
+          "update_kind": "durable_fact",
+          "anchor": "- **Invoicing**: FPX full support; iDEAL|Wero full support; Bancontact/EPS/P24 invite-only; BLIK/TWINT unsupported",
+          "proposed_markdown": "- **Invoicing**: FPX full support; iDEAL|Wero full support; Bancontact was invite-only in its May overview, while its November overview lists Invoicing with `send_invoice` collection only and does not resolve account-specific gating; EPS/P24 invite-only; BLIK/TWINT unsupported. See [[source-stripe-bancontact]].",
+          "quote_indexes": [
+            3
+          ],
+          "warnings": [
+            "Old Bancontact raw lines 101-111 versus new raw lines 100-116. Other methods in this row are unchanged and not re-evaluated here."
+          ],
+          "job_id": "payments-bancontact",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bancontact/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "payments-bancontact-bank-redirect-source-route",
+          "target_path": "wiki/concepts/stripe-bank-redirects.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-bank-redirects]] \u2014 primary source: product support matrix, API support matrix, payment flow",
+          "proposed_markdown": "- [[source-stripe-bank-redirects]] \u2014 primary source: product support matrix, API support matrix, payment flow\n- [[source-stripe-bancontact]] \u2014 Bancontact overviews (2026-05-03 and 2026-11-07): updated refund and eligibility boundaries and dated setup conflict",
+          "quote_indexes": [
+            0,
+            2,
+            3
+          ],
+          "warnings": [],
+          "job_id": "payments-bancontact",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bancontact/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "bank-redirects-dated-scope",
+          "target_path": "wiki/concepts/stripe-bank-redirects.md",
+          "update_kind": "durable_fact",
+          "anchor": "Bank redirects let customers pay online by being redirected to their bank's portal, logging in, and approving the transaction. Dominant payment method in Germany, Netherlands (iDEAL), and Malaysia (FPX). Covers 8 methods: Bancontact, BLIK, EPS, FPX, iDEAL|Wero, P24, Pay by Bank, TWINT.",
+          "proposed_markdown": "Bank redirects let customers pay online through bank authorization and usually return to the merchant after a browser redirect; BLIK is the no-browser-redirect exception. The May 3, 2026 overview covered seven product rows and eight API rows, including TWINT and API-only Pay by Bank. The November 7, 2026 capture has six product rows (Bancontact, BLIK, EPS, FPX, iDEAL|Wero, P24) and seven API rows (those six plus Pay by Bank), omitting TWINT from both. This is dated table coverage, not proof that TWINT support ended. See [[source-stripe-bank-redirects]].",
+          "quote_indexes": [
+            0,
+            1,
+            2
+          ],
+          "warnings": [
+            "Old raw lines 24-32 and 40-49 versus new raw lines 25-32 and 40-48; Pay by Bank is API-only in both captured tables."
+          ],
+          "job_id": "payments-bank-redirects",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-redirects/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "bank-redirects-subscription-scope",
+          "target_path": "wiki/concepts/stripe-bank-redirects.md",
+          "update_kind": "durable_fact",
+          "anchor": "Not suitable for subscriptions with `charge_automatically` \u2014 most bank redirect methods are single-use or require redirect-based approval each time.",
+          "proposed_markdown": "Subscription and recurring support is method- and route-specific. The November 7, 2026 matrix marks BLIK Subscriptions supported, while the BLIK method page requires an authorized recurring mandate and capability activation. Bancontact/EPS/FPX/P24 subscription cells are `send_invoice` only; iDEAL|Wero is Checkout-subscription-mode-only and excludes `charge_automatically` for subscriptions or invoices. A matrix support cell does not prove a particular merchant's capability or a completed off-session payment.",
+          "quote_indexes": [
+            0,
+            1
+          ],
+          "warnings": [
+            "New raw lines 14, 27-34; old raw line 13. BLIK method raw lines 124-148 and 177-181 give mandate and Connect capability boundaries."
+          ],
+          "job_id": "payments-bank-redirects",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-redirects/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "bank-redirects-api-rows-2026",
+          "target_path": "wiki/concepts/stripe-bank-redirects.md",
+          "update_kind": "durable_fact",
+          "anchor": "| Bancontact | `bancontact` | Yes | Yes (`off_session` only) | Yes |\n| BLIK | `blik` | No | No | No |\n| EPS | `eps` | No | No | Yes |\n| FPX | `fpx` | No | No | Yes |\n| iDEAL\\|Wero | `ideal` | Yes | Yes (`off_session` only) | Yes |\n| P24 | `p24` | No | No | Yes |\n| Pay by Bank | `pay_by_bank` | No | No | Yes |\n| TWINT | `twint` | Yes | Yes (`off_session` only) | Yes |",
+          "proposed_markdown": "| Bancontact | `bancontact` | No in November matrix (May: Yes) | Yes in November matrix, with generated SEPA Direct Debit footnote; same-date Bancontact page says no | Yes |\n| BLIK | `blik` | Yes in November matrix (May: No; May setup guide: Yes) | Yes in November matrix (May: No); off-session recurring path in BLIK guide | No |\n| EPS | `eps` | No | No | Yes |\n| FPX | `fpx` | No | No | Yes |\n| iDEAL\\|Wero | `ideal` | Yes | Yes | Yes |\n| P24 | `p24` | No | No | Yes |\n| Pay by Bank | `pay_by_bank` | No | No | Yes |\n| TWINT | `twint` | May 3 matrix: Yes; no November row | May 3 matrix: Yes; no November row | May 3 matrix: Yes; no November row |",
+          "quote_indexes": [
+            2,
+            3
+          ],
+          "warnings": [
+            "Old raw lines 42-49, new raw lines 42-48 and 50. Bancontact same-date method raw lines 109-116 mark SetupIntents and PI future usage unsupported. BLIK May setup-guide raw lines 20-37, 144-157 and 563-623 describe SetupIntent paths despite May matrix No. The November matrix does not prove exclusive off_session for BLIK or iDEAL, nor a TWINT withdrawal."
+          ],
+          "job_id": "payments-bank-redirects",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-redirects/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "bank-redirects-product-rows-2026",
+          "target_path": "wiki/concepts/stripe-bank-redirects.md",
+          "update_kind": "durable_fact",
+          "anchor": "- **Express Checkout Element**: unsupported for all bank redirects\n- **Checkout setup/subscription mode**: unsupported for BLIK, EPS, FPX, P24, TWINT\n- **Subscriptions**: only iDEAL|Wero, Bancontact, EPS, FPX, P24 \u2014 all via `send_invoice` only (not `charge_automatically`)\n- **Invoicing**: FPX full support; iDEAL|Wero full support; Bancontact/EPS/P24 invite-only; BLIK/TWINT unsupported\n- **BLIK**: does not support deferred intent creation path",
+          "proposed_markdown": "- **Express Checkout Element**: unsupported for every method listed in both captured product tables; Pay by Bank has no product row and TWINT has no November row.\n- **Checkout modes**: November EPS/FPX/P24 retain footnotes excluding setup and subscription modes. The May BLIK row also had those footnotes, but November BLIK does not. Its separate May accept-payment guide covered a one-time payment-mode path while its same-date setup guide documented Checkout setup mode; no single row resolves all guide routes. TWINT has only a May row with those exclusions.\n- **Subscriptions**: November BLIK supported, with mandate/capability conditions in its method page; Bancontact/EPS/FPX/P24 `send_invoice` only; iDEAL|Wero Checkout subscription mode only plus `send_invoice`, excluding `charge_automatically`. TWINT's May row was unsupported and is absent in November.\n- **Invoicing and portal**: November BLIK Invoicing and Customer Portal supported; May row marked both unsupported. November Bancontact/EPS/P24 Invoicing invite-only, FPX supported, iDEAL|Wero supported without `charge_automatically`; TWINT's May row said unsupported and November omits it.\n- **BLIK Payment Element**: November footnotes still exclude collecting details before PI creation and Elements with the Checkout Sessions API. The bank-redirects table says Mobile Payment Element supported, while the same-date BLIK method overview says its in-app category unsupported; keep this apparent terminology/scope conflict visible. BLIK's deferred-intent creation path remains excluded in the November API footnote.",
+          "quote_indexes": [
+            1,
+            4
+          ],
+          "warnings": [
+            "Old raw lines 24-34 and new raw lines 25-34 preserve method-specific cells/footnotes. BLIK May setup-guide raw lines 20-37 conflict with May overview mode/SetupIntent cells; new BLIK raw lines 150-181 qualify mobile, recurring and Connect capability. Do not generalize product cells to account eligibility or payment outcome."
+          ],
+          "job_id": "payments-bank-redirects",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-redirects/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "bank-redirects-source-route-2026",
+          "target_path": "wiki/concepts/stripe-bank-redirects.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-bank-redirects]] \u2014 primary source: product support matrix, API support matrix, payment flow",
+          "proposed_markdown": "- [[source-stripe-bank-redirects]] \u2014 May 3 and November 7, 2026 product/API matrices: method-specific footnotes, BLIK and Bancontact changes, and TWINT's November row omission",
+          "quote_indexes": [
+            1,
+            2,
+            3
+          ],
+          "warnings": [],
+          "job_id": "payments-bank-redirects",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-redirects/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "bank-redirects-blik-api-row",
+          "target_path": "wiki/concepts/stripe-bank-redirects.md",
+          "update_kind": "durable_fact",
+          "anchor": "| BLIK | `blik` | No | No | No |",
+          "proposed_markdown": "| BLIK | `blik` | Yes (November 7, 2026 matrix) | Yes (November 7, 2026 matrix; BLIK overview documents an `off_session` recurring path) | No |",
+          "quote_indexes": [
+            0,
+            3
+          ],
+          "warnings": [
+            "Old bank-redirect raw line 43 marked SetupIntents and setup_future_usage unsupported; new bank-redirect raw line 43 marks both supported. New BLIK raw line 146 documents off_session recurring setup but does not exclude on_session usage; new bank-redirect raw line 50 distinguishes bank-debit methods and does not impose an exclusive BLIK off_session limit. Account enablement remains qualified."
+          ],
+          "job_id": "payments-blik",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "bank-redirects-blik-product-boundary",
+          "target_path": "wiki/concepts/stripe-bank-redirects.md",
+          "update_kind": "durable_fact",
+          "anchor": "- **Checkout setup/subscription mode**: unsupported for BLIK, EPS, FPX, P24, TWINT\n- **Subscriptions**: only iDEAL|Wero, Bancontact, EPS, FPX, P24 \u2014 all via `send_invoice` only (not `charge_automatically`)\n- **Invoicing**: FPX full support; iDEAL|Wero full support; Bancontact/EPS/P24 invite-only; BLIK/TWINT unsupported\n- **BLIK**: does not support deferred intent creation path",
+          "proposed_markdown": "- **Checkout setup/subscription mode**: The May 3, 2026 bank-redirects matrix excluded BLIK, EPS, FPX, P24 and TWINT from both modes. The November 7 matrix lists BLIK Checkout and Subscriptions support without those BLIK mode-exclusion footnotes, but does not itself establish a specific BLIK Checkout mode. The May matrix's EPS, FPX, P24 and TWINT mode exclusions remain dated method-specific facts.\n- **Subscriptions**: The May 3 matrix listed iDEAL|Wero, Bancontact, EPS, FPX and P24 as supported via `send_invoice` only, not `charge_automatically`, and marked BLIK and TWINT unsupported. The November 7 matrix marks BLIK supported, alongside the BLIK overview's recurring mandate path; it does not by itself establish BLIK's invoice collection method. Preserve the other methods' stated May matrix conditions as dated.\n- **Invoicing**: The May 3 matrix listed FPX and iDEAL|Wero supported; Bancontact, EPS and P24 invite only; BLIK and TWINT unsupported. The November 7 bank-redirects matrix and BLIK overview now mark BLIK supported. Preserve the other methods' May matrix statuses as dated; do not infer a specific BLIK invoice payment flow from a support cell.\n- **BLIK Payment Element**: The November 7 bank-redirects matrix excludes both collecting details before PI creation and using Elements with the Checkout Sessions API (BLIK footnotes 3 and 4), despite separate broad Checkout and Payment Element support cells. The overview also states the deferred-details restriction.\n- **BLIK deferred intent**: The November bank-redirects API footnote still excludes BLIK's deferred-intent creation path. This does not negate supported SetupIntents and off-session PI setup. See [[source-stripe-blik]] for the dated conditions.",
+          "quote_indexes": [
+            0,
+            3
+          ],
+          "warnings": [
+            "Old bank-redirect raw lines 27, 34, 43, 51 and new bank-redirect raw lines 28, 34, 43, 50; new BLIK raw lines 144-175. Other methods' support/collection conditions are retained explicitly as dated May 3 matrix facts. The exact Elements with Checkout Sessions API exclusion is November bank-redirect raw line 34 footnote 4."
+          ],
+          "job_id": "payments-blik",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "bank-redirects-blik-source-route",
+          "target_path": "wiki/concepts/stripe-bank-redirects.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-bank-redirects]] \u2014 primary source: product support matrix, API support matrix, payment flow",
+          "proposed_markdown": "- [[source-stripe-bank-redirects]] \u2014 bank-redirect product/API support matrix and flow, with dated per-method qualifications\n- [[source-stripe-blik]] \u2014 May 3 and November 7, 2026 BLIK overviews: reusable mandate path, operational limits, and route-specific support qualifications",
+          "quote_indexes": [
+            0,
+            3
+          ],
+          "warnings": [
+            "The BLIK overview is reciprocal context for conflicting historical matrix rows; the bank-redirects canonical source has a separate coordinator-assigned update."
+          ],
+          "job_id": "payments-blik",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "s03-eps-shared-bank-redirect-scope",
+          "target_path": "wiki/concepts/stripe-bank-redirects.md",
+          "update_kind": "durable_fact",
+          "anchor": "- **Subscriptions**: only iDEAL|Wero, Bancontact, EPS, FPX, P24 \u2014 all via `send_invoice` only (not `charge_automatically`)\n- **Invoicing**: FPX full support; iDEAL|Wero full support; Bancontact/EPS/P24 invite-only; BLIK/TWINT unsupported",
+          "proposed_markdown": "- **Subscriptions**: The May 2026 bank-redirect matrix lists iDEAL|Wero, Bancontact, EPS, FPX and P24 via `send_invoice` only. For EPS this is a per-invoice collection route, not automatic recurring charging or Checkout subscription mode; the November EPS overview labels recurring and off-session support unavailable. See [[source-stripe-eps]].\n- **Invoicing**: The May 2026 matrix marks FPX and iDEAL|Wero supported and Bancontact/EPS/P24 invite-only; BLIK/TWINT unsupported. The November EPS page instead marks EPS Invoicing supported with a `send_invoice`-only footnote whose row attachment is unclear in the text capture. Preserve the dated conflict; EPS entitlement for a particular account remains unverified. See [[source-stripe-eps]].",
+          "quote_indexes": [
+            3
+          ],
+          "warnings": [
+            "May shared source matrix and footnote: raw/stripe-bank-redirects-2025.md:24-34; May EPS Invoicing invite statement: raw/stripe-eps-2025.md:101-111.",
+            "November EPS recurring, matrix and footnote: raw/stripe-payments-eps-2026-11-07.md:42,86-112. Other bank-redirect method facts are unchanged."
+          ],
+          "job_id": "payments-eps",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-eps/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "bank-redirects-fpx-billing-boundary",
+          "target_path": "wiki/concepts/stripe-bank-redirects.md",
+          "update_kind": "durable_fact",
+          "anchor": "- **Subscriptions**: only iDEAL|Wero, Bancontact, EPS, FPX, P24 \u2014 all via `send_invoice` only (not `charge_automatically`)",
+          "proposed_markdown": "- **Subscriptions**: The May 3, 2026 bank-redirects matrix listed iDEAL|Wero, Bancontact, EPS, FPX and P24 via `send_invoice` only, not `charge_automatically`. The May 3 FPX accept-payment guide's legacy Elements section separately said Billing was not supported, so that same-day guide and bank-redirects matrix conflict by route. The November 7 FPX overview marks Billing/Invoicing supported with a `send_invoice`-only footnote, while recurring payments, SetupIntents, `setup_future_usage` and off-session payments remain unsupported. FPX Billing support does not authorize automatic recurring charges. Other methods retain their dated matrix scope; see [[source-stripe-fpx]].",
+          "quote_indexes": [
+            2
+          ],
+          "warnings": [
+            "New FPX raw lines 86-115; old FPX raw lines 62-71; May 3 bank-redirects raw lines 29 and 34; May 3 accept-payment guide raw line 156. The May 3 bank-redirects concept is retained as dated for other methods; this job does not assert their November status."
+          ],
+          "job_id": "payments-fpx",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-fpx/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "bank-redirects-fpx-source-route",
+          "target_path": "wiki/concepts/stripe-bank-redirects.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-bank-redirects]] \u2014 primary source: product support matrix, API support matrix, payment flow",
+          "proposed_markdown": "- [[source-stripe-bank-redirects]] \u2014 bank-redirect product/API support matrices and payment flow\n- [[source-stripe-fpx]] \u2014 May 3 and November 7, 2026 FPX overviews: MY/MYR, dated refund change, B2C/B2B bounds, send_invoice-only Billing scope",
+          "quote_indexes": [
+            0,
+            1,
+            3
+          ],
+          "warnings": [
+            "Reciprocal route is specific to FPX; do not replace other methods' independent source routes."
+          ],
+          "job_id": "payments-fpx",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-fpx/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "fpx_accept_a1_bank_subscriptions",
+          "target_path": "wiki/concepts/stripe-bank-redirects.md",
+          "update_kind": "durable_fact",
+          "anchor": "- **Subscriptions**: only iDEAL|Wero, Bancontact, EPS, FPX, P24 \u2014 all via `send_invoice` only (not `charge_automatically`)",
+          "proposed_markdown": "- **Subscriptions**: the bank-redirects support summary lists iDEAL|Wero, Bancontact, EPS, FPX, and P24 via `send_invoice` only (not `charge_automatically`). FPX requires a dated scope warning: the May 3, 2026 FPX legacy Elements guide says FPX is single-use, cannot be used for recurring or additional payments, and is not supported with Stripe Billing; its Checkout compatibility table separately says subscription mode is unsupported. The November 7, 2026 FPX canonical capture is only a variant index and does not resolve this conflict. Verify the relevant current variant and Billing path before treating FPX `send_invoice` support as established.",
+          "quote_indexes": [
+            1,
+            2,
+            3
+          ],
+          "warnings": [
+            "The existing support statement conflicts with raw/stripe-fpx-accept-payment-2025.md:156; Checkout's narrower no-subscription-mode claim is at old raw:28-37. New raw/stripe-payments-fpx-accept-a-payment-2026-11-07.md:9-15 has no current subscription behavior."
+          ],
+          "job_id": "payments-fpx-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-fpx-accept-a-payment/attempt-2/receipt.json"
+        }
+      ],
+      "contributions": [
+        {
+          "job_id": "payments-bancontact",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bancontact/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bancontact/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bancontact/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-bank-redirects",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-redirects/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-redirects/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-redirects/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-blik",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik/attempt-2/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik/attempt-2/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik/attempt-2/input.json"
+        },
+        {
+          "job_id": "payments-eps",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-eps/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-eps/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-eps/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-fpx",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-fpx/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-fpx/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-fpx/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-fpx-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-fpx-accept-a-payment/attempt-2/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-fpx-accept-a-payment/attempt-2/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-fpx-accept-a-payment/attempt-2/input.json"
+        }
+      ]
+    },
+    {
+      "target": "wiki/concepts/stripe-bnpl.md",
+      "before_sha256": "29257bf1a59b6e4750c9c3b815cc55de420759f91b1f67e190d92c1720dba495",
+      "candidate": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-bnpl.md",
+      "candidate_sha256": "67641b05863b89b230b4196f2ed0475472ac32676668b8514f9ae412212e9b70",
+      "diff": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-bnpl.md.diff",
+      "updates": [
+        {
+          "update_id": "affirm-bnpl-method-row",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "| Affirm | `affirm` | US, CA | $50\u2013$30k | Subscriptions, Terminal |",
+          "proposed_markdown": "| Affirm | `affirm` | US, CA; GB private preview | US USD 35\u201330k across eligible options; CA CAD 50\u201330k; GB preview GBP 50\u201330k | Single-use; no recurring payments, SetupIntents, or off-session use; Terminal listed |",
+          "quote_indexes": [
+            0,
+            1
+          ],
+          "warnings": [
+            "New raw/stripe-payments-affirm-2026-11-07.md:18-22,177-210,271-296,356-380; old raw/stripe-affirm-2025.md:16-22,32-54,63-75. The prior 'Subscriptions' cell is wrong; Invoicing/Customer Portal support does not imply subscription invoices. GB is private preview only."
+          ],
+          "job_id": "payments-affirm",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-affirm/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "affirm-bnpl-financing",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Financing packages**: Standard (default) and Enhanced (more 0% APR tiers). Configurable in Dashboard; platforms excluded from 0% APR plans.",
+          "proposed_markdown": "**Financing packages**: Standard (default) and Enhanced (additional listed monthly 0% APR tiers); eligible businesses with Dashboard access can view or change the package, except platforms and connected accounts. The captured platform exclusion applies to Pay in 30 and monthly 0% APR plans; Pay in 4 is separately listed at 0% APR. GB Pay in 3 appears in the November Standard table but not Enhanced, so do not infer Enhanced GB availability.",
+          "quote_indexes": [
+            0,
+            1
+          ],
+          "warnings": [
+            "Corrects overbroad exclusion against raw/stripe-affirm-2025.md:105-149 and raw/stripe-payments-affirm-2026-11-07.md:212-260. November GB is private preview (raw/stripe-payments-affirm-2026-11-07.md:18-22,177-203)."
+          ],
+          "job_id": "payments-affirm",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-affirm/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "affirm-bnpl-refunds",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Refunds**: up to 120 days; async processing (`refund.updated`/`refund.failed` webhooks); no fee credits returned.",
+          "proposed_markdown": "**Refunds**: full or partial refunds can be submitted within 120 days; November describes asynchronous processing of up to two days and remaining scheduled payments canceled, with final `Refund.status` or `refund.updated`/`refund.failed` determining completion. May alone says no processing-fee credit, multiple partial refunds and no refund creation during an open dispute, and describes the customer plan as paused rather than canceled; retain those as dated claims.",
+          "quote_indexes": [
+            2,
+            3
+          ],
+          "warnings": [
+            "November raw/stripe-payments-affirm-2026-11-07.md:287-311; May raw/stripe-affirm-2025.md:170-176. The refund plan-state wording differs; do not equate pause with cancel or infer successful refund from submission."
+          ],
+          "job_id": "payments-affirm",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-affirm/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "affirm-bnpl-disputes",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Disputes**: no time limit for customer to file; 30-day resolution; 15-day merchant evidence window; Affirm covers fraud losses.",
+          "proposed_markdown": "**Disputes**: November capture says customers have 120 calendar days from purchase to file, merchants have 15 days from dispute creation to submit evidence, and Affirm issues a decision within 60 days of creation; repeated disputes are separate objects. **Dated conflict:** May capture said no customer filing limit, up to 30 days from creation for resolution and a decision within 15 days after evidence submission. Affirm's loss coverage is stated for customer fraud, with possible stop-or-pause-shipment requests; it is not a universal dispute guarantee. See [[source-stripe-affirm]].",
+          "quote_indexes": [
+            2,
+            3
+          ],
+          "warnings": [
+            "Reciprocal dated conflict: raw/stripe-affirm-2025.md:178-202 versus raw/stripe-payments-affirm-2026-11-07.md:313-354. Both give a 15-day merchant evidence window; do not confuse it with the 60-day November decision window."
+          ],
+          "job_id": "payments-affirm",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-affirm/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "affirm-bnpl-source-route",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-affirm]] \u2014 Affirm deep-dive: financing packages, payment tiers, refunds, disputes, prohibited categories, Connect requirements",
+          "proposed_markdown": "- [[source-stripe-affirm]] \u2014 Affirm overview captured May and November 2026: domestic US/CA plus GB private preview, financing, eligibility/MCC rules, dated refund and dispute timing conflict, product limits and May Connect detail",
+          "quote_indexes": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "warnings": [
+            "Route reflects raw/stripe-payments-affirm-2026-11-07.md:18-45,165-210,271-380 and historical raw/stripe-affirm-2025.md:170-233; GB remains private preview."
+          ],
+          "job_id": "payments-affirm",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-affirm/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "affirm_accept_concept_integration_note",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Integration notes**: 12-hour expiry for `requires_action` PaymentIntents. `affirm_checkout_canceled` error can't distinguish user cancel from Affirm loan rejection. Shipping address in `payment_intent_data[shipping]` helps loan acceptance. Always offer fallback payment methods (Affirm has higher decline rates).",
+          "proposed_markdown": "**Integration notes (May 2026 guide)**: The guide describes a 12-hour no-action timeout for `requires_action` PaymentIntents, but its prose starts the clock after the Affirm redirect while its error table says after initial checkout creation; see [[source-stripe-affirm-accept-payment]] before choosing a start point. `affirm_checkout_canceled` is a charge outcome reason that does not distinguish buyer cancellation from Affirm loan rejection, not an error code. Checkout's `payment_intent_data[shipping]` can improve loan acceptance, and the guide recommends fallback methods such as cards. Its Elements and Direct API manual-capture sections also conflict on seven-day/partial versus 30-day/full-only capture; the ten-minute uncaptured expiry is test mode only.",
+          "quote_indexes": [
+            1
+          ],
+          "warnings": [
+            "November raw lines 9-20 are navigation only; all behavior and the original category correction come from May raw lines 116, 209-249, 1271-1313, 1556-1589, 1701-1723.",
+            "May prose and error table conflict on the 12-hour start; May Elements and Direct API conflict on manual-capture window and amount. Do not turn either into a universal current rule."
+          ],
+          "job_id": "payments-affirm-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-affirm-accept-a-payment/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "affirm_accept_concept_source_route",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-affirm-accept-payment]] \u2014 Affirm integration: 3 paths, Checkout constraints, 12-hour expiry, error codes, shipping tip",
+          "proposed_markdown": "- [[source-stripe-affirm-accept-payment]] \u2014 May 2026 Affirm guide: four web/API variants, Checkout constraints, outcome and capture conflicts; November 2026 index: six variant links including iOS and Android navigation",
+          "quote_indexes": [
+            1,
+            4
+          ],
+          "warnings": [
+            "Four detailed May web/API variants are in old raw lines 10-1723; six November links are navigation only at new raw lines 13-20."
+          ],
+          "job_id": "payments-affirm-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-affirm-accept-a-payment/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "afterpay-coverage-a1",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Domestic only** across 5 countries. Transaction limits: AU $4k AUD, CA $2k CAD, NZ $4k NZD, UK \u00a31.2k GBP, US $4k USD.",
+          "proposed_markdown": "**Coverage**: AU, CA, GB, NZ and US merchants and customers. General availability is domestic only; the 2026-11-07 overview lists cross-border transactions in private preview. Dynamic Checkout/Payment Element eligibility uses shipping country then geocoded client IP; manually listed payment methods require merchant-side eligibility filtering. Pay in 4 maxima: AU AUD 4k, CA CAD 2k, NZ NZD 4k, GB GBP 1.2k, US USD 2k; US monthly installments reach USD 4k.",
+          "quote_indexes": [
+            0
+          ],
+          "warnings": [
+            "New raw lines 111-160; old raw line 80 states unqualified domestic-only. Preview is not general availability or account access."
+          ],
+          "job_id": "payments-afterpay-clearpay",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-afterpay-clearpay/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "afterpay-dispute-a1",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Disputes**: 120-day customer window; 14-day merchant evidence; 30-day decision. Afterpay covers fraud.",
+          "proposed_markdown": "**Disputes**: one full dispute per payment, within 120 days of purchase; 14 calendar days from dispute creation for merchant evidence. The 2026-11-07 page says the final decision comes within 30 calendar days **of dispute creation**; the 2026-05-06 page says **of evidence submission**. Stripe withholds the amount, returning it on a merchant win and making the charge permanent on a loss. Afterpay covers customer fraud or installment nonpayment losses, subject to shipment stop/pause requests.",
+          "quote_indexes": [
+            2
+          ],
+          "warnings": [
+            "New raw lines 184-239; old raw lines 151-173 retain conflicting decision-clock origin."
+          ],
+          "job_id": "payments-afterpay-clearpay",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-afterpay-clearpay/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "afterpay-refund-a1",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Refunds**: 120-day window; async.",
+          "proposed_markdown": "**Refunds**: full or partial submission within 120 days; asynchronous completion can take up to 10 business days and refunds cannot be canceled. Check Refund `status` and `refund.updated`/`refund.failed`; a failed amount returns to the Stripe balance and requires another customer refund method. Submission is not success.",
+          "quote_indexes": [
+            1
+          ],
+          "warnings": [
+            "New raw lines 178-202; old raw lines 175-177 supply the earlier 120-day/async baseline."
+          ],
+          "job_id": "payments-afterpay-clearpay",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-afterpay-clearpay/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "afterpay-prohibited-a1",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Prohibited**: alcohol, bars, donations, pre-orders, NFTs, B2B.",
+          "proposed_markdown": "**Eligibility**: B2C is supported, B2B is not. The 2026-11-07 short prohibited list names alcohol, donations, pre-orders and NFTs, plus B2B; its MCC table separately distinguishes prohibited from restricted categories. The 2026-05-06 short list also named bars/lounges. Omission in November does not establish permission; check the full MCC list and terms.",
+          "quote_indexes": [
+            3
+          ],
+          "warnings": [
+            "New raw lines 18-93; old raw prohibited list must be dated, not silently dropped."
+          ],
+          "job_id": "payments-afterpay-clearpay",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-afterpay-clearpay/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "afterpay-source-route-a1",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-afterpay-clearpay]] \u2014 Afterpay/Clearpay: Cash App rebrand, country limits, US installment tiers, dispute/refund windows, prohibited categories",
+          "proposed_markdown": "- [[source-stripe-afterpay-clearpay]] \u2014 Afterpay/Clearpay overview: November 2026 eligibility, private-preview cross-border, payment options, refund/dispute states; dated May 2026 rebrand, Invoicing and dispute-clock conflicts",
+          "quote_indexes": [
+            0,
+            2
+          ],
+          "warnings": [
+            "Route preserves same existing source; new raw lines 111-119 and 204-211; old raw lines 8, 78 and 173."
+          ],
+          "job_id": "payments-afterpay-clearpay",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-afterpay-clearpay/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "afterpay-rebrand-a1",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "**US rebrand**: Afterpay \u2192 Cash App Afterpay (no integration changes needed). UK name: Clearpay.",
+          "proposed_markdown": "**US rebrand (2026-05-06 capture)**: Afterpay \u2192 Cash App Afterpay; the older page says no integration changes are needed **unless custom Afterpay components are used**. UK name: Clearpay. The 2026-11-07 overview does not repeat the US notice.",
+          "quote_indexes": [
+            4
+          ],
+          "warnings": [
+            "Old raw line 8 is the authority for the qualified US rebrand note; new raw lines 5-9 and 268-270 establish current captured naming but omission is not reversal."
+          ],
+          "job_id": "payments-afterpay-clearpay",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-afterpay-clearpay/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "afterpay-accept-s03-bnpl-integration-state",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Integration notes**: 3-hour expiry for `requires_action` PaymentIntents (vs Affirm's 12 hours). `billing_details` required for manual PaymentIntent path. Shipping optional but improves auth rates.",
+          "proposed_markdown": "**Integration notes (2026-05-06 guide)**: After redirect, a `requires_action` Afterpay PaymentIntent with no customer action for 3 hours detaches its PaymentMethod and returns to `requires_payment_method`; the guide's separate `payment_intent_payment_attempt_expired` entry uses 3 hours after initial checkout creation for an unsuccessful authorization. In its legacy server-managed Direct API redirect, `payment_method_data.billing_details` and `return_url` are required; shipping is optional but recommended for authentication. The old Elements Payment Intents manual-capture section says 7 days, while legacy Direct API/mobile sections say 13 days and describe refund of the first installment if uncaptured. These variant-specific old statements conflict; the 2026-11-07 variant index does not resolve current timing. See [[source-stripe-afterpay-clearpay-accept-payment]].",
+          "quote_indexes": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "warnings": [
+            "Existing concept text at wiki/concepts/stripe-bnpl.md:75 compresses old raw/stripe-afterpay-clearpay-accept-payment-2025.md:217-231 into an unqualified expiry; old lines 219 and 231 use different anchors/states.",
+            "Old raw/stripe-afterpay-clearpay-accept-payment-2025.md:1262-1266 says seven days for Elements Payment Intents; lines 1567-1571, 2022-2026, 2374-2378, 2766-2770 say 13 days for legacy Direct API/mobile. New raw:9-21 is navigation only."
+          ],
+          "job_id": "payments-afterpay-clearpay-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-afterpay-clearpay-accept-a-payment/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "afterpay-accept-s03-bnpl-source-route",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-afterpay-clearpay-accept-payment]] \u2014 Afterpay integration: 3-hour expiry, billing_details required, 3 paths, shipping tip",
+          "proposed_markdown": "- [[source-stripe-afterpay-clearpay-accept-payment]] \u2014 Afterpay/Clearpay acceptance: 2026-05-06 detailed variant guide, three-hour inactive state transition, variant-specific capture-window conflict; 2026-11-07 index adds navigation routes only",
+          "quote_indexes": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "warnings": [
+            "Replace the existing three-path/expiry label at wiki/concepts/stripe-bnpl.md:256. Old factual basis: raw/stripe-afterpay-clearpay-accept-payment-2025.md:217-231, 1262-1266, 1567-1571; new navigation basis: raw/stripe-payments-afterpay-clearpay-accept-a-payment-2026-11-07.md:9-21."
+          ],
+          "job_id": "payments-afterpay-clearpay-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-afterpay-clearpay-accept-a-payment/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "payments-alma-bnpl-coverage-timing",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Coverage**: FR, IT, ES, NL, BE, LU. EUR only. 50\u20135,000 EUR. Pay in 2, 3, or 4 (interest-free; first installment may be higher based on credit). Payout T+3.",
+          "proposed_markdown": "**Coverage and timing**: The 2026-11-07 Alma overview lists BE, ES, FR, IT, LU and NL for merchant and customer location, B2C domestic EUR transactions of 50\u20135,000 EUR, and interest-free Pay in 2, 3 or 4 (the first installment may be higher). Its property matrix says immediate confirmation, instant provisional access and settlement up to three business days (T+3), while the 2026-05-06 page labeled T+3 as payout timing. Upfront funds language does not prove instant settlement or actual payout arrival. See [[source-stripe-alma]].",
+          "quote_indexes": [
+            0,
+            1
+          ],
+          "warnings": [
+            "New raw lines 14-16, 636-653; old raw lines 36-38 and 87-91. Separate instant confirmation, provisional access and upfront funds from settlement; old payout terminology remains dated."
+          ],
+          "job_id": "payments-alma",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-alma/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "payments-alma-bnpl-disputes-fraud",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Disputes**: 120-day customer window; 14-day merchant evidence; 25-day Alma decision. Must maintain low fraud/dispute rates or risk losing access.",
+          "proposed_markdown": "**Disputes and fraud**: Customers have 120 calendar days to file; merchants have 14 calendar days to submit evidence; Alma decides within 25 calendar days after submission. The 2026-11-07 overview says dispute fees are nonrefundable regardless of outcome. Alma covers losses from customer fraud, but may request that a merchant stop or pause shipment; rising fraud/dispute rates may cost access. A filing or evidence submission does not establish a winning decision. See [[source-stripe-alma]].",
+          "quote_indexes": [
+            3
+          ],
+          "warnings": [
+            "New raw lines 743-791 and old raw lines 129-150. Fraud coverage applies to customer fraud and preserves stop/pause-shipment condition."
+          ],
+          "job_id": "payments-alma",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-alma/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "payments-alma-bnpl-connect",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Connect**: online marketplaces only (e.g., Deliveroo/ManoMano) \u2014 NOT platforms onboarding other businesses (e.g., Shopify). Requires Dashboard onboarding request.",
+          "proposed_markdown": "**Connect**: Alma is for eligible online marketplaces (for example Deliveroo or ManoMano), not platforms that only onboard other businesses to accept payments directly (for example Shopify). Marketplace onboarding requires a Dashboard request. The 2026-11-07 account-type and Connect charge checkmarks do not remove this same-page business-model restriction. See [[source-stripe-alma]].",
+          "quote_indexes": [
+            1
+          ],
+          "warnings": [
+            "New raw lines 19-22, 827-837 and old raw lines 152-162. Account type and charge-type checkmarks do not establish eligibility for onboarding-only platforms."
+          ],
+          "job_id": "payments-alma",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-alma/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "payments-alma-bnpl-source-route",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-alma]] \u2014 Alma: EUR only, T+3 payout, marketplace-only Connect, 25-day dispute, required customer terms",
+          "proposed_markdown": "- [[source-stripe-alma]] \u2014 Alma overview (2026-05-06 and 2026-11-07): B2C domestic EUR eligibility and MCC caveats; single-use 2/3/4 installments; May T+3 payout wording versus November up-to-T+3 settlement label; marketplace-only Connect, refund/dispute outcomes, and customer terms",
+          "quote_indexes": [
+            0,
+            1,
+            3
+          ],
+          "warnings": [
+            "New raw lines 17-42, 636-653, 705-817; old raw lines 36-38, 116-162. Exact source route has both dated captures."
+          ],
+          "job_id": "payments-alma",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-alma/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "payments-alma-accept-a-payment-bnpl-integration",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Integration notes**: **1-hour expiry** for `requires_action` PaymentIntents (shortest of all BNPL methods). `return_url` required. Desktop auth via QR code (expires 1h, refreshable up to 20 times). Manual capture: 7-day window.",
+          "proposed_markdown": "**Integration notes (2026-05-06 guide)**: For an Alma PaymentIntent in `requires_action`, if the customer takes no action within one hour after redirect to Alma, its PaymentMethod is detached and the Intent transitions to `requires_payment_method`. The old Elements desktop flow uses a QR code (one-hour authentication session; up to 20 refreshes). A `return_url` is required when confirming an Alma PaymentIntent; the old hosted Checkout example instead uses `success_url`, while embedded Checkout uses `return_url`. The seven-day capture window applies when `capture_method: manual` is used. Old iOS/Android dynamic-method USD examples conflict with the guide's EUR-only Alma tables/error and do not establish USD Alma eligibility. See [[source-stripe-alma-accept-payment]].",
+          "quote_indexes": [
+            1,
+            3
+          ],
+          "warnings": [
+            "Historical authority is old raw lines 40-90, 605-620, 622-665, 693-713 (especially line 699: no action within one hour after redirect), 1051-1087, 1194-1200, 1300-1335, 1413-1420; new raw lines 9-18 are navigation only. Concept hash must equal 29257bf1a59b6e4750c9c3b815cc55de420759f91b1f67e190d92c1720dba495.",
+            "The old mobile USD dynamic examples conflict with EUR-only Alma tables. Do not infer current USD eligibility."
+          ],
+          "job_id": "payments-alma-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-alma-accept-a-payment/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "payments-alma-accept-a-payment-bnpl-source-route",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-alma-accept-payment]] \u2014 Alma integration: 1-hour expiry, QR code desktop auth (20 refreshes), return_url required, 7-day manual capture",
+          "proposed_markdown": "- [[source-stripe-alma-accept-payment]] \u2014 2026-05-06 Alma integration guide: five Checkout/Elements/Direct API/iOS/Android paths; Elements one-hour authentication and desktop QR (up to 20 refreshes); `return_url` when confirming an Alma PaymentIntent (hosted Checkout uses `success_url`, embedded Checkout uses `return_url`); seven-day manual-capture window. The 2026-11-07 capture is a variant index, not refreshed behavior.",
+          "quote_indexes": [
+            1,
+            2,
+            3
+          ],
+          "warnings": [
+            "Old raw lines 40-90 and 703-713 scope return_url by UI/PaymentIntent; new raw lines 9-18 only list variants. The same unqualified claim occurs in wiki/stripe-index.md line 329 and needs coordinator reconciliation."
+          ],
+          "job_id": "payments-alma-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-alma-accept-a-payment/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "billie-overview-bnpl-row",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "| Billie | `billie` | \u2014 | \u2014 | setup_future_usage |",
+          "proposed_markdown": "| Billie | `billie` | 11 business/customer countries in November 2026 Billie overview | Minimum 0.01 EUR; maximum varies by country/currency | May 2026 cross-BNPL matrix marks setup_future_usage supported; November Billie-specific matrix marks PaymentIntents with it unsupported. See dated conflict below. |",
+          "quote_indexes": [
+            3
+          ],
+          "warnings": [
+            "Existing row implies unqualified setup_future_usage support. Cross-BNPL raw/stripe-bnpl-overview-2025.md line 63 marks support; new raw lines 18-67, 163-168 provide country/amount scope and the conflicting unsupported mark. Old Billie raw lines 30-32 also says no recurring payments. Do not infer deprecation or current account eligibility."
+          ],
+          "job_id": "payments-billie",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-billie/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "billie-overview-bnpl-api-conflict",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "**setup_future_usage**: Billie, Klarna, Kriya, Mondu, SeQura",
+          "proposed_markdown": "**setup_future_usage**: The May 2026 cross-BNPL API matrix lists Billie, Klarna, Kriya, Mondu and SeQura. Billie is a dated conflict: its November 2026 method-specific matrix marks PaymentIntents with `setup_future_usage` unsupported, and both Billie overviews mark recurring payments unsupported. Verify the Billie integration route before relying on the older matrix.",
+          "quote_indexes": [
+            3
+          ],
+          "warnings": [
+            "Cross-BNPL raw/stripe-bnpl-overview-2025.md lines 58-71, especially line 63, is the old support authority. New raw lines 69-70 and 163-168 give Billie-specific exclusions; old Billie raw lines 30-32 says recurring No. Keep non-Billie methods as dated matrix entries, not revalidated by this Billie page."
+          ],
+          "job_id": "payments-billie",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-billie/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "billie-overview-bnpl-detail",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "**B2B only** \u2014 Pay in 30 days. 11 European countries. Multi-currency: EUR, SEK, NOK, DKK, GBP, CHF. No stated maximum; minimum 0.01 EUR.\n\n**Include `line_items`** in integration to improve approval rates.\n\n**Disputes**: 12-day merchant evidence window (shortest of BNPL methods). Types: fraud, double payments, amount discrepancy.\n\n**Refunds**: 180-day window; async (up to 5 min).\n\n**Connect**: `billie_payments` capability required on both platform AND connected accounts. Statement descriptor: direct/`on_behalf_of` \u2192 connected account; destination/SCT \u2192 platform.\n\n**Prohibited**: gambling, country clubs, adult content, financial institutions, crypto, postal services (govt), precious metals/jewelry.",
+          "proposed_markdown": "**B2B only** \u2014 Pay in 30 days. The November 2026 Billie overview lists 11 merchant/customer countries and EUR, SEK, NOK, DKK, GBP and CHF presentment, domestic rather than cross-border coverage, a 0.01 EUR minimum, and maxima varying by country/currency. The May Billie page stated the minimum but no maximum; that omission did not mean unlimited amounts.\n\n**Line items**: the May Billie get-started section recommended `line_items` to improve approval rates and described early access. The November overview's omission does not establish removal.\n\n**Disputes**: November gives customers 365 days from purchase to file, merchants 35 calendar days from dispute creation for evidence, and Billie seven calendar days after submission for a decision. May required evidence within 12 calendar days and gave fraud, double-payment and amount-discrepancy examples; the older 'shortest' comparison is unverified for November.\n\n**Refunds**: November requires submission within 365 days of original payment, versus May's 180-day limit. Full/partial refunds are asynchronous, up to five minutes; the November page says they cannot be canceled. Track final `refund.updated`/`refund.failed` status rather than treating submission as completion.\n\n**Connect**: `billie_payments` capability must be active on the platform and enabled connected accounts. Descriptor source depends on charge type: direct and `on_behalf_of` use the connected account; destination and separate-charge-and-transfer use the platform absent `on_behalf_of`.\n\n**Category eligibility**: November lists prohibited MCCs, including gambling, adult content, financial institutions, crypto, construction, car rental, real-estate rental and tax payments; restricted categories might require more account information. Consult the full dated table before a merchant-specific decision.",
+          "quote_indexes": [
+            1,
+            2
+          ],
+          "warnings": [
+            "Exact old concept block at lines 95-105 contains outdated no-maximum, 12-day and 180-day claims. New raw lines 18-67, 85-142, 178-198 document November terms; old Billie raw lines 86-121, 123-154, 156-176 document May baseline. Capture/approval/refund success and account eligibility remain separate. This replacement preserves the old line_items advice as dated and does not alter the distinct accept-payment guide at concept line 107."
+          ],
+          "job_id": "payments-billie",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-billie/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "billie-overview-bnpl-route",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-billie]] \u2014 Billie: B2B Pay-in-30, multi-currency EU, 12-day dispute window, billie_payments capability",
+          "proposed_markdown": "- [[source-stripe-billie]] \u2014 May and November 2026 full B2B Billie overviews: dated refund/dispute windows, country/currency/MCC limits, Connect, and conflicts with the older BNPL matrix on setup_future_usage and Invoicing; November Billing/Invoicing entry has a send_invoice footnote with route-specific ambiguity",
+          "quote_indexes": [
+            1,
+            2,
+            3
+          ],
+          "warnings": [
+            "Old Billie raw lines 123-154 have 12-day evidence and 180-day refund terms; new raw lines 85-142 have 35-day and 365-day terms. Cross-BNPL raw/stripe-bnpl-overview-2025.md lines 40-45 mark Billie Invoicing unsupported and line 63 marks setup_future_usage supported; new raw lines 154-176 mark Invoicing supported with send_invoice footnote and PaymentIntents with setup_future_usage unsupported. May Billie raw lines 70-79 merely omit Invoicing."
+          ],
+          "job_id": "payments-billie",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-billie/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "billie-accept-bnpl-integration-note",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Integration notes**: Payment terms 7\u2013120 days (not just 30). `return_url` required. Manual capture: 7-day window. `line_items` data improves approval rates.",
+          "proposed_markdown": "**Integration notes (May 2026 guide)**: Payment terms 7\u2013120 days (not just 30). Hosted Checkout's example uses `success_url`; Checkout Sessions with Elements examples use `return_url`, and PaymentIntent redirect confirmation provides `return_url`. Optional PaymentIntent manual capture has a 7-day window. Early-access Unified `line_items` data is recommended to improve approval rates. See [[source-stripe-billie-accept-payment]] for path details and the November 2026 navigation-only index.",
+          "quote_indexes": [
+            1,
+            2,
+            3
+          ],
+          "warnings": [
+            "Historical authority: raw/stripe-billie-accept-payment-2025.md:20,49-75,131-165,933-939,1100-1152,1299-1327. New raw/stripe-payments-billie-accept-a-payment-2026-11-07.md:9-20 is navigation only; it does not revalidate these behaviors."
+          ],
+          "job_id": "payments-billie-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-billie-accept-a-payment/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "billie-accept-bnpl-source-route",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-billie-accept-payment]] \u2014 Billie integration: 7-120 day terms, return_url required, 7-day manual capture, line_items tip",
+          "proposed_markdown": "- [[source-stripe-billie-accept-payment]] \u2014 May 2026 Billie integration guide: 7\u2013120 day terms, path-specific return destinations, optional 7-day PaymentIntent capture; November 2026 variant index is navigation only",
+          "quote_indexes": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "warnings": [
+            "Historical authority: raw/stripe-billie-accept-payment-2025.md:20,49-75,131-165,933-939,1100-1152,1299-1327. November index: raw/stripe-payments-billie-accept-a-payment-2026-11-07.md:9-20."
+          ],
+          "job_id": "payments-billie-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-billie-accept-a-payment/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "bnpl-overview-definition-2026",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "Stripe supports 11 buy now, pay later (BNPL) payment methods. Merchants are paid immediately and in full; customers pay nothing or a portion at purchase time and repay in installments. All BNPL methods require a redirect.",
+          "proposed_markdown": "Stripe's 7 November 2026 overview lists 11 buy now, pay later (BNPL) methods. It describes merchants as paid immediately and in full while customers pay nothing or a portion at purchase time and repay a provider in installments. The overview's **ten-row API table** marks all listed methods as requiring redirect; Scalapay is absent, so the table does not establish a redirect or PaymentIntent claim for it. Buyer selection and return to the merchant site do not establish approval or completed payment. See [[source-stripe-bnpl-overview]].",
+          "quote_indexes": [
+            0,
+            3
+          ],
+          "warnings": [
+            "New raw lines 11,32-37,39-53,59-72; old raw lines 10,31-36,38-52,58-71."
+          ],
+          "job_id": "payments-buy-now-pay-later",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-buy-now-pay-later/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "bnpl-overview-affirm-row-2026",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "| Affirm | `affirm` | US, CA | $50\u2013$30k | Subscriptions, Terminal |",
+          "proposed_markdown": "| Affirm | `affirm` | US, CA | $50\u2013$30k | Terminal; November overview marks Subscriptions Unsupported and Customer Portal Supported (May overview had Subscriptions with `send_invoice` and Portal Unsupported) |",
+          "quote_indexes": [
+            1
+          ],
+          "warnings": [
+            "New raw line 43 and footnote line 55; old raw lines 42,54. This is the overview product cell, not a universal Affirm entitlement."
+          ],
+          "job_id": "payments-buy-now-pay-later",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-buy-now-pay-later/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "bnpl-overview-sequra-row-2026",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "| SeQura | `sequra` | \u2014 | \u2014 | setup_future_usage |",
+          "proposed_markdown": "| SeQura | `sequra` | \u2014 | \u2014 | November overview marks `setup_future_usage` Unsupported (May overview marked Supported); Invoicing `send_invoice` only |",
+          "quote_indexes": [
+            3,
+            4
+          ],
+          "warnings": [
+            "New raw lines 51,55,68; old raw lines 50,54,67."
+          ],
+          "job_id": "payments-buy-now-pay-later",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-buy-now-pay-later/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "bnpl-overview-sunbit-row-2026",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "| Sunbit | `sunbit` | \u2014 | \u2014 | No manual capture |",
+          "proposed_markdown": "| Sunbit | `sunbit` | \u2014 | \u2014 | `setup_future_usage` Supported; no manual capture (both May and November API tables) |",
+          "quote_indexes": [
+            3
+          ],
+          "warnings": [
+            "New raw line 69; old raw line 68. Baseline omission from concept, not a November change."
+          ],
+          "job_id": "payments-buy-now-pay-later",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-buy-now-pay-later/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "bnpl-overview-api-2026",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "All BNPL methods support:\n\n- PaymentIntents \u2713\n- Redirect required \u2713\n\n**Manual capture**: Affirm, Afterpay, Alma, Billie, Klarna, Kriya, Mondu, SeQura \u2713 (Sunbit, Zip \u2717)\n\n**SetupIntents**: Klarna only\n\n**setup_future_usage**: Billie, Klarna, Kriya, Mondu, SeQura\n\n**Express Checkout Element**: Klarna only (no `setup_future_usage` when using ECE)",
+          "proposed_markdown": "The November 2026 overview's API matrix has ten rows, omitting Scalapay. Its listed methods show PaymentIntents support and redirect required; this is not an all-eleven claim. Manual capture is supported for Affirm, Afterpay/Clearpay, Alma, Billie, Klarna, Kriya, Mondu, and SeQura, and unsupported for Sunbit and Zip. Klarna alone shows SetupIntents support. `setup_future_usage` is supported for Billie, Klarna, Kriya, Mondu, and Sunbit; SeQura changed from May Supported to November Unsupported. The parameter's session support remains qualified by the API table footnote. Klarna alone shows Express Checkout Element support in the product matrix, where saving during payment via `setup_future_usage` is excluded. See [[source-stripe-bnpl-overview]].\n\n**Connect conflict**: Both overview product matrices mark all eleven methods Supported on Connect, while the May method-specific captures for Kriya, Mondu, SeQura, and Scalapay say Connect No. This is an unresolved dated source conflict, not an established account entitlement; see [[source-stripe-bnpl-overview]] and the individual method sources.",
+          "quote_indexes": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "warnings": [
+            "New raw lines 41-55,59-72; old raw lines 40-54,58-71; raw/stripe-kriya-2025.md, raw/stripe-mondu-2025.md, raw/stripe-sequra-2025.md, raw/stripe-scalapay-2025.md lines 36-38. Do not infer Scalapay API coverage."
+          ],
+          "job_id": "payments-buy-now-pay-later",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-buy-now-pay-later/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "bnpl-overview-kriya-connect-2026",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "**B2B only** \u2014 UK only, GBP only. **No Connect support** \u2014 only BNPL method without it.",
+          "proposed_markdown": "**B2B only** \u2014 UK only, GBP only. Its May method-specific capture says **Connect No**, as do May Mondu, SeQura, and Scalapay captures. Both overview product tables mark Connect Supported for all eleven methods; the scope conflict remains unresolved. See [[source-stripe-bnpl-overview]].",
+          "quote_indexes": [
+            1,
+            2
+          ],
+          "warnings": [
+            "Kriya May raw lines 36-38 and Mondu/SeQura/Scalapay May raw lines 36-38; old overview raw lines 40-52 and new overview raw lines 41-53."
+          ],
+          "job_id": "payments-buy-now-pay-later",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-buy-now-pay-later/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "klarna-overview-bnpl-row",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "| Klarna | `klarna` | 22 countries | $10+ | SetupIntents, Express Checkout, setup_future_usage, Subscriptions |",
+          "proposed_markdown": "| Klarna | `klarna` | 23 customer countries (May/November 2026 overview) | See dated country/currency tables | SetupIntents, Express Checkout, setup_future_usage, Subscriptions |",
+          "quote_indexes": [
+            2,
+            3
+          ],
+          "warnings": [
+            "Replace the existing unsupported 22-country/$10+ row. New raw lines 17-23, 614-753 list 23 customer locations and country/currency-specific ranges; old raw lines 16-22, 125-258 also list 23 customer locations and dated ranges. This overview alone does not revalidate the other integration features in the row."
+          ],
+          "job_id": "payments-klarna",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "klarna-overview-bnpl-definition-payout",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "Stripe supports 11 buy now, pay later (BNPL) payment methods. Merchants are paid immediately and in full; customers pay nothing or a portion at purchase time and repay in installments. All BNPL methods require a redirect.",
+          "proposed_markdown": "Stripe supports 11 buy now, pay later (BNPL) payment methods. Customers pay nothing or a portion at purchase time and repay in installments. All BNPL methods require a redirect. For Klarna specifically, an accepted payment credits the order amount minus fees to the merchant's Stripe account, while standard payout timing applies; this does not promise an immediate external payout.",
+          "quote_indexes": [
+            0
+          ],
+          "warnings": [
+            "Exact existing definition overstates merchant payout for the Klarna path. New raw line 13 conditions the Stripe-account credit on payment acceptance and subtracts fees; new raw lines 37-39 specify standard payout timing. Old raw lines 8-12 and 36-38 say the same. The retained general BNPL count/redirect/consumer model belongs to the separate BNPL overview; this suggestion does not revalidate every method's timing."
+          ],
+          "job_id": "payments-klarna",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "klarna-overview-bnpl-details",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "**4 payment options**: Pay in full (immediate, most countries), Pay later (30 days, ~20 countries), Pay in 3 or 4 (interest-free installments), Financing (up to 36 months, AT/CA/DE/FI/GB/NO/SE/US).\n\n**Recurring payments**: Pay in full, Pay later, Pay in 3 or 4 support subscriptions (country restrictions apply). Not available with `setup_future_usage`.\n\n**Cross-border**: EEA \u2194 EEA/CH/UK allowed in customer's local currency. Non-EEA (AU, CA, NZ, US) must sell domestically.\n\n**Refunds**: 180-day window; 5-7 business days. Partial refunds spread evenly across remaining installments. Blocked during active disputes.",
+          "proposed_markdown": "**4 payment options**: Pay in full, Pay later (30-day single payment), Pay in 3 or 4 (interest-free installments), and Financing (up to 36 months, possibly with interest and subject to creditworthiness). The May 2026 Financing list has AT/CA/DE/FI/GB/NO/SE/US; the November 2026 table additionally lists **Italy for one-time Financing at 35-3,000 EUR**. These dated tables do not establish any particular buyer's approval.\n\n**Recurring payments**: Pay in full, Pay later and Pay in 3 or 4 have documented subscription use cases with country and plan limits. `setup_future_usage` classifies a Klarna payment as recurring and can limit the plans displayed, including otherwise eligible plans; it does not categorically prevent recurring Klarna. **November source conflict**: individual Pay later country rows list subscriptions beyond DE/SE/US, while the same page's all-country footnote and limitations say only Germany, Sweden and the US support Pay later subscriptions and on-demand payments. Do not infer expanded eligibility from those rows.\n\n**Cross-border**: The EEA, UK and Switzerland business rows permit customers in the EEA, UK or Switzerland with presentment in the customer-location currency. The other-countries row requires the customer and business locations to match and presentment in the business-location currency; the table alone does not establish account eligibility.\n\n**Refunds**: Up to 180 days after payment completion; usually 5-7 business days, possibly longer. Full and partial refunds are supported up to the original charge. When a partial refund exceeds the remaining order balance, Klarna reduces that balance and returns the difference; when it is less, Klarna reduces that balance and spreads refunds across remaining payments. Klarna does not support refunding a payment escalated to a dispute.",
+          "quote_indexes": [
+            0,
+            2,
+            3,
+            4
+          ],
+          "warnings": [
+            "The exact existing Klarna Details block at concept lines 215-221 contains stale Financing geography, a false blanket setup_future_usage exclusion, incomplete cross-border business rows and unconditional partial-refund spreading. May baseline: old raw lines 242-270, 272-297. November: new raw lines 135-143, 251-282, 452-468, 735-775, 779-803. The November Pay later country subscription rows conflict with its only-DE/SE/US footnote and limitations (new raw lines 759, 775); the May footnote says the same (old raw line 266). The recorded Italy range is a dated one-time Financing table entry, not an approval guarantee."
+          ],
+          "job_id": "payments-klarna",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "klarna_accept_bnpl_prefill_correction",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Integration notes**: Prefill billing details via `payment_method_options.klarna` to improve conversion. Manual capture supported. Test with amount `3500` (local currency) to exercise all options except Financing.",
+          "proposed_markdown": "**Integration notes (May 6, 2026 acceptance guide)**: In its Direct API PaymentIntent path, Stripe recommends `payment_method_data.billing_details` and shipping details to help acceptance and reduce disputes; its deferred-payment prefill example also passes `payment_method_data.klarna.dob`. This corrects the earlier `payment_method_options.klarna` prefill attribution for that example. Optional PaymentIntent manual capture has a 28-day authorization deadline, after which capture is unavailable. The guide's amount `3500` in local currency is a production-testing tip for options other than Financing, not an eligibility guarantee. See [[source-stripe-klarna-accept-payment]].",
+          "quote_indexes": [
+            1,
+            3
+          ],
+          "warnings": [
+            "Baseline correction supported by raw/stripe-klarna-accept-payment-2025.md:2835-2843,3602-3645; capture by :3453-3476; testing by :3400-3404. The November index at raw/stripe-payments-klarna-accept-a-payment-2026-11-07.md:9-19 is navigation only.",
+            "Other concept claims remain outside this bounded correction."
+          ],
+          "job_id": "payments-klarna-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-accept-a-payment/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "klarna-compliance-prohibited-a1",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "**No B2B** \u2014 explicitly prohibited. Also prohibited: charities and political organizations.",
+          "proposed_markdown": "**Klarna prohibitions (2026-11-07 Stripe capture):** besides Stripe-wide restrictions, the Klarna list includes charities, political organizations, business-to-business (written \u201cBTB\u201d in November; \u201cB2B\u201d in May), money/crypto services, stored value/gift cards, bailiff/insolvency/debt/fines/court/bail services, gambling/lotteries, direct marketing, and fundraising/crowdfunding. The May three-item list was narrower; spelling alone does not show a B2B policy change. Check the full linked terms and account eligibility.",
+          "quote_indexes": [
+            0,
+            1,
+            2
+          ],
+          "warnings": [
+            "New raw lines 11-26 contain the expanded list; old raw lines 10-18 contain only charities/political/B2B. Do not infer a category beyond the captured wording or merchant approval."
+          ],
+          "job_id": "payments-klarna-compliance",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-compliance/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "klarna-compliance-marketing-a1",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "**UK FCA**: must use Klarna-approved messaging for BNPL advertising \u2014 non-compliance can result in **criminal charges**. PMME auto-handles this.",
+          "proposed_markdown": "**Marketing (dated Stripe guidance):** UK Klarna BNPL advertising must use Klarna-approved messaging; the page warns of criminal-charge risk for noncompliance. Stripe recommends PMME because it handles **Klarna brand compliance**, not all legal disclosures. The 2026-11-07 page says marketing Klarna **credit products to EU consumers** has additional CCD2 disclosure requirements beginning **2026-11-20**, using Klarna pre-approved copy and applicable country guidance. Treat the prospective legal statement as the captured page's claim, not independently verified law or a universal merchant obligation.",
+          "quote_indexes": [
+            3
+          ],
+          "warnings": [
+            "Old raw lines 20-24; new raw lines 28-34. UK guideline URL change is navigation. PMME branding is narrower than UK/EU legal compliance."
+          ],
+          "job_id": "payments-klarna-compliance",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-compliance/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "klarna-compliance-ddo-a1",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "**AU DDO**: active promoters of Pay in 4 in Australia are \"distributors\" \u2014 must follow TMD, report under-18 purchases and harm complaints.",
+          "proposed_markdown": "**AU DDO:** most Stripe users need do nothing. Australian businesses actively promoting or recommending Klarna Pay in 4 **might** be considered distributors and **might** have TMD-consistent promotion and significant-adverse-dealing notification duties; complaint/adverse-dealing reports or information are supplied **if requested**. Both dated captures state these conditions, not automatic distributor status for every promoter.",
+          "quote_indexes": [
+            4
+          ],
+          "warnings": [
+            "Old raw lines 41-50 and new raw lines 51-60 use might/if requested. Corrects pre-existing concept overstatement."
+          ],
+          "job_id": "payments-klarna-compliance",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-compliance/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "klarna-compliance-route-a1",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-klarna-compliance]] \u2014 Klarna compliance: prohibited categories, UK FCA criminal risk, termination rights, AU DDO",
+          "proposed_markdown": "- [[source-stripe-klarna-compliance]] \u2014 Klarna rules: expanded November 2026 prohibitions, dated UK and prospective EU consumer-credit marketing guidance, termination/merchant duties, conditional AU DDO distributor status",
+          "quote_indexes": [
+            1,
+            3,
+            4
+          ],
+          "warnings": [
+            "New raw lines 11-60 and old raw lines 10-50; route summarizes same existing source and preserves date/condition scope."
+          ],
+          "job_id": "payments-klarna-compliance",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-compliance/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "klarna-disputes-bnpl-fact",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Disputes**: 180-day window (longest BNPL). Two-stage: Inquiry (21 days, no evidence, resolve directly) \u2192 Chargeback (evidence accepted, fee reversed if merchant wins). Fraud disputes skip inquiry. Evidence deadline: 12 days standard, **5 days for fraud**. One round of evidence only. `charge.dispute.funds_withdrawn` webhook marks escalation.",
+          "proposed_markdown": "**Disputes**: Under the captured [[source-stripe-klarna-disputes]] guide, customers generally have 180 calendar days from capture to file, with stated exceptions. Almost all cases begin with a 21-day inquiry: the customer may withdraw it or the business may refund the full disputed amount without a fee; Klarna takes no evidence then. Only unresolved inquiries escalate to chargeback, though fraud and other exceptions can go directly to chargeback. At chargeback, Stripe withholds the disputed funds and fee; a win releases both. Evidence is due 12 days from escalation, or 5 days for fraud, and is limited to one round. `charge.dispute.funds_withdrawn` marks escalation. The guide's fee table says assessed when a dispute is created, while its inquiry and chargeback prose locates fee avoidance during inquiry and withholding at escalation; do not infer an inquiry-opening charge.",
+          "quote_indexes": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "warnings": [
+            "New authority raw/stripe-payments-klarna-disputes-2026-11-07.md:11,62-80,94-111; old baseline raw/stripe-klarna-disputes-2025.md:40-58,72-89. Table/prose fee and direct-escalation tension is retained, not silently resolved."
+          ],
+          "job_id": "payments-klarna-disputes",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-disputes/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "klarna-disputes-bnpl-route",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-klarna-disputes]] \u2014 Klarna disputes: 180-day window, inquiry\u2192chargeback 2-stage, fee model, 5-day fraud evidence, 23-country test triggers",
+          "proposed_markdown": "- [[source-stripe-klarna-disputes]] \u2014 Klarna disputes: capture-based 180-day filing window with exceptions; inquiry resolution, direct-chargeback exceptions, chargeback evidence and fee handling, API states, and capture-dated sandbox triggers",
+          "quote_indexes": [
+            0,
+            1,
+            3,
+            4
+          ],
+          "warnings": [
+            "Replaces existing synopsis at wiki/concepts/stripe-bnpl.md:267 with bounded route to the updated source; raw/stripe-payments-klarna-disputes-2026-11-07.md:11,64,109,247."
+          ],
+          "job_id": "payments-klarna-disputes",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-disputes/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "klarna-future-bnpl-fact-a1",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Recurring/save**: Use SetupIntent or Checkout `mode: 'setup'` to save. Subscription `reference` must be identical across setup and all renewals \u2014 mismatch causes error. Send `payment_method_options.klarna.subscriptions` to unlock Pay in 3/4 for subscriptions. For on-demand, pass `klarna.on_demand` metadata to improve underwriting. Listen for `mandate.updated` webhook to handle Klarna-side revocations.",
+          "proposed_markdown": "**Recurring/save (2026-05-06 full guide)**: Checkout `mode: 'setup'` or a SetupIntent can save Klarna for later use, with a reusable PaymentMethod attached to a Customer and the billing agreement authorized. For a subscription, keep the same `reference` on future charges; when a line item supplies `subscription_reference`, a mismatch causes an error. Passing `payment_method_options.klarna.subscriptions` helps show applicable options, but Pay in 3/4 depends on subscription length, use case and buyer country. The on-demand charge example's `klarna.on_demand` details are optional underwriting information, not a guaranteed improvement; that example sets `off_session: false`. Confirm authorization through Intent status or webhooks before reuse, and handle Klarna-side `mandate.updated` revocation by detaching the PaymentMethod. See [[source-stripe-klarna-set-up-future-payments]]; its 2026-11-07 capture is navigation only.",
+          "quote_indexes": [
+            0,
+            1
+          ],
+          "warnings": [
+            "Factual corrections come from the 2026-05-06 old raw at lines 14-18, 41-43, 76-87, 218-224, 279-287 and 330-337. The new raw at lines 9-18 is navigation only; do not imply November variant validation."
+          ],
+          "job_id": "payments-klarna-set-up-future-payments",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-set-up-future-payments/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "klarna-future-bnpl-route-a1",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-klarna-set-up-future-payments]] \u2014 Klarna save/recurring: subscription reference consistency, on_demand metadata, mandate revocation",
+          "proposed_markdown": "- [[source-stripe-klarna-set-up-future-payments]] \u2014 2026-05-06 full Klarna save/recurring guide: Customer attachment, authorization status, reference matching, optional on-demand details and revocation; 2026-11-07 capture is a variant index only",
+          "quote_indexes": [
+            0,
+            1
+          ],
+          "warnings": [
+            "Route label describes the 2026-05-06 full old raw at lines 8-20 and 218-337; the 2026-11-07 new raw lines 9-18 only lists variants."
+          ],
+          "job_id": "payments-klarna-set-up-future-payments",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-set-up-future-payments/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "klarna_supplementary_concept_qualification",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Supplementary purchase data** (public preview, API header `2025-11-17.preview`): pass `payment_method_options.klarna.supplementary_purchase_data` with vertical-specific data (events, insurance, vouchers, train, bus, ferry, organized trips, marketplace sellers) to improve acceptance rates and fraud assessment. No fee impact; no validation feedback.",
+          "proposed_markdown": "**Supplementary purchase data** (Klarna-only public preview; API header `2025-11-17.preview` or a later preview version): pass `payment_method_options.klarna.supplementary_purchase_data` on PaymentIntent create, update or confirm for events, standalone insurance, vouchers, train, bus, ferry, organized trips, or marketplace sellers. The data can support underwriting and fraud assessment, but authorization-rate improvement is possible and variable, not assured. It does not change Klarna fees; Stripe and Klarna provide no feedback on whether particular well-formed data qualifies for improved outcomes. See [[source-stripe-klarna-supplementary-data]] for replacement and removal semantics and dated examples.",
+          "quote_indexes": [
+            0,
+            1,
+            2
+          ],
+          "warnings": [
+            "New raw lines 11, 21-36, 55-59 and old raw lines 10, 20-35, 54-58 support the later-preview allowance and only potential, variable acceptance benefit. The original concept's exact-only version and unqualified improvement are baseline errors, not November rule changes.",
+            "New raw lines 349-412 and old raw lines 564-701 preserve the destructive per-vertical replacement and empty-string removal semantics; the full versioned field schemas linked by new raw lines 90-325 were not captured."
+          ],
+          "job_id": "payments-klarna-supplementary-purchase-data",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-supplementary-purchase-data/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "klarna_supplementary_concept_source_route",
+          "target_path": "wiki/concepts/stripe-bnpl.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-klarna-supplementary-data]] \u2014 Klarna supplementary data (preview): 8 verticals, acceptance/fraud improvement, update semantics",
+          "proposed_markdown": "- [[source-stripe-klarna-supplementary-data]] \u2014 Klarna-only supplementary purchase data preview: eight verticals, possible acceptance and fraud-assessment benefits, PaymentIntent update semantics, and May/November 2026 example provenance",
+          "quote_indexes": [
+            0,
+            1
+          ],
+          "warnings": [
+            "New raw lines 61-84 and old raw lines 60-115 show curl automatic-payment-methods versus Node explicit-Klarna examples; this does not establish actual Klarna offer, authorization or changed eligibility."
+          ],
+          "job_id": "payments-klarna-supplementary-purchase-data",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-supplementary-purchase-data/attempt-1/receipt.json"
+        }
+      ],
+      "contributions": [
+        {
+          "job_id": "payments-affirm",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-affirm/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-affirm/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-affirm/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-affirm-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-affirm-accept-a-payment/attempt-2/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-affirm-accept-a-payment/attempt-2/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-affirm-accept-a-payment/attempt-2/input.json"
+        },
+        {
+          "job_id": "payments-afterpay-clearpay",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-afterpay-clearpay/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-afterpay-clearpay/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-afterpay-clearpay/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-afterpay-clearpay-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-afterpay-clearpay-accept-a-payment/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-afterpay-clearpay-accept-a-payment/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-afterpay-clearpay-accept-a-payment/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-alma",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-alma/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-alma/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-alma/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-alma-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-alma-accept-a-payment/attempt-2/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-alma-accept-a-payment/attempt-2/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-alma-accept-a-payment/attempt-2/input.json"
+        },
+        {
+          "job_id": "payments-billie",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-billie/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-billie/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-billie/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-billie-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-billie-accept-a-payment/attempt-2/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-billie-accept-a-payment/attempt-2/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-billie-accept-a-payment/attempt-2/input.json"
+        },
+        {
+          "job_id": "payments-buy-now-pay-later",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-buy-now-pay-later/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-buy-now-pay-later/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-buy-now-pay-later/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-klarna",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna/attempt-2/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna/attempt-2/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna/attempt-2/input.json"
+        },
+        {
+          "job_id": "payments-klarna-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-accept-a-payment/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-accept-a-payment/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-accept-a-payment/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-klarna-compliance",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-compliance/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-compliance/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-compliance/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-klarna-disputes",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-disputes/attempt-2/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-disputes/attempt-2/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-disputes/attempt-2/input.json"
+        },
+        {
+          "job_id": "payments-klarna-set-up-future-payments",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-set-up-future-payments/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-set-up-future-payments/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-set-up-future-payments/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-klarna-supplementary-purchase-data",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-supplementary-purchase-data/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-supplementary-purchase-data/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-supplementary-purchase-data/attempt-1/input.json"
+        }
+      ]
+    },
+    {
+      "target": "wiki/concepts/stripe-instant-bank-payments.md",
+      "before_sha256": "e879ed7a76fac631f5dd673473ae102cd7ac282acfcce5372b081f98038756f5",
+      "candidate": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-instant-bank-payments.md",
+      "candidate_sha256": "40f3e629d9b812dfccac99ba9b6459ffb5099f4243281e14d9d914ffec112c9b",
+      "diff": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-instant-bank-payments.md.diff",
+      "updates": [
+        {
+          "update_id": "s03-bank-debits-ibp-mobile-conflict",
+          "target_path": "wiki/concepts/stripe-instant-bank-payments.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Supported integrations**: Checkout, Payment Links, Hosted Invoice Page, Payment Element, Mobile Payment Element.",
+          "proposed_markdown": "**Supported integrations (May 8, 2026 dedicated Link Instant Bank Payments guide)**: Checkout, Payment Links, Hosted Invoice Page, Payment Element, Mobile Payment Element. **Dated disagreement:** the May 2 bank-debits overview also marked its combined Instant Bank Payments-or-ACH row supported for Mobile Payment Element, but the November 7 overview marks that combined row unsupported. It does not separate the two methods or verify a live client/platform change. See [[source-stripe-instant-bank-payments]] for the dedicated May claim and [[source-stripe-bank-debits]] for both overview captures; verify the specific current route before relying on mobile support.",
+          "quote_indexes": [
+            2
+          ],
+          "warnings": [
+            "May overview combined-row mark: raw/stripe-bank-debits-2025.md:31; November combined-row mark: raw/stripe-payments-bank-debits-2026-11-07.md:32; dedicated May IBP Mobile Payment Element list: raw/stripe-instant-bank-payments-2025.md:119-129.",
+            "The combined row cannot assign changed support to one method. The dedicated source wiki/sources/source-stripe-instant-bank-payments.md:21 still states the May claim and is outside this worker's authorized source targets."
+          ],
+          "job_id": "payments-bank-debits",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-debits/attempt-1/receipt.json"
+        }
+      ],
+      "contributions": [
+        {
+          "job_id": "payments-bank-debits",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-debits/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-debits/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-debits/attempt-1/input.json"
+        }
+      ]
+    },
+    {
+      "target": "wiki/concepts/stripe-payment-methods.md",
+      "before_sha256": "edf4bf35649a3fa0e152b59754e0053647a021f32480dd9098fb3f65b769369e",
+      "candidate": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-payment-methods.md",
+      "candidate_sha256": "3faa17c2c3320aebe397dbf1a972d83a405fbb5215bf0fee6972895434f9d3ed",
+      "diff": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-payment-methods.md.diff",
+      "updates": [
+        {
+          "update_id": "payments-cards-payment-methods-route",
+          "target_path": "wiki/concepts/stripe-payment-methods.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-cards]] \u2014 Cards detail: brand capabilities table, Amex/CUP/JCB/CB/eftpos restrictions, SCA/3DS, EU co-badged card choice, India RBI",
+          "proposed_markdown": "- [[source-stripe-cards]] \u2014 May and November 2026 cards guide: account-country and customer-country brand matrix, conditional SCA/3DS, EU co-badged choice, and November's qualified UnionPay Apple Pay on the web, eftpos Apple Pay in AUD without manual capture, and Payment Element brand/funding filter",
+          "quote_indexes": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "warnings": [
+            "Old cards raw lines 49 and 52 mark UnionPay and eftpos wallets unsupported; new raw lines 50, 53, 59 and 61 narrowly change those cells."
+          ],
+          "job_id": "payments-cards",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-cards/attempt-3/receipt.json"
+        }
+      ],
+      "contributions": [
+        {
+          "job_id": "payments-cards",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-cards/attempt-3/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-cards/attempt-3/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-cards/attempt-3/input.json"
+        }
+      ]
+    }
+  ],
+  "coordinator_resolutions": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/manual-resolutions.json"
+}

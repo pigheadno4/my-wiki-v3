@@ -1,0 +1,14 @@
+<!-- Source URL: https://docs.stripe.com/payments/checkout/customization/product-images -->
+<!-- Fetched: 2026-11-07 -->
+<!-- Discovery: reconciled llms.txt,sitemap.xml -->
+
+# Add product images
+
+Provide a visual representation of what your customers are purchasing.
+
+## Index
+
+This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:
+
+- [Full page](https://docs.stripe.com/payments/checkout/customization/product-images.md?ui=full-page)
+- [Embedded form](https://docs.stripe.com/payments/checkout/customization/product-images.md?ui=checkout-form)

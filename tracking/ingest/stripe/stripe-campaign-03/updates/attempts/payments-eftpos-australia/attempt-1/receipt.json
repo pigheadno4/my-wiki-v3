@@ -1,0 +1,170 @@
+{
+  "job_id": "payments-eftpos-australia",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-eftpos-australia.md": {
+      "job_id": "payments-eftpos-australia",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: eftpos Australia\"\ntype: source\ndate_ingested: 2026-05-01\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/eftpos-australia\"\nraw_files:\n  - \"stripe-payments-eftpos-australia-2026-11-07.md\"\n  - \"stripe-eftpos-australia-2025.md\"\ntags: [stripe, eftpos, australia, local-card-network, least-cost-routing, debit, disclosure, apple-pay]\n---\n\n## Summary\n\neftpos is Australia's local debit card network. More than 90% of eftpos cards are co-branded with Visa or Mastercard. Stripe documents acceptance for Australian Stripe accounts in AUD and routing over eftpos or an international scheme according to transaction type, technical availability and authorization considerations. Proprietary eftpos-only cards support in-person payments, not online transactions. The November 2026 capture adds a distinct Apple Pay path and its no-fallback manual-capture limit.\n\n## Key Details\n\n- **Properties and reach:** Customer location Australia; presentment AUD; customer-initiated debit/prepaid card method. The page lists recurring payments, Connect, disputes, full and partial refunds, and standard payout timing, but no eftpos manual capture. Product list: Connect, Checkout, Payment Links, Subscriptions, Invoicing, Elements and Terminal. Express Checkout Element does not support eftpos; Terminal has separate Australian regional requirements. These are documented method properties, not proof of enablement for an individual account. See new raw lines 15-77.\n- **Availability:** Australian Stripe accounts, except the seven listed MCC categories: massage parlors (7297); financial institution manual cash disbursements (6010) and merchandise/services (6012); non-financial foreign currency, money orders and travelers' checks (6051); remote stored value load (6530); stored value card purchase/load (6540); and wires/money orders (4829). See new raw lines 79-89.\n- **Existing card integration:** The guide says an integration already accepting card payments can also accept eftpos without additional updates. That general card path does not remove the separate Apple Pay iOS enabled-network, wallet and capture conditions below. See new raw lines 91-95, 136-179.\n- **General co-branded card routing:** For a payment requiring a hold between authorization and capture, Stripe routes to Visa or Mastercard; other payments generally default to eftpos, subject to transaction type, technical availability and authorization-rate considerations. Contact Stripe support if eftpos must never be the default. This general hold rule must not be applied as a Visa/Mastercard fallback for a selected eftpos Apple Pay token. See new raw lines 109-118, 171-179.\n- **Processed-network observation:** For a successful PaymentIntent, inspect its Charge's `payment_method_details.card.network`; `eftpos_au` identifies processing on eftpos. The example's `brand: \"visa\"` and `network: \"eftpos_au\"` are distinct values, not a guarantee for another charge. See new raw lines 118-134.\n- **Customer notice:** Where eftpos is the default, the page requires telling dual-network debit customers that routing may use the debit network despite the displayed logo, and informing them how routing and processing work. Its recommendations place single-payment notice before checkout completion, new recurring notice at setup and existing recurring notice before future transactions. The suggested text is guidance, not evidence of a merchant's compliance. See new raw lines 95-107.\n\n## Apple Pay eftpos branch (2026-11-07)\n\nFor a co-branded card in Apple Pay, the customer selects a card brand on the Apple device. If they choose eftpos, Stripe routes that transaction on eftpos. The documented prerequisites are an Australian Stripe account, AUD presentment, a business outside the restricted categories above, and Apple Pay enabled in Dashboard payment-method settings. For a successful PaymentIntent's Charge, `card.network: \"eftpos_au\"` together with `card.wallet.type: \"apple_pay\"` identifies an Apple Pay payment processed on eftpos; customer choice alone does not establish a completed payment. See new raw lines 136-157.\n\nFor an **existing iOS Apple Pay integration**, the page shows setting `StripeAPI.additionalEnabledApplePayNetworks = [.eftpos]` when the transaction currency is AUD. This is a scoped Swift client SDK example, not a requirement demonstrated for every web or Android integration. See new raw lines 159-169.\n\n**Manual capture boundary:** An eftpos Apple Pay token has no fallback to Visa or Mastercard. The page says a manual-capture eftpos Apple Pay payment always fails. To accept this path, set the PaymentIntent `capture_method` to `automatic` or `automatic_async`; if setting `payment_method_options.card.capture_method` too, use one of those automatic values. When manual capture is needed for other card payments, configure the Payment Element with `capture_method: \"manual\"` before it renders so it hides eftpos Apple Pay. Adding `payment_method_options.card.capture_method: \"manual\"` after render may leave eftpos Apple Pay selectable and fail at confirmation. These are request settings and UI timing conditions, not evidence of any live authorization, capture or settlement. See new raw lines 171-179.\n\n## Dated Comparison\n\nThe 2026-05-01 capture already contained the co-branding, AU/AUD, excluded MCCs, customer disclosure, general routing and Charge network example. The 2026-11-07 capture retains those facts and adds Apple Pay guidance. The May capture's silence on Apple Pay does not establish that it was unavailable then. Heading whitespace and see-also links are presentational changes.\n\n## Related Pages\n\n- [[stripe]] \u2014 Stripe company route.\n- [[eftpos-australia]] \u2014 reciprocal network and wallet-token distinction.\n- [[source-stripe-cards]] \u2014 cards context.\n\n## Raw Sources\n\n- [[raw/stripe-payments-eftpos-australia-2026-11-07|2026-11-07 eftpos Australia guide]] \u2014 full capture including Apple Pay requirements and capture limits.\n- [[raw/stripe-eftpos-australia-2025|2026-05-01 eftpos Australia guide]] \u2014 older full capture of general co-branded routing and disclosure.\n",
+      "quotes": [
+        {
+          "text": "Eftpos-only cards (also known as \u201cproprietary eftpos cards\u201d) only support in-person payments and can\u2019t be used for online transactions.",
+          "location": "raw/stripe-payments-eftpos-australia-2026-11-07.md:13-13"
+        },
+        {
+          "text": "Stripe always routes to the international scheme.",
+          "location": "raw/stripe-payments-eftpos-australia-2026-11-07.md:113-113"
+        },
+        {
+          "text": "If the customer chooses eftpos, Stripe routes the transaction over the eftpos network.",
+          "location": "raw/stripe-payments-eftpos-australia-2026-11-07.md:155-155"
+        },
+        {
+          "text": "Apple Pay eftpos tokens can only route through the eftpos network, with no fallback to Visa or Mastercard.",
+          "location": "raw/stripe-payments-eftpos-australia-2026-11-07.md:173-173"
+        },
+        {
+          "text": "Don\u2019t add `payment_method_options.card.capture_method: 'manual'` after the Payment Element has already rendered.",
+          "location": "raw/stripe-payments-eftpos-australia-2026-11-07.md:179-179"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "payments-eftpos-australia-routing-wallet-boundary",
+            "target_path": "wiki/concepts/eftpos-australia.md",
+            "update_kind": "durable_fact",
+            "anchor": "- **No manual capture**: hold/delayed capture always routes to Visa/MC (international scheme)\n- **Default routing**: eftpos is the default for non-hold payments; Stripe may route to Visa/MC for technical/authorization rate reasons",
+            "proposed_markdown": "- **General co-branded card routing**: eftpos does not support manual capture. A payment requiring a hold between authorization and capture routes to Visa or Mastercard; other payments generally default to eftpos, subject to transaction type, technical availability and authorization-rate considerations.\n- **Apple Pay eftpos exception (2026-11-07)**: When a customer chooses eftpos on a co-branded card in Apple Pay, the eftpos token cannot fall back to Visa or Mastercard; an eftpos Apple Pay payment with manual capture always fails. Use automatic or automatic_async capture for this path. If manual capture is needed for other cards, configure the Payment Element before render to hide eftpos Apple Pay; setting card manual capture afterward can leave an option that fails at confirmation. This does not change the general co-branded hold-routing rule.",
+            "quote_indexes": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Old raw lines 108-117 and new raw lines 109-118 establish general co-branded routing. New raw lines 171-179 add the distinct no-fallback Apple Pay token and pre-render Payment Element condition."
+            ]
+          },
+          {
+            "update_id": "payments-eftpos-australia-integration-apple-pay",
+            "target_path": "wiki/concepts/eftpos-australia.md",
+            "update_kind": "durable_fact",
+            "anchor": "No additional code changes needed if already accepting card payments. Contact Stripe support to opt out of eftpos as the default network.",
+            "proposed_markdown": "For the general card acceptance route, the guide says an integration already accepting cards can accept eftpos without additional updates; contact Stripe support if eftpos must never be the default network. The separate Apple Pay eftpos route requires an Australian Stripe account, AUD, an allowed business category and Apple Pay enabled in payment-method settings. For an existing iOS Apple Pay integration, its Swift example enables `.eftpos` only for AUD. A successful PaymentIntent's Charge identifies an Apple Pay eftpos result through `card.network: 'eftpos_au'` and `card.wallet.type: 'apple_pay'`; the customer selection or SDK setting alone is not a payment outcome.",
+            "quote_indexes": [
+              2,
+              3
+            ],
+            "warnings": [
+              "New raw lines 91-95 establish the general card path; new raw lines 136-169 establish Apple Pay scope, prerequisites, Charge observation and iOS-only configuration. The old raw ends at line 138 without an Apple Pay section; that does not prove earlier unavailability."
+            ]
+          },
+          {
+            "update_id": "payments-eftpos-australia-source-route",
+            "target_path": "wiki/concepts/eftpos-australia.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-eftpos-australia]] \u2014 primary source: properties, routing logic, MCCs, disclosure requirements",
+            "proposed_markdown": "- [[source-stripe-eftpos-australia]] \u2014 2026-05 and 2026-11 Stripe guides: general eftpos routing and disclosure, plus the later Apple Pay no-fallback and capture conditions",
+            "quote_indexes": [
+              2,
+              3,
+              4
+            ],
+            "warnings": []
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-eftpos-australia-2026-11-07.md",
+      "raw_sha256": "3ae2c82cea6882fd54f438dc7a1093aa4a8d300f5de64fd911dd0685bddbadb1",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-eftpos-australia-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 95
+      },
+      {
+        "start": 96,
+        "end": 184
+      }
+    ],
+    "raw/stripe-eftpos-australia-2025.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 138
+      }
+    ],
+    "wiki/sources/source-stripe-eftpos-australia.md": [
+      {
+        "start": 1,
+        "end": 27
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/b1869f06dbd0e4f624edf396/content.diff": [
+      {
+        "start": 1,
+        "end": 72
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-eftpos-australia/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 168
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 11
+      },
+      {
+        "start": 53,
+        "end": 62
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 222,
+        "end": 232
+      },
+      {
+        "start": 724,
+        "end": 738
+      }
+    ],
+    "wiki/concepts/eftpos-australia.md": [
+      {
+        "start": 1,
+        "end": 42
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "Stripe always routes to the international scheme.",
+      "location": "raw/stripe-eftpos-australia-2025.md:112-112"
+    },
+    {
+      "text": "Eftpos is the default network for payment.",
+      "location": "raw/stripe-eftpos-australia-2025.md:94-94"
+    },
+    {
+      "text": "To identify which network a payment was processed on",
+      "location": "raw/stripe-eftpos-australia-2025.md:117-117"
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/eftpos-australia, stripe-payments-eftpos-australia-2026-11-07.md (new raw lines 5-118, 136-179) retains the Australian Stripe account, AUD, co-branded debit, excluded-category and customer-routing-notice conditions. Ordinary held co-branded payments route to Visa/Mastercard, while others generally default to eftpos; inspect a successful PaymentIntent's Charge network to identify actual processing. The new Apple Pay branch requires AU account, AUD, eligible category and Apple Pay enablement; customer selection of eftpos routes on eftpos, and Charge network plus wallet type identifies a processed Apple Pay transaction. Its token cannot fall back, so manual capture fails. stripe-eftpos-australia-2025.md (old raw lines 8-117) already covered the general rules. source-stripe-eftpos-australia.md covers only those older rules and needs the scoped Apple Pay branch and routing exception.",
+    "Q2": "For https://docs.stripe.com/payments/eftpos-australia, the substantive addition in stripe-payments-eftpos-australia-2026-11-07.md (new raw lines 136-179) is eftpos through Apple Pay, including AU/AUD/category/settings prerequisites, customer network choice, a scoped iOS `.eftpos` enablement example, and no Visa/Mastercard fallback for Apple Pay eftpos tokens. PaymentIntent and optional card capture settings must be automatic or automatic_async; a Payment Element requiring manual capture should be configured before render to hide this wallet option, while a late card capture change may leave a failing choice. stripe-eftpos-australia-2025.md (old raw lines 90-138) preserves general co-branded routing, disclosure and the Charge example as May evidence; silence on Apple Pay does not prove prior unavailability. source-stripe-eftpos-australia.md and its reciprocal concept need to distinguish general hold-to-international routing from selected Apple Pay token failure. Whitespace and see-also changes are presentational. None of the page's examples proves account enablement, payment authorization, capture or settlement."
+  }
+}

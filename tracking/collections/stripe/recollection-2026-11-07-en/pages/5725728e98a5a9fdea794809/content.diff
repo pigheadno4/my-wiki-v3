@@ -1,0 +1,315 @@
+--- raw/stripe-bank-transfers-refunds-2025.md
++++ raw/stripe-payments-customer-balance-refunding-2026-11-07.md
+@@ -1,10 +1,10 @@
+ # Refund bank transfer payments
+ 
+-Refund payments made with bank transfers, or refund a customer’s available cash balance.
++Refund payments made with bank transfers, or refund a customer's available cash balance.
+ 
+ You can refund customer balance payments through the [Dashboard](https://dashboard.stripe.com/payments) or [API](https://docs.stripe.com/api.md#create_refund).
+ 
+-## Refund a payment to the customer
++## Refund a payment to the customer 
+ 
+ Stripe requires customer bank account details to process the refund. In some cases, Stripe receives the customer’s bank account details when performing the transfer. Stripe emails the customer to let them know that the refund is in process.
+ 
+@@ -16,38 +16,34 @@
+ 
+ You can refund a payment up to 180 days after it was created.
+ 
+-### Creating a payment refund using the Dashboard
++### Creating a payment refund using the Dashboard 
+ 
+ 1. To refund a payment made with a bank transfer, go to the payment page and click **Refund**.
+-   ![Payment page header with Refund button](assets/stripe-bank-transfer-payment-page-header.png)
++![](https://b.stripecdn.com/docs-statics-srv/assets/payment-page-header.57a436368ac47f5d34cbba18c2896b69.png)
+ 
+ 1. In the following dialog, enter the amount you want to refund, if different than the full payment amount, and any other details about the refund. Then click **Refund**.
+ 
+-### Creating a payment refund using the API
+-
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const refund = await stripe.refunds.create({
+-  payment_intent: "{{PAYMENTINTENT_ID}}",
+-  instructions_email: "customeremail@example.com",
+-});
++### Creating a payment refund using the API 
++
++```curl
++curl https://api.stripe.com/v1/refunds \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "payment_intent={{PAYMENTINTENT_ID}}" \
++  --data-urlencode "instructions_email=customeremail@example.com"
+ ```
+ 
+ Refunds are sent to the customer’s bank account, and the customer receives a notification at their default email address. If you want to override the default email address used to contact the customer, specify the new email address using the [instructions_email](https://docs.stripe.com/api/refunds/object.md#refund_object-instructions_email) parameter.
+ 
+ The refund’s status transitions as follows:
+ 
+-| Event                                                                          | Refund status     |
+-| ------------------------------------------------------------------------------ | ----------------- |
+-| Refund is created                                                              | `requires_action` |
+-| Customer submits bank account details, and Stripe begins processing the refund | `pending`         |
+-| Refund is expected to arrive in customer’s bank                                | `succeeded`       |
+-| Customer’s bank returns the funds back to Stripe                               | `requires_action` |
+-| Refund is in `requires_action` 45 days after creation                          | `failed`          |
+-| Refund is canceled from a `requires_action` state                              | `canceled`        |
++| Event | Refund status |
++| --- | --- |
++| Refund is created | `requires_action` |
++| Customer submits bank account details, and Stripe begins processing the refund | `pending` |
++| Refund is expected to arrive in customer’s bank | `succeeded` |
++| Customer’s bank returns the funds back to Stripe | `requires_action` |
++| Refund is in `requires_action` 45 days after creation | `failed` |
++| Refund is canceled from a `requires_action` state | `canceled` |
+ 
+ If the customer’s bank can’t successfully complete the transfer, the funds are returned to Stripe and the refund transitions to `requires_action`. This can happen if the account holder’s name doesn’t match what the recipient bank has on file or if the provided bank account number has a typo. In these cases, Stripe emails the customer to inform them of the failure and to request that they resubmit their bank account details.
+ 
+@@ -57,98 +53,90 @@
+ 
+ Each individual refund (including each partial refund) might incur a fee. Contact your point of contact at Stripe to learn more about this.
+ 
+-## Cancel a payment refund sent to the customer
++## Cancel a payment refund sent to the customer 
+ 
+ If a bank transfer payment refund has been sent to the customer, and the customer hasn’t submitted their bank details, you can still cancel the refund.
+ 
+-### Canceling a payment refund using the Dashboard
++### Canceling a payment refund using the Dashboard 
+ 
+ 1. To cancel a refund for a bank transfer payment, go to the payment page and click **Cancel refund**.
+-   ![Cancel payment refund button on payment page](assets/stripe-bank-transfer-cancel-payment-refund.png)
++![](https://b.stripecdn.com/docs-statics-srv/assets/cancel-payment-refund.b4596e21f2ee32cf1b2bff824de8d4b7.png)
+ 
+ 1. If the payment has multiple partial refunds in the `requires_action` state, select the correct refund from the **Refund** dropdown in the following dialog.
+-1. Confirm the cancellation by selecting **Cancel refund** in the dialog.
+-
+-### Canceling a payment refund using the API
+-
+-#### Node.js
+-
+-```javascript
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const refund = await stripe.refunds.cancel({
+-  refund: "{{REFUND_ID}}",
+-});
++2. Confirm the cancellation by selecting **Cancel refund** in the dialog.
++
++### Canceling a payment refund using the API 
++
++#### curl
++
++```bash
++curl https://api.stripe.com/v1/refunds/{{REFUND_ID}}/cancel \
++  -u <<YOUR_SECRET_KEY>>: \
++  -X POST
+ ```
+ 
+ After the payment refund has been canceled, the refund transitions from `requires_action` to `canceled`. If there are no other refunds, the payment transitions back to its original pre-refund state.
+ 
+-## Refund a payment to the customer’s cash balance
++## Refund a payment to the customer’s cash balance 
+ 
+ A refund to the customer cash balance succeeds immediately. Refunds to the customer cash balance are free of charge.
+ 
+-### Creating a payment refund using the Dashboard
++### Creating a payment refund using the Dashboard 
+ 
+ 1. To refund a payment made with a bank transfer, go to the payment page and click **Refund**.
+-   ![Payment page header with Refund button](assets/stripe-bank-transfer-payment-page-header.png)
++![](https://b.stripecdn.com/docs-statics-srv/assets/payment-page-header.57a436368ac47f5d34cbba18c2896b69.png)
+ 
+ 1. In the following dialog, select **Customer cash balance** in the **Destination** dropdown. Selecting this option deposits the refund into the customer’s cash balance on Stripe, which allows them to use the funds for future payments on your site.
+ 
+-## Refund the cash balance to the customer
++## Refund the cash balance to the customer 
+ 
+ You can return a customer’s cash balance directly to them. For example, you might need to do this when a customer transfers more funds than expected for a payment.
+ 
+-### Refund a customer’s cash balance using the Dashboard
++### Refund a customer’s cash balance using the Dashboard 
+ 
+ 1. Navigate to the [Customer list](https://dashboard.stripe.com/customers) page.
+-1. Click the customer in the list of customers.
+-1. Expand the **Cash Balance** row in the **Payment methods** section.
+-1. Click **Initiate Refund** button at the end of the row.
+-   ![Cash Balance row on Customer page with Initiate Refund button](assets/stripe-customer-balance-row.png)
++2. Click the customer in the list of customers.
++3. Expand the **Cash Balance** row in the **Payment methods** section.
++4. Click **Initiate Refund** button at the end of the row.
++![](https://b.stripecdn.com/docs-statics-srv/assets/customer_balance_row.224a651cdaecf7e3b05c8046dc0e103a.png)
+ 
+ 1. In the next dialog, enter the amount to refund.
+-1. Click **Initiate Refund**.
++2. Click **Initiate Refund**.
+ 
+ View the status of the refund on the customer balance transactions list page.
+ 
+-### Refund a customer’s cash balance using the API
++### Refund a customer’s cash balance using the API 
+ 
+ To refund a customer’s cash balance with the API, set the [origin](https://docs.stripe.com/api/refunds/object.md#refund_object-origin) parameter to `customer_balance` and specify the [customer](https://docs.stripe.com/api/refunds/object.md#refund_object-customer). The customer’s default email address is used to contact them. To override it, specify the new email address using the [instructions_email](https://docs.stripe.com/api/refunds/object.md#refund_object-instructions_email) parameter.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const refund = await stripe.refunds.create({
+-  amount: 1099,
+-  currency: "usd",
+-  customer: "{{CUSTOMER_ID}}",
+-  instructions_email: "jenny.rosen@example.com",
+-  origin: "customer_balance",
+-});
++```curl
++curl https://api.stripe.com/v1/refunds \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d amount=1099 \
++  -d currency=usd \
++  -d "customer={{CUSTOMER_ID}}" \
++  --data-urlencode "instructions_email=jenny.rosen@example.com" \
++  -d origin=customer_balance
+ ```
+ 
+-## Cancel a cash balance refund sent to the customer
++## Cancel a cash balance refund sent to the customer 
+ 
+ You can only cancel un-processed refunds. After the customer submits their bank account details, you can’t cancel a refund. Currently, you must use the Stripe Dashboard to cancel a refund:
+ 
+ 1. Navigate to the [Customer list](https://dashboard.stripe.com/customers) page.
+-1. Click the customer in the list of customers.
+-1. Expand the **Cash Balance** row in the **Payment methods** section.
+-1. Click the **View balance details** link.
+-   ![Cash balance View balance details link](assets/stripe-cash-balance-transactions-link.png)
++2. Click the customer in the list of customers.
++3. Expand the **Cash Balance** row in the **Payment methods** section.
++4. Click the **View balance details** link.
++![](https://b.stripecdn.com/docs-statics-srv/assets/cash_balance_transactions_link.2315ea0a6110fd68d550961b570622e6.png)
+ 
+ 1. Click the overflow menu (**•••**) next to the refund you want to cancel and click the **Cancel** link
+-   ![Cancel customer return overflow menu](assets/stripe-cancel-customer-return.png)
++![](https://b.stripecdn.com/docs-statics-srv/assets/cancel_customer_return.2b049b51896c523d27f56eaa437db52f.png)
+ 
+ The refund amount is credited back to the available cash balance.
+ 
+-## Track state of a refund
+-
+-You can track the state of a refund through the [Dashboard](https://dashboard.stripe.com/payments) or [API](https://docs.stripe.com/api/refunds.md).
++## Track state of a refund 
++
++You can track the state of a refund through the [Dashboard](https://dashboard.stripe.com/payments) or by retrieving the [Refund](https://docs.stripe.com/api/refunds/retrieve.md) object.
+ 
+ ### When and where refund email is sent
+ 
+@@ -162,16 +150,16 @@
+ 
+ The refund transitions to `succeeded` when the refund is successfully paid out to the customer.
+ 
+-## Refund international payments
++## Refund international payments 
+ 
+ Stripe doesn’t support refunds for international (SWIFT) payments and doesn’t send any automated refund emails for international wire payments.
+ 
+ 1. **Move funds from the customer balance to your Stripe account balance**: If the funds are sitting unreconciled in the customer’s cash balance, reconcile them through the Dashboard or API, or wait for Stripe to automatically sweep them to your account balance after 75 days.
+-1. **Pay out the funds to your bank account**: After the funds are in your Stripe account balance, initiate a [payout](https://dashboard.stripe.com/payouts) to transfer them to your external bank account.
+-1. **Collect your customer’s bank account details**: Reach out to your customer directly to obtain the account information needed to send the funds back to them.
+-1. **Send the funds and notify your customer**: Use your preferred method to transfer the funds back to your customer, and let them know the refund timeline and method.
+-
+-## Test refunds
++2. **Pay out the funds to your bank account**: After the funds are in your Stripe account balance, initiate a [payout](https://dashboard.stripe.com/payouts) to transfer them to your external bank account.
++3. **Collect your customer’s bank account details**: Reach out to your customer directly to obtain the account information needed to send the funds back to them.
++4. **Send the funds and notify your customer**: Use your preferred method to transfer the funds back to your customer, and let them know the refund timeline and method.
++
++## Test refunds 
+ 
+ You can test refund behavior in a sandbox using the following test bank accounts on the bank account details collection page linked in the email sent to the customer. Bank account details outside of these test bank accounts won’t be accepted.
+ 
+@@ -181,10 +169,9 @@
+ 
+ Specify the appropriate [country code](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements) (for example, GB, IL, CR, and so on) to test IBANs for any IBAN country and any valid currency for that country. For instance, the following IBANs specify Germany with the `DE` prefix.
+ 
+-| Number                   | Type             |
+-| ------------------------ | ---------------- |
++| Number | Type |
++| --- | --- |
+ | `DE89370400440532013000` | Refund succeeds. |
+-
+ | `DE62370400440532013001`
+ 
+ `DE89370400440532013002`
+@@ -197,10 +184,10 @@
+ 
+ #### Japan
+ 
+-| Routing   | Account   | Type             |
+-| --------- | --------- | ---------------- |
++| Routing | Account | Type |
++| --- | --- | --- |
+ | `1100000` | `0001234` | Refund succeeds. |
+-| `1100000` | `1111113` |
++| `1100000` | `1111113`
+ 
+ `1111116`
+ 
+@@ -212,10 +199,9 @@
+ 
+ #### Mexico
+ 
+-| Account              | Type             |
+-| -------------------- | ---------------- |
++| Account | Type |
++| --- | --- |
+ | `000000001234567897` | Refund succeeds. |
+-
+ | `000000111111111117`
+ 
+ `000000111111111133`
+@@ -228,10 +214,10 @@
+ 
+ #### United Kingdom
+ 
+-| Sort     | Account    | Type             |
+-| -------- | ---------- | ---------------- |
++| Sort | Account | Type |
++| --- | --- | --- |
+ | `108800` | `00012345` | Refund succeeds. |
+-| `108800` | `11111113` |
++| `108800` | `11111113`
+ 
+ `11111116`
+ 
+@@ -243,10 +229,10 @@
+ 
+ #### United States
+ 
+-| Routing     | Account        | Type             |
+-| ----------- | -------------- | ---------------- |
++| Routing | Account | Type |
++| --- | --- | --- |
+ | `110000000` | `000123456789` | Refund succeeds. |
+-| `110000000` | `000111111113` |
++| `110000000` | `000111111113`
+ 
+ `000111111116`
+ 
+@@ -256,9 +242,9 @@
+ 
+ `000444444440` | Refund fails. |
+ 
+-#### Testing Refunds Expiry
+-
+-You can make an API call to simulate the expiry of a testmode refund.
++#### Test refund expiration 
++
++You can make an API call to simulate the expiration of a refund in a sandbox.
+ 
+ ```bash
+ curl https://api.stripe.com/v1/test_helpers/refunds/{{REFUND_ID}}/expire \

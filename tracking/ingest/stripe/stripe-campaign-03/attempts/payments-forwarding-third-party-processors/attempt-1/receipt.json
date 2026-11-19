@@ -1,0 +1,180 @@
+{
+  "job_id": "payments-forwarding-third-party-processors",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-forwarding-third-party-processors-2026-11-07.md",
+  "raw_sha256": "9ff11e953ebb02c7c1d568a58b341a603a6b300485efaa5afc47ea66345ebd41",
+  "prior_raw_path": "raw/stripe-forwarding-third-party-2026.md",
+  "prior_raw_sha256": "ae7f38f9ca1c78daf93f397cef6e547371bd3566e956af1cc6a480d4def14a10",
+  "source_targets": [
+    "wiki/sources/source-stripe-forwarding-third-party.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-forwarding-third-party.md": "98b955c9d880075f0673bb582ccf7da4d01d68df1013d9e0c90849fa4c3cd2cf"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-forwarding-third-party-processors-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 140
+      },
+      {
+        "start": 141,
+        "end": 279
+      }
+    ],
+    "raw/stripe-forwarding-third-party-2026.md": [
+      {
+        "start": 1,
+        "end": 140
+      },
+      {
+        "start": 141,
+        "end": 277
+      }
+    ],
+    "wiki/sources/source-stripe-forwarding-third-party.md": [
+      {
+        "start": 1,
+        "end": 30
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/e5b5d963b6952f590af4300c/content.diff": [
+      {
+        "start": 1,
+        "end": 190
+      },
+      {
+        "start": 191,
+        "end": 376
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 12
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 560,
+        "end": 568
+      },
+      {
+        "start": 710,
+        "end": 716
+      }
+    ],
+    "wiki/concepts/stripe-vault-and-forward.md": [
+      {
+        "start": 1,
+        "end": 58
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/proposed-queries.md": [
+      {
+        "start": 544,
+        "end": 550
+      }
+    ],
+    "raw/stripe-vault-and-forward-2026.md": [
+      {
+        "start": 318,
+        "end": 350
+      },
+      {
+        "start": 748,
+        "end": 758
+      }
+    ],
+    "wiki/sources/source-stripe-vault-and-forward.md": [
+      {
+        "start": 30,
+        "end": 40
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Use Payment Element across multiple processors",
+      "location": "raw/stripe-payments-forwarding-third-party-processors-2026-11-07.md:5"
+    },
+    {
+      "text": "To gain access to use Stripe\u2019s forwarding service, contact",
+      "location": "raw/stripe-payments-forwarding-third-party-processors-2026-11-07.md:13"
+    },
+    {
+      "text": "[Stripe] -- Stripe redacts identified PCI-sensitive data and relays the response --> [Server]",
+      "location": "raw/stripe-payments-forwarding-third-party-processors-2026-11-07.md:23"
+    },
+    {
+      "text": "paymentMethodCreation: 'manual'",
+      "location": "raw/stripe-payments-forwarding-third-party-processors-2026-11-07.md:42"
+    },
+    {
+      "text": "if (forwardedReq.response_details.status != 200)",
+      "location": "raw/stripe-payments-forwarding-third-party-processors-2026-11-07.md:244"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Pass the PaymentMethod ID to the ForwardingRequest endpoint on your server.",
+      "location": "raw/stripe-forwarding-third-party-2026.md:17"
+    },
+    {
+      "text": "Contact Stripe support to",
+      "location": "raw/stripe-forwarding-third-party-2026.md:191"
+    },
+    {
+      "text": "if (forwardedReq.response_details.status != 200)",
+      "location": "raw/stripe-forwarding-third-party-2026.md:242"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The May 11 and November 7 guides share the same core integration: request Stripe forwarding access, collect card details with Payment Element, create a Stripe PaymentMethod on the client with manual creation, send its ID to a merchant server, and make a server-side ForwardingRequest to a configured third-party destination (old raw lines 8-17, 21-105, 189-260; new raw lines 9-13, 27-29, 33-118, 197-263). Neither a PaymentMethod nor the ForwardingRequest itself is a Stripe PaymentIntent, destination authorization, capture, or settlement outcome.",
+    "November adds an explicit client/Stripe/server/processor sequence diagram. It says Stripe forwards card data, receives a processor response, redacts identified PCI-sensitive data, and relays that response to the merchant server (new raw lines 15-25; diff lines 10-22). May only had the diagram reference/alt text (old raw line 13). This is a substantive documentation clarification about relay/redaction boundaries, not proof of comprehensive redaction or a successful payment.",
+    "The example sets Elements mode payment, amount 1099 USD, paymentMethodCreation manual, calls elements.submit before stripe.createPaymentMethod, and sends only paymentMethod.id to the server in both HTML/JS and React variants (new raw lines 33-118, 121-195; old raw lines 21-107, 109-187). These are client collection/validation and PaymentMethod creation steps; the actual processor request is separate and server-owned.",
+    "The server example requires a support-configured destination/test endpoint, uses the PaymentMethod ID, destination URL, destination API and idempotency headers, JSON amount/reference and blank card fields, and replacements for number/expiry/CVC/name (new raw lines 197-242; old raw lines 189-240). The example checks response_details.status, parses response_details.body on its 200 branch, and catches errors; its client handler checks error versus status (new raw lines 244-279; old raw lines 242-277). Request shape, response branch and status 200 are examples, not evidence the destination accepted or processed a charge.",
+    "The mapped source line 21 says 'Stripe always returns 200' without a condition and next to the response_details.status check. The related retained Vault and Forward guide says the API returns 200 for any response from the destination endpoint, even a destination 400, with destination response/error in response.body (raw/stripe-vault-and-forward-2026.md lines 748-756; wiki/sources/source-stripe-vault-and-forward.md line 37). That statement does not say Stripe requests cannot fail; this guide catches errors and checks response_details.status (new raw lines 244-257). Qualify the source and reciprocal concept line 23 to destination-response handling, and do not conflate HTTP response, response_details.status and a successful processor payment.",
+    "The remaining November changes are quote style, indentation, wrapping and a name/sample formatting change in HTML/JS, React and server snippets (diff lines 24-190, 191-376); no new API parameter, endpoint, required SDK version, replacement enum, or processor-result rule is established by those formatting differences. Current source only links the May raw and claims 262 lines while the pinned May file has 277 lines (source lines 4-7, 28-30)."
+  ],
+  "substantive_changes": [
+    "November explicitly adds a seven-step data-flow diagram showing Stripe forwarding card data and redacting identified PCI-sensitive response data before relay (new raw lines 15-25; old raw lines 10-13; diff lines 10-22). This documents the response path but does not establish complete redaction, card-network authorization, settlement, or error-free execution.",
+    "All functional sample calls and request fields remain the same across captures; code typography/indentation and diagram placement are presentational (old raw lines 21-277; new raw lines 33-279; diff lines 24-376). The source's unconditional 200 wording is a pre-existing summary-scope issue, not a newly changed API behavior."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain dated May 11 support-request and destination configuration prerequisites, the client Payment Element manual-creation flow and server ForwardingRequest request fields as earlier evidence (old raw lines 8-17, 21-105, 189-240). November repeats these details (new raw lines 9-13, 27-118, 197-242) but the examples are not a live integration test.",
+    "Retain the separate related Vault and Forward guide's conditional 200 rule only for destination responses, and preserve the distinction between destination response_details, Stripe/API errors and a real processor outcome (raw/stripe-vault-and-forward-2026.md lines 748-756; new raw lines 244-279). The November diagram's identified-PCI-data redaction wording is scoped to the depicted relay step (new raw lines 15-25)."
+  ],
+  "conflicts": [
+    "wiki/sources/source-stripe-forwarding-third-party.md line 21 and wiki/concepts/stripe-vault-and-forward.md line 23 say Stripe always returns 200, but the related retained guide limits that to any destination endpoint response (raw/stripe-vault-and-forward-2026.md lines 748-756), while this guide's server catches errors and checks response_details.status (old raw lines 242-255; new raw lines 244-257). Reciprocally scope the 200 claim and keep destination status/body and payment outcome distinct.",
+    "The source's flow line 21 can be read as treating a response_details.status 200 as processor success, but the code only enters a parse/handle branch (old raw lines 242-249; new raw lines 244-252); source and concept must not equate a successful forwarding response with authorization or settlement."
+  ],
+  "unresolved_questions": [
+    "The configured destination's API contract, merchant access, actual response schema and payment/settlement outcome are not established by the example or diagram (new raw lines 197-279).",
+    "The new diagram states redaction of identified PCI-sensitive data but does not define an exhaustive redaction set or proof of PCI compliance for the merchant server (new raw lines 15-25)."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-vault-and-forward.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-forwarding-third-party.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add November raw/canonical route with dated May provenance; the current source lists only May raw and an incorrect 262-line count for a pinned 277-line file (source lines 4-7, 28-30; new raw lines 1-3; old raw lines 1-2).",
+        "Retain the manual Payment Element, elements.submit/createPaymentMethod and server ForwardingRequest sequence, while adding the November diagram's processor-response relay and identified PCI-sensitive-data redaction step without claiming complete safety or payment success (source lines 13-21; new raw lines 15-25, 27-29, 197-279).",
+        "Scope the source line 21 200 statement to a returned destination response, citing the separate retained Vault and Forward guide; distinguish Stripe/API errors, response_details.status/body and destination payment outcome, with reciprocal qualification at wiki/concepts/stripe-vault-and-forward.md line 23 (raw/stripe-vault-and-forward-2026.md lines 748-756; old raw lines 242-255; new raw lines 244-257)."
+      ],
+      "conflicts": [
+        "Unconditional source line 21 and concept line 23 200 wording exceeds the related guide's destination-response condition (raw/stripe-vault-and-forward-2026.md lines 748-756), and the mapped guide's sample checks response_details.status/catches errors rather than certifying a payment (new raw lines 244-279)."
+      ],
+      "reason": "The new diagram adds a meaningful relay/redaction boundary, and the existing source's status language needs a condition and outcome boundary; a dated source and reciprocal concept qualification are warranted."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/forwarding-third-party-processors, the November guide documents support-gated card collection through Payment Element, client-side elements.submit and manual stripe.createPaymentMethod, passage of a PaymentMethod ID to the merchant server, and a server-side ForwardingRequest to a configured third-party processor (new raw lines 9-29, 33-118, 197-242). Its new diagram shows Stripe relaying a processor response after redacting identified PCI-sensitive data (new raw lines 15-25). The May guide already documented the same core calls and request fields (old raw lines 8-17, 21-105, 189-240). source-stripe-forwarding-third-party.md maps the flow but lacks November provenance and overstates the 200 response condition (source lines 13-30). Neither PaymentMethod creation nor a forwarded request proves third-party authorization, capture, or settlement.",
+    "Q2": "For https://docs.stripe.com/payments/forwarding-third-party-processors, the substantive documentation addition is the explicit processor-response/redaction diagram (new raw lines 15-25; old raw lines 10-13); most other diff is code quote, spacing and indentation changes, with the same fields and branching (new raw lines 33-279; old raw lines 21-277). source-stripe-forwarding-third-party.md should preserve May details as dated, add November raw, and narrow its 'always 200' statement: the related Vault and Forward guide applies that to any destination endpoint response, while this guide catches errors and checks response_details.status (source line 21; raw/stripe-vault-and-forward-2026.md lines 748-756; old raw lines 242-255; new raw lines 244-257). The reciprocal concept line 23 needs the same condition. A returned 200 or redacted relay is not proof of a successful processor charge, complete PCI redaction, merchant access, or settlement."
+  }
+}

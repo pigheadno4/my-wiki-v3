@@ -21,7 +21,7 @@ Mexico-only consumer credit card installment feature. MX Stripe accounts only; M
 
 ### Japan — 分割払い
 
-Japan-only card installment feature for JP Stripe accounts processing JPY. Merchant receives full amount upfront; card company handles collection.
+Japan card installment feature for Japan Stripe accounts processing JPY on Japanese-issued credit cards. The merchant receives full transaction principal as with standard card payments, while the issuer extends credit and collects installments; funds become available on the ordinary card schedule, with standard payout timing.
 
 **3 plan types**: fixed installments, revolving credit, bonus (paid at customer's company bonus cycle).
 
@@ -37,7 +37,7 @@ Japan-only card installment feature for JP Stripe accounts processing JPY. Merch
 
 **Bonus windows**: Summer (Dec 16–Jun 15), Winter (Jul 16–Nov 15). Unavailable Jun 16–Jul 15 and Nov 16–Dec 15. Checkout-to-payment cutoff crossing causes payment failure.
 
-**Restrictions**: JP-issued credit cards only (no debit/prepaid); JPY; no recurring/off-session.
+**Restrictions**: Japan Stripe account, Japanese-issued credit card (no debit/prepaid) and JPY. Recurring installment payments are unsupported. For other off-session payments, the guide warns against use when the customer does not select the plan at payment; it does not affirm support in any other off-session case.
 
 ## Sources
 
@@ -46,4 +46,4 @@ Japan-only card installment feature for JP Stripe accounts processing JPY. Merch
 - [[source-stripe-mx-installments]] — Mexico meses sin intereses: fees table (3–24mo), 33 supported issuers, requirements, Connect
 - [[source-stripe-mx-installments-accept-payment]] — Mexico meses sin intereses integration: Checkout/Elements/Direct API/Invoices/Payment Links, custom settings, test cards
 - [[source-stripe-jp-installments]] — Japan installments detail: brand support table, bonus windows, requirements
-- [[source-stripe-jp-installments-accept-payment]] — Japan installments integration guide: Checkout/Elements/Direct API/Invoices/Payment Links
+- [[source-stripe-jp-installments-accept-payment]] — 2026-05-01 Japan installment integration guide for Checkout, Elements, Direct API, Invoices and Payment Links; the 2026-11-07 capture at its canonical URL supplies variant navigation only.

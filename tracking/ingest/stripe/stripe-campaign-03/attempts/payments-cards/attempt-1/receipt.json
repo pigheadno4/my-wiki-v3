@@ -1,0 +1,185 @@
+{
+  "job_id": "payments-cards",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-cards-2026-11-07.md",
+  "raw_sha256": "02da10c8197189cc837deccb95f68071ce1c6c0275c11c7a8ac650f81f48c53c",
+  "prior_raw_path": "raw/stripe-cards-2025.md",
+  "prior_raw_sha256": "317ae1eb036fb25b7e6fa62c21ffdc5d5eb395082cc89f04c6f9ab105d4caeec",
+  "source_targets": [
+    "wiki/sources/source-stripe-cards.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-cards.md": "0be3007684987aa592a1a05a09bade57b4de6db43a465c703a781d1e4a2c879e"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-cards-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 60
+      },
+      {
+        "start": 61,
+        "end": 108
+      }
+    ],
+    "raw/stripe-cards-2025.md": [
+      {
+        "start": 1,
+        "end": 60
+      },
+      {
+        "start": 61,
+        "end": 102
+      }
+    ],
+    "wiki/sources/source-stripe-cards.md": [
+      {
+        "start": 1,
+        "end": 45
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/37c3a00095e8e344ad75624e/content.diff": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 121
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      },
+      {
+        "start": 50,
+        "end": 62
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 215,
+        "end": 231
+      }
+    ],
+    "wiki/concepts/stripe-payment-methods.md": [
+      {
+        "start": 1,
+        "end": 23
+      },
+      {
+        "start": 88,
+        "end": 99
+      }
+    ],
+    "wiki/concepts/eftpos-australia.md": [
+      {
+        "start": 10,
+        "end": 43
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 455,
+        "end": 470
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/proposed-queries.md": [
+      {
+        "start": 299,
+        "end": 304
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "| **China UnionPay** | Australia, Canada, Hong Kong, Malaysia, New Zealand, Singapore, United Kingdom, United States, Switzerland, and all countries in the European Economic Area except Iceland | Global | \u2713 Supported | \u2713 Supported4 |",
+      "location": "raw/stripe-payments-cards-2026-11-07.md:50"
+    },
+    {
+      "text": "| **eftpos** | Australia | Australia | \u2713 Supported | \u2713 Supported3 |",
+      "location": "raw/stripe-payments-cards-2026-11-07.md:53"
+    },
+    {
+      "text": "3 Supports Apple Pay. Transactions must be in AUD, and manual capture isn\u2019t supported.",
+      "location": "raw/stripe-payments-cards-2026-11-07.md:59"
+    },
+    {
+      "text": "4 Supports [UnionPay through Apple Pay on the web]",
+      "location": "raw/stripe-payments-cards-2026-11-07.md:61"
+    },
+    {
+      "text": "Use the Payment Element to [filter cards by brand and funding type]",
+      "location": "raw/stripe-payments-cards-2026-11-07.md:69"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Not supported",
+      "location": "raw/stripe-cards-2025.md:49"
+    },
+    {
+      "text": "Not supported",
+      "location": "raw/stripe-cards-2025.md:52"
+    },
+    {
+      "text": "You can disallow the use of specific card brands in the following ways:",
+      "location": "raw/stripe-cards-2025.md:60"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Both captures identify cards as bank-linked debit or credit funding entered at online checkout, enabled by default, with eligible methods selected by transaction amount, currency and payment flow; customers may need network/country-dependent verification (old raw lines 4-17; new raw lines 5-18). Card funding through Link and digital wallets is distinct from the wallet PaymentMethod presentation and a completed charge (new raw lines 16-18). The mapped source summarizes brands and geography but omits this selection/identity distinction (source lines 11-17, 41).",
+    "The online brand table changes China UnionPay wallets from 'Not supported' to '\u2713 Supported4' and adds footnote 4 limiting the claim to UnionPay through Apple Pay on the web (old raw lines 43-50; new raw lines 44-51, 61). It changes eftpos wallets from 'Not supported' to '\u2713 Supported3', with Apple Pay support conditioned on AUD and no manual capture (old raw lines 43-52; new raw lines 44-59). The current source still states CUP and eftpos wallet \u2717 at lines 28 and 31: those May claims directly conflict with the November table and need dated reciprocal qualification, not broad all-wallet support.",
+    "The new Exclude card brands section adds Payment Element filtering by brand and funding type alongside the retained Radar rejection rule and custom client-side brand check (old raw lines 58-63; new raw lines 63-69). Source line 33 currently lists only Radar and a client-side check, so it misses a new integration-specific option. A Payment Element display/filter configuration is not identical to a Radar rejection or payment outcome.",
+    "The remaining table rows preserve Visa, Mastercard, Amex, Discover/Diners, JCB and Cartes Bancaires account/country/3DS/wallet qualifications; the Cartes Bancaires footnote link changes target but still says Apple Pay (old raw lines 43-56; new raw lines 44-57). JCB's 3DS cell is a country list, not an unqualified global 3DS assertion (new raw line 51). Account-country availability and cardholder country are different axes (new raw lines 36-53).",
+    "The new guide retains possible SCA/3DS authentication, default support in Checkout, Payment Links and hosted invoice pages, and configurable paths through Payment Intents, Setup Intents, Elements and mobile SDKs (old raw lines 71-82; new raw lines 77-88). Source line 35 says 'SCA/3DS: required in Europe and India', stronger than the guide's 'some banks' and region-dependent wording; qualify the source baseline rather than presenting every card transaction in those places as requiring 3DS (new raw lines 71-88). A SetupIntent is setup for future payment, not a successful charge.",
+    "The new guide retains issuer-managed installments as distinct from Subscriptions or SetupIntents, EU customer co-badged brand choice, and India RBI resource navigation (old raw lines 84-96; new raw lines 90-102). The eftpos concept's no-manual-capture claim is compatible with the new Apple Pay footnote but its general routing statement cannot by itself establish Apple Pay availability (wiki/concepts/eftpos-australia.md lines 14-19, 36-42; new raw lines 53-59)."
+  ],
+  "substantive_changes": [
+    "China UnionPay wallet capability changes from unsupported in May to UnionPay through Apple Pay on the web in November; the web and Apple Pay qualification controls the claim (old raw line 49; new raw lines 50, 61; source line 28).",
+    "eftpos wallet capability changes from unsupported in May to Apple Pay with AUD transactions and no manual capture in November; the account and customer table scope remains Australia (old raw line 52; new raw lines 53, 59; source line 31).",
+    "Payment Element brand-and-funding-type filtering is a newly documented option alongside Radar and custom client-side checking (old raw lines 58-63; new raw lines 63-69; source line 33)."
+  ],
+  "historical_claims_to_preserve": [
+    "Preserve the May 1, 2026 raw and date_ingested provenance for the older wallet \u2717 rows, while adding the November capture and its qualified CUP/eftpos wallet support; do not silently rewrite what the May table said (source lines 4-7, 28, 31, 43-45; old raw lines 49, 52; new raw lines 50, 53, 59-61).",
+    "Retain the dated card account-country versus customer-country table, regional 3DS/SCA qualifications, issuer-managed installments, EU co-badged choice and India resource references without inferring universal eligibility, compliance, authentication success or a completed payment from documentation alone (old raw lines 35-41, 71-96; new raw lines 36-42, 77-102).",
+    "Keep Radar rejection and custom client-side brand check as older options; add the new Payment Element filter without equating these controls or asserting that configuration proves payment rejection (old raw lines 58-63; new raw lines 63-69)."
+  ],
+  "conflicts": [
+    "The May source table says CUP wallets \u2717 and eftpos wallets \u2717 (source lines 28, 31), while the November online table says qualified Apple Pay support for UnionPay on the web and eftpos in AUD without manual capture (new raw lines 50, 53, 59-61). The source update should date both positions and state the November limitations; any relevant concept note must use the same qualification.",
+    "The existing source's blanket 'SCA/3DS: required in Europe and India' (source line 35) is broader than the conditional authentication described in both captures (old raw lines 71-77; new raw lines 77-83). This is a pre-existing summary overstatement, separate from the November wallet/filter delta."
+  ],
+  "unresolved_questions": [
+    "The new table's footnotes do not establish UnionPay wallet support outside Apple Pay on the web, or eftpos support in other wallets, currencies, capture modes or integration paths (new raw lines 50, 53, 59-61). Linked brand-specific pages were not pinned here.",
+    "The guide does not supply a concrete Payment Element filtering configuration, a Radar outcome, merchant eligibility check, or observed successful card payment; the linked implementation page remains navigation only (new raw lines 63-69)."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-payment-methods.md",
+    "wiki/concepts/eftpos-australia.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-cards.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add November raw provenance while preserving May ingestion and May table (source lines 4-7, 43-45; new raw lines 1-5).",
+        "Replace the source table's unqualified current CUP/eftpos wallet \u2717 reading with dated May versus November statements: UnionPay through Apple Pay on the web, and eftpos Apple Pay in AUD with no manual capture (source lines 28, 31; old raw lines 49, 52; new raw lines 50, 53, 59-61).",
+        "Add Payment Element brand/funding filtering as a separate option from Radar reject and custom client-side brand check (source line 33; old raw lines 58-63; new raw lines 63-69).",
+        "Qualify source line 35's Europe/India SCA/3DS blanket wording to the conditional and path-specific statements in the guide (old raw lines 71-82; new raw lines 77-88)."
+      ],
+      "conflicts": [
+        "Source lines 28 and 31 retain the May unsupported wallet cells while November lines 50, 53 and 59-61 document qualified Apple Pay capability.",
+        "Source line 35 overstates region-wide SCA/3DS necessity relative to the conditional source wording (new raw lines 77-83)."
+      ],
+      "reason": "The wallet rows and Payment Element option are substantive raw changes that make the mapped source materially stale; the baseline SCA phrasing also needs a narrower qualification."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/cards, the complete November guide says cards are default-enabled bank-linked payment methods entered at checkout, with Stripe selecting eligible methods by amount, currency and flow, while some network/country combinations trigger additional verification (new raw lines 5-18). Its online table separates Stripe account country, customer country, 3DS and wallet capability; a supported cell is not a completed payment (new raw lines 36-61). Compared with May, UnionPay gains Apple Pay on the web and eftpos gains Apple Pay only in AUD without manual capture (old raw lines 43-52; new raw lines 50-61). The new Payment Element can filter brand and funding type (new raw lines 63-69). source-stripe-cards.md still records May wallet exclusions and omits that filter at source lines 28-33; its broad SCA wording at line 35 needs conditional scope. PaymentIntents track payment authentication, SetupIntents setup for future payments, and issuer-managed installments are distinct from Subscriptions (new raw lines 83-94).",
+    "Q2": "For https://docs.stripe.com/payments/cards, the substantive changes are qualified UnionPay and eftpos Apple Pay support plus a Payment Element brand/funding filter (old raw lines 49-63; new raw lines 50-69). Reflowed table formatting, heading spaces, updated image/link targets and SCA wording edits do not independently prove a new payment state or wholesale brand eligibility change (old raw lines 10-17, 35-56, 71-82; new raw lines 11-18, 36-61, 77-88). source-stripe-cards.md should preserve its May table as dated history, add November-qualified support, and warn reciprocally that its existing wallet \u2717 cells at lines 28 and 31 are superseded only for those Apple Pay contexts. Its SCA/3DS blanket claim at line 35 is an older summary overstatement, not a fresh November policy change. Account country differs from customer country; browser Payment Element filtering differs from Radar rejection; 3DS capability or SetupIntent creation is not authentication or payment success. The captured page cannot prove account-specific availability, an actual charge or compliance."
+  }
+}

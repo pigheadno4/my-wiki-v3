@@ -1,0 +1,207 @@
+{
+  "job_id": "payments-build-a-two-step-confirmation",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-build-a-two-step-confirmation-2026-11-07.md",
+  "raw_sha256": "92d499f2f7f3ae2a22da15da77c888cb648a4e2f87ad20a4d20a77d2eb1b7bc7",
+  "prior_raw_path": "raw/stripe-two-step-confirmation-2026.md",
+  "prior_raw_sha256": "55a6c27d5b4fdc212b7d68fc925abfa76e873a6722af93887403ddcf9e17c0e0",
+  "source_targets": [
+    "wiki/sources/source-stripe-two-step-confirmation.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-two-step-confirmation.md": "fda7472376fe229a646f7e127ae0468d312ca845a496b2fbea890fb52af78d5e"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-build-a-two-step-confirmation-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 220
+      },
+      {
+        "start": 221,
+        "end": 440
+      },
+      {
+        "start": 441,
+        "end": 660
+      },
+      {
+        "start": 661,
+        "end": 884
+      }
+    ],
+    "raw/stripe-two-step-confirmation-2026.md": [
+      {
+        "start": 1,
+        "end": 220
+      },
+      {
+        "start": 221,
+        "end": 330
+      },
+      {
+        "start": 331,
+        "end": 440
+      },
+      {
+        "start": 441,
+        "end": 660
+      },
+      {
+        "start": 661,
+        "end": 906
+      }
+    ],
+    "wiki/sources/source-stripe-two-step-confirmation.md": [
+      {
+        "start": 1,
+        "end": 47
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/f5040e863f89628230d4c7df/content.diff": [
+      {
+        "start": 1,
+        "end": 220
+      },
+      {
+        "start": 221,
+        "end": 440
+      },
+      {
+        "start": 441,
+        "end": 650
+      },
+      {
+        "start": 651,
+        "end": 820
+      },
+      {
+        "start": 821,
+        "end": 976
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 24
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 548,
+        "end": 562
+      },
+      {
+        "start": 724,
+        "end": 735
+      }
+    ],
+    "wiki/concepts/stripe-payment-intents.md": [
+      {
+        "start": 1,
+        "end": 115
+      },
+      {
+        "start": 138,
+        "end": 152
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/proposed-queries.md": [
+      {
+        "start": 285,
+        "end": 290
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Add an optional review page or run validations after a user enters their payment details.",
+      "location": "raw/stripe-payments-build-a-two-step-confirmation-2026-11-07.md:7"
+    },
+    {
+      "text": "If you intend to specify `setup_future_usage`, don\u2019t set `payment_method_save_usage` in the same payment transaction because `setup_future_usage` controls the save behavior.",
+      "location": "raw/stripe-payments-build-a-two-step-confirmation-2026-11-07.md:253"
+    },
+    {
+      "text": "If your integration renders the Payment Element before creating an Intent, we suppress microdeposit verification for US bank accounts when the payment amount is 0.",
+      "location": "raw/stripe-payments-build-a-two-step-confirmation-2026-11-07.md:382"
+    },
+    {
+      "text": "`allowedPaymentMethodTypes`",
+      "location": "raw/stripe-payments-build-a-two-step-confirmation-2026-11-07.md:397"
+    },
+    {
+      "text": "Use [stripe.confirmPayment](https://docs.stripe.com/js/payment_intents/confirm_payment) to complete the payment using details from the Payment Element.",
+      "location": "raw/stripe-payments-build-a-two-step-confirmation-2026-11-07.md:745"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "`paymentMethodTypes`",
+      "location": "raw/stripe-two-step-confirmation-2026.md:394"
+    },
+    {
+      "text": "If you intend to specify `setup_future_usage`, don\u2019t set `payment_method_save_usage` in the same payment transaction because this causes an integration error.",
+      "location": "raw/stripe-two-step-confirmation-2026.md:250"
+    },
+    {
+      "text": "To calculate tax in the Payment Element, you must first:",
+      "location": "raw/stripe-two-step-confirmation-2026.md:598"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Semantic raw delta: the two-step review/validation/tax purpose and deferred Payment Element \u2192 client ConfirmationToken \u2192 server PaymentIntent \u2192 client confirmPayment path remain in both captures (new raw lines 5-13, 404-410, 653-661, 743-751; old raw lines 4-12, 401-407, 655-663, 763-771). November adds specific zero-amount US-bank microdeposit suppression and renames an Elements option in its table (new raw lines 382, 397-403; old raw lines 374-399; diff lines 423-464).",
+    "November's server setup and PaymentIntent examples switch Node.js to Ruby, the Stripe.js script example moves dahlia to endive, and image URLs/code style change (new raw lines 15-30, 55-69, 263-323, 665-741; old raw lines 14-25, 49-63, 260-320, 667-761; diff lines 3-20, 40-85, 254-363, 709-873). These are captured example/version/presentation changes, not proof of API deprecation or payment success.",
+    "Existing-summary baseline accuracy: source lines 13-22 conveys the core review flow but omits elements.submit before ConfirmationToken (new raw lines 437-465; old raw lines 434-462), overstates that all Elements options must match PI parameters exactly (source line 26 versus conditional match warning and table in new raw lines 376-402), and presents tax linking as a fixed step although the guide calls tax optional and its PI hook is commented (new raw lines 591-600, 663-699; old raw lines 594-604, 665-706).",
+    "Current source lines 31-34 says no ACSS direct debits, while both captures specify pre-authorized ACSS debits; they also condition customer_balance on a client-created deferred Intent with dynamic payment methods and require a server-created PaymentIntent with Account or Customer and returned client_secret for that route (new raw lines 33-39; old raw lines 27-33).",
+    "Root wiki/index.md line 7 routes through wiki/stripe-index.md lines 555 and 729 to wiki/concepts/stripe-payment-intents.md lines 43-48 and 145-148 and mapped source; source lines 1-9 lacks canonical_url and source lines 45-47 only link the May raw, so provenance and November route need correction."
+  ],
+  "substantive_changes": [
+    "New raw line 382 documents suppression of microdeposit verification for US bank accounts when the Payment Element is rendered before Intent creation and payment amount is 0; old raw lines 374-399 have no matching note. This is a scoped documented behavior, not a general US-bank rule.",
+    "New Elements options table uses allowedPaymentMethodTypes instead of paymentMethodTypes and applies the card-installments prerequisite to the new name (new raw lines 397-403; old raw lines 393-399; diff lines 451-464). Treat as a captured documentation change within this web Elements guide, not a universal Stripe.js migration claim.",
+    "New capture explains setup_future_usage controls save behavior where the old capture warned that combining it with payment_method_save_usage causes an integration error (new raw lines 249-259; old raw lines 246-256; diff lines 234-250). Preserve the dated conflict rather than declaring the old error impossible.",
+    "New capture gives a concrete Accounts v2 preview join instruction through Dashboard Account previews and features, while preserving Connect GA versus other-user preview and preview-version requirement (new raw lines 255-261; old raw lines 252-258; diff lines 241-252). This is a dated access-navigation detail, not verified account eligibility."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the May Node.js and dahlia Stripe.js examples as May 11, 2026 captures; the November Ruby and endive examples do not establish Node.js removal or a required Stripe.js version migration (old raw lines 20-25, 49-55, 667-761; new raw lines 21-30, 55-61, 665-741).",
+    "Keep the common BLIK and pre-authorized ACSS exclusion and conditional client-side customer_balance limitation with exact object identity and server-created PI route (old raw lines 27-33; new raw lines 33-39).",
+    "Keep the review step's ConfirmationToken/payment_method_preview distinct from PaymentIntent creation and actual payment confirmation; optional tax requires Stripe Tax and billing address, and amount_total/hook use are illustrated, not a default (old raw lines 401-407, 542-659, 763-771; new raw lines 404-410, 541-657, 743-751).",
+    "Keep the May mismatch warning for setup_future_usage and payment_method_save_usage dated alongside the revised November explanation; neither document proves behavior across arbitrary SDK/API versions (old raw line 250; new raw line 253)."
+  ],
+  "conflicts": [
+    "Saved-method warning differs: May calls joint setup_future_usage/payment_method_save_usage an integration error (old raw line 250), November says setup_future_usage controls save behavior (new raw line 253). The shared prohibition remains, but the cause changed; source line 27 omits both conditions.",
+    "Tax example uses confirmationToken.paymentMethodPreview.billingDetails.address while surrounding summary accesses confirmationToken.payment_method_preview.type (new raw lines 567-573, 612-627; old raw lines 570-575, 616-630). Treat field-style mismatch as example ambiguity, not a verified runtime shape; source lines 19-21 should not imply a drop-in complete tax implementation.",
+    "Source line 26's 'must match PI params exactly' overgeneralizes the guide's examples and conditional warning (new raw lines 376-402; old raw lines 374-399). Source line 33 broadens ACSS pre-authorized debit exclusion to all ACSS direct debits (new raw line 35; old raw line 29)."
+  ],
+  "unresolved_questions": [
+    "The captured guide changes the listed Elements option from paymentMethodTypes to allowedPaymentMethodTypes (new raw lines 397-403; old raw lines 393-399), but the exact runtime/API-version compatibility and whether both names coexist are not established by these pages.",
+    "The revised save-behavior explanation and old integration-error explanation conflict on cause (new raw line 253; old raw line 250); current account-specific runtime behavior is untested.",
+    "The November examples show Ruby server code and endive Stripe.js while May shows Node.js and dahlia (new raw lines 55-61, 665-741; old raw lines 49-55, 667-761); the captures alone do not establish SDK compatibility or a mandatory upgrade."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-payment-intents.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-two-step-confirmation.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add exact canonical_url https://docs.stripe.com/payments/build-a-two-step-confirmation and November raw route while retaining May raw/date (source lines 1-9, 45-47; new raw lines 1-3; old raw lines 1-2).",
+        "Record the scoped zero-amount US-bank microdeposit note and allowedPaymentMethodTypes table change as November changes; retain old name as dated May and avoid claiming universal runtime migration (new raw lines 382, 397-403; old raw lines 374-399).",
+        "Repair baseline summary: add elements.submit before token creation, condition Elements/PI matching to equivalent supplied options, make Tax Calculation and PI hook optional, and correct ACSS restriction to pre-authorized debits (source lines 13-34; new raw lines 35, 380, 437-465, 591-600, 663-699).",
+        "Qualify CustomerSession Account-vs-Customer identity and Accounts v2 GA for Connect/public preview for other users, preview-version requirement, and newly specified Dashboard enrollment (source lines 26-29; new raw lines 249-261)."
+      ],
+      "conflicts": [
+        "Old save warning calls combined setup_future_usage/payment_method_save_usage an integration error, new warning attributes control to setup_future_usage; preserve dates and the shared 'do not combine' instruction (old raw line 250; new raw line 253).",
+        "Tax example field style differs between payment_method_preview and paymentMethodPreview (new raw lines 567-573, 612-627); source lines 19-21 should not imply a fully executable tax recipe."
+      ],
+      "reason": "The November capture adds scoped behavior and an option name, while the mapped source has baseline overstatements and missing provenance. A dated dual-raw source correction is needed; no source edit is authorized in this review-only handoff."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/build-a-two-step-confirmation, the November guide documents an optional review, validation or tax step after Payment Element entry: configure web Elements, submit details, create a ConfirmationToken, inspect payment_method_preview on the server, optionally calculate tax, then create a server PaymentIntent and pass its client secret to client-side stripe.confirmPayment with the token and return_url (new raw lines 5-13, 404-410, 437-465, 541-661, 743-751). The May guide describes the same central flow (old raw lines 4-12, 401-407, 542-663, 763-771). Enabled payment methods, live HTTPS and direct Stripe.js loading matter; BLIK and ACSS pre-authorized debits are excluded, and client-created deferred Intents cannot use customer_balance with dynamic methods unless the PaymentIntent is instead server-created with Account or Customer (new raw lines 33-55). Saved-method CustomerSession uses a Customer or customer-configured Account, the latter GA for Connect and preview for others with preview version (new raw lines 249-261). source-stripe-two-step-confirmation.md captures the outline but omits submit, broadens some conditions, and misses November raw provenance (current source lines 1-9, 13-34, 45-47). Token creation, review display, Intent creation and browser return do not establish payment success or settlement.",
+    "Q2": "At https://docs.stripe.com/payments/build-a-two-step-confirmation, the substantive November differences are the scoped zero-amount US-bank microdeposit suppression, Elements table's allowedPaymentMethodTypes in place of paymentMethodTypes, revised save-behavior explanation, and Accounts v2 preview enrollment route (new raw lines 253-261, 376-403; old raw lines 250-258, 374-399). Ruby replacing Node.js server examples, endive replacing dahlia in the Stripe.js script example, images and code formatting are presentation/version evidence, not proof of deprecation or mandatory SDK migration (new raw lines 21-30, 55-61, 665-741; old raw lines 20-25, 49-55, 667-761). source-stripe-two-step-confirmation.md should retain May provenance, add November raw and canonical_url, qualify optional tax and exact ACSS wording, and narrow its Elements matching claim (current source lines 1-9, 21-34, 45-47). May warned a combined setup_future_usage/payment_method_save_usage transaction caused an integration error whereas November says setup_future_usage controls save behavior; both say not to combine them, so preserve dates and flag the explanation conflict (old raw line 250; new raw line 253). Account versus Customer and Connect GA versus preview, client versus server confirmation, return_url handling, and PaymentIntent state must remain distinct; neither capture proves payment success, eligibility or funds availability (new raw lines 255-261, 653-661, 743-751)."
+  }
+}

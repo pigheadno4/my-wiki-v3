@@ -1,0 +1,172 @@
+{
+  "job_id": "payments-bizum-accept-a-payment",
+  "attempt": 2,
+  "raw_path": "raw/stripe-payments-bizum-accept-a-payment-2026-11-07.md",
+  "raw_sha256": "0f00fe5fd8773bf7b62ff585467408db07f9b758b5aa66abff1f6fe8bf84caf6",
+  "prior_raw_path": "raw/stripe-bizum-accept-payment-2025.md",
+  "prior_raw_sha256": "a71811a110abd20e5ae298bb650d52b3451dcc09a5d30ec210f587dd9457d221",
+  "source_targets": [
+    "wiki/sources/source-stripe-bizum-accept-payment.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-bizum-accept-payment.md": "cc5365da9e8565a9f9b5800c3bc714b4be183f494770b98803fd3c539498daa3"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-bizum-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      },
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "raw/stripe-bizum-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 1858
+      },
+      {
+        "start": 1120,
+        "end": 1309
+      }
+    ],
+    "wiki/sources/source-stripe-bizum-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 38
+      },
+      {
+        "start": 1,
+        "end": 38
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/966be66c54a81bbc0782384e/content.diff": [
+      {
+        "start": 1,
+        "end": 1863
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 22
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 363,
+        "end": 375
+      }
+    ],
+    "wiki/concepts/stripe-real-time-payments.md": [
+      {
+        "start": 180,
+        "end": 222
+      },
+      {
+        "start": 180,
+        "end": 222
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Learn how to set up your integration with Bizum.",
+      "location": "raw/stripe-payments-bizum-accept-a-payment-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-bizum-accept-a-payment-2026-11-07.md:11"
+    },
+    {
+      "text": "- [Checkout](https://docs.stripe.com/payments/bizum/accept-a-payment.md?payment-ui=checkout)",
+      "location": "raw/stripe-payments-bizum-accept-a-payment-2026-11-07.md:13"
+    },
+    {
+      "text": "  - [Checkout Sessions API](https://docs.stripe.com/payments/bizum/accept-a-payment.md?payment-ui=elements&api-integration=checkout)",
+      "location": "raw/stripe-payments-bizum-accept-a-payment-2026-11-07.md:15"
+    },
+    {
+      "text": "- [Direct API](https://docs.stripe.com/payments/bizum/accept-a-payment.md?payment-ui=direct-api)",
+      "location": "raw/stripe-payments-bizum-accept-a-payment-2026-11-07.md:17"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "To enable Bizum, buyers need a Spanish IBAN from a bank connected to Bizum. Within their banking app, they can enable Bizum and link their mobile number to their IBAN.",
+      "location": "raw/stripe-bizum-accept-payment-2025.md:16"
+    },
+    {
+      "text": "The total amount must be between 0.50 EUR and 5,000.00 EUR.",
+      "location": "raw/stripe-bizum-accept-payment-2025.md:37"
+    },
+    {
+      "text": "When accepting a Bizum payment, you must collect the customer\u2019s Bizum-registered phone number.",
+      "location": "raw/stripe-bizum-accept-payment-2025.md:1130"
+    },
+    {
+      "text": "By default, Stripe.js polls for updates to the PaymentIntent after confirmation.",
+      "location": "raw/stripe-bizum-accept-payment-2025.md:1281"
+    },
+    {
+      "text": "It automatically handles complexities like the redirect described below",
+      "location": "raw/stripe-bizum-accept-payment-2025.md:1238"
+    },
+    {
+      "text": "The iOS SDK presents a webview in your app to complete the Bizum payment.",
+      "location": "raw/stripe-bizum-accept-payment-2025.md:1526"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "November new raw lines 5-17 are a variant index and purpose statement only. Old raw lines 8-1858 contained four web paths plus iOS/Android mobile sections. Diff lines 3-17 and 1859-1863 demonstrate presentation/navigation replacement, not a documented behavioral removal, deprecation, or evidence that mobile support ended. Add index provenance without replacing May-dated detail.",
+    "Source line 18 misattributes 'no redirect required, Stripe.js polls' to hosted Checkout. Old raw lines 8-76 cover hosted Checkout and fulfillment; polling appears in the Direct API at old raw lines 1255-1283, while Payment Intents API Elements uses return_url and possible redirect at old raw lines 938-945. Source line 21 is the place for the Direct API polling qualification.",
+    "Separately, source line 21 asserts the Direct API has '(no redirect)' and wiki/concepts/stripe-real-time-payments.md:199 says 'no redirect needed'. The dated Direct API passage requires Bizum phone collection, bank-app authorization and default Stripe.js polling at old raw lines 1234-1283, but does not promise redirects cannot occur; old raw line 1238 explicitly refers to 'the redirect described below'. New raw lines 13-17 are navigation only. Remove or narrowly qualify the absolute no-redirect wording in both source and reciprocal concept while retaining Direct API-specific polling and status transitions as dated claims.",
+    "Source line 23 claims Android Compose support, but old raw lines 1627-1817 show an Android Kotlin PaymentLauncher example, while iOS uses STPPaymentHandler and webview with return URL at old raw lines 1518-1563. Neither the older evidence nor new index lines 13-17 establishes a Compose recipe. Source line 13 should keep mobile as May-dated history, since the November index lists no mobile variant.",
+    "Old raw lines 16, 32-37, 1130 and 1329 establish Spanish connected-bank IBAN plus linked phone, same-currency Checkout line items, a hosted Checkout 0.50-5000 EUR total and Direct API EUR. Source lines 13-21 omit the buyer prerequisite and line-item constraint and should attribute the amount band to hosted Checkout, not universal Bizum behavior. The old compatibility template is blank at old raw lines 18-30, 103-115; source line 34 correctly avoids filling it in.",
+    "Old raw lines 82-87 and 1302-1309 provide test-only phone outcomes after about five seconds; source lines 25-30 are under a test heading but should not be read as live success guarantees. Old raw lines 1087-1091 and 1311-1315 recommend asynchronous payment_intent.succeeded events over relying on client callback. PaymentIntent creation, confirmation, browser return and SDK callback do not alone prove settled payment."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "Retain the May 6, 2026 Checkout, Elements Checkout Sessions API, Elements Payment Intents API and Direct API workflows (old raw lines 8-17, 95-101, 581-585, 1126-1130), distinguishing each object and UI path.",
+    "Retain older mobile iOS/Android sections as dated history (old raw lines 1351-1376, 1518-1563, 1627-1652, 1699-1709, 1769-1817); the November root index omits mobile links but does not prove product withdrawal.",
+    "Retain old guide's dated Stripe.js dahlia sample and package minimums (old raw lines 212-239), Accounts v2 customer_account versus Customers v1 customer examples (old raw lines 818-925), and sandbox-only phone outcomes (old raw lines 82-87)."
+  ],
+  "conflicts": [
+    "Source line 18's no-redirect/polling claim is attached to Checkout, whereas old raw lines 1255-1283 attach polling to Direct API and old raw lines 938-945 describe a return_url and possible redirect for Elements Payment Intents API; correct this source-level path misattribution.",
+    "Source line 21 and wiki/concepts/stripe-real-time-payments.md:199 separately assert no redirect for Direct API, but old raw lines 1234-1238 and 1255-1283 establish phone collection, bank-app approval and default polling without an unconditional redirect-free guarantee; old raw line 1238 mentions a redirect. Correct the source and concept reciprocally; new raw lines 13-17 cannot resolve it.",
+    "Source line 23 and wiki/concepts/stripe-real-time-payments.md line 199 say Android Compose, while old raw lines 1775-1817 show Kotlin PaymentLauncher; neither the pinned old guide nor new index supports Compose."
+  ],
+  "unresolved_questions": [
+    "The four November variant URLs at new raw lines 13-17 were not fetched in this pinned comparison; their detailed November behavior, current mobile availability and release-specific SDK support remain unverified."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-real-time-payments.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-bizum-accept-payment.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add November variant-index raw provenance while retaining May detailed raw (source lines 6-7, 36-38; new raw lines 9-17).",
+        "Correct Checkout polling/no-redirect misattribution at source line 18 from old raw lines 938-945 and 1255-1283; keep default polling and its succeeded/requires_payment_method resolution specifically on the dated Direct API path (old raw lines 1255-1283).",
+        "Separately remove or narrowly qualify source line 21's absolute Direct API '(no redirect)' assertion and flag reciprocal correction of wiki/concepts/stripe-real-time-payments.md:199: old raw lines 1234-1238,1255-1283 document phone collection, bank-app authorization and polling but do not guarantee a redirect-free flow, and line 1238 refers to a redirect; new raw lines 13-17 provide navigation only.",
+        "Replace Android Compose claim at source line 23 with supported Kotlin PaymentLauncher evidence at old raw lines 1775-1817.",
+        "Qualify buyer bank/phone prerequisite and Checkout-only amount/line-item conditions from old raw lines 16, 32-37 and 1130; preserve test and event outcome boundaries from old raw lines 82-87 and 1087-1091."
+      ],
+      "conflicts": [
+        "Checkout polling claim conflicts with the flow-specific Direct API polling and Elements redirect passages (source line 18; old raw lines 938-945,1255-1283).",
+        "Direct API no-redirect guarantee is unsupported in both source line 21 and wiki/concepts/stripe-real-time-payments.md:199 despite the dated Direct API polling evidence (old raw lines 1234-1238,1255-1283).",
+        "Android Compose is unsupported by the pinned Kotlin PaymentLauncher example."
+      ],
+      "reason": "The new capture changes navigation only, but this mapped summary needs separate provenance and material baseline corrections, including the reciprocal concept's no-redirect assertion, so users do not select the wrong flow or infer a guaranteed no-redirect outcome."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/bizum/accept-a-payment, the complete November capture (new raw lines 5-17) states the integration purpose and routes to hosted Checkout, Elements through Checkout Sessions API or Payment Intents API, and Direct API; it states no prerequisite, status, or payment outcome. The May guide (old raw lines 16-37, 95-101, 818-925, 1126-1130, 1234-1283) documents a Spanish connected-bank IBAN and linked phone, EUR and Checkout amount/line-item constraints, server-created Sessions or PaymentIntents with client secrets, and Direct API phone entry followed by bank-app authorization and default polling to succeeded or requires_payment_method. This dated polling behavior does not guarantee a redirect-free flow: old raw line 1238 mentions a redirect. The mapped source-stripe-bizum-accept-payment.md summarizes four paths at lines 13-23, but misplaces polling under Checkout, asserts no redirect on Direct API, and calls an Android Kotlin PaymentLauncher example Compose; only the older capture supplies mobile details (old raw lines 1351-1817).",
+    "Q2": "At https://docs.stripe.com/payments/bizum/accept-a-payment, the visible November delta is presentational navigation (new raw lines 9-17 versus old raw lines 8-1858), so source-stripe-bizum-accept-payment.md must retain May-dated integration, mobile, test and error-code claims rather than treat absent body text as deprecation. Correct two separate baseline problems: source line 18 assigns no-redirect polling to Checkout although old raw lines 938-945 describe Elements return_url/possible redirect and old raw lines 1255-1283 locate default polling in Direct API; source line 21 and wiki/concepts/stripe-real-time-payments.md:199 assert Direct API needs no redirect, which old raw lines 1234-1238 and 1255-1283 do not guarantee. Remove or narrowly qualify that absolute assertion in both source and concept while retaining dated Direct API polling and status outcomes. Source line 23's Android Compose label is unsupported by old raw lines 1775-1817. Versioned Stripe.js and SDK examples remain dated, test phone results at old raw lines 82-87 are not live guarantees, and client callback or returned page is not conclusive payment evidence compared with payment_intent.succeeded events (old raw lines 1087-1091)."
+  }
+}

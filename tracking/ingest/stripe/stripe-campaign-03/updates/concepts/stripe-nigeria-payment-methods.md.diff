@@ -1,0 +1,47 @@
+--- wiki/concepts/stripe-nigeria-payment-methods.md
++++ tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-nigeria-payment-methods.md
+@@ -7,7 +7,7 @@
+ 
+ ## Definition
+ 
+-Stripe enables acceptance of Nigerian local payment methods (Naira cards, bank transfers, and wallets) without a local Nigerian entity, via a **merchant of record** model through a Nigerian partner. See [[stripe-managed-payments]] for the broader MoR framework.
++Stripe describes acceptance of Nigerian local methods through a **Nigerian partner as merchant of record**, without a local Nigerian entity. The November 2026 matrix lists Naira cards and one-time bank transfers; it marks Naira wallet No/No, despite overview prose mentioning local wallets. The May 2026 matrix instead said wallet one-time was “Coming soon.” Treat wallet availability as unresolved in this capture; see [[source-stripe-nigeria-payment-methods]]. This partner-MoR route is distinct from [[stripe-managed-payments]], where Stripe is MoR.
+ 
+ ## How It Works
+ 
+@@ -19,11 +19,13 @@
+ 
+ ## Payment Methods
+ 
+-| Method | One-time | Recurring |
++| Method | May 2026 one-time / recurring | November 2026 one-time / recurring |
+ | --- | --- | --- |
+-| Naira cards | Yes | Yes |
+-| Naira bank transfer | Yes | Coming soon |
+-| Naira wallet | Coming soon | No |
++| Naira cards | Yes / Yes | Yes / Yes |
++| Naira bank transfer | Yes / Coming soon | Yes / No |
++| Naira wallet | Coming soon / No | No / No |
++
++The November overview also mentions local wallets in prose; its wallet matrix says No/No. This is an unresolved within-page discrepancy, not proof of current wallet availability or a prior live withdrawal. See [[source-stripe-nigeria-payment-methods]].
+ 
+ ## Key Properties
+ 
+@@ -37,7 +39,7 @@
+ 
+ ## Integration
+ 
+-Dashboard-driven: enable Naira payment methods in Stripe Dashboard → auto-surfaced in Checkout/Elements/Payment Links. Also available via Payment Intents API.
++The November 2026 overview includes an invite-request step. Requesting an invite or enabling a method in the Dashboard does not establish approval or account eligibility. For an eligible account, the guide routes Stripe front-end products through Dashboard payment-method settings, links Checkout/Elements and Payment Links, and points to the Payment Intents API; see [[source-stripe-nigeria-payment-methods]] for the dated access boundary.
+ 
+ ### Naira Card (`ng_card`)
+ 
+@@ -76,7 +78,7 @@
+ ## Sources
+ 
+ - [[source-stripe-local-payment-methods-by-country]] — hub page: Nigeria + South Korea local payment methods
+-- [[source-stripe-nigeria-payment-methods]] — Nigeria overview: MoR model, Naira cards/bank transfer/wallet, VAT, disputes, refunds
++- [[source-stripe-nigeria-payment-methods]] — May and November 2026 Nigeria partner-MoR overview: card/bank-transfer matrix, unresolved wallet prose versus No/No table, invite request, conditional VAT, disputes and refunds
+ - [[source-stripe-ng-bank-transfer-accept-payment]] — Naira bank transfer integration: ng_bank_transfer, 500–100M NGN limits, confirmPayment(), redirect flow, test modes
+ - [[source-stripe-ng-card-accept-payment]] — Naira card integration: ng_card, setup+subscription mode, 500–100M NGN limits, confirmPayment(), same redirect flow
+ - [[source-stripe-ng-card-set-up-future-payments]] — Naira card save/recurring: SetupIntent + confirmNgCardSetup(), PaymentIntent setup_future_usage, off_session reuse, detach events

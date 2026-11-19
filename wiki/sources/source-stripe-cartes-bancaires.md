@@ -2,6 +2,8 @@
 title: "Stripe: Cartes Bancaires (CB)"
 type: source
 date_ingested: 2026-05-01
+date_updated: 2026-11-15
+canonical_url: "https://docs.stripe.com/payments/cartes-bancaires"
 original_format: webpage
 raw_files:
   - "stripe-cartes-bancaires-2025.md"
@@ -10,18 +12,33 @@ tags: [stripe, cartes-bancaires, france, local-card-network, co-badged, disputes
 
 ## Summary
 
-Cartes Bancaires is France's local card network. >95% co-badged with Visa/MC. EUR only. 41 business countries. 0 EUR dispute fee; cannot contest disputes.
+[[stripe]]'s **2026-05-01 full capture** describes Cartes Bancaires (CB), France's local card network. More than 95% of CB cards are co-badged with Visa or Mastercard, so these cards can be processed on CB or the global network. The **2026-11-07 root capture is only a variant-navigation index** with iOS and Web links. It does not revalidate or update May's acceptance, eligibility, network-choice, dispute or product-support statements; neither variant body was captured here.
 
-## Key Details
+## Dated May 2026 behavior and eligibility
 
-**Co-badging**: EEA businesses must offer network choice; Stripe auto-retries on Visa/MC if CB declines.
+- The May page lists Europe as customer location, EUR presentment, customer-initiated confirmation, recurring payments, standard payout timing, Connect, disputes, manual capture, multicapture and full/partial refunds. It lists 41 Stripe-account business countries. Those are dated properties, not verified current eligibility for a particular account.
+- May says EEA businesses processing co-badged cards must let customers choose the preferred network at checkout and points to a separate co-badged-card compliance guide. Keep that as Stripe's dated guidance; the November variant index supplies no new legal or implementation detail.
+- If a CB charge is declined **for a technical reason on the CB network**, May says Stripe automatically retries on Visa or Mastercard. This is conditional on the technical reason and does not promise retry after every decline or successful authorization.
+- For a business **outside France**, May says **one payment from a CB-eligible card** must be processed to fully enable CB. A first payment from any card would not meet the documented condition; this historical prerequisite does not prove current account access.
 
-**Non-France enablement**: must process one CB payment first.
+## Product and dispute qualifications (May 2026)
 
-**Disputes**: fewer reasons → lower rate; cannot contest; 0 EUR fee; CB may withdraw → `won`.
+The May page lists Connect, Checkout, Payment Links, Subscriptions, Invoicing, Elements and Terminal. It explicitly excludes Express Checkout Element. Terminal integrations in France have separate regional requirements. These product labels are not platform-specific November instructions: the newer root lists iOS and Web variant URLs, but their bodies are absent.
 
-**Product support**: Connect/Checkout/Payment Links/Subscriptions/Invoicing/Elements (not Express Checkout)/Terminal (France needs regional config).
+May says CB cardholders can dispute charges; fewer permitted reasons correlate with a lower average dispute rate than Visa/Mastercard. Under **Stripe's May CB processing** guidance, businesses cannot contest CB disputes and the dispute fee is **0 EUR**. CB may withdraw a dispute, in which case its status becomes `won`. Do not extend Stripe's contestation statement to other providers such as Adyen.
+
+The May page says merchants already able to accept card payments can use CB, points to a separate network-choice and test-card guide, and advises contacting Stripe Support if CB must never be the default network. These are dated integration routes, not evidence of an enabled merchant account or a successful payment.
+
+## Related
+
+- [[stripe]] — Stripe company page.
+- [[cartes-bancaires]] — CB concept with provider-specific dispute context.
+- [[co-badged-cards]] — cross-provider co-badged-card context.
+
+## Related raw API references
+
+- [[raw/stripe-payments-cartes-bancaires-2026-11-07]] — fetched 2026-11-07; **variant-navigation index only**, linking iOS and Web. No behavior is inferred from the linked but unread variant bodies.
 
 ## Raw Sources
 
-- [[stripe-cartes-bancaires-2025]] — verbatim webpage content
+- [[raw/stripe-cartes-bancaires-2025]] — full factual overview fetched 2026-05-01 (130 lines; filename year is not fetch date).

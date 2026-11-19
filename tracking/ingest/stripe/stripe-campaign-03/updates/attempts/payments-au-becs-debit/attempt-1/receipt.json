@@ -1,0 +1,248 @@
+{
+  "job_id": "payments-au-becs-debit",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-au-becs-debit.md": {
+      "job_id": "payments-au-becs-debit",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Australia BECS Direct Debit Payments\"\ntype: source\ndate_ingested: 2026-05-02\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/payments/au-becs-debit\nraw_files:\n  - \"stripe-payments-au-becs-debit-2026-11-07.md\"\n  - \"stripe-au-becs-debit-2025.md\"\ntags: [stripe, au-becs, becs, australia, aud, bank-debit, mandates, disputes]\n---\n\n## Summary\n\nAustralia BECS Direct Debit is a reusable, delayed-notification, domestic AUD debit for an Australian business and a customer with an Australian bank account. This overview preserves the May 2, 2026 capture and incorporates the November 7, 2026 full capture. A customer's Direct Debit Request (DDR) and Service Agreement authorize future debits; payment submission, final payment success, a successful refund, and available Stripe funds are separate outcomes.\n\n## Key Details\n\n**Access and scope.** The November overview lists AU merchant and Connect platform accounts, AU customers, AUD presentment, domestic coverage, and approval-required access. After requesting access in Payment methods settings, the account must complete additional identity verification. The scheme amount range is 0.50 to 99,000,000 AUD, but this is not the merchant's processing limit. The default account limits are 10,000 AUD per transaction and 10,000 AUD per week across AU BECS debits; actual limits depend on approval and increases. A transaction must satisfy both scheme and applicable account limits.\n\n**Mandate and account identity.** Collect account holder name, BSB, account number, and acceptance of the DDR and its Service Agreement before debit. Checkout and Payment Element collect them by default. A custom `auBankAccount` form must display Stripe's prescribed DDR agreement and standard authorization text and collect acceptance. Retrieve a PaymentIntent with `latest_charge` expanded, read `latest_charge.payment_method_details.au_becs_debit.mandate`, then retrieve the Mandate. With Connect, use the account context owning that payment and mandate; a mandate collected `on_behalf_of` one connected account cannot be reused for another. A customer may revoke via the business or bank. Detaching the associated PaymentMethod cancels the business-side mandate; future debits then require a new DDR. `mandate.updated` reports cancellation or permanent failure and the Mandate becomes `inactive`.\n\n**Processing and settlement.** The November introduction says final success or failure notification takes up to **2 business days** after initiating a debit; the May introduction said up to **3 business days**. Both captures show standard settlement as T+2 at 00:00 UTC for payment success and funds available, with an 18:30 Australia/Melbourne cutoff. T is submission, which can differ from creation after a cutoff or on a non-business day. May's T+0 customer debit is explicitly a sample timeline, not a guarantee. `Charge.payment_method_details.au_becs_debit.expected_debit_date`, also readable through an expanded `PaymentIntent.latest_charge`, is an estimate that can vary. The November customer flow labels the result \u201csubmitted\u201d or \u201cprocessing,\u201d not succeeded; no bank redirect or app switch is described.\n\n**Refunds.** Full and partial refunds must be submitted within 90 days of the original payment. November says they typically take **5 business days** to process; May said **3\u20135 business days**. A refund created while a Charge is processing begins only if the Charge becomes `succeeded`; Stripe cancels it if the Charge becomes `failed`. This conditional Charge transition is present in both captures. Track Refund `status` in the Dashboard or API and verify `refund.updated`/`refund.failed` webhook signatures. A failed refund returns the amount to the Stripe balance and the customer needs another refund method. Refunds appear as a separate bank credit referencing the original payment descriptor, not a reversal or an explicit \u201crefund\u201d label. Inform customers of the credit; a bank dispute can still create a second credit.\n\n**Disputes.** Customers can dispute through their bank for up to seven years without giving a reason. The full dispute is final and non-appealable, with no inquiry phase or Dashboard/API evidence counter. Stripe deducts the amount and fee, and the fee is not refunded; an agreed return requires a new customer payment. Stripe sends both `charge.dispute.created` and `charge.dispute.closed` events, but neither capture says they are simultaneous. A refund does not prevent a later bank dispute.\n\n**Notifications.** The scheme recommends notice when a mandate starts and before each debit. Fourteen calendar days' lead time is recommended, not mandatory. Stripe sends emails by default, including a pre-debit email the day before the debit. To send merchant notices, turn off Stripe emails, link the mandate, and use verified `payment_intent.processing` events. Include bank-account last four, amount, contact information, and planned debit date. Fixed recurring debits can be grouped in one notice.\n\n**Billing retries.** The May capture titled this feature \u201cPrivate preview\u201d and described optional insufficient-funds retries for subscription and one-off invoices. The November capture describes enabling Direct Debit retries, at most four automatic retries within 30 days of the original attempt, and no debit-failure fee for Stripe-initiated retries. The newer text does not establish that any particular account has access or has enabled retries. It covers insufficient-funds failure, not every failure reason; separate subscription guidance has an unresolved historical retry contradiction.\n\n**Products and API scope.** The November matrix lists full-page and embedded Checkout, Payment Links, Payment Element, in-app payments, Billing, Invoicing, Customer Portal, Radar, and Connect as supported; Express Checkout Element, Payment Method Messaging Element, Managed Payments, and Terminal are unsupported. Checkout Sessions, PaymentIntents, PaymentIntents with `setup_future_usage`, and SetupIntents are listed supported, but the same matrix marks \u201cOff-session payments\u201d unsupported. The scope of that label is unresolved here; it does not erase the separately documented setup and subscription flows. Manual, partial, multi-, and over-capture are unsupported.\n\n**Statement descriptors and Connect.** The customer bank statement shows a business name and transaction-specific lodgement reference. `PaymentIntent.statement_descriptor` changes the descriptor used in the reference, not the business name. The reference uses the first nine alphanumeric characters followed by a unique suffix, and banks may format it differently. For direct charges the connected account supplies the business name/default descriptor; for destination or separate charges the platform does, unless `on_behalf_of` makes the connected account the source. Stripe does not expose the lodgement reference in the API; reconcile using PaymentIntent and Charge IDs in the owning account context.\n\n**May test example.** The May capture showed test BSB `000000` and account `000123456` with a sample flow link. The November overview does not repeat those credentials; keep them attributed to that dated example, not as proof of current test coverage.\n\n## Related\n\n- [[stripe]] \u2014 Stripe company route.\n- [[stripe-au-becs-debit]] \u2014 AU BECS concept, integration routes, and reciprocal qualifications.\n\n## Raw Sources\n\n- [[raw/stripe-payments-au-becs-debit-2026-11-07|2026-11-07 full AU BECS overview]] \u2014 newer factual capture, 279 lines.\n- [[raw/stripe-au-becs-debit-2025|2026-05-02 AU BECS overview]] \u2014 retained historical factual capture, 234 lines; includes dated sample flow, test credentials, and private-preview label.\n",
+      "quotes": [
+        {
+          "text": "It takes up to 2 business days to receive the final success or failure notification after initiating a debit.",
+          "location": "raw/stripe-payments-au-becs-debit-2026-11-07.md:13-13"
+        },
+        {
+          "text": "The maximum transaction amount in the Payment support table is the scheme maximum, not your account\u2019s processing limit.",
+          "location": "raw/stripe-payments-au-becs-debit-2026-11-07.md:47-47"
+        },
+        {
+          "text": "A mandate collected for a `PaymentIntent` `on_behalf_of` a connected account can\u2019t be reused for a different connected account.",
+          "location": "raw/stripe-payments-au-becs-debit-2026-11-07.md:147-147"
+        },
+        {
+          "text": "The customer sees that the payment is submitted or processing, not that it has succeeded.",
+          "location": "raw/stripe-payments-au-becs-debit-2026-11-07.md:255-255"
+        },
+        {
+          "text": "Stripe doesn\u2019t expose the lodgement reference through the API.",
+          "location": "raw/stripe-payments-au-becs-debit-2026-11-07.md:273-273"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "payments-au-becs-debit-limits",
+            "target_path": "wiki/concepts/stripe-au-becs-debit.md",
+            "update_kind": "durable_fact",
+            "anchor": "- Per transaction: 10,000 AUD (new users)\n- Per week: 10,000 AUD (new users)\n- Contact Stripe support for higher limits",
+            "proposed_markdown": "- November 7, 2026 scheme range: 0.50\u201399,000,000 AUD; the scheme maximum is not an account processing limit.\n- Default account limits: 10,000 AUD per transaction and 10,000 AUD per week across AU BECS debits. Actual limits vary with approval and increases; both scheme and account limits apply.\n- Contact Stripe support to request higher account limits.",
+            "quote_indexes": [
+              1
+            ],
+            "warnings": [
+              "Old raw lines 12-14 gives new-user defaults. New raw lines 38-52 distinguish scheme range from account limits and approval."
+            ]
+          },
+          {
+            "update_id": "payments-au-becs-debit-settlement",
+            "target_path": "wiki/concepts/stripe-au-becs-debit.md",
+            "update_kind": "durable_fact",
+            "anchor": "Funds debited from customer at T+0; settlement confirmation takes 2 business days.",
+            "proposed_markdown": "The May 2, 2026 capture shows customer debit at T+0 only in a sample timeline. Submission can occur after creation when a cutoff or non-business day intervenes. Standard payment success and funds availability are listed at T+2 after submission; the expected debit date is an estimate, not a guarantee. November's final success/failure notification bound is up to 2 business days, versus May's up to 3.",
+            "quote_indexes": [
+              0,
+              3
+            ],
+            "warnings": [
+              "Old raw lines 12-14, 120-141 contain the prior notification bound and sample T+0 timeline. New raw lines 13, 196-208, 253-255 separate notification, estimated debit date, T+2, and processing."
+            ]
+          },
+          {
+            "update_id": "payments-au-becs-debit-dispute-events",
+            "target_path": "wiki/concepts/stripe-au-becs-debit.md",
+            "update_kind": "durable_fact",
+            "anchor": "- Stripe sends `charge.dispute.created` + `charge.dispute.closed` simultaneously",
+            "proposed_markdown": "- Stripe sends both `charge.dispute.created` and `charge.dispute.closed`; neither dated overview specifies that the events are simultaneous. Disputes have no inquiry/evidence counter, are final, and the dispute fee is not refunded.",
+            "quote_indexes": [
+              3
+            ],
+            "warnings": [
+              "Old raw lines 163-173 and new raw lines 109-127 say both events are sent but do not guarantee simultaneity."
+            ]
+          },
+          {
+            "update_id": "payments-au-becs-debit-refunds",
+            "target_path": "wiki/concepts/stripe-au-becs-debit.md",
+            "update_kind": "durable_fact",
+            "anchor": "- 3\u20135 business days to process",
+            "proposed_markdown": "- May 2, 2026 overview: typically 3\u20135 business days; November 7, 2026 overview: typically 5 business days. A pending refund begins only after its Charge succeeds and is canceled if the Charge fails. Track final Refund status; a failed refund returns funds to the Stripe balance and requires another customer refund method.",
+            "quote_indexes": [
+              3
+            ],
+            "warnings": [
+              "Old raw lines 189-199 and new raw lines 79-107 support the dated timing and shared Charge-state conditional; new raw lines 87-91 add Refund status and failure outcome."
+            ]
+          },
+          {
+            "update_id": "payments-au-becs-debit-descriptor",
+            "target_path": "wiki/concepts/stripe-au-becs-debit.md",
+            "update_kind": "durable_fact",
+            "anchor": "- **Merchant name**: from Stripe account statement descriptor; override with `statement_descriptor` on PaymentIntent",
+            "proposed_markdown": "- **Business name**: comes from the account selected by Connect charge type and `on_behalf_of`; `PaymentIntent.statement_descriptor` changes the payment-specific lodgement reference, not this business name.",
+            "quote_indexes": [
+              4
+            ],
+            "warnings": [
+              "Old raw lines 201-230 show the two fields and Connect mapping. New raw lines 257-273 explicitly state the dynamic descriptor changes reference, not name, and the lodgement reference is not exposed through the API."
+            ]
+          },
+          {
+            "update_id": "payments-au-becs-debit-retries",
+            "target_path": "wiki/concepts/stripe-au-becs-debit.md",
+            "update_kind": "durable_fact",
+            "anchor": "Private preview. Auto-retry for insufficient funds on subscription or one-off invoices.",
+            "proposed_markdown": "May 2, 2026 overview labeled Billing Retries a private preview. The November 7 overview describes opt-in Direct Debit retries for insufficient-funds failures on recurring subscription or one-off invoices, at most four retries within 30 days of the original attempt, with no debit-failure fee for Stripe-initiated attempts. Neither capture establishes access or enabled status for a particular account. The subscription-guide contradiction below remains unresolved.",
+            "quote_indexes": [
+              3
+            ],
+            "warnings": [
+              "Old raw lines 232-234 contain the private-preview label. New raw lines 231-237 specify opt-in scope, cap, and fee; new raw lines 178-183 also label off-session payments unsupported beside supported SetupIntents/setup_future_usage."
+            ]
+          },
+          {
+            "update_id": "payments-au-becs-debit-product-boundary",
+            "target_path": "wiki/concepts/stripe-au-becs-debit.md",
+            "update_kind": "durable_fact",
+            "anchor": "Connect, Checkout, Payment Links, Subscriptions, Invoicing, Elements (not Express Checkout Element).",
+            "proposed_markdown": "November 7 overview lists full-page and embedded Checkout, Payment Links, Payment Element, in-app payments, Billing, Invoicing, Customer Portal, Radar, and Connect as supported; Express Checkout Element, Payment Method Messaging Element, Managed Payments, and Terminal as unsupported. Its API matrix lists Checkout Sessions, PaymentIntents with or without `setup_future_usage`, and SetupIntents as supported, while also labeling \u201cOff-session payments\u201d unsupported. The scope of that last label is unresolved here; it does not independently override the separate setup and subscription guides.",
+            "quote_indexes": [
+              3
+            ],
+            "warnings": [
+              "Old raw lines 64-73 list a narrower product summary. New raw lines 159-183 list the expanded product/API matrix and its unresolved off-session label."
+            ]
+          },
+          {
+            "update_id": "payments-au-becs-debit-source-route",
+            "target_path": "wiki/concepts/stripe-au-becs-debit.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-au-becs-debit]] \u2014 primary source: settlement, mandates, disputes, refunds, debit notifications, statement descriptors",
+            "proposed_markdown": "- [[source-stripe-au-becs-debit]] \u2014 May 2 and November 7, 2026 full overviews: AU/AUD eligibility, account versus scheme limits, DDR and Connect mandate ownership, processing versus T+2 success, refund/dispute outcomes, debit notices, conditional retries, and descriptor identities; dated differences and off-session matrix ambiguity are qualified there.",
+            "quote_indexes": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Old raw lines 8-14, 120-234 and new raw lines 9-52, 79-183, 196-273 support this reciprocal route."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-au-becs-debit-2026-11-07.md",
+      "raw_sha256": "bcc0d53ae35009b7a465d80c30b3d8ea4758925afbfbf8bd374b7075eb2b300c",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-au-becs-debit-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 140
+      },
+      {
+        "start": 141,
+        "end": 279
+      }
+    ],
+    "raw/stripe-au-becs-debit-2025.md": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 234
+      }
+    ],
+    "wiki/sources/source-stripe-au-becs-debit.md": [
+      {
+        "start": 1,
+        "end": 41
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/bf780be9fc70ed7dfe3dc3e2/content.diff": [
+      {
+        "start": 1,
+        "end": 130
+      },
+      {
+        "start": 131,
+        "end": 260
+      },
+      {
+        "start": 261,
+        "end": 380
+      },
+      {
+        "start": 381,
+        "end": 489
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-au-becs-debit/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 140
+      },
+      {
+        "start": 141,
+        "end": 183
+      }
+    ],
+    "wiki/concepts/stripe-au-becs-debit.md": [
+      {
+        "start": 1,
+        "end": 102
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 9,
+        "end": 9
+      },
+      {
+        "start": 256,
+        "end": 256
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "it can take up to three business days to receive notification on the success or failure of a payment",
+      "location": "raw/stripe-au-becs-debit-2025.md:12-12"
+    },
+    {
+      "text": "For new users, Australia BECS Direct Debit transactions have a default limit of 10,000 AUD per transaction and 10,000 AUD per week.",
+      "location": "raw/stripe-au-becs-debit-2025.md:14-14"
+    },
+    {
+      "text": "Refunds require additional time to process (typically 3-5 business days).",
+      "location": "raw/stripe-au-becs-debit-2025.md:191-191"
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/au-becs-debit, raw/stripe-payments-au-becs-debit-2026-11-07.md (new raw lines 9-52, 79-183, 196-273) establishes an approval-required domestic AUD debit for an AU business and AU bank-account holder. The holder's name, BSB, account number, and DDR/Service Agreement acceptance are prerequisites; Checkout and Payment Element collect acceptance, while a custom auBankAccount form must display Stripe's prescribed terms. A mandate belongs to the owning account context, and on_behalf_of mandates cannot cross connected accounts. Submitted or processing is not succeeded; final notification is up to two business days, and T+2 standard success/availability is measured from submission. raw/stripe-au-becs-debit-2025.md (old raw lines 8-14, 120-141, 163-234) said up to three business days and offered a sample T+0 debit timeline, with the same T+2 table. source-stripe-au-becs-debit.md preserved the broad model but overstated simultaneous dispute events, unconditional T+0 debit, and business-name descriptor override. The revised source repairs those and adds scheme/account limits, conditional refund states, mandate retrieval, and dated retry detail.",
+    "Q2": "For https://docs.stripe.com/payments/au-becs-debit, substantive changes from raw/stripe-au-becs-debit-2025.md (old raw lines 12-14, 75-98, 120-141, 189-234) to raw/stripe-payments-au-becs-debit-2026-11-07.md (new raw lines 13-52, 79-107, 129-183, 196-273) include the two-day notification wording, separate scheme and account limits, Refund status/webhook and failed-refund handling, Connect-context mandate retrieval, and capped opt-in insufficient-funds retries. The May three-day notification, 3\u20135-day refund estimate, sample test credentials, and private-preview retry label remain dated. Reorganized sections, refreshed quickstart links, and expanded UI matrices alone do not prove account approval or deprecation. source-stripe-au-becs-debit.md and its AU BECS concept need reciprocal correction of the simultaneous dispute-event inference, the universal T+0 debit claim, and the dynamic descriptor's business-name effect. The November matrix says SetupIntents and setup_future_usage are supported but off-session payments unsupported; its scope is unresolved beside separate subscription evidence. DDR acceptance, processing, estimated debit date, Charge success, Refund success, and funds availability are distinct; a pending refund begins only after Charge succeeds, as both captures already said."
+  }
+}

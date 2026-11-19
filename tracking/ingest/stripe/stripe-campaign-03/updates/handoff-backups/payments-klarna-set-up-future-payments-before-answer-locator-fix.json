@@ -1,0 +1,147 @@
+{
+  "job_id": "payments-klarna-set-up-future-payments",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-klarna-set-up-future-payments.md": {
+      "job_id": "payments-klarna-set-up-future-payments",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Set Up Future Klarna Payments\"\ntype: source\ndate_ingested: 2026-05-06\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/klarna/set-up-future-payments\"\nraw_files:\n  - \"stripe-klarna-set-up-future-payments-2025.md\"\ntags: [stripe, bnpl, klarna, buy-now-pay-later, subscriptions, setup-intent, recurring, on-demand]\n---\n\n## Overview\n\nThe 2026-05-06 full [[stripe]] guide describes saving a Klarna PaymentMethod for later subscription renewals or on-demand purchases. Reuse requires attaching the PaymentMethod to a Customer and customer authorization of the billing agreement. This guide excludes Stripe Billing integrations; for those, use Stripe's Klarna for subscriptions guide. Klarna payment options vary by use case and buyer country. See [[stripe-bnpl]].\n\nThe 2026-11-07 capture at the same canonical URL is a variant index for Checkout, Direct API, iOS, Android and React Native. It supplies navigation only; the functional details below remain attributed to the 2026-05-06 full capture. The indexed variant bodies were not captured here.\n\n## Key takeaways from the 2026-05-06 guide\n\n- **Set up and attach:** Checkout `mode: 'setup'` saves without charging. A custom Direct API UI uses a PaymentIntent with `setup_future_usage` when taking an initial payment, or a SetupIntent when only saving, including a trial. Attach the reusable PaymentMethod to a Customer. The guide's client examples confirm the Intent and redirect the buyer to Klarna for authorization.\n- **Verify authorization:** A Checkout `success_url` visit or redirect return alone is insufficient. Use webhooks or retrieve the Intent status. After `payment_intent.succeeded` or `setup_intent.succeeded` and `succeeded` status, store the resulting PaymentMethod ID for reuse. Failure events return the Intent to `requires_payment_method`. A created Intent, client secret, or `requires_action` redirect is not proof of authorization or a successful charge.\n- **Subscription reference:** Pass subscription details in `payment_method_options.klarna.subscriptions` during setup and reuse the same `reference` for later charges; if a line item includes `subscription_reference`, its value must match or an error results. Details help expose applicable Klarna options, including Pay in 3/4 only for subscriptions of particular lengths, subject also to use case and buyer country; they do not guarantee a specific option.\n- **Renewals:** For the guide's off-session renewal PaymentIntent, use the saved Customer and PaymentMethod IDs with `off_session: true` and `confirm: true`, specify a `return_url`, and send updated subscription details and line items with the same reference. Authentication required during an off-session attempt causes an error. This is a flow-specific instruction, not a universal API requiredness claim.\n- **On-demand:** The dated guide's charge example uses `off_session: false` for a customer in checkout. Its `payment_method_options.klarna.on_demand` details, such as expected amounts and frequency, are optional information intended to help underwriting and authorization rates; neither approval nor improved rates are guaranteed.\n- **Upgrade and revocation:** The optional upgrade flow reauthorizes with the same reference through a PaymentIntent with `setup_future_usage` or a new SetupIntent and requires completing Klarna's redirect. For Klarna-app deactivation, handle `mandate.updated` and detach the PaymentMethod; also detach for a customer-initiated removal in your UI when supported. Detachment emits `payment_method.detached`.\n\n## Detail locators\n\n- Full guide scope, Buyer-country variation and Customer attachment: [[raw/stripe-klarna-set-up-future-payments-2025|2026-05-06 full guide]], lines 8–20 and 41–45.\n- Checkout setup, subscription reference and conditional options: same raw, lines 55–134; redirect, Session retrieval and post-setup status: lines 136–224.\n- Renewal, on-demand and revocation: same raw, lines 226–337; optional upgrade/removal: lines 698–792.\n- Direct API initial-payment, trial and save-only paths: same raw, lines 794–1030; Stripe.js redirect example uses `dahlia`: lines 1032–1129.\n- Dated native examples: iOS 13+ at lines 1742–1765, Android SDK `23.7.0` example at lines 2385–2428, and React Native iOS return URL conditions at lines 3040–3128. Sandbox country and outcome tables begin at lines 339–345 and do not establish current eligibility.\n\n## Related\n\n- [[stripe-bnpl]] — Klarna within Stripe's BNPL method map\n- [[stripe-klarna]] — subscription integration and its separately dated source\n\n## Raw Sources\n\n- [[raw/stripe-klarna-set-up-future-payments-2025|2026-05-06 full Klarna future-payments guide]] — factual workflow evidence, including Checkout, Direct API and mobile variants; retained capture has 3751 lines and repaired italic term markup.\n\n## Related raw API references\n\n- [[raw/stripe-payments-klarna-set-up-future-payments-2026-11-07|2026-11-07 Klarna future-payments variant index]] — navigation only to Checkout, Direct API, iOS, Android and React Native variants; no functional behavior is inferred from this index.\n",
+      "quotes": [
+        {
+          "text": "Learn how to save Klarna details and charge your customers later.",
+          "location": "raw/stripe-payments-klarna-set-up-future-payments-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-klarna-set-up-future-payments-2026-11-07.md:11"
+        },
+        {
+          "text": "- [Checkout](https://docs.stripe.com/payments/klarna/set-up-future-payments.md?payment-ui=checkout)",
+          "location": "raw/stripe-payments-klarna-set-up-future-payments-2026-11-07.md:13"
+        },
+        {
+          "text": "- [Direct API](https://docs.stripe.com/payments/klarna/set-up-future-payments.md?payment-ui=direct-api)",
+          "location": "raw/stripe-payments-klarna-set-up-future-payments-2026-11-07.md:14"
+        },
+        {
+          "text": "  - [React Native](https://docs.stripe.com/payments/klarna/set-up-future-payments.md?payment-ui=mobile&platform=react-native)",
+          "location": "raw/stripe-payments-klarna-set-up-future-payments-2026-11-07.md:18"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "klarna-future-bnpl-fact-a1",
+            "target_path": "wiki/concepts/stripe-bnpl.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Recurring/save**: Use SetupIntent or Checkout `mode: 'setup'` to save. Subscription `reference` must be identical across setup and all renewals — mismatch causes error. Send `payment_method_options.klarna.subscriptions` to unlock Pay in 3/4 for subscriptions. For on-demand, pass `klarna.on_demand` metadata to improve underwriting. Listen for `mandate.updated` webhook to handle Klarna-side revocations.",
+            "proposed_markdown": "**Recurring/save (2026-05-06 full guide)**: Checkout `mode: 'setup'` or a SetupIntent can save Klarna for later use, with a reusable PaymentMethod attached to a Customer and the billing agreement authorized. For a subscription, keep the same `reference` on future charges; when a line item supplies `subscription_reference`, a mismatch causes an error. Passing `payment_method_options.klarna.subscriptions` helps show applicable options, but Pay in 3/4 depends on subscription length, use case and buyer country. The on-demand charge example's `klarna.on_demand` details are optional underwriting information, not a guaranteed improvement; that example sets `off_session: false`. Confirm authorization through Intent status or webhooks before reuse, and handle Klarna-side `mandate.updated` revocation by detaching the PaymentMethod. See [[source-stripe-klarna-set-up-future-payments]]; its 2026-11-07 capture is navigation only.",
+            "quote_indexes": [
+              0,
+              1
+            ],
+            "warnings": [
+              "Factual corrections come from the 2026-05-06 old raw at lines 14-18, 41-43, 76-87, 218-224, 279-287 and 330-337. The new raw at lines 9-18 is navigation only; do not imply November variant validation."
+            ]
+          },
+          {
+            "update_id": "klarna-future-bnpl-route-a1",
+            "target_path": "wiki/concepts/stripe-bnpl.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-klarna-set-up-future-payments]] — Klarna save/recurring: subscription reference consistency, on_demand metadata, mandate revocation",
+            "proposed_markdown": "- [[source-stripe-klarna-set-up-future-payments]] — 2026-05-06 full Klarna save/recurring guide: Customer attachment, authorization status, reference matching, optional on-demand details and revocation; 2026-11-07 capture is a variant index only",
+            "quote_indexes": [
+              0,
+              1
+            ],
+            "warnings": [
+              "Route label describes the 2026-05-06 full old raw at lines 8-20 and 218-337; the 2026-11-07 new raw lines 9-18 only lists variants."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-klarna-set-up-future-payments-2026-11-07.md",
+      "raw_sha256": "bd0981490041f06192d65eb0c923c1328d5fe2404d6ba6d64450c4133a2e59cf",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-klarna-set-up-future-payments-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 18
+      }
+    ],
+    "raw/stripe-klarna-set-up-future-payments-2025.md": [
+      {
+        "start": 1,
+        "end": 3751
+      }
+    ],
+    "wiki/sources/source-stripe-klarna-set-up-future-payments.md": [
+      {
+        "start": 1,
+        "end": 33
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/417957c910705071b7152911/content.diff": [
+      {
+        "start": 1,
+        "end": 3757
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 24
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 310,
+        "end": 342
+      },
+      {
+        "start": 675,
+        "end": 690
+      }
+    ],
+    "wiki/concepts/stripe-bnpl.md": [
+      {
+        "start": 225,
+        "end": 267
+      }
+    ],
+    "wiki/concepts/stripe-klarna.md": [
+      {
+        "start": 1,
+        "end": 46
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "This guide isn’t for integrations that use [Stripe Billing](https://docs.stripe.com/billing.md). If you use Stripe Billing, see [Klarna for subscriptions](https://docs.stripe.com/billing/subscriptions/klarna.md).",
+      "location": "raw/stripe-klarna-set-up-future-payments-2025.md:14"
+    },
+    {
+      "text": "To reuse a Klarna payment method for future payments, you must attach it to a *Customer*",
+      "location": "raw/stripe-klarna-set-up-future-payments-2025.md:43"
+    },
+    {
+      "text": "When you charge the saved payment method, use the same subscription reference.",
+      "location": "raw/stripe-klarna-set-up-future-payments-2025.md:87"
+    },
+    {
+      "text": "The example below includes optional details using [payment_method_options](https://docs.stripe.com/api/payment_intents/create.md#create_payment_intent-payment_method_options) to help improve Klarna underwriting and authorization rates.",
+      "location": "raw/stripe-klarna-set-up-future-payments-2025.md:287"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/klarna/set-up-future-payments, the complete new raw at lines 5-18 establishes only the purpose of saving Klarna details for later charges and navigation to Checkout, Direct API, iOS, Android and React Native variants. It does not establish prerequisites, object states, or successful payment. The matched full May capture at old raw lines 8-20, 41-57, 218-237 and 279-287 documents customer authorization, Customer-attached PaymentMethods, Checkout setup and Direct API Intent paths, succeeded or failed authorization states, off-session subscription renewal, and an on-session on-demand example. The mapped source-stripe-klarna-set-up-future-payments.md summarized some of this at lines 13-29 but omitted the Billing exclusion, variable option availability and status verification.",
+    "Q2": "At https://docs.stripe.com/payments/klarna/set-up-future-payments, the November change is navigation and presentation only (new raw lines 9-18, diff lines 3-20 and 3752-3757); the five variant bodies are outside this pin. Keep source-stripe-klarna-set-up-future-payments.md's May-dated Customer attachment, reference matching, renewal, upgrade and revocation facts, but correct overbroad statements: old raw lines 14-18 and 76-87 condition Pay in 3/4 on use case, buyer country and subscription length; old raw lines 230-237 specify return_url for this renewal flow without proving universal API requiredness; old raw lines 279-287 call on_demand details optional and use off_session false. Redirect, resource creation and client return do not prove authorization or payment success (old raw lines 136-150 and 218-224). Dated Stripe.js dahlia, iOS 13+, Android 23.7.0, React Native return URL and sandbox examples remain historical (old raw lines 1032-1061, 1763-1765, 2408-2428, 3118-3128, 339-345). The November index cannot revalidate or repeal them."
+  }
+}

@@ -1,0 +1,46 @@
+---
+title: "Stripe: Use Boleto with Subscriptions"
+type: source
+date_ingested: 2026-05-07
+date_updated: 2026-11-15
+original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/boleto/set-up-subscription"
+raw_files:
+  - "stripe-payments-boleto-set-up-subscription-2026-11-07.md"
+  - "stripe-boleto-subscription-2025.md"
+tags: [stripe, vouchers, boleto, brazil, brl, subscriptions, recurring, send-invoice, charge-automatically, tax-id]
+---
+
+## Overview
+
+[[stripe]] documents Boleto subscription billing through `send_invoice` and `charge_automatically`. Boleto is a voucher the customer pays separately; the automatic collection label describes voucher generation and email, not automatic cash debit or settled payment. This guide now gives both customer-configured Accounts v2 and Customers v1 examples. See [[stripe-vouchers]] for the method overview.
+
+## Key takeaways
+
+- **Enablement:** Turn on Boleto in Payment methods settings and the Stripe-hosted link for payments requiring confirmation in Subscriptions and emails settings before integration. Voucher expiration delay is configurable. [November raw lines 9-15]
+- **`send_invoice`:** For a customer without a saved preferred method or full Boleto details, email an invoice with a due date. The customer enters full name, address and tax ID for each invoice or subscription period; this path does not use their default payment method. Stripe creates the voucher after those details are entered. Its expiration, default three days, can fall before or after the invoice due date. [November raw lines 17-29]
+- **`charge_automatically`:** Create a Boleto PaymentMethod with `boleto.tax_id` and billing name, email and Brazilian address, attach it to the represented customer, and set it as the billing default. Stripe creates and emails a Boleto voucher each period. The invoice has no due date in this path; voucher expiration remains separate. The customer still has to pay the voucher. [November raw lines 23-29, 156-220; [[source-stripe-boleto-invoices]]]
+- **Customer identity:** The older May capture recommended Accounts v2 but showed only Customer v1 procedures. The November capture specifies `configuration.customer: {}` on a v2 Account and `customer_account` for its PaymentMethod attachment, subscription and Checkout examples; the v1 route uses a Customer ID and `customer`. For a v2 Account, set `configuration.customer.billing.default_payment_method`; for v1, set `invoice_settings.default_payment_method`. Keep the identity path consistent. [May raw lines 8-14, 98-188; November raw lines 81-220, 336-416]
+- **Version boundary:** Stripe describes Accounts v2 as generally available for Connect users and in public preview for others. Preview users must specify a preview version; the November v2 cURL examples show `Stripe-Version: 2026-10-28.preview` and a Dashboard preview enrollment step. These examples do not establish this account's eligibility or currently deployed version. Secret-key API calls belong on the server. [November raw lines 75-113, 128-144]
+
+## Subscription paths and state
+
+- Create a recurring product/price before an API subscription; the examples use a `RECURRING_PRICE_ID`. **Example currency warning:** the November 2026 generic price-creation snippet sets `currency=usd` and omits a recurring interval; its schedule illustration also says 10 USD per month plus a 20 USD one-time item. The separate May Boleto method capture specifies BRL presentment. These generic USD examples do not establish a valid Boleto subscription price; use a Boleto-compatible BRL recurring price and check the actual account/payment-method configuration. [November raw lines 262-276, 336-416, 420-435; `raw/stripe-boleto-2025.md:26-32`] The API examples for both identities set `payment_behavior=default_incomplete`. The invoice route sets `collection_method=send_invoice` and `days_until_due=3`; the default-method route sets `collection_method=charge_automatically` and `off_session=true`. These request parameters do not establish a paid voucher or active subscription. [November raw lines 223-280, 326-386]
+- Checkout Sessions examples use `mode=subscription`, the recurring price, the matching `customer_account` or `customer`, and `payment_method_options[boleto][expires_after_days]=3`. A configured `success_url` is a return destination, not proof of cash payment. Stripe says it emails the previously generated Boleto each subscription cycle. [November raw lines 388-416]
+- Subscription schedules can begin in the future or end on a date. A phase's `add_invoice_items` can add a one-time amount: items in future phases are generated when those phases begin, while current-phase items are generated immediately. The November example notes substituting `customer_account` for `customer` for a customer-configured Account. [November raw lines 418-437]
+- Dashboard create/edit/cancel/pause steps are generic subscription UI. Its refund-last-payment menu option is **not** evidence that Boleto refunds are supported: the Boleto method source says no Boleto refunds. [November raw lines 288-324; [[source-stripe-boleto]]]
+
+## Dated example difference
+
+The May 2026 `send_invoice` Node example explicitly set `payment_settings.payment_method_types: ["card", "boleto"]`. The November 2026 Accounts v2 and Customers v1 cURL `send_invoice` examples omit that field. Keep both examples dated; omission does not prove the setting is invalid, unnecessary, or removed, nor establish the account's default allowed methods. The Node-to-cURL conversion, changed sample identities/timestamps, numbering and related links are example or presentation changes. [May raw lines 310-329; November raw lines 336-358; collection diff lines 1-715]
+
+## Related
+
+- [[stripe-vouchers]] — voucher method overview and billing distinction
+- [[source-stripe-boleto]] — method restrictions, including no refunds
+- [[source-stripe-boleto-invoices]] — invoice collection and active voucher payment
+
+## Raw Sources
+
+- [[raw/stripe-payments-boleto-set-up-subscription-2026-11-07|2026-11-07 full Boleto subscription guide]] — current captured page, 441 lines
+- [[raw/stripe-boleto-subscription-2025|2026-05-07 Boleto subscription guide]] — earlier captured page, 417 lines; preserves the Customer v1 Node examples and explicit card/Boleto method list

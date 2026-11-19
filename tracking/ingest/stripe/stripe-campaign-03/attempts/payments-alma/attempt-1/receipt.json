@@ -1,0 +1,201 @@
+{
+  "job_id": "payments-alma",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-alma-2026-11-07.md",
+  "raw_sha256": "e7f35d9988e1c79f1219a601a370008a1de126a793fa3b8783bd6f4ca147db16",
+  "prior_raw_path": "raw/stripe-alma-2025.md",
+  "prior_raw_sha256": "7b94093c307447e1f8766e0dcb4485947e28e816e1dd01b760556b0652ebe04c",
+  "source_targets": [
+    "wiki/sources/source-stripe-alma.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-alma.md": "9abc941f085fdcd117a201141aee8441bc77aa5861d9752ff524c0628e65a5cd"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-alma-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 450
+      },
+      {
+        "start": 451,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 730
+      },
+      {
+        "start": 731,
+        "end": 865
+      }
+    ],
+    "raw/stripe-alma-2025.md": [
+      {
+        "start": 1,
+        "end": 170
+      }
+    ],
+    "wiki/sources/source-stripe-alma.md": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/cd8f156a12564b84c2e6ebd4/content.diff": [
+      {
+        "start": 1,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 450
+      },
+      {
+        "start": 451,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 750
+      },
+      {
+        "start": 751,
+        "end": 880
+      },
+      {
+        "start": 881,
+        "end": 977
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 28
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 315,
+        "end": 335
+      }
+    ],
+    "wiki/concepts/stripe-bnpl.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 250,
+        "end": 263
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/proposed-queries.md": [
+      {
+        "start": 75,
+        "end": 81
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Usability: Single-use",
+      "location": "raw/stripe-payments-alma-2026-11-07.md:13"
+    },
+    {
+      "text": "Geographic coverage: \u2713 Domestic, \u2717 Crossborder",
+      "location": "raw/stripe-payments-alma-2026-11-07.md:647"
+    },
+    {
+      "text": "Refunds for Alma payments are asynchronous and take up to 5 minutes to complete. You can\u2019t cancel Alma refunds.",
+      "location": "raw/stripe-payments-alma-2026-11-07.md:735"
+    },
+    {
+      "text": "Dispute fees are non-refundable regardless of the outcome.",
+      "location": "raw/stripe-payments-alma-2026-11-07.md:783"
+    },
+    {
+      "text": "Alma payments include a `transaction_id` field and an `installments.count` field on the payment method details.",
+      "location": "raw/stripe-payments-alma-2026-11-07.md:859"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Alma is only available for payments between 50 EUR and 5,000 EUR.",
+      "location": "raw/stripe-alma-2025.md:12"
+    },
+    {
+      "text": "If your integration requires manually listing payment methods, learn how to [manually configure Alma as a payment]",
+      "location": "raw/stripe-alma-2025.md:85"
+    },
+    {
+      "text": "Alma isn\u2019t available for platforms that onboard other businesses and enable them to accept payments directly",
+      "location": "raw/stripe-alma-2025.md:154"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The November 7 capture preserves the May 6 overview's Alma redirect, 2/3/4 installments, six countries, EUR and 50-5,000 range (new raw lines 5-11, 636-703; old raw lines 4-12, 87-99), while reorganizing them as property, eligibility, country-option, capability and product matrices (new raw lines 12-23, 644-730, 793-817). The new labels of instant provisional access, immediate payment confirmation, and settlement up to T+3 are separate states, not evidence that account funds are settled or paid out instantly (new raw lines 13-16, 650-651; old raw lines 36-38, 89).",
+    "Material newly explicit eligibility: the new raw specifies merchant or platform/marketplace account location BE/ES/FR/IT/LU/NL, B2C rather than B2B, domestic rather than cross-border, and a large prohibited/restricted MCC matrix with a conditional restricted-account information rule (new raw lines 17-42, 44-634, 636-650). The older raw already named the six merchant/customer countries and prohibited business categories, including B2B (old raw lines 16-22, 56-65, 101-114), so these are partly clarified constraints, not a wholly new country set. Risk can still make an unlisted business ineligible (new raw line 37; old raw line 114). Do not infer that every software business is barred solely from the many MCC rows labeled Software; the exact category and MCC must be checked.",
+    "New support matrix makes single-use, no recurring, no SetupIntent, no PaymentIntent setup_future_usage, no off-session, manual and partial capture, no multi/over-capture, and UI/product/API support explicit (new raw lines 12-16, 705-730, 793-817). The old raw already said no recurring, manual capture yes, and Connect yes (old raw lines 28-54), but did not enumerate this complete matrix. Checkout Sessions and PaymentIntents are supported APIs, with Checkout Sessions recommended; Payment Links, embedded form, Payment Element and in-app payments are listed as supported UIs (new raw lines 793-817). This overview does not itself specify the integration parameters or prove an attempted payment succeeds; the accept-a-payment link at new raw line 865 is navigation only (old raw line 85).",
+    "New refund and dispute detail narrows outcomes: submission within 180 days; asynchronous refund processing up to five minutes; cancellation unavailable; retrieve Refund.status and heed refund.updated/refund.failed final events, with failed amount returned to balance for another refund method (new raw lines 721-741). The old raw had the window, async timing and events but not the no-cancel statement or explicit retrieval route (old raw lines 125-127). The new raw repeats 120-day customer dispute and 14-day evidence/25-day decision windows, adds Dashboard/API evidence routes and nonrefundable dispute fees, and distinguishes customer-fraud coverage from merchant stop/pause-shipment requests and fraud/dispute-rate access risk (new raw lines 743-791; old raw lines 129-150).",
+    "New transaction identifiers are distinct: payment method details include transaction_id and installments.count; the underlying charge is reached by expanding latest_charge on the PaymentIntent (new raw lines 857-859). The redirect and installment-choice sequence at new raw lines 839-855 is illustrative; selection, redirect or terms acceptance alone do not establish payment completion. May source's T+3 wording was payout timing (old raw lines 36-38), whereas November explicitly labels settlement timing up to three business days (new raw lines 14-16); preserve capture dates and do not silently equate these timing categories.",
+    "Existing source accuracy axis: source-stripe-alma.md lines 13-35 correctly records many May facts but has no canonical_url in frontmatter lines 1-9 and only the May raw at lines 6-7 and 37-39. Its T+3 payout wording at lines 13 and 21 should be dated to May and distinguished from November settlement timing; its absolute 'Alma covers fraud' at line 25 needs the customer-fraud and stop-shipment qualification in new raw lines 785-791 and old raw lines 131, 150. Add the November raw and the newly explicit domestic/B2C/MCC, product/API, refund-cancellation, dispute-fee and identifier locators without replacing the older provenance. Root index line 7 routes to Stripe index line 328 and concept stripe-bnpl lines 77-91, 258, where Alma's old payout/fraud context also merits a reciprocal dated warning."
+  ],
+  "substantive_changes": [
+    "Explicit November eligibility matrix adds domestic-only coverage, B2C account model, prohibited/restricted MCCs and conditional restricted-account details (new raw lines 17-42, 44-650; old raw lines 56-65, 101-114).",
+    "Expanded capability/product matrix adds single-use and detailed capture, setup, off-session and UI/API support boundaries (new raw lines 12-16, 705-730, 793-817; old raw lines 24-54, 72-85).",
+    "Refund cancellation prohibition, Refund.status retrieval, nonrefundable dispute fees and transaction_id/installments.count/latest_charge identity are newly explicit (new raw lines 731-741, 779-783, 857-859; old raw lines 125-148)."
+  ],
+  "historical_claims_to_preserve": [
+    "Preserve the May 6 capture and its source citation as dated authority for 2/3/4 interest-free installments, EUR 50-5,000, six countries and conditional upfront funds less fees (old raw lines 4-12, 87-99; current source lines 4-7, 17-21); the November country option tables and funding sentence corroborate these at new raw lines 636-703.",
+    "Preserve the May terminology of payout timing T+3 as dated, while November calls it settlement timing up to three business days (old raw lines 36-38; new raw lines 14-16; source lines 13, 21). Neither wording proves instant settlement merely because the customer installment plan pays the merchant upfront (old raw lines 89-91; new raw lines 650-653).",
+    "Preserve the marketplace-only Connect restriction and Dashboard onboarding request despite the generic new platform/matrix checkmarks (old raw lines 152-162; new raw lines 20-22, 827-837; source line 27); supported direct charges in the Connect table do not make every platform business model eligible."
+  ],
+  "conflicts": [
+    "Current source lines 13 and 21 and concept stripe-bnpl line 79 use 'T+3 payout'; November new raw lines 14-16 explicitly say 'settlement timing: up to 3 business days (T+3)', while old raw lines 36-38 said payout timing. Date and qualify both labels rather than replacing one as a universal promise; the same new raw says funds are available upfront only in the payment-option context (new raw lines 650-653).",
+    "Current source line 25 says 'Alma covers fraud' without limiting this to customer fraud or preserving Alma's stop/pause-shipment request and fraud/dispute-rate eligibility risk (new raw lines 785-791; old raw lines 131, 150); concept stripe-bnpl lines 83-85 omits that qualification too.",
+    "The new raw account-type matrix says platform or marketplace supported at lines 19-22 and its Connect charge table includes direct charges at lines 827-837, while the same page explicitly bars platforms that merely onboard businesses to accept payments directly at lines 827-831. Current source line 27 correctly states the marketplace-only restriction; both statements need reciprocal context to avoid generalizing account-type checkmarks into unrestricted Connect eligibility."
+  ],
+  "unresolved_questions": [
+    "The captured overview and MCC table do not establish a particular merchant's eligibility, the current legal classification of an individual MCC, or Alma approval for a specific buyer; restricted entries can require more account information and risk review (new raw lines 37-42, 44-634).",
+    "The overview does not give an end-to-end integration result, refund completion for a submitted request, dispute decision for a case, or real payout arrival; those require the appropriate resource state/events and account-specific evidence (new raw lines 14-16, 735-741, 779-783, 839-865)."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-bnpl.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-alma.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Retain May 6 raw and date_ingested provenance while adding the November 7 raw and canonical_url: https://docs.stripe.com/payments/alma to frontmatter (source lines 1-9, 37-39; old raw line 1; new raw line 1).",
+        "Add locators for the new domestic/B2C/MCC eligibility matrix, supported/unsupported product and API paths, single-use/capture boundaries, noncancelable async refunds, dispute fees, and PaymentIntent-versus-payment-method identifiers (new raw lines 17-42, 44-650, 705-741, 779-783, 793-817, 857-859; source lines 13-35).",
+        "Date and qualify the existing T+3 payout and fraud statements; distinguish November settlement timing and customer-fraud/stop-shipment conditions (source lines 13, 21, 25; old raw lines 36-38, 131; new raw lines 14-16, 785-791). Preserve the marketplace-only Connect caveat despite the broad account matrix (source line 27; new raw lines 19-22, 827-837)."
+      ],
+      "conflicts": [
+        "Unqualified current source T+3 payout at lines 13 and 21 versus November's up-to-T+3 settlement label at new raw lines 14-16; May raw lines 36-38 use payout terminology.",
+        "Unqualified fraud-coverage sentence at source line 25 versus new raw lines 785-791 and old raw line 131, which distinguish customer fraud, shipment request and rate-based access risk.",
+        "New broad platform/account checkmarks at raw lines 19-22 cannot override the same new page's marketplace-only Connect restriction at lines 827-831, which source line 27 already captures."
+      ],
+      "reason": "The November overview adds material eligibility, capability and outcome qualifiers that the May-only summary cannot answer, and its existing timing/fraud wording needs dated qualifications. The update is a review proposal only; the repository source remains untouched."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/alma, the November overview describes single-use Alma BNPL: eligible B2C merchants or qualifying Connect marketplaces in BE, ES, FR, IT, LU or NL offer domestic EUR 50-5,000 purchases, redirect buyers to Alma for a 2, 3 or 4 installment choice, and have immediate confirmation but settlement up to three business days (new raw lines 7-22, 636-703). Prohibited and restricted business/MCC conditions remain, and being in a listed country does not establish account or buyer approval (new raw lines 24-42, 44-634). Checkout Sessions and PaymentIntents are supported, while recurring, SetupIntents, setup_future_usage and off-session reuse are not (new raw lines 705-730, 793-817). Refund finality depends on Refund.status or refund.updated/refund.failed, not submission; dispute outcomes follow evidence and Alma decision (new raw lines 731-783). The May capture already had the redirect, range, six countries, marketplace restriction, refund/dispute windows and dated T+3 payout label (old raw lines 4-12, 87-99, 125-162). source-stripe-alma.md preserves much of that but lacks the expanded eligibility/support matrix, canonical URL and November provenance (source lines 1-39).",
+    "Q2": "At https://docs.stripe.com/payments/alma, reorganized country option tables and headings are presentational, while the explicit domestic/B2C/MCC eligibility, single-use and product/API exclusions, noncancelable refunds, nonrefundable dispute fees and transaction identifiers are substantive additions (new raw lines 17-42, 44-650, 705-741, 779-783, 793-817, 857-859). Old 2/3/4 installment, EUR range, 180-day refund, 120/14/25-day dispute, customer terms and marketplace-only Connect facts remain dated May evidence (old raw lines 87-99, 116-162). source-stripe-alma.md must add November provenance and canonical URL, and qualify its T+3 'payout' and broad fraud wording against November's up-to-T+3 settlement and customer-fraud/shipment conditions (source lines 1-27; new raw lines 14-16, 785-791). The broad Connect account checkmark does not override the same page's marketplace-only restriction (new raw lines 19-22, 827-837); redirect, installment choice, upfront-funds language and refund initiation are not proof of settlement, successful payment, final refund or eligibility."
+  }
+}

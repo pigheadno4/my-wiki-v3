@@ -1,0 +1,229 @@
+{
+  "job_id": "payments-billie",
+  "attempt": 2,
+  "raw_path": "raw/stripe-payments-billie-2026-11-07.md",
+  "raw_sha256": "8bf640245b5859b292a8497cecbe495f94dfa61f16d101495b08eccc5bbc8867",
+  "prior_raw_path": "raw/stripe-billie-2025.md",
+  "prior_raw_sha256": "41284b90520e3893d425f4902143b3df808e1245e2818c3bda2e48f726cc2a1b",
+  "source_targets": [
+    "wiki/sources/source-stripe-billie.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-billie.md": "0bff220d59ec0b899309cc10ebe47c4228fb873ad3e1d74782a43bb64235ca45"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-billie-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 226
+      },
+      {
+        "start": 144,
+        "end": 178
+      }
+    ],
+    "raw/stripe-billie-2025.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 187
+      },
+      {
+        "start": 67,
+        "end": 82
+      }
+    ],
+    "wiki/sources/source-stripe-billie.md": [
+      {
+        "start": 1,
+        "end": 35
+      },
+      {
+        "start": 1,
+        "end": 35
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/84ebcfa5e9d3bb5024fab997/content.diff": [
+      {
+        "start": 1,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 388
+      },
+      {
+        "start": 278,
+        "end": 321
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 12
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 325,
+        "end": 334
+      },
+      {
+        "start": 735,
+        "end": 750
+      }
+    ],
+    "wiki/concepts/stripe-bnpl.md": [
+      {
+        "start": 1,
+        "end": 45
+      },
+      {
+        "start": 90,
+        "end": 110
+      },
+      {
+        "start": 250,
+        "end": 265
+      },
+      {
+        "start": 14,
+        "end": 44
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/proposed-queries.md": [
+      {
+        "start": 201,
+        "end": 207
+      }
+    ],
+    "raw/stripe-bnpl-overview-2025.md": [
+      {
+        "start": 36,
+        "end": 50
+      },
+      {
+        "start": 56,
+        "end": 65
+      },
+      {
+        "start": 40,
+        "end": 45
+      }
+    ],
+    "wiki/sources/source-stripe-bnpl-overview.md": [
+      {
+        "start": 20,
+        "end": 25
+      },
+      {
+        "start": 18,
+        "end": 26
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Offer businesses \"Pay in 30\" payment terms while getting paid instantly.",
+      "location": "raw/stripe-payments-billie-2026-11-07.md:7"
+    },
+    {
+      "text": "Billie requires that you submit a refund within 365 days from the original payment",
+      "location": "raw/stripe-payments-billie-2026-11-07.md:97"
+    },
+    {
+      "text": "You have 35 calendar days from dispute creation to submit evidence.",
+      "location": "raw/stripe-payments-billie-2026-11-07.md:132"
+    },
+    {
+      "text": "\u2717 Payment Intents with setup_future_usage",
+      "location": "raw/stripe-payments-billie-2026-11-07.md:166"
+    },
+    {
+      "text": "After a Billie payment succeeds, expand `latest_charge` on the PaymentIntent",
+      "location": "raw/stripe-payments-billie-2026-11-07.md:220"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "You must submit the requested information within 12 calendar days.",
+      "location": "raw/stripe-billie-2025.md:145"
+    },
+    {
+      "text": "The refund period is up to 180 days after the purchase.",
+      "location": "raw/stripe-billie-2025.md:151"
+    },
+    {
+      "text": "Set the `billie_payments` capability to `active` on your platform account, and on any connected accounts you want to enable Billie for.",
+      "location": "raw/stripe-billie-2025.md:162"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The November 7 page remains a Billie B2B single-use BNPL overview: customers in 11 listed countries select Billie, leave the merchant site to authorize, and pay by invoice while the merchant receives payment immediately, with standard payout timing (new raw lines 5-23, 46-59, 200-216). The May 6 overview also documented Pay in 30, redirect, non-recurring use and standard payout (old raw lines 4-40). An authorization redirect or browser return is not itself proof of successful payment; the November text says Stripe immediately notifies success or failure and the Billie transaction ID is available only after a successful PaymentIntent/Charge (new raw lines 214-220).",
+    "The November eligibility matrix adds explicit B2B versus B2C, account/customer countries, domestic versus cross-border coverage, a country/currency dependent maximum instead of an unstated maximum, and a 13-row prohibited MCC table including construction, car rental, real-estate rental and tax payments absent from the old narrative list (new raw lines 18-67; old raw lines 54-68, 105-121, 178-187). This is a documented scope change; the table does not prove that a particular merchant/category is enabled, nor does an unstated May maximum mean there was no maximum.",
+    "The November refund submission window is 365 days from original payment, replacing May's up-to-180-day statement; both say refunds can be full or partial and are asynchronous up to five minutes (new raw lines 85-109; old raw lines 147-154). November adds that Billie refunds cannot be canceled, describes obligation adjustments, signature verification and refund status/failure handling (new raw lines 97-109). Current source line 25 and BNPL concept line 101 still say 180 days, so both routes need a dated reciprocal correction.",
+    "The November dispute guide gives the customer 365 days to file, the merchant 35 calendar days from dispute creation to submit evidence, and Billie seven calendar days after evidence to decide (new raw lines 91-94, 111-142). May required evidence within 12 days and listed fraud/double-payment/amount-difference reasons (old raw lines 123-145). Current source line 23, BNPL concept lines 99 and 260, and Stripe index line 330 still say 12 days; update every reciprocal route and preserve May's 12-day claim as historical, not a current deadline.",
+    "The November product matrix lists Checkout full page, Payment Links, embedded form, Payment Element, in-app, Billing, Invoicing and Connect as supported, but excludes Express Checkout Element, Payment Method Messaging Element, Managed Payments, Customer Portal, Radar, Terminal, SetupIntents, off-session payments and PaymentIntents with setup_future_usage (new raw lines 144-176). It also says recurring payments are unsupported (new raw lines 69-83). May had a narrower product list with Checkout setup/subscription exclusions and non-recurring property (old raw lines 30-48, 70-79). The November matrix shows Billing/Invoicing but a footnote says only send_invoice collection_method (new raw lines 154-176); do not infer subscription-mode Checkout or automatic off-session recurring charges from product names.",
+    "The retained BNPL overview's Billie API matrix marks setup_future_usage supported at raw/stripe-bnpl-overview-2025.md line 63; wiki/concepts/stripe-bnpl.md lines 19 and 41 and wiki/sources/source-stripe-bnpl-overview.md line 23 repeat that dated cross-source claim. November's Billie-specific matrix expressly marks PaymentIntents with setup_future_usage unsupported (new raw lines 163-168), while both Billie captures say recurring payments unsupported (old raw lines 30-32; new raw lines 69-70). Flag this source conflict reciprocally and route current integration questions to versioned provider authority instead of asserting unconditional support or silently erasing the older matrix.",
+    "November continues the `billie_payments` active capability requirement for platform and enabled connected accounts, and Connect statement-descriptor origin still depends on direct, destination, separate-charge-and-transfer and on_behalf_of charge type (new raw lines 178-198; old raw lines 156-176). The source line 27 summarizes this accurately. November adds a post-success transaction ID path through latest_charge.payment_method_details.billie.transaction_id (new raw lines 218-220); this requires a succeeded payment and is not a request-time identity.",
+    "The older cross-BNPL overview explicitly marks Billie Invoicing unsupported in its product table (raw/stripe-bnpl-overview-2025.md lines 40-45), while the November Billie-specific product matrix marks Invoicing supported and places an 'Only supports send_invoice collection method' footnote below the matrix (new raw lines 154-170; diff lines 289-315). The matched May Billie page merely lists Connect, Payment Links, Checkout and Elements, without an explicit Invoicing-unsupported mark (old raw lines 70-79). Preserve the 2025 overview mark as dated and warn reciprocally on BNPL overview and Billie routes; the text capture does not bind the footnote unambiguously to each product, so route-specific confirmation remains needed. Neither the supported mark nor the footnote proves subscription-mode Checkout or automatic off-session recurring charges (new raw lines 163-175).",
+    "Targeted retry personally reread new raw lines 144-178, old raw lines 67-82, source lines 1-35, cross-BNPL overview lines 40-45, BNPL source lines 18-26, BNPL concept lines 14-44 and diff lines 278-321 after verifying all four pinned file hashes plus the prior receipt/review hashes; the initial worker's full-file read ranges remain recorded above."
+  ],
+  "substantive_changes": [
+    "Refund submission window changes from May 180 days to November 365 days, with non-cancelability and obligation/status details added (old raw lines 147-154; new raw lines 85-109).",
+    "Merchant dispute evidence deadline changes from May 12 calendar days to November 35 calendar days; November adds 365-day customer filing and seven-day post-evidence decision timing (old raw lines 123-145; new raw lines 91-94, 111-142).",
+    "November adds explicit MCC, eligibility, geographic, amount and product/API-support matrices, including a PaymentIntents-with-setup_future_usage unsupported mark that conflicts with the older cross-BNPL overview support mark (new raw lines 18-83, 144-176; old raw lines 54-79, 105-121; raw/stripe-bnpl-overview-2025.md lines 56-65). Its Invoicing supported mark also conflicts with the older cross-BNPL overview's explicit unsupported mark, with a send_invoice-only footnote and route-specific ambiguity (raw/stripe-bnpl-overview-2025.md lines 40-45; new raw lines 154-170). May's Billie-specific list simply omits Invoicing, so that omission is not an unsupported mark (old raw lines 70-79). New table/presentation structure alone is not evidence that every listed capability changed at runtime."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain May 6, 2026 Billie Pay-in-30, 11-country, six-presentment-currency, B2B, redirect, manual-capture, Connect-capability/descriptor and old 180-day refund/12-day dispute terms explicitly as dated source history (old raw lines 4-79, 105-187). November gives later documentation, not proof that the old limits never applied (new raw lines 5-16, 85-142, 178-198).",
+    "Preserve the older cross-BNPL matrix's setup_future_usage support claim and its explicit Invoicing unsupported mark as dated contradictions, not current Billie eligibility. The November Billie-specific matrix says setup_future_usage unsupported and Invoicing supported with a send_invoice footnote whose exact attachment in this text capture remains uncertain (raw/stripe-bnpl-overview-2025.md lines 40-45, 56-65; new raw lines 154-170). May's Billie-specific narrower list does not explicitly mark Invoicing unsupported (old raw lines 70-79). Preserve the distinction between Billing/Invoicing invoice collection, a one-time PaymentIntent, SetupIntent, Checkout subscription mode and an off-session recurring payment (new raw lines 69-70, 144-176)."
+  ],
+  "conflicts": [
+    "source-stripe-billie.md line 25 and wiki/concepts/stripe-bnpl.md line 101 retain May's 180-day refund window despite November's 365 days (old raw lines 147-154; new raw lines 85-99). The May limit should remain dated, and both current routes need the November window plus no-cancellation qualification (new raw lines 97-109).",
+    "source-stripe-billie.md line 23, wiki/concepts/stripe-bnpl.md lines 99 and 260, and wiki/stripe-index.md line 330 still state May's 12-day merchant evidence window; November says 35 days after creation (old raw lines 123-145; new raw lines 111-136). The concept's 'shortest' label also loses support; reciprocally correct all routes, with May retained as dated.",
+    "wiki/concepts/stripe-bnpl.md lines 19 and 41 and wiki/sources/source-stripe-bnpl-overview.md line 23 repeat the old cross-BNPL matrix's Billie setup_future_usage support (raw/stripe-bnpl-overview-2025.md line 63), while new Billie-specific raw lines 163-168 say PaymentIntents with setup_future_usage unsupported. The old/new source conflict needs an explicit dated warning; neither a blanket support claim nor an inferred deprecation is justified without more authority.",
+    "source-stripe-billie.md line 19 says no stated maximum, but November says maximum amounts vary by country and currency (new raw lines 54-67), and BNPL concept line 95 also says no stated maximum. Correct both to the November qualified statement rather than assuming unlimited transactions.",
+    "The 2025 cross-BNPL overview explicitly marks Billie Invoicing unsupported at raw/stripe-bnpl-overview-2025.md line 45, while November's Billie-specific matrix marks it supported at new raw lines 154-157 and adds a send_invoice-only footnote at line 170. The May Billie-specific raw lines 70-79 omit Invoicing but do not mark it unsupported. Add dated reciprocal warnings to the Billie source and BNPL overview/source/concept routes; do not infer Checkout subscription support or automatic recurring charges (new raw lines 163-175)."
+  ],
+  "unresolved_questions": [
+    "The old cross-BNPL matrix and November Billie-specific API matrix disagree on setup_future_usage; this packet does not establish whether one is stale, an account-specific exception, or a documentation defect (raw/stripe-bnpl-overview-2025.md line 63; new raw lines 163-168).",
+    "The November product matrix's send_invoice footnote placement is ambiguous within the text capture, so exact Billing/Invoicing integration behavior and its disagreement with the older BNPL overview's Billie Invoicing-unsupported mark should be checked in the route-specific guide before implementation (raw/stripe-bnpl-overview-2025.md lines 40-45; new raw lines 154-176).",
+    "Documentation alone does not establish a merchant's category eligibility, account capability activation, permitted amount/currency pair, payment authorization, payout, dispute outcome, or refund completion (new raw lines 18-67, 85-142, 178-220)."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-bnpl.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-billie.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add November raw/canonical route and date May provenance; source currently lists only old raw (source lines 1-8, 33-35; new raw lines 1-3; old raw lines 1-2).",
+        "Replace old 180-day refund and 12-day merchant evidence facts with November 365-day refund submission and 35-day evidence terms, while preserving the prior values as May history and noting refund non-cancelability and pending/final status (source lines 23-25; old raw lines 123-154; new raw lines 85-142). Reciprocally correct wiki/concepts/stripe-bnpl.md lines 99, 101 and 260 and wiki/stripe-index.md line 330.",
+        "Correct 'no stated maximum' to maximum varying by country/currency and add the new B2B, domestic-only, category/MCC and country/currency scope with table locators (source lines 17-19, 29-31; new raw lines 18-67). Reciprocally qualify wiki/concepts/stripe-bnpl.md line 95.",
+        "Record the November product/API matrix limits, including no recurring, no SetupIntents, no off-session and no PaymentIntents with setup_future_usage, while preserving dated May overview context and warning of the older cross-BNPL setup_future_usage conflict at wiki/concepts/stripe-bnpl.md lines 19 and 41 and wiki/sources/source-stripe-bnpl-overview.md line 23 (new raw lines 69-83, 144-176; raw/stripe-bnpl-overview-2025.md line 63).",
+        "Add a reciprocal dated product-support warning: the older cross-BNPL overview explicitly marks Billie Invoicing unsupported at raw/stripe-bnpl-overview-2025.md line 45, but November's Billie-specific matrix marks it supported at new raw lines 154-157 with a send_invoice-only footnote at line 170. The May Billie-specific list is narrower, not an explicit unsupported mark (old raw lines 70-79). Qualify the footnote's table attachment/route-specific integration uncertainty and do not infer subscription-mode Checkout or automatic recurring charges (new raw lines 163-175).",
+        "Keep `billie_payments` active on platform and enabled connected accounts and charge-type-specific descriptor source; add post-success latest_charge transaction ID as an outcome locator, not a generic checkout identifier (source line 27; old raw lines 156-176; new raw lines 178-220)."
+      ],
+      "conflicts": [
+        "Current source lines 19, 23, 25 retain May maximum/dispute/refund statements that the November raw qualifies or replaces (old raw lines 105-154; new raw lines 54-67, 85-142), with corresponding concept/index routes requiring reciprocal changes.",
+        "Older BNPL overview setup_future_usage support at raw/stripe-bnpl-overview-2025.md line 63 and concept lines 19, 41 conflict with the newer Billie-specific unsupported mark at new raw lines 163-168; preserve this as a dated source disagreement.",
+        "Older cross-BNPL overview Billie Invoicing unsupported mark at raw/stripe-bnpl-overview-2025.md line 45 conflicts with November Billie-specific supported mark and send_invoice footnote (new raw lines 154-170). Preserve the older overview as dated and warn reciprocally in source-stripe-billie.md and the BNPL overview route; May Billie raw lines 70-79 merely omit Invoicing."
+      ],
+      "reason": "November documents materially different refund and dispute windows and adds availability/API limits that the mapped source and concept/index routes do not yet reflect; the older cross-BNPL setup_future_usage and Invoicing product-support marks require reciprocal dated warnings, with the send_invoice footnote and integration route qualified."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/billie, the complete November overview describes a B2B, single-use Pay-in-30 invoice method in 11 European countries: the buyer redirects to Billie to authorize, Stripe immediately reports success or failure, and merchant payout follows the standard schedule (new raw lines 5-23, 46-67, 200-220). It documents country/currency and MCC eligibility, manual/partial capture, no recurring or SetupIntents/off-session support, and active billie_payments capability on platform and enabled connected accounts (new raw lines 18-83, 144-184). The May overview had the same basic Pay-in-30/redirect and Connect roles but 180-day refund and 12-day evidence windows (old raw lines 4-79, 123-176). source-stripe-billie.md currently repeats those old windows and 'no stated maximum', while November gives 365-day refund, 35-day evidence, and varying maximum amounts (source lines 17-31; new raw lines 54-67, 85-142). Authorization return or a transaction ID path does not prove payment completion for a specific customer.",
+    "Q2": "For https://docs.stripe.com/payments/billie, the November capture adds substantive refund and dispute timing changes: 365 versus May 180 days for refund submission and 35 versus May 12 days for merchant evidence (new raw lines 85-142; old raw lines 123-154). Its new tables make B2B/domestic, MCC, amount/currency and product/API scope explicit; formatting alone does not prove runtime eligibility or that every support mark changed (new raw lines 18-83, 144-176; old raw lines 54-79, 105-121). source-stripe-billie.md needs dated dual-raw provenance and corrections to refund, dispute and maximum claims, with reciprocal updates at wiki/concepts/stripe-bnpl.md lines 95, 99, 101, 260 and wiki/stripe-index.md line 330. The older BNPL overview says Billie setup_future_usage supported, whereas November Billie-specific matrix says unsupported; preserve the dated conflict at concept lines 19 and 41 rather than asserting universal support or deprecation (raw/stripe-bnpl-overview-2025.md line 63; new raw lines 163-168). A separate dated product-support conflict is the 2025 cross-BNPL overview's Billie Invoicing unsupported mark versus November Billie-specific Invoicing supported mark and send_invoice-only footnote (raw/stripe-bnpl-overview-2025.md lines 40-45; new raw lines 154-170). May Billie raw lines 70-79 only list fewer products, so its silence is not an unsupported mark. Warn reciprocally on the BNPL overview and Billie source routes; the footnote's exact table attachment and route-specific integration need confirmation. Distinguish Checkout/PaymentIntent payments from Billing/Invoicing send_invoice, subscription-mode Checkout, SetupIntents, off-session automatic recurring, redirect authorization, final payment status, payout and refund completion."
+  }
+}

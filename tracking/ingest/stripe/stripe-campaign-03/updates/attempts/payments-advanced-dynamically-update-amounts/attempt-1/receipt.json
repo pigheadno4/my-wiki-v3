@@ -1,0 +1,146 @@
+{
+  "job_id": "payments-advanced-dynamically-update-amounts",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-checkout-dynamic-amounts.md": {
+      "job_id": "payments-advanced-dynamically-update-amounts",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Dynamically Update Payment Amounts\"\ntype: source\ndate_ingested: 2026-04-21\ndate_updated: 2026-11-15\ncanonical_url: https://docs.stripe.com/payments/advanced/dynamically-update-amounts\noriginal_format: webpage\nraw_files:\n  - \"stripe-checkout-dynamic-amounts-2025.md\"\ntags: [stripe, checkout-sessions, payment-intents, dynamic-amounts, runServerUpdate, line-items, price-data]\n---\n\n## Summary\n\nThe April 21, 2026 full guide describes two dated paths for changing totals while a customer changes selections: Checkout Sessions with client `runServerUpdate` and server `line_items`/`price_data`, and PaymentIntents with server `paymentIntents.update({ amount })` followed by client refresh. Both require trusted server recalculation and authorization. The November 7 capture at this canonical URL is only a variant index linking Checkout Sessions embedded components and Payment Intents Elements; it contains no refreshed implementation or state rules.\n\n## Security and state boundaries (April 21 guide)\n\n- For both API paths, recalculate amounts **server-side** from trusted catalog and business rules; do not trust client prices or totals. Authorize the requested change, including quantity limits.\n- For Checkout Sessions, update only an active Session that has not completed or expired. The dated sample retrieves the Session and checks `status === 'complete'` and `expires_at` before updating. These are Checkout Session fields and checks, not a PaymentIntent status/expiry rule.\n- For a PaymentIntent, the guide gives awaiting-payment examples `requires_payment_method` and `requires_confirmation`. It says that after confirmation the amount **generally** cannot be increased; this dated qualification does not identify exceptions. Do not project a Session's `complete` or `expires_at` fields onto an Intent.\n\n## Checkout Sessions path (April 21 full variant)\n\nUses `runServerUpdate` + `line_items` with `price_data`:\n\n```js\n// Client wraps server call\nconst response = await actions.runServerUpdate(() =>\n  fetch('/update-custom-amount', {\n    method: 'POST',\n    body: JSON.stringify({ checkout_session_id: session.id, product_id: 'gift_wrap' })\n  })\n);\n\n// Dated server example submits one illustrative ad-hoc line item\nawait stripe.checkout.sessions.update(checkout_session_id, {\n  line_items: [{\n    price_data: {\n      currency: 'usd',\n      product_data: { name: 'Gift Wrap' },\n      unit_amount: 500,\n    },\n    quantity: 1,\n  }],\n});\n// Returns updated.amount_total \u2014 taxes recalculated automatically\n```\n\nIn the April example, `price_data` supplies an ad-hoc charge without a pre-created Price. Updating `line_items` or `price_data` recalculates the Session total and taxes. The snippet submits one illustrative item and does not prove preservation of other cart items; the merchant must validate the complete cart and amount on the server. A successful Session update refreshes checkout state but is not payment confirmation.\n\n## Payment Intents path (April 21 full variant)\n\nThe server receives a selection change, recomputes the total from trusted data, updates the PaymentIntent amount while it is in an updatable state, then returns the Intent or client secret. The client refreshes its displayed total and confirms only when the customer is ready. The raw guide's `computeOrderAmount` is a TODO placeholder, not a finished pricing implementation.\n\nDated server sketch:\n\n```js\n// Server\nconst pi = await stripe.paymentIntents.update(payment_intent_id, { amount });\nreturn res.json({ id: pi.id, amount: pi.amount, client_secret: pi.client_secret });\n\n// Client: refresh UI, then confirm when ready\n// Developer is responsible for keeping client and server in sync\n```\n\nNo `runServerUpdate` here \u2014 developer owns the full update + confirm cycle.\n\n## Timing constraints (April 21 guide)\n\n| Object or phase | Dated rule |\n| --- | --- |\n| PaymentIntent awaiting payment | `requires_payment_method` and `requires_confirmation` are examples of states in which an amount may be updated. |\n| After confirmation | The guide says the amount **generally** cannot be increased; it does not specify exceptions. |\n| Checkout Session | Update only while active, before completion or expiry; the example checks Session `status` and `expires_at`. |\n\nThe November variant index does not verify these rules for the linked bodies.\n\n## Use Cases\n\n- Add/remove add-ons (gift wrap, warranty)\n- Change shipping method or delivery speed\n- Add additional services or charges\n- Apply/remove discount codes or store credit\n\n## Related Pages\n\n- [[stripe]] \u2014 Stripe company route.\n- [[source-stripe-checkout-dynamic-line-items]] \u2014 companion feature (line item updates via runServerUpdate)\n- [[source-stripe-checkout-dynamic-discounts]] \u2014 companion feature (discount updates)\n- [[stripe-checkout]] \u2014 Checkout concept page\n- [[stripe-payment-intents]] \u2014 Payment Intents concept page\n\n## Raw Sources\n\n- [[raw/stripe-checkout-dynamic-amounts-2025|2026-04-21 full dynamic amounts guide]] \u2014 dated Checkout Sessions embedded-components and Payment Intents Elements variants; server/client examples and timing qualifications\n\n## Related raw API references\n\n- [[raw/stripe-payments-advanced-dynamically-update-amounts-2026-11-07|2026-11-07 dynamic-amounts variant index]] \u2014 navigation-only capture linking Checkout Sessions API (`payment-ui=embedded-components`) and Payment Intents API (`payment-ui=elements`); no linked variant behavior inferred.\n",
+      "quotes": [
+        {
+          "text": "Learn how to modify total amounts when customers change their selections during checkout.",
+          "location": "raw/stripe-payments-advanced-dynamically-update-amounts-2026-11-07.md:7-7"
+        },
+        {
+          "text": "## Index",
+          "location": "raw/stripe-payments-advanced-dynamically-update-amounts-2026-11-07.md:9-9"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-advanced-dynamically-update-amounts-2026-11-07.md:11-11"
+        },
+        {
+          "text": "[Checkout Sessions API](https://docs.stripe.com/payments/advanced/dynamically-update-amounts.md?payment-ui=embedded-components)",
+          "location": "raw/stripe-payments-advanced-dynamically-update-amounts-2026-11-07.md:13-13"
+        },
+        {
+          "text": "[Payment Intents API](https://docs.stripe.com/payments/advanced/dynamically-update-amounts.md?payment-ui=elements)",
+          "location": "raw/stripe-payments-advanced-dynamically-update-amounts-2026-11-07.md:14-14"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "payments-advanced-dynamically-update-amounts-pi-route",
+            "target_path": "wiki/concepts/stripe-payment-intents.md",
+            "update_kind": "durable_fact",
+            "anchor": "- [[source-stripe-checkout-dynamic-amounts]] \u2014 Dynamic amounts (PI path): paymentIntents.update({ amount }), server-side calculation, cannot increase after confirmation, developer owns client-server sync",
+            "proposed_markdown": "- [[source-stripe-checkout-dynamic-amounts]] \u2014 April 21, 2026 full guide: PaymentIntents amount updates require trusted server calculation and client refresh; its wording says post-confirmation increases **generally** are not possible, without specifying exceptions. It separately documents Checkout Sessions `runServerUpdate`/server line-item changes and Session completion/expiry checks, which must not be applied as PaymentIntent fields. The November 7 capture is only a Checkout Sessions/Payment Intents variant index and does not verify current implementation or lifecycle behavior.",
+            "quote_indexes": [
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Old raw lines 17-26 give the server pricing and qualified post-confirmation statement. Old raw lines 142-149 are Checkout Session status/expiry checks; old raw lines 180-247 show the separate PaymentIntent server/client flow. New raw lines 9-14 provide navigation only."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-advanced-dynamically-update-amounts-2026-11-07.md",
+      "raw_sha256": "8d19529a9cac4f4782a16843768d90ec81fce12448a773da9319822994539208",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-advanced-dynamically-update-amounts-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-checkout-dynamic-amounts-2025.md": [
+      {
+        "start": 1,
+        "end": 125
+      },
+      {
+        "start": 126,
+        "end": 247
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-dynamic-amounts.md": [
+      {
+        "start": 1,
+        "end": 91
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/da7ac57e4f74a02ba1a6aeb2/content.diff": [
+      {
+        "start": 1,
+        "end": 125
+      },
+      {
+        "start": 126,
+        "end": 249
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-advanced-dynamically-update-amounts/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 105
+      },
+      {
+        "start": 106,
+        "end": 184
+      }
+    ],
+    "wiki/concepts/stripe-payment-intents.md": [
+      {
+        "start": 1,
+        "end": 151
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 22
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 9,
+        "end": 9
+      },
+      {
+        "start": 86,
+        "end": 86
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "Recalculate amounts on your server. Don\u2019t trust client-provided prices or totals.",
+      "location": "raw/stripe-checkout-dynamic-amounts-2025.md:19-19"
+    },
+    {
+      "text": "Only update Sessions that are active and not completed or expired.",
+      "location": "raw/stripe-checkout-dynamic-amounts-2025.md:21-21"
+    },
+    {
+      "text": "After confirmation, you generally can\u2019t increase the amount.",
+      "location": "raw/stripe-checkout-dynamic-amounts-2025.md:26-26"
+    },
+    {
+      "text": "Updating the `line_items` or `price_data` recalculates the Session total and taxes.",
+      "location": "raw/stripe-checkout-dynamic-amounts-2025.md:117-117"
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/advanced/dynamically-update-amounts, raw/stripe-payments-advanced-dynamically-update-amounts-2026-11-07.md (new raw lines 5-14) establishes only the purpose of changing checkout totals and two variant destinations, Checkout Sessions with embedded components and Payment Intents with Elements. It supplies no current implementation prerequisite, state check, or result. The complete April raw/stripe-checkout-dynamic-amounts-2025.md (old raw lines 17-26, 28-178, 180-247) describes server-owned price recomputation and authorization, a Checkout Session server update wrapped in client runServerUpdate, and a separate PaymentIntent amount update followed by client refresh and confirmation. Checkout Session status/expiry checks belong to Sessions; PaymentIntent awaiting-payment examples include requires_payment_method and requires_confirmation. source-stripe-checkout-dynamic-amounts.md previously conflated those object states and omitted the older guide's generally qualifier after confirmation. The candidate separates them and keeps both full variants dated.",
+    "Q2": "For https://docs.stripe.com/payments/advanced/dynamically-update-amounts, raw/stripe-payments-advanced-dynamically-update-amounts-2026-11-07.md (new raw lines 9-14) is a navigation-only index; no substantive payment behavior change or removal follows from the missing variant bodies. raw/stripe-checkout-dynamic-amounts-2025.md (old raw lines 17-26, 28-178, 180-247) remains dated authority for trusted server pricing, Checkout Sessions line_items/price_data updates and total/tax recalculation, optional client beta flags, and the PaymentIntent server amount/client-sync path. source-stripe-checkout-dynamic-amounts.md now assigns complete/expired and expires_at checks only to Checkout Sessions and preserves the qualified April statement that post-confirmation increases generally are unavailable, with no invented exception. The Payment Intents concept route receives the same warning. The single-entry line_items sample does not establish existing-cart preservation, and computeOrderAmount is an unfinished placeholder. A server update or UI refresh is not payment confirmation, while the November linked variants' current contracts remain unverified."
+  }
+}

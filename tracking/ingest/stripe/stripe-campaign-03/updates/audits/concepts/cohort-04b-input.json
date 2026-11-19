@@ -1,0 +1,882 @@
+{
+  "audit_id": "concept-audit-04b",
+  "targets": [
+    {
+      "target": "wiki/concepts/eftpos-australia.md",
+      "before_sha256": "7c0bde00b0fba15dd1973f06c7ca524a01f1edf1f61c6bceed465278f5e6659a",
+      "candidate": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/eftpos-australia.md",
+      "candidate_sha256": "956a118ed4849c610e15bed54cf92911f95ea5700f18ab06723c43652b1329fe",
+      "diff": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/eftpos-australia.md.diff",
+      "updates": [
+        {
+          "update_id": "payments-cards-eftpos-wallet-qualification",
+          "target_path": "wiki/concepts/eftpos-australia.md",
+          "update_kind": "durable_fact",
+          "anchor": "- Detect network: `charge.payment_method_details.card.network` \u2192 `\"eftpos_au\"`",
+          "proposed_markdown": "- Detect the processed network on a successful PaymentIntent's Charge: `charge.payment_method_details.card.network` \u2192 `\"eftpos_au\"`.\n- The 2026-11-07 Stripe cards table adds eftpos **Apple Pay** wallet support in AUD without manual capture, after the 2026-05-01 table marked eftpos wallets unsupported. This scoped wallet capability is not all-wallet or manual-capture support; see [[source-stripe-cards]] and [[source-stripe-eftpos-australia]].",
+          "quote_indexes": [
+            1,
+            2
+          ],
+          "warnings": [
+            "Old cards raw line 52 says eftpos wallets were not supported; new cards raw lines 53 and 59 add only Apple Pay in AUD without manual capture. The eftpos-specific raw defines additional token and UI conditions; do not infer those solely from this cards table."
+          ],
+          "job_id": "payments-cards",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-cards/attempt-3/receipt.json"
+        },
+        {
+          "update_id": "payments-eftpos-australia-routing-wallet-boundary",
+          "target_path": "wiki/concepts/eftpos-australia.md",
+          "update_kind": "durable_fact",
+          "anchor": "- **No manual capture**: hold/delayed capture always routes to Visa/MC (international scheme)\n- **Default routing**: eftpos is the default for non-hold payments; Stripe may route to Visa/MC for technical/authorization rate reasons",
+          "proposed_markdown": "- **General co-branded card routing**: eftpos does not support manual capture. A payment requiring a hold between authorization and capture routes to Visa or Mastercard; other payments generally default to eftpos, subject to transaction type, technical availability and authorization-rate considerations.\n- **Apple Pay eftpos exception (2026-11-07)**: When a customer chooses eftpos on a co-branded card in Apple Pay, the eftpos token cannot fall back to Visa or Mastercard; an eftpos Apple Pay payment with manual capture always fails. Use automatic or automatic_async capture for this path. If manual capture is needed for other cards, configure the Payment Element before render to hide eftpos Apple Pay; setting card manual capture afterward can leave an option that fails at confirmation. This does not change the general co-branded hold-routing rule.",
+          "quote_indexes": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "warnings": [
+            "Old raw lines 108-117 and new raw lines 109-118 establish general co-branded routing. New raw lines 171-179 add the distinct no-fallback Apple Pay token and pre-render Payment Element condition."
+          ],
+          "job_id": "payments-eftpos-australia",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-eftpos-australia/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "payments-eftpos-australia-integration-apple-pay",
+          "target_path": "wiki/concepts/eftpos-australia.md",
+          "update_kind": "durable_fact",
+          "anchor": "No additional code changes needed if already accepting card payments. Contact Stripe support to opt out of eftpos as the default network.",
+          "proposed_markdown": "For the general card acceptance route, the guide says an integration already accepting cards can accept eftpos without additional updates; contact Stripe support if eftpos must never be the default network. The separate Apple Pay eftpos route requires an Australian Stripe account, AUD, an allowed business category and Apple Pay enabled in payment-method settings. For an existing iOS Apple Pay integration, its Swift example enables `.eftpos` only for AUD. A successful PaymentIntent's Charge identifies an Apple Pay eftpos result through `card.network: 'eftpos_au'` and `card.wallet.type: 'apple_pay'`; the customer selection or SDK setting alone is not a payment outcome.",
+          "quote_indexes": [
+            2,
+            3
+          ],
+          "warnings": [
+            "New raw lines 91-95 establish the general card path; new raw lines 136-169 establish Apple Pay scope, prerequisites, Charge observation and iOS-only configuration. The old raw ends at line 138 without an Apple Pay section; that does not prove earlier unavailability."
+          ],
+          "job_id": "payments-eftpos-australia",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-eftpos-australia/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "payments-eftpos-australia-source-route",
+          "target_path": "wiki/concepts/eftpos-australia.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-eftpos-australia]] \u2014 primary source: properties, routing logic, MCCs, disclosure requirements",
+          "proposed_markdown": "- [[source-stripe-eftpos-australia]] \u2014 2026-05 and 2026-11 Stripe guides: general eftpos routing and disclosure, plus the later Apple Pay no-fallback and capture conditions",
+          "quote_indexes": [
+            2,
+            3,
+            4
+          ],
+          "warnings": [],
+          "job_id": "payments-eftpos-australia",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-eftpos-australia/attempt-1/receipt.json"
+        }
+      ],
+      "contributions": [
+        {
+          "job_id": "payments-cards",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-cards/attempt-3/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-cards/attempt-3/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-cards/attempt-3/input.json"
+        },
+        {
+          "job_id": "payments-eftpos-australia",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-eftpos-australia/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-eftpos-australia/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-eftpos-australia/attempt-1/input.json"
+        }
+      ]
+    },
+    {
+      "target": "wiki/concepts/stripe-bancontact.md",
+      "before_sha256": "dba4bec0955a1767aa5d9d57abb9556df7d890ad8a39d16bff967f4fdca059e7",
+      "candidate": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-bancontact.md",
+      "candidate_sha256": "2c90e5384fcea3b5ab5c4b01f720297adc7296e8a843a8c7a0501cb84a03c8ab",
+      "diff": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-bancontact.md.diff",
+      "updates": [
+        {
+          "update_id": "payments-bancontact-refund-and-invoicing",
+          "target_path": "wiki/concepts/stripe-bancontact.md",
+          "update_kind": "durable_fact",
+          "anchor": "- **Refunds**: Up to 180 days\n- **Invoicing**: Invite-only. Express Checkout Element: unsupported.",
+          "proposed_markdown": "- **Refunds**: The 2026-11-07 overview allows full or partial refund submission within 730 days/two years; the 2026-05-03 overview said 180 days. Submission is not completion: check the Refund status or final events. See [[source-stripe-bancontact]].\n- **Invoicing**: The May overview called it invite-only; the November matrix lists Invoicing with `send_invoice` collection only and does not resolve account-specific eligibility. Express Checkout Element is unsupported.",
+          "quote_indexes": [
+            2,
+            3
+          ],
+          "warnings": [
+            "Old raw lines 101-111,166-168 and new raw lines 57-82,90-116; preserve the dated invite gate and distinguish submission from succeeded refund status."
+          ],
+          "job_id": "payments-bancontact",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bancontact/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "payments-bancontact-recurring-boundary",
+          "target_path": "wiki/concepts/stripe-bancontact.md",
+          "update_kind": "durable_fact",
+          "anchor": "- **Recurring**: Not native \u2014 requires saving as [[stripe-sepa-debit]] mandate. Bancontact payment can be converted to a SEPA Direct Debit for future recurring charges.",
+          "proposed_markdown": "- **Recurring**: Native Bancontact recurring is unsupported in the November overview. Separate May [[source-stripe-bancontact-set-up-payment|setup]] and [[source-stripe-bancontact-save-during-payment|save-during-payment]] guides document Bancontact-to-[[stripe-sepa-debit]] generation for future charges, while the November overview marks Bancontact SetupIntents and PaymentIntents with `setup_future_usage` unsupported. The captures do not resolve current support for those older setup paths; see [[source-stripe-bancontact]].",
+          "quote_indexes": [
+            0,
+            3
+          ],
+          "warnings": [
+            "Old overview raw lines 32-34; additional May setup guide raw lines 16-28,50-85 and save guide raw lines 12-16,49-64; new raw lines 41-42,109-114."
+          ],
+          "job_id": "payments-bancontact",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bancontact/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "payments-bancontact-primary-source-route",
+          "target_path": "wiki/concepts/stripe-bancontact.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-bancontact]] \u2014 primary source: properties, payment flows, disputes, refunds",
+          "proposed_markdown": "- [[source-stripe-bancontact]] \u2014 Bancontact overviews (2026-05-03 and 2026-11-07): single-use Belgian EUR redirect, eligibility, payment/refund boundaries, product support and dated setup conflict",
+          "quote_indexes": [
+            0,
+            2
+          ],
+          "warnings": [],
+          "job_id": "payments-bancontact",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bancontact/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "payments-bancontact-accept-a-payment-a1-concept-1",
+          "target_path": "wiki/concepts/stripe-bancontact.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-bancontact-accept-payment]] \u2014 integration guide: Checkout + Direct API + iOS + Android + React Native, preferred_language, bank details on charge",
+          "proposed_markdown": "- [[source-stripe-bancontact-accept-payment]] \u2014 2026-05-03 Bancontact acceptance guide for Checkout, Direct API, iOS, Android, and React Native, including preferred language and a Charge details example; web uses `confirmBancontactPayment`, React Native uses `confirmPayment`, and a redirect return requires PaymentIntent status verification. The 2026-11-07 canonical capture is a variant index only.",
+          "quote_indexes": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "warnings": [
+            "Source line 40 incorrectly identifies React Native as confirmBancontactPayment. The dated old raw identifies web Stripe.js at raw/stripe-bancontact-accept-payment-2025.md:361-388 and React Native confirmPayment at :1300-1321; the November raw lines 9-18 contain navigation only.",
+            "The old web guide requires a PaymentIntent status check on the return page at raw/stripe-bancontact-accept-payment-2025.md:535-558 and recommends asynchronous events at :619-623; return alone is not verified payment success."
+          ],
+          "job_id": "payments-bancontact-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bancontact-accept-a-payment/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "bancontact-bank-redirects-setup-conflict",
+          "target_path": "wiki/concepts/stripe-bancontact.md",
+          "update_kind": "durable_fact",
+          "anchor": "- **Recurring**: Not native \u2014 requires saving as [[stripe-sepa-debit]] mandate. Bancontact payment can be converted to a SEPA Direct Debit for future recurring charges.",
+          "proposed_markdown": "- **Recurring and setup boundary**: Native Bancontact is single-use; future recurring use can involve a generated [[stripe-sepa-debit]] payment method. The May 3 bank-redirects API matrix marked Bancontact SetupIntents and future usage supported. Its November 7 matrix marks SetupIntents unsupported but future usage supported through a generated SEPA Direct Debit footnote, while the same-date Bancontact method overview marks both SetupIntents and PaymentIntents with setup_future_usage unsupported. Preserve the unresolved route-specific conflict; none of these cells proves a particular account can complete a mandate.",
+          "quote_indexes": [
+            3
+          ],
+          "warnings": [
+            "Old bank-redirect raw line 42, new raw lines 42 and 50, and same-date Bancontact method raw lines 109-116. Do not silently choose between overview and method-page API support cells."
+          ],
+          "job_id": "payments-bank-redirects",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-redirects/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "bancontact-bank-redirects-source-route",
+          "target_path": "wiki/concepts/stripe-bancontact.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-bancontact]] \u2014 primary source: properties, payment flows, disputes, refunds",
+          "proposed_markdown": "- [[source-stripe-bancontact]] \u2014 Bancontact method overview, including November 7, 2026 API support cells\n- [[source-stripe-bank-redirects]] \u2014 May 3 and November 7, 2026 matrices; Bancontact SetupIntent and generated-SEPA future-use conflict with same-date method page",
+          "quote_indexes": [
+            3
+          ],
+          "warnings": [],
+          "job_id": "payments-bank-redirects",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-redirects/attempt-1/receipt.json"
+        }
+      ],
+      "contributions": [
+        {
+          "job_id": "payments-bancontact",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bancontact/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bancontact/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bancontact/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-bancontact-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bancontact-accept-a-payment/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bancontact-accept-a-payment/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bancontact-accept-a-payment/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-bank-redirects",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-redirects/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-redirects/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-redirects/attempt-1/input.json"
+        }
+      ]
+    },
+    {
+      "target": "wiki/concepts/stripe-blik.md",
+      "before_sha256": "5fa8212ebb304ff6fe01f12f67be0f839eed0546f8bd247b1b281a614142b7bd",
+      "candidate": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-blik.md",
+      "candidate_sha256": "6957ba65b5c96547e3ce9a51e07e73b31b994245dc3d8b9271fb789355926d0a",
+      "diff": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-blik.md.diff",
+      "updates": [
+        {
+          "update_id": "blik-bank-redirects-reciprocal-conflict",
+          "target_path": "wiki/concepts/stripe-blik.md",
+          "update_kind": "durable_fact",
+          "anchor": "- **Recurring**: Private preview\n- **Deferred intent**: Client-side confirmation only (private preview)\n- **ECE + Mobile Payment Element**: Not supported",
+          "proposed_markdown": "- **Recurring and setup**: The May 3 BLIK overview called recurring private preview; the May bank-redirects matrix marked SetupIntents, future usage, subscriptions and Checkout setup mode unsupported even though the separate May BLIK setup guide documented Checkout setup mode and SetupIntents. The November matrix and BLIK method overview mark reusable recurring, SetupIntents and future usage supported, conditional on bank-app mandate authorization and relevant Connect capabilities. Neither setup nor a matrix cell proves a later successful charge.\n- **Deferred intent**: May BLIK overview described client-side confirmation only in private preview. November bank-redirects API footnote continues to exclude BLIK deferred-intent creation; Payment Element collection-before-PI and Elements with Checkout Sessions are separate excluded paths.\n- **ECE and mobile**: Express Checkout Element unsupported. November bank-redirects matrix marks Mobile Payment Element supported, whereas same-date BLIK overview marks in-app payments unsupported; the labels may differ and require route-specific resolution.",
+          "quote_indexes": [
+            1,
+            2,
+            4
+          ],
+          "warnings": [
+            "Old bank-redirect raw lines 27, 43; BLIK May setup raw lines 20-37 and 144-157; new bank-redirect raw lines 28, 34, 43, 50; new BLIK overview raw lines 124-181. Preserve older preview as dated rather than inferring a universal launch or bank eligibility."
+          ],
+          "job_id": "payments-bank-redirects",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-redirects/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "blik-bank-redirects-source-route",
+          "target_path": "wiki/concepts/stripe-blik.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-blik]] \u2014 primary source: payment flow, disputes, refunds, Connect",
+          "proposed_markdown": "- [[source-stripe-blik]] \u2014 BLIK method overview, dated customer flow and recurring/Connect conditions\n- [[source-stripe-bank-redirects]] \u2014 May 3 and November 7, 2026 matrix changes and conflicting BLIK setup/mobile rows; read with method-specific guides",
+          "quote_indexes": [
+            1,
+            2
+          ],
+          "warnings": [],
+          "job_id": "payments-bank-redirects",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-redirects/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "blik-concept-business-list",
+          "target_path": "wiki/concepts/stripe-blik.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Currency**: PLN only. **Customers**: Poland only. **Business**: 37 countries.",
+          "proposed_markdown": "**Currency**: PLN only. **Customers**: Poland only. **Business locations**: 35 listed in the November 7, 2026 BLIK overview; the May 3, 2026 capture listed 36, including IS. The prior 37 count was a summary error. A captured list is not an individual account eligibility determination; Stripe may review BLIK eligibility after activation.",
+          "quote_indexes": [
+            0
+          ],
+          "warnings": [
+            "Count directly from new raw lines 19-30 and old raw lines 58-97; old raw line 2 says fetched 2026-05-03. New raw line 22 qualifies account review."
+          ],
+          "job_id": "payments-blik",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "blik-concept-recurring-boundary",
+          "target_path": "wiki/concepts/stripe-blik.md",
+          "update_kind": "durable_fact",
+          "anchor": "- **Confirmation**: Customer-initiated, immediate notification\n- **Recurring**: Private preview\n- **Deferred intent**: Client-side confirmation only (private preview)\n- **ECE + Mobile Payment Element**: Not supported\n- **Refunds**: Full and partial; immediate or within hours depending on bank",
+          "proposed_markdown": "- **Confirmation**: Customer approves in the bank app within 60 seconds; the November overview calls confirmation immediate but says Stripe normally receives an asynchronous result within 60 seconds. This does not prove payment success or settlement.\n- **Recurring**: The May 3, 2026 BLIK capture said private preview and single use. The November 7 overview marks BLIK reusable and recurring supported: an initial bank-app-authorized mandate attaches to a reusable PaymentMethod. Save during payment with PI `setup_future_usage=off_session` or without an initial payment with SetupIntent `usage=off_session`; a future charge needs valid authorization. The off-session recurring cap is 2,000 PLN per charge.\n- **Deferred intent**: The May 3 BLIK page described client-side confirmation only in private preview. The November BLIK overview excludes collecting details before PI creation in Payment Element, and its same-day bank-redirects guide excludes BLIK's deferred-intent creation path. Keep these route-specific.\n- **UI support**: Express Checkout Element unsupported. The November BLIK overview says \"in-app payments\" unsupported, while the same-day bank-redirects table says Mobile Payment Element supported; do not equate the labels without an integration-specific guide. That matrix explicitly excludes BLIK when using Elements with the Checkout Sessions API, despite its separate broad Checkout and Payment Element support cells.\n- **Refunds**: Full and partial; submit within 730 days; asynchronous, noncancelable, up to 120 minutes. Check final Refund status or verified webhook. The May 3 page used shorter bank-dependent timing wording.",
+          "quote_indexes": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "warnings": [
+            "New BLIK raw lines 9-14, 44-84, 124-175, 183-195; old BLIK raw lines 8-52, 158-160. Same-day bank-redirect raw lines 28, 34, 43, 50 supply the table and deferred-intent contrast; neither matrix establishes account-specific availability."
+          ],
+          "job_id": "payments-blik",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "blik-concept-sdk-qualification",
+          "target_path": "wiki/concepts/stripe-blik.md",
+          "update_kind": "durable_fact",
+          "anchor": "Existing private-preview constraints remain. See [[source-github-stripe-js]].",
+          "proposed_markdown": "The private-preview label belongs to the May 3, 2026 BLIK capture; the November 7, 2026 overview describes supported recurring with a mandate and separate capability requirements. SDK typing remains version-specific and does not prove account or bank enablement, setup authorization, or a successful future charge. See [[source-github-stripe-js]] and [[source-stripe-blik]].",
+          "quote_indexes": [
+            0,
+            3,
+            4
+          ],
+          "warnings": [
+            "New raw lines 124-148 and 177-181 establish the overview's mandate/capability conditions; old raw lines 8, 30-32 are historical. Preserve the rest of the existing SDK 10.0.0 typing paragraph unchanged."
+          ],
+          "job_id": "payments-blik",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "blik-concept-integration-mode",
+          "target_path": "wiki/concepts/stripe-blik.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Checkout**: `payment_method_types: ['blik']`, `pln`, payment mode only. Refund/dispute window: 13 months.",
+          "proposed_markdown": "**Checkout**: `payment_method_types: ['blik']` with PLN is the existing payment path. The May 3, 2026 bank-redirects matrix marked BLIK Checkout setup/subscription modes unsupported, while the November 7 overview and same-day bank-redirects table mark broader recurring, Billing, Invoicing and subscription support. Those broad tables do not alone establish a specific Checkout mode or invoice collection method. The November BLIK page separately gives 730 days for refund submission, 12 calendar days for merchant dispute evidence, and a generally 13-month customer notification maximum for unauthorized transactions subject to statutory exceptions.",
+          "quote_indexes": [
+            1,
+            2,
+            3
+          ],
+          "warnings": [
+            "Do not collapse distinct refund, merchant evidence and customer notification clocks. New BLIK raw lines 72, 104, 122, 150-175; old bank-redirect raw lines 27, 34; new bank-redirect raw lines 28, 34."
+          ],
+          "job_id": "payments-blik",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "blik-concept-source-route",
+          "target_path": "wiki/concepts/stripe-blik.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-blik]] \u2014 primary source: payment flow, disputes, refunds, Connect",
+          "proposed_markdown": "- [[source-stripe-blik]] \u2014 May 3 and November 7, 2026 BLIK overview captures: code payment, reusable mandate setup, refunds, disputes, Connect prerequisites and dated support conflicts",
+          "quote_indexes": [
+            0,
+            2,
+            3,
+            4
+          ],
+          "warnings": [],
+          "job_id": "payments-blik",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "blik-accept-direct-outcome",
+          "target_path": "wiki/concepts/stripe-blik.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Direct API**: `stripe.confirmBlikPayment()` \u2014 **synchronous** (no redirect). Code passed in `payment_method_options.blik.code`. After confirm: `requires_action` + `blik_authorize` next_action \u2192 customer has 60s in banking app.",
+          "proposed_markdown": "**Direct API (May 3, 2026 guide)**: The client awaits `stripe.confirmBlikPayment()` with the code in `payment_method_options.blik.code`; Stripe.js polling can be disabled with `handleActions: false`. A valid confirmation can leave the PaymentIntent at `requires_action` with `blik_authorize` while the customer has 60 seconds to approve in the banking app. Treat `succeeded`/`payment_intent.succeeded`, not the confirmation return, as payment success.",
+          "quote_indexes": [
+            0,
+            1,
+            3
+          ],
+          "warnings": [
+            "Old raw/stripe-blik-accept-payment-2025.md:449-478,522-566,673-685 is the dated factual authority; new raw lines 7-17 contain navigation only.",
+            "Old raw lines 573-574 and 641-642 generic React comments mention browser redirect, conflicting with code-and-bank-app prose. Avoid an unconditional browser-navigation assertion."
+          ],
+          "job_id": "payments-blik-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik-accept-a-payment/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "blik-accept-flow-boundary",
+          "target_path": "wiki/concepts/stripe-blik.md",
+          "update_kind": "durable_fact",
+          "anchor": "6. Immediate payment confirmation\n\n**No redirect** \u2014 BLIK is unique among bank redirects in that it doesn't require leaving the checkout page.",
+          "proposed_markdown": "6. After bank-app approval, verify the PaymentIntent reaches `succeeded` before treating the payment as complete.\n\n**Browser flow (May 3, 2026 guide)** \u2014 The method prose describes code entry on the payment form and approval in the banking app. Generic Direct API React sample comments mention leaving the page, so this capture does not establish one universal browser-navigation outcome.",
+          "quote_indexes": [
+            0,
+            1,
+            3
+          ],
+          "warnings": [
+            "Old raw/stripe-blik-accept-payment-2025.md:18-20,673-685,910-914,1139-1143 supports the authorization and outcome distinction; old raw lines 573-574,641-642 conflict on browser redirect. New raw 7-17 is navigation only."
+          ],
+          "job_id": "payments-blik-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik-accept-a-payment/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "blik-accept-source-route",
+          "target_path": "wiki/concepts/stripe-blik.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-blik-accept-payment]] \u2014 integration guide: Checkout + Direct API + iOS + Android, synchronous confirmBlikPayment, 10 failure patterns",
+          "proposed_markdown": "- [[source-stripe-blik-accept-payment]] \u2014 May 3, 2026 Checkout, Direct API, iOS and Android guide with code/authorization timing, PaymentIntent outcome boundaries and sandbox failures; November 7 variant-index navigation is separate.",
+          "quote_indexes": [
+            0,
+            1,
+            2,
+            4
+          ],
+          "warnings": [
+            "New raw/stripe-payments-blik-accept-a-payment-2026-11-07.md:7-17 names variants but contains no implementation body. May 3 detail remains in old raw/stripe-blik-accept-payment-2025.md:8-1190."
+          ],
+          "job_id": "payments-blik-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik-accept-a-payment/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "blik-accept-checkout-elements-conflict",
+          "target_path": "wiki/concepts/stripe-blik.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Checkout**: `payment_method_types: ['blik']`, `pln`, payment mode only. Refund/dispute window: 13 months.",
+          "proposed_markdown": "**Checkout (May 3, 2026 guides)**: The accept-payment guide illustrates `payment_method_types: ['blik']`, PLN payment mode and a Checkout Session `ui_mode: 'elements'` example, plus a 13-month refund/dispute window. A separate same-date bank-redirects support table marks BLIK unsupported when using Elements with the Checkout Sessions API. Treat Elements Checkout support as unresolved by these captures; the November variant index provides no resolution.",
+          "quote_indexes": [
+            0,
+            1,
+            2
+          ],
+          "warnings": [
+            "Old raw/stripe-blik-accept-payment-2025.md:22-38,106-130,151-157 supplies the dated example and windows; separately fully read raw/stripe-bank-redirects-2025.md:24-34 has the contrary BLIK footnote 4.",
+            "New raw/stripe-payments-blik-accept-a-payment-2026-11-07.md:9-17 is navigation only and does not settle support. This suggestion does not change the separate Direct API or native routes."
+          ],
+          "job_id": "payments-blik-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik-accept-a-payment/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "payments-blik-save-during-payment-a1-concept-1",
+          "target_path": "wiki/concepts/stripe-blik.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-blik-save-during-payment]] \u2014 save for recurring: setup_future_usage, max 2000 PLN, not all banks supported, 6 additional test patterns",
+          "proposed_markdown": "- [[source-stripe-blik-save-during-payment]] \u2014 2026-05-03 BLIK payment-plus-mandate guide for Checkout, Elements, and Direct API: present recurring terms before code entry, attach the saved method to a Customer, and use a separate off-session PaymentIntent (PLN; up to 2000 PLN per later payment). Recurring availability was labeled private preview, banks vary, and final payment/mandate outcomes require status events. The 2026-11-07 canonical capture is a variant index only.",
+          "quote_indexes": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "warnings": [
+            "Private-preview scope comes from fully read dated primary raw/stripe-blik-2025.md:30-32, not the November navigation-only raw lines 5-15. Bank support and terms-before-code are in raw/stripe-blik-save-during-payment-2025.md:8-12.",
+            "The older Elements variant's 'card is saved' at raw/stripe-blik-save-during-payment-2025.md:488 conflicts with BLIK-specific saved PaymentMethod and bank-action passages at lines 8, 137-165, 607, 627-631. Generic Elements return_url at lines 390-419 does not override BLIK's in-app no-redirect context.",
+            "The response requires_action/next_action.blik_authorize at old raw lines 773-794 is pending; the guide uses payment_intent.succeeded, payment_intent.payment_failed and mandate.updated events for outcome or lifecycle."
+          ],
+          "job_id": "payments-blik-save-during-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik-save-during-payment/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "blik_setup_concept_definition_scope",
+          "target_path": "wiki/concepts/stripe-blik.md",
+          "update_kind": "durable_fact",
+          "anchor": "BLIK is Poland's dominant online payment method. Customers generate a 6-digit code from their banking app and enter it at checkout \u2014 no redirect needed. API enum: `blik`. Customer-initiated (customer authenticates each payment), immediate notification.",
+          "proposed_markdown": "BLIK is Poland's dominant online payment method. In the one-time checkout flow, customers generate a 6-digit banking-app code, enter it at checkout, and authenticate that payment; the capture describes immediate notification without a checkout-page redirect. API enum: `blik`. The separate May 2026 recurring setup guide saves a Customer-linked method after mandate authorization, then uses a later off-session PaymentIntent; those steps must not be read as requiring customer initiation of every later charge. See [[source-stripe-blik-set-up-payment]].",
+          "quote_indexes": [
+            1
+          ],
+          "warnings": [
+            "Baseline flow distinction comes from old raw lines 8-12, 20-37, 39-63, 625-649; new raw lines 5-15 establish purpose and navigation only. Keep one-time payment statements scoped to that flow."
+          ],
+          "job_id": "payments-blik-set-up-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik-set-up-payment/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "blik_setup_concept_redirect_scope",
+          "target_path": "wiki/concepts/stripe-blik.md",
+          "update_kind": "durable_fact",
+          "anchor": "**No redirect** \u2014 BLIK is unique among bank redirects in that it doesn't require leaving the checkout page.",
+          "proposed_markdown": "**One-time payment flow**: The BLIK payment guide describes no checkout-page redirect. The May 2026 recurring **setup** guide instead calls `stripe.confirmSetup` with a `return_url` and says BLIK may use an intermediate authorization site before returning; see [[source-stripe-blik-set-up-payment]]. The November 2026 setup capture is a variant index only and does not establish current redirect behavior.",
+          "quote_indexes": [
+            1,
+            2
+          ],
+          "warnings": [
+            "May setup guide old raw lines 372-399 has confirmSetup return_url and possible intermediate site; new raw lines 9-15 do not revalidate current variant behavior."
+          ],
+          "job_id": "payments-blik-set-up-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik-set-up-payment/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "blik_setup_concept_checkout_scope",
+          "target_path": "wiki/concepts/stripe-blik.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Checkout**: `payment_method_types: ['blik']`, `pln`, payment mode only. Refund/dispute window: 13 months.",
+          "proposed_markdown": "**Checkout payment flow**: `payment_method_types: ['blik']`, `pln`, payment mode in the one-time payment guide. The separate May 2026 recurring setup guide documents a Checkout Session in `setup` mode with `blik` and a Customer to save a PaymentMethod without an initial payment; see [[source-stripe-blik-set-up-payment]]. Refund/dispute window for payments: 13 months.",
+          "quote_indexes": [
+            1,
+            3
+          ],
+          "warnings": [
+            "Old raw lines 20-37 explicitly show Checkout setup mode and Customer attachment; the concept's payment-mode-only statement concerns a different one-time payment source. New raw lines 9-15 are variant navigation only."
+          ],
+          "job_id": "payments-blik-set-up-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik-set-up-payment/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "blik_setup_concept_source_route",
+          "target_path": "wiki/concepts/stripe-blik.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-blik-set-up-payment]] \u2014 SetupIntent (no payment): mandate-only authorization, confirmSetup/Direct API, same constraints and test patterns",
+          "proposed_markdown": "- [[source-stripe-blik-set-up-payment]] \u2014 May 2026 BLIK setup guide: Checkout setup Session, Elements and Direct API mandate authorization without an initial payment; later off-session PaymentIntent is separate. November 2026 capture lists three variant links only",
+          "quote_indexes": [
+            1,
+            2,
+            4
+          ],
+          "warnings": [
+            "Old raw lines 16-37, 130-157, 372-456, 549-623 substantiate the dated three-path setup details and separate later payment; new raw lines 13-15 list links only."
+          ],
+          "job_id": "payments-blik-set-up-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik-set-up-payment/attempt-1/receipt.json"
+        }
+      ],
+      "contributions": [
+        {
+          "job_id": "payments-bank-redirects",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-redirects/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-redirects/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-redirects/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-blik",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik/attempt-2/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik/attempt-2/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik/attempt-2/input.json"
+        },
+        {
+          "job_id": "payments-blik-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik-accept-a-payment/attempt-2/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik-accept-a-payment/attempt-2/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik-accept-a-payment/attempt-2/input.json"
+        },
+        {
+          "job_id": "payments-blik-save-during-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik-save-during-payment/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik-save-during-payment/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik-save-during-payment/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-blik-set-up-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik-set-up-payment/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik-set-up-payment/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-blik-set-up-payment/attempt-1/input.json"
+        }
+      ]
+    },
+    {
+      "target": "wiki/concepts/stripe-checkout.md",
+      "before_sha256": "97dd2f91e1adb696236a428b94cf9da1c7a1fdda97f237c988f52fa40f5b0618",
+      "candidate": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-checkout.md",
+      "candidate_sha256": "cd32dd9a4b6a8d1c2e475f79781ae2dcb78e474fd58656417f2c330292d08ac6",
+      "diff": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-checkout.md.diff",
+      "updates": [
+        {
+          "update_id": "payments-advanced-discounts-checkout-source-route",
+          "target_path": "wiki/concepts/stripe-checkout.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-checkout-discounts]] \u2014 Discounts: Coupon API, apply to session, promotion codes, all restriction params, uniqueness rules, lifecycle",
+          "proposed_markdown": "- [[source-stripe-checkout-discounts]] \u2014 Discounts: Coupon API, apply to session, promotion codes, all restriction params, uniqueness rules, lifecycle\n- [[source-stripe-checkout-add-discounts]] \u2014 April and November 2026 Checkout Elements discounts guide: server Session coupon or promotion-code setup and client apply/remove actions; the dated React example changes from `useCheckout()` to `useCheckoutElements()` without establishing removal of the older hook.",
+          "quote_indexes": [
+            0,
+            1,
+            2
+          ],
+          "warnings": [
+            "The source's old raw lines 176-178 use useCheckout(), while new raw lines 144-147 use useCheckoutElements(); this is a dated website example difference. The existing concept's React binding discussion at lines 69-98 separately retains versioned useCheckout alias evidence, so this route must not claim removal or a package-version floor.",
+            "Old raw lines 34-36 and new raw lines 31-33 both say at most one coupon or promotion code per Checkout Session. Server setup appears at old raw lines 104-133 and new raw lines 89-106; no payment completion is established."
+          ],
+          "job_id": "payments-advanced-discounts",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-advanced-discounts/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "payments-checkout-sessions-concept-route",
+          "target_path": "wiki/concepts/stripe-checkout.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-checkout-sessions]] \u2014 Checkout Sessions API: 3 UI modes, 5 built-in features, Adaptive Pricing, vs Payment Intents",
+          "proposed_markdown": "- [[source-stripe-checkout-sessions]] \u2014 April and November 2026 Checkout Sessions API overviews: hosted, embedded and custom Elements UI routes, built-in tax/discounts/shipping/subscriptions/Adaptive Pricing, and an illustrative server-side `ui_mode=custom` metadata request. The separate version-qualified React custom path on this page uses `ui_mode='elements'`; the overview's sample does not settle that SDK naming or prove payment completion.",
+          "quote_indexes": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "warnings": [
+            "Old raw lines 40-53 and new raw lines 41-48 both show `ui_mode=custom` in the overview sample; `wiki/concepts/stripe-checkout.md` line 81 separately describes version-qualified React `ui_mode=elements`. New raw lines 15-17 only change navigation to payments/quickstart.md."
+          ],
+          "job_id": "payments-checkout-sessions",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-sessions/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "payments-checkout-adjustable-quantity-concept-scope",
+          "target_path": "wiki/concepts/stripe-checkout.md",
+          "update_kind": "durable_fact",
+          "anchor": "- **Adjustable quantities**: `adjustable_quantity: { enabled: true, minimum, maximum }` on line_items; defaults 0\u201399; absolute max 999,999; last item cannot be removed; client update via `actions.updateLineItemQuantity({ lineItem: id, quantity })` (React: `checkoutState.checkout.updateLineItemQuantity`); fetch finalized quantities via `sessions.listLineItems(id, { limit: 100 })` post-payment; store internal IDs in `metadata` for reconciliation; quantity changes only \u2014 cannot add new line items",
+          "proposed_markdown": "- **Adjustable quantities (2026-04-21 Elements example)**: Enable `adjustable_quantity` on Checkout Session `line_items` at server-side Session creation; the captured payment-mode example uses `ui_mode: 'elements'`. Defaults are minimum 0 and maximum 99, with configurable maximum up to 999999; the last item cannot be removed and adding line items is outside this quantity-only integration. For the captured Elements/custom Checkout client route, `actions.updateLineItemQuantity({ lineItem: id, quantity })` (React: `checkoutState.checkout.updateLineItemQuantity`) updates by Session line-item ID. After payment completes, the guide shows retrieving finalized quantities via `sessions.listLineItems(id, { limit: 100 })` and using metadata to reconcile internal IDs; its fulfillment handler is an unfinished TODO, not evidence of successful fulfillment. The 2026-11-07 capture is only a Full page/Embedded form variant index and does not verify that either variant uses these same calls. See [[source-stripe-checkout-adjustable-quantities]].",
+          "quote_indexes": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "warnings": [
+            "Old raw lines 14-49 and 51-115 establish the 2026-04-21 Elements example and dated behavior; old raw lines 134-139 show an unfinished throwing fulfillment TODO. New raw lines 9-14 supply navigation only, not either variant body."
+          ],
+          "job_id": "payments-checkout-adjustable-quantity",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-adjustable-quantity/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "payments-checkout-custom-shipping-options-reciprocal",
+          "target_path": "wiki/concepts/stripe-checkout.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-checkout-custom-shipping-options]] \u2014 Historical 2026-04-20 Embedded Checkout payment-mode guide: server endpoint, `permissions.update_shipping_details`, and `onShippingDetailsChange`; the callback is deprecated in Stripe.js 9.14.0 (see version boundary above).",
+          "proposed_markdown": "- [[source-stripe-checkout-custom-shipping-options]] \u2014 Historical 2026-04-20 Embedded Checkout payment-mode guide: server endpoint, `permissions.update_shipping_details`, and `onShippingDetailsChange`; the callback is deprecated in Stripe.js 9.14.0 (see version boundary above).\n- [[source-stripe-checkout-dynamic-shipping]] \u2014 Separate April 21, 2026 Checkout Sessions `ui_mode: 'elements'` beta example: server_only permission, merchant validation/calculation endpoint, and client `runServerUpdate`; Payment Intents require a manual amount change or new Intent. The November 7 capture at that URL is only a Full page/Embedded form variant index and does not verify either linked implementation or renew the beta versions.",
+          "quote_indexes": [
+            2,
+            3,
+            4
+          ],
+          "warnings": [
+            "Old raw lines 17-62, 126-159, and 246-341 establish the dated Elements path. New raw lines 9-14 are navigation only. The separate historical Embedded Checkout callback and its versioned deprecation appear in wiki/sources/source-stripe-checkout-custom-shipping-options.md lines 14-22 and this concept line 141."
+          ],
+          "job_id": "payments-checkout-custom-shipping-options",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-custom-shipping-options/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "checkout-dynamic-lines-dated-scope",
+          "target_path": "wiki/concepts/stripe-checkout.md",
+          "update_kind": "durable_fact",
+          "anchor": "- **Dynamic line items**: **not supported** in hosted or embedded Checkout; **supported** in Elements path (Checkout Sessions API) via beta `runServerUpdate` pattern (SDK `2025-03-31.basil`+) \u2014 use cases: inventory checks, cross-sells, subscription interval toggle, order-total-based shipping/tax updates; see [[source-stripe-checkout-dynamic-line-items]]",
+          "proposed_markdown": "- **Dynamic line items (dated UI scope)**: The 2026-04-20 shipping summary recorded hosted/embedded Checkout line-item updates as unsupported or in development. A separate 2026-04-21 guide demonstrates an Elements Checkout Session in subscription mode with a server `sessions.update` and client `runServerUpdate` pattern; its code sets `apiVersion: \"2025-03-31.basil\"`. The 2026-11-07 capture is a Full page/Embedded form variant index with no support matrix or implementation body. Do not infer current hosted, embedded, Elements, or payment-mode support from its labels. See [[source-stripe-checkout-custom-shipping-options]] and [[source-stripe-checkout-dynamic-line-items]].",
+          "quote_indexes": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "warnings": [
+            "Old authority: raw/stripe-checkout-dynamic-line-items-2025.md:35-63,65-149,170-176; shipping source wiki/sources/source-stripe-checkout-custom-shipping-options.md:62-69, with underlying separate shipping raw raw/stripe-checkout-custom-shipping-options-2025.md:8-43. November raw/stripe-payments-checkout-dynamically-update-line-items-2026-11-07.md:9-14 is navigation only."
+          ],
+          "job_id": "payments-checkout-dynamically-update-line-items",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-dynamically-update-line-items/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "payments-checkout-how-checkout-works-source-route",
+          "target_path": "wiki/concepts/stripe-checkout.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-how-checkout-works]] \u2014 How Checkout works: 24-feature table (built-in vs customizable), mixed cart, session expiry, save payment details, guest customers, Checkout for agents",
+          "proposed_markdown": "- [[source-stripe-how-checkout-works]] \u2014 April 20, 2026 full How Checkout Works guide: 26-row Hosted feature table (11 built-in and 15 customizable), mixed cart, Session expiry, saved methods, guest customers, and Checkout for agents; the November 7 capture is a four-target variant index only. Its `embedded-page` and `checkout-form` links do not establish linked-body behavior or Checkout Form SDK rollout.",
+          "quote_indexes": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "warnings": [
+            "Old raw lines 36-63 supply 11 built-in and 15 customizable Hosted rows, contradicting the old 24-feature route label. Old raw lines 14-16, 190-192, and 350-363 contain three full bodies; new raw lines 9-16 supply only four links."
+          ],
+          "job_id": "payments-checkout-how-checkout-works",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-how-checkout-works/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "s03-checkout-update-customer-preview-boundary",
+          "target_path": "wiki/concepts/stripe-checkout.md",
+          "update_kind": "durable_fact",
+          "anchor": "- **Mid-checkout customer attachment**: call `checkout.sessions.update(id, { customer: 'cus_...' })` to attach a Customer after session creation; saved PMs, email, and billing info auto-populate without losing previously entered data; enables guest \u2192 login flow during checkout",
+          "proposed_markdown": "- **Mid-checkout customer attachment (November 7, 2026 preview)**: [[source-stripe-checkout-update-customer]] describes attaching a Customer to an already-created Checkout Session when a guest logs in during checkout; saved payment methods, email and billing information can populate without losing entered data. The November page requests preview access by email. Neither its new capture nor the April 21, 2026 prior capture specifies `checkout.sessions.update(...)` syntax, a particular initial `customer` value, API version or Checkout UI mode; an access request does not prove entitlement or payment success.",
+          "quote_indexes": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "warnings": [
+            "Replace only the exact Mid-checkout customer attachment bullet at concept line 145. Both old raw lines 4-8 and new raw lines 5-20 describe attachment behavior but not checkout.sessions.update syntax or an initial customer=null prerequisite.",
+            "New raw lines 11-20 add a preview access request; submitting it is not access approval or account enablement."
+          ],
+          "job_id": "payments-checkout-update-customer",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-update-customer/attempt-1/receipt.json"
+        }
+      ],
+      "contributions": [
+        {
+          "job_id": "payments-advanced-discounts",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-advanced-discounts/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-advanced-discounts/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-advanced-discounts/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-bank-transfers-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-transfers-accept-a-payment/attempt-2/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-transfers-accept-a-payment/attempt-2/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-transfers-accept-a-payment/attempt-2/input.json"
+        },
+        {
+          "job_id": "payments-checkout-adjustable-quantity",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-adjustable-quantity/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-adjustable-quantity/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-adjustable-quantity/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-checkout-custom-shipping-options",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-custom-shipping-options/attempt-2/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-custom-shipping-options/attempt-2/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-custom-shipping-options/attempt-2/input.json"
+        },
+        {
+          "job_id": "payments-checkout-customization-appearance",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-customization-appearance/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-customization-appearance/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-customization-appearance/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-checkout-dynamically-update-line-items",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-dynamically-update-line-items/attempt-2/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-dynamically-update-line-items/attempt-2/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-dynamically-update-line-items/attempt-2/input.json"
+        },
+        {
+          "job_id": "payments-checkout-how-checkout-works",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-how-checkout-works/attempt-2/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-how-checkout-works/attempt-2/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-how-checkout-works/attempt-2/input.json"
+        },
+        {
+          "job_id": "payments-checkout-sessions",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-sessions/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-sessions/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-sessions/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-checkout-update-customer",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-update-customer/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-update-customer/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-update-customer/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-custom-localize-prices-manual-currency-prices",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-manual-currency-prices/attempt-2/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-manual-currency-prices/attempt-2/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-manual-currency-prices/attempt-2/input.json"
+        }
+      ]
+    },
+    {
+      "target": "wiki/concepts/stripe-klarna.md",
+      "before_sha256": "4eba78c63d3aeb89a6061fa6ce213e7f67172854aa87c7b953fbf1062be24e5d",
+      "candidate": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-klarna.md",
+      "candidate_sha256": "3d1463a68e04898d2eec326f9a50764472ab64281b3d9c9c5d2d49f994891280",
+      "diff": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-klarna.md.diff",
+      "updates": [
+        {
+          "update_id": "klarna-overview-concept-route",
+          "target_path": "wiki/concepts/stripe-klarna.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-subscriptions-klarna]] \u2014 2026-05-13 Klarna subscription guide: hosted Checkout and advanced Payment Element; 2026-11-07 capture is a variant index; country tables are sandbox test data",
+          "proposed_markdown": "- [[source-stripe-subscriptions-klarna]] \u2014 2026-05-13 Klarna subscription guide: hosted Checkout and advanced Payment Element; 2026-11-07 capture is a variant index; country tables are sandbox test data\n- [[source-stripe-klarna]] \u2014 May and November 2026 full Klarna payment-method overviews: options, geography, cross-border rules, refunds and Connect; dated table conflict and limits apply",
+          "quote_indexes": [
+            0,
+            2,
+            4
+          ],
+          "warnings": [
+            "Existing concept sources omit the overview despite describing its hosted redirect and options. New raw lines 9-13, 135-143, 614-824; old raw lines 8-12, 121-318. The overview's November country Pay later subscription rows conflict with its only-DE/SE/US footnote (new raw lines 251-282, 759, 775; old raw line 266)."
+          ],
+          "job_id": "payments-klarna",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "klarna_accept_concept_reciprocal",
+          "target_path": "wiki/concepts/stripe-klarna.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-subscriptions-klarna]] \u2014 2026-05-13 Klarna subscription guide: hosted Checkout and advanced Payment Element; 2026-11-07 capture is a variant index; country tables are sandbox test data",
+          "proposed_markdown": "- [[source-stripe-subscriptions-klarna]] \u2014 2026-05-13 Klarna subscription guide: hosted Checkout and advanced Payment Element; 2026-11-07 capture is a variant index; country tables are sandbox test data\n- [[source-stripe-klarna-accept-payment]] \u2014 2026-05-06 acceptance guide for Checkout, Elements, Direct API and mobile PaymentIntent paths; 2026-11-07 capture is a variant index, not renewed behavioral guidance",
+          "quote_indexes": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "warnings": [
+            "Detailed path descriptions derive from raw/stripe-klarna-accept-payment-2025.md:14-20,436-466,830-989,1500-1657,2167-2317,2827-3014. New index routes at raw/stripe-payments-klarna-accept-a-payment-2026-11-07.md:9-19."
+          ],
+          "job_id": "payments-klarna-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-accept-a-payment/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "payments-klarna-best-practices-concept-route",
+          "target_path": "wiki/concepts/stripe-klarna.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-subscriptions-klarna]] \u2014 2026-05-13 Klarna subscription guide: hosted Checkout and advanced Payment Element; 2026-11-07 capture is a variant index; country tables are sandbox test data",
+          "proposed_markdown": "- [[source-stripe-subscriptions-klarna]] \u2014 2026-05-13 Klarna subscription guide: hosted Checkout and advanced Payment Element; 2026-11-07 capture is a variant index; country tables are sandbox test data\n- [[source-stripe-klarna-best-practices]] \u2014 2026-05 and 2026-11 conversion advice: Express Checkout placement, product-page messaging, Checkout line-item passing and optional addresses that may help fraud scoring; buyer offers and outcomes remain conditional",
+          "quote_indexes": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "warnings": [
+            "Old raw lines 10-32 and new raw lines 11-33 present advice and conditional underwriting; address data are optional and only may help. The November business-data wording is not a new required field."
+          ],
+          "job_id": "payments-klarna-best-practices",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-best-practices/attempt-1/receipt.json"
+        }
+      ],
+      "contributions": [
+        {
+          "job_id": "payments-klarna",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna/attempt-2/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna/attempt-2/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna/attempt-2/input.json"
+        },
+        {
+          "job_id": "payments-klarna-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-accept-a-payment/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-accept-a-payment/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-accept-a-payment/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-klarna-best-practices",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-best-practices/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-best-practices/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-best-practices/attempt-1/input.json"
+        }
+      ]
+    },
+    {
+      "target": "wiki/concepts/stripe-vault-and-forward.md",
+      "before_sha256": "f8f75aafa3ebbce4aac310e8a1af254330f06afb9866e024b66251416760649c",
+      "candidate": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-vault-and-forward.md",
+      "candidate_sha256": "b43b1b200d5275f5e94da5de7a26c1d9de07c9fb4fa97e7c51ad56f03fe27cfa",
+      "diff": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-vault-and-forward.md.diff",
+      "updates": [
+        {
+          "update_id": "forwarding_processors_concept_response_scope",
+          "target_path": "wiki/concepts/stripe-vault-and-forward.md",
+          "update_kind": "durable_fact",
+          "anchor": "4. Stripe returns 200; actual destination status is in response body",
+          "proposed_markdown": "4. For a response **received from the destination endpoint**, the related [[source-stripe-vault-and-forward]] guide says the forwarding API returns HTTP 200 even if the destination responds 400, and includes the destination response/error in the body. The [[source-stripe-forwarding-third-party]] example separately checks `response_details.status` and catches request errors. Neither HTTP 200 nor a forwarded response proves processor authorization, capture or settlement.",
+          "quote_indexes": [
+            2,
+            4
+          ],
+          "warnings": [
+            "The conditional 200 rule is in fully read related raw/stripe-vault-and-forward-2026.md:748-756: any destination endpoint response yields forwarding API HTTP 200, including destination 400. The current guide raw/stripe-payments-forwarding-third-party-processors-2026-11-07.md:244-257 checks response_details.status and catches errors; do not equate any 200 with processor payment success."
+          ],
+          "job_id": "payments-forwarding-third-party-processors",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-forwarding-third-party-processors/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "forwarding_processors_concept_source_route",
+          "target_path": "wiki/concepts/stripe-vault-and-forward.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-forwarding-third-party]] \u2014 Payment Element multiprocessor integration (paymentMethodCreation: 'manual' flow)",
+          "proposed_markdown": "- [[source-stripe-forwarding-third-party]] \u2014 May/November 2026 Payment Element multiprocessor guide: manual PaymentMethod creation, server ForwardingRequest, processor-response relay and identified-PCI-data redaction boundary",
+          "quote_indexes": [
+            0,
+            2,
+            3
+          ],
+          "warnings": [
+            "May raw/stripe-forwarding-third-party-2026.md:15-277 and November raw/stripe-payments-forwarding-third-party-processors-2026-11-07.md:15-279 share the core flow; November adds explicit diagram relay/redaction, not proof of comprehensive PCI safety or completed charge."
+          ],
+          "job_id": "payments-forwarding-third-party-processors",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-forwarding-third-party-processors/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "forwarding-vault-response-status-boundary",
+          "target_path": "wiki/concepts/stripe-vault-and-forward.md",
+          "update_kind": "durable_fact",
+          "anchor": "4. Stripe returns 200; actual destination status is in response body",
+          "proposed_markdown": "4. Inspect both the Forwarding API response and the vault result: the own-vault guide says the API returns the same status, but its concrete example has vault `400` yielding API HTTP `200` with the upstream error in the body. Do not treat API `200` as vault token creation or payment success; see [[source-stripe-forwarding-token-vault]].",
+          "quote_indexes": [
+            0,
+            4
+          ],
+          "warnings": [
+            "Both full captures retain the response-code wording tension: raw/stripe-payments-forwarding-token-vault-2026-11-07.md:107-113 and raw/stripe-forwarding-token-vault-2026.md:104-110. New diagram raw/stripe-payments-forwarding-token-vault-2026-11-07.md:17-24 limits redaction to identified PCI-sensitive response data; the vault must still omit sensitive fields."
+          ],
+          "job_id": "payments-forwarding-token-vault",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-forwarding-token-vault/attempt-1/receipt.json"
+        }
+      ],
+      "contributions": [
+        {
+          "job_id": "payments-forwarding-third-party-processors",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-forwarding-third-party-processors/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-forwarding-third-party-processors/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-forwarding-third-party-processors/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-forwarding-token-vault",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-forwarding-token-vault/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-forwarding-token-vault/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-forwarding-token-vault/attempt-1/input.json"
+        }
+      ]
+    }
+  ],
+  "coordinator_resolutions": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/manual-resolutions.json"
+}

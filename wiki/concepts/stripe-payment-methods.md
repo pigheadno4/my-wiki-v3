@@ -92,7 +92,7 @@ See [[stripe-dynamic-payment-methods]] for the AI-driven dynamic selection syste
 - [[source-stripe-payment-methods-overview]] — primary source: all 8 categories, regional availability tables
 - [[source-stripe-payment-method-integration-options]] — integration paths comparison, dynamic vs manual, domain registration for wallets
 - [[source-stripe-automatic-payment-methods]] — Aug 2023 API change: omit payment_method_types → Dashboard methods; allow_redirects: never option; Elements migration
-- [[source-stripe-cards]] — Cards detail: brand capabilities table, Amex/CUP/JCB/CB/eftpos restrictions, SCA/3DS, EU co-badged card choice, India RBI
+- [[source-stripe-cards]] — May and November 2026 cards guide: account-country and customer-country brand matrix, conditional SCA/3DS, EU co-badged choice, and November's qualified UnionPay Apple Pay on the web, eftpos Apple Pay in AUD without manual capture, and Payment Element brand/funding filter
 - [[source-stripe-how-cards-work]] — How cards work: 4-step flow, manual update limits, change default payment method, automatic card updates + fingerprint change
 - [[source-stripe-card-product-codes]] — Card product codes: brand_product field, Visa (41 codes) + Mastercard (200+ codes) reference tables, test cards
 - [[source-stripe-bank-debits]] — Bank debits: 6 methods (ACH/Bacs/AU-BECS/NZ-BECS/ACSS/SEPA), API enums, product/API support matrices, caveats

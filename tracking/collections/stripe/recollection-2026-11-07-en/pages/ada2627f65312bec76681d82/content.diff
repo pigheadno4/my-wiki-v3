@@ -1,0 +1,216 @@
+--- raw/stripe-boleto-2025.md
++++ raw/stripe-payments-boleto-2026-11-07.md
+@@ -1,94 +1,99 @@
+ # Boleto payments
+ 
+-Learn how to accept payments with Boleto.
++Accept Boleto payments, a voucher-based payment method in Brazil.
+ 
+-Boleto is an official (regulated by the Central Bank of Brazil) payment method in Brazil.
++Boleto is an official voucher-based payment method in Brazil, regulated by the Central Bank of Brazil. To complete a transaction, customers receive a voucher for the amount due and pay it before expiration at an authorized agency or bank, ATM, or online bank portal.
++Payment method family: Vouchers
++Usability: Reusable
++Access type: Instant provisional access
++Payment confirmation timing: Up to 1 business day
++Settlement timing: Up to 2 business days (T+2)
++Pricing: https://stripe.com/pt-br/pricing/local-payment-methods#boleto-bancario
++## Eligibility and availability 
+ 
+-To complete a transaction, customers receive a voucher stating the amount to pay for services or goods. Customers then pay the boleto before its expiration date in one of several different methods, including at authorized agencies or banks, ATMs, or online bank portals. You’ll receive payment confirmation after 1 business day, and funds will be available for payout 2 business days after payment confirmation.
++### Account eligibility
++Business location: BR
++Account type: ✓ Merchant, ✓ Platform or marketplace (Connect)
++Business model: ✓ B2B, ✓ B2C
++Your account might be reviewed after activation to confirm eligibility. While Boleto doesn’t enforce any additional website requirements, make sure that you provide a website that meets the [Stripe account activation requirements](https://support.stripe.com/questions/business-website-for-account-activation-faq). You can contact [Stripe support](https://support.stripe.com/) to appeal any Boleto capability restrictions.
+ 
+-#### Payment method properties
++This payment method doesn’t have any MCC requirements.
+ 
+-- **Customer locations**
++Stripe accounts in the following countries can accept Boleto payments that settle in a supported currency.
+ 
+-  Brazil
++AMER: BR
+ 
+-- **Payment method family**
++Customers in the following countries can use Boleto.
+ 
+-  Cash-based payment method
++AMER: BR
+ 
+-- **Connect support**
++### Payment support
++Customer location: BR
++Presentment currency: BRL
++Geographic coverage: ✓ Domestic, ✗ Crossborder
++Transaction limits: Minimum amount: 5.00 BRL
+ 
+-  Yes
++Maximum amount: 49,999.99 BRL
++## Capabilities 
++Recurring payments: ✓ Supported
+ 
+-- **Presentment currency**
++Payment authorizations:
++  ✗ Extended authorizations
++  ✗ Flexible extended authorizations
++  ✗ Incremental authorizations
++  ✗ Decremental authorizations
++  ✗ Re-authorizations
+ 
+-  BRL
++Payment captures:
++  ✗ Manual capture
++  ✗ Partial capture
++  ✗ Multi-capture
++  ✗ Over-capture
+ 
+-- **Recurring Payments**
++Refunds:
++  ✗ Partial refunds
++  ✗ Full refunds
+ 
+-  Yes
++Disputes:
++  ✗ Partial disputes
++  ✗ Full disputes
++### Disputes 
+ 
+-- **Dispute support**
++Boleto doesn’t support the standard dispute process, and customers can’t file a chargeback. However, in some instances, bank-side irregularities similar to disputes can occur, such as payment mishandling. If this happens, Stripe contacts you with next steps.
+ 
+-  [No](https://docs.stripe.com/payments/boleto.md#disputed-payments)
++## Stripe product support 
++Checkout UIs:
++  ✓ Full page (Recommended)
++  ✓ Payment Links
++  ✓ Embedded form
++  ✓ Payment Element
++  ✗ Express Checkout Element
++  ✗ Payment Method Messaging Element
++  ✗ In-app payments
+ 
+-- **Manual capture support**
++Products:
++  ✗ Managed Payments
++  ✓ Billing
++  ✓ Invoicing
++  ✓ Customer Portal
++  ✗ Radar
++  ✗ Terminal
++  ✓ Connect
+ 
+-  No
++APIs:
++  ✓ Checkout Sessions (Recommended)
++  ✓ Payment Intents
++  ✓ Payment Intents with setup_future_usage
++  ✓ Setup Intents
++  ✗ Off-session payments
++### Get started 
+ 
+-- **Payment confirmation**
+-
+-  Customer-initiated
+-
+-- **Payout timing**
+-
+-  2 business days
+-
+-- **Refunds / Partial refunds**
+-
+-  [No / No](https://docs.stripe.com/payments/boleto.md#refunds)
+-
+-#### Business locations
+-
+-Stripe accounts in the following countries can accept Boleto payments:
+-
+-- BR
+-
+-#### Product support
+-
+-- Connect
+-- Checkout
+-- Payment Links
+-- Elements1
+-
+-- Subscriptions
+-- Invoicing
+-
+-1Express Checkout Element doesn’t support Boleto.
+-
+-## Payment flow
+-
+-![](assets/stripe-boleto-flow-checkout.svg)
+-
+-1. Selects Boleto at checkout
+-   ![](assets/stripe-boleto-flow-voucher.svg)
+-
+-2. Receives payment codes and a confirmation number
+-   ![](assets/stripe-boleto-flow-bank-portal.svg)
+-
+-3. Makes a payment at banks or online bank portals.
+-   ![](assets/stripe-boleto-flow-success.svg)
+-
+-4. Receives notification that payment is complete
+-
+-## Get started
+-
+-You don’t have to integrate Boleto and other payment methods individually. If you use our front-end products, Stripe automatically determines the most relevant payment methods to display. Go to the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods) and enable Boleto. To get started with one of our hosted UIs, follow a quickstart:
++To get started with one of our hosted UIs, follow a quickstart:
+ 
+ - [Checkout](https://docs.stripe.com/checkout/quickstart.md): Our prebuilt, hosted checkout page.
+-- [Elements](https://docs.stripe.com/payments/quickstart-checkout-sessions.md): Our drop-in UI components.
++- [Elements](https://docs.stripe.com/payments/quickstart.md): Our drop-in UI components.
+ 
+-### Other payment products
++#### Other payment products
+ 
+ The following Stripe products also let you add Boleto from the Dashboard:
+ 
+@@ -96,18 +101,38 @@
+ - [Payment Links](https://docs.stripe.com/payment-links.md)
+ - [Subscriptions](https://docs.stripe.com/billing/subscriptions/overview.md)
+ 
+-If your integration requires manually listing payment methods, learn how to [manually configure Boleto as a payment](https://docs.stripe.com/payments/boleto/accept-a-payment.md).
+-
+ Check out the Boleto [sample on GitHub](https://github.com/stripe-samples/accept-a-payment).
+ 
+-## Disputes
++## Customer experience 
+ 
+-Generally Boleto payments can’t be disputed by the customer. However, in some instances irregularities similar to disputes (by the bank) can occur (for example, due to mishandling). In these cases, Stripe will need to reach out to you for next steps.
++#### 1. Select Boleto
+ 
+-## Refunds
++The customer selects Boleto at checkout and provides the required contact and tax ID details.
+ 
+-Boleto payments can’t be refunded. You need to create a separate process to credit customers who require a refund.
++#### 2. Receive voucher
+ 
+-## Amount limits
++Stripe displays a hosted voucher page where the customer can copy the Boleto number or download the voucher PDF. The voucher expires after 3 days by default, configurable from 0–60 days.
+ 
+-The amount for a single Boleto must be at least 5.00 BRL and no more than 49,999.99 BRL.+#### 3. Pay the voucher
++
++The customer pays through a bank, ATM, authorized agency, or online bank portal. Desktop and mobile customers use the same hosted-voucher browser flow.
++
++#### 4. Payment complete
++
++After the customer pays, Stripe confirms the payment asynchronously, typically on the next business day, and the customer receives confirmation that the payment is complete.
++
++### Transaction identifiers 
++
++The Boleto voucher or bank receipt might show Stripe as the company. The exact formatting depends on the customer’s bank or payment channel.
++
++For Boleto and other non-card payments, you can set the full [statement descriptor](https://docs.stripe.com/get-started/account/statement-descriptors.md) using the `statement_descriptor` parameter. If you don’t set a request-level descriptor, Stripe uses the account-level statement descriptor. The `statement_descriptor_suffix` parameter only applies to card payments. A bank might display statement-descriptor information differently or omit it.
++
++For Connect destination charges without `on_behalf_of`, the statement descriptor comes from the platform account. When you use `on_behalf_of`, it comes from the connected account, subject to legacy API-version behavior. Learn more about [statement descriptors with Connect](https://docs.stripe.com/connect/statement-descriptors.md).
++
++Use `payment_intent.next_action.boleto_display_details.number` to retrieve the customer-visible Boleto number. This number identifies the voucher, but it isn’t a processor transaction ID. Boleto doesn’t expose a processor transaction ID under `latest_charge.payment_method_details.boleto`.
++
++## Enable Boleto 
++
++If you use Stripe front-end products, enable Boleto in your [payment method settings](https://dashboard.stripe.com/settings/payment_methods). Stripe automatically determines which payment methods are most relevant to each customer.
++
++If your integration requires manually listing payment methods, you can [configure Boleto as an accepted payment method](https://docs.stripe.com/payments/boleto/accept-a-payment.md).

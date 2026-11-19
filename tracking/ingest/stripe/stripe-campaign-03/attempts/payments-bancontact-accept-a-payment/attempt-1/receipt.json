@@ -1,0 +1,148 @@
+{
+  "job_id": "payments-bancontact-accept-a-payment",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-bancontact-accept-a-payment-2026-11-07.md",
+  "raw_sha256": "d4928f074aea826f40a24d2b990b8e5c671e4caa32abe7de4a1ffb05ce4c3dc1",
+  "prior_raw_path": "raw/stripe-bancontact-accept-payment-2025.md",
+  "prior_raw_sha256": "213c2137c2252114ac34edeb74a3833328009d7e2ec48348a4d71c5d5729aca8",
+  "source_targets": [
+    "wiki/sources/source-stripe-bancontact-accept-payment.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-bancontact-accept-payment.md": "b2967da2db4243feb7a335a0be0d176c4bb28145b3dd65838d1f186e128d969d"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-bancontact-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 18
+      }
+    ],
+    "raw/stripe-bancontact-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 1425
+      }
+    ],
+    "wiki/sources/source-stripe-bancontact-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 44
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/cb1f8cc3a0261f2120b649dc/content.diff": [
+      {
+        "start": 1,
+        "end": 1431
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 263,
+        "end": 277
+      }
+    ],
+    "wiki/concepts/stripe-bancontact.md": [
+      {
+        "start": 1,
+        "end": 43
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Learn how to accept Bancontact, a common payment method in Belgium.",
+      "location": "raw/stripe-payments-bancontact-accept-a-payment-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-bancontact-accept-a-payment-2026-11-07.md:11"
+    },
+    {
+      "text": "- [Checkout](https://docs.stripe.com/payments/bancontact/accept-a-payment.md?payment-ui=checkout)",
+      "location": "raw/stripe-payments-bancontact-accept-a-payment-2026-11-07.md:13"
+    },
+    {
+      "text": "- [Direct API](https://docs.stripe.com/payments/bancontact/accept-a-payment.md?payment-ui=direct-api)",
+      "location": "raw/stripe-payments-bancontact-accept-a-payment-2026-11-07.md:14"
+    },
+    {
+      "text": "- [React Native](https://docs.stripe.com/payments/bancontact/accept-a-payment.md?payment-ui=mobile&platform=react-native)",
+      "location": "raw/stripe-payments-bancontact-accept-a-payment-2026-11-07.md:18"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Bancontact is a [single use](https://docs.stripe.com/payments/payment-methods.md#usage) payment method where customers are required to [authenticate]",
+      "location": "raw/stripe-bancontact-accept-payment-2025.md:18"
+    },
+    {
+      "text": "**Setup mode**: Yes",
+      "location": "raw/stripe-bancontact-accept-payment-2025.md:32"
+    },
+    {
+      "text": "Call [stripe.confirmBancontactPayment](https://docs.stripe.com/js/payment_intents/confirm_bancontact_payment) to redirect your customer to Bancontact\u2019s website or app to complete the payment.",
+      "location": "raw/stripe-bancontact-accept-payment-2025.md:361"
+    },
+    {
+      "text": "You should verify the status of the `PaymentIntent` when rendering the return page.",
+      "location": "raw/stripe-bancontact-accept-payment-2025.md:544"
+    },
+    {
+      "text": "Retrieve the client secret from the PaymentIntent you created and call `confirmPayment`.",
+      "location": "raw/stripe-bancontact-accept-payment-2025.md:1302"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Raw delta is navigation/presentation: new raw lines 5-18 contain title, purpose and links to Checkout, Direct API, iOS, Android and React Native. Old raw lines 8-1425 have complete same-path web and mobile sections; diff lines 3-19 and 1425-1431 show full text replaced with variant index, not a substantive policy or API change, deprecation, or renewed November detailed behavior.",
+    "May dated central path: Bancontact is single-use and customer-authenticated with redirect and immediate notification (old raw lines 18-20, 132-134). Checkout guide lists EUR presentment and payment/setup/subscription modes with EUR line item prices (old raw lines 22-38), with hosted and embedded Session examples at old raw lines 53-103. These modes are Checkout compatibility claims, not native recurring Bancontact debit; wiki/concepts/stripe-bancontact.md lines 16-20 separately says recurring use requires SEPA conversion. New raw lines 13-18 provide no detailed mode terms.",
+    "Direct API May flow creates an EUR Bancontact PaymentIntent on the server (old raw lines 149-165), has English default authorization page or fr/nl/de preferred_language (old raw lines 167-183), takes a full billing name and return_url for client confirmBancontactPayment (old raw lines 257-265, 338-382), or creates and confirms server-side to requires_action/next_action.redirect_to_url before a manual redirect (old raw lines 637-700). The resulting Charge example carries bank_code, bank_name, bics, iban_last4, preferred_language and verified_name at old raw lines 561-615; it is an example, not a guaranteed non-null field set for every charge.",
+    "Outcome boundary: old raw lines 535-558 says the return page should retrieve PaymentIntent and verify succeeded; old raw lines 619-623 and 700 advise webhook status checks. Thus a client confirm call, next_action, browser return, or charge example does not itself prove succeeded payment. New raw lines 9-18 add no payment-state assertion.",
+    "Mobile May sections create PaymentIntent server-side and return client secret (old raw lines 801-853, 992-1051, 1210-1269); iOS calls STPPaymentHandler confirmPayment with STPPaymentMethodBancontactParams and billing name (old raw lines 856-897); Android uses PaymentMethodCreateParams.createBancontact and PaymentLauncher.confirm (old raw lines 1053-1109); React Native uses confirmPayment with paymentMethodType Bancontact and billing details (old raw lines 1272-1345) and discusses deep linking at 1365-1425. iOS/Android SDK examples and React Native snippet are May capture details, not established current November APIs.",
+    "Baseline summary error independent of raw delta: current source lines 38-40 names React Native confirmBancontactPayment, whereas old raw lines 1300-1321 name confirmPayment with paymentMethodType Bancontact. The summary calls the paste truncated, but must not substitute the web Stripe.js method. Current source line 25 says immediate result on return without the old raw lines 535-558 status verification condition; qualify it. Current source lines 6-7, 42-44 omit November raw provenance.",
+    "Main route: wiki/index.md line 7 leads to wiki/stripe-index.md lines 267-270 and wiki/concepts/stripe-bancontact.md lines 38-43, which links the mapped current source."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "Preserve May 3, 2026 old-capture Bancontact single-use redirect/notification, Terms of Service, EUR Checkout and payment/setup/subscription compatibility as dated and path-scoped (old raw lines 2, 18-38). New raw lines 1-18 do not revalidate current account, mode or compliance behavior.",
+    "Preserve May Direct API full-name and return_url prerequisites, server PaymentIntent/client secret separation, preferred_language default/alternatives, manual requires_action redirect, Charge example fields and later status verification (old raw lines 149-188, 257-265, 338-382, 535-615, 637-700).",
+    "Preserve May iOS, Android and React Native client calls by platform and the React Native custom URL deep-link guidance as dated (old raw lines 856-897, 1053-1109, 1272-1345, 1365-1425), without treating any sample or callback as a live payment outcome."
+  ],
+  "conflicts": [
+    "Current source lines 38-40 incorrectly says React Native confirmBancontactPayment, while the old React Native section at raw lines 1300-1321 explicitly uses confirmPayment; web Direct API at old raw lines 338-388 is where confirmBancontactPayment appears. Repair platform scope and note the old React Native example's truncated/malformed surrounding code rather than claiming runnable execution.",
+    "Current source line 25's 'immediate result on return' may imply browser return equals successful payment; old raw lines 535-558 require retrieving PaymentIntent status, and lines 619-623/700 advise asynchronous/webhook verification. Preserve immediate-notification characterization without collapsing the status boundary."
+  ],
+  "unresolved_questions": [
+    "The November variant URLs at new raw lines 13-18 were not separately fetched in this approved pin. Current platform SDK versions, variant details, account support and any changed compliance or payment outcomes are not established by this navigation index."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-bancontact.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-bancontact-accept-payment.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add November index raw to provenance and clearly date May detailed material (current source lines 4-7, 42-44; new raw lines 1-18; old raw lines 1-2).",
+        "Correct React Native method from web-only confirmBancontactPayment to React Native confirmPayment and note example limitations (current source lines 38-40; old raw lines 338-388 and 1300-1345).",
+        "Qualify Direct API return as requiring PaymentIntent status check, preserve full-name/return_url and EUR/Checkout-mode scope (current source lines 19-28; old raw lines 22-38, 257-265, 361-382, 535-558, 637-700)."
+      ],
+      "conflicts": [
+        "Current source lines 38-40 misidentify the React Native call; line 25 overcompresses return and status boundaries compared with old raw lines 535-558."
+      ],
+      "reason": "New pin is navigation-only, yet provenance must include it; independent baseline source corrections prevent wrong SDK selection and payment-success inference."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/bancontact/accept-a-payment, the November capture establishes Bancontact acceptance as its purpose and routes readers to Checkout, Direct API, iOS, Android and React Native, without describing detailed requirements or success states (new raw lines 5-18). The May capture documents EUR Checkout compatibility, distinct hosted/embedded Session examples, a server-created Bancontact PaymentIntent for Direct API/mobile, full billing name and return URL for web confirmation, platform-specific mobile calls, optional language selection, and status verification after redirect (old raw lines 18-38, 53-103, 149-188, 338-382, 535-558, 801-897, 992-1109, 1210-1345). source-stripe-bancontact-accept-payment.md retains most history but misnames the React Native method and compresses return-versus-success at lines 25 and 38-40.",
+    "Q2": "For https://docs.stripe.com/payments/bancontact/accept-a-payment, the observed change is presentation/navigation: the November page is a five-variant index and does not substantively amend the May integrations (new raw lines 9-18). source-stripe-bancontact-accept-payment.md should add the new raw while keeping the May Checkout modes, EUR constraint, Terms, web and native SDK examples, and Charge fields dated and path-specific (old raw lines 18-38, 149-188, 561-615, 856-897, 1053-1109, 1272-1345). Its React Native confirmBancontactPayment conflicts with May confirmPayment; its return wording requires a PaymentIntent succeeded check and should not imply confirmed funds or current availability (old raw lines 535-558, 619-700, 1300-1321). No fetched November variant resolves that baseline error or proves a new rule."
+  }
+}

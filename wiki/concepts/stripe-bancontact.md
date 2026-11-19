@@ -15,9 +15,9 @@ Bancontact is Belgium's dominant online payment method. Customers pay using a Ba
 
 - **Confirmation**: Customer-authenticated (immediate — not delayed notification)
 - **Disputes**: No chargebacks. Customer must authenticate with their bank, which prevents fraudulent disputes.
-- **Recurring**: Not native — requires saving as [[stripe-sepa-debit]] mandate. Bancontact payment can be converted to a SEPA Direct Debit for future recurring charges.
-- **Refunds**: Up to 180 days
-- **Invoicing**: Invite-only. Express Checkout Element: unsupported.
+- **Recurring and setup boundary**: Native Bancontact is single-use; future recurring use can involve a generated [[stripe-sepa-debit]] payment method. The May 3 bank-redirects API matrix marked Bancontact SetupIntents and future usage supported. Its November 7 matrix marks SetupIntents unsupported but future usage supported through a generated SEPA Direct Debit footnote, while the same-date Bancontact method overview marks both SetupIntents and PaymentIntents with setup_future_usage unsupported. Preserve the unresolved route-specific conflict; none of these cells proves a particular account can complete a mandate. The separate May [[source-stripe-bancontact-set-up-payment|setup]] and [[source-stripe-bancontact-save-during-payment|save-during-payment]] guides document those generated-SEPA paths; the captures do not resolve their current support.
+- **Refunds**: The 2026-11-07 overview allows full or partial refund submission within 730 days/two years; the 2026-05-03 overview said 180 days. Submission is not completion: check the Refund status or final events. See [[source-stripe-bancontact]].
+- **Invoicing**: The May overview called it invite-only; the November matrix lists Invoicing with `send_invoice` collection only and does not resolve account-specific eligibility. Express Checkout Element is unsupported.
 
 ## Payment Flows
 
@@ -37,7 +37,8 @@ Bancontact is Belgium's dominant online payment method. Customers pay using a Ba
 
 ## Sources
 
-- [[source-stripe-bancontact]] — primary source: properties, payment flows, disputes, refunds
-- [[source-stripe-bancontact-accept-payment]] — integration guide: Checkout + Direct API + iOS + Android + React Native, preferred_language, bank details on charge
+- [[source-stripe-bancontact]] — Bancontact overviews (2026-05-03 and 2026-11-07): single-use Belgian EUR redirect, eligibility, payment/refund boundaries, product support and dated setup conflict
+- [[source-stripe-bank-redirects]] — May 3 and November 7, 2026 matrices; Bancontact SetupIntent and generated-SEPA future-use conflict with same-date method page
+- [[source-stripe-bancontact-accept-payment]] — 2026-05-03 Bancontact acceptance guide for Checkout, Direct API, iOS, Android, and React Native, including preferred language and a Charge details example; web uses `confirmBancontactPayment`, React Native uses `confirmPayment`, and a redirect return requires PaymentIntent status verification. The 2026-11-07 canonical capture is a variant index only.
 - [[source-stripe-bancontact-save-during-payment]] — save IBAN as SEPA mandate: setup_future_usage + generated_sepa_debit, SEPA mandate text (7 languages), 6 test email/token patterns
 - [[source-stripe-bancontact-set-up-payment]] — SetupIntent path (no payment): confirmBancontactSetup, Stripe charges/refunds 0.02 EUR, generated_sepa_debit

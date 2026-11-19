@@ -1,0 +1,155 @@
+{
+  "job_id": "payments-customer-balance-reconciliation",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-customer-balance-reconciliation.md": {
+      "job_id": "payments-customer-balance-reconciliation",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Customer Balance Reconciliation\"\ntype: source\ndate_ingested: 2026-05-05\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/customer-balance/reconciliation\"\nraw_files:\n  - \"stripe-payments-customer-balance-reconciliation-2026-11-07.md\"\n  - \"stripe-customer-balance-reconciliation-2025.md\"\ntags: [stripe, customer-balance, bank-transfers, reconciliation, webhooks, invoicing]\n---\n\n## Summary\n\nStripe documents how incoming bank transfer funds in a customer's cash balance are applied to incomplete PaymentIntents and open invoices. The November 7, 2026 capture describes automatic reconciliation, manual application through the Dashboard or API, a transaction-level webhook example, and the separate aging of unreconciled funds. This is documentation of reconciliation behavior, not evidence that a particular payment succeeded or that funds settled. See [[stripe]] and [[stripe-customer-balance]].\n\n## Automatic reconciliation\n\nThe default is `automatic` for all customers; the merchant can change the Bank Transfers reconciliation setting and override an individual customer's mode in the Dashboard or Customers API. Set `reconciliation_mode: manual` to override, or `merchant_default` to return to the merchant setting. Automatic reconciliation considers the entire available cash balance in the payment currency, including earlier unreconciled transfers. It considers incomplete PaymentIntents and `open` invoices that are current or became overdue within the last **365 days**. These eligibility and application rules are from the November 7, 2026 capture; the older 2025 capture said **30 days**.\n\nFor bank transfers in the US, UK, EU, and MX, Stripe applies funds in this order:\n\n1. Match the transfer reference to one invoice number. Reference matching can apply no more than the amount of the triggering transfer.\n2. Otherwise match it to one incomplete PaymentIntent's `display_bank_transfer_instructions.reference`, with the same transfer-amount cap.\n3. If there is no single reference match, find a group of one to five invoices and PaymentIntents for the **exact available cash balance**, preferring the smallest group, then the most invoices, then the oldest PaymentIntents.\n4. Fully fund eligible invoices, beginning with the oldest **due** invoices.\n5. Apply remaining funds to incomplete PaymentIntents, beginning with the oldest.\n\nThe later steps consider remaining available cash balance, including older funds. In JPY, Stripe does not use reference matching: it finds an exact-balance group with the same tie breaks, then fully funds invoices by oldest **finalization** time, then applies remaining funds to incomplete PaymentIntents by oldest **confirmation** time. The older capture described exact matching against the amount the customer sent, and described US/UK/EU/MX invoice fallback by oldest finalization time. Keep those as dated historical descriptions rather than current rules.\n\nWhen funds arrive, automatic reconciliation can partially fund an incomplete PaymentIntent. It applies an incoming transfer as a **partial invoice payment** only when automatic partial reconciliation is enabled and the customer includes the invoice number in the transfer memo. At invoice finalization, existing cash balance is applied only if it can fully pay the invoice after the configured underpayment threshold; otherwise Stripe leaves it unapplied. These automatic invoice conditions do not prohibit manual partial invoice funding in the Dashboard.\n\n## Manual reconciliation and identities\n\nIn `manual` mode, Stripe does not automatically apply the cash balance. The Dashboard or API can apply funds to an incomplete or partially funded PaymentIntent or an open invoice, including an overdue open invoice. In the Dashboard, use **Fund from cash balance** on a payment, or **Charge customer** then **Cash Balance** on an invoice; the invoice flow can fund it partially or fully. The payment button does not appear without available cash balance. For a PaymentIntent, the API is `POST /v1/payment_intents/{id}/apply_customer_balance` with `currency` and optional `amount`; omitted `amount` defaults to its remaining requested amount. The page's API example addresses a PaymentIntent, while the described invoice partial-payment control is in the Dashboard.\n\nFor a customer-configured Account under Accounts v2, manage cash balance settings through the Customers API with the **Account ID** as the path parameter, for example `v1/customers/acct_xxxxx`. The November capture says Accounts v2 is generally available for Connect users and in public preview for other Stripe users; preview participants need to specify a preview version. In the webhook example, expand the event's Customer to obtain its `customer_account` property when an Account ID is needed to retrieve cash balance. Do not substitute the Customer ID for that Account ID.\n\n## Manual webhook example\n\nThe November page's **Ruby example** receives `customer_cash_balance_transaction.created`. Its event contains one `CustomerCashBalanceTransaction`, with that transaction's `customer` and `currency`; the handler verifies the signature and processes only `type: funded`. It lists that customer's PaymentIntents, filters to the same currency, `customer_balance` payment method, and `requires_payment_method` or `requires_action` status, applies balance to the oldest first, and retrieves cash balance again after each application. The oldest-first choice is an example policy, not a mandatory manual priority rule. A funded-transaction event records incoming funds; it is not a paid-PaymentIntent or invoice outcome.\n\nThe 2025 page instead showed a **Node.js example** using `cash_balance.funds_available`, whose event object represented the entire current CashBalance, including older funds. The November page's use of a different event and language does not establish that the older event was removed or deprecated. Implementations must preserve the distinction between transaction-level detail and an aggregate balance snapshot.\n\n## Unreconciled funds and credit balance\n\nThe merchant remains responsible for timely reconciliation. At **75 days** Stripe attempts to return the **aged portion** of unreconciled funds to the customer's bank account; a bank return can fail. Newer funds retain their own 75-day timeline. If Stripe lacks bank details it may contact the customer. At **90 days**, any still-unreconciled aged portion is transferred to the merchant's Stripe balance; this is not a second return attempt or proof that the customer received money. The 2025 capture described these dates for a customer balance more generally; the November capture makes the per-portion aging explicit.\n\nCustomer **credit balance** is distinct from cash balance. It is an invoices-only merchant/customer liability applied when an invoice is finalized to reduce the amount due.\n\n## Raw Sources\n\n- [[raw/stripe-payments-customer-balance-reconciliation-2026-11-07|Stripe customer balance reconciliation \u2014 November 7, 2026 full capture]]\n- [[raw/stripe-customer-balance-reconciliation-2025|Stripe customer balance reconciliation \u2014 2025 captured page]]\n",
+      "quotes": [
+        {
+          "text": "An invoice is awaiting funding if it\u2019s `open` and either hasn\u2019t passed its due date or became overdue within the last 365 days.",
+          "location": "raw/stripe-payments-customer-balance-reconciliation-2026-11-07.md:18-18"
+        },
+        {
+          "text": "Automatic reconciliation considers the customer\u2019s entire available cash balance in the payment currency, including unreconciled funds from earlier bank transfers.",
+          "location": "raw/stripe-payments-customer-balance-reconciliation-2026-11-07.md:20-20"
+        },
+        {
+          "text": "For invoices, Stripe only applies an incoming bank transfer as a partial payment when you enable automatic partial reconciliation and your customer includes the invoice number in the transfer memo.",
+          "location": "raw/stripe-payments-customer-balance-reconciliation-2026-11-07.md:50-50"
+        },
+        {
+          "text": "The `customer_cash_balance_transaction.created` event contains a single [CustomerCashBalanceTransaction](https://docs.stripe.com/api/cash_balance_transactions/object.md) object with transaction-level detail, including the `currency` and `customer` for each funding event.",
+          "location": "raw/stripe-payments-customer-balance-reconciliation-2026-11-07.md:123-123"
+        },
+        {
+          "text": "Newer funds remain in the cash balance and follow their own 75-day timeline.",
+          "location": "raw/stripe-payments-customer-balance-reconciliation-2026-11-07.md:207-207"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "customer-balance-reconciliation-priority-2026",
+            "target_path": "wiki/concepts/stripe-customer-balance.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Automatic priority order** (US/UK/EU/MX):\n\n1. Match reference \u2192 single invoice (by invoice number)\n2. Match reference \u2192 single PI (by `display_bank_transfer_instructions.reference`)\n3. Find exact-amount group (1\u20135 invoices+PIs) \u2192 smallest \u2192 most invoices \u2192 oldest PIs\n4. Fund oldest fully-fundable invoices\n5. Apply remainder to oldest incomplete PIs\n\nJP uses a simplified 3-step version (no reference matching).\n\nInvoice eligible: `open` + not past due OR became overdue within last 30 days.",
+            "proposed_markdown": "**Automatic priority order** (US/UK/EU/MX, November 7, 2026 capture):\n\n1. Match transfer reference \u2192 single invoice number (capped at the triggering transfer amount).\n2. Match transfer reference \u2192 single incomplete PI by `display_bank_transfer_instructions.reference` (same cap).\n3. Match the exact *available cash balance* to a group of 1\u20135 invoices and PIs \u2192 smallest group \u2192 most invoices \u2192 oldest PIs.\n4. Fully fund eligible invoices, oldest **due** first.\n5. Apply remainder to oldest incomplete PIs.\n\nThe full same-currency available balance includes earlier unreconciled transfers; later steps consider funds remaining after reference matching. JPY skips reference matching, then matches an exact-balance group, fully funds invoices by oldest **finalization** time, and applies the remainder to PIs by oldest **confirmation** time. Automatic invoice eligibility is `open` and current or overdue within the last **365 days**. The 2025 source said **30 days**, matched the amount sent, and used oldest finalization in the US/UK/EU/MX invoice fallback; treat those as dated descriptions.\n\nAutomatic partial funding of an incomplete PI can occur on arrival of funds. Automatic partial invoice payment requires the automatic partial reconciliation setting and the invoice number in the transfer memo. At invoice finalization, existing balance applies only if it fully pays after the configured underpayment threshold; otherwise it remains in cash balance. See [[source-stripe-customer-balance-reconciliation]] for the dated source and manual-payment distinction.",
+            "quote_indexes": [
+              0,
+              1,
+              2
+            ],
+            "warnings": [
+              "New raw lines 18-52 establish the 365-day window, available-balance matching, regional order and automatic partial-payment boundaries. Old raw lines 48-121 contain the dated 30-day and amount-sent descriptions."
+            ]
+          },
+          {
+            "update_id": "customer-balance-reconciliation-manual-aging-2026",
+            "target_path": "wiki/concepts/stripe-customer-balance.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Manual reconciliation API**: `stripe.paymentIntents.applyCustomerBalance(id, { amount?, currency })`. Also applicable to open Invoices via Dashboard.\n\n**Webhook**: `cash_balance.funds_available` \u2014 always contains full current balance (not just new funds).\n\n**Unreconciled funds**: auto-return attempt at **75 days**; swept to Stripe balance at **90 days**.",
+            "proposed_markdown": "**Manual reconciliation**: A manual-mode customer receives no automatic application. An incomplete or partially funded PI or an open invoice (including overdue) can be funded in the Dashboard; an invoice can be partially funded there. The PI API is `POST /v1/payment_intents/{id}/apply_customer_balance` with `currency` and optional `amount` (defaults to the PI's remaining requested amount).\n\n**Webhook examples**: The November 7, 2026 source uses `customer_cash_balance_transaction.created`, a single transaction object; filter for `type: funded` before considering eligible same-currency PIs and recheck balance after each application. The 2025 source used `cash_balance.funds_available` with an aggregate CashBalance snapshot, including earlier funds. The newer example does not establish deprecation of the older event. Neither event alone proves an invoice or PI is paid.\n\n**Unreconciled funds**: At **75 days**, Stripe attempts to return the aged portion to the customer's bank; a return can fail. Newer funds have separate aging. At **90 days**, remaining aged funds transfer to the merchant's Stripe balance, not another return attempt. The merchant remains responsible for reconciliation. See [[source-stripe-customer-balance-reconciliation]].",
+            "quote_indexes": [
+              3,
+              4
+            ],
+            "warnings": [
+              "New raw lines 83-123 and 197-207; old raw lines 162-288 document the prior aggregate event example. Event replacement/deprecation is not established by omission."
+            ]
+          },
+          {
+            "update_id": "customer-balance-reconciliation-source-route-2026",
+            "target_path": "wiki/concepts/stripe-customer-balance.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-customer-balance-reconciliation]] \u2014 automatic priority order (5-step per region), manual reconciliation API, cash_balance.funds_available webhook, 75/90-day unreconciled fund rules",
+            "proposed_markdown": "- [[source-stripe-customer-balance-reconciliation]] \u2014 2025 and November 7, 2026 webpage captures: automatic and manual reconciliation, transaction versus aggregate webhook examples, and aged-portion 75/90-day handling",
+            "quote_indexes": [
+              0,
+              3,
+              4
+            ],
+            "warnings": [
+              "Reciprocal route updates the existing source description; it does not claim the 2025 webhook was deprecated."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-customer-balance-reconciliation-2026-11-07.md",
+      "raw_sha256": "e6513992566118c34e47d239eba659bc32166a7b30914892b4b00c3087b10deb",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-customer-balance-reconciliation-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 218
+      }
+    ],
+    "raw/stripe-customer-balance-reconciliation-2025.md": [
+      {
+        "start": 1,
+        "end": 311
+      }
+    ],
+    "wiki/sources/source-stripe-customer-balance-reconciliation.md": [
+      {
+        "start": 1,
+        "end": 40
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/beb64581f6d338abd6f72b13/content.diff": [
+      {
+        "start": 1,
+        "end": 452
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-customer-balance-reconciliation/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 159
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 24
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 300,
+        "end": 315
+      },
+      {
+        "start": 740,
+        "end": 754
+      }
+    ],
+    "wiki/concepts/stripe-customer-balance.md": [
+      {
+        "start": 1,
+        "end": 82
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "An invoice is awaiting funding if it\u2019s `open` and either hasn\u2019t passed its due date or became overdue within the last 30 days.",
+      "location": "raw/stripe-customer-balance-reconciliation-2025.md:52-52"
+    },
+    {
+      "text": "The following code is an example of a full pass of manual reconciliation. You receive the `cash_balance.funds_available` webhook, find PaymentIntents that are awaiting funding, and use the funds available to reconcile the open PaymentIntents.",
+      "location": "raw/stripe-customer-balance-reconciliation-2025.md:162-162"
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/customer-balance/reconciliation, the November 7, 2026 capture establishes automatic application of same-currency available cash balance, including older transfers, to incomplete PaymentIntents and eligible open invoices, plus per-customer manual overrides and a PI application API. The 365-day invoice window, available-balance exact match, US/UK/EU/MX oldest-due fallback, JPY finalization/confirmation order, and conditional automatic invoice partial payment are documented at new raw lines 18-52. Account-configured Accounts v2 use an Account ID and may require a preview version outside Connect; a funded transaction webhook is not payment success. The source-stripe-customer-balance-reconciliation.md summary still states the older 30-day window and aggregate webhook example. The 2025 source describes those historical rules at old raw lines 48-121 and 162-288. The candidate keeps both dated captures and routes to [[stripe]] and [[stripe-customer-balance]].",
+    "Q2": "For https://docs.stripe.com/payments/customer-balance/reconciliation, substantive differences include the 30-to-365-day invoice window, entire available balance and transfer-capped reference matching, oldest-due invoice fallback for US/UK/EU/MX, conditional automatic partial invoices, transaction-level manual example, and separate aging of portions at 75 and 90 days; compare old raw lines 48-121 and 292-302 with new raw lines 18-52 and 197-207. source-stripe-customer-balance-reconciliation.md must retain the 2025 `cash_balance.funds_available` Node.js example as dated history, because omission does not prove removal. Curl/Ruby replacing Node and CDN image URLs are presentation changes. Dashboard invoice partial funding is distinct from automatic invoice rules; Accounts v2 Account versus Customer IDs and preview version conditions must remain explicit. A webhook or return attempt does not prove payment or customer receipt. The bounded [[stripe-customer-balance]] replacements correct its stale window, webhook and aging language while preserving the reciprocal source route."
+  }
+}

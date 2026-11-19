@@ -1,0 +1,297 @@
+{
+  "job_id": "payments-bank-transfers",
+  "attempt": 2,
+  "source_results": {
+    "wiki/sources/source-stripe-bank-transfers.md": {
+      "job_id": "payments-bank-transfers",
+      "attempt": 2,
+      "source_page": "---\ntitle: \"Stripe: Bank Transfer Payments\"\ntype: source\ndate_ingested: 2026-05-05\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/payments/bank-transfers\nraw_files:\n  - \"stripe-payments-bank-transfers-2026-11-07.md\"\n  - \"stripe-bank-transfers-2025.md\"\ntags: [stripe, bank-transfers, customer-balance, payments, ach, sepa, swift, wire, connect]\n---\n\n## Summary\n\nStripe's bank transfer overview describes a push-payment method. Stripe supplies a virtual account number, the customer sends funds from their bank, Stripe holds incoming funds in that customer's cash balance, and reconciliation applies them to a payment or invoice. Receipt of funds and provisional access do not by themselves mean the payment is complete: the November 7 customer-experience sequence marks completion after reconciliation and notification. This page compares the November 7, 2026 full capture with the May 5, 2026 capture.\n\n## Key Details\n\n**Activation and identity.** Enable bank transfers in Payment methods settings. The customer's virtual account details and transfer reference are used to send funds; the real merchant bank account is not exposed. Checkout requires a Customer on the session. The incoming Cash Balance Transaction has type `funded`; its `funded.bank_transfer` fields describe the sender and payment rail. A funding transaction, a cash balance, a reconciled PaymentIntent or invoice, and a merchant payout are different states and objects.\n\n**Timing and recurrence.** The November capture labels access \u201cInstant provisional access,\u201d payment confirmation \u201cDelayed,\u201d and settlement \u201cStandard payout schedule.\u201d Recurring payments are supported only while the customer keeps enough cash balance to cover each invoice. Stripe attempts to return unreconciled funds held for **more than 75 days**. It may contact the customer if bank details are missing; only if it cannot determine account information by day 90 does it sweep the unreconciled funds to the merchant's Stripe balance. These are an attempted return and conditional sweep, not unconditional completed refunds.\n\n**Eligibility.** The listed presentment currencies are EUR, GBP, JPY, MXN, and USD, with merchant-country eligibility per currency. The November GBP row lists AT, AU, BE, BG, CA, CH, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GR, HK, HR, HU, IE, IT, LI, LT, LU, LV, MC, MT, NL, NO, PL, PT, RO, SE, SG, SI, SK, SM, and US; the May capture listed GB only. EUR or USD have their separate account-country row; JPY is listed for JP and MXN for MX. IBAN localization is listed for DE, FR, IE, and NL. There is no extra bank-transfer-specific amount limit beyond Stripe's currency minimum and maximum. For EU EUR transfers, the beneficiary name should exactly match the business name registered with Stripe to avoid screening delays.\n\n**Products and APIs.** The November matrix lists full-page and embedded Checkout, Payment Element, Billing, Invoicing, and Connect as supported. Checkout Sessions and PaymentIntents are supported APIs; the PaymentIntent method enum is `customer_balance`. Checkout does not support bank transfers in subscription or setup mode. Invoices and Subscriptions support only `send_invoice` collection. SetupIntents, `setup_future_usage`, manual capture, Payment Links, Express Checkout Element, in-app payments, Managed Payments, Customer Portal, Radar, and Terminal are listed unsupported. The matrix says no redirect is required. Checkout session Customer requirement remains in both captures.\n\n**Refunds and disputes.** Full and partial refunds may go to the customer bank account or back to the cash balance. Stripe needs bank details for a bank-account refund and may email the customer to collect them. The November capability row says dispute support is **USD transactions only**, while the detailed section on the same page says USD and CAD bank transfers can be reversed and describes CAD ACH reversals. The capture's presentment-currency list omits CAD. Treat CAD availability and dispute applicability as unresolved in this overview; USD ACH reversals are described with a five-day deadline. Do not generalize \u201cirreversible\u201d across all other cases from this contradictory page.\n\n**Wire contradiction.** The November payment-support row says cross-border payments are not supported, and its unsupported-features paragraph says International transfers are unsupported. Yet the same November wire section says US bank-transfer users can accept domestic and international SWIFT wires, with 3\u20135 business days to settle into customer balance, possible fee deductions, no Stripe refund for international wires, and USD-only SWIFT receipt for US accounts. The May capture contains the same wire-versus-unsupported contradiction. This overview does not resolve whether a particular cross-border transfer is eligible; verify the exact account, currency, and rail before relying on wire receipt.\n\n**Sender information.** In the Dashboard, open the customer's cash balance Funding transaction. The November API example uses `GET /v1/customers/{customer}/cash_balance_transactions/{transaction}` via curl; the May example used the Node SDK method `stripe.customers.retrieveCashBalanceTransaction(customerId, transactionId)`. These examples are dated representations of the Cash Balance Transactions API, not evidence that the Node method was removed. `funded.bank_transfer` examples show EU BIC/IBAN last four and SEPA network; GB account number last four and sort code; JP sender bank/branch; MX CLABE last four; and US ACH or domestic-wire network.\n\n**Connect.** Bank transfers can be used with all Connect charge types. `on_behalf_of` is unsupported. Direct charges require the connected account itself to activate the method and have the relevant capability. Capability activation and incoming funding do not establish that a particular payment succeeded.\n\n## Related\n\n- [[stripe]] \u2014 Stripe company route.\n- [[stripe-bank-transfers]] \u2014 concept and reciprocal conflict notes.\n- [[stripe-customer-balance]] \u2014 cash-balance and reconciliation concept.\n\n## Raw Sources\n\n- [[raw/stripe-payments-bank-transfers-2026-11-07|2026-11-07 full bank transfer overview]] \u2014 complete newer factual capture, 453 lines.\n- [[raw/stripe-bank-transfers-2025|2026-05-05 bank transfer overview]] \u2014 retained historical factual capture, 408 lines; includes the dated Node sender-info example.\n",
+      "quotes": [
+        {
+          "text": "Bank transfers support IBAN localization for DE, FR, IE, and NL.",
+          "location": "raw/stripe-payments-bank-transfers-2026-11-07.md:20-20"
+        },
+        {
+          "text": "| Cross-border payments | Not supported |",
+          "location": "raw/stripe-payments-bank-transfers-2026-11-07.md:111-111"
+        },
+        {
+          "text": "| Disputes | [Supported for USD transactions only](https://docs.stripe.com/payments/bank-transfers.md#disputes) |",
+          "location": "raw/stripe-payments-bank-transfers-2026-11-07.md:171-171"
+        },
+        {
+          "text": "Bank transfer payments can\u2019t be reversed except for USD and CAD transactions.",
+          "location": "raw/stripe-payments-bank-transfers-2026-11-07.md:186-186"
+        },
+        {
+          "text": "Checkout doesn\u2019t support bank transfers in subscription or setup mode. Invoices and Subscriptions only support the [send_invoice](https://docs.stripe.com/api/invoices/object.md#invoice_object-collection_method) collection method.",
+          "location": "raw/stripe-payments-bank-transfers-2026-11-07.md:409-409"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "payments-bank-transfers-gbp-eligibility",
+            "target_path": "wiki/concepts/stripe-bank-transfers.md",
+            "update_kind": "durable_fact",
+            "anchor": "- **GBP**: GB only",
+            "proposed_markdown": "- **GBP**: November 7, 2026 overview lists AT, AU, BE, BG, CA, CH, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GR, HK, HR, HU, IE, IT, LI, LT, LU, LV, MC, MT, NL, NO, PL, PT, RO, SE, SG, SI, SK, SM, US; the May 5 capture listed GB only. This is merchant-account eligibility for GBP, not a statement that cross-border payments are supported.",
+            "quote_indexes": [
+              1
+            ],
+            "warnings": [
+              "Old raw lines 99-101 contain the GB-only row. New raw lines 64-103 contain the expanded GBP account-location row and separate JPY/MXN rows; new raw lines 105-112 say cross-border payments are unsupported."
+            ]
+          },
+          {
+            "update_id": "payments-bank-transfers-unreconciled",
+            "target_path": "wiki/concepts/stripe-bank-transfers.md",
+            "update_kind": "durable_fact",
+            "anchor": "- Unreconciled funds auto-returned at **75 days**",
+            "proposed_markdown": "- Stripe **attempts** to return unreconciled funds held for **more than 75 days**; it may contact the customer for missing bank details. A return attempt is not a completed refund.",
+            "quote_indexes": [
+              1
+            ],
+            "warnings": [
+              "Old raw lines 140-144 and new raw lines 140-144 both state more than 75 days and an attempted return; the conditional day-90 sweep is on the same lines."
+            ]
+          },
+          {
+            "update_id": "payments-bank-transfers-dispute-conflict",
+            "target_path": "wiki/concepts/stripe-bank-transfers.md",
+            "update_kind": "durable_fact",
+            "anchor": "| Disputes | USD and CAD only |",
+            "proposed_markdown": "| Disputes | Conflict in November 7 overview: capability row says USD only; detailed reversal section discusses USD and CAD. CAD applicability is unresolved here. |",
+            "quote_indexes": [
+              2,
+              3
+            ],
+            "warnings": [
+              "New raw lines 166-171 restrict the capability row to USD transactions, while new raw lines 184-194 describe USD and CAD reversals. Old raw lines 44-46 said US only, while old raw lines 356-366 discussed USD/CAD."
+            ]
+          },
+          {
+            "update_id": "payments-bank-transfers-wire-conflict",
+            "target_path": "wiki/concepts/stripe-bank-transfers.md",
+            "update_kind": "durable_fact",
+            "anchor": "Available for US accounts only. SWIFT transfers settle in 3\u20135 business days. No refunds for international wires. US accounts accept SWIFT in USD only.",
+            "proposed_markdown": "The November 7 overview's US wire section says US bank-transfer users can accept domestic and international SWIFT wires; international wires can take 3\u20135 business days to settle into the cash balance, Stripe does not refund them, and US accounts accept SWIFT in USD only. The same capture also labels cross-border payments unsupported and says International transfers are unsupported. Treat exact account, currency, and rail eligibility as unresolved by this overview.",
+            "quote_indexes": [
+              1
+            ],
+            "warnings": [
+              "New raw lines 105-112 and 427-429 conflict with its US wire section at new raw lines 146-162. Old raw lines 146-162 and 406-408 preserve the same conflict."
+            ]
+          },
+          {
+            "update_id": "payments-bank-transfers-product-matrix",
+            "target_path": "wiki/concepts/stripe-bank-transfers.md",
+            "update_kind": "durable_fact",
+            "anchor": "PaymentIntents only \u2014 no SetupIntents, no manual capture, no `setup_future_usage`.",
+            "proposed_markdown": "The November 7 overview lists Checkout Sessions and PaymentIntents as supported APIs; its PaymentIntent payment-method enum is `customer_balance`. SetupIntents, manual capture, and `setup_future_usage` are unsupported. Checkout excludes subscription and setup mode; Invoices and Subscriptions require `send_invoice` collection.",
+            "quote_indexes": [
+              4
+            ],
+            "warnings": [
+              "Old raw lines 390-396 showed PaymentIntents in the older API matrix. New raw lines 402-417 add Checkout Sessions to the product/API display and retain the SetupIntent/manual-capture/setup_future_usage limits."
+            ]
+          },
+          {
+            "update_id": "payments-bank-transfers-cash-balance-age",
+            "target_path": "wiki/concepts/stripe-customer-balance.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Unreconciled funds**: auto-return attempt at **75 days**; swept to Stripe balance at **90 days**.",
+            "proposed_markdown": "**Unreconciled funds**: Stripe attempts return after funds have been held for **more than 75 days**. If it lacks customer bank details, it may contact the customer; if it still cannot determine the account information by **day 90**, it sweeps the unreconciled funds to the merchant's Stripe balance. A return attempt is not a completed refund.",
+            "quote_indexes": [
+              1
+            ],
+            "warnings": [
+              "Both old raw lines 140-144 and new raw lines 140-144 specify more than 75 days and a conditional day-90 sweep."
+            ]
+          },
+          {
+            "update_id": "payments-bank-transfers-source-route",
+            "target_path": "wiki/concepts/stripe-bank-transfers.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-bank-transfers]] \u2014 overview: virtual account model, customer balance, international wires, disputes, sender info API, Connect, product/API support tables",
+            "proposed_markdown": "- [[source-stripe-bank-transfers]] \u2014 May 5 and November 7, 2026 full overviews: virtual-account and customer-cash-balance model, expanded GBP account eligibility, Checkout Sessions and PaymentIntents support, sender-info examples, Connect, and unresolved cross-border/SWIFT and USD/CAD dispute contradictions.",
+            "quote_indexes": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "New raw lines 14-20, 64-112, 146-194, 204-227, and 384-429 support the route; old raw lines 99-101, 146-162, 201-213, 356-366, and 390-408 retain dated contrasts."
+            ]
+          },
+          {
+            "update_id": "payments-bank-transfers-delayed-confirmation",
+            "target_path": "wiki/concepts/stripe-bank-transfers.md",
+            "update_kind": "durable_fact",
+            "anchor": "| Payment confirmation | No (push payment \u2014 not instant) |",
+            "proposed_markdown": "| Payment confirmation | November 7, 2026 overview: **delayed**; access is labeled **instant provisional**. Customer funding and reconciliation precede the documented completed-payment step, and standard payout timing applies. May 5, 2026 properties panel said **No**. |",
+            "quote_indexes": [
+              0
+            ],
+            "warnings": [
+              "Replace the exact existing property row. New raw lines 14-20 label access instant provisional, confirmation delayed and settlement standard; new raw lines 431-447 place payment complete after Stripe reconciles and notifies. Old raw lines 24-38 had Payment confirmation No and standard payout timing. Provisional access, funding, reconciliation and payout are distinct from demonstrated payment success."
+            ]
+          },
+          {
+            "update_id": "payments-bank-transfers-international-support-qualifier",
+            "target_path": "wiki/concepts/stripe-bank-transfers.md",
+            "update_kind": "durable_fact",
+            "anchor": "Unsupported: Payment Links, Express Checkout Element, Mobile Payment Element, Customer Portal, International transfers.",
+            "proposed_markdown": "Unsupported in the overview's product rows: Payment Links, Express Checkout Element, Mobile Payment Element and Customer Portal. The November 7, 2026 cross-border row and unsupported-features paragraph also label International transfers unsupported; its US wire section nevertheless discusses domestic and international SWIFT receipt for US bank-transfer users. See the unresolved [[source-stripe-bank-transfers]] wire conflict before deciding account, currency or rail eligibility.",
+            "quote_indexes": [
+              1
+            ],
+            "warnings": [
+              "The exact Product Support line currently gives an absolute answer beside the concept's qualified wire paragraph. New raw lines 105-112 and 427-429 state the exclusion, but new raw lines 146-162 describe US domestic/international SWIFT and USD-only US account currency. Old raw lines 146-162 and 406-408 retain the same contradiction. This patch records both without declaring US international transfers generally supported."
+            ]
+          },
+          {
+            "update_id": "payments-bank-transfers-dispute-detail-qualifier",
+            "target_path": "wiki/concepts/stripe-bank-transfers.md",
+            "update_kind": "durable_fact",
+            "anchor": "- **USD (ACH)**: reversible within 5 days of payment; merchant must provide evidence to remitting bank.\n- **CAD (ACH)**: reversals always initiated by remitting bank; beneficiary bank must honor.\n- All other currencies: **irreversible**.",
+            "proposed_markdown": "- **USD (ACH)**: the November 7, 2026 detailed section says a remitting-bank reversal must be sent no later than five days after payment, with evidence supplied to the bank. The capability row separately limits dispute support to USD transactions.\n- **CAD (ACH)**: the same detailed section says reversals are initiated by the remitting bank and honored by the beneficiary bank. Its USD-only capability row and presentment-currency list do not establish CAD payment or dispute availability; applicability remains unresolved.\n- **Other currencies**: the detailed section says bank transfers cannot be reversed except USD and CAD. Read that dated statement with the capability-row conflict; do not infer a universal or current irreversibility rule from this page.",
+            "quote_indexes": [
+              2,
+              3
+            ],
+            "warnings": [
+              "Replace the exact three-bullet Disputes block. New raw lines 166-171 say USD-only dispute support, while new raw lines 184-194 describe USD/CAD reversals; new raw lines 105-112 omit CAD from presentment currencies. Old raw lines 44-46 say US only, while old raw lines 356-366 give USD/CAD reversal details. The concept must retain that contradiction in the detailed answer, not only in the property table."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-bank-transfers-2026-11-07.md",
+      "raw_sha256": "5c0919337904b63634b3ecee148383f6c49ce85183d171185c5b8125902dbd1c",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-bank-transfers-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 453
+      }
+    ],
+    "raw/stripe-bank-transfers-2025.md": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 340
+      },
+      {
+        "start": 341,
+        "end": 408
+      }
+    ],
+    "wiki/sources/source-stripe-bank-transfers.md": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/db06fdb0d2a7bc9870b5f77a/content.diff": [
+      {
+        "start": 1,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 450
+      },
+      {
+        "start": 451,
+        "end": 607
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-bank-transfers/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 248
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 303,
+        "end": 315
+      }
+    ],
+    "wiki/concepts/stripe-bank-transfers.md": [
+      {
+        "start": 1,
+        "end": 142
+      }
+    ],
+    "wiki/concepts/stripe-customer-balance.md": [
+      {
+        "start": 1,
+        "end": 82
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-transfers/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 119
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-transfers/attempt-2/input.json": [
+      {
+        "start": 1,
+        "end": 85
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "| GBP | - GB |",
+      "location": "raw/stripe-bank-transfers-2025.md:99-99"
+    },
+    {
+      "text": "Bank transfer payments can\u2019t be reversed except for USD and CAD transactions.",
+      "location": "raw/stripe-bank-transfers-2025.md:358-358"
+    },
+    {
+      "text": "Bank transfers don\u2019t support Payment Links or International transfers.",
+      "location": "raw/stripe-bank-transfers-2025.md:408-408"
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/bank-transfers, the full November capture (raw/stripe-payments-bank-transfers-2026-11-07.md, new raw lines 5-20, 64-112, 140-227, 370-447) establishes a customer push to Stripe-provided virtual bank details, receipt into that Customer's cash balance, and payment completion only after reconciliation. It distinguishes provisional access, delayed confirmation, cash-balance funding, invoice or PaymentIntent application, and standard payout. Enable the method in settings; Checkout requires a Customer; Connect direct charges require the connected account's capability. The prior raw/stripe-bank-transfers-2025.md (old raw lines 4-12, 99-112, 140-213, 356-408) had the same central funding model and older product matrix, but GBP account eligibility was GB-only and the sender API example used Node. Current source-stripe-bank-transfers.md preserved the model but misstated the 75/90-day rule, reduced API support to PaymentIntents only, and stated USD/CAD disputes without the newer conflicting USD-only summary. The candidate fixes those statements and routes to [[stripe]], the transfer concept, and cash-balance concept.",
+    "Q2": "For https://docs.stripe.com/payments/bank-transfers, substantive changes between raw/stripe-bank-transfers-2025.md (old raw lines 44-56, 99-112, 140-162, 197-213, 356-408) and raw/stripe-payments-bank-transfers-2026-11-07.md (new raw lines 14-20, 64-112, 140-194, 218-227, 384-429) include expanded GBP merchant-account locations, explicit provisional/delayed timing and IBAN localization, the Checkout Sessions/product matrix, currency limit qualification, and the USD-only capability-row wording. Node versus curl is a dated example format, not proof of Node API removal; list/table restyling and the refreshed Elements quickstart are presentation/navigation. Both captures say Stripe attempts return only after more than 75 days and condition the day-90 sweep on unavailable account information. Both contain a cross-border/International-unsupported statement alongside US SWIFT support, and their dispute summaries conflict with USD/CAD detail; reciprocal concept warnings preserve uncertainty. Customer funding, provisional access, a successful reconciliation, refunded funds, a connected-account capability, and merchant payout are distinct outcomes. The revised source-stripe-bank-transfers.md preserves these contradictions and dated examples. No pricing conclusion follows the undefined URL or account eligibility from a customer country alone."
+  }
+}

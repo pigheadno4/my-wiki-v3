@@ -1,0 +1,145 @@
+# EPS payments
+
+Learn about EPS, a common payment method in Austria.
+
+EPS is an Austria-based payment method that lets customers complete transactions online using their bank credentials. All Austrian banks support EPS, and most Austrian online retailers accept it.
+Payment method family: Bank redirects
+Usability: Single-use
+Access type: Instant provisional access
+Payment confirmation timing: Immediate
+Settlement timing: Standard payout schedule
+Pricing: https://stripe.com/en-us/pricing/local-payment-methods#eps
+## Eligibility and availability 
+
+### Account eligibility
+Business location: AT, AU, BE, BG, CA, CH, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GI, GR, HK, HR, HU, IE, IT, JP, LI, LT, LU, LV, MT, MX, NL, NO, NZ, PL, PT, RO, SE, SG, SI, SK, US
+Account type: ✓ Merchant, ✓ Platform or marketplace (Connect)
+Business model: ✓ B2B, ✓ B2C
+Your account might be reviewed after activation to confirm eligibility. While EPS doesn’t enforce any additional website requirements, make sure that you provide a website that meets the [Stripe account activation requirements](https://support.stripe.com/questions/business-website-for-account-activation-faq). You can contact [Stripe support](https://support.stripe.com/) to appeal any EPS capability restrictions.
+
+Stripe accounts in the following countries can accept EPS payments that settle in a supported currency.
+
+AMER: CA, MX, US
+
+EMEA: AT, BE, BG, CH, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GI, GR, HR, HU, IE, IT, LI, LT, LU, LV, MT, NL, NO, PL, PT, RO, SE, SI, SK
+
+APAC: AU, HK, JP, NZ, SG
+
+Customers in the following countries can use EPS.
+
+EMEA: AT
+
+### Payment support
+Customer location: AT
+Presentment currency: EUR
+Geographic coverage: ✓ Domestic, ✓ Crossborder
+Transaction limits: Minimum amount: 1.00 EUR
+## Capabilities 
+Recurring payments: ✗ Not supported
+
+Payment authorizations:
+  ✗ Extended authorizations
+  ✗ Flexible extended authorizations
+  ✗ Incremental authorizations
+  ✗ Decremental authorizations
+  ✗ Re-authorizations
+
+Payment captures:
+  ✗ Manual capture
+  ✗ Partial capture
+  ✗ Multi-capture
+  ✗ Over-capture
+
+Refunds:
+  ✓ Partial refunds
+  ✓ Full refunds
+  Submission window: 180 days
+  Processing time: Typically 1–3 days, with timing varying by bank
+
+Disputes:
+  ✗ Partial disputes
+  ✗ Full disputes
+### Refunds 
+
+You can issue a full or partial refund for an EPS payment within 180 days of the original payment through the [Dashboard](https://dashboard.stripe.com/payments) or [Refunds API](https://docs.stripe.com/api/refunds/create.md). You can issue multiple partial refunds, provided the total refunded amount doesn’t exceed the original payment amount. Funds typically reach the customer’s bank account within 1–3 days, but timing varies by bank. There’s no guaranteed maximum completion time. You can’t cancel an EPS refund after submitting it.
+
+#### Refund process 
+
+EPS refunds are always processed as a separate credit to the customer’s bank account. Unlike card payments, they’re never issued as a reversal. The refund won’t be explicitly labeled as a refund on the customer’s bank statement. We recommend notifying your customer when you issue a refund so they can identify the incoming credit.
+
+#### Tracking refunds 
+
+To check a refund’s status, open the payment in the [Dashboard](https://dashboard.stripe.com/payments) and click **View details** on the refund entry. You can also [retrieve the Refund object](https://docs.stripe.com/api/refunds/retrieve.md) and check its `status` field.
+
+Stripe notifies you of the final status through a `refund.updated` or `refund.failed` *webhook* (A webhook is a real-time push notification sent to your application as a JSON payload through HTTPS requests) event. When a refund succeeds, the [Refund object](https://docs.stripe.com/api/refunds/object.md) status changes to `succeeded`. If the refund fails, the status changes to `failed` and Stripe returns the amount to your Stripe balance. You must refund the customer using another method.
+
+### Disputes 
+
+EPS requires customers to authenticate payments directly with their bank, which reduces the risk of fraud and unrecognized transactions. As a result, EPS doesn’t support the standard dispute process—customers can’t file a chargeback through their bank, and funds are never withdrawn from your Stripe balance because of a dispute.
+
+If a customer contacts their bank about a payment made with EPS, the bank directs them back to you. You can then issue a full or partial refund.
+
+## Stripe product support 
+Checkout UIs:
+  ✓ Full page (Recommended)
+  ✓ Payment Links
+  ✓ Embedded form
+  ✓ Payment Element
+  ✗ Express Checkout Element
+  ✗ Payment Method Messaging Element
+  ✓ In-app payments
+
+Products:
+  ✗ Managed Payments
+  ✓ Billing
+  ✓ Invoicing
+  ✗ Customer Portal
+  ✓ Radar
+  ✗ Terminal
+  ✓ Connect
+
+APIs:
+  ✓ Checkout Sessions (Recommended)
+  ✓ Payment Intents
+  ✗ Payment Intents with setup_future_usage
+  ✗ Setup Intents
+  ✗ Off-session payments
+
+1. Only supports send_invoice collection method.
+## Customer experience 
+
+#### 1. Select EPS
+
+The customer selects EPS at checkout.
+
+#### 2. Choose a bank
+
+The customer selects their bank and is redirected to the bank's login page.
+
+#### 3. Sign in to the bank
+
+The customer enters their bank credentials.
+
+#### 4. Authorize the payment
+
+The customer has up to 1 hour to complete bank authorization using a bank-provided method, such as a scanner or SMS.
+
+#### 5. See the payment result
+
+The customer immediately sees whether the payment succeeded or failed.
+
+#### 6. Return to the business
+
+The customer can optionally return to the business website for confirmation.
+
+### Statement descriptors 
+
+Set `statement_descriptor` to specify the descriptor Stripe sends for an EPS payment. The value shown on the customer’s bank statement varies by bank. Non-card payments use `statement_descriptor`, while `statement_descriptor_suffix` applies only to card payments. If you don’t set a payment-level descriptor, Stripe uses the account-level statement descriptor.
+
+For Connect destination charges, Stripe uses the platform’s statement descriptor by default. If you set `on_behalf_of`, Stripe uses the connected account’s statement descriptor instead. Learn more about [statement descriptors with Connect](https://docs.stripe.com/connect/statement-descriptors.md).
+
+## Enable EPS 
+
+If you use Stripe front-end products, enable EPS in your [payment method settings](https://dashboard.stripe.com/settings/payment_methods). Stripe automatically determines which payment methods are most relevant to each customer.
+
+If your integration requires manually listing payment methods, you can [configure EPS as an accepted payment method](https://docs.stripe.com/payments/eps/accept-a-payment.md).

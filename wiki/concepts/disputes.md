@@ -407,6 +407,7 @@ See [[source-stripe-disputes-responding]] for full evidence submission workflow.
 - [[source-paypal-customer-disputes]] — older disputes API coverage from developer.paypal.com
 - [[source-github-paypal-rest-api-specifications]] — exact-SHA Disputes 1.11 operation and schema contract
 - [[source-stripe-disputes-how-disputes-work]] — Stripe dispute lifecycle: EFWs, inquiries, timing, fees, LPM differences
+- [[source-stripe-klarna-disputes]] — Klarna-specific inquiry, direct-chargeback exceptions, evidence deadlines, fee/funds handling, and Dispute API states (2026-05-06 and 2026-11-07 captures)
 
 ## Open Questions
 

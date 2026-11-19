@@ -1,0 +1,792 @@
+{
+  "audit_id": "concept-audit-01",
+  "targets": [
+    {
+      "target": "wiki/concepts/disputes.md",
+      "before_sha256": "6c91f893c0288b8bf708d21a20117c14bff6fb4ffc92647da9ef25dfd6adfb42",
+      "candidate": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/disputes.md",
+      "candidate_sha256": "93352cbe8e46303404e902df1b24409afa4748d870bd5cef1726ab6c145594dc",
+      "diff": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/disputes.md.diff",
+      "updates": [
+        {
+          "update_id": "klarna-disputes-generic-route",
+          "target_path": "wiki/concepts/disputes.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-disputes-how-disputes-work]] \u2014 Stripe dispute lifecycle: EFWs, inquiries, timing, fees, LPM differences",
+          "proposed_markdown": "- [[source-stripe-disputes-how-disputes-work]] \u2014 Stripe dispute lifecycle: EFWs, inquiries, timing, fees, LPM differences\n- [[source-stripe-klarna-disputes]] \u2014 Klarna-specific inquiry, direct-chargeback exceptions, evidence deadlines, fee/funds handling, and Dispute API states (2026-05-06 and 2026-11-07 captures)",
+          "quote_indexes": [
+            1,
+            3
+          ],
+          "warnings": [
+            "Appends a Klarna-specific source route at wiki/concepts/disputes.md:409; no generic card-dispute rule is changed. raw/stripe-payments-klarna-disputes-2026-11-07.md:60-111,527-569."
+          ],
+          "job_id": "payments-klarna-disputes",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-disputes/attempt-2/receipt.json"
+        }
+      ],
+      "contributions": [
+        {
+          "job_id": "payments-klarna-disputes",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-disputes/attempt-2/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-disputes/attempt-2/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-disputes/attempt-2/input.json"
+        }
+      ]
+    },
+    {
+      "target": "wiki/concepts/stripe-au-becs-debit.md",
+      "before_sha256": "48ebec59365c8ff7fa8bc35d8a076049975d9e437296ee1b650371b412355f85",
+      "candidate": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-au-becs-debit.md",
+      "candidate_sha256": "10c68db87b35dc7f1ad54f3db613e5fd5f661311c1755825d0a72b101a0aff88",
+      "diff": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-au-becs-debit.md.diff",
+      "updates": [
+        {
+          "update_id": "payments-au-becs-debit-limits",
+          "target_path": "wiki/concepts/stripe-au-becs-debit.md",
+          "update_kind": "durable_fact",
+          "anchor": "- Per transaction: 10,000 AUD (new users)\n- Per week: 10,000 AUD (new users)\n- Contact Stripe support for higher limits",
+          "proposed_markdown": "- November 7, 2026 scheme range: 0.50\u201399,000,000 AUD; the scheme maximum is not an account processing limit.\n- Default account limits: 10,000 AUD per transaction and 10,000 AUD per week across AU BECS debits. Actual limits vary with approval and increases; both scheme and account limits apply.\n- Contact Stripe support to request higher account limits.",
+          "quote_indexes": [
+            1
+          ],
+          "warnings": [
+            "Old raw lines 12-14 gives new-user defaults. New raw lines 38-52 distinguish scheme range from account limits and approval."
+          ],
+          "job_id": "payments-au-becs-debit",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-au-becs-debit/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "payments-au-becs-debit-settlement",
+          "target_path": "wiki/concepts/stripe-au-becs-debit.md",
+          "update_kind": "durable_fact",
+          "anchor": "Funds debited from customer at T+0; settlement confirmation takes 2 business days.",
+          "proposed_markdown": "The May 2, 2026 capture shows customer debit at T+0 only in a sample timeline. Submission can occur after creation when a cutoff or non-business day intervenes. Standard payment success and funds availability are listed at T+2 after submission; the expected debit date is an estimate, not a guarantee. November's final success/failure notification bound is up to 2 business days, versus May's up to 3.",
+          "quote_indexes": [
+            0,
+            3
+          ],
+          "warnings": [
+            "Old raw lines 12-14, 120-141 contain the prior notification bound and sample T+0 timeline. New raw lines 13, 196-208, 253-255 separate notification, estimated debit date, T+2, and processing."
+          ],
+          "job_id": "payments-au-becs-debit",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-au-becs-debit/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "payments-au-becs-debit-dispute-events",
+          "target_path": "wiki/concepts/stripe-au-becs-debit.md",
+          "update_kind": "durable_fact",
+          "anchor": "- Stripe sends `charge.dispute.created` + `charge.dispute.closed` simultaneously",
+          "proposed_markdown": "- Stripe sends both `charge.dispute.created` and `charge.dispute.closed`; neither dated overview specifies that the events are simultaneous. Disputes have no inquiry/evidence counter, are final, and the dispute fee is not refunded.",
+          "quote_indexes": [
+            3
+          ],
+          "warnings": [
+            "Old raw lines 163-173 and new raw lines 109-127 say both events are sent but do not guarantee simultaneity."
+          ],
+          "job_id": "payments-au-becs-debit",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-au-becs-debit/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "payments-au-becs-debit-refunds",
+          "target_path": "wiki/concepts/stripe-au-becs-debit.md",
+          "update_kind": "durable_fact",
+          "anchor": "- 3\u20135 business days to process",
+          "proposed_markdown": "- May 2, 2026 overview: typically 3\u20135 business days; November 7, 2026 overview: typically 5 business days. A pending refund begins only after its Charge succeeds and is canceled if the Charge fails. Track final Refund status; a failed refund returns funds to the Stripe balance and requires another customer refund method.",
+          "quote_indexes": [
+            3
+          ],
+          "warnings": [
+            "Old raw lines 189-199 and new raw lines 79-107 support the dated timing and shared Charge-state conditional; new raw lines 87-91 add Refund status and failure outcome."
+          ],
+          "job_id": "payments-au-becs-debit",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-au-becs-debit/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "payments-au-becs-debit-descriptor",
+          "target_path": "wiki/concepts/stripe-au-becs-debit.md",
+          "update_kind": "durable_fact",
+          "anchor": "- **Merchant name**: from Stripe account statement descriptor; override with `statement_descriptor` on PaymentIntent",
+          "proposed_markdown": "- **Business name**: comes from the account selected by Connect charge type and `on_behalf_of`; `PaymentIntent.statement_descriptor` changes the payment-specific lodgement reference, not this business name.",
+          "quote_indexes": [
+            4
+          ],
+          "warnings": [
+            "Old raw lines 201-230 show the two fields and Connect mapping. New raw lines 257-273 explicitly state the dynamic descriptor changes reference, not name, and the lodgement reference is not exposed through the API."
+          ],
+          "job_id": "payments-au-becs-debit",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-au-becs-debit/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "payments-au-becs-debit-retries",
+          "target_path": "wiki/concepts/stripe-au-becs-debit.md",
+          "update_kind": "durable_fact",
+          "anchor": "Private preview. Auto-retry for insufficient funds on subscription or one-off invoices.",
+          "proposed_markdown": "May 2, 2026 overview labeled Billing Retries a private preview. The November 7 overview describes opt-in Direct Debit retries for insufficient-funds failures on recurring subscription or one-off invoices, at most four retries within 30 days of the original attempt, with no debit-failure fee for Stripe-initiated attempts. Neither capture establishes access or enabled status for a particular account. The subscription-guide contradiction below remains unresolved.",
+          "quote_indexes": [
+            3
+          ],
+          "warnings": [
+            "Old raw lines 232-234 contain the private-preview label. New raw lines 231-237 specify opt-in scope, cap, and fee; new raw lines 178-183 also label off-session payments unsupported beside supported SetupIntents/setup_future_usage."
+          ],
+          "job_id": "payments-au-becs-debit",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-au-becs-debit/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "payments-au-becs-debit-product-boundary",
+          "target_path": "wiki/concepts/stripe-au-becs-debit.md",
+          "update_kind": "durable_fact",
+          "anchor": "Connect, Checkout, Payment Links, Subscriptions, Invoicing, Elements (not Express Checkout Element).",
+          "proposed_markdown": "November 7 overview lists full-page and embedded Checkout, Payment Links, Payment Element, in-app payments, Billing, Invoicing, Customer Portal, Radar, and Connect as supported; Express Checkout Element, Payment Method Messaging Element, Managed Payments, and Terminal as unsupported. Its API matrix lists Checkout Sessions, PaymentIntents with or without `setup_future_usage`, and SetupIntents as supported, while also labeling \u201cOff-session payments\u201d unsupported. The scope of that last label is unresolved here; it does not independently override the separate setup and subscription guides.",
+          "quote_indexes": [
+            3
+          ],
+          "warnings": [
+            "Old raw lines 64-73 list a narrower product summary. New raw lines 159-183 list the expanded product/API matrix and its unresolved off-session label."
+          ],
+          "job_id": "payments-au-becs-debit",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-au-becs-debit/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "payments-au-becs-debit-source-route",
+          "target_path": "wiki/concepts/stripe-au-becs-debit.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-au-becs-debit]] \u2014 primary source: settlement, mandates, disputes, refunds, debit notifications, statement descriptors",
+          "proposed_markdown": "- [[source-stripe-au-becs-debit]] \u2014 May 2 and November 7, 2026 full overviews: AU/AUD eligibility, account versus scheme limits, DDR and Connect mandate ownership, processing versus T+2 success, refund/dispute outcomes, debit notices, conditional retries, and descriptor identities; dated differences and off-session matrix ambiguity are qualified there.",
+          "quote_indexes": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "warnings": [
+            "Old raw lines 8-14, 120-234 and new raw lines 9-52, 79-183, 196-273 support this reciprocal route."
+          ],
+          "job_id": "payments-au-becs-debit",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-au-becs-debit/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "au_becs_accept_checkout_dated",
+          "target_path": "wiki/concepts/stripe-au-becs-debit.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Checkout**: `payment_method_types: ['au_becs_debit']`, `aud` currency required. Supports payment/setup/subscription modes. Optional `target_date` (3\u201315 days, best-effort).",
+          "proposed_markdown": "**Checkout (2026-05-02 full guide)**: Australian customer geography and `aud` prices for every line item; payment, setup, and subscription modes. The guide shows manual `payment_method_types: ['au_becs_debit']` as well as a dynamic-payment-method route. Optional `target_date` is 3\u201315 days ahead and best effort; nonbusiness dates or dates fewer than three business days out can shift the debit. See [[source-stripe-au-becs-accept-payment]].",
+          "quote_indexes": [
+            0,
+            1,
+            2
+          ],
+          "warnings": [
+            "Old factual authority: raw/stripe-au-becs-accept-payment-2025.md:8-49,135-146. New index raw/stripe-payments-au-becs-debit-accept-a-payment-2026-11-07.md:9-20 is navigation only."
+          ],
+          "job_id": "payments-au-becs-debit-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-au-becs-debit-accept-a-payment/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "au_becs_accept_mobile_and_web_routes",
+          "target_path": "wiki/concepts/stripe-au-becs-debit.md",
+          "update_kind": "durable_fact",
+          "anchor": "**iOS**: `STPAUBECSFormView` collects name/email/BSB/account + displays BECS Terms. Confirm with `STPPaymentHandler.confirmPayment`. Share mandate URL after confirmation.\n\n**Android**: `AUBECSDirectDebitWidget` + `stripe.confirmAuBecsDebitPayment()`.",
+          "proposed_markdown": "**Web Elements (2026-05-02 full guide)**: Two distinct routes are documented: Checkout Sessions API with a server-created Session, client secret and Checkout Elements confirmation; and Payment Intents API with a server-created PaymentIntent, Payment Element and client `stripe.confirmPayment`.\n\n**iOS (2026-05-02 full guide)**: The form collects name, email, BSB and account number and displays BECS Terms; the prose names `STPAUBECSFormView`, while Swift code/delegate name `STPAUBECSDebitFormView`. The guide uses `STPPaymentHandler.confirmPayment` and says to share the mandate URL after confirmation. Verify the SDK symbol before implementation.\n\n**Android (2026-05-02 full guide)**: Prose/layout name `BecsDebitWidget`. The prose names `PaymentLauncher.confirm`, but the Kotlin example passes SetupIntent parameters inside a PaymentIntent section and testing text names `Stripe#confirmPayment()`. The guide does not establish a consistent executable call; see [[source-stripe-au-becs-accept-payment]].\n\n**React Native (2026-05-02 full guide)**: `AuBECSDebitForm` collects details and mandate acknowledgement; its shown client path calls `useConfirmPayment().confirmPayment` using a server-created PaymentIntent client secret. `processing` is distinct from final `succeeded`.",
+          "quote_indexes": [
+            1,
+            3,
+            4
+          ],
+          "warnings": [
+            "Old factual authority: raw/stripe-au-becs-accept-payment-2025.md:239-307,609-665,729-735,826-884,952-1025,1088-1094,1160-1182,1322-1357,1421,1443-1455,1527-1531,1642-1679,1752-1758,2029-2167. New index lines 9-20 only routes to unread variants.",
+            "Existing Android concept text says AUBECSDirectDebitWidget and stripe.confirmAuBecsDebitPayment(), unsupported by the paired full guide; the iOS prose/code names conflict within that guide."
+          ],
+          "job_id": "payments-au-becs-debit-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-au-becs-debit-accept-a-payment/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "au_becs_accept_source_route",
+          "target_path": "wiki/concepts/stripe-au-becs-debit.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-au-becs-accept-payment]] \u2014 integration guide: Checkout + Elements + iOS + Android, 10 test accounts, target_date",
+          "proposed_markdown": "- [[source-stripe-au-becs-accept-payment]] \u2014 2026-05-02 full accept-payment guide: Checkout, Elements via Checkout Sessions or Payment Intents, iOS, Android, React Native, test accounts and target_date; 2026-11-07 capture provides variant navigation only",
+          "quote_indexes": [
+            1,
+            3,
+            4
+          ],
+          "warnings": [
+            "Old factual authority: raw/stripe-au-becs-accept-payment-2025.md:8-10,156-158,721-723,1080-1082,1443-1445,1752-1754. New navigation: raw/stripe-payments-au-becs-debit-accept-a-payment-2026-11-07.md:9-20."
+          ],
+          "job_id": "payments-au-becs-debit-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-au-becs-debit-accept-a-payment/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "au_becs_setup_source_route",
+          "target_path": "wiki/concepts/stripe-au-becs-debit.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-au-becs-set-up-payment]] \u2014 save for future: SetupIntent (Elements + iOS + Android), AuBankAccountElement, DDR mandate requirements, off-session charging",
+          "proposed_markdown": "- [[source-stripe-au-becs-set-up-payment]] \u2014 2026-05-02 full save-for-future guide: SetupIntent with DDR, Elements, iOS, Android and React Native; a later separate PaymentIntent attempts a debit. The 2026-11-07 capture adds Direct API navigation without inspected instructions.",
+          "quote_indexes": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "warnings": [
+            "Old factual authority: raw/stripe-au-becs-set-up-payment-2025.md:8-12,77-131,161-181,469-501,671-686,719-754,757-761,1110-1118,1463-1471,1698-1716. New index: raw/stripe-payments-au-becs-debit-set-up-payment-2026-11-07.md:9-18; Direct API target unread.",
+            "Existing text says off-session charging, while old future-payment example has a later server PaymentIntent with confirm:true and no off_session parameter (old raw lines 719-754)."
+          ],
+          "job_id": "payments-au-becs-debit-set-up-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-au-becs-debit-set-up-payment/attempt-1/receipt.json"
+        }
+      ],
+      "contributions": [
+        {
+          "job_id": "payments-au-becs-debit",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-au-becs-debit/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-au-becs-debit/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-au-becs-debit/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-au-becs-debit-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-au-becs-debit-accept-a-payment/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-au-becs-debit-accept-a-payment/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-au-becs-debit-accept-a-payment/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-au-becs-debit-set-up-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-au-becs-debit-set-up-payment/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-au-becs-debit-set-up-payment/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-au-becs-debit-set-up-payment/attempt-1/input.json"
+        }
+      ]
+    },
+    {
+      "target": "wiki/concepts/stripe-bacs-direct-debit.md",
+      "before_sha256": "6e0f06c5e32122431ae8afdeba25fc17a34423d62b15701803ed53b5aaae4a3f",
+      "candidate": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-bacs-direct-debit.md",
+      "candidate_sha256": "221d0ce64f75bc5144817cc5709fbcd8c8ff9e20dcd45b57ba4f4f8a5258f56a",
+      "diff": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-bacs-direct-debit.md.diff",
+      "updates": [
+        {
+          "update_id": "payments-bacs-debit-accept-a-payment-optional-save",
+          "target_path": "wiki/concepts/stripe-bacs-direct-debit.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Checkout**: `payment_method_types: ['bacs_debit']`, `mode: 'payment'` + `setup_future_usage: 'off_session'`. Handle 3 async events: `checkout.session.completed` \u2192 `checkout.session.async_payment_succeeded` (fulfill) / `checkout.session.async_payment_failed` (retry).",
+          "proposed_markdown": "**Checkout (May 2, 2026 guide)**: A manually configured payment-mode Session example selects `payment_method_types: ['bacs_debit']`; `payment_intent_data.setup_future_usage: 'off_session'` is in its optional save-for-later example. Handle `checkout.session.completed` as debit authorization, then `checkout.session.async_payment_succeeded` for later payment success and fulfillment or `checkout.session.async_payment_failed` for follow-up. A `success_url` redirect does not prove payment success.",
+          "quote_indexes": [
+            0,
+            1,
+            2
+          ],
+          "warnings": [
+            "Old raw lines 116-139 attach setup_future_usage to the can-save example; lines 148-174 distinguish redirect, authorization, asynchronous success, and delayed funds. New raw lines 9-14 are variant navigation only."
+          ],
+          "job_id": "payments-bacs-debit-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bacs-debit-accept-a-payment/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "payments-bacs-debit-accept-a-payment-reciprocal-source",
+          "target_path": "wiki/concepts/stripe-bacs-direct-debit.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-bacs-accept-payment]] \u2014 integration guide: Checkout + Elements paths, 11 test accounts, 6 failure codes, target_date, mandate reference prefix",
+          "proposed_markdown": "- [[source-stripe-bacs-accept-payment]] \u2014 May 2, 2026 full Checkout and web Elements Bacs payment guide, including delayed payment states, sandbox cases, optional target dates, and mandate prefix rules; November 7 capture is a Checkout/Elements variant index for navigation only.",
+          "quote_indexes": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "warnings": [
+            "Old raw lines 16-18 and 326-330 identify the two dated paths; lines 270-324 and 887-1055 contain detailed sandbox, target-date, and prefix material. New raw lines 9-14 provide only variant navigation."
+          ],
+          "job_id": "payments-bacs-debit-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bacs-debit-accept-a-payment/attempt-1/receipt.json"
+        }
+      ],
+      "contributions": [
+        {
+          "job_id": "payments-bacs-debit",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bacs-debit/attempt-2/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bacs-debit/attempt-2/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bacs-debit/attempt-2/input.json"
+        },
+        {
+          "job_id": "payments-bacs-debit-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bacs-debit-accept-a-payment/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bacs-debit-accept-a-payment/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bacs-debit-accept-a-payment/attempt-1/input.json"
+        }
+      ]
+    },
+    {
+      "target": "wiki/concepts/stripe-currency-selector-element.md",
+      "before_sha256": "3c8fd3010194a6e33c1633c9e4883c3f27aedb4da84f44361575d171d6360349",
+      "candidate": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-currency-selector-element.md",
+      "candidate_sha256": "1913961c6b80b5ac784ed72d83d8875690b34bc9f301d3a68604c12ff37517c8",
+      "diff": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-currency-selector-element.md.diff",
+      "updates": [
+        {
+          "update_id": "adaptive_pricing_selector_client_session_fix",
+          "target_path": "wiki/concepts/stripe-currency-selector-element.md",
+          "update_kind": "durable_fact",
+          "anchor": "To display currency options on this Checkout Sessions Elements path, the November 2026 guide says to enable Adaptive Pricing, set `adaptivePricing.allowed` to `true` **in the Checkout Session**, and use an integration or price currency eligible for settlement by the merchant of record. The April capture already restricted the selector to Checkout Sessions; these new display prerequisites do not imply PaymentIntents support or account-specific eligibility. See [[source-stripe-currency-selector-element]] (https://docs.stripe.com/elements/currency-selector-element; April `raw/stripe-currency-selector-element-2025.md:8-10`; November `raw/stripe-elements-currency-selector-element-2026-11-07.md:11-21`).",
+          "proposed_markdown": "To display currency options on this Checkout Sessions Elements path, the November Adaptive Pricing configuration section puts client readiness at `adaptivePricing: { allowed: true }` in `initCheckoutElementsSdk` or `CheckoutElementsProvider` options, and uses Dashboard settings or per-Session `adaptive_pricing.enabled` to enable Adaptive Pricing. The integration or price currency must be eligible for settlement by the merchant of record, the customer cross-border, and the currency pair supported. Its troubleshooting bullet says the Checkout Session includes camel-case `adaptivePricing.allowed`, which conflicts with the explicit client versus Session configuration; treat that bullet's field placement as unresolved rather than a separate verified Session recipe. These conditions do not imply Payment Intents support or account-specific eligibility. See [[source-stripe-currency-selector-element]] for the selector guide and [[source-stripe-adaptive-pricing-elements]] for the November configuration (`raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md:108-115,132-164`).",
+          "quote_indexes": [
+            1,
+            2
+          ],
+          "warnings": [
+            "New raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md:112 checklist wording conflicts with client init/provider code at lines 132-161 and per-Session adaptive_pricing.enabled at line 164; preserve distinction and uncertainty."
+          ],
+          "job_id": "payments-custom-localize-prices-adaptive-pricing",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-adaptive-pricing/attempt-1/receipt.json"
+        }
+      ],
+      "contributions": [
+        {
+          "job_id": "payments-custom-localize-prices-adaptive-pricing",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-adaptive-pricing/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-adaptive-pricing/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-adaptive-pricing/attempt-1/input.json"
+        }
+      ]
+    },
+    {
+      "target": "wiki/concepts/stripe-installments.md",
+      "before_sha256": "36ee3468e49ff4843687b50395de5619c911d2c1aa135533a76014e559468cf4",
+      "candidate": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-installments.md",
+      "candidate_sha256": "9f109371092e33fb46f441638dd3cab843af97fba9e9edd19eba5f4c3fac1acc",
+      "diff": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-installments.md.diff",
+      "updates": [
+        {
+          "update_id": "jp-installments-family-principal-timing",
+          "target_path": "wiki/concepts/stripe-installments.md",
+          "update_kind": "durable_fact",
+          "anchor": "Japan-only card installment feature for JP Stripe accounts processing JPY. Merchant receives full amount upfront; card company handles collection.",
+          "proposed_markdown": "Japan card installment feature for Japan Stripe accounts processing JPY on Japanese-issued credit cards. The merchant receives full transaction principal as with standard card payments, while the issuer extends credit and collects installments; funds become available on the ordinary card schedule, with standard payout timing.",
+          "quote_indexes": [
+            0,
+            3
+          ],
+          "warnings": [
+            "Old raw/stripe-jp-installments-2025.md:8,36-38,66-68 and new raw/stripe-payments-jp-installments-2026-11-07.md:9,37-39,67-69 do not promise instant funds or payout."
+          ],
+          "job_id": "payments-jp-installments",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-jp-installments/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "jp-installments-family-offsession",
+          "target_path": "wiki/concepts/stripe-installments.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Restrictions**: JP-issued credit cards only (no debit/prepaid); JPY; no recurring/off-session.",
+          "proposed_markdown": "**Restrictions**: Japan Stripe account, Japanese-issued credit card (no debit/prepaid) and JPY. Recurring installment payments are unsupported. For other off-session payments, the guide warns against use when the customer does not select the plan at payment; it does not affirm support in any other off-session case.",
+          "quote_indexes": [
+            0,
+            1
+          ],
+          "warnings": [
+            "Old raw/stripe-jp-installments-2025.md:32-34,78-81 and new raw/stripe-payments-jp-installments-2026-11-07.md:33-35,79-82 establish separate recurring and conditionally worded other-off-session limits."
+          ],
+          "job_id": "payments-jp-installments",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-jp-installments/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "payments-jp-installments-accept-a-payment-family-concept-route",
+          "target_path": "wiki/concepts/stripe-installments.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-jp-installments-accept-payment]] \u2014 Japan installments integration guide: Checkout/Elements/Direct API/Invoices/Payment Links",
+          "proposed_markdown": "- [[source-stripe-jp-installments-accept-payment]] \u2014 2026-05-01 Japan installment integration guide for Checkout, Elements, Direct API, Invoices and Payment Links; the 2026-11-07 capture at its canonical URL supplies variant navigation only.",
+          "quote_indexes": [
+            2,
+            3,
+            4
+          ],
+          "warnings": [
+            "Old raw lines 14-763 provide the full five-route guide and test examples. New raw lines 9-17 identify variant URLs only and do not refresh parameter, eligibility, or outcome claims."
+          ],
+          "job_id": "payments-jp-installments-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-jp-installments-accept-a-payment/attempt-2/receipt.json"
+        }
+      ],
+      "contributions": [
+        {
+          "job_id": "payments-jp-installments",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-jp-installments/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-jp-installments/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-jp-installments/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-jp-installments-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-jp-installments-accept-a-payment/attempt-2/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-jp-installments-accept-a-payment/attempt-2/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-jp-installments-accept-a-payment/attempt-2/input.json"
+        }
+      ]
+    },
+    {
+      "target": "wiki/concepts/stripe-jp-installments.md",
+      "before_sha256": "b83caef485229f7c69ee75e959b77e7b4a3d08acc28f7e112dfa1bce0a3e0771",
+      "candidate": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-jp-installments.md",
+      "candidate_sha256": "a43d73f541a1ac1a0e702da7f5940a5b097d820b6971c2bc99ed1940e6f888bb",
+      "diff": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-jp-installments.md.diff",
+      "updates": [
+        {
+          "update_id": "jp-installments-direct-principal-timing",
+          "target_path": "wiki/concepts/stripe-jp-installments.md",
+          "update_kind": "durable_fact",
+          "anchor": "Japan card installments (\u5206\u5272\u6255\u3044) allow customers to split credit card purchases over multiple billing statements. Merchant receives full amount upfront; card company handles credit and collection.",
+          "proposed_markdown": "Japan card installments (\u5206\u5272\u6255\u3044) let customers split credit-card purchases over multiple billing statements. The merchant receives the full transaction amount as with a standard card payment, while the card issuer provides credit and collects installments; funds become available on the same schedule as other card payments, with standard payout timing.",
+          "quote_indexes": [
+            0,
+            3
+          ],
+          "warnings": [
+            "Both raw/stripe-jp-installments-2025.md:8,36-38,66-68 and raw/stripe-payments-jp-installments-2026-11-07.md:9,37-39,67-69 distinguish full principal from funds availability. Do not infer instant payout."
+          ],
+          "job_id": "payments-jp-installments",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-jp-installments/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "jp-installments-direct-offsession",
+          "target_path": "wiki/concepts/stripe-jp-installments.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Restrictions**: Japan Stripe accounts only; JP-issued credit cards only (no debit/prepaid); JPY only; no recurring/off-session use.",
+          "proposed_markdown": "**Restrictions**: Japan Stripe accounts, Japanese-issued credit cards (not debit or prepaid) and JPY. Recurring installment payments are marked unsupported. The guide also says not to use installments for other off-session payments where the customer does not choose the plan when making the payment; it does not establish support for another off-session case.",
+          "quote_indexes": [
+            0,
+            1
+          ],
+          "warnings": [
+            "Old raw/stripe-jp-installments-2025.md:32-34,78-81 and new raw/stripe-payments-jp-installments-2026-11-07.md:33-35,79-82 distinguish the independent recurring No property from the conditional other-off-session warning."
+          ],
+          "job_id": "payments-jp-installments",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-jp-installments/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "payments-jp-installments-accept-a-payment-jp-concept-route",
+          "target_path": "wiki/concepts/stripe-jp-installments.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-jp-installments-accept-payment]] \u2014 integration guide: Checkout, Payment Element, Direct API (4-step), Invoices, Payment Links; test cards",
+          "proposed_markdown": "- [[source-stripe-jp-installments-accept-payment]] \u2014 2026-05-01 full integration guide for Checkout, Payment Element, Direct API, Invoices, Payment Links and sandbox cards; its 2026-11-07 canonical capture is only a five-variant navigation index. With dynamic payment methods, the May guide says installments appear automatically and the `enabled` field is omitted in the PaymentIntent path.",
+          "quote_indexes": [
+            2,
+            3,
+            4
+          ],
+          "warnings": [
+            "The November raw lines 9-17 are navigation only; all behavior in this replacement comes from old raw lines 28-55, 82-106, 124-487, 489-763. The May source's prior unconditional enabled:true summary conflicted with old raw lines 30, 84, 106 and is corrected in the proposed source. Do not infer current variant behavior from the index.",
+            "Direct API confirmation is conditional: old raw lines 304-320 show the Immediate option, old raw lines 363-375 send selected_plan from the client, and old raw lines 406-426 include the installment plan only when selected_plan is defined. A previously set plan still requires explicit unsetting on retry (old raw lines 481-487)."
+          ],
+          "job_id": "payments-jp-installments-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-jp-installments-accept-a-payment/attempt-2/receipt.json"
+        }
+      ],
+      "contributions": [
+        {
+          "job_id": "payments-jp-installments",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-jp-installments/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-jp-installments/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-jp-installments/attempt-1/input.json"
+        },
+        {
+          "job_id": "payments-jp-installments-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-jp-installments-accept-a-payment/attempt-2/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-jp-installments-accept-a-payment/attempt-2/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-jp-installments-accept-a-payment/attempt-2/input.json"
+        }
+      ]
+    },
+    {
+      "target": "wiki/concepts/stripe-multicapture.md",
+      "before_sha256": "7b38ae93ea0f208995b2828d62bea125c5105e44249493e492685271aa85814f",
+      "candidate": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-multicapture.md",
+      "candidate_sha256": "9ead47478fd1f32bec30f2eb0cf51affb704ce8999484159d1e3205b04c7561a",
+      "diff": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-multicapture.md.diff",
+      "updates": [
+        {
+          "update_id": "flex-migration-multicapture-route",
+          "target_path": "wiki/concepts/stripe-multicapture.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-payment-line-items-flexible]] \u2014 multicapture with payment line items (aggregation rules)",
+          "proposed_markdown": "- [[source-stripe-payment-line-items-flexible]] \u2014 multicapture with payment line items (aggregation rules)\n- [[source-stripe-flexible-features-migration]] \u2014 2026-05-11 full beta-to-GA migration guide for the dated version header, full-remaining-amount error, event switch and uncaptured-funds representation; November capture is variant navigation only",
+          "quote_indexes": [
+            0
+          ],
+          "warnings": [
+            "May raw lines 320-350, 376-489 document these beta-to-GA details. New raw lines 9-16 are navigation only. The 2026-04-22.preview header is a dated transition example, not current version advice."
+          ],
+          "job_id": "payments-flexible-features-migration",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-flexible-features-migration/attempt-1/receipt.json"
+        }
+      ],
+      "contributions": [
+        {
+          "job_id": "payments-flexible-features-migration",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-flexible-features-migration/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-flexible-features-migration/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-flexible-features-migration/attempt-1/input.json"
+        }
+      ]
+    },
+    {
+      "target": "wiki/concepts/stripe-overcapture.md",
+      "before_sha256": "c9b494190cbce25b56423cd9607777e782a9889f0a0d7957a3b11bbcf4aabd97",
+      "candidate": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-overcapture.md",
+      "candidate_sha256": "1d21c28a1e8f7aa249abdd3a5a800fdf4a79d5b01fd379f138625165f8b45d5e",
+      "diff": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-overcapture.md.diff",
+      "updates": [
+        {
+          "update_id": "flex-migration-overcapture-route",
+          "target_path": "wiki/concepts/stripe-overcapture.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-payment-line-items-flexible]] \u2014 overcapture with payment line items",
+          "proposed_markdown": "- [[source-stripe-payment-line-items-flexible]] \u2014 overcapture with payment line items\n- [[source-stripe-flexible-features-migration]] \u2014 2026-05-11 full beta-to-GA migration guide for pre-confirmation request and conditional charge maximum; November capture is variant navigation only",
+          "quote_indexes": [
+            3
+          ],
+          "warnings": [
+            "May raw lines 153-229, 491-549 document the request, availability and combined strategy. New raw lines 9-16 are navigation only. Do not infer a live maximum or availability from the example."
+          ],
+          "job_id": "payments-flexible-features-migration",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-flexible-features-migration/attempt-1/receipt.json"
+        }
+      ],
+      "contributions": [
+        {
+          "job_id": "payments-flexible-features-migration",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-flexible-features-migration/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-flexible-features-migration/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-flexible-features-migration/attempt-1/input.json"
+        }
+      ]
+    },
+    {
+      "target": "wiki/concepts/stripe-pricing-table.md",
+      "before_sha256": "ec7328aa8b6a03b3d34c895e137d6f62dd7b00a776f41107e5c2d32c14088c7c",
+      "candidate": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-pricing-table.md",
+      "candidate_sha256": "05416233b0a537cb0a8842a14da3739da4eb057bc913437be430f04e37385aa7",
+      "diff": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-pricing-table.md.diff",
+      "updates": [
+        {
+          "update_id": "payments-checkout-pricing-table-concept-session-timing",
+          "target_path": "wiki/concepts/stripe-pricing-table.md",
+          "update_kind": "durable_fact",
+          "anchor": "Create a `CustomerSession` server-side \u2192 pass `client_secret` as `customer-session-client-secret`. Session expires 30min after creation; additional 30min to complete payment after Checkout Session created.",
+          "proposed_markdown": "For an already authenticated customer, create a `CustomerSession` server-side for a customer-configured Account (`customer_account`) or Customer (`customer`), with the `pricing_table` component enabled; pass its `client_secret` as `customer-session-client-secret`. Both the 2026-05-12 and 2026-11-07 guides allow 30 minutes to include the secret in the table, then an additional 30 minutes **after rendering the pricing table** to complete payment. If the customer session has expired before Checkout Session creation, the new Session has no associated customer; if it expires after Session creation but before confirmation, confirmation fails. The November guide adds a Dashboard route for other-user Accounts v2 public-preview enrollment, while retaining Connect GA and preview-version qualifications. See [[source-stripe-pricing-table]].",
+          "quote_indexes": [
+            1,
+            2,
+            3
+          ],
+          "warnings": [
+            "Existing concept line 33 incorrectly anchors the second 30-minute window to Checkout Session creation; both old raw line 278 and new raw line 241 say after pricing-table rendering. Old raw line 280 and new raw line 243 separately state that expiry after Session creation but before confirmation fails. The source should not collapse these states.",
+            "New raw lines 191-199 provide Accounts v2 availability and a Dashboard preview enrollment route, whereas old raw lines 212-220 retain an incomplete request-access sentence. This is dated access guidance, not current account eligibility.",
+            "The concept's existing line 15 already says Connect is not supported for pricing tables. Retain that broad scope: both old raw line 342 and new raw line 305 state the table is not designed to work with Connect, with platform fee collection only an example; the Accounts v2 GA-for-Connect statement at new raw line 195 is a different access/identity claim."
+          ],
+          "job_id": "payments-checkout-pricing-table",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-pricing-table/attempt-2/receipt.json"
+        }
+      ],
+      "contributions": [
+        {
+          "job_id": "payments-checkout-pricing-table",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-pricing-table/attempt-2/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-pricing-table/attempt-2/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-pricing-table/attempt-2/input.json"
+        }
+      ]
+    },
+    {
+      "target": "wiki/concepts/stripe-saved-payment-methods.md",
+      "before_sha256": "37bdd869198c14ca62d479f04fea017615630333fae9636aa0b145223e755cf3",
+      "candidate": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-saved-payment-methods.md",
+      "candidate_sha256": "113da796f1580b44fa198c783bdcc00909dfffe8390abfd93d4988ad0b070b52",
+      "diff": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-saved-payment-methods.md.diff",
+      "updates": [
+        {
+          "update_id": "existing-customers-five-route-concept-link",
+          "target_path": "wiki/concepts/stripe-saved-payment-methods.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-payments-existing-customers]] \u2014 Existing customer flows: 4 paths (hosted/embedded/Elements/custom), allow_redisplay rules, prefill conditions, 30-min timeout",
+          "proposed_markdown": "- [[source-stripe-payments-existing-customers]] \u2014 The retained 2026-05-11 guide covers five on-session routes: hosted, full embedded, and Elements Checkout Sessions; a PaymentIntent with CustomerSession; and Direct API PaymentMethod listing plus PaymentIntent confirmation. Redisplay filters, card prefill and events vary by route. The 2026-11-07 canonical capture is variant navigation only, not refreshed behavior.",
+          "quote_indexes": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "warnings": [
+            "Existing concept line 158 says four routes and applies Checkout-specific prefill broadly. Old raw lines 8-12, 205-209, 502-506, 896-919, 1448-1486 and 1545-1616 support five dated routes and their object boundaries; new raw lines 7-17 support identity and five navigation links only."
+          ],
+          "job_id": "payments-existing-customers",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-existing-customers/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "existing-customers-limited-default-concept-fact",
+          "target_path": "wiki/concepts/stripe-saved-payment-methods.md",
+          "update_kind": "durable_fact",
+          "anchor": "| `limited` | PM won't appear for future purchases (e.g. setup_future_usage without consent checkbox) |",
+          "proposed_markdown": "| `limited` | Excluded from default redisplay. In the dated existing-customer Checkout guide, a Session's `saved_payment_method_options.allow_redisplay_filters` can include `limited`; rendering a saved method still requires consent for that specific future use. |",
+          "quote_indexes": [
+            0,
+            1
+          ],
+          "warnings": [
+            "Existing concept line 26 says limited methods never appear. Old raw/stripe-payments-existing-customers-2026.md lines 88-98 state the default is always-only, permit Checkout `allow_redisplay_filters` to include limited, and require consent for the specific future use. New raw lines 7-17 establish identity and variant navigation only."
+          ],
+          "job_id": "payments-existing-customers",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-existing-customers/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "existing-customers-limited-prefill-concept-fact",
+          "target_path": "wiki/concepts/stripe-saved-payment-methods.md",
+          "update_kind": "durable_fact",
+          "anchor": "- **Checkout Sessions**: A `customer` or eligible `customer_account` identifies whose saved methods Checkout can consider, but identity alone does not make them prefill. In the 2026-04-20 [[source-stripe-accept-a-payment|Accept a payment guide]], selecting the optional save-consent checkbox sets `allow_redisplay: always`; eligible saved **cards** can then prefill returning Checkout purchases. Cards saved through `setup_future_usage` or subscription mode without that consent can have `limited` and do not prefill. `unspecified` methods are excluded by default unless redisplay behavior is appropriately changed or overridden; Checkout prefills saved cards only.",
+          "proposed_markdown": "- **Checkout Sessions**: A `customer` or eligible `customer_account` identifies whose saved methods Checkout can consider, but identity alone does not make them prefill. In the 2026-04-20 [[source-stripe-accept-a-payment|Accept a payment guide]], selecting the optional save-consent checkbox sets `allow_redisplay: always`; eligible saved **cards** can then prefill returning Checkout purchases. Cards saved through `setup_future_usage` or subscription mode without that checkbox can have `limited` and do not automatically prefill. The retained 2026-05-11 existing-customer guide permits Checkout `saved_payment_method_options.allow_redisplay_filters` to include `limited`; a saved card can prefill after this display setting is adjusted if the other Checkout conditions hold, including `payment` or `subscription` mode and the required billing details. The guide states a 30-minute prefill window after Session creation. Displaying a saved method still requires consent for the specific future use. `unspecified` methods are excluded by default unless redisplay behavior is appropriately changed or overridden; Checkout prefills saved cards only.",
+          "quote_indexes": [
+            0,
+            1
+          ],
+          "warnings": [
+            "Existing concept line 83's absolute 'limited and do not prefill' conflicts with old raw/stripe-payments-existing-customers-2026.md lines 94-98 and 161-183: Checkout filters can include limited, and a saved card can prefill when display is adjusted plus mode, card and billing details conditions hold. Old raw lines 86-88 require consent for the specific future use, unaffected by filtering. wiki/sources/source-stripe-accept-a-payment.md line 49 says 'do not automatically prefill,' consistent with this narrower correction. New raw lines 7-17 are navigation only."
+          ],
+          "job_id": "payments-existing-customers",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-existing-customers/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "ideal-save-during-saved-pm-route",
+          "target_path": "wiki/concepts/stripe-saved-payment-methods.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "When saved for future use, these redirect-based methods generate a `sepa_debit` PaymentMethod. Query saved PMs as `type: 'sepa_debit'`.",
+          "proposed_markdown": "When saved for future use, these redirect-based methods generate a `sepa_debit` PaymentMethod. Query saved PMs as `type: 'sepa_debit'`. The dated iDEAL | Wero payment flow in [[source-stripe-ideal-save-during-payment]] retrieves `generated_sepa_debit` from the initial PaymentIntent's expanded `latest_charge`; its 2026-11-07 capture is a variant navigation index only.",
+          "quote_indexes": [
+            0,
+            1
+          ],
+          "warnings": [
+            "Existing generic claim derives from other sources; this addition only routes the iDEAL-specific dated flow. Old authority: raw/stripe-ideal-save-during-payment-2025.md:505-590. New raw: raw/stripe-payments-ideal-save-during-payment-2026-11-07.md:9-17."
+          ],
+          "job_id": "payments-ideal-save-during-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-ideal-save-during-payment/attempt-1/receipt.json"
+        }
+      ],
+      "contributions": [
+        {
+          "job_id": "payments-existing-customers",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-existing-customers/attempt-2/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-existing-customers/attempt-2/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-existing-customers/attempt-2/input.json"
+        },
+        {
+          "job_id": "payments-ideal-save-during-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-ideal-save-during-payment/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-ideal-save-during-payment/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-ideal-save-during-payment/attempt-1/input.json"
+        }
+      ]
+    },
+    {
+      "target": "wiki/concepts/stripe-sepa-debit.md",
+      "before_sha256": "0262582cbe67075ce8f456a5a0af85b2c636f3d4e09ea8297fcb10f4e670fbcf",
+      "candidate": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-sepa-debit.md",
+      "candidate_sha256": "234915f2c9694277fc0402346c5c5fabfeebc2f210824a9fe58de601dda8a2a0",
+      "diff": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-sepa-debit.md.diff",
+      "updates": [
+        {
+          "update_id": "ideal-save-during-sepa-route",
+          "target_path": "wiki/concepts/stripe-sepa-debit.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-subscriptions-ideal]] \u2014 2026-05-13 iDEAL\u2192SEPA subscription variants: hosted Checkout and Direct API setup with generated_sepa_debit retrieval; setup success differs from the later SEPA payment outcome. 2026-11-07 capture is a variant index only.",
+          "proposed_markdown": "- [[source-stripe-subscriptions-ideal]] \u2014 2026-05-13 iDEAL\u2192SEPA subscription variants: hosted Checkout and Direct API setup with generated_sepa_debit retrieval; setup success differs from the later SEPA payment outcome. 2026-11-07 capture is a variant index only.\n- [[source-stripe-ideal-save-during-payment]] \u2014 2026-05-03 initial iDEAL payment to generated SEPA method and distinct later SEPA intent; mobile mandate examples and asynchronous outcome caveat. 2026-11-07 capture is variant navigation only.",
+          "quote_indexes": [
+            0,
+            1
+          ],
+          "warnings": [
+            "Old authority: raw/stripe-ideal-save-during-payment-2025.md:14-16,505-632,892-924,1216-1248,1593-1625. New raw: raw/stripe-payments-ideal-save-during-payment-2026-11-07.md:9-17."
+          ],
+          "job_id": "payments-ideal-save-during-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-ideal-save-during-payment/attempt-1/receipt.json"
+        }
+      ],
+      "contributions": [
+        {
+          "job_id": "payments-ideal-save-during-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-ideal-save-during-payment/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-ideal-save-during-payment/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-ideal-save-during-payment/attempt-1/input.json"
+        }
+      ]
+    },
+    {
+      "target": "wiki/concepts/stripe-tax-id-element.md",
+      "before_sha256": "b5ac690ec4c4f5af6427551e975f0c4239328cd9b72a3ecf44cb95c013c40a81",
+      "candidate": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-tax-id-element.md",
+      "candidate_sha256": "56bb34221719d9773cfa9124e1f326fd5a1128ebae83a07c37afe4578a0dc4c6",
+      "diff": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-tax-id-element.md.diff",
+      "updates": [
+        {
+          "update_id": "payments-advanced-tax-tax-id-source",
+          "target_path": "wiki/concepts/stripe-tax-id-element.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-tax-id-element]] \u2014 April 21 captured examples for both API paths, listed regions, visibility, and conditional Payment Intents save/redisplay; November 7 variant index linked for navigation",
+          "proposed_markdown": "- [[source-stripe-tax-id-element]] \u2014 April 21 captured examples for both API paths, listed regions, visibility, and conditional Payment Intents save/redisplay; November 7 variant index linked for navigation\n- [[source-stripe-checkout-collect-taxes]] \u2014 April 21, 2026 advanced tax guide includes dated Checkout Sessions and Payment Intents Tax ID Element preview and verification flows; the November 7 capture at that URL only links to variants.",
+          "quote_indexes": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "warnings": [
+            "Old raw lines 306-429 and 2249-2443 support the dated Tax ID Element flows; old raw lines 1667-1681 distinguish custom Tax API calculations from Element government validation. New raw lines 9-14 provide navigation, not current beta or validation evidence."
+          ],
+          "job_id": "payments-advanced-tax",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-advanced-tax/attempt-1/receipt.json"
+        }
+      ],
+      "contributions": [
+        {
+          "job_id": "payments-advanced-tax",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-advanced-tax/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-advanced-tax/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-advanced-tax/attempt-1/input.json"
+        }
+      ]
+    },
+    {
+      "target": "wiki/concepts/stripe-tax.md",
+      "before_sha256": "a6974b85d85839961e70233a271ebfadc77f7868158ee5630c9186af9e04ec18",
+      "candidate": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-tax.md",
+      "candidate_sha256": "8859d87cc21881de2444c3d9ef680b6217adfb21a4bc6466c956b7be3378d87c",
+      "diff": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-tax.md.diff",
+      "updates": [
+        {
+          "update_id": "payments-advanced-tax-stripe-tax-source",
+          "target_path": "wiki/concepts/stripe-tax.md",
+          "update_kind": "durable_fact",
+          "anchor": "- [[source-stripe-checkout-collect-taxes]] \u2014 Comprehensive tax guide: CS automatic_tax + Tax ID Element + real-time verification; PI Tax API (calculate/record/reverse), 100+ tax ID types",
+          "proposed_markdown": "- [[source-stripe-checkout-collect-taxes]] \u2014 April 21, 2026 full guide for Checkout Sessions automatic tax, Tax ID Element preview flows, and the Payment Intents choice between Stripe-managed tax handling and custom Tax API calculation, transaction recording, and reversals. Its tax-ID tables enumerate 107 country/type rows, 96 distinct country codes, and 80 distinct enum types; the November 7, 2026 capture is a variant index only.",
+          "quote_indexes": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "warnings": [
+            "Old raw lines 431-545 and 2445-2559 support the dated table counts; lines 553-559 support the two Payment Intents choices. New raw lines 9-14 are navigation only and cannot establish current coverage or behavior."
+          ],
+          "job_id": "payments-advanced-tax",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-advanced-tax/attempt-1/receipt.json"
+        }
+      ],
+      "contributions": [
+        {
+          "job_id": "payments-advanced-tax",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-advanced-tax/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-advanced-tax/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-advanced-tax/attempt-1/input.json"
+        }
+      ]
+    }
+  ]
+}

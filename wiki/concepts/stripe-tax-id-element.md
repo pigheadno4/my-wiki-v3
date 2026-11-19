@@ -76,3 +76,4 @@ Full list in [[source-stripe-tax-id-element]].
 ## Sources
 
 - [[source-stripe-tax-id-element]] — April 21 captured examples for both API paths, listed regions, visibility, and conditional Payment Intents save/redisplay; November 7 variant index linked for navigation
+- [[source-stripe-checkout-collect-taxes]] — April 21, 2026 advanced tax guide includes dated Checkout Sessions and Payment Intents Tax ID Element preview and verification flows; the November 7 capture at that URL only links to variants.

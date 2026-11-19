@@ -20,7 +20,7 @@ Vault and Forward API: store card details in Stripe's PCI-compliant vault and fo
 1. Collect card details → PaymentMethod created (stored in Stripe vault)
 2. Create `ForwardingRequest` with: `payment_method`, `url`, `request.body` (blank card fields), `replacements`
 3. Stripe inserts card data into body and forwards to destination
-4. Stripe returns 200; actual destination status is in response body
+4. Inspect both the Forwarding API response and destination result. The general [[source-stripe-vault-and-forward]] guide says a response received from the destination yields forwarding HTTP 200 even when the destination returns 400, with its response/error in the body. The own-vault guide instead says the API returns the same status, while its concrete example also shows vault 400 yielding API 200; preserve that wording tension. The third-party processor example separately checks `response_details.status` and catches request errors. Neither API 200 nor a forwarded response proves vault token creation, processor authorization, capture or settlement. See [[source-stripe-forwarding-third-party]] and [[source-stripe-forwarding-token-vault]].
 
 ## Replacement Fields
 
@@ -54,5 +54,5 @@ Accertify, Adyen, Basis Theory, Braintree, CardPointe, Checkout, Evervault, Expe
 ## Sources
 
 - [[source-stripe-vault-and-forward]] — ForwardingRequest API, replacement fields, wallet support, processor list, PGP key
-- [[source-stripe-forwarding-third-party]] — Payment Element multiprocessor integration (paymentMethodCreation: 'manual' flow)
+- [[source-stripe-forwarding-third-party]] — May/November 2026 Payment Element multiprocessor guide: manual PaymentMethod creation, server ForwardingRequest, processor-response relay and identified-PCI-data redaction boundary
 - [[source-stripe-forwarding-token-vault]] — own token vault requirements, PCI, CVC rules, webhook updates

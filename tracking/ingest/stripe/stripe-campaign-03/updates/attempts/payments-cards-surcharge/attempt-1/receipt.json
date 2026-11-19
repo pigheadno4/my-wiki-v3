@@ -1,0 +1,174 @@
+{
+  "job_id": "payments-cards-surcharge",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-surcharge.md": {
+      "job_id": "payments-cards-surcharge",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe \u2014 Collect Surcharges\"\ntype: source\ndate_ingested: 2026-05-11\ndate_updated: 2026-11-15\ncanonical_url: https://docs.stripe.com/payments/cards/surcharge\noriginal_format: webpage\nraw_files:\n  - \"stripe-payments-cards-surcharge-2026-11-07.md\"\n  - \"stripe-surcharge-2026.md\"\ntags: [stripe, surcharge, payment-intent, compliance, refunds, multicapture, preview]\n---\n\n## Summary\n\nThe public-preview PaymentIntent surcharge guide describes how merchants, and connected accounts on platforms that set and collect payment fees, can offset some card acceptance costs. It requires API version `2026-03-25.preview` via a public-preview SDK or a Stripe-Version request header. An available API response or Stripe technical maximum is not legal permission, a recommended amount, or proof that a surcharge was collected. The merchant remains responsible for jurisdiction and card-network requirements.\n\n## Availability and dated table difference\n\nThe November 7, 2026 table lists United States credit cards up to 3%, Canada credit cards up to 2.4%, and New Zealand all cards up to 4%. It also names Visa, Mastercard, Amex, Discover, Eftpos, Diners, Interac, JCB, Maestro, and Unionpay as available networks. The network list does not mean every network, card product, or merchant is eligible in every listed country.\n\nThe May 11, 2026 table additionally listed Australia, all cards, 4%. Australia is absent from the November table. This is a dated documentation difference; the captures alone do not establish current Australian legal or account-specific availability or prohibition.\n\n## PaymentIntent availability and validation\n\nWith an attached payment method, sending `amount_details[surcharge][amount]` or `amount_details[surcharge][enforce_validation]` returns `surcharge.status` (`available` or `unavailable`) and, when technical validation is enabled, `surcharge.maximum_amount`. The maximum is Stripe's technical limit for the selected payment method, not a suggested surcharge or a legal/network cap. Compare a compliant calculation with that returned maximum to avoid technical errors.\n\n| `enforce_validation` | Stripe technical behavior |\n| --- | --- |\n| `enabled` | Enforce technical maximum and return `maximum_amount`. |\n| `disabled` | Do not enforce that technical maximum or return `maximum_amount`; funding-type and regional availability restrictions, and applicable law and network limits, remain. |\n| `automatic` | Default technical maximum enforcement when no explicit value is sent. |\n\nThe guide allows explicit enablement or disablement at PaymentIntent create, update, or confirm. Once explicitly set either way, `surcharge.enforce_validation` cannot be modified.\n\n## Amount, lifecycle, and capture\n\nThe top-level PaymentIntent `amount` must include subtotal plus surcharge; Stripe does not add `amount_details[surcharge][amount]` to it. For a $10 subtotal and $0.20 surcharge, set top-level `amount: 1020` and surcharge `amount: 20`. The November guide applies this at create, confirm, or capture. Its sample responses show `requires_confirmation` before confirmation and `requires_capture` after a confirmation request; neither is a captured payment or settlement outcome.\n\nAt capture, a surcharge set at confirmation can only be reduced, never increased. For multicapture, each capture can specify a surcharge, but their sum cannot exceed the surcharge confirmed. Incremental Authorization cannot increase the surcharge, even if the authorized amount increases; surcharging is unavailable when autocapturing with partial authorizations.\n\n## Compliance, refunds, and receipts\n\nThe guide frames listed compliance duties as obligations that may apply by region and card type. Calculate within applicable law, card-network and cost-of-acceptance limits; notify the acquirer or card network **if required** by the jurisdiction or network; surcharge consistently where required; disclose the amount and total before purchase; show surcharge separately on the receipt; and allow cancellation or another payment method after disclosure. Stripe says the merchant bears responsibility for fines, penalties, and losses from noncompliance. These are documented guidance, not a determination for a specific transaction.\n\nThe merchant must implement surcharge-return logic for refunds. The guide says card-network rules and certain laws and regulations require the full surcharge on a full refund and a prorated amount on a partial refund; its example refunds $60.90 for $60 of a $100 order with a $1.50 surcharge. Stripe prebuilt receipts automatically display the surcharge; custom receipts must show it separately. The applied amount is visible at `PaymentIntent.amount_details.surcharge.amount`, and Sigma has `payment_intents.amount_details_surcharge_amount`.\n\n## Preview migration and example scope\n\nBoth dated captures distinguish private-preview `amount_surcharge`, automatic top-level amount increment, always-on validation, update/confirm-only use, and `payment_method_options` response fields from public-preview `amount_details[surcharge]`, merchant-specified total-inclusive amount, configurable technical validation, create/update/confirm/capture support, and `amount_details` response fields. These are version contexts, not contradictory instructions for the same API version.\n\nThe May examples use the Node public-preview SDK; November examples use curl with explicit `Stripe-Version: 2026-03-25.preview` headers and an illustrative `return_url` on confirm. The sample change does not establish a universal new `return_url` requirement or remove a path-wide `payment_method_types` requirement.\n\n## Related\n\n- Company: [[stripe]]\n- Concept: [[stripe-surcharge]]\n- Related concepts: [[stripe-refunds]], [[stripe-payment-intents]]\n\n## Raw Sources\n\n- [[raw/stripe-payments-cards-surcharge-2026-11-07|November 7, 2026 surcharge guide]] \u2014 full captured page with US/Canada/New Zealand table and curl examples.\n- [[raw/stripe-surcharge-2026|May 11, 2026 surcharge guide]] \u2014 full captured page with Australia row and Node examples.\n",
+      "quotes": [
+        {
+          "text": "Notify your acquirer or card network of your intent to apply a surcharge, if required by your jurisdiction or the card network.",
+          "location": "raw/stripe-payments-cards-surcharge-2026-11-07.md:16"
+        },
+        {
+          "text": "Surcharging is available on Visa, Mastercard, Amex, Discover, Eftpos, Diners, Interac, JCB, Maestro, and Unionpay.",
+          "location": "raw/stripe-payments-cards-surcharge-2026-11-07.md:29"
+        },
+        {
+          "text": "| New Zealand | All cards | 4% |",
+          "location": "raw/stripe-payments-cards-surcharge-2026-11-07.md:37"
+        },
+        {
+          "text": "Passing in `enforce_validation: disabled` doesn\u2019t disable any other restrictions on availability, including restrictions on card funding type and other regional restrictions.",
+          "location": "raw/stripe-payments-cards-surcharge-2026-11-07.md:57"
+        },
+        {
+          "text": "You must implement logic for returning surcharges to a customer when you issue a refund.",
+          "location": "raw/stripe-payments-cards-surcharge-2026-11-07.md:197"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "cards_surcharge_a1_overview",
+            "target_path": "wiki/concepts/stripe-surcharge.md",
+            "update_kind": "durable_fact",
+            "anchor": "Stripe surcharging (public preview) lets merchants offset card processing costs. Available in US/CA/AU/NZ. Merchant is **fully responsible** for compliance with laws, regulations, and card network rules.",
+            "proposed_markdown": "Stripe surcharging (public preview) lets merchants offset card processing costs. The November 7, 2026 table lists US/Canada/New Zealand; the May 11, 2026 table also listed Australia. The omission does not establish current Australian permission or prohibition. Merchant is **fully responsible** for compliance with laws, regulations, and card network rules.",
+            "quote_indexes": [
+              1,
+              2
+            ],
+            "warnings": [
+              "Old raw/stripe-surcharge-2026.md:26-35 includes Australia; new raw/stripe-payments-cards-surcharge-2026-11-07.md:27-37 omits it. Keep this as dated documentation difference."
+            ]
+          },
+          {
+            "update_id": "cards_surcharge_a1_availability",
+            "target_path": "wiki/concepts/stripe-surcharge.md",
+            "update_kind": "durable_fact",
+            "anchor": "| AU | All cards | 4% |",
+            "proposed_markdown": "| AU (May 11, 2026 table only; omitted November 7) | All cards | 4% |",
+            "quote_indexes": [
+              1,
+              2
+            ],
+            "warnings": [
+              "Old raw/stripe-surcharge-2026.md:34 supplies the historical row; new raw/stripe-payments-cards-surcharge-2026-11-07.md:33-37 contains no AU row."
+            ]
+          },
+          {
+            "update_id": "cards_surcharge_a1_validation",
+            "target_path": "wiki/concepts/stripe-surcharge.md",
+            "update_kind": "durable_fact",
+            "anchor": "| `disabled` | No technical max; no `maximum_amount` |",
+            "proposed_markdown": "| `disabled` | No Stripe technical maximum validation or `maximum_amount`; card-funding, regional, legal, and card-network restrictions still apply |",
+            "quote_indexes": [
+              3
+            ],
+            "warnings": [
+              "New raw/stripe-payments-cards-surcharge-2026-11-07.md:53-59 and old raw/stripe-surcharge-2026.md:51-57 distinguish disabled technical validation from compliance and availability."
+            ]
+          },
+          {
+            "update_id": "cards_surcharge_a1_notice",
+            "target_path": "wiki/concepts/stripe-surcharge.md",
+            "update_kind": "durable_fact",
+            "anchor": "- Notify acquirer/card network of intent to surcharge",
+            "proposed_markdown": "- Notify the acquirer or card network of intent to surcharge if required by the jurisdiction or card network; the page frames its listed duties as obligations that might apply.",
+            "quote_indexes": [
+              0
+            ],
+            "warnings": [
+              "Old raw/stripe-surcharge-2026.md:12-15 already says duties 'might include' notification; new raw/stripe-payments-cards-surcharge-2026-11-07.md:13-16 makes 'if required' explicit."
+            ]
+          },
+          {
+            "update_id": "cards_surcharge_a1_refund",
+            "target_path": "wiki/concepts/stripe-surcharge.md",
+            "update_kind": "durable_fact",
+            "anchor": "- **Full refund**: return entire surcharge\n- **Partial refund**: return prorated surcharge (refund % \u00d7 surcharge)",
+            "proposed_markdown": "- **Full refund**: implement return of the entire surcharge where required by card-network rules or applicable law.\n- **Partial refund**: implement a prorated surcharge return where required (refunded order share \u00d7 surcharge).",
+            "quote_indexes": [
+              4
+            ],
+            "warnings": [
+              "Refund authority is new raw/stripe-payments-cards-surcharge-2026-11-07.md:195-197 and old raw/stripe-surcharge-2026.md:241-243; the duty is conditional on applicable card-network rules and laws."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-cards-surcharge-2026-11-07.md",
+      "raw_sha256": "00a889749414eb032df5e6d86d307be4cf8852ed30002057d7e1b1eedabec6ef",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-cards-surcharge-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 226
+      }
+    ],
+    "raw/stripe-surcharge-2026.md": [
+      {
+        "start": 1,
+        "end": 272
+      }
+    ],
+    "wiki/sources/source-stripe-surcharge.md": [
+      {
+        "start": 1,
+        "end": 81
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/31e6c0c58e7a6e80faf6212f/content.diff": [
+      {
+        "start": 1,
+        "end": 313
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-cards-surcharge/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 199
+      }
+    ],
+    "wiki/concepts/stripe-surcharge.md": [
+      {
+        "start": 1,
+        "end": 59
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 552,
+        "end": 559
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "| Australia     | All cards                 | 4%                       |",
+      "location": "raw/stripe-surcharge-2026.md:34"
+    },
+    {
+      "text": "Surcharging requirements vary across regions and card types and might include obligations to:",
+      "location": "raw/stripe-surcharge-2026.md:12"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/cards/surcharge, the complete November public-preview guide says merchants and fee-setting platforms' connected accounts can offset some card processing costs through a PaymentIntent surcharge, provided the integration uses API version 2026-03-25.preview and applicable eligibility and compliance conditions (new raw lines 5-25, 39-59). With an attached payment method, surcharge.status reports available or unavailable and maximum_amount is Stripe's technical cap, not legal permission. Top-level amount includes the surcharge, with a separate amount_details.surcharge.amount; sample responses show requires_confirmation and requires_capture, not captured or settled funds (new raw lines 75-90, 128-162). The November table lists US, Canada and New Zealand and ten named networks, whereas May also listed Australia (old raw lines 26-35; new raw lines 27-37). wiki/sources/source-stripe-surcharge.md retains core amount and capture rules but presents Australia and notification without the needed dated and conditional qualifications.",
+    "Q2": "At https://docs.stripe.com/payments/cards/surcharge, the substantive captured difference is the absence of May's Australia row from the November country table, alongside a new list of ten card networks (old raw lines 26-35; new raw lines 27-37). The notification bullet explicitly says 'if required,' clarifying the already conditional May preface that listed duties 'might include' notification (old raw lines 12-15; new raw lines 13-16). wiki/sources/source-stripe-surcharge.md and the concept should date the Australia disagreement, avoid inferring a current legal prohibition or permission, and qualify notification. The Node SDK to curl examples and illustrative return_url are presentation differences, not universal API changes. Public-preview total-inclusive amount, validation setting lock, capture reduction and multicapture ceilings, conditional refund proration, receipt separation, Sigma reporting and private-preview migration remain materially aligned (old raw lines 37-272; new raw lines 39-226). Disabling maximum_amount technical validation does not remove funding, regional, law or network restrictions. An available status or requires_capture response is not a completed payment."
+  }
+}

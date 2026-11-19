@@ -1,0 +1,191 @@
+{
+  "job_id": "payments-boleto-set-up-invoices",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-boleto-invoices.md": {
+      "job_id": "payments-boleto-set-up-invoices",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Use Boleto with Invoices\"\ntype: source\ndate_ingested: 2026-05-07\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/boleto/set-up-invoices\"\nraw_files:\n  - \"stripe-payments-boleto-set-up-invoices-2026-11-07.md\"\n  - \"stripe-boleto-invoices-2025.md\"\ntags: [stripe, vouchers, boleto, brazil, brl, invoices, send-invoice, charge-automatically, auto-advance]\n---\n\n## Summary\n\nGuide to Boleto invoice collection, including one-off invoices and invoice periods associated with subscriptions. Both `send_invoice` and `charge_automatically` are documented, but even the latter requires the customer to pay the Boleto voucher; Stripe emails a payment link. The 2026-11-07 capture adds concrete customer-configured Accounts v2 branches alongside Customers v1. See [[stripe]] and [[stripe-vouchers]]. (New raw lines 5-27, 77-218, 296-310; old raw lines 4-34, 80-185, 271-284.)\n\n## Prerequisites and collection choices\n\n- Enable Boleto for the integration, then enable **Send a Stripe-hosted link for customers to confirm their payments when required** in Subscriptions and emails settings. The email setting was also in the 2026-05-07 capture. (New raw lines 9-13; old raw lines 16-20.)\n- Use `send_invoice` when the customer has not chosen a preferred method or full name, address, and tax ID are missing. This flow can offer card or Boleto, and the customer re-enters those details for each invoice/service period; the customer default method is not used. The invoice has a due date. Boleto is generated after details are entered, and its own expiration defaults to three days, so it can fall before or after the invoice due date. (New raw lines 15-27; old raw lines 22-34.)\n- Use `charge_automatically` after the customer has selected Boleto and the required name, Brazilian address, and tax ID are available. Attach a Boleto PaymentMethod and set it as the customer default. Its invoice creation example omits an explicit PaymentMethod because that default already exists; the omission does not remove the setup prerequisite. This branch's invoice has no due date, and the generated Boleto has a selected expiration date, default three days. The customer still must pay the voucher for payment to succeed. (New raw lines 21-27, 77, 154-218, 296-310, 373-406; old raw lines 28-34, 127-185, 271-284.)\n\n## Customer identity and examples\n\nThe older guide discussed Accounts v2 availability but gave Customers v1 Node examples. The November guide adds curl examples for customer-configured Accounts v2 **and retains** Customers v1 examples. Its Accounts v2 note says generally available for Connect users and public preview for other Stripe users; preview participants specify the illustrated `2026-10-28.preview` version. That sample version and account setup do not prove access for a particular merchant. Check for an existing customer record before creating another. (New raw lines 29-33, 73-120; old raw lines 8-14, 80-124.)\n\n- **Accounts v2 branch:** Create or use a customer-configured Account with `configuration.customer`; associate its ID with the business customer record. The Boleto PaymentMethod is still created at the v1 payment-method endpoint, attached using `customer_account`, and set as `configuration.customer.billing.default_payment_method` on the Account. Invoice items and invoices also use `customer_account` in the November examples. (New raw lines 87-111, 126-142, 154-182, 192-211, 324-343, 373-390.)\n- **Customers v1 branch:** Create/use a Customer, attach the Boleto PaymentMethod with `customer`, and set `invoice_settings.default_payment_method`. Invoice items and invoices use `customer`. This path remains in both captures. The PaymentMethod example supplies Boleto tax ID and billing name, email and Brazilian address; the values are illustrative. (New raw lines 113-120, 144-169, 184-219, 345-361, 392-407; old raw lines 96-185, 299-365.)\n- The guide's USD Product/Price illustration explains generic catalog and explicit currency handling; it does not demonstrate a successful Boleto invoice payment or automatically localized pricing. Prices and invoice items need the correct amount/currency for the customer region. (New raw lines 221-278; old raw lines 188-253.)\n\n## Invoice and payment states\n\n- For an emailed invoice, the examples set `collection_method=send_invoice`, allow card and Boleto in `payment_settings.payment_method_types`, and set `days_until_due`. For an automatically collected invoice, examples use `collection_method=charge_automatically` and `auto_advance=true`, relying on the attached default Boleto. The first is an invoice option; the second is not a true auto-debit for this voucher. (New raw lines 314-361, 373-407; old raw lines 289-327, 341-366.)\n- In the guide's `auto_advance=true` example, Stripe automatically finalizes after a few hours, making the invoice ready for payment. A sandbox does not send emails, though the invoice can be checked in Dashboard. With `auto_advance=false`, a draft stays editable until finalized through Dashboard, sending, paying, or the finalize API. It is inaccurate to say manual finalization is the only route. (New raw lines 316-320, 364-371, 409-416; old raw lines 289-295, 329-339, 368-378.)\n- **Sending an invoice finalizes it** and sends it to the customer email. The guide warns that many jurisdictions treat a finalized invoice as a legal document with some unalterable fields. Finalization alone does not guarantee an email, voucher redemption, or payment success; even `charge_automatically` still requires voucher payment. A sent invoice that was already paid does not mention that payment in its email. (New raw lines 296-310, 418-426; old raw lines 271-284, 380-391.)\n\n## Raw Sources\n\n- [[raw/stripe-payments-boleto-set-up-invoices-2026-11-07|Boleto invoice guide, 2026-11-07]] \u2014 full guide with Accounts v2 and Customers v1 branches.\n- [[raw/stripe-boleto-invoices-2025|Boleto invoice guide, 2026-05-07]] \u2014 retained older guide with Customers v1 Node examples.\n",
+      "quotes": [
+        {
+          "text": "Before you can use the Boleto payment method with invoices, you need to",
+          "location": "raw/stripe-payments-boleto-set-up-invoices-2026-11-07.md:9-9"
+        },
+        {
+          "text": "If you want to charge the customer automatically, then you need to attach a payment method to the customer.",
+          "location": "raw/stripe-payments-boleto-set-up-invoices-2026-11-07.md:77-77"
+        },
+        {
+          "text": "The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users.",
+          "location": "raw/stripe-payments-boleto-set-up-invoices-2026-11-07.md:81-81"
+        },
+        {
+          "text": "If you automatically charge your customer, they still need to pay the Boleto for the payment to succeed",
+          "location": "raw/stripe-payments-boleto-set-up-invoices-2026-11-07.md:310-310"
+        },
+        {
+          "text": "Stripe finalizes the invoice as soon as you send it.",
+          "location": "raw/stripe-payments-boleto-set-up-invoices-2026-11-07.md:420-420"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "payments-boleto-set-up-invoices-vouchers-billing",
+            "target_path": "wiki/concepts/stripe-vouchers.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Subscriptions and invoices**: both `send_invoice` and `charge_automatically` supported (unique among vouchers). `charge_automatically` requires name, Brazilian address, and tax ID as default payment method on Customer; Boleto emailed automatically each cycle. `send_invoice` has customer re-enter details each cycle; invoice must have due date. **Important**: even with `charge_automatically`, Boleto is never a true auto-debit \u2014 customer must still actively pay the voucher (Stripe emails a payment link).",
+            "proposed_markdown": "**Subscriptions and invoices**: both `send_invoice` and `charge_automatically` are documented. For automatic collection, the Boleto PaymentMethod must be attached and set as the default on a Customers v1 Customer or a customer-configured Accounts v2 Account; the customer name, Brazilian address and tax ID must be available. Accounts v2 uses `customer_account` and `configuration.customer.billing.default_payment_method`, while Customers v1 uses `customer` and `invoice_settings.default_payment_method` (2026-11-07 guide; Accounts v2 preview/version access remains conditional). In `send_invoice`, customers re-enter details and the invoice has a due date; voucher expiration is separate and defaults to three days. Even with `charge_automatically`, Boleto is not an auto-debit: the customer must pay the voucher for success. See [[source-stripe-boleto-invoices]] and [[source-stripe-boleto-subscription]].",
+            "quote_indexes": [
+              1,
+              2,
+              3
+            ],
+            "warnings": [
+              "The old raw lines 8-14, 22-34, 127-185, 271-284 already cover Accounts v2 availability and Customers v1 Boleto setup/collection. New raw lines 77-218, 324-406 add Accounts v2 examples while retaining Customers v1; the new preview version is illustrative and conditional.",
+              "Voucher expiration and invoice due date are distinct; automatic invoice collection does not establish voucher payment."
+            ]
+          },
+          {
+            "update_id": "payments-boleto-set-up-invoices-vouchers-source-route",
+            "target_path": "wiki/concepts/stripe-vouchers.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-boleto-invoices]] \u2014 Boleto invoices: same collection method logic, auto_advance, charge_automatically still requires customer to pay voucher",
+            "proposed_markdown": "- [[source-stripe-boleto-invoices]] \u2014 Boleto invoice guide (2026-05-07 and 2026-11-07): send_invoice versus charge_automatically, Customers v1 and preview-qualified customer-configured Accounts v2 examples, invoice finalization versus voucher payment",
+            "quote_indexes": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Old raw lines 291-295, 329, 368, 380-391 and new raw lines 318-320, 364, 409, 418-426 distinguish finalization from sending and payment."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-boleto-set-up-invoices-2026-11-07.md",
+      "raw_sha256": "c224989f34bb048620052f241237e78f855827515d0fdeb0e59243969d9998d3",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-boleto-set-up-invoices-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 360
+      },
+      {
+        "start": 361,
+        "end": 431
+      }
+    ],
+    "raw/stripe-boleto-invoices-2025.md": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 360
+      },
+      {
+        "start": 361,
+        "end": 396
+      }
+    ],
+    "wiki/sources/source-stripe-boleto-invoices.md": [
+      {
+        "start": 1,
+        "end": 33
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/1138d326fa390d32ce3a8aac/content.diff": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 360
+      },
+      {
+        "start": 361,
+        "end": 480
+      },
+      {
+        "start": 481,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 678
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-boleto-set-up-invoices/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 201
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 315,
+        "end": 345
+      },
+      {
+        "start": 738,
+        "end": 754
+      }
+    ],
+    "wiki/concepts/stripe-vouchers.md": [
+      {
+        "start": 1,
+        "end": 123
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "enable **Send a Stripe-hosted link for customers to confirm their payments when required**.",
+      "location": "raw/stripe-boleto-invoices-2025.md:20-20"
+    },
+    {
+      "text": "If you automatically charge your customer, they still need to pay the Boleto for the payment to succeed",
+      "location": "raw/stripe-boleto-invoices-2025.md:284-284"
+    },
+    {
+      "text": "Stripe finalizes the invoice as soon as you send it.",
+      "location": "raw/stripe-boleto-invoices-2025.md:382-382"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/boleto/set-up-invoices, the complete November guide requires Boleto enablement and the Stripe-hosted confirmation-link email setting, then separates send_invoice from charge_automatically by customer details and attached default Boleto PaymentMethod (new raw lines 9-27, 73-85, 154-218). It adds customer-configured Accounts v2 creation, customer_account attachment/default and invoice examples alongside Customers v1, with preview/version conditions rather than a universal account migration (new raw lines 79-120, 126-218, 324-406). A send or finalized invoice remains distinct from voucher payment and success (new raw lines 296-320, 418-426). The old guide already had the two collection methods, Customers v1 setup, due-date/expiration distinction and customer voucher action (old raw lines 18-34, 127-185, 271-295). source-stripe-boleto-invoices.md omitted Accounts v2 examples and misstated default-method, finalization and email boundaries.",
+    "Q2": "At https://docs.stripe.com/payments/boleto/set-up-invoices, the substantive November additions are explicit Accounts v2 customer-configured Account, customer_account PaymentMethod attachment and default-billing field, plus parallel Accounts v2 invoice-item/invoice examples (new raw lines 77-218, 324-406). The old capture discussed Accounts v2 availability but provided Customers v1 Node examples; Node-to-curl formatting and Dashboard step renumbering are presentational (old raw lines 8-14, 80-185, 299-365). source-stripe-boleto-invoices.md must retain the historical email prerequisite, separate invoice due date and three-day voucher expiration, and Customer v1 path; automatic invoice creation still needs an attached default Boleto, and customer voucher payment is required (new raw lines 11-27, 77, 296-310). With auto_advance=false a draft can be finalized by send/pay/API/Dashboard, and sending finalizes, while finalization alone does not promise an email or payment (old raw lines 329-391; new raw lines 318-320, 364, 409, 418-426). Preview/version access and sandbox email behavior remain conditional."
+  }
+}

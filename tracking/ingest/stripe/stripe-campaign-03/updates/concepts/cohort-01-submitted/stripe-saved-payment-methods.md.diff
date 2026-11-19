@@ -1,0 +1,33 @@
+--- wiki/concepts/stripe-saved-payment-methods.md
++++ tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-saved-payment-methods.md
+@@ -23,7 +23,7 @@
+ | Value | Meaning |
+ | --- | --- |
+ | `always` | An eligible saved PM can be redisplayed; the Checkout save-consent path sets this value when the customer selects the checkbox |
+-| `limited` | PM won't appear for future purchases (e.g. setup_future_usage without consent checkbox) |
++| `limited` | Excluded from default redisplay. In the dated existing-customer Checkout guide, a Session's `saved_payment_method_options.allow_redisplay_filters` can include `limited`; rendering a saved method still requires consent for that specific future use. |
+ | `unspecified` | Legacy PMs (saved outside checkout) — won't render by default |
+ 
+ ## Checkout Sessions Path
+@@ -76,11 +76,11 @@
+ 
+ ## Bancontact / iDEAL / Sofort → SEPA Debit
+ 
+-When saved for future use, these redirect-based methods generate a `sepa_debit` PaymentMethod. Query saved PMs as `type: 'sepa_debit'`.
++When saved for future use, these redirect-based methods generate a `sepa_debit` PaymentMethod. Query saved PMs as `type: 'sepa_debit'`. The dated iDEAL | Wero payment flow in [[source-stripe-ideal-save-during-payment]] retrieves `generated_sepa_debit` from the initial PaymentIntent's expanded `latest_charge`; its 2026-11-07 capture is a variant navigation index only.
+ 
+ ## Displaying Saved PMs
+ 
+-- **Checkout Sessions**: A `customer` or eligible `customer_account` identifies whose saved methods Checkout can consider, but identity alone does not make them prefill. In the 2026-04-20 [[source-stripe-accept-a-payment|Accept a payment guide]], selecting the optional save-consent checkbox sets `allow_redisplay: always`; eligible saved **cards** can then prefill returning Checkout purchases. Cards saved through `setup_future_usage` or subscription mode without that consent can have `limited` and do not prefill. `unspecified` methods are excluded by default unless redisplay behavior is appropriately changed or overridden; Checkout prefills saved cards only.
++- **Checkout Sessions**: A `customer` or eligible `customer_account` identifies whose saved methods Checkout can consider, but identity alone does not make them prefill. In the 2026-04-20 [[source-stripe-accept-a-payment|Accept a payment guide]], selecting the optional save-consent checkbox sets `allow_redisplay: always`; eligible saved **cards** can then prefill returning Checkout purchases. Cards saved through `setup_future_usage` or subscription mode without that checkbox can have `limited` and do not automatically prefill. The retained 2026-05-11 existing-customer guide permits Checkout `saved_payment_method_options.allow_redisplay_filters` to include `limited`; a saved card can prefill after this display setting is adjusted if the other Checkout conditions hold, including `payment` or `subscription` mode and the required billing details. The guide states a 30-minute prefill window after Session creation. Displaying a saved method still requires consent for the specific future use. `unspecified` methods are excluded by default unless redisplay behavior is appropriately changed or overridden; Checkout prefills saved cards only.
+ - **Payment Intents**: requires CustomerSession with `payment_method_redisplay: 'enabled'`
+ - **Legacy `unspecified` PMs**: either update `allow_redisplay` to `'always'` via API, or configure CustomerSession filters
+ - **Display order**: most recently added first; default PM always first
+@@ -155,6 +155,6 @@
+ - [[source-stripe-inapp-set-up-future-payments]] — Mobile setup without charge: SetupIntent supports card/Bancontact/iDEAL/Link/SEPA/Sofort/US bank (more than setup_future_usage), setupIntentClientSecret
+ - [[source-stripe-inapp-customer-sheet]] — CustomerSheet (Payment Method Settings Sheet): app settings PM management UI for iOS/Android/RN; CustomerSession + SetupIntent dual endpoints; retrievePaymentOptionSelection without presenting
+ - [[source-stripe-inapp-save-card-without-auth]] — Legacy save-card (US/Canada only): attach PM to Customer, charge with error_on_requires_action, setup_future_usage=on_session, CVC re-collection; non-compliant in India
+-- [[source-stripe-payments-existing-customers]] — Existing customer flows: 4 paths (hosted/embedded/Elements/custom), allow_redisplay rules, prefill conditions, 30-min timeout
++- [[source-stripe-payments-existing-customers]] — The retained 2026-05-11 guide covers five on-session routes: hosted, full embedded, and Elements Checkout Sessions; a PaymentIntent with CustomerSession; and Direct API PaymentMethod listing plus PaymentIntent confirmation. Redisplay filters, card prefill and events vary by route. The 2026-11-07 canonical capture is variant navigation only, not refreshed behavior.
+ - [[source-stripe-save-card-without-auth]] — Web legacy save card (US/CA only): createPaymentMethod→attach Customer, error_on_requires_action, setup_future_usage=on_session, CVC re-collection
+ - [[source-metronome-guides-customers-billing-optimize-customer-experience-india-e-mandates]] — source-scoped Indian-card SetupIntent mandate creation, activation states, invoice attachment, action-required handling, and Stripe lifecycle ownership

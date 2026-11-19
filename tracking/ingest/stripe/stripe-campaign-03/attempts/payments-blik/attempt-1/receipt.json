@@ -1,0 +1,170 @@
+{
+  "job_id": "payments-blik",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-blik-2026-11-07.md",
+  "raw_sha256": "a6511a5e781b13b7daa0868fc4c80c5aaa305640d0b929552a71af1e520bb4f1",
+  "prior_raw_path": "raw/stripe-blik-2025.md",
+  "prior_raw_sha256": "3bcca014a76b6d7705ad51cf8d8c54e78a5c8f665333ac0875cb43d6c316328a",
+  "source_targets": [
+    "wiki/sources/source-stripe-blik.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-blik.md": "e712294d29154d95c693344272bac46a18e224e8d3abe9efce88200dd818ab39"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-blik-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 221
+      }
+    ],
+    "raw/stripe-blik-2025.md": [
+      {
+        "start": 1,
+        "end": 180
+      }
+    ],
+    "wiki/sources/source-stripe-blik.md": [
+      {
+        "start": 1,
+        "end": 35
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/1b5bbb83f9e23d1ec194f344/content.diff": [
+      {
+        "start": 1,
+        "end": 385
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 60
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 260,
+        "end": 280
+      },
+      {
+        "start": 738,
+        "end": 756
+      }
+    ],
+    "wiki/concepts/stripe-blik.md": [
+      {
+        "start": 1,
+        "end": 64
+      }
+    ],
+    "wiki/concepts/stripe-bank-redirects.md": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ],
+    "wiki/concepts/stripe-payment-methods.md": [
+      {
+        "start": 1,
+        "end": 90
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Usability: Reusable",
+      "location": "raw/stripe-payments-blik-2026-11-07.md:11"
+    },
+    {
+      "text": "Maximum amount for off-session recurring payments: 2,000 PLN per charge",
+      "location": "raw/stripe-payments-blik-2026-11-07.md:44"
+    },
+    {
+      "text": "Refunds for BLIK payments are asynchronous and can\u2019t be canceled.",
+      "location": "raw/stripe-payments-blik-2026-11-07.md:74"
+    },
+    {
+      "text": "To save it during a payment, create a PaymentIntent with `setup_future_usage=off_session`. To save it without an initial payment, create a SetupIntent with `usage=off_session`.",
+      "location": "raw/stripe-payments-blik-2026-11-07.md:146"
+    },
+    {
+      "text": "Both capabilities must be active before you use `setup_future_usage=off_session` or a SetupIntent with `usage=off_session`.",
+      "location": "raw/stripe-payments-blik-2026-11-07.md:181"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "BLIK is a [single use](https://docs.stripe.com/payments/payment-methods.md#usage) payment method",
+      "location": "raw/stripe-blik-2025.md:8"
+    },
+    {
+      "text": "Yes (Private preview)",
+      "location": "raw/stripe-blik-2025.md:32"
+    },
+    {
+      "text": "Client-side confirmation only (Private preview)",
+      "location": "raw/stripe-blik-2025.md:52"
+    },
+    {
+      "text": "Depending on the bank, refunds are processed immediately or within a couple of hours.",
+      "location": "raw/stripe-blik-2025.md:160"
+    },
+    {
+      "text": "Set the `blik_payments` capability to `active` on your platform account, and on any connected accounts you want to enable BLIK for.",
+      "location": "raw/stripe-blik-2025.md:168"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The 2026-11-07 BLIK overview identifies a bank-debit method and a reusable PaymentMethod, Polish customers, PLN presentment, supported merchant/platform account regions, and account review after activation. A six-digit code is valid two minutes; bank-app approval is due within 60 seconds; the merchant page remains open without a redirect, while Stripe normally receives an asynchronous result within 60 seconds. Immediate confirmation in the property table is not settlement or a guarantee of individual payment success (new raw lines 7-14, 18-44, 183-195; old raw lines 8-36; source lines 13-18).",
+    "The captured capability table now says recurring supported and gives a 2,000 PLN per-charge off-session maximum, whereas the paired capture said single-use and recurring private preview. Reuse requires an initially authorized mandate linked to a reusable PaymentMethod: PaymentIntent with setup_future_usage=off_session during payment, or SetupIntent with usage=off_session without an initial payment; future charges need no new BLIK code. SetupIntent creation/mandate authorization is not a charge or proof of a later successful off-session payment (new raw lines 44-46, 124-148, 169-181; old raw lines 8, 30-32, 132; source line 19).",
+    "The new capture gives minimum 2 PLN, one-time maximum 999,999.99 PLN, and recurring off-session maximum 2,000 PLN. It excludes manual and other listed capture/authorization variants; full and partial refunds must be submitted within 730 days, are asynchronous and noncancelable, and can take up to 120 minutes. Track final succeeded/failed Refund status and refund.updated/refund.failed events; a failed refund returns funds to the Stripe balance. The older raw stated only full/partial and bank-dependent immediate or hours-long processing (new raw lines 40-84; old raw lines 46-56, 158-160; source line 29).",
+    "Disputes remain supported for full amounts with 12 calendar days from creation to submit evidence; Dispute.reason and evidence_details.due_by expose details and deadline. The new capture adds no guaranteed decision timeframe, no dispute fee or appeal, and a generally 13-month customer notification maximum for unauthorized transactions subject to statutory exceptions. The 13-month notification period is distinct from the merchant's 12-day evidence deadline (new raw lines 67-69, 86-122; old raw lines 134-156; source lines 23-27).",
+    "For Connect, blik_payments remains required on platform and accepting connected accounts. For recurring BLIK, the new overview additionally requires requesting blik_payments before blik_recurring_payments and both active on each relevant account before off-session setup. Payment-level full statement_descriptor applies to non-card BLIK; defaults differ by direct versus destination/separate charges, with on_behalf_of selecting the connected account's descriptor (new raw lines 177-181, 211-215; old raw lines 162-180; source line 31).",
+    "The existing summary's 37-business-location assertion is a baseline error: counting the old raw's AT-through-US list gives 36 entries (old raw lines 58-97; source line 21). Counting the new raw's business-location list gives 35; IS appears in old raw line 81 but not new raw lines 19, 24-30. Record the dated captured-list difference without inferring individual account deactivation or present eligibility."
+  ],
+  "substantive_changes": [
+    "Single-use/private-preview framing versus new reusable, supported recurring and mandate/off-session setup, including separate PaymentIntent and SetupIntent paths and additional recurring Connect capability (old raw lines 8, 30-32, 132, 166-168; new raw lines 11, 44-46, 124-148, 169-181).",
+    "New transaction, refund submission/processing, dispute, and explicit support constraints (old raw lines 42-56, 134-160; new raw lines 36-84, 86-122, 150-175).",
+    "New captured business-location list has 35 rather than old 36 entries, omitting IS, and new account eligibility/review and B2B/B2C details are supplied (old raw lines 58-97; new raw lines 18-39)."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the 2026-05-03 paired capture's single-use and private-preview recurring/deferred-intent descriptions dated, and do not silently rewrite what it said (old raw lines 8, 30-32, 50-52; source lines 4, 19-20).",
+    "Retain stable code validity, approval window, Polish customer/PLN, no-redirect, full/partial refund, 12-day dispute-evidence, and basic blik_payments/descriptor facts where still supported; qualify timing and receipt versus final state using the later capture (old raw lines 8-28, 134-180; new raw lines 9, 36-39, 61-84, 86-108, 177-215)."
+  ],
+  "conflicts": [
+    "Current source lines 19-20 contradict each other about deferred intents: private-preview client-side confirmation versus unsupported. New raw line 175 says Payment Element does not support collecting payment details before PaymentIntent creation, but does not establish every deferred-intent path; retain route-specific dated warning instead of universal replacement (old raw lines 50-52; new raw lines 169-175).",
+    "The existing BLIK concept still says recurring private preview and that Stripe.js 10.0.0 typed setup support leaves private-preview constraints in force (wiki/concepts/stripe-blik.md lines 27-30, 53-55), whereas the 2026-11-07 overview says recurring supported (new raw lines 44-46, 124-148). Keep older SDK typing versioned and point the concept reciprocally to the newer captured overview; neither typing nor overview proves account/bank enablement.",
+    "The bank-redirects concept has BLIK SetupIntents and setup_future_usage marked No, Checkout setup/subscription and Invoicing marked unsupported, and BLIK deferred-intent path marked unsupported (wiki/concepts/stripe-bank-redirects.md lines 16-35), whereas the newer BLIK overview explicitly supports SetupIntents, off-session PaymentIntents, Billing, and Invoicing (new raw lines 144-175). Keep its older matrix dated and add reciprocal route-qualified warning; the overview does not by itself prove each Checkout mode or subscription billing route.",
+    "The current BLIK source says 37 business countries while its cited older list has 36 and the newer capture 35 (source line 21; old raw lines 58-97; new raw lines 18-30). The current BLIK concept repeats 37 (wiki/concepts/stripe-blik.md line 12)."
+  ],
+  "unresolved_questions": [
+    "The new overview describes supported recurring broadly, but it does not itself establish which individual bank, merchant account, country, Checkout setup/subscription mode, or in-app integration is enabled; linked child guides and account-specific capability state are separate authority (new raw lines 18-22, 144-181).",
+    "The new product table's Billing and Invoicing support should be reconciled with the older bank-redirect matrix before asserting a specific subscription or invoice implementation path (new raw lines 150-175; wiki/concepts/stripe-bank-redirects.md lines 29-35)."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-blik.md",
+    "wiki/concepts/stripe-bank-redirects.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-blik.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add the exact canonical URL and new pinned raw as distinct 2026-11-07 provenance, a concise reciprocal route to the BLIK concept, reusable/off-session mandate and Connect capability prerequisites, limits and asynchronous refund/dispute state boundaries (source lines 1-35; new raw lines 1-2, 40-84, 86-148, 169-181).",
+        "Correct the pre-existing 37-country count error against the old captured list of 36 and report the new list of 35 as a dated capture, with IS missing from the latter (source line 21; old raw lines 58-97; new raw lines 19-30)."
+      ],
+      "conflicts": [
+        "Source lines 19-20 conflict on deferred-intent support; preserve old route and preview qualification while clarifying the new Payment Element deferred-details restriction at new raw line 175.",
+        "Source line 19's private-preview recurring claim conflicts with the later supported/reusable overview at new raw lines 11, 44-46, 124-148."
+      ],
+      "reason": "The new capture changes central reuse/mandate behavior and consequential operational constraints, while the existing source has a baseline count error and internal deferred-intent contradiction."
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/blik, the 2026-11-07 capture documents Polish-customer, PLN BLIK code payments: the six-digit code lasts two minutes, the customer authorizes in the bank app within 60 seconds, the page stays open, and Stripe normally receives an asynchronous result within 60 seconds (new raw lines 7-14, 36-44, 183-195). Reusable off-session BLIK now uses an authorized mandate linked to a PaymentMethod, with a PaymentIntent setup_future_usage=off_session during payment or a SetupIntent usage=off_session without one; Connect recurring requires blik_payments and blik_recurring_payments active on relevant platform and connected accounts (new raw lines 124-148, 169-181). A setup or page return is not a successful charge, and immediate confirmation is not settlement. The older raw called BLIK single-use and recurring private preview (old raw lines 8-32). Current source-stripe-blik.md preserves that older status, adds a contradictory deferred-intent line and miscounts its old business list as 37 (source lines 19-21; old raw lines 58-97).",
+    "Q2": "For https://docs.stripe.com/payments/blik, substantive differences include reusable supported recurring with mandate and 2,000 PLN off-session cap, payment limits, a 730-day asynchronous noncancelable refund process, explicit dispute states, and recurring Connect capability requirements (new raw lines 40-84, 86-148, 177-181); the old capture's single-use/private-preview claims and terse refund wording must remain dated (old raw lines 8-52, 158-168). New headings, product-link navigation and swapped flow-image URLs are presentation or navigation, not independent behavior proof (old raw lines 99-132; new raw lines 150-175, 197-221). source-stripe-blik.md needs a reciprocal warning for its private-preview and contradictory deferred-intent statements; the BLIK and bank-redirect concepts also conflict on SetupIntents, Billing and Invoicing. Payment Element's deferred-details restriction is UI/path-specific, Stripe.js setup typing is version-specific, and neither the overview nor a mandate proves bank/account eligibility, payment success, funds availability or settlement."
+  }
+}

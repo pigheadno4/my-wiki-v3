@@ -1,0 +1,220 @@
+{
+  "job_id": "payments-boleto",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-boleto.md": {
+      "job_id": "payments-boleto",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Boleto Payments\"\ntype: source\ndate_ingested: 2026-05-07\ndate_updated: 2026-11-15\ncanonical_url: \"https://docs.stripe.com/payments/boleto\"\noriginal_format: webpage\nraw_files:\n  - \"stripe-payments-boleto-2026-11-07.md\"\n  - \"stripe-boleto-2025.md\"\ntags: [stripe, vouchers, boleto, brazil, brl, cash, recurring, connect, subscriptions]\n---\n\n## Summary\n\n[[stripe]] describes Boleto as a reusable, regulated Brazil voucher method. A Brazil merchant or Connect platform gives a Brazil customer a BRL voucher, and the customer pays it before expiry at a bank, authorized agency, ATM or online bank portal. Voucher generation, method access, subscription creation and invoice finalization are not payment confirmation. Stripe confirms after payment asynchronously; settlement and payout availability have separately dated descriptions.\n\n## Eligibility, amount and timing\n\nThe 2026-11-07 overview lists Brazil merchant/platform and customer locations, BRL presentment, domestic coverage only, B2B and B2C, and **BRL 5.00–49,999.99** per transaction. It says there is no Boleto-specific MCC requirement, but the website must satisfy Stripe account activation requirements. Access is labeled **instant provisional** and Stripe may review eligibility after activation; neither label establishes account-specific approval or paid funds.\n\nThe November page labels payment confirmation **up to one business day** and settlement **up to two business days (T+2)** without explicitly giving the new settlement clock's starting event. Its flow says confirmation typically comes on the next business day after customer payment. The earlier **2026-05-07** capture instead says confirmation after one business day and **funds available for payout two business days after confirmation**. Preserve these as dated timing labels: settlement, payout availability and bank payout arrival are not interchangeable.\n\n## Voucher and payment flow\n\nThe customer selects Boleto and supplies contact and tax ID details. Stripe hosts a voucher page with a number the customer can copy or a PDF to download. Voucher expiry defaults to **three days** and is configurable from **0–60 days**. Desktop and mobile use the same browser-hosted voucher flow. A customer pays through an authorized channel; only subsequent asynchronous confirmation establishes successful payment. A visible voucher or browser return is not success.\n\nUse `payment_intent.next_action.boleto_display_details.number` for the customer-visible voucher number. It identifies the voucher, **not** a processor transaction ID. The overview says no processor transaction ID appears under `latest_charge.payment_method_details.boleto`.\n\n## Capabilities and product support\n\nThe November matrix supports recurring payments, Billing, Invoicing, Customer Portal, Connect, SetupIntents, PaymentIntents with `setup_future_usage`, Checkout Sessions/PaymentIntents, full-page and embedded Checkout, Payment Links and Payment Element. It explicitly marks **off-session payments unsupported**. Manual, partial, multi- and over-capture, authorization extensions, standard full/partial refunds and standard full/partial disputes are unsupported. The matrix also excludes Managed Payments, Radar, Terminal, Express Checkout Element, Payment Method Messaging Element and in-app payments.\n\n**Recurring is not automatic debit:** a dated May subscription guide shows a `Subscription` creation request with `collection_method: \"charge_automatically\"` and `off_session: true`; that is a request example, not proof of an accepted or successful off-session Boleto payment. The May invoice guide says even `charge_automatically` requires the customer to pay each emailed voucher. The November overview's no-off-session matrix qualifies the payment behavior but does not by itself prove the older Subscription request is invalid. Keep Subscription creation, invoice collection and customer voucher payment as separate actions. See [[source-stripe-boleto-subscription]] and [[source-stripe-boleto-invoices]] for dated setup details.\n\n## Refunds and disputes\n\nStripe Boleto **full and partial refund capability is unsupported**. The May page advises a separate process to credit customers needing a refund; this does not mean all remediation is impossible. Boleto has no standard customer dispute or chargeback process, but bank-side mishandling can cause similar irregularities. In that case, Stripe **contacts the merchant with next steps**; neither capture promises Stripe will resolve the issue without merchant action.\n\n## Descriptor and Connect identity\n\nFor Boleto and other non-card payments, a request-level `statement_descriptor` sets the full descriptor, falling back to the account-level value when omitted; `statement_descriptor_suffix` applies only to cards. A bank or payment channel may display or omit descriptor details and may show Stripe on the voucher or receipt. For Connect destination charges without `on_behalf_of`, the platform account supplies the descriptor; with `on_behalf_of`, the connected account supplies it, subject to legacy API-version behavior. The broad Connect checkmark does not prove a particular account's eligibility or statement display.\n\n## Related\n\n- [[stripe]] — Stripe company page.\n- [[stripe-vouchers]] — voucher-method concept.\n- [[source-stripe-boleto-accept-payment]] — integration-specific webhook and voucher details.\n- [[source-stripe-boleto-subscription]] — dated subscription request example.\n- [[source-stripe-boleto-invoices]] — dated invoice collection and customer-payment behavior.\n\n## Raw Sources\n\n- [[raw/stripe-payments-boleto-2026-11-07]] — full webpage capture fetched 2026-11-07 (142 lines).\n- [[raw/stripe-boleto-2025]] — earlier webpage capture fetched 2026-05-07 (116 lines); no italic fixes; four SVG flow diagrams downloaded to assets/.\n",
+      "quotes": [
+        {
+          "text": "Access type: Instant provisional access",
+          "location": "raw/stripe-payments-boleto-2026-11-07.md:12-12"
+        },
+        {
+          "text": "Your account might be reviewed after activation to confirm eligibility.",
+          "location": "raw/stripe-payments-boleto-2026-11-07.md:22-22"
+        },
+        {
+          "text": "✗ Off-session payments",
+          "location": "raw/stripe-payments-boleto-2026-11-07.md:92-92"
+        },
+        {
+          "text": "The voucher expires after 3 days by default, configurable from 0–60 days.",
+          "location": "raw/stripe-payments-boleto-2026-11-07.md:118-118"
+        },
+        {
+          "text": "This number identifies the voucher, but it isn’t a processor transaction ID.",
+          "location": "raw/stripe-payments-boleto-2026-11-07.md:136-136"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "boleto-timing-a1",
+            "target_path": "wiki/concepts/stripe-vouchers.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Confirmation**: 1 business day. **Payout**: T+2 business days after confirmation.",
+            "proposed_markdown": "**Timing (dated):** The 2026-11-07 overview says confirmation takes **up to one business day**, typically the next business day after payment, and labels settlement **up to two business days (T+2)** without defining its start event. The 2026-05-07 overview says funds become available for payout two business days **after confirmation**. Voucher issue and provisional method access are not paid status; settlement, payout availability and payout arrival are separate.",
+            "quote_indexes": [
+              0
+            ],
+            "warnings": [
+              "Old raw line 10 provides payout-after-confirmation anchor; new raw lines 12-14 and 124-126 use distinct confirmation/settlement labels."
+            ]
+          },
+          {
+            "update_id": "boleto-refund-dispute-a1",
+            "target_path": "wiki/concepts/stripe-vouchers.md",
+            "update_kind": "durable_fact",
+            "anchor": "**No refunds** — must create separate process. **No customer disputes** (bank irregularities handled by Stripe).",
+            "proposed_markdown": "**Refunds and disputes:** Stripe Boleto full/partial refund capability is unsupported; the 2026-05-07 page advises a separate customer-credit process. Customers cannot file standard Boleto chargebacks. Bank-side mishandling can still occur, and Stripe **contacts the merchant with next steps**; the captures do not promise Stripe handles resolution alone.",
+            "quote_indexes": [
+              1
+            ],
+            "warnings": [
+              "Old raw lines 106-112 and new raw lines 57-66; avoid the original absolute 'no exceptions' and overstrong 'handled by Stripe' wording."
+            ]
+          },
+          {
+            "update_id": "boleto-recurring-a1",
+            "target_path": "wiki/concepts/stripe-vouchers.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Recurring**: full subscriptions + invoicing (not `send_invoice`-only). SetupIntents, setup_future_usage, and Customer Portal all supported.",
+            "proposed_markdown": "**Recurring and setup:** Billing/subscriptions, Invoicing, Customer Portal, SetupIntents and PaymentIntents with `setup_future_usage` are listed as supported, but the 2026-11-07 overview excludes **off-session Boleto payments**. The 2026-05-07 subscription guide's `charge_automatically` plus `off_session: true` is a Subscription creation example, not proof of off-session voucher collection; its invoice guide says the customer still must pay each voucher. The overview does not resolve whether that older request remains accepted.",
+            "quote_indexes": [
+              2
+            ],
+            "warnings": [
+              "New raw lines 41-92; supplemental old raw/stripe-boleto-subscription-2025.md:331-350 and raw/stripe-boleto-invoices-2025.md:271-284, both fully read. Preserve object/action scopes."
+            ]
+          },
+          {
+            "update_id": "boleto-source-route-a1",
+            "target_path": "wiki/concepts/stripe-vouchers.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-boleto]] — Boleto: Brazil cash voucher, no refunds, 1-day confirmation, T+2 payout, 5–49,999.99 BRL",
+            "proposed_markdown": "- [[source-stripe-boleto]] — Boleto overview: Brazil BRL voucher, provisional access, asynchronous up-to-one-business-day confirmation, November T+2 settlement versus dated May payout-availability wording, no Stripe refunds or off-session payments",
+            "quote_indexes": [
+              0,
+              2
+            ],
+            "warnings": [
+              "Old raw line 10 and new raw lines 12-14, 57-59, 87-92; keep dates and different timing labels explicit."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-boleto-2026-11-07.md",
+      "raw_sha256": "ddc8a8680b78b99a44c66b86e5873a07dcf32f4def68beb44fee5b677686af88",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-boleto-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 72
+      },
+      {
+        "start": 73,
+        "end": 142
+      }
+    ],
+    "raw/stripe-boleto-2025.md": [
+      {
+        "start": 1,
+        "end": 60
+      },
+      {
+        "start": 61,
+        "end": 116
+      }
+    ],
+    "wiki/sources/source-stripe-boleto.md": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/ada2627f65312bec76681d82/content.diff": [
+      {
+        "start": 1,
+        "end": 110
+      },
+      {
+        "start": 111,
+        "end": 216
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-boleto/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 110
+      },
+      {
+        "start": 111,
+        "end": 253
+      }
+    ],
+    "raw/stripe-boleto-subscription-2025.md": [
+      {
+        "start": 1,
+        "end": 105
+      },
+      {
+        "start": 106,
+        "end": 210
+      },
+      {
+        "start": 211,
+        "end": 315
+      },
+      {
+        "start": 316,
+        "end": 417
+      }
+    ],
+    "raw/stripe-boleto-invoices-2025.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 396
+      }
+    ],
+    "wiki/concepts/stripe-vouchers.md": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 105,
+        "end": 120
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 369,
+        "end": 379
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "You’ll receive payment confirmation after 1 business day, and funds will be available for payout 2 business days after payment confirmation.",
+      "location": "raw/stripe-boleto-2025.md:10-10"
+    },
+    {
+      "text": "Boleto payments can’t be refunded. You need to create a separate process to credit customers who require a refund.",
+      "location": "raw/stripe-boleto-2025.md:112-112"
+    },
+    {
+      "text": "The amount for a single Boleto must be at least 5.00 BRL and no more than 49,999.99 BRL.",
+      "location": "raw/stripe-boleto-2025.md:116-116"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/boleto, the November overview describes a reusable Brazil domestic BRL voucher method: a BR merchant or Connect platform offers it to a BR customer, who gives contact and tax-ID details, receives a hosted voucher, and pays through a bank, ATM, authorized agency or portal before expiry. Method access is provisional and can be reviewed after activation; voucher issue is not paid status (new raw lines 7-40, 110-126). The page says confirmation takes up to one business day and settlement up to two business days, while the paired May capture says payout availability is two business days after confirmation (old raw lines 8-10; new raw lines 12-14). Recurring, SetupIntents and setup_future_usage are supported, but off-session payments are explicitly excluded (new raw lines 41-92). The mapped source-stripe-boleto.md preserves old geography, limits and no-refund facts but overstates fixed timing, Stripe's bank-irregularity action, and refund finality, and omits voucher-number/processor-ID boundaries. The dated Subscription request example and invoice guide describe distinct creation and customer-payment actions.",
+    "Q2": "For https://docs.stripe.com/payments/boleto, substantive additions are postactivation review, no Boleto-specific MCC requirement, domestic coverage, explicit no-off-session matrix, hosted voucher expiry of three days by default and 0–60 configurable, customer-visible boleto_display_details.number versus no processor transaction ID, and descriptor ownership under Connect (old raw lines 12-85; new raw lines 16-136). The new confirmation-up-to-one-day and settlement-up-to-two-days labels must remain distinct from the old payout-availability-after-confirmation clock (old raw line 10; new raw lines 12-14, 124-126); source-stripe-boleto.md and stripe-vouchers need dated warnings. The separate May subscription guide shows an off_session: true Subscription creation request, while its invoice guide requires customer voucher payment despite charge_automatically; this is not proof of a successful off-session Boleto payment or of current request rejection. The new overview's quickstart and setup links are navigation, and a displayed voucher, SetupIntent, invoice finalization or provisional access cannot prove confirmation, settlement or bank payout. Both old and new captures say Stripe contacts the merchant over bank-side irregularities, rather than resolving them unilaterally. Full/partial Stripe refunds are unsupported, while May separately advises a customer-credit process."
+  }
+}

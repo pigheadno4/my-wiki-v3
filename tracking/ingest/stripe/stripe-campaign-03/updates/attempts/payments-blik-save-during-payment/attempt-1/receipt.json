@@ -1,0 +1,160 @@
+{
+  "job_id": "payments-blik-save-during-payment",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-blik-save-during-payment.md": {
+      "job_id": "payments-blik-save-during-payment",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Save BLIK Details During a Payment\"\ntype: source\ndate_ingested: 2026-05-03\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/blik/save-during-payment\"\nraw_files:\n  - \"stripe-blik-save-during-payment-2025.md\"\n  - \"stripe-blik-2025.md\"\ntags: [stripe, blik, poland, pln, recurring, payment-intents, mandates, off-session]\n---\n\n## Summary\n\nThe detailed 2026-05-03 guide shows how to save a BLIK PaymentMethod while processing a payment, so a later recurring off-session charge need not collect another BLIK code. The customer approves both the first payment and mandate in their banking app. The separate 2026-05-03 BLIK overview labels recurring support **private preview**, and the save guide warns that not all Polish banks support it. The 2026-11-07 canonical capture is only a purpose sentence and a chooser for Checkout, Elements, and Direct API; it does not verify current feature access or variant behavior.\n\n## Key Details\n\n### Mandate, identity, and limits (2026-05-03 evidence)\n\n- Before collecting the BLIK code, present the recurring mandate terms: price, charge cycle, end date, and a link to terms and conditions. The customer must understand and agree before proceeding. A bank without recurring support can fail with `recurring_not_supported_by_bank` (old save raw lines 8-12).\n- The saved PaymentMethod must be associated with a Customer for reuse. The guide uses PLN and caps **each later off-session recurring payment** at 2000 PLN; this is not a general limit on the initial payment. The dated primary BLIK overview says recurring is private preview, not universally available (old save raw lines 50-75, 137-165, 718-736; old BLIK overview lines 18-32).\n- BLIK's specific action remains in the banking app, without a browser redirect for BLIK itself. The generic Payment Element `return_url` example discusses redirects for some other methods, including iDEAL; it does not establish a BLIK redirect (old save raw lines 390-419, 607-613, 773-794; old BLIK overview lines 8-10).\n\n### Initial payment and save paths (2026-05-03 guide)\n\n- Checkout creates a Session in `payment` mode for a Customer, with `payment_intent_data.setup_future_usage: \"off_session\"`. After the customer completes the Session and approves payment plus mandate, a reusable BLIK PaymentMethod attaches to that Customer (old raw lines 18-44).\n- Elements creates a PLN BLIK PaymentIntent on the server for a Customer with `setup_future_usage: \"off_session\"`, gives its client secret to the client, and uses Payment Element plus `stripe.confirmPayment`. The generic example includes `return_url`; inspect the PaymentIntent status rather than equating a return or client callback with success (old raw lines 137-171, 390-419, 488-607).\n- Direct API creates and confirms a PLN BLIK PaymentIntent for the Customer with `setup_future_usage: \"off_session\"`, a BLIK code in `payment_method_options.blik.code`, and `mandate_data.customer_acceptance` of type `online` with `ip_address` and `user_agent`. That explicit `mandate_data` prescription belongs to this Direct API variant; do not apply it blindly to hosted Checkout or Elements (old raw lines 718-770).\n- A valid confirmation can produce `requires_action` with `next_action.type: \"blik_authorize\"`. The customer then has 60 seconds to approve payment and mandate in the banking app. This state is pending authorization, not final success. The Direct API section names `payment_intent.succeeded`, `payment_intent.payment_failed`, and `mandate.updated` webhooks for outcomes or mandate changes (old raw lines 607-613, 773-800).\n- The Elements paragraph at old raw line 488 says a \u201ccard\u201d is saved, while the BLIK-specific instructions identify a BLIK PaymentMethod and Customer. Treat \u201ccard\u201d as an internal template conflict, not as a BLIK storage fact (old raw lines 8, 137-165, 488, 607-631).\n\n### Later off-session payment and sandbox cases (2026-05-03 guide)\n\n- Create a **new** PLN PaymentIntent with the saved BLIK PaymentMethod and Customer IDs, `off_session: true`, and `confirm: true`. The bank validates it against the original mandate; `blik_authorize` is a bank action, and a bank decline can move the Intent to `requires_payment_method`. Listen for `payment_intent.succeeded` and `payment_intent.payment_failed` to determine final payment status. A created or confirmed Intent alone does not establish payment success (old raw lines 46-79, 627-660, 814-847).\n- Six recurring-specific sandbox billing-email patterns: `.*recurring_not_supported@.*` and `.*alias_declined@.*` produce provider declines immediately and after about 8 seconds; `.*setup_timeout@.*` produces `mandate.updated` pending-to-inactive after about 60 seconds; `.*alias_unregistered@.*` and `.*alias_expired@.*` produce active-to-inactive mandate updates after about six minutes; `.*recurring_declined@.*` lets setup succeed but declines later off-session attempts. These are test fixtures, not live outcome promises (old raw lines 81-118, 662-699, 849-886).\n\n## Capture boundary\n\nThe 2026-11-07 raw lists only Checkout, Elements, and Direct API variant links. The collection diff replaces the May detailed body with those links. None of the linked November variants was captured in this pin, so no substantive change, current bank participation, or present merchant eligibility can be inferred.\n\n## Related\n\n- [[stripe]] \u2014 Stripe company route.\n- [[stripe-blik]] \u2014 BLIK concept and related Stripe source routes.\n\n## Raw Sources\n\n- [[raw/stripe-blik-save-during-payment-2025|2026-05-03 full BLIK save-during-payment guide]] \u2014 dated implementation, state, limit, and sandbox evidence; 886 lines.\n- [[raw/stripe-blik-2025|2026-05-03 BLIK overview]] \u2014 dated private-preview and in-app approval context; 180 lines.\n\n## Related raw API references\n\n- [[raw/stripe-payments-blik-save-during-payment-2026-11-07|2026-11-07 BLIK save variant index]] \u2014 navigation-only Checkout, Elements, and Direct API links; no variant behavior inferred.\n",
+      "quotes": [
+        {
+          "text": "Save your customer's BLIK payment method while processing a payment for future recurring use.",
+          "location": "raw/stripe-payments-blik-save-during-payment-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-blik-save-during-payment-2026-11-07.md:11"
+        },
+        {
+          "text": "- [Checkout](https://docs.stripe.com/payments/blik/save-during-payment.md?payment-ui=checkout)",
+          "location": "raw/stripe-payments-blik-save-during-payment-2026-11-07.md:13"
+        },
+        {
+          "text": "- [Elements](https://docs.stripe.com/payments/blik/save-during-payment.md?payment-ui=elements)",
+          "location": "raw/stripe-payments-blik-save-during-payment-2026-11-07.md:14"
+        },
+        {
+          "text": "- [Direct API](https://docs.stripe.com/payments/blik/save-during-payment.md?payment-ui=direct-api)",
+          "location": "raw/stripe-payments-blik-save-during-payment-2026-11-07.md:15"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "payments-blik-save-during-payment-a1-concept-1",
+            "target_path": "wiki/concepts/stripe-blik.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-blik-save-during-payment]] \u2014 save for recurring: setup_future_usage, max 2000 PLN, not all banks supported, 6 additional test patterns",
+            "proposed_markdown": "- [[source-stripe-blik-save-during-payment]] \u2014 2026-05-03 BLIK payment-plus-mandate guide for Checkout, Elements, and Direct API: present recurring terms before code entry, attach the saved method to a Customer, and use a separate off-session PaymentIntent (PLN; up to 2000 PLN per later payment). Recurring availability was labeled private preview, banks vary, and final payment/mandate outcomes require status events. The 2026-11-07 canonical capture is a variant index only.",
+            "quote_indexes": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Private-preview scope comes from fully read dated primary raw/stripe-blik-2025.md:30-32, not the November navigation-only raw lines 5-15. Bank support and terms-before-code are in raw/stripe-blik-save-during-payment-2025.md:8-12.",
+              "The older Elements variant's 'card is saved' at raw/stripe-blik-save-during-payment-2025.md:488 conflicts with BLIK-specific saved PaymentMethod and bank-action passages at lines 8, 137-165, 607, 627-631. Generic Elements return_url at lines 390-419 does not override BLIK's in-app no-redirect context.",
+              "The response requires_action/next_action.blik_authorize at old raw lines 773-794 is pending; the guide uses payment_intent.succeeded, payment_intent.payment_failed and mandate.updated events for outcome or lifecycle."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-blik-save-during-payment-2026-11-07.md",
+      "raw_sha256": "ca1a1a255645b4c6eab88ddc4c905b5d6608141447ba08c5bcc193423e43b67f",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-blik-save-during-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-blik-save-during-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 886
+      }
+    ],
+    "wiki/sources/source-stripe-blik-save-during-payment.md": [
+      {
+        "start": 1,
+        "end": 54
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/86409fc60c7e7e64ecc5bb62/content.diff": [
+      {
+        "start": 1,
+        "end": 889
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-blik-save-during-payment/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 231
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 22
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 260,
+        "end": 276
+      },
+      {
+        "start": 374,
+        "end": 385
+      },
+      {
+        "start": 670,
+        "end": 685
+      },
+      {
+        "start": 742,
+        "end": 754
+      }
+    ],
+    "wiki/concepts/stripe-blik.md": [
+      {
+        "start": 1,
+        "end": 64
+      }
+    ],
+    "raw/stripe-blik-2025.md": [
+      {
+        "start": 1,
+        "end": 180
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "Before collecting the BLIK code, present the mandate terms to the customer, including the price, charge cycle, end date, and a link to your terms and conditions.",
+      "location": "raw/stripe-blik-save-during-payment-2025.md:10"
+    },
+    {
+      "text": "Not all Polish banks support BLIK recurring payments.",
+      "location": "raw/stripe-blik-save-during-payment-2025.md:12"
+    },
+    {
+      "text": "After the customer completes the Checkout Session, a reusable BLIK PaymentMethod is attached to the Customer.",
+      "location": "raw/stripe-blik-save-during-payment-2025.md:44"
+    },
+    {
+      "text": "After confirming with valid parameters, the PaymentIntent\u2019s status becomes `requires_action`.",
+      "location": "raw/stripe-blik-save-during-payment-2025.md:607"
+    },
+    {
+      "text": "You must provide `mandate_data` with `customer_acceptance` set to `online`",
+      "location": "raw/stripe-blik-save-during-payment-2025.md:736"
+    },
+    {
+      "text": "Listen for the following webhooks to determine the outcome:",
+      "location": "raw/stripe-blik-save-during-payment-2025.md:790"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/blik/save-during-payment, the complete November capture, new raw lines 5-15, establishes only a save-during-payment purpose and Checkout, Elements, and Direct API navigation; it has no implementation or outcome details. The May guide, old raw lines 8-44, 137-165, 607-660, 718-847, requires recurring terms before BLIK code entry, a Customer-bound saved PaymentMethod, path-specific off_session setup_future_usage, and for Direct API online mandate_data plus the code. requires_action/ blik_authorize begins bank-app approval, while later off-session charging uses a separate PaymentIntent and final webhooks. source-stripe-blik-save-during-payment.md has the paths and PLN/2000-PLN limit but omits consent-before-code, historical private-preview scope, and webhook outcome separation.",
+    "Q2": "At https://docs.stripe.com/payments/blik/save-during-payment, the change is navigation-only: new raw lines 9-15 list three variant links where old raw lines 8-886 contained detailed instructions, with no proven substantive API change. source-stripe-blik-save-during-payment.md should retain dated Checkout, Elements and Direct API flows, six sandbox patterns and their different decline versus mandate.updated effects, PLN-only currency and the 2000 PLN per later off-session payment ceiling. The dated primary BLIK overview labels recurring private preview. Old raw lines 392-419 provide generic Elements return_url wording, not proof of a BLIK browser redirect; old raw line 488's 'card' conflicts with the BLIK method passages. Neither a requires_action bank prompt nor a created later Intent proves payment success; old raw lines 773-800 require outcome events, and the November index does not verify current access."
+  }
+}

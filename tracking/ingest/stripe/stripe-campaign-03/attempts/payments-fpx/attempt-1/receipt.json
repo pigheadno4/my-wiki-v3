@@ -1,0 +1,164 @@
+{
+  "job_id": "payments-fpx",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-fpx-2026-11-07.md",
+  "raw_sha256": "9b5f0dc294aabec0f6c2cdee74cd805d0967f795b186142a29800bcae075c65a",
+  "prior_raw_path": "raw/stripe-fpx-2025.md",
+  "prior_raw_sha256": "4743e2f34e3687183a29b97b16a4709c8d8e1afd52534247986bfae3449b9ee4",
+  "source_targets": [
+    "wiki/sources/source-stripe-fpx.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-fpx.md": "b52d797a1dee211cadbd3b3967de97e8209cd166a29ffc3b9129c120b2624289"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-fpx-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 157
+      }
+    ],
+    "raw/stripe-fpx-2025.md": [
+      {
+        "start": 1,
+        "end": 119
+      }
+    ],
+    "wiki/sources/source-stripe-fpx.md": [
+      {
+        "start": 1,
+        "end": 28
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/92ea4126f226c1e15a1897ba/content.diff": [
+      {
+        "start": 1,
+        "end": 219
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 277,
+        "end": 278
+      },
+      {
+        "start": 744,
+        "end": 744
+      },
+      {
+        "start": 753,
+        "end": 753
+      }
+    ],
+    "wiki/concepts/stripe-fpx.md": [
+      {
+        "start": 1,
+        "end": 57
+      }
+    ],
+    "wiki/concepts/stripe-bank-redirects.md": [
+      {
+        "start": 14,
+        "end": 39
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Transaction limits: Minimum amount: 1.00 MYR (B2C), 2.00 MYR (B2B); Maximum amount: 30,000.00 MYR (B2C), 1,000,000.00 MYR (B2B)",
+      "location": "raw/stripe-payments-fpx-2026-11-07.md:40"
+    },
+    {
+      "text": "You can issue a full or partial refund for an FPX payment within 180 days of the original payment",
+      "location": "raw/stripe-payments-fpx-2026-11-07.md:68"
+    },
+    {
+      "text": "FPX supports iOS and Android Payment Sheet for B2C transactions only.",
+      "location": "raw/stripe-payments-fpx-2026-11-07.md:115"
+    },
+    {
+      "text": "A B2C payment immediately displays as successful. A B2B payment initially displays as pending while confirmation is processed asynchronously, then displays as successful after confirmation.",
+      "location": "raw/stripe-payments-fpx-2026-11-07.md:141"
+    },
+    {
+      "text": "To reconcile an FPX payment with PayNet records, retrieve the PaymentIntent with `latest_charge` expanded and read `latest_charge.payment_method_details.fpx.transaction_id`.",
+      "location": "raw/stripe-payments-fpx-2026-11-07.md:151"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "FPX payments can be refunded up to 60 days after the original payment.",
+      "location": "raw/stripe-fpx-2025.md:119"
+    },
+    {
+      "text": "Refunds for FPX payments are asynchronous and take approximately 1 week to complete.",
+      "location": "raw/stripe-fpx-2025.md:119"
+    },
+    {
+      "text": "1Not supported when using Checkout in subscription mode or setup mode.2Express Checkout Element doesn\u2019t support FPX.",
+      "location": "raw/stripe-fpx-2025.md:71"
+    },
+    {
+      "text": "(Optional) Customer returns back to business\u2019s site for payment confirmation",
+      "location": "raw/stripe-fpx-2025.md:93"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The new capture identifies FPX as a single-use Malaysian bank redirect for MY customers/MYR, domestic use, MY merchants/platforms, with BRN required to process payments and receive payouts. It states no recurring, setup_future_usage, SetupIntent, off-session, manual capture, or standard chargeback process. Up to T+5 payout timing is distinct from immediate payment confirmation and provisional access (new raw lines 9-65, 80-110; old raw lines 8-71; source lines 13-22).",
+    "The consequential refund change is old 60-day submission and about one week completion versus new 180-day submission, normally up to 14 days and possibly six weeks. The new refund is full/partial, asynchronous, noncancelable after submission, and a separate credit rather than a card-like reversal. Use Refund status or refund.updated/refund.failed for final outcome; a failed refund returns funds to Stripe balance and requires an alternative customer refund (old raw lines 36-38, 117-119; new raw lines 57-78; source lines 13, 20).",
+    "The new capture adds B2C 1-30,000 MYR and B2B 2-1,000,000 MYR transaction bounds, B2C-only iOS/Android Payment Sheet, and a confirmation distinction: B2C immediately displays successful, while B2B initially displays pending until asynchronous confirmation. Browser return after authorization is a navigation state, not an independently verified payment success (new raw lines 36-40, 112-141; old raw lines 73-93; source line 24).",
+    "The new product table says Billing and Invoicing supported but footnotes send_invoice collection only, while recurring, SetupIntents and off-session payments are unsupported. This must not become an automatic subscription or charge_automatically claim. The older capture explicitly excluded Checkout setup/subscription mode; keep that dated, and scope the new Billing row to its footnote (old raw lines 62-71; new raw lines 86-115; wiki/concepts/stripe-bank-redirects.md lines 29-34).",
+    "The new overview adds statement descriptor semantics and FPX PayNet reconciliation ID: full statement_descriptor controls seller order number, card-only suffix does not; Connect direct/on_behalf_of uses connected-account descriptor, destination without on_behalf_of uses platform. Read the PaymentIntent latest_charge.payment_method_details.fpx.transaction_id for PayNet reconciliation, not a generic returned-page state (new raw lines 143-151).",
+    "Older source/concept details about mandatory confirmation-page fields, separate FPX balance/payout routing and bank lists come from the separate accept-payment guide, not the new overview. Preserve those as dated route-specific authority rather than deleting them because absent here (wiki/concepts/stripe-fpx.md lines 45-53; wiki/stripe-index.md line 278)."
+  ],
+  "substantive_changes": [
+    "Refund submission 60 to 180 days, processing approximately one week to normally up to 14 days/potential six weeks, noncancelability and credit/Refund status detail (old raw lines 117-119; new raw lines 57-78).",
+    "New B2B/B2C payment limits and display/confirmation-state split, plus B2C-only native Payment Sheet boundary (new raw lines 36-40, 112-141).",
+    "New account eligibility, product/API support, send_invoice qualifier, statement descriptor routing and PayNet transaction_id locator (new raw lines 16-40, 86-115, 143-151)."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the 2026-05-03 capture's 60-day/~one-week refund statement and optional merchant return dated; the 2026-11-07 overview differs and must be named explicitly (old raw lines 73-93, 117-119; new raw lines 68-78, 135-141).",
+    "Retain BRN, MY/MYR, bank authentication/redirect, no recurring/disputes and T+5 payout as continuing facts; preserve older historical PayNet/BNM and 2018 transaction-count prose as historical rather than assuming the new shorter wording disproves it (old raw lines 8-54; new raw lines 9-42)."
+  ],
+  "conflicts": [
+    "Current source and FPX concept state 60-day/~one-week refund behavior (source lines 13, 20; wiki/concepts/stripe-fpx.md lines 30, 41-42), while the new capture states 180 days, normally up to 14 days and possibly six weeks (new raw lines 57-78). Add reciprocal dated warnings and update comparison row.",
+    "The current source/concept describes an optional merchant return after completion (source line 24; wiki/concepts/stripe-fpx.md lines 18-23), whereas the new overview says customer automatically returns and B2B initially displays pending (new raw lines 135-141). Preserve the older flow as dated and avoid implying return is payment success.",
+    "The FPX concept says legacy Elements min RM2/max RM30,000 (wiki/concepts/stripe-fpx.md line 53), but the new overview gives B2C 1/30,000 MYR and B2B 2/1,000,000 MYR (new raw line 40). Treat legacy UI and B2B/B2C scope separately, not an unconditional replacement.",
+    "The current source says Checkout subscription/setup unsupported (source line 22), old raw says the same (old raw line 71), while new product table's Billing support is send_invoice-only and its SetupIntent/off-session entries are negative (new raw lines 96-115). This is a qualified product-row difference, not support for automatic recurring."
+  ],
+  "unresolved_questions": [
+    "The overview does not confirm an individual merchant's BRN, capability activation, bank availability, or runtime success; the pending B2B display and merchant return are not settlement or funds-availability proof (new raw lines 18-24, 121-141).",
+    "The linked accept-payment guide, not this overview, is needed to reconcile exact mandatory confirmation-page fields and historical legacy-Elements limits with current UI variants (new raw lines 112-157; wiki/concepts/stripe-fpx.md lines 45-53)."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-fpx.md",
+    "wiki/concepts/stripe-bank-redirects.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-fpx.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add exact canonical URL and new pinned provenance, retain old raw, update refund window/timing/state and B2B/B2C amount/confirmation boundaries, plus send_invoice-only Billing and B2C-only mobile scope (source lines 1-28; old raw lines 117-119; new raw lines 36-40, 57-78, 86-115, 139-141).",
+        "Route to FPX concept for historical accept-payment guide facts; new overview's statement descriptor and PayNet transaction ID deserve locators rather than generic payment-success claims (new raw lines 143-151)."
+      ],
+      "conflicts": [
+        "Old source says 60-day/~one-week refunds versus new 180-day/14-day-to-six-week process (source lines 13, 20; new raw lines 57-78).",
+        "Old optional return phrasing versus new automatic return and B2B pending display (source line 24; new raw lines 135-141)."
+      ],
+      "reason": "The new capture materially changes refund operations and adds B2B/B2C payment limits and outcome distinctions missing from the existing source."
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/fpx, the new capture establishes a single-use MY merchant/customer, MYR domestic bank redirect with required BRN for processing and payouts, no recurring or standard disputes, and T+5 settlement separate from confirmation (new raw lines 9-65, 80-110). It adds B2C 1-30,000 MYR and B2B 2-1,000,000 MYR limits, B2C-only native Payment Sheet, and B2B pending display before asynchronous confirmation; bank authorization and browser return do not prove settlement (new raw lines 36-40, 112-141). Refunds now have a 180-day submission window and normally up to 14 days, possibly six weeks, to complete; final Refund status matters (new raw lines 57-78). The matched old capture said 60 days/about one week (old raw lines 117-119), which source-stripe-fpx.md still repeats, and its optional-return flow also differs (source lines 13, 20, 24).",
+    "Q2": "For https://docs.stripe.com/payments/fpx, substantive changes are the 60-to-180-day refund window, longer stated processing range and noncancelable separate-credit workflow, B2B/B2C limits and status split, B2C-only mobile sheet, send_invoice-only Billing qualifier, and descriptor/PayNet reconciliation fields (old raw lines 62-71, 73-93, 117-119; new raw lines 36-40, 57-78, 86-115, 135-151). source-stripe-fpx.md and the FPX concept must keep their 2026-05-03 refund/return statements dated with reciprocal warnings; the concept's legacy Elements amount limit is UI-specific. New headings, pricing/sample links and replacement of video/flow images with prose are presentation or navigation, not evidence those older references are deprecated. Billing support is not automatic recurring, a B2B pending display is not success, and neither browser return nor submitted refund proves final payment or refund outcome."
+  }
+}

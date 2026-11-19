@@ -1,0 +1,288 @@
+{
+  "job_id": "payments-bank-redirects",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-bank-redirects.md": {
+      "job_id": "payments-bank-redirects",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Bank Redirects Overview\"\ntype: source\ndate_ingested: 2026-05-03\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/bank-redirects\"\nraw_files:\n  - \"stripe-payments-bank-redirects-2026-11-07.md\"\n  - \"stripe-bank-redirects-2025.md\"\ntags: [stripe, bank-redirects, bancontact, blik, eps, fpx, ideal, p24, twint, pay-by-bank]\n---\n\n## Summary\n\nStripe's bank-redirect overview compares product and API support by method. Its **May 3, 2026** capture has seven product-table rows and eight API-table rows; the **November 7, 2026** capture has six product rows and seven API rows. TWINT appears in May but not November, and Pay by Bank appears only in the API table in both. This is a change in captured table coverage, not evidence that TWINT was withdrawn. The usual flow redirects a customer to the bank for authentication and returns them to the merchant, with BLIK marked as the no-browser-redirect exception. A return or support cell does not establish payment success or merchant capability activation. See [[stripe]] and [[stripe-bank-redirects]].\n\n## Product support and dated matrix scope\n\nAll **six listed November product rows** (Bancontact, BLIK, EPS, FPX, iDEAL|Wero, P24) mark Connect, Checkout, Payment Links, Payment Element and Mobile Payment Element supported, and Express Checkout Element unsupported. The prior source's claim that **all eight** methods have those product cells overreached even the May table: Pay by Bank has no product row in either capture. The November matrix does not provide a TWINT product row, so its May row remains dated rather than erased. The matrix's broad cells are documentation labels, not account- or UI-variant guarantees.\n\n- **BLIK:** May's product row marked Subscriptions, Invoicing and Customer Portal unsupported and attached Checkout setup/subscription exclusions. November marks all three products supported and omits those two Checkout footnotes. Both captures' BLIK Payment Element row still excludes collecting details before a PaymentIntent and **Elements with the Checkout Sessions API**. The November overview says Mobile Payment Element supported, while the same-date BLIK method overview marks an \"in-app payments\" category unsupported. The labels need integration-specific resolution; do not flatten them to a universal mobile claim. The November BLIK page describes reusable off-session mandate setup with bank-app approval, a 2,000 PLN per-charge recurring cap and account/bank qualifications; Connect requires active `blik_payments` and, for recurring, `blik_recurring_payments` on the platform and relevant connected accounts. See [[source-stripe-blik]].\n- **Bancontact, EPS, FPX, P24:** November Subscriptions cells carry `send_invoice`-only footnote 7. Bancontact/EPS/P24 Invoicing is invite-only; FPX Invoicing is supported. EPS/FPX/P24 Checkout cells retain footnotes 1 and 2, excluding subscription and setup modes. These support cells do not imply automatic recurring charges.\n- **iDEAL|Wero:** The November subscription cell is limited to Checkout subscription mode and carries the `send_invoice` footnote; footnote 6 excludes `charge_automatically` for subscriptions or invoices. Its Invoicing support also carries footnote 6. Preserve these separate conditions instead of treating it as generic subscription support.\n- **TWINT:** May's product row listed Connect, Checkout, Payment Links, Payment Element and Mobile Payment Element supported, Express Checkout Element, Subscriptions, Invoicing and Customer Portal unsupported, and Checkout setup/subscription mode excluded. November does not include a TWINT row. Omission alone does not prove a runtime support change.\n\n## API support and method-page conflicts\n\nEvery method **listed in each captured API table** supports PaymentIntents and excludes manual capture. BLIK is marked no browser redirect; the other listed methods require one. The general footnote says a `return_url` may be required for methods that redirect. EPS, FPX, P24 and Pay by Bank remain SetupIntents and `setup_future_usage` unsupported in the November table. iDEAL|Wero remains supported for both. TWINT's May API row said both supported but it has no November API row. Do not project May's TWINT row into the November table.\n\n- **BLIK:** May's API row marked SetupIntents and `setup_future_usage` unsupported; November marks both supported, retaining the deferred-intent creation exclusion. The same-date November BLIK overview documents `setup_future_usage=off_session` on a PaymentIntent or `usage=off_session` on a SetupIntent with bank-app-authorized mandate, not universal account eligibility or a successful future charge. There is also a **May 3 same-date contradiction**: the May bank-redirect matrix said BLIK SetupIntents unsupported, while the separate May BLIK setup guide explicitly described Checkout `setup` mode and a BLIK SetupIntent without an initial charge. The May accept-payment guide's one-time Checkout path said payment mode only; that path does not erase the separate setup guide. The setup guide says bank support can vary and final setup/payment outcomes require webhooks. See [[source-stripe-blik-set-up-payment]], [[source-stripe-blik-accept-payment]] and [[source-stripe-blik-save-during-payment]].\n- **Bancontact:** May's API row marked SetupIntents and future usage supported. November marks SetupIntents **unsupported** but future usage **supported**, with a footnote saying Bancontact can save bank details as a **SEPA Direct Debit** payment method. The same-date November Bancontact method overview marks both PaymentIntents with `setup_future_usage` and SetupIntents unsupported. Preserve this overview-versus-method-page conflict: native single-use Bancontact, a generated SEPA future-use route, and the method-page API cells are not interchangeable. Neither page alone resolves a merchant's exact setup path. See [[source-stripe-bancontact]] and [[stripe-bancontact]].\n\nThe November API footnote distinguishes card/bank-debit types that can support `on_session` and `off_session` from other methods that either do not support future usage or only support `off_session`. The matrix does not prove an exclusive `off_session` value for every listed method. Nor do these method labels demonstrate mandate completion, Checkout mode availability, or a live payment.\n\n## Related method guides\n\n- [[source-stripe-blik]] \u2014 BLIK overview and account/mandate conditions\n- [[source-stripe-bancontact]] \u2014 Bancontact overview and same-date API conflict\n- [[source-stripe-blik-set-up-payment]] \u2014 May 3, 2026 no-charge SetupIntent guide; conflicts with May matrix BLIK SetupIntents cell\n- [[source-stripe-blik-accept-payment]] \u2014 May 3, 2026 one-time payment-mode guide\n- [[source-stripe-blik-save-during-payment]] \u2014 May 3, 2026 recurring save-during-payment guide\n\n## Raw Sources\n\n- [[raw/stripe-payments-bank-redirects-2026-11-07|Bank-redirect overview \u2014 November 7, 2026 full capture]]\n- [[raw/stripe-bank-redirects-2025|Bank-redirect overview \u2014 May 3, 2026 capture; filename retains 2025 suffix]]\n\n## Related raw guide\n\n- [[raw/stripe-blik-set-up-payment-2025|BLIK setup guide \u2014 May 3, 2026; same-date matrix conflict]]\n",
+      "quotes": [
+        {
+          "text": "Some bank redirects support *subscriptions*",
+          "location": "raw/stripe-payments-bank-redirects-2026-11-07.md:14-14"
+        },
+        {
+          "text": "| [BLIK](https://docs.stripe.com/payments/blik.md) | \u2713 Supported | \u2713 Supported | \u2713 Supported | \u2713 Supported 3,4 | - Unsupported | \u2713 Supported | \u2713 Supported | \u2713 Supported | \u2713 Supported |",
+          "location": "raw/stripe-payments-bank-redirects-2026-11-07.md:28-28"
+        },
+        {
+          "text": "| [BLIK](https://docs.stripe.com/payments/blik.md)4 | `blik` | \u2713 Supported | \u2713 Supported | - Unsupported | \u2713 Supported 1 | No |",
+          "location": "raw/stripe-payments-bank-redirects-2026-11-07.md:43-43"
+        },
+        {
+          "text": "Bancontact supports `setup_future_usage` by saving the customer\u2019s bank details as a SEPA Direct Debit payment method.",
+          "location": "raw/stripe-payments-bank-redirects-2026-11-07.md:50-50"
+        },
+        {
+          "text": "Not supported when using [Elements with the Checkout Sessions API](https://docs.stripe.com/payments/quickstart.md).",
+          "location": "raw/stripe-payments-bank-redirects-2026-11-07.md:34-34"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "bank-redirects-dated-scope",
+            "target_path": "wiki/concepts/stripe-bank-redirects.md",
+            "update_kind": "durable_fact",
+            "anchor": "Bank redirects let customers pay online by being redirected to their bank's portal, logging in, and approving the transaction. Dominant payment method in Germany, Netherlands (iDEAL), and Malaysia (FPX). Covers 8 methods: Bancontact, BLIK, EPS, FPX, iDEAL|Wero, P24, Pay by Bank, TWINT.",
+            "proposed_markdown": "Bank redirects let customers pay online through bank authorization and usually return to the merchant after a browser redirect; BLIK is the no-browser-redirect exception. The May 3, 2026 overview covered seven product rows and eight API rows, including TWINT and API-only Pay by Bank. The November 7, 2026 capture has six product rows (Bancontact, BLIK, EPS, FPX, iDEAL|Wero, P24) and seven API rows (those six plus Pay by Bank), omitting TWINT from both. This is dated table coverage, not proof that TWINT support ended. See [[source-stripe-bank-redirects]].",
+            "quote_indexes": [
+              0,
+              1,
+              2
+            ],
+            "warnings": [
+              "Old raw lines 24-32 and 40-49 versus new raw lines 25-32 and 40-48; Pay by Bank is API-only in both captured tables."
+            ]
+          },
+          {
+            "update_id": "bank-redirects-subscription-scope",
+            "target_path": "wiki/concepts/stripe-bank-redirects.md",
+            "update_kind": "durable_fact",
+            "anchor": "Not suitable for subscriptions with `charge_automatically` \u2014 most bank redirect methods are single-use or require redirect-based approval each time.",
+            "proposed_markdown": "Subscription and recurring support is method- and route-specific. The November 7, 2026 matrix marks BLIK Subscriptions supported, while the BLIK method page requires an authorized recurring mandate and capability activation. Bancontact/EPS/FPX/P24 subscription cells are `send_invoice` only; iDEAL|Wero is Checkout-subscription-mode-only and excludes `charge_automatically` for subscriptions or invoices. A matrix support cell does not prove a particular merchant's capability or a completed off-session payment.",
+            "quote_indexes": [
+              0,
+              1
+            ],
+            "warnings": [
+              "New raw lines 14, 27-34; old raw line 13. BLIK method raw lines 124-148 and 177-181 give mandate and Connect capability boundaries."
+            ]
+          },
+          {
+            "update_id": "bank-redirects-api-rows-2026",
+            "target_path": "wiki/concepts/stripe-bank-redirects.md",
+            "update_kind": "durable_fact",
+            "anchor": "| Bancontact | `bancontact` | Yes | Yes (`off_session` only) | Yes |\n| BLIK | `blik` | No | No | No |\n| EPS | `eps` | No | No | Yes |\n| FPX | `fpx` | No | No | Yes |\n| iDEAL\\|Wero | `ideal` | Yes | Yes (`off_session` only) | Yes |\n| P24 | `p24` | No | No | Yes |\n| Pay by Bank | `pay_by_bank` | No | No | Yes |\n| TWINT | `twint` | Yes | Yes (`off_session` only) | Yes |",
+            "proposed_markdown": "| Bancontact | `bancontact` | No in November matrix (May: Yes) | Yes in November matrix, with generated SEPA Direct Debit footnote; same-date Bancontact page says no | Yes |\n| BLIK | `blik` | Yes in November matrix (May: No; May setup guide: Yes) | Yes in November matrix (May: No); off-session recurring path in BLIK guide | No |\n| EPS | `eps` | No | No | Yes |\n| FPX | `fpx` | No | No | Yes |\n| iDEAL\\|Wero | `ideal` | Yes | Yes | Yes |\n| P24 | `p24` | No | No | Yes |\n| Pay by Bank | `pay_by_bank` | No | No | Yes |\n| TWINT | `twint` | May 3 matrix: Yes; no November row | May 3 matrix: Yes; no November row | May 3 matrix: Yes; no November row |",
+            "quote_indexes": [
+              2,
+              3
+            ],
+            "warnings": [
+              "Old raw lines 42-49, new raw lines 42-48 and 50. Bancontact same-date method raw lines 109-116 mark SetupIntents and PI future usage unsupported. BLIK May setup-guide raw lines 20-37, 144-157 and 563-623 describe SetupIntent paths despite May matrix No. The November matrix does not prove exclusive off_session for BLIK or iDEAL, nor a TWINT withdrawal."
+            ]
+          },
+          {
+            "update_id": "bank-redirects-product-rows-2026",
+            "target_path": "wiki/concepts/stripe-bank-redirects.md",
+            "update_kind": "durable_fact",
+            "anchor": "- **Express Checkout Element**: unsupported for all bank redirects\n- **Checkout setup/subscription mode**: unsupported for BLIK, EPS, FPX, P24, TWINT\n- **Subscriptions**: only iDEAL|Wero, Bancontact, EPS, FPX, P24 \u2014 all via `send_invoice` only (not `charge_automatically`)\n- **Invoicing**: FPX full support; iDEAL|Wero full support; Bancontact/EPS/P24 invite-only; BLIK/TWINT unsupported\n- **BLIK**: does not support deferred intent creation path",
+            "proposed_markdown": "- **Express Checkout Element**: unsupported for every method listed in both captured product tables; Pay by Bank has no product row and TWINT has no November row.\n- **Checkout modes**: November EPS/FPX/P24 retain footnotes excluding setup and subscription modes. The May BLIK row also had those footnotes, but November BLIK does not. Its separate May accept-payment guide covered a one-time payment-mode path while its same-date setup guide documented Checkout setup mode; no single row resolves all guide routes. TWINT has only a May row with those exclusions.\n- **Subscriptions**: November BLIK supported, with mandate/capability conditions in its method page; Bancontact/EPS/FPX/P24 `send_invoice` only; iDEAL|Wero Checkout subscription mode only plus `send_invoice`, excluding `charge_automatically`. TWINT's May row was unsupported and is absent in November.\n- **Invoicing and portal**: November BLIK Invoicing and Customer Portal supported; May row marked both unsupported. November Bancontact/EPS/P24 Invoicing invite-only, FPX supported, iDEAL|Wero supported without `charge_automatically`; TWINT's May row said unsupported and November omits it.\n- **BLIK Payment Element**: November footnotes still exclude collecting details before PI creation and Elements with the Checkout Sessions API. The bank-redirects table says Mobile Payment Element supported, while the same-date BLIK method overview says its in-app category unsupported; keep this apparent terminology/scope conflict visible. BLIK's deferred-intent creation path remains excluded in the November API footnote.",
+            "quote_indexes": [
+              1,
+              4
+            ],
+            "warnings": [
+              "Old raw lines 24-34 and new raw lines 25-34 preserve method-specific cells/footnotes. BLIK May setup-guide raw lines 20-37 conflict with May overview mode/SetupIntent cells; new BLIK raw lines 150-181 qualify mobile, recurring and Connect capability. Do not generalize product cells to account eligibility or payment outcome."
+            ]
+          },
+          {
+            "update_id": "bank-redirects-source-route-2026",
+            "target_path": "wiki/concepts/stripe-bank-redirects.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-bank-redirects]] \u2014 primary source: product support matrix, API support matrix, payment flow",
+            "proposed_markdown": "- [[source-stripe-bank-redirects]] \u2014 May 3 and November 7, 2026 product/API matrices: method-specific footnotes, BLIK and Bancontact changes, and TWINT's November row omission",
+            "quote_indexes": [
+              1,
+              2,
+              3
+            ],
+            "warnings": []
+          },
+          {
+            "update_id": "blik-bank-redirects-reciprocal-conflict",
+            "target_path": "wiki/concepts/stripe-blik.md",
+            "update_kind": "durable_fact",
+            "anchor": "- **Recurring**: Private preview\n- **Deferred intent**: Client-side confirmation only (private preview)\n- **ECE + Mobile Payment Element**: Not supported",
+            "proposed_markdown": "- **Recurring and setup**: The May 3 BLIK overview called recurring private preview; the May bank-redirects matrix marked SetupIntents, future usage, subscriptions and Checkout setup mode unsupported even though the separate May BLIK setup guide documented Checkout setup mode and SetupIntents. The November matrix and BLIK method overview mark reusable recurring, SetupIntents and future usage supported, conditional on bank-app mandate authorization and relevant Connect capabilities. Neither setup nor a matrix cell proves a later successful charge.\n- **Deferred intent**: May BLIK overview described client-side confirmation only in private preview. November bank-redirects API footnote continues to exclude BLIK deferred-intent creation; Payment Element collection-before-PI and Elements with Checkout Sessions are separate excluded paths.\n- **ECE and mobile**: Express Checkout Element unsupported. November bank-redirects matrix marks Mobile Payment Element supported, whereas same-date BLIK overview marks in-app payments unsupported; the labels may differ and require route-specific resolution.",
+            "quote_indexes": [
+              1,
+              2,
+              4
+            ],
+            "warnings": [
+              "Old bank-redirect raw lines 27, 43; BLIK May setup raw lines 20-37 and 144-157; new bank-redirect raw lines 28, 34, 43, 50; new BLIK overview raw lines 124-181. Preserve older preview as dated rather than inferring a universal launch or bank eligibility."
+            ]
+          },
+          {
+            "update_id": "blik-bank-redirects-source-route",
+            "target_path": "wiki/concepts/stripe-blik.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-blik]] \u2014 primary source: payment flow, disputes, refunds, Connect",
+            "proposed_markdown": "- [[source-stripe-blik]] \u2014 BLIK method overview, dated customer flow and recurring/Connect conditions\n- [[source-stripe-bank-redirects]] \u2014 May 3 and November 7, 2026 matrix changes and conflicting BLIK setup/mobile rows; read with method-specific guides",
+            "quote_indexes": [
+              1,
+              2
+            ],
+            "warnings": []
+          },
+          {
+            "update_id": "bancontact-bank-redirects-setup-conflict",
+            "target_path": "wiki/concepts/stripe-bancontact.md",
+            "update_kind": "durable_fact",
+            "anchor": "- **Recurring**: Not native \u2014 requires saving as [[stripe-sepa-debit]] mandate. Bancontact payment can be converted to a SEPA Direct Debit for future recurring charges.",
+            "proposed_markdown": "- **Recurring and setup boundary**: Native Bancontact is single-use; future recurring use can involve a generated [[stripe-sepa-debit]] payment method. The May 3 bank-redirects API matrix marked Bancontact SetupIntents and future usage supported. Its November 7 matrix marks SetupIntents unsupported but future usage supported through a generated SEPA Direct Debit footnote, while the same-date Bancontact method overview marks both SetupIntents and PaymentIntents with setup_future_usage unsupported. Preserve the unresolved route-specific conflict; none of these cells proves a particular account can complete a mandate.",
+            "quote_indexes": [
+              3
+            ],
+            "warnings": [
+              "Old bank-redirect raw line 42, new raw lines 42 and 50, and same-date Bancontact method raw lines 109-116. Do not silently choose between overview and method-page API support cells."
+            ]
+          },
+          {
+            "update_id": "bancontact-bank-redirects-source-route",
+            "target_path": "wiki/concepts/stripe-bancontact.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-bancontact]] \u2014 primary source: properties, payment flows, disputes, refunds",
+            "proposed_markdown": "- [[source-stripe-bancontact]] \u2014 Bancontact method overview, including November 7, 2026 API support cells\n- [[source-stripe-bank-redirects]] \u2014 May 3 and November 7, 2026 matrices; Bancontact SetupIntent and generated-SEPA future-use conflict with same-date method page",
+            "quote_indexes": [
+              3
+            ],
+            "warnings": []
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-bank-redirects-2026-11-07.md",
+      "raw_sha256": "07661589a8e09950c226fb330b96a8c48d2b58b23f0a4f2343f2403b04f042c8",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-bank-redirects-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 54
+      }
+    ],
+    "raw/stripe-bank-redirects-2025.md": [
+      {
+        "start": 1,
+        "end": 55
+      }
+    ],
+    "wiki/sources/source-stripe-bank-redirects.md": [
+      {
+        "start": 1,
+        "end": 45
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/08899239a32675ed1197c4d9/content.diff": [
+      {
+        "start": 1,
+        "end": 70
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-bank-redirects/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 226
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 25
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 263,
+        "end": 278
+      },
+      {
+        "start": 742,
+        "end": 755
+      }
+    ],
+    "wiki/concepts/stripe-bank-redirects.md": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ],
+    "wiki/concepts/stripe-blik.md": [
+      {
+        "start": 1,
+        "end": 64
+      }
+    ],
+    "wiki/concepts/stripe-bancontact.md": [
+      {
+        "start": 1,
+        "end": 43
+      }
+    ],
+    "raw/stripe-payments-bancontact-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 155
+      }
+    ],
+    "raw/stripe-payments-blik-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 221
+      }
+    ],
+    "raw/stripe-blik-set-up-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 697
+      }
+    ],
+    "wiki/sources/source-stripe-blik-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 46
+      }
+    ],
+    "wiki/sources/source-stripe-blik-save-during-payment.md": [
+      {
+        "start": 1,
+        "end": 54
+      }
+    ],
+    "wiki/sources/source-stripe-blik-set-up-payment.md": [
+      {
+        "start": 1,
+        "end": 44
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "<!-- Fetched: 2026-05-03 -->",
+      "location": "raw/stripe-bank-redirects-2025.md:2-2"
+    },
+    {
+      "text": "| [TWINT](https://docs.stripe.com/payments/twint.md)",
+      "location": "raw/stripe-bank-redirects-2025.md:32-32"
+    },
+    {
+      "text": "| [BLIK](https://docs.stripe.com/payments/blik.md)3",
+      "location": "raw/stripe-bank-redirects-2025.md:43-43"
+    },
+    {
+      "text": "| [Bancontact](https://docs.stripe.com/payments/bancontact.md)",
+      "location": "raw/stripe-bank-redirects-2025.md:42-42"
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/bank-redirects, the November 7 capture establishes method-specific product and API support rather than a universal bank-redirect capability. Its six product rows and seven API rows mark BLIK subscription, invoicing, Customer Portal, SetupIntent and future-use support, with Payment Element/deferred path footnotes; Bancontact SetupIntents changes to unsupported while generated-SEPA future use remains in the matrix. The usual bank redirect and return is a navigation flow, not payment success. The May 3 capture included TWINT and marked BLIK setup/support differently at old raw lines 24-51; November omits TWINT at new raw lines 25-50 without proving withdrawal. source-stripe-bank-redirects.md still presents eight-method/all-product coverage, incorrectly including Pay by Bank in the product table, and stale BLIK/Bancontact cells. Separate May BLIK SetupIntent guidance conflicts with May matrix, and the same-date November Bancontact method page conflicts with the November future-use cell. The candidate keeps these dated and routes to [[stripe-bank-redirects]], [[stripe-blik]] and [[stripe-bancontact]].",
+    "Q2": "For https://docs.stripe.com/payments/bank-redirects, substantive changes are BLIK's subscription/invoice/portal and SetupIntent/future-use rows, Bancontact's SetupIntent row, TWINT's November row omission, and softened subscription framing; compare old raw lines 24-51 with new raw lines 14-50. The May matrix remains dated in source-stripe-bank-redirects.md; omission does not prove TWINT withdrawal. Pay by Bank's baseline API-only placement corrects the old all-eight product overclaim. Method-specific Checkout-mode, send_invoice, invite-only, iDEAL collection, redirect and `return_url` footnotes remain necessary. The same-date November Bancontact page says PI future usage and SetupIntent unsupported while the matrix gives generated-SEPA future usage; the May BLIK setup guide documents SetupIntents despite May matrix No, and the November BLIK page requires mandate/bank/Connect conditions. BLIK Mobile Payment Element versus in-app labels require path-specific resolution. CDN diagram and quickstart-link changes are presentation/navigation. Neither a setup, account support cell, browser return nor webhook subscription example proves successful payment or settlement."
+  }
+}

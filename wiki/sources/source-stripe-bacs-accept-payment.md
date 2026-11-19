@@ -2,7 +2,9 @@
 title: "Stripe: Accept Bacs Direct Debit Payments"
 type: source
 date_ingested: 2026-05-02
+date_updated: 2026-11-15
 original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/bacs-debit/accept-a-payment"
 raw_files:
   - "stripe-bacs-accept-payment-2025.md"
 tags: [stripe, bacs, bank-debit, uk, gbp, checkout, elements, payment-element, webhooks, mandates]
@@ -10,30 +12,36 @@ tags: [stripe, bacs, bank-debit, uk, gbp, checkout, elements, payment-element, w
 
 ## Summary
 
-Integration guide for accepting Bacs Direct Debit payments via Checkout or Elements/PaymentIntent. Covers both paths end-to-end including test accounts, failure codes, optional debit date, and mandate reference prefix customization.
+The May 2, 2026 full guide describes UK-bank-account Bacs Direct Debit payments in GBP through Checkout and web Elements with a PaymentIntent. It covers mandate acknowledgement, delayed payment-state webhooks, sandbox test accounts, failure codes, optional target dates, and mandate reference prefixes. The November 7, 2026 capture at the same canonical URL is only a Checkout/Elements variant index; it does not verify the current variant bodies or renew the May requirements and outcomes.
+
+## Capture boundary
+
+All operational details below come from the May 2, 2026 full capture. Its Checkout section states that UK Stripe users can use payment-mode Checkout for Bacs Direct Debit; its Elements section uses a PaymentIntent to track the payment. The new November index links to two variant URLs but contains no current setup, API-version, mandate, success, failure, or settlement detail. The May examples are dated documentation, not evidence of account eligibility or a completed debit.
 
 ## Key Details
 
-### Checkout path
+### Checkout path (May 2, 2026)
 
-1. Create Product + Price (GBP required)
-2. Create Checkout Session: `payment_method_types: ['bacs_debit']`, `mode: 'payment'`, `payment_intent_data.setup_future_usage: 'off_session'`
-3. Handle 3 async events: `checkout.session.completed` (mandate authorized), `checkout.session.async_payment_succeeded` (fulfill), `checkout.session.async_payment_failed` (retry request)
-4. Optional: `payment_method_options.bacs_debit.target_date` — 3–15 days out; best-effort; delayed to next business day if weekend/holiday/insufficient lead time
+1. Create a Product and GBP Price, or an ad-hoc Price at Session creation using an existing Product when the price is determined at checkout. The captured manually configured example is for UK Stripe users; the guide also points to dynamic payment methods.
+2. Have the client call a server endpoint to create a payment-mode Checkout Session. The example sets `payment_method_types: ['bacs_debit']`. Its `payment_intent_data.setup_future_usage: 'off_session'` belongs to the **optional save-for-later** example, not every Bacs payment.
+3. Handle three Checkout events: `checkout.session.completed` means the customer authorized the debit and payment can still be pending; `checkout.session.async_payment_succeeded` reports later payment success and is the guide's fulfillment trigger; `checkout.session.async_payment_failed` calls for contacting the customer to request a new order. The guide says the underlying PaymentIntent moves from `processing` to `succeeded` when payment succeeds.
+4. Do not use `success_url` or a browser redirect as payment evidence. Direct navigation to the URL and closing the browser before redirect both break that inference. The Checkout passage says funds typically become available in three business days, while the Elements section gives a different dated timing description; neither is a universal or guaranteed settlement time.
+5. Optional Checkout `payment_method_options.bacs_debit.target_date`: 3–15 days from the current date, best effort, shifted to the next available business day for a weekend, holiday, or fewer than three business days' lead time. Actual bank processing can vary.
 
-### Elements path
+### Elements path (May 2, 2026)
 
-1. Create Customer
-2. Payment Element collects mandate automatically
-3. Create PaymentIntent (`customer` or `customer_account`, `currency: 'gbp'`)
-4. `stripe.confirmPayment` with `return_url`
-5. Handle `payment_intent.succeeded`, `payment_intent.processing`, `payment_intent.payment_failed` webhooks
+1. Create or retrieve a Customer to associate a bank account for future reuse. The guide also shows a customer-configured Account path under Accounts v2; at capture time this API was generally available to Connect users, in public preview for other Stripe users, and required a preview version for preview participants. `customer_account` is therefore a qualified alternative, not a blanket access claim.
+2. Collect payment details and the customer's required Bacs mandate acknowledgement in the web Payment Element. The guide uses Stripe.js directly from `js.stripe.com` and requires HTTPS for live checkout; its HTML+JS and React examples are dated UI examples.
+3. Have the server choose the GBP amount and create a PaymentIntent with `customer` or qualified `customer_account`. The manual-list examples set `payment_method_types: ['bacs_debit']`; Dashboard-controlled examples use configured methods. The client runs `elements.submit()`, obtains the PaymentIntent client secret, and calls `stripe.confirmPayment` with a `return_url`.
+4. Handle `payment_intent.succeeded` to confirm payment success; the guide also recommends `payment_intent.processing` and `payment_intent.payment_failed`. Intent creation, client confirmation, and return-page arrival do not prove success or available funds. The Elements section describes four business days to confirm with an existing mandate and seven with a new mandate, plus a standard-settlement table of T+3 success and T+4 available from submission, subject to business-day/cutoff timing. A bank failure can arrive after a marked success and become a dispute.
 
-### Test accounts (sort code `108800`)
+### Sandbox test accounts (sort code `108800`, May 2, 2026)
+
+These are synthetic sandbox scenarios, not live timing or settlement guarantees. The May guide recommends three-minute-delay accounts to simulate the delayed live flow. Debit notification emails are not sent in sandboxes; test success can also be followed by a dispute.
 
 | Account | Token | Behavior |
 | --- | --- | --- |
-| `00012345` | `pm_bacsDebit_success` | Succeeds immediately |
+| `00012345` | `pm_bacsDebit_success` | Transitions from `processing` to `succeeded`; no immediate duration specified |
 | `90012345` | `pm_bacsDebit_successDelayed` | Succeeds after 3 min |
 | `33333335` | `pm_bacsDebit_debitNotAuthorized` | Fails immediately; mandate → inactive |
 | `93333335` | `pm_bacsDebit_debitNotAuthorizedDelayed` | Fails after 3 min; mandate → inactive |
@@ -45,7 +53,9 @@ Integration guide for accepting Bacs Direct Debit payments via Checkout or Eleme
 | `34343434` | `pm_bacsDebit_exceedsWeeklyLimit` | Fails: `charge_exceeds_source_limit` |
 | `12121212` | `pm_bacsDebit_exceedsTransactionLimit` | Fails: `charge_exceeds_transaction_limit` |
 
-### Failure codes
+### Failure codes (May 2, 2026)
+
+The guide reads these from `charge.failure_code` and says the list can grow. Its retryability table is not an exhaustive current enum; it recommends contacting the payer before retrying a retryable PaymentIntent with the same PaymentMethod.
 
 | Code | Retryable |
 | --- | --- |
@@ -56,10 +66,22 @@ Integration guide for accepting Bacs Direct Debit payments via Checkout or Eleme
 | `generic_could_not_process` | Yes |
 | `insufficient_funds` | Yes |
 
-### Mandate reference prefix
+### Mandate reference prefix (May 2, 2026)
 
-`payment_method_options.bacs_debit.mandate_options.reference_prefix` on PaymentIntent, SetupIntent, or Checkout Session. Max 12 chars, uppercase/numbers/spaces/`./_/-/&`. Cannot start with `DDIC` or `STRIPE`. Generates 18-char reference.
+The optional `payment_method_options.bacs_debit.mandate_options.reference_prefix` appears in PaymentIntent, SetupIntent, and Checkout Session examples for payment or setup mode. It must be at most 12 characters, **start with a number or uppercase letter**, contain only uppercase letters, numbers, spaces, or `.`, `/`, `&`, `-`, `_`, and cannot start with `DDIC` or `STRIPE`. Include a desired delimiter because Stripe adds none by default; trailing spaces are trimmed to at most one. A valid prefix yields an 18-character reference. This rule is from the May capture, not the November index.
+
+The May Elements path also documents an optional PaymentIntent `target_date` of 3–15 days, best effort, with cancellation possible up to three business days before that date. Its Checkout target-date example does not itself establish the PaymentIntent cancellation rule.
+
+## Related
+
+- [[stripe]] — provider
+- [[stripe-bacs-direct-debit]] — Bacs Direct Debit concept, mandate and delayed-state context
+- [[source-stripe-bacs-direct-debit]] — Bacs method overview and scheme context
 
 ## Raw Sources
 
-- [[stripe-bacs-accept-payment-2025]] — verbatim webpage content (Checkout + Elements sections)
+- [[raw/stripe-bacs-accept-payment-2025|May 2, 2026 full Bacs payment guide]] — dated Checkout and Elements sections with examples, events, sandbox cases, target dates, and prefix rules.
+
+## Related raw API references
+
+- [[raw/stripe-payments-bacs-debit-accept-a-payment-2026-11-07|November 7, 2026 Checkout/Elements variant index]] — navigation only; linked variant bodies are not part of this evidence packet.

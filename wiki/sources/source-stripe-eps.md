@@ -2,27 +2,44 @@
 title: "Stripe: EPS Payments"
 type: source
 date_ingested: 2026-05-03
+date_updated: 2026-11-15
 original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/eps"
 raw_files:
+  - "stripe-payments-eps-2026-11-07.md"
   - "stripe-eps-2025.md"
 tags: [stripe, eps, austria, eur, bank-redirect, authenticated]
 ---
 
-## Summary
+## Overview
 
-Reference page for EPS on Stripe. Austria-only bank redirect, EUR-only, customer-authenticated with immediate notification. No disputes (authentication prevents chargebacks), no recurring payments, 180-day refund window.
+[[stripe]] describes EPS as a single-use Austrian customer bank redirect payment method, with EUR presentment, immediate payment result notification, instant provisional access and the standard payout schedule. A customer chooses a bank, signs in and authorizes there, then may optionally return to the business. The bank result, browser return and eventual payout are separate states. See [[stripe-eps]] and [[stripe-bank-redirects]]. [November raw lines 5-14, 113-137]
 
-## Key Details
+## Eligibility and limits
 
-- **Customers**: Austria only; **Currency**: EUR; **Confirmation**: Customer-authenticated (immediate notification)
-- **Recurring**: No — single-use only
-- **Disputes**: No chargebacks (authentication prevents them)
-- **Refunds**: Up to 180 days
-- **Business locations**: 40 countries
-- **Checkout**: Not supported in subscription or setup mode; **Invoicing**: invite-only; **ECE**: unsupported
+- EPS customers are in Austria; the November page lists Stripe account business locations across 40 countries, merchant and Connect platform/marketplace account types, B2B and B2C, and domestic/cross-border coverage. It states that an account might be reviewed after activation and can appeal capability restrictions. Country-list inclusion, Dashboard enablement and an activated account do not establish this particular account's EPS eligibility. [November raw lines 16-39]
+- Presentment currency is EUR, with a 1.00 EUR minimum in the November capture. The May capture also listed Austrian customers, EUR and the same business countries, but did not state this minimum. [May raw lines 14-22, 56-99; November raw lines 19-40]
+- The November page labels EPS single-use and recurring payments unsupported. Manual/partial/multi/overcapture, extended/incremental/decremental/re-authorization, SetupIntents, PaymentIntents with `setup_future_usage`, and off-session payments are marked unsupported. These exclusions prevent treating Billing support as an automatic recurring EPS charge path. [May raw lines 28-50; November raw lines 10-14, 41-65, 105-112]
 
-**6-step payment flow**: select EPS → select bank → redirect to bank login → enter credentials → scanner/SMS auth → payment confirmation → optional return to merchant site.
+## Payment flow and integration
+
+The customer selects EPS, chooses a bank, is redirected to its login page, enters bank credentials and has up to one hour for bank authorization by a bank-provided method such as scanner or SMS. The customer immediately sees success or failure, and may optionally return to the business website. The May diagram-based flow had these stages without the one-hour statement. A return to the website alone is not confirmation of success or settlement. [May raw lines 113-132; November raw lines 113-137]
+
+The November matrix marks full-page Checkout, Payment Links, embedded form, Payment Element, in-app payments, Billing, Invoicing, Radar, Connect, Checkout Sessions and PaymentIntents supported. It marks Express Checkout Element, Payment Method Messaging Element, Customer Portal, Terminal and Managed Payments unsupported. The older May list was shorter; omissions there are not proof of non-support. If using Stripe front-end products, enable EPS in payment method settings; manual payment-method lists need explicit configuration. This setting is separate from account eligibility. [May raw lines 101-111, 134-148; November raw lines 86-112, 145-149]
+
+**Dated Invoicing and subscription boundary:** The May 2026 EPS page explicitly described Invoicing as invite-only and excluded Checkout subscription/setup modes. The separate May bank-redirects matrix listed EPS Subscriptions with `send_invoice` only. The November EPS page marks Invoicing and Billing supported and includes a `send_invoice`-only footnote after its product/API matrix, while also marking recurring and off-session payments unsupported. The text capture does not unambiguously attach the footnote to one product row. Preserve the May invite condition as historical; the November omission of that condition does not prove it was lifted for every account. An invoice collection route does not imply Checkout subscription mode or automatic recurring charges. Confirm the account and route-specific eligibility before using them. [May EPS raw lines 101-111; May bank-redirects raw lines 24-34; November EPS raw lines 42, 86-112; [[source-stripe-bank-redirects]]]
+
+## Refunds and disputes
+
+- A full or partial EPS refund may be submitted through the Dashboard or Refunds API within 180 days of payment; multiple partial refunds must not exceed the original amount. It cannot be canceled once submitted. Stripe processes it as a separate bank-account credit, not a card-style reversal, and it may not be labeled as a refund on the bank statement. Typical receipt is 1–3 days depending on the bank, with no guaranteed maximum. The May capture stated the 180-day window without these later details. [May raw lines 154-156; November raw lines 57-72]
+- Track `Refund.status` in the Dashboard or Refunds API and `refund.updated`/`refund.failed` webhooks. A `succeeded` Refund object is the successful refund state; on `failed`, Stripe returns the amount to the Stripe balance and the business must refund the customer another way. Submission is not receipt or success. [November raw lines 74-78]
+- EPS bank authentication means Stripe describes no **standard dispute/chargeback process** for EPS. It does not eliminate customer complaints: a customer contacting the bank can be directed back to the merchant, who may refund. [May raw lines 150-152; November raw lines 80-84]
+
+## Statement descriptors
+
+For this non-card payment, use `statement_descriptor` rather than the card-only `statement_descriptor_suffix`; an unset payment descriptor falls back to the account-level descriptor. For Connect destination charges, Stripe says the platform descriptor applies by default, or the connected-account descriptor when `on_behalf_of` is set. What appears on the bank statement varies by bank. [November raw lines 139-143]
 
 ## Raw Sources
 
-- [[stripe-eps-2025]] — verbatim webpage content; 6 flow diagram SVGs (2 new: select-bank, pincode-sms; 4 reused from existing `raw/assets/`)
+- [[raw/stripe-payments-eps-2026-11-07|2026-11-07 full EPS overview]] — 149 lines; expanded eligibility, capabilities, refund lifecycle and customer experience
+- [[raw/stripe-eps-2025|2026-05-03 EPS overview]] — 156 lines; earlier properties, diagrams and invite-only Invoicing footnote

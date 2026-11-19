@@ -1,0 +1,183 @@
+{
+  "job_id": "payments-au-becs-debit",
+  "attempt": 2,
+  "raw_path": "raw/stripe-payments-au-becs-debit-2026-11-07.md",
+  "raw_sha256": "bcc0d53ae35009b7a465d80c30b3d8ea4758925afbfbf8bd374b7075eb2b300c",
+  "prior_raw_path": "raw/stripe-au-becs-debit-2025.md",
+  "prior_raw_sha256": "b416e66b11a4e5a4b5d2b84c1ad309a79b68a91800676b381ca867b07d4a021b",
+  "source_targets": [
+    "wiki/sources/source-stripe-au-becs-debit.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-au-becs-debit.md": "bd734e288e0f4b883b4536b557cec8497edcfbe41f779c1017e01fa13cb77ea5"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-au-becs-debit-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 140
+      },
+      {
+        "start": 141,
+        "end": 279
+      },
+      {
+        "start": 79,
+        "end": 107
+      },
+      {
+        "start": 196,
+        "end": 208
+      }
+    ],
+    "raw/stripe-au-becs-debit-2025.md": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 234
+      },
+      {
+        "start": 120,
+        "end": 141
+      },
+      {
+        "start": 189,
+        "end": 199
+      }
+    ],
+    "wiki/sources/source-stripe-au-becs-debit.md": [
+      {
+        "start": 1,
+        "end": 41
+      },
+      {
+        "start": 17,
+        "end": 31
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/bf780be9fc70ed7dfe3dc3e2/content.diff": [
+      {
+        "start": 1,
+        "end": 170
+      },
+      {
+        "start": 171,
+        "end": 340
+      },
+      {
+        "start": 341,
+        "end": 489
+      }
+    ],
+    "wiki/concepts/stripe-au-becs-debit.md": [
+      {
+        "start": 1,
+        "end": 105
+      },
+      {
+        "start": 20,
+        "end": 29
+      },
+      {
+        "start": 55,
+        "end": 61
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "It takes up to 2 business days to receive the final success or failure notification after initiating a debit.",
+      "location": "raw/stripe-payments-au-becs-debit-2026-11-07.md:13"
+    },
+    {
+      "text": "The maximum transaction amount in the Payment support table is the scheme maximum, not your account\u2019s processing limit.",
+      "location": "raw/stripe-payments-au-becs-debit-2026-11-07.md:47"
+    },
+    {
+      "text": "A mandate collected for a `PaymentIntent` `on_behalf_of` a connected account can\u2019t be reused for a different connected account.",
+      "location": "raw/stripe-payments-au-becs-debit-2026-11-07.md:147"
+    },
+    {
+      "text": "The customer sees that the payment is submitted or processing, not that it has succeeded.",
+      "location": "raw/stripe-payments-au-becs-debit-2026-11-07.md:255"
+    },
+    {
+      "text": "Stripe doesn\u2019t expose the lodgement reference through the API.",
+      "location": "raw/stripe-payments-au-becs-debit-2026-11-07.md:273"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "it can take up to three business days to receive notification on the success or failure of a payment",
+      "location": "raw/stripe-au-becs-debit-2025.md:12"
+    },
+    {
+      "text": "For new users, Australia BECS Direct Debit transactions have a default limit of 10,000 AUD per transaction and 10,000 AUD per week.",
+      "location": "raw/stripe-au-becs-debit-2025.md:14"
+    },
+    {
+      "text": "Refunds require additional time to process (typically 3-5 business days).",
+      "location": "raw/stripe-au-becs-debit-2025.md:191"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The November page explicitly revises the introductory final success/failure notification bound to up to 2 business days versus the May page's up to three (new raw lines 9-18; old raw lines 8-14). This notification bound is distinct from T+2 standard settlement after submission and funds availability, which both pages retain (new raw lines 196-208; old raw lines 120-141).",
+    "November clarifies 0.50 AUD scheme minimum and 99,000,000 AUD scheme maximum versus separate account processing limits, default 10,000 AUD per transaction and per week, variable by approval or increases (new raw lines 38-52). May only states new-user 10,000 AUD defaults (old raw line 14); source line 17 and concept lines 14-18 should gain the scheme/account distinction without suggesting automatic eligibility for the scheme maximum.",
+    "New page specifies approval-required access, identity verification after access request, AU merchant/Connect and AU customer domestic AUD scope; no manual capture, while setup_future_usage and SetupIntents are supported and its product matrix marks off-session payments unsupported (new raw lines 16-28,30-76,159-183). Old page covers AU/AUD, verification, recurring, Connect and no manual capture but lacks the expanded matrix (old raw lines 8-77). Do not collapse setup capability into off-session payment support.",
+    "Both captures say a pending full or partial refund begins only after Charge succeeded and is canceled if Charge failed (old raw line 193; new raw line 85). November newly adds Refund status retrieval, refund.updated/refund.failed and signature verification, failed-refund balance return and alternate customer refund (new raw lines 87-91), while retaining separate bank credit/double-credit risks (old raw lines 195-199; new raw lines 93-107). Source line 29's old 3-5-day estimate needs dated wording alongside November's typically 5 business days (old raw line 191; new raw line 81).",
+    "New mandate guidance explicitly separates Checkout/Payment Element default acceptance from custom auBankAccount form DDR text, Mandate lookup via latest_charge on PaymentIntent, Connect account context and on_behalf_of non-reuse, payment-method detach cancellation, and mandate.updated inactive state (new raw lines 129-157). Old page had mandate collection, cancellation and non-reuse but not these retrieval/form details (old raw lines 175-187,230).",
+    "New page expands disputes with no inquiry/evidence/counter, final non-appealable result and non-refunded dispute fee (new raw lines 109-127); source line 21 asserts dispute.created and dispute.closed are sent simultaneously although new raw line 117 and old raw line 169 only say both are sent, with no simultaneity guarantee. Correct that baseline error.",
+    "New billing retry section documents opt-in insufficient-funds retries, up to four retries within 30 days and no Stripe debit-failure fee for automatic attempts (new raw lines 231-237), while May labels Billing Retries private preview and only gives general enabled categories (old raw lines 232-234). Preserve dated preview/access qualification from source line 37 and concept lines 76-78,92-95; new wording does not prove any account has enabled access.",
+    "New page clarifies submitted/processing is not success, no bank redirect, statement descriptor affects lodgement reference rather than business name, Connect charge-type mapping and API non-exposure of reference (new raw lines 239-273). Source lines 31-33 and concept lines 63-70 compress these identities; old raw lines 201-230 already distinguished business name and reference, though source line 31 incorrectly says dynamic override of merchant name.",
+    "Source line 19 and concept line 26 turn the May sample-timeline T+0 customer debit into a universal assertion. Old raw lines 132-139 label T+0 as an illustrative standard-settlement timeline; old raw lines 122-126 and new raw lines 198-208 say submission may follow creation after cutoff or non-business day and expected_debit_date is only an estimate. Qualify T+0 as dated illustration, not guaranteed debit, success or funds-availability date."
+  ],
+  "substantive_changes": [
+    "Final success/failure notification introductory bound changes from up to three business days (old raw line 12) to up to two (new raw line 13), while T+2 standard settlement remains separately specified (new raw lines 196-206).",
+    "New account/scheme limit matrix, Refund status/webhook and failed-refund handling, mandate retrieval/account context, explicit retry cap and unsupported off-session-payments matrix supply operational detail beyond May capture (new raw lines 38-52,87-91,129-183,231-237; old raw lines 14,189-199,232-234). Pending refund start/cancel on Charge succeeded/failed is shared, not newly introduced (old raw line 193; new raw line 85)."
+  ],
+  "historical_claims_to_preserve": [
+    "May 2, 2026 page's up-to-three-business-day notification wording and 3-5-business-day refund processing estimate remain dated historical claims; November says up to two and typically five respectively (old raw lines 12,191; new raw lines 13,81).",
+    "May billing retries were labeled private preview and new page does not expressly remove that access qualifier; the related concept also records separate subscription-guide contradiction (old raw lines 232-234; new raw lines 231-237; wiki/concepts/stripe-au-becs-debit.md:76-95).",
+    "Both captures retain the T+2 standard settlement table after submission, 18:30 Melbourne cutoff, estimated rather than guaranteed expected_debit_date, seven-year final bank disputes, 90-day refunds, DDR cancellation and account-specific Connect mandate reuse restrictions (old raw lines 120-130,163-230; new raw lines 79-157,196-208). The old T+0 customer debit belongs to a sample timeline only (old raw lines 132-139), and pending-refund Charge transitions are shared (old raw line 193; new raw line 85)."
+  ],
+  "conflicts": [
+    "Source line 21 and concept line 53 claim dispute.created and dispute.closed are simultaneous; both captures only say both are sent (old raw line 169; new raw line 117). Remove timing inference reciprocally.",
+    "Source line 31 and concept line 67 imply a dynamic PaymentIntent statement_descriptor can override merchant name, but November says it changes lodgement reference, not business name; Connect charge type/on_behalf_of determines account supplying business name/default descriptor (new raw lines 259-273; old raw lines 201-230).",
+    "Source and concept 3-5-day refund estimate reflects May; November says typically five business days (source line 29; concept line 59; old raw line 191; new raw line 81).",
+    "Source line 19 and concept line 26 assert customer debit at T+0 generally, but May presents it only as a sample and both captures say estimated debit date can vary (old raw lines 122-139; new raw lines 198-208)."
+  ],
+  "unresolved_questions": [
+    "The November product matrix marks off-session payments unsupported while also marking Payment Intents with setup_future_usage and SetupIntents supported; whether this denotes a specific off-session integration/API surface rather than all future debits is not defined here (new raw lines 178-183). Do not override separate subscription evidence from this matrix alone.",
+    "The new retry description does not state a public access tier or whether an account has Direct Debit retries enabled (new raw lines 231-237); retain the older private-preview provenance pending explicit current access evidence."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-au-becs-debit.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-au-becs-debit.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add exact canonical URL and November raw route while preserving May raw provenance (source lines 1-9,39-41; old/new raw lines 1-2). Update final-notification 3-to-2-day delta separately from retained T+2 settlement (old raw lines 12,120-130; new raw lines 13,196-208).",
+        "Expand source line 17 to distinguish scheme 0.50 to 99 million AUD range from default account 10,000 transaction and weekly processing limits; add approval/verification, domestic AUD, no manual capture and cautiously qualified off-session product matrix (new raw lines 16-76,159-183).",
+        "Preserve dated May 3-5-day refund estimate versus November typically 5; preserve shared pending-refund Charge succeeded/failed transition (old raw line 193; new raw line 85), and add newly explicit Refund status retrieval, verified refund.updated/refund.failed webhooks, failed-refund balance return and alternate refund method (new raw lines 87-91). Add Connect mandate context/non-reuse and custom form acceptance and conditional retry caps (source lines 23-29,37; new raw lines 129-157,231-237).",
+        "Correct unsupported simultaneous dispute-event assertion, dynamic descriptor override of business name, and universal T+0 customer debit claim (source lines 19,21,31; old raw lines 124,132-139,169,201-230; new raw lines 117,198-208,259-273); coordinate reciprocal concept warnings."
+      ],
+      "conflicts": [
+        "Source line 21 claims simultaneous dispute events without that timing in either capture (old raw line 169; new raw line 117).",
+        "Source line 31 blurs merchant business name versus payment-specific lodgement reference; new raw lines 259-273 distinguish them.",
+        "Source line 19's T+0 customer debit is only a May sample timeline; actual expected debit date is estimated and submission timing varies (old raw lines 122-139; new raw lines 198-208)."
+      ],
+      "reason": "November brings material timing and operational detail and exposes baseline summary errors; a dated source accuracy update is required without inferring account approval, successful payment from submission, or funds availability from estimated debit date. Source line 19's T+0 claim needs qualification as a sample rather than a guaranteed debit date."
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/au-becs-debit, the November capture describes an approval-required AU domestic AUD bank debit requiring account holder name, BSB, account number and accepted DDR/Service Agreement; Checkout and Payment Element collect these, while custom forms must present the prescribed DDR text (new raw lines 9-52,129-141). Debit submission is processing, with final success/failure notification up to two business days; standard T+2 success and funds availability are measured after submission, not necessarily creation (new raw lines 13,196-208,239-255). The May capture said up to three business days for final notification and also had T+2 settlement, seven-year disputes and 90-day refunds (old raw lines 8-14,120-130,163-199). source-stripe-au-becs-debit.md retains much May detail but lacks the changed notification bound, scheme/account limit distinction, expanded refund/mandate/retry states, and makes unsupported simultaneous-event and descriptor-override claims (source lines 17-41). Mandate acceptance authorizes a debit; it is not payment success or available funds. Source line 19 and concept line 26 also overstate T+0 customer debit: May presents T+0 only in a sample timeline, and both guides call expected_debit_date an estimate that can vary (old raw lines 122-139; new raw lines 198-208). Pending-refund Charge success/failure transitions already existed in May (old raw line 193; new raw line 85).",
+    "Q2": "For https://docs.stripe.com/payments/au-becs-debit, the November changes are substantive where the final-notification bound shifts from up to three to up to two business days and where scheme versus account limits, refund status/webhooks, mandate account context, and conditional retry limits are newly explicit (old raw lines 12,14,175-199,232-234; new raw lines 13,38-52,79-107,129-157,231-237). Section rearrangement and product/UI matrices alone do not prove new merchant access or deprecated methods. source-stripe-au-becs-debit.md should preserve dated May 3-5-day refund and private-preview retry provenance while adding November typically-five-day refund and opt-in retry cap, correct its simultaneous dispute-event and dynamic-descriptor errors, and separate processing, payment success, estimated debit date and funds available (source lines 19-37; new raw lines 196-208,239-273). The related AU BECS concept repeats those baseline errors and has a separate subscription-retry warning, so it needs reciprocal dated qualifications. The off-session-support matrix is ambiguous beside SetupIntent/setup_future_usage support; no account-specific approval or universal future-debit conclusion follows (new raw lines 178-183). Refunds' pending Charge-state transitions are retained from May, while Refund status retrieval, refund.updated/refund.failed and failed-refund handling are newly explicit (old raw line 193; new raw lines 85-91). Source line 19 and concept line 26 must change unconditional T+0 debit language to a dated sample with estimated, variable debit date (old raw lines 122-139; new raw lines 198-208)."
+  }
+}

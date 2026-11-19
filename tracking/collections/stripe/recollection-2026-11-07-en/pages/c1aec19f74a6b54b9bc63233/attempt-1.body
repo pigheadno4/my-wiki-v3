@@ -1,0 +1,210 @@
+# Alipay payments
+
+Learn about Alipay, a digital wallet popular with customers from China.
+
+Alipay is a digital wallet in China that has more than a billion active users worldwide. Alipay users can pay on the web or a mobile device using login credentials or their Alipay app.
+Payment method family: Wallets
+Usability: Single-use
+Access type: Instant provisional access
+Payment confirmation timing: Immediate
+Settlement timing: Standard payout schedule
+Pricing: https://stripe.com/en-us/pricing/local-payment-methods#alipay
+## Eligibility and availability 
+
+### Account eligibility
+Business location: AT, AU, BE, BG, CA, CH, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GI, GR, HK, HR, HU, IE, IT, JP, LI, LT, LU, LV, MT, MY, NL, NO, NZ, PT, RO, SE, SG, SI, SK, US
+Account type: ✓ Merchant, ✓ Platform or marketplace (Connect)
+Business model: ✓ B2B, ✓ B2C
+Business category: View list of prohibited and restricted business categories
+To use Alipay, your business must meet both [Stripe’s restricted-business requirements](https://stripe.com/restricted-businesses) and [Alipay’s prohibited-business requirements](https://stripe.com/legal/alipay). If you’re unsure whether your business is eligible, [contact Stripe Support](https://support.stripe.com/contact/login).
+
+Your account might be reviewed after activation to confirm eligibility. In addition to meeting the criteria above, you must also provide a website that meets the following requirements in addition to the [Stripe account activation requirements](https://support.stripe.com/questions/business-website-for-account-activation-faq):
+
+- Must be publicly accessible.
+- Must be accessible without requiring a login or redirect.
+- Must clearly indicate the products or services for sale.
+- Must clearly display pricing information.
+- Must clearly indicate delivery terms and conditions.
+- Must disclose if operating as a drop-shipping business.
+
+You can contact [Stripe support](https://support.stripe.com/) to appeal any Alipay capability restrictions.
+
+Review the list of *merchant category codes* (A Merchant Category Code (MCC) is a four-digit number that classifies the type of goods or services a business offers) that are prohibited or restricted for Alipay.
+
+- **Prohibited**: You can’t use this payment method with these MCCs.
+- **Restricted**: You might be able to use this payment method with these MCCs, but you must provide additional information when you create the account.
+
+| MCC | Description | Type |
+| --- | --- | --- |
+| 4829 | Money Orders - Wire Transfers | Prohibited |
+| 6012 | Financial Institutions | Prohibited |
+| 6300 | Insurance Underwriting, Premiums | Prohibited |
+| 6513 | Real Estate Agents and Managers - Rentals | Prohibited |
+| 7012 | Timeshares | Prohibited |
+| 7800 | Government-Owned Lotteries (US Region only) | Prohibited |
+| 7995 | Betting and Casino Gambling | Prohibited |
+| 8398 | Charitable and Social Service Organizations - Fundraising | Prohibited |
+| 8651 | Political Organizations | Prohibited |
+| 8661 | Religious Organizations | Prohibited |
+
+Stripe accounts in the following countries can accept Alipay payments that settle in a supported currency.
+
+AMER: CA, US
+
+EMEA: AT, BE, BG, CH, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GI, GR, HR, HU, IE, IT, LI, LT, LU, LV, MT, NL, NO, PT, RO, SE, SI, SK
+
+APAC: AU, HK, JP, MY, NZ, SG
+
+Customers in the following countries can use Alipay.
+
+APAC: CN
+
+### Payment support
+Customer location: CN
+Presentment currency: AUD, CAD, CHF, CNY, EUR, GBP, HKD, JPY, MYR, NZD, SGD, USD
+Geographic coverage: ✓ Domestic, ✓ Crossborder
+Transaction limits: Minimum amount: 0.50 USD
+
+Maximum amount: 999,999.99 USD
+## Supported currencies
+
+Your account must have a bank account for one of the following currencies. You can create Alipay payments in the currencies that map to your country. The default local currency for Alipay is `cny` and customers also see their purchase amount in `cny`.
+
+| Currency | Country |
+| --- | --- |
+| `cny` | Any country |
+| `aud` | Australia |
+| `cad` | Canada |
+| `chf` | Switzerland |
+| `eur` | Austria, Belgium, Bulgaria, Croatia, Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Ireland, Italy, Latvia, Liechtenstein, Lithuania, Luxembourg, Malta, Netherlands, Norway, Portugal, Romania, Slovakia, Slovenia, Spain, Sweden, Switzerland |
+| `gbp` | Gibraltar, United Kingdom |
+| `hkd` | Hong Kong |
+| `jpy` | Japan |
+| `myr` | Malaysia |
+| `nzd` | New Zealand |
+| `sgd` | Singapore |
+| `usd` | Austria, Belgium, Bulgaria, Canada, Croatia, Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Gibraltar, Greece, Hong Kong, Hungary, Ireland, Italy, Latvia, Liechtenstein, Lithuania, Luxembourg, Malta, Netherlands, Norway, Portugal, Romania, Singapore, Slovakia, Slovenia, Spain, Sweden, United Kingdom, United States |
+
+## Capabilities 
+Recurring payments: ✗ Not supported
+
+Payment authorizations:
+  ✗ Extended authorizations
+  ✗ Flexible extended authorizations
+  ✗ Incremental authorizations
+  ✗ Decremental authorizations
+  ✗ Re-authorizations
+
+Payment captures:
+  ✗ Manual capture
+  ✗ Partial capture
+  ✗ Multi-capture
+  ✗ Over-capture
+
+Refunds:
+  ✓ Partial refunds
+  ✓ Full refunds
+  Submission window: 90 days
+  Processing time: 5 minutes
+
+Disputes:
+  ✗ Partial disputes
+  ✗ Full disputes
+### Refunds 
+
+Alipay requires that you submit a refund within 90 days from the original payment using the [Dashboard](https://dashboard.stripe.com/payments) or [Refunds API](https://docs.stripe.com/api/refunds/create.md). This is the maximum the payment method allows. Your return policy determines what you offer customers.
+
+Refunds for Alipay payments are asynchronous and take up to 5 minutes to complete. You can’t cancel Alipay refunds.
+
+#### Refund process 
+
+Alipay refunds are never processed as reversals. Alipay handles the refund directly and returns the funds to the customer’s original payment source, which is either their Alipay balance or linked payment method. The customer sees the refund reflected in their Alipay account or funding source.
+
+#### Tracking refunds 
+
+To check a refund’s status, open the payment in the [Dashboard](https://dashboard.stripe.com/payments) and click **View details** on the refund entry. You can also [retrieve the Refund object](https://docs.stripe.com/api/refunds/retrieve.md) and check its `status` field.
+
+Stripe notifies you of the final status through a `refund.updated` or `refund.failed` *webhook* (A webhook is a real-time push notification sent to your application as a JSON payload through HTTPS requests) event. [Verify webhook signatures](https://docs.stripe.com/webhooks.md#verify-events) to confirm that events came from Stripe. You can also use Stripe’s [public IP addresses](https://docs.stripe.com/ips.md) for network allowlisting. When a refund succeeds, the [Refund object](https://docs.stripe.com/api/refunds/object.md) status changes to `succeeded`. If the refund fails, the status changes to `failed` and Stripe returns the amount to your Stripe balance. You must refund the customer using another method.
+
+### Disputes 
+
+Alipay requires customers to authenticate payments directly with the Alipay app, which reduces the risk of fraud and unrecognized transactions. As a result, Alipay doesn’t support the standard dispute process—customers can’t file a chargeback, and funds are never withdrawn from your Stripe balance because of a dispute.
+
+If a customer contacts Alipay about a payment, they might be directed back to you. You can then issue a full or partial refund.
+
+## Stripe product support 
+Checkout UIs:
+  ✓ Full page (Recommended)
+  ✓ Payment Links
+  ✓ Embedded form
+  ✓ Payment Element
+  ✗ Express Checkout Element
+  ✗ Payment Method Messaging Element
+  ✗ In-app payments
+
+Products:
+  ✗ Managed Payments
+  ✗ Billing
+  ✓ Invoicing
+  ✗ Customer Portal
+  ✓ Radar
+  ✗ Terminal
+  ✓ Connect
+
+APIs:
+  ✓ Checkout Sessions (Recommended)
+  ✓ Payment Intents
+  ✗ Payment Intents with setup_future_usage
+  ✗ Setup Intents
+  ✗ Off-session payments
+The In-app payments row refers to Mobile Payment Element (PaymentSheet), which doesn’t support Alipay. You can accept Alipay payments in a custom iOS, Android, or React Native integration. See [Accept an Alipay payment](https://docs.stripe.com/payments/alipay/accept-a-payment.md?payment-ui=mobile).
+
+Checkout and the Hosted Invoice Page support one-time Alipay payments.
+
+### Recurring payments 
+
+Recurring payments through Invoicing, Checkout subscription or setup mode, and saving Alipay details for future payments require access to the Alipay recurring payments private preview. Access is invite-only and requires individual approval from Alipay. To request access, [contact Stripe Support](https://support.stripe.com/contact/email?topic=payment_apis).
+
+## Customer experience 
+
+#### 1. Select Alipay
+
+The customer selects Alipay at checkout.
+
+#### 2. Open Alipay
+
+On mobile, the customer continues in the Alipay app or mobile website. On desktop, the customer signs in to Alipay or scans the displayed QR code with the Alipay app.
+
+#### 3. Authorize the payment
+
+The customer reviews the amount and exchange rate, then authorizes the payment in Alipay within 5 minutes.
+
+#### 4. Return to the merchant
+
+After the payment succeeds, the customer returns to the merchant page and sees the completed payment.
+
+### Statement descriptors 
+
+Stripe sends Alipay a merchant name and an order description as separate fields. When you provide a statement descriptor for the payment, Stripe uses it as the order description. Otherwise, Stripe uses your account-level statement descriptor.
+
+Alipay controls how these fields appear in the customer’s Alipay transaction history and might localize, shorten, reformat, or omit them. Stripe doesn’t combine the fields into a fixed descriptor such as `ALIPAY*MERCHANT`.
+
+Stripe can’t guarantee the descriptor shown by a linked bank or card issuer. That funding transaction occurs between the customer, Alipay, and the issuer, and might display Alipay, an Alipay processing entity, merchant information supplied by Alipay, or an issuer-specific value. Don’t promise that your Stripe legal name or statement descriptor will appear verbatim on the customer’s funding-source statement.
+
+For Connect integrations, see [statement descriptors with Connect](https://docs.stripe.com/connect/statement-descriptors.md).
+
+To reconcile an Alipay payment with Alipay’s records, expand or retrieve the PaymentIntent’s `latest_charge`, then read:
+
+```text
+payment_intent.latest_charge.payment_method_details.alipay.transaction_id
+```
+
+## Enable Alipay 
+
+If you use Stripe front-end products, enable Alipay in your [payment method settings](https://dashboard.stripe.com/settings/payment_methods). Stripe automatically determines which payment methods are most relevant to each customer.
+
+If your integration lists payment methods manually, learn how to [configure Alipay as a payment method](https://docs.stripe.com/payments/alipay/accept-a-payment.md).
+
+Alipay supports destination charges and separate charges and transfers. Connected accounts with standard Dashboard access can enable Alipay in the Dashboard.
+
+For connected accounts without standard Dashboard access, the platform must request the `alipay_payments` capability. Requesting this capability through the API is in private preview. Before creating direct charges or using `on_behalf_of`, [contact Stripe Support](https://support.stripe.com/contact/email?topic=payment_apis) to request access.

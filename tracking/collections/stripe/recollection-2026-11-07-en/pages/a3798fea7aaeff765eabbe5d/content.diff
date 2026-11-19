@@ -1,0 +1,278 @@
+--- raw/stripe-amazon-pay-2025.md
++++ raw/stripe-payments-amazon-pay-2026-11-07.md
+@@ -3,146 +3,188 @@
+ Learn how to accept payments with Amazon Pay.
+ 
+ [Amazon Pay](https://pay.amazon.com/) is a wallet payment method that lets your customers check out the same way as on Amazon.com.
++Payment method family: Wallets
++Usability: Reusable
++Access type: Instant provisional access
++Payment confirmation timing: Immediate
++Settlement timing: Standard payout schedule
++Pricing: https://stripe.com/en-us/pricing/local-payment-methods#amazon-pay
++## Eligibility and availability 
+ 
+-For information on payment method transaction fees, refer to [pricing details](https://stripe.com/pricing/local-payment-methods#amazon-pay).
++### Account eligibility
++Business location: AT, BE, CH, CY, DE, DK, ES, FR, GB, HU, IE, IT, LU, NL, PT, SE, US
++Account type: ✓ Merchant, ✓ Platform or marketplace (Connect)
++Business model: ✓ B2B, ✓ B2C
++Business category: View list of prohibited and restricted business categories
++Review the list of *merchant category codes* (A Merchant Category Code (MCC) is a four-digit number that classifies the type of goods or services a business offers) that are prohibited or restricted for Amazon Pay.
+ 
+-When customers select Amazon Pay as their payment method, Stripe redirects them to Amazon’s website, where they can check out using the shipping and payment information stored in their Amazon account. After completing the payment, Amazon redirects them back to your website.
++- **Prohibited**: You can’t use this payment method with these MCCs.
++- **Restricted**: You might be able to use this payment method with these MCCs, but you must provide additional information when you create the account.
+ 
+-#### Payment method properties
++| MCC | Description | Type |
++| --- | --- | --- |
++| 6051 | Cryptocurrency exchanges and wallets | Prohibited |
+ 
+-- **Customer locations**
++Stripe accounts in the following countries can accept Amazon Pay payments that settle in a supported currency.
+ 
+-  Worldwide
++AMER: US
+ 
+-- **Presentment currency**
++EMEA: AT, BE, CH, CY, DE, DK, ES, FR, GB, HU, IE, IT, LU, NL, PT, SE
+ 
+-  USD, AUD, GBP, DKK, EUR, HKD, JPY, NZD, NOK, ZAR, SEK, CHF
++Customers worldwide can use Amazon Pay.
+ 
+-- **Payment confirmation**
++### Payment support
++Customer location: Worldwide
++Presentment currency: AUD, CHF, DKK, EUR, GBP, HKD, JPY, NOK, NZD, SEK, USD, ZAR
++Geographic coverage: ✓ Domestic, ✓ Crossborder
++### Currency availability 
+ 
+-  Customer-initiated
++| Business location | Supported currencies |
++| --- | --- |
++| Austria, Belgium, Cyprus, Denmark, France, Germany, Hungary, Ireland, Italy, Luxembourg, Netherlands, Portugal, Spain, Sweden, Switzerland, United Kingdom | AUD, CHF, DKK, EUR, GBP, HKD, JPY, NOK, NZD, SEK, USD, ZAR |
++| United States | USD |
+ 
+-- **Payment method family**
++The minimum amount is 0.50 USD, 0.50 GBP, or 0.50 EUR. For other currencies, see [minimum charge amounts](https://docs.stripe.com/currencies.md#minimum-and-maximum-charge-amounts).
+ 
+-  Wallet
++### Available payment methods 
+ 
+-- **Recurring payments**
++Use Amazon Pay to store card credentials. Amazon Pay also supports the following alternative payment methods:
+ 
+-  Yes
++| Country | Payment methods |
++| --- | --- |
++| United States | Amazon Store Card, Amazon Store Card Installments, Amazon Visa Card Installments, Citi Flex Pay, Affirm, and Shop with Points |
++| Austria, Belgium, Cyprus, Denmark, France, Germany, Hungary, Ireland, Italy, Luxembourg, Netherlands, Portugal, Spain, Sweden, Switzerland | SEPA Direct Debit |
+ 
+-- **Payout timing**
++## Capabilities 
++Recurring payments: ✓ Supported
+ 
+-  Standard payout timing applies
++Payment authorizations:
++  ✗ Extended authorizations
++  ✗ Flexible extended authorizations
++  ✗ Incremental authorizations
++  ✗ Decremental authorizations
++  ✗ Re-authorizations
+ 
+-- **Connect support**
++Payment captures:
++  ✓ Manual capture
++  ✓ Partial capture
++  ✗ Multi-capture
++  ✗ Over-capture
+ 
+-  Yes
++Refunds:
++  ✓ Partial refunds
++  ✓ Full refunds
++  Submission window: 90 days
++  Processing time: 14 days
+ 
+-- **Dispute support**
++Disputes:
++  ✗ Partial disputes
++  ✓ Full disputes
++  Submission window: 240 days
++### Refunds 
+ 
+-  [Yes](https://docs.stripe.com/payments/amazon-pay.md#disputed-payments)
++You have up to 90 days from the original payment to submit a refund using the [Dashboard](https://dashboard.stripe.com/payments) or [Refunds API](https://docs.stripe.com/api/refunds/create.md). For some Amazon Pay transactions that use non-card payment methods, refunds can take up to 14 calendar days to return a final status.
+ 
+-- **Manual capture support**
++#### Refund process 
+ 
+-  Yes
++After Stripe initiates a refund, Amazon Pay returns the funds to the customer’s original form of payment.
+ 
+-- **Refunds / Partial refunds**
++#### Tracking refunds 
+ 
+-  [Yes / Yes](https://docs.stripe.com/payments/amazon-pay.md#refunds)
++To check a refund’s status, open the payment in the [Dashboard](https://dashboard.stripe.com/payments) and click **View details** on the refund entry. You can also [retrieve the Refund object](https://docs.stripe.com/api/refunds/retrieve.md) and check its `status` field.
+ 
+-#### Business locations
++Stripe notifies you of the final status through a `refund.updated` or `refund.failed` *webhook* (A webhook is a real-time push notification sent to your application as a JSON payload through HTTPS requests) event. When a refund succeeds, the [Refund object](https://docs.stripe.com/api/refunds/object.md) status changes to `succeeded`. If the refund fails, the status changes to `failed` and Stripe returns the amount to your Stripe balance. You must refund the customer using another method.
+ 
+-Stripe accounts in the following countries can accept Amazon Pay payments:
++### Disputes 
+ 
+-- AT
+-- BE
+-- CH
+-- CY
+-- DE
+-- DK
+-- ES
+-- FR
+-- GB
+-- HU
+-- IE
+-- IT
+-- LU
+-- NL
+-- PT
+-- SE
+-- US
++Customers have up to 240 calendar days from the date of purchase to file Amazon Pay disputes.
+ 
+-#### Product support
++#### Dispute process 
+ 
+-- Connect
+-- Checkout
+-- Payment Links
+-- Elements
+-- Subscriptions
+-- Invoicing
++1. **Dispute opened**: Amazon Pay opens a dispute. Stripe immediately withholds the disputed amount and the applicable dispute fee from your balance. Chargebacks and A-to-z Guarantee claims have different evidence deadlines. See [Responding to disputes](https://docs.stripe.com/payments/amazon-pay.md#responding-to-disputes).
++2. **Decision**: Amazon Pay reviews your evidence and issues a final decision within 90 calendar days after evidence submission.
+ 
+-## Payment flow
++#### Dispute notifications 
+ 
+-Below is a demonstration of the Amazon Pay payment flow from your checkout page:
+-![](https://d37ugbyn3rpeym.cloudfront.net/videos/AmazonPayDemo3.mp4)
++When an Amazon Pay dispute is opened, Stripe notifies you through:
+ 
+-## Get started
++- Email
++- The [Stripe Dashboard](https://dashboard.stripe.com/disputes)
++- A [charge.dispute.created](https://docs.stripe.com/api/events/types.md#event_types-charge.dispute.created) webhook event
+ 
+-You don’t have to integrate Amazon Pay and other payment methods individually. If you use our front-end products, Stripe automatically determines the most relevant payment methods to display. Go to the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods) and enable Amazon Pay. To get started with one of our hosted UIs, follow a quickstart:
++The dispute reason is available in the Dashboard and in the `reason` field of the [Dispute object](https://docs.stripe.com/api/disputes/object.md). The evidence submission deadline is available in the Dashboard and in the [evidence_details.due_by](https://docs.stripe.com/api/disputes/object.md#dispute_object-evidence_details-due_by) field of the Dispute object.
+ 
+-- [Checkout](https://docs.stripe.com/checkout/quickstart.md): Our prebuilt, hosted checkout page.
+-- [Elements](https://docs.stripe.com/payments/quickstart-checkout-sessions.md): Our drop-in UI components.
++#### Responding to disputes 
+ 
+-### Other payment products
++You typically have 10 calendar days from dispute creation to respond to a chargeback, and 6 calendar days to respond to an A-to-z Guarantee claim. Always use the deadline shown in the Dashboard or in the [evidence_details.due_by](https://docs.stripe.com/api/disputes/object.md#dispute_object-evidence_details-due_by) field of the Dispute object.
+ 
+-The following Stripe products also let you add Amazon Pay from the Dashboard:
++Upload compelling evidence that you fulfilled the purchase order. This evidence can include a received return confirmation for shipped goods returned by the customer, the tracking ID, the shipping date, a record of purchase for intangible goods such as an IP address or email receipt, or a record of purchase for services or physical goods such as a phone number or proof of receipt. Include as much detail as possible from the information the customer provided at checkout.
+ 
+-- [Payment Links](https://docs.stripe.com/payment-links.md)
++You can submit evidence and manage Amazon Pay disputes in the [Dashboard](https://dashboard.stripe.com/disputes) or programmatically using the [Disputes API](https://docs.stripe.com/api/disputes/update.md). In the Dashboard, go to the **Needs Response** tab, click the disputed payment, then click **Counter dispute** to submit your evidence, or **Accept dispute** to accept the loss. To submit evidence through the API, upload supporting files using the [Files API](https://docs.stripe.com/api/files/create.md) and include the returned file IDs when you update the [Dispute Evidence object](https://docs.stripe.com/api/disputes/update.md).
+ 
+-If your integration requires manually listing payment methods, learn how to [manually configure Amazon Pay as a payment](https://docs.stripe.com/payments/amazon-pay/accept-a-payment.md).
++#### Dispute outcomes 
+ 
+-## Refunds
++If Amazon Pay resolves the dispute in your favor, Stripe returns the disputed amount and the dispute fee to your Stripe balance.
+ 
+-Amazon Pay supports partial or full refunds for up to 90 days after the original purchase, and processes them asynchronously. After Stripe initiates a refund, Amazon Pay issues the refund to the customer’s original form of payment. We notify you of the final refund status using the `refund.updated` or `refund.failed` *webhook* (A webhook is a real-time push notification sent to your application as a JSON payload through HTTPS requests) event. When a refund succeeds, the [Refund](https://docs.stripe.com/api/refunds/object.md) object’s status transitions to `succeeded`. If a refund fails, the Refund object’s status transitions to `failed` and we return the amount to your Stripe balance. You then need to arrange an alternative way to provide your customer with a refund.
++If they rule in favor of the customer, the balance charge becomes permanent.
+ 
+-For some Amazon Pay transactions that use non-card payment methods, refunds can take up to 14 calendar days from the purchase date to return a status.
++#### Authentication and fraud 
+ 
+-## Disputes
++Customers must authenticate Amazon Pay payments by signing in to their Amazon account. This requirement helps reduce the risk of fraud and unrecognized payments.
+ 
+-Customers must authenticate Amazon Pay payments by logging into their Amazon account. This requirement helps reduce the risk of fraud or unrecognized payments.
++#### A-to-z Guarantee claims 
+ 
+-Customers have up to 240 calendar days from the date of purchase to file a dispute. The dispute process works like this:
++Amazon Pay offers an [A-to-z Guarantee](https://www.amazon.com/gp/help/customer/display.html?nodeId=GQ37ZCNECJKTFYQV) that protects customers from issues related to timely delivery and the condition of their items. Customers have up to 90 calendar days from the date of purchase to file a claim against this guarantee. A claim follows the same dispute process described above, but has a shorter evidence deadline and doesn’t incur a dispute fee. In the Dispute object, `payment_method_details.amazon_pay.dispute_type` is `claim` for an A-to-z Guarantee claim.
+ 
+-- After the customer initiates a dispute, Stripe notifies you through email, the Stripe Dashboard, and an API `charge.dispute.created` event (if your integration is set up to receive [webhooks](https://docs.stripe.com/webhooks.md)).
++You can also [respond to disputes using the API](https://docs.stripe.com/disputes/api.md).
+ 
+-- Stripe holds back the disputed amount from your balance until Amazon resolves the dispute.
++## Stripe product support 
++Checkout UIs:
++  ✓ Full page (Recommended)
++  ✓ Payment Links
++  ✓ Embedded form
++  ✓ Payment Element
++  ✓ Express Checkout Element
++  ✗ Payment Method Messaging Element
++  ✓ In-app payments
+ 
+-- Stripe requests that you upload compelling evidence that you fulfilled the purchase order [using the Stripe Dashboard](https://docs.stripe.com/disputes/responding.md#respond). This evidence can include:
+-  - A received return confirmation (for shipped goods returned from the customer to you)
+-  - The tracking ID
+-  - The shipping date
+-  - A record of purchase for intangible goods, such as IP address or email receipt
+-  - A record of purchase for services or physical goods, such as phone number or proof of receipt
++Products:
++  ✗ Managed Payments
++  ✓ Billing
++  ✓ Invoicing
++  ✓ Customer Portal
++  ✓ Radar
++  ✗ Terminal
++  ✓ Connect
+ 
+-- This information helps Amazon determine if a dispute is valid or if it should be rejected. Make sure the evidence you provide contains as much detail as possible from what the customer provided at checkout. You must submit the requested information within 10 calendar days. Amazon Pay makes a decision within 90 calendar days of evidence submission. If Amazon resolves the dispute with you winning, Stripe returns the disputed amount to your Stripe balance. If Amazon rules in favor of the customer, the balance charge becomes permanent.
++APIs:
++  ✓ Checkout Sessions (Recommended)
++  ✓ Payment Intents
++  ✓ Payment Intents with setup_future_usage
++  ✓ Setup Intents
++  ✓ Off-session payments
++## Customer experience 
+ 
+-Amazon Pay offers an [A-to-z Guarantee](https://www.amazon.com/gp/help/customer/display.html?nodeId=GQ37ZCNECJKTFYQV) that protects buyers from issues related to timely delivery and the condition of their items. A buyer can make a claim against this guarantee, which follows the same dispute process described above. A-to-z Guarantee claims don’t incur dispute fees. In the Dashboard and in the dispute object, you can distinguish A-to-z Guarantee claims as `dispute_type = claim`.
++#### 1. Select Amazon Pay
+ 
+-> If you prefer to handle disputes programmatically, you can [respond to disputes using the API](https://docs.stripe.com/disputes/api.md).
++The customer selects Amazon Pay at checkout.
+ 
+-## Supported currencies
++#### 2. Authorize with Amazon
+ 
+-You can create Amazon Pay payments in any of the supported currencies, regardless of the country your business operates in with the exception of the US.
++Stripe redirects the customer to Amazon's hosted checkout page. The customer signs in and completes the payment using the shipping and payment information stored in their Amazon account. Amazon controls how long the customer has to complete this step; Stripe doesn't configure an authorization-session timeout.
+ 
+-| Country                                                                                                                                                                   | Currency                                                                           |
+-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+-| Austria, Belgium, Cyprus, Denmark, France, Germany, Hungary, Ireland, Italy, Luxembourg, Netherlands, Portugal, Spain, Sweden, Switzerland, United Kingdom, United States | `aud`, `gbp`, `dkk`, `eur`, `hkd`, `jpy`, `nzd`, `nok`, `zar`, `sek`, `chf`, `usd` |
++#### 3. Complete payment
+ 
+-## Available payment methods
++After Amazon authorizes the payment, Stripe confirms it immediately and Amazon redirects the customer to the merchant's success or confirmation page.
+ 
+-Use Amazon Pay to store card credentials. They support the following alternative payment methods:
++### Transaction identifiers 
+ 
+-| Country                                                                                                                                    | Payment methods                                                                                                               |
+-| ------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+-| United States                                                                                                                              | Amazon Store Card, Amazon Store Card Installments, Amazon Visa Card Installments, Citi Flex Pay, Affirm, and Shop with Points |
+-| Austria, Belgium, Cyprus, Denmark, France, Germany, Hungary, Ireland, Italy, Luxembourg, Netherlands, Portugal, Spain, Sweden, Switzerland | SEPA Direct Debit                                                                                                             |+Stripe passes your payment’s statement descriptor to Amazon Pay. Amazon Pay and the customer’s funding source control how it appears on the customer’s statement.
++
++To retrieve the Amazon Pay transaction ID for a payment, [retrieve the PaymentIntent](https://docs.stripe.com/api/payment_intents/retrieve.md) with `expand[]=latest_charge`, then read `latest_charge.payment_method_details.amazon_pay.transaction_id`. Without expansion, `latest_charge` is a Charge ID. You can also [retrieve the referenced Charge](https://docs.stripe.com/api/charges/retrieve.md) and read `payment_method_details.amazon_pay.transaction_id` on the Charge object. The field might be absent when Amazon doesn’t provide a transaction ID.
++
++## Enable Amazon Pay 
++
++If you use Stripe front-end products, enable Amazon Pay in your [payment method settings](https://dashboard.stripe.com/settings/payment_methods). Stripe automatically determines which payment methods are most relevant to each customer.
++
++If your integration requires manually listing payment methods, you can [configure Amazon Pay as an accepted payment method](https://docs.stripe.com/payments/amazon-pay/accept-a-payment.md).

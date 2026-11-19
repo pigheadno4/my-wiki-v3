@@ -1,0 +1,175 @@
+{
+  "job_id": "payments-klarna-disputes",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-klarna-disputes.md": {
+      "job_id": "payments-klarna-disputes",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Respond to Klarna Disputes\"\ntype: source\ndate_ingested: 2026-05-06\ndate_updated: 2026-11-15\ncanonical_url: https://docs.stripe.com/payments/klarna/disputes\noriginal_format: webpage\nraw_files:\n  - \"stripe-payments-klarna-disputes-2026-11-07.md\"\n  - \"stripe-klarna-disputes-2025.md\"\ntags: [stripe, bnpl, klarna, disputes, chargebacks, inquiries, evidence]\n---\n\n## Summary\n\n[[stripe]] guide to Klarna payment disputes: a customer files a complaint or return request in the Klarna app; most cases pass through an inquiry before a chargeback, while some reach chargeback directly. It covers the merchant's refund or evidence choices, fee and funds handling, Dispute API states, and sandbox test triggers. See [[stripe-bnpl]] and [[disputes]].\n\n## Key Details\n\n**Filing window**: Customers generally have 180 calendar days from capture. Klarna may raise a dispute beyond the limitation in exceptional cases including reported fraud, external-authority legal claims, local consumer-protection rules, and debt collection. This is a guide-specific window, not a ranking against other BNPL methods.\n\n**Inquiry**: Stripe notifies the business when Klarna opens an inquiry, and Klarna pauses outstanding customer repayments until resolution. Almost all Klarna disputes start here, with a 21-calendar-day window. The business can seek a mutual resolution and the customer can withdraw the inquiry in the Klarna app, or the business can refund the full disputed amount. A refund during inquiry resolves it without escalation or a dispute fee; Klarna accepts no evidence at this stage. Only an **unresolved** inquiry escalates after the window. Refunds cannot be performed after chargeback escalation.\n\n**Direct chargeback exceptions**: Fraudulent transactions are one example of direct escalation, and Stripe says there are other scenarios. The comparison table says all disputes except fraudulent ones start as inquiries, while the inquiry prose explicitly allows other direct-chargeback exceptions; do not treat that table as an exhaustive rule.\n\n**Partial disputes**: A partial refund resolves an inquiry when it matches the amount of a partial dispute. If the dispute is for the full order, a partial refund does not resolve it; the business can contest the later chargeback with evidence. For a return inquiry, Stripe shows it in Dashboard, API, or events only after the customer provides return proof. In Dashboard, inspect **Issuer evidence** for tracking and verify return or transit before refunding within the inquiry period.\n\n**Chargeback and fee**: On escalation of an unresolved inquiry, Stripe withholds disputed funds and the associated fee pending resolution. The guide's comparison table says the Klarna dispute fee is assessed when a dispute is created, while its inquiry instructions say refunding during inquiry avoids the fee and its chargeback section locates the withholding at escalation. Read the table with those stage-specific instructions; do not infer a fee charged at inquiry opening. If the business wins after countering, Stripe releases the withheld funds and fee; if it loses, Stripe debits them and Klarna returns the disputed amount to the customer. The guide contrasts this single Klarna fee with the card-fee model in its captured comparison.\n\n**Evidence**: Counter a chargeback in the Stripe Dashboard or Disputes API by the displayed deadline or `evidence_due_by`: 12 calendar days from escalation, or 5 days for fraud. Klarna accepts one evidence round. If the business misses submission, Klarna rules for the customer. Dashboard's **Needs Response** flow ends with **Submit Evidence**; the API examples upload files with `purpose=dispute_evidence` and update the Dispute with evidence and `submit=true`. An uploaded file is for one dispute only. The November capture uses cURL examples where the older capture used Node examples; that presentation change alone does not establish a new API contract.\n\n**States and reason fields**: `warning_needs_response` and `warning_closed` are inquiry states; `needs_response`, `under_review`, `lost`, and `won` are chargeback states. `charge.dispute.funds_withdrawn` marks escalation. Stripe's `reason` holds its mapped category and `payment_method_details.klarna.reason_code` holds Klarna's code, shown as **Network Reason Code** in Dashboard. For a lost chargeback, `payment_method_details.klarna.chargeback_loss_reason_code` may appear in the webhook when Klarna closes it; if the business did not counter or accepted loss, the field may be absent from the webhook and later available via a fetched Dispute object. Do not infer an outcome from evidence submission or the status alone before adjudication.\n\n**Sandbox tests**: The capture lists email and phone triggers across 23 customer-country tables, with seven scenario rows per country but six distinct Stripe dispute-reason labels (`General` appears twice). A sandbox transaction can open a dispute and accept evidence; it cannot simulate the final dispute outcome. The listed test regions are capture-dated examples, not proof of current account eligibility or live availability.\n\n## Raw Sources\n\n- [[raw/stripe-payments-klarna-disputes-2026-11-07.md]] \u2014 full Stripe guide capture, fetched 2026-11-07 (575 lines).\n- [[raw/stripe-klarna-disputes-2025.md]] \u2014 prior full guide capture, fetched 2026-05-06 (601 lines); historical capture retained, including the earlier italic-markup normalization noted in the original summary.\n",
+      "quotes": [
+        {
+          "text": "Customers have up to 180 calendar days to file a dispute from the date of capture.",
+          "location": "raw/stripe-payments-klarna-disputes-2026-11-07.md:11"
+        },
+        {
+          "text": "Fraudulent transactions are one example of this immediate escalation, but there are also other scenarios.",
+          "location": "raw/stripe-payments-klarna-disputes-2026-11-07.md:64"
+        },
+        {
+          "text": "Refunding during the inquiry dispute period avoids a dispute fee and prevents the inquiry from being escalated to a chargeback dispute.",
+          "location": "raw/stripe-payments-klarna-disputes-2026-11-07.md:69"
+        },
+        {
+          "text": "Businesses have 12 calendar days from chargeback escalation to provide evidence, except for fraud disputes, which have a 5 day timeframe.",
+          "location": "raw/stripe-payments-klarna-disputes-2026-11-07.md:109"
+        },
+        {
+          "text": "You can submit evidence on the dispute, but you can\u2019t simulate the final dispute outcome in a sandbox.",
+          "location": "raw/stripe-payments-klarna-disputes-2026-11-07.md:247"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "klarna-disputes-bnpl-fact",
+            "target_path": "wiki/concepts/stripe-bnpl.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Disputes**: 180-day window (longest BNPL). Two-stage: Inquiry (21 days, no evidence, resolve directly) \u2192 Chargeback (evidence accepted, fee reversed if merchant wins). Fraud disputes skip inquiry. Evidence deadline: 12 days standard, **5 days for fraud**. One round of evidence only. `charge.dispute.funds_withdrawn` webhook marks escalation.",
+            "proposed_markdown": "**Disputes**: Under the captured [[source-stripe-klarna-disputes]] guide, customers generally have 180 calendar days from capture to file, with stated exceptions. Almost all cases begin with a 21-day inquiry: the customer may withdraw it or the business may refund the full disputed amount without a fee; Klarna takes no evidence then. Only unresolved inquiries escalate to chargeback, though fraud and other exceptions can go directly to chargeback. At chargeback, Stripe withholds the disputed funds and fee; a win releases both. Evidence is due 12 days from escalation, or 5 days for fraud, and is limited to one round. `charge.dispute.funds_withdrawn` marks escalation. The guide's fee table says assessed when a dispute is created, while its inquiry and chargeback prose locates fee avoidance during inquiry and withholding at escalation; do not infer an inquiry-opening charge.",
+            "quote_indexes": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "warnings": [
+              "New authority raw/stripe-payments-klarna-disputes-2026-11-07.md:11,62-80,94-111; old baseline raw/stripe-klarna-disputes-2025.md:40-58,72-89. Table/prose fee and direct-escalation tension is retained, not silently resolved."
+            ]
+          },
+          {
+            "update_id": "klarna-disputes-bnpl-route",
+            "target_path": "wiki/concepts/stripe-bnpl.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-klarna-disputes]] \u2014 Klarna disputes: 180-day window, inquiry\u2192chargeback 2-stage, fee model, 5-day fraud evidence, 23-country test triggers",
+            "proposed_markdown": "- [[source-stripe-klarna-disputes]] \u2014 Klarna disputes: capture-based 180-day filing window with exceptions; inquiry resolution, direct-chargeback exceptions, chargeback evidence and fee handling, API states, and capture-dated sandbox triggers",
+            "quote_indexes": [
+              0,
+              1,
+              3,
+              4
+            ],
+            "warnings": [
+              "Replaces existing synopsis at wiki/concepts/stripe-bnpl.md:267 with bounded route to the updated source; raw/stripe-payments-klarna-disputes-2026-11-07.md:11,64,109,247."
+            ]
+          },
+          {
+            "update_id": "klarna-disputes-generic-route",
+            "target_path": "wiki/concepts/disputes.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-disputes-how-disputes-work]] \u2014 Stripe dispute lifecycle: EFWs, inquiries, timing, fees, LPM differences",
+            "proposed_markdown": "- [[source-stripe-disputes-how-disputes-work]] \u2014 Stripe dispute lifecycle: EFWs, inquiries, timing, fees, LPM differences\n- [[source-stripe-klarna-disputes]] \u2014 Klarna-specific inquiry, direct-chargeback exceptions, evidence deadlines, fee/funds handling, and Dispute API states (2026-05-06 and 2026-11-07 captures)",
+            "quote_indexes": [
+              1,
+              3
+            ],
+            "warnings": [
+              "Appends a Klarna-specific source route at wiki/concepts/disputes.md:409; no generic card-dispute rule is changed. raw/stripe-payments-klarna-disputes-2026-11-07.md:60-111,527-569."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-klarna-disputes-2026-11-07.md",
+      "raw_sha256": "9ede1b5ee948bada95012bbe8715cb0969a5a86db6f6ddd3153b27f54451017d",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-klarna-disputes-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 575
+      }
+    ],
+    "raw/stripe-klarna-disputes-2025.md": [
+      {
+        "start": 1,
+        "end": 601
+      }
+    ],
+    "wiki/sources/source-stripe-klarna-disputes.md": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/4be6f19aa21a3053a33bd6d7/content.diff": [
+      {
+        "start": 1,
+        "end": 871
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-klarna-disputes/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 218
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 38,
+        "end": 52
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 328,
+        "end": 344
+      }
+    ],
+    "wiki/concepts/stripe-bnpl.md": [
+      {
+        "start": 203,
+        "end": 235
+      },
+      {
+        "start": 252,
+        "end": 272
+      }
+    ],
+    "wiki/concepts/disputes.md": [
+      {
+        "start": 55,
+        "end": 80
+      },
+      {
+        "start": 338,
+        "end": 367
+      },
+      {
+        "start": 402,
+        "end": 423
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "Almost all Klarna disputes start as inquiry disputes, which have a 21-calendar-day timeframe before they escalate.",
+      "location": "raw/stripe-klarna-disputes-2025.md:42"
+    },
+    {
+      "text": "Refunding during the inquiry dispute period avoids a dispute fee and prevents the inquiry from being escalated to a chargeback dispute.",
+      "location": "raw/stripe-klarna-disputes-2025.md:47"
+    },
+    {
+      "text": "You can submit evidence on the dispute, but you can\u2019t simulate the final dispute outcome in a testing environment.",
+      "location": "raw/stripe-klarna-disputes-2025.md:273"
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/klarna/disputes, the full November capture says a Klarna customer files a complaint or return in the Klarna app within 180 calendar days of capture, subject to stated exceptions (new raw lines 9-44). Almost all disputes start with a 21-day inquiry, where a customer withdrawal or full-disputed-amount refund can resolve it without fee; unresolved inquiries escalate, while fraud and other exceptions may start at chargeback (new raw lines 60-80). Chargeback permits one evidence round in 12 days, or 5 for fraud, and uses Stripe Dashboard or Disputes API states and Klarna reason fields (new raw lines 94-111 and 527-569). The May capture already states the same core lifecycle and exceptions (old raw lines 38-89). The mapped source-stripe-klarna-disputes.md summary needs the precise stage, fee, and test-row qualifications.",
+    "Q2": "For https://docs.stripe.com/payments/klarna/disputes, the comparison mainly changes presentation: a lifecycle diagram, reformatted tables, sequential Dashboard list numbers, cURL in place of Node API examples, and \u201csandbox\u201d wording for the same testing limit (old raw lines 129-273 and 555-601; new raw lines 131-247 and 527-569). No new payment execution, SDK contract, evidence acceptance, or final outcome follows from those examples. The dated May source-stripe-klarna-disputes.md claims \u201clongest BNPL,\u201d seven distinct dispute reasons, categorical fraud bypass, and fee on creation without stage qualification need correction. Both captures retain the 180-day exception list and return-proof Dashboard condition (old raw lines 8-70; new raw lines 11-92). The November table says fee assessed when a dispute is created, but inquiry prose says refund avoids fee and chargeback prose locates withholding at escalation (new raw lines 50-54, 69, 94-103); preserve this tension as a warning rather than invent a charge at inquiry opening. The table also says all nonfraud cases start as inquiries, while prose allows other direct-chargeback exceptions (new raw lines 52-64). Sandbox rows cannot simulate final outcomes (new raw lines 243-247)."
+  }
+}

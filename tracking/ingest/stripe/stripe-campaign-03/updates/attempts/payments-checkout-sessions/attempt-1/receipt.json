@@ -1,0 +1,153 @@
+{
+  "job_id": "payments-checkout-sessions",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-checkout-sessions.md": {
+      "job_id": "payments-checkout-sessions",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe Checkout Sessions API\"\ntype: source\ndate_ingested: 2026-04-19\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/checkout-sessions\"\nraw_files:\n  - \"stripe-payments-checkout-sessions-2026-11-07.md\"\n  - \"stripe-checkout-sessions-api-2025.md\"\ntags: [stripe, checkout-sessions, checkout, payment-element, adaptive-pricing, subscriptions]\n---\n\n## Summary\n\nThe April and November 2026 Stripe overviews recommend the Checkout Sessions API for most payments integrations. It supplies built-in tax calculation, discounts, shipping, subscriptions and Adaptive Pricing with less merchant-written checkout logic than the Payment Intents API. Stripe describes managed authentication, Session status/expiration and lifecycle tracking, and duplicate-charge prevention as product advantages. The lifecycle varies by payment UI; these overview statements do not show a completed payment or a universal outcome guarantee. See new raw lines 7-35 and old raw lines 6-34.\n\n## Key Takeaways\n\n- **Three UI routes:** Stripe-hosted redirect page, embedded form, and a custom payment flow built with Stripe Elements including the Payment Element. The Checkout Sessions API is the back end for all three. See new raw lines 11-17.\n- **Server/client boundary in the linked Elements quickstart:** The server creates a Checkout Session; the client receives its `client_secret` for Stripe Elements. The overview does not show the client confirmation or paid state. The November quickstart URL is `https://docs.stripe.com/payments/quickstart.md`; the April overview linked `payments/quickstart-checkout-sessions.md`. See new raw lines 15-17, 54-56; old raw lines 14-16, 59-61.\n- **Checkout Sessions versus Payment Intents:** Stripe says the former covers similar scenarios with significantly less code and built-in support for the listed features. It recommends Payment Intents when an integration needs control of every aspect of checkout state or builds discount, tax, subscription and currency-conversion logic itself. This overview does not say every Payment Intents integration lacks all ancillary services. See new raw lines 19-31.\n- **Metadata:** Attach an internal order identifier to a Session for Dashboard/report reconciliation. Do not put personally identifiable information, card details or other sensitive data in metadata. See new raw lines 37-50.\n\n## Captured UI and Mode Examples\n\n| Route | Overview description |\n| --- | --- |\n| Stripe-hosted page | Redirect customer to Stripe-hosted payment page. |\n| Embedded form | Embed Stripe payment form on merchant site. |\n| Custom Elements flow | Build a custom checkout page using Stripe Elements/Payment Element. |\n\nBoth captured overviews illustrate server-side Session creation for the custom flow with literal `ui_mode=custom`, `mode=payment`, a return URL and `metadata[order_id]=6735`. The 2026-04-19 illustration is Node.js; the 2026-11-07 illustration is equivalent curl:\n\n```sh\ncurl https://api.stripe.com/v1/checkout/sessions \\\n  -u \"<<YOUR_SECRET_KEY>>:\" \\\n  -d mode=payment \\\n  -d ui_mode=custom \\\n  --data-urlencode \"return_url=https://example.com/return\" \\\n  -d \"metadata[order_id]=6735\"\n```\n\nThe request shows creation and metadata association, not client confirmation, completed Session status, payment success or fulfillment. Preserve the example's `custom` value as printed in these overviews. Separate version-qualified React guidance for a new custom Checkout Elements page uses `ui_mode: 'elements'` with `CheckoutElementsProvider`; these captures do not settle which mode name a particular current SDK/API-version integration should use. See old raw lines 40-55, new raw lines 41-50, and [[stripe-checkout]].\n\n## Dated Comparison\n\nNo substantive feature or lifecycle delta is established by the two pinned overviews. November changes the custom-flow and quickstart link to `payments/quickstart.md`, changes the metadata example language from Node to curl, and reflows headings/table formatting. The request fields and central claims remain. An updated link is navigation, not evidence about the linked guide's implementation or product rollout.\n\n## Related Pages\n\n- [[stripe]] \u2014 Stripe company route.\n- [[stripe-checkout]] \u2014 concept, including the separate version-qualified `elements` React path.\n- [[source-stripe-how-checkout-works]] \u2014 Checkout lifecycle and UI details.\n- [[source-stripe-payment-intents]] \u2014 distinct Payment Intents and Setup Intents reference.\n\n## Raw Sources\n\n- [[raw/stripe-payments-checkout-sessions-2026-11-07|2026-11-07 Checkout Sessions overview]] \u2014 newer full capture and curl metadata example.\n- [[raw/stripe-checkout-sessions-api-2025|2026-04-19 Checkout Sessions overview]] \u2014 older full capture and Node metadata example.\n",
+      "quotes": [
+        {
+          "text": "Stripe recommends this API for most payments integrations because it handles complex checkout tasks for you, enables features such as [Adaptive Pricing](https://docs.stripe.com/payments/currencies/localize-prices/adaptive-pricing.md), and reduces the amount of custom code you need to write and maintain.",
+          "location": "raw/stripe-payments-checkout-sessions-2026-11-07.md:9-9"
+        },
+        {
+          "text": "The Checkout Sessions API serves as the back end for multiple [Stripe payment UIs](https://docs.stripe.com/payments/online-payments.md#payment-uis):",
+          "location": "raw/stripe-payments-checkout-sessions-2026-11-07.md:11-11"
+        },
+        {
+          "text": "To get started, see the [Checkout Sessions quickstart](https://docs.stripe.com/payments/quickstart.md). It walks through creating a `Checkout Session` on the server, using its `client_secret` with Stripe Elements on the client.",
+          "location": "raw/stripe-payments-checkout-sessions-2026-11-07.md:17-17"
+        },
+        {
+          "text": "The Checkout Sessions API manages the full checkout lifecycle for you, with the lifecycle varying depending on the [payment UI you use](https://docs.stripe.com/payments/checkout/how-checkout-works.md).",
+          "location": "raw/stripe-payments-checkout-sessions-2026-11-07.md:35-35"
+        },
+        {
+          "text": "Don\u2019t store sensitive information (such as personally identifiable information or card details) as metadata.",
+          "location": "raw/stripe-payments-checkout-sessions-2026-11-07.md:50-50"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "payments-checkout-sessions-concept-route",
+            "target_path": "wiki/concepts/stripe-checkout.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-checkout-sessions]] \u2014 Checkout Sessions API: 3 UI modes, 5 built-in features, Adaptive Pricing, vs Payment Intents",
+            "proposed_markdown": "- [[source-stripe-checkout-sessions]] \u2014 April and November 2026 Checkout Sessions API overviews: hosted, embedded and custom Elements UI routes, built-in tax/discounts/shipping/subscriptions/Adaptive Pricing, and an illustrative server-side `ui_mode=custom` metadata request. The separate version-qualified React custom path on this page uses `ui_mode='elements'`; the overview's sample does not settle that SDK naming or prove payment completion.",
+            "quote_indexes": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "warnings": [
+              "Old raw lines 40-53 and new raw lines 41-48 both show `ui_mode=custom` in the overview sample; `wiki/concepts/stripe-checkout.md` line 81 separately describes version-qualified React `ui_mode=elements`. New raw lines 15-17 only change navigation to payments/quickstart.md."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-checkout-sessions-2026-11-07.md",
+      "raw_sha256": "58a8b2d8eb0bdb978fcd364dd861b3c75985d38dbff17aa0b85bf9a254e3b7a8",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-checkout-sessions-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 56
+      }
+    ],
+    "raw/stripe-checkout-sessions-api-2025.md": [
+      {
+        "start": 1,
+        "end": 61
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-sessions.md": [
+      {
+        "start": 1,
+        "end": 59
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/495f37c013b52d74de614b44/content.diff": [
+      {
+        "start": 1,
+        "end": 79
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-checkout-sessions/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 90
+      },
+      {
+        "start": 80,
+        "end": 165
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 22
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 20,
+        "end": 37
+      }
+    ],
+    "wiki/concepts/stripe-checkout.md": [
+      {
+        "start": 1,
+        "end": 34
+      },
+      {
+        "start": 75,
+        "end": 85
+      },
+      {
+        "start": 101,
+        "end": 119
+      },
+      {
+        "start": 245,
+        "end": 255
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 12,
+        "end": 36
+      },
+      {
+        "start": 45,
+        "end": 50
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "To get started, see the [Checkout Sessions quickstart](https://docs.stripe.com/payments/quickstart-checkout-sessions.md). It walks through creating a `Checkout Session` on the server, using its `client_secret` with Stripe Elements on the client.",
+      "location": "raw/stripe-checkout-sessions-api-2025.md:16-16"
+    },
+    {
+      "text": "The Checkout Sessions API manages the full checkout lifecycle for you, with the lifecycle varying depending on the [payment UI you use](https://docs.stripe.com/payments/checkout/how-checkout-works.md).",
+      "location": "raw/stripe-checkout-sessions-api-2025.md:34-34"
+    },
+    {
+      "text": "Don\u2019t store sensitive information (such as personally identifiable information or card details) as metadata.",
+      "location": "raw/stripe-checkout-sessions-api-2025.md:55-55"
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/checkout-sessions, stripe-payments-checkout-sessions-2026-11-07.md (new raw lines 7-35, 37-50) describes Checkout Sessions as Stripe's recommended API for most payments integrations, with built-in tax, discounts, shipping, subscriptions and Adaptive Pricing. It backs hosted, embedded and custom Elements UIs; Session lifecycle and authentication handling vary by UI. The linked quickstart says the server creates a Session and the client uses its client_secret, but this overview's metadata example shows only server creation, not confirmation or paid status. stripe-checkout-sessions-api-2025.md (old raw lines 6-34, 36-55) establishes the same central behavior. source-stripe-checkout-sessions.md summarizes the older page but lacks November provenance and treats the literal `ui_mode=custom` sample too generally given separate versioned React `elements` guidance.",
+    "Q2": "For https://docs.stripe.com/payments/checkout-sessions, stripe-payments-checkout-sessions-2026-11-07.md (new raw lines 15-17, 41-56) changes the custom-flow and quickstart URL to payments/quickstart.md and illustrates the same mode, return URL and order metadata request in curl. stripe-checkout-sessions-api-2025.md (old raw lines 14-16, 40-61) used a Node example and the earlier quickstart route; table spacing and wording changes are presentational, with no established feature or lifecycle delta. source-stripe-checkout-sessions.md should preserve its April date and literal `ui_mode=custom` sample, add November provenance and route, and qualify the separate versioned React `ui_mode=elements` path rather than claiming an exhaustive current mode mapping. Its Payment Intents 'None' cell overstates this overview's less-code/build-yourself comparison. Neither Session creation nor client-secret handoff proves client confirmation, payment success, fulfillment or a particular account capability; the no-sensitive-metadata warning remains."
+  }
+}

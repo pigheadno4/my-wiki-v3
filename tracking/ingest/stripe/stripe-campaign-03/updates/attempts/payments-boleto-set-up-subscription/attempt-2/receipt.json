@@ -1,0 +1,205 @@
+{
+  "job_id": "payments-boleto-set-up-subscription",
+  "attempt": 2,
+  "source_results": {
+    "wiki/sources/source-stripe-boleto-subscription.md": {
+      "job_id": "payments-boleto-set-up-subscription",
+      "attempt": 2,
+      "source_page": "---\ntitle: \"Stripe: Use Boleto with Subscriptions\"\ntype: source\ndate_ingested: 2026-05-07\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/boleto/set-up-subscription\"\nraw_files:\n  - \"stripe-payments-boleto-set-up-subscription-2026-11-07.md\"\n  - \"stripe-boleto-subscription-2025.md\"\ntags: [stripe, vouchers, boleto, brazil, brl, subscriptions, recurring, send-invoice, charge-automatically, tax-id]\n---\n\n## Overview\n\n[[stripe]] documents Boleto subscription billing through `send_invoice` and `charge_automatically`. Boleto is a voucher the customer pays separately; the automatic collection label describes voucher generation and email, not automatic cash debit or settled payment. This guide now gives both customer-configured Accounts v2 and Customers v1 examples. See [[stripe-vouchers]] for the method overview.\n\n## Key takeaways\n\n- **Enablement:** Turn on Boleto in Payment methods settings and the Stripe-hosted link for payments requiring confirmation in Subscriptions and emails settings before integration. Voucher expiration delay is configurable. [November raw lines 9-15]\n- **`send_invoice`:** For a customer without a saved preferred method or full Boleto details, email an invoice with a due date. The customer enters full name, address and tax ID for each invoice or subscription period; this path does not use their default payment method. Stripe creates the voucher after those details are entered. Its expiration, default three days, can fall before or after the invoice due date. [November raw lines 17-29]\n- **`charge_automatically`:** Create a Boleto PaymentMethod with `boleto.tax_id` and billing name, email and Brazilian address, attach it to the represented customer, and set it as the billing default. Stripe creates and emails a Boleto voucher each period. The invoice has no due date in this path; voucher expiration remains separate. The customer still has to pay the voucher. [November raw lines 23-29, 156-220; [[source-stripe-boleto-invoices]]]\n- **Customer identity:** The older May capture recommended Accounts v2 but showed only Customer v1 procedures. The November capture specifies `configuration.customer: {}` on a v2 Account and `customer_account` for its PaymentMethod attachment, subscription and Checkout examples; the v1 route uses a Customer ID and `customer`. For a v2 Account, set `configuration.customer.billing.default_payment_method`; for v1, set `invoice_settings.default_payment_method`. Keep the identity path consistent. [May raw lines 8-14, 98-188; November raw lines 81-220, 336-416]\n- **Version boundary:** Stripe describes Accounts v2 as generally available for Connect users and in public preview for others. Preview users must specify a preview version; the November v2 cURL examples show `Stripe-Version: 2026-10-28.preview` and a Dashboard preview enrollment step. These examples do not establish this account's eligibility or currently deployed version. Secret-key API calls belong on the server. [November raw lines 75-113, 128-144]\n\n## Subscription paths and state\n\n- Create a recurring product/price before an API subscription; the examples use a `RECURRING_PRICE_ID`. **Example currency warning:** the November 2026 generic price-creation snippet sets `currency=usd` and omits a recurring interval; its schedule illustration also says 10 USD per month plus a 20 USD one-time item. The separate May Boleto method capture specifies BRL presentment. These generic USD examples do not establish a valid Boleto subscription price; use a Boleto-compatible BRL recurring price and check the actual account/payment-method configuration. [November raw lines 262-276, 336-416, 420-435; `raw/stripe-boleto-2025.md:26-32`] The API examples for both identities set `payment_behavior=default_incomplete`. The invoice route sets `collection_method=send_invoice` and `days_until_due=3`; the default-method route sets `collection_method=charge_automatically` and `off_session=true`. These request parameters do not establish a paid voucher or active subscription. [November raw lines 223-280, 326-386]\n- Checkout Sessions examples use `mode=subscription`, the recurring price, the matching `customer_account` or `customer`, and `payment_method_options[boleto][expires_after_days]=3`. A configured `success_url` is a return destination, not proof of cash payment. Stripe says it emails the previously generated Boleto each subscription cycle. [November raw lines 388-416]\n- Subscription schedules can begin in the future or end on a date. A phase's `add_invoice_items` can add a one-time amount: items in future phases are generated when those phases begin, while current-phase items are generated immediately. The November example notes substituting `customer_account` for `customer` for a customer-configured Account. [November raw lines 418-437]\n- Dashboard create/edit/cancel/pause steps are generic subscription UI. Its refund-last-payment menu option is **not** evidence that Boleto refunds are supported: the Boleto method source says no Boleto refunds. [November raw lines 288-324; [[source-stripe-boleto]]]\n\n## Dated example difference\n\nThe May 2026 `send_invoice` Node example explicitly set `payment_settings.payment_method_types: [\"card\", \"boleto\"]`. The November 2026 Accounts v2 and Customers v1 cURL `send_invoice` examples omit that field. Keep both examples dated; omission does not prove the setting is invalid, unnecessary, or removed, nor establish the account's default allowed methods. The Node-to-cURL conversion, changed sample identities/timestamps, numbering and related links are example or presentation changes. [May raw lines 310-329; November raw lines 336-358; collection diff lines 1-715]\n\n## Related\n\n- [[stripe-vouchers]] \u2014 voucher method overview and billing distinction\n- [[source-stripe-boleto]] \u2014 method restrictions, including no refunds\n- [[source-stripe-boleto-invoices]] \u2014 invoice collection and active voucher payment\n\n## Raw Sources\n\n- [[raw/stripe-payments-boleto-set-up-subscription-2026-11-07|2026-11-07 full Boleto subscription guide]] \u2014 current captured page, 441 lines\n- [[raw/stripe-boleto-subscription-2025|2026-05-07 Boleto subscription guide]] \u2014 earlier captured page, 417 lines; preserves the Customer v1 Node examples and explicit card/Boleto method list\n",
+      "quotes": [
+        {
+          "text": "The invoice must contain a due date.",
+          "location": "raw/stripe-payments-boleto-set-up-subscription-2026-11-07.md:27"
+        },
+        {
+          "text": "Your customer receives an email with a Boleto voucher every time you send them an invoice, or there\u2019s a subscription service period.",
+          "location": "raw/stripe-payments-boleto-set-up-subscription-2026-11-07.md:26"
+        },
+        {
+          "text": "The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users.",
+          "location": "raw/stripe-payments-boleto-set-up-subscription-2026-11-07.md:83"
+        },
+        {
+          "text": "Set `configuration.customer` to an empty object to enable the customer configuration on this account.",
+          "location": "raw/stripe-payments-boleto-set-up-subscription-2026-11-07.md:97"
+        },
+        {
+          "text": "If you [represent your customers as customer-configured Account objects](https://docs.stripe.com/accounts-v2/use-accounts-as-customers.md), replace `customer` in this example with `customer_account`.",
+          "location": "raw/stripe-payments-boleto-set-up-subscription-2026-11-07.md:422"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "s03-boleto-subscription-voucher-billing",
+            "target_path": "wiki/concepts/stripe-vouchers.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Subscriptions and invoices**: both `send_invoice` and `charge_automatically` supported (unique among vouchers). `charge_automatically` requires name, Brazilian address, and tax ID as default payment method on Customer; Boleto emailed automatically each cycle. `send_invoice` has customer re-enter details each cycle; invoice must have due date. **Important**: even with `charge_automatically`, Boleto is never a true auto-debit \u2014 customer must still actively pay the voucher (Stripe emails a payment link).",
+            "proposed_markdown": "**Subscriptions and invoices**: Boleto supports both `send_invoice` and `charge_automatically` (unlike the other listed vouchers). `send_invoice` needs an invoice due date and fresh full name, address and tax ID each period; the Boleto's own expiration can differ from that due date. `charge_automatically` uses a default Boleto PaymentMethod with those details and emails a voucher each cycle, but the customer still has to pay it; this is not cash auto-debit. The May 2026 guide showed a Customer v1 route; the November 2026 guide also shows customer-configured Accounts v2, using `customer_account` in v1 billing calls and `configuration.customer.billing.default_payment_method` as the Account billing default. Customers v1 use `customer` and `invoice_settings.default_payment_method`. The Accounts v2 preview and API-version conditions apply; see [[source-stripe-boleto-subscription]] for the dated examples. The generic Dashboard option to refund a last subscription payment does not establish Boleto refund support; [[source-stripe-boleto]] says Boleto has no refunds.",
+            "quote_indexes": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "November raw lines 17-29, 81-220, 326-416 establish collection and identity paths; May raw lines 8-14, 310-329 establish dated baseline.",
+              "The active voucher-payment qualifier comes from wiki/sources/source-stripe-boleto-invoices.md:13,25; the no-refund qualifier comes from wiki/sources/source-stripe-boleto.md:13,25. Generic refund menu is November raw line 312."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-boleto-set-up-subscription-2026-11-07.md",
+      "raw_sha256": "72961f9c2767d72998a02b0cb2eeffd3889f2319511349ca64b54d4edcadd197",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-boleto-set-up-subscription-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 250
+      },
+      {
+        "start": 251,
+        "end": 340
+      },
+      {
+        "start": 341,
+        "end": 441
+      }
+    ],
+    "raw/stripe-boleto-subscription-2025.md": [
+      {
+        "start": 1,
+        "end": 140
+      },
+      {
+        "start": 141,
+        "end": 280
+      },
+      {
+        "start": 281,
+        "end": 417
+      }
+    ],
+    "wiki/sources/source-stripe-boleto-subscription.md": [
+      {
+        "start": 1,
+        "end": 40
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/dc4c839e81bdf4417e1415ac/content.diff": [
+      {
+        "start": 1,
+        "end": 145
+      },
+      {
+        "start": 146,
+        "end": 290
+      },
+      {
+        "start": 291,
+        "end": 435
+      },
+      {
+        "start": 436,
+        "end": 580
+      },
+      {
+        "start": 581,
+        "end": 715
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 60
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 365,
+        "end": 383
+      }
+    ],
+    "wiki/concepts/stripe-vouchers.md": [
+      {
+        "start": 1,
+        "end": 123
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 568,
+        "end": 578
+      }
+    ],
+    "wiki/sources/source-stripe-boleto.md": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ],
+    "wiki/sources/source-stripe-boleto-invoices.md": [
+      {
+        "start": 1,
+        "end": 33
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-boleto-set-up-subscription/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 210
+      }
+    ],
+    "raw/stripe-boleto-2025.md": [
+      {
+        "start": 1,
+        "end": 116
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-boleto-set-up-subscription/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 175
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-boleto-set-up-subscription/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 121
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-boleto-set-up-subscription/attempt-1/candidates/source-stripe-boleto-subscription.md": [
+      {
+        "start": 1,
+        "end": 46
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-boleto-set-up-subscription/attempt-2/input.json": [
+      {
+        "start": 1,
+        "end": 74
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "payment_method_types: [\"card\", \"boleto\"]",
+      "location": "raw/stripe-boleto-subscription-2025.md:325"
+    },
+    {
+      "text": "The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users.",
+      "location": "raw/stripe-boleto-subscription-2025.md:10"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/boleto/set-up-subscription, Boleto subscription billing requires enabling Boleto and the Stripe-hosted confirmation link. `send_invoice` needs a due date and fresh name, address and tax ID each period; `charge_automatically` needs a default Boleto PaymentMethod and emails a voucher, which the customer must still pay. Voucher expiry and invoice due date are distinct. The new capture shows Accounts v2 customer-configured Accounts and Customers v1 with different `customer_account`/`customer` identity and billing-default fields; Accounts v2 preview/version conditions remain account-specific. The generic November price snippet uses USD without a recurring interval, while the Boleto method capture specifies BRL presentment; a compatible recurring price must be established separately. API subscription creation with `default_incomplete`, Checkout `success_url`, and voucher email are not payment or activation proof. Compared with old raw lines 8-36, 98-188, 302-413 and new raw lines 9-29, 81-220, 326-437, source-stripe-boleto-subscription.md preserves the May Customer route but lacks the concrete November Account route and new provenance.",
+    "Q2": "At https://docs.stripe.com/payments/boleto/set-up-subscription, the substantive change is the parameterized Accounts v2 route, including `configuration.customer`, `customer_account`, a distinct billing default, preview enrollment and example `Stripe-Version: 2026-10-28.preview`; the old guide already recommended Accounts v2 (old raw lines 8-14; new raw lines 81-220). The May `send_invoice` example explicitly lists card and Boleto payment types, while November examples omit the list (old raw lines 310-329; new raw lines 336-358). source-stripe-boleto-subscription.md should date both examples without inferring changed defaults or deprecation. The generic November price snippet uses `currency=usd` without a recurring interval, and the schedule illustration states USD amounts (new raw lines 262-276, 420-435), whereas the Boleto method capture specifies BRL presentment (`raw/stripe-boleto-2025.md:26-32`) and subscription examples require a recurring price ID (new raw lines 336-416). These examples do not establish a valid Boleto price or runtime eligibility. Node-to-cURL conversion, sample values, numbering and links are otherwise presentational. Secret-key calls are server-side; generic Dashboard refund language does not override Boleto-specific no-refund guidance. Neither a created subscription, Checkout return URL, voucher generation nor an emailed voucher proves payment, settlement or activation."
+  }
+}

@@ -1,0 +1,174 @@
+{
+  "job_id": "payments-bacs-debit-accept-a-payment",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-bacs-accept-payment.md": {
+      "job_id": "payments-bacs-debit-accept-a-payment",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Accept Bacs Direct Debit Payments\"\ntype: source\ndate_ingested: 2026-05-02\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/bacs-debit/accept-a-payment\"\nraw_files:\n  - \"stripe-bacs-accept-payment-2025.md\"\ntags: [stripe, bacs, bank-debit, uk, gbp, checkout, elements, payment-element, webhooks, mandates]\n---\n\n## Summary\n\nThe May 2, 2026 full guide describes UK-bank-account Bacs Direct Debit payments in GBP through Checkout and web Elements with a PaymentIntent. It covers mandate acknowledgement, delayed payment-state webhooks, sandbox test accounts, failure codes, optional target dates, and mandate reference prefixes. The November 7, 2026 capture at the same canonical URL is only a Checkout/Elements variant index; it does not verify the current variant bodies or renew the May requirements and outcomes.\n\n## Capture boundary\n\nAll operational details below come from the May 2, 2026 full capture. Its Checkout section states that UK Stripe users can use payment-mode Checkout for Bacs Direct Debit; its Elements section uses a PaymentIntent to track the payment. The new November index links to two variant URLs but contains no current setup, API-version, mandate, success, failure, or settlement detail. The May examples are dated documentation, not evidence of account eligibility or a completed debit.\n\n## Key Details\n\n### Checkout path (May 2, 2026)\n\n1. Create a Product and GBP Price, or an ad-hoc Price at Session creation using an existing Product when the price is determined at checkout. The captured manually configured example is for UK Stripe users; the guide also points to dynamic payment methods.\n2. Have the client call a server endpoint to create a payment-mode Checkout Session. The example sets `payment_method_types: ['bacs_debit']`. Its `payment_intent_data.setup_future_usage: 'off_session'` belongs to the **optional save-for-later** example, not every Bacs payment.\n3. Handle three Checkout events: `checkout.session.completed` means the customer authorized the debit and payment can still be pending; `checkout.session.async_payment_succeeded` reports later payment success and is the guide's fulfillment trigger; `checkout.session.async_payment_failed` calls for contacting the customer to request a new order. The guide says the underlying PaymentIntent moves from `processing` to `succeeded` when payment succeeds.\n4. Do not use `success_url` or a browser redirect as payment evidence. Direct navigation to the URL and closing the browser before redirect both break that inference. The Checkout passage says funds typically become available in three business days, while the Elements section gives a different dated timing description; neither is a universal or guaranteed settlement time.\n5. Optional Checkout `payment_method_options.bacs_debit.target_date`: 3\u201315 days from the current date, best effort, shifted to the next available business day for a weekend, holiday, or fewer than three business days' lead time. Actual bank processing can vary.\n\n### Elements path (May 2, 2026)\n\n1. Create or retrieve a Customer to associate a bank account for future reuse. The guide also shows a customer-configured Account path under Accounts v2; at capture time this API was generally available to Connect users, in public preview for other Stripe users, and required a preview version for preview participants. `customer_account` is therefore a qualified alternative, not a blanket access claim.\n2. Collect payment details and the customer's required Bacs mandate acknowledgement in the web Payment Element. The guide uses Stripe.js directly from `js.stripe.com` and requires HTTPS for live checkout; its HTML+JS and React examples are dated UI examples.\n3. Have the server choose the GBP amount and create a PaymentIntent with `customer` or qualified `customer_account`. The manual-list examples set `payment_method_types: ['bacs_debit']`; Dashboard-controlled examples use configured methods. The client runs `elements.submit()`, obtains the PaymentIntent client secret, and calls `stripe.confirmPayment` with a `return_url`.\n4. Handle `payment_intent.succeeded` to confirm payment success; the guide also recommends `payment_intent.processing` and `payment_intent.payment_failed`. Intent creation, client confirmation, and return-page arrival do not prove success or available funds. The Elements section describes four business days to confirm with an existing mandate and seven with a new mandate, plus a standard-settlement table of T+3 success and T+4 available from submission, subject to business-day/cutoff timing. A bank failure can arrive after a marked success and become a dispute.\n\n### Sandbox test accounts (sort code `108800`, May 2, 2026)\n\nThese are synthetic sandbox scenarios, not live timing or settlement guarantees. The May guide recommends three-minute-delay accounts to simulate the delayed live flow. Debit notification emails are not sent in sandboxes; test success can also be followed by a dispute.\n\n| Account | Token | Behavior |\n| --- | --- | --- |\n| `00012345` | `pm_bacsDebit_success` | Transitions from `processing` to `succeeded`; no immediate duration specified |\n| `90012345` | `pm_bacsDebit_successDelayed` | Succeeds after 3 min |\n| `33333335` | `pm_bacsDebit_debitNotAuthorized` | Fails immediately; mandate \u2192 inactive |\n| `93333335` | `pm_bacsDebit_debitNotAuthorizedDelayed` | Fails after 3 min; mandate \u2192 inactive |\n| `22222227` | `pm_bacsDebit_insufficientFunds` | Fails; mandate stays active |\n| `92222227` | `pm_bacsDebit_insufficientFundsDelayed` | Fails after 3 min; mandate stays active |\n| `55555559` | `pm_bacsDebit_dispute` | Succeeds then dispute created |\n| `00033333` | `pm_bacsDebit_mandateRefused` | PM created; mandate \u2192 inactive |\n| `00044444` | \u2014 | Setup fails immediately (invalid account) |\n| `34343434` | `pm_bacsDebit_exceedsWeeklyLimit` | Fails: `charge_exceeds_source_limit` |\n| `12121212` | `pm_bacsDebit_exceedsTransactionLimit` | Fails: `charge_exceeds_transaction_limit` |\n\n### Failure codes (May 2, 2026)\n\nThe guide reads these from `charge.failure_code` and says the list can grow. Its retryability table is not an exhaustive current enum; it recommends contacting the payer before retrying a retryable PaymentIntent with the same PaymentMethod.\n\n| Code | Retryable |\n| --- | --- |\n| `account_closed` | No |\n| `bank_ownership_changed` | No |\n| `debit_not_authorized` | No |\n| `invalid_account_number` | No |\n| `generic_could_not_process` | Yes |\n| `insufficient_funds` | Yes |\n\n### Mandate reference prefix (May 2, 2026)\n\nThe optional `payment_method_options.bacs_debit.mandate_options.reference_prefix` appears in PaymentIntent, SetupIntent, and Checkout Session examples for payment or setup mode. It must be at most 12 characters, **start with a number or uppercase letter**, contain only uppercase letters, numbers, spaces, or `.`, `/`, `&`, `-`, `_`, and cannot start with `DDIC` or `STRIPE`. Include a desired delimiter because Stripe adds none by default; trailing spaces are trimmed to at most one. A valid prefix yields an 18-character reference. This rule is from the May capture, not the November index.\n\nThe May Elements path also documents an optional PaymentIntent `target_date` of 3\u201315 days, best effort, with cancellation possible up to three business days before that date. Its Checkout target-date example does not itself establish the PaymentIntent cancellation rule.\n\n## Related\n\n- [[stripe]] \u2014 provider\n- [[stripe-bacs-direct-debit]] \u2014 Bacs Direct Debit concept, mandate and delayed-state context\n- [[source-stripe-bacs-direct-debit]] \u2014 Bacs method overview and scheme context\n\n## Raw Sources\n\n- [[raw/stripe-bacs-accept-payment-2025|May 2, 2026 full Bacs payment guide]] \u2014 dated Checkout and Elements sections with examples, events, sandbox cases, target dates, and prefix rules.\n\n## Related raw API references\n\n- [[raw/stripe-payments-bacs-debit-accept-a-payment-2026-11-07|November 7, 2026 Checkout/Elements variant index]] \u2014 navigation only; linked variant bodies are not part of this evidence packet.\n",
+      "quotes": [
+        {
+          "text": "Accept Bacs Direct Debit payments from customers with a UK bank account.",
+          "location": "raw/stripe-payments-bacs-debit-accept-a-payment-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-bacs-debit-accept-a-payment-2026-11-07.md:11"
+        },
+        {
+          "text": "[Checkout](https://docs.stripe.com/payments/bacs-debit/accept-a-payment.md?payment-ui=checkout)",
+          "location": "raw/stripe-payments-bacs-debit-accept-a-payment-2026-11-07.md:13"
+        },
+        {
+          "text": "[Elements](https://docs.stripe.com/payments/bacs-debit/accept-a-payment.md?payment-ui=elements)",
+          "location": "raw/stripe-payments-bacs-debit-accept-a-payment-2026-11-07.md:14"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "payments-bacs-debit-accept-a-payment-optional-save",
+            "target_path": "wiki/concepts/stripe-bacs-direct-debit.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Checkout**: `payment_method_types: ['bacs_debit']`, `mode: 'payment'` + `setup_future_usage: 'off_session'`. Handle 3 async events: `checkout.session.completed` \u2192 `checkout.session.async_payment_succeeded` (fulfill) / `checkout.session.async_payment_failed` (retry).",
+            "proposed_markdown": "**Checkout (May 2, 2026 guide)**: A manually configured payment-mode Session example selects `payment_method_types: ['bacs_debit']`; `payment_intent_data.setup_future_usage: 'off_session'` is in its optional save-for-later example. Handle `checkout.session.completed` as debit authorization, then `checkout.session.async_payment_succeeded` for later payment success and fulfillment or `checkout.session.async_payment_failed` for follow-up. A `success_url` redirect does not prove payment success.",
+            "quote_indexes": [
+              0,
+              1,
+              2
+            ],
+            "warnings": [
+              "Old raw lines 116-139 attach setup_future_usage to the can-save example; lines 148-174 distinguish redirect, authorization, asynchronous success, and delayed funds. New raw lines 9-14 are variant navigation only."
+            ]
+          },
+          {
+            "update_id": "payments-bacs-debit-accept-a-payment-reciprocal-source",
+            "target_path": "wiki/concepts/stripe-bacs-direct-debit.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-bacs-accept-payment]] \u2014 integration guide: Checkout + Elements paths, 11 test accounts, 6 failure codes, target_date, mandate reference prefix",
+            "proposed_markdown": "- [[source-stripe-bacs-accept-payment]] \u2014 May 2, 2026 full Checkout and web Elements Bacs payment guide, including delayed payment states, sandbox cases, optional target dates, and mandate prefix rules; November 7 capture is a Checkout/Elements variant index for navigation only.",
+            "quote_indexes": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "warnings": [
+              "Old raw lines 16-18 and 326-330 identify the two dated paths; lines 270-324 and 887-1055 contain detailed sandbox, target-date, and prefix material. New raw lines 9-14 provide only variant navigation."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-bacs-debit-accept-a-payment-2026-11-07.md",
+      "raw_sha256": "1d3e3ecaebcbc4ff8556f5e399061c4e489bc0426d8785b172f1d3d68fe64565",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-bacs-debit-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-bacs-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 220
+      },
+      {
+        "start": 221,
+        "end": 440
+      },
+      {
+        "start": 441,
+        "end": 660
+      },
+      {
+        "start": 661,
+        "end": 880
+      },
+      {
+        "start": 881,
+        "end": 1060
+      }
+    ],
+    "wiki/sources/source-stripe-bacs-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 65
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/98727a8c608a668c40545843/content.diff": [
+      {
+        "start": 1,
+        "end": 220
+      },
+      {
+        "start": 221,
+        "end": 440
+      },
+      {
+        "start": 441,
+        "end": 660
+      },
+      {
+        "start": 661,
+        "end": 880
+      },
+      {
+        "start": 881,
+        "end": 1062
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 24
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 234,
+        "end": 255
+      },
+      {
+        "start": 732,
+        "end": 742
+      }
+    ],
+    "wiki/concepts/stripe-bacs-direct-debit.md": [
+      {
+        "start": 1,
+        "end": 119
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-bacs-debit-accept-a-payment/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 198
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "Bacs Direct Debit payments must be in GBP.",
+      "location": "raw/stripe-bacs-accept-payment-2025.md:79"
+    },
+    {
+      "text": "The Bacs Direct Debit scheme rules require that your customer accept a mandate in order for Stripe to debit their account.",
+      "location": "raw/stripe-bacs-accept-payment-2025.md:365"
+    },
+    {
+      "text": "Must begin with a number or an uppercase letter",
+      "location": "raw/stripe-bacs-accept-payment-2025.md:948"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/bacs-debit/accept-a-payment, the complete November capture establishes only a UK bank-account Bacs payment purpose and links to Checkout and Elements variants (new raw lines 5-14); it establishes no current payment-state or settlement rule. The May full capture gives the dated prerequisites and identities: a UK Stripe user and GBP Checkout payment-mode Session, or web Elements with mandate acknowledgement, server-created GBP PaymentIntent and Customer or qualified customer-configured Account (old raw lines 8-28, 79-90, 326-371, 575-709). Its Checkout Session completion means debit authorization; asynchronous success or failure follows, and the PaymentIntent moves from processing to succeeded only on success (old raw lines 112-174). The mapped source-stripe-bacs-accept-payment.md already has the key Checkout event distinction, but its optional save-for-later setting, Accounts v2 access, redirect and delayed-funds boundaries, sandbox timing and prefix constraints needed correction (source lines 13-30, 32-65).",
+    "Q2": "At https://docs.stripe.com/payments/bacs-debit/accept-a-payment, the November change is a presentation and variant-navigation delta, not proven substantive change to Bacs behavior (new raw lines 9-14; diff lines 1-29, 1060-1062). source-stripe-bacs-accept-payment.md retains the May 2, 2026 Checkout and Elements instructions as dated evidence and routes the November index separately. The optional `setup_future_usage: 'off_session'` belongs to a save-for-later Checkout example, not all payment Sessions (old raw lines 116-139). A success URL or browser return is unreliable as payment evidence, and Bacs funds are delayed; the old Checkout passage says typically three business days, while the Elements timeline describes four or seven days for confirmation and standard T+4 availability from submission (old raw lines 148-174, 852-870). Sandbox success and mandate-state scenarios are synthetic, not live guarantees; account 00012345 has no specified immediate duration (old raw lines 270-290, 887-905). Accounts v2 eligibility and preview version, distinct client/server steps, and the prefix's required first character, delimiter and trailing-space behavior remain May-specific qualifiers (old raw lines 8-14, 575-769, 941-956). The November variant bodies were not captured."
+  }
+}

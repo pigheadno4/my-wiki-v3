@@ -1,0 +1,313 @@
+--- raw/stripe-surcharge-2026.md
++++ raw/stripe-payments-cards-surcharge-2026-11-07.md
+@@ -9,7 +9,7 @@
+ If you impose a surcharge on your card payments, you must comply with all applicable laws, regulations, and card network rules. Surcharging requirements vary across regions and card types and might include obligations to:
+ 
+ - Accurately calculate permissible surcharge amounts so these amounts don’t exceed limits imposed by applicable law, card networks, or your cost of acceptance (which you must [determine](https://support.stripe.com/questions/exporting-payment-data)).
+-- Notify your acquirer or the card network of your intent to surcharge.
++- Notify your acquirer or card network of your intent to apply a surcharge, if required by your jurisdiction or the card network.
+ - Surcharge consistently across card networks or card products.
+ - Conspicuously disclose surcharge amounts that apply to each transaction and the total costs to the cardholder ahead of purchase, and reflect the surcharge separately on the transaction receipt.
+ - Provide the ability to cancel the transaction, or choose a different payment method after the surcharge amount is disclosed to the cardholder.
+@@ -22,14 +22,15 @@
+ 
+ ## Availability
+ 
++Surcharging is available on Visa, Mastercard, Amex, Discover, Eftpos, Diners, Interac, JCB, Maestro, and Unionpay.
++
+ Surcharging is available in the following countries and payment methods:
+ 
+-| Country       | Permitted payment methods | Maximum surcharge amount |
+-| ------------- | ------------------------- | ------------------------ |
+-| United States | Credit cards only         | 3%                       |
+-| Canada        | Credit cards only         | 2.4%                     |
+-| Australia     | All cards                 | 4%                       |
+-| New Zealand   | All cards                 | 4%                       |
++| Country | Permitted payment methods | Maximum surcharge amount |
++| --- | --- | --- |
++| United States | Credit cards only | 3% |
++| Canada | Credit cards only | 2.4% |
++| New Zealand | All cards | 4% |
+ 
+ ## Before you begin
+ 
+@@ -53,82 +54,64 @@
+ - You can also pass in `enforce_validation: enabled` to explicitly enable maximum surcharge amount technical validations. After you do so, you can no longer modify `surcharge.enforce_validation`.
+ - By default, Stripe enforces the maximum surcharge amount technical restrictions. If you don’t pass in any field in `surcharge.enforce_validation`, the response includes `enforce_validation: automatic` to signify this behavior.
+ 
+-#### Scenario 1: Enable validation and use `maximum_amount`
++#### Scenario 1: Enable validation and use maximum_amount 
+ 
+ Create a `PaymentIntent` with validation enabled to receive the `maximum_amount`:
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-// This example uses the public preview SDK. See https://github.com/stripe/stripe-node#public-preview-sdks
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const paymentIntent = await stripe.paymentIntents.create({
+-  amount: 1000,
+-  currency: "usd",
+-  payment_method: "{{PAYMENTMETHOD_ID}}",
+-  payment_method_types: ["card"],
+-  amount_details: {
+-    surcharge: {
+-      enforce_validation: "enabled",
+-    },
+-  },
+-});
++```curl
++curl https://api.stripe.com/v1/payment_intents \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -H "Stripe-Version: 2026-03-25.preview" \
++  -d amount=1000 \
++  -d currency=usd \
++  -d "payment_method={{PAYMENTMETHOD_ID}}" \
++  -d "amount_details[surcharge][enforce_validation]=enabled"
+ ```
+ 
+ ```json
+ {
+-  "id": "pi_123",
+-  "object": "payment_intent",
+-  "amount": 1000,
+-  "amount_capturable": 0,
+-  "amount_details": {
+-    "surcharge": {
+-      "enforce_validation": "enabled",
+-      "maximum_amount": 24,
+-      "status": "available"
+-    }
+-  },
+-  "status": "requires_confirmation"
++   "id": "pi_123",
++   "object": "payment_intent",
++   "amount": 1000,
++   "amount_capturable": 0,
++   "amount_details": {
++      "surcharge": {
++          "enforce_validation": "enabled",
++          "maximum_amount": 24,
++          "status": "available"
++      }
++   },
++   "status": "requires_confirmation"
+ }
+ ```
+ 
+-#### Scenario 2: Disable validation
+-
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-// This example uses the public preview SDK. See https://github.com/stripe/stripe-node#public-preview-sdks
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const paymentIntent = await stripe.paymentIntents.create({
+-  amount: 1000,
+-  currency: "usd",
+-  payment_method: "{{PAYMENTMETHOD_ID}}",
+-  payment_method_types: ["card"],
+-  amount_details: {
+-    surcharge: {
+-      enforce_validation: "disabled",
+-    },
+-  },
+-});
++#### Scenario 2: Disable validation 
++
++```curl
++curl https://api.stripe.com/v1/payment_intents \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -H "Stripe-Version: 2026-03-25.preview" \
++  -d amount=1000 \
++  -d currency=usd \
++  -d "payment_method={{PAYMENTMETHOD_ID}}" \
++  -d "amount_details[surcharge][enforce_validation]=disabled"
+ ```
+ 
+ Stripe doesn’t return `maximum_amount` when you disable validation.
+ 
+ ```json
+ {
+-  "id": "pi_123",
+-  "object": "payment_intent",
+-  "amount": 1000,
+-  "amount_capturable": 0,
+-  "amount_details": {
+-    "surcharge": {
+-      "enforce_validation": "disabled",
+-      "status": "available"
+-    }
+-  },
+-  "status": "requires_confirmation"
++   "id": "pi_123",
++   "object": "payment_intent",
++   "amount": 1000,
++   "amount_capturable": 0,
++   "amount_details": {
++      "surcharge": {
++          "enforce_validation": "disabled",
++          "status": "available"
++      }
++   },
++   "status": "requires_confirmation"
+ }
+ ```
+ 
+@@ -143,44 +126,34 @@
+ After calculating the surcharge and disclosing it to the customer, you can apply the surcharge when confirming or capturing the PaymentIntent.
+ 
+ > #### Specify the total amount inclusive of surcharge
+->
++> 
+ > Stripe charges only the amount in the top-level `amount` field and doesn’t increment the amount with any additional values. So, you need to specify the total amount inclusive of the surcharge in the `amount` field. For example, for a 10.00 USD subtotal with a 0.20 USD surcharge, you’d pass in 10.20 USD in the top-level `amount` field. The surcharge amount of 0.20 USD would be specified separately in `amount_details[surcharge][amount]`.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-// This example uses the public preview SDK. See https://github.com/stripe/stripe-node#public-preview-sdks
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const paymentIntent = await stripe.paymentIntents.confirm(
+-  "{{PAYMENTINTENT_ID}}",
+-  {
+-    amount_to_confirm: 1020,
+-    amount_details: {
+-      surcharge: {
+-        enforce_validation: "enabled",
+-        amount: 20,
+-      },
+-    },
+-  },
+-);
++```curl
++curl https://api.stripe.com/v1/payment_intents/{{PAYMENTINTENT_ID}}/confirm \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -H "Stripe-Version: 2026-03-25.preview" \
++  --data-urlencode "return_url=https://example.com/return" \
++  -d amount_to_confirm=1020 \
++  -d "amount_details[surcharge][enforce_validation]=enabled" \
++  -d "amount_details[surcharge][amount]=20"
+ ```
+ 
+ ```json
+ {
+-  "id": "pi_123",
+-  "object": "payment_intent",
+-  "amount": 1020,
+-  "amount_capturable": 1020,
+-  "amount_details": {
+-    "surcharge": {
+-      "enforce_validation": "enabled",
+-      "amount": 20,
+-      "maximum_amount": 24,
+-      "status": "available"
+-    }
+-  },
+-  "status": "requires_capture"
++   "id": "pi_123",
++   "object": "payment_intent",
++   "amount": 1020,
++   "amount_capturable": 1020,
++   "amount_details": {
++      "surcharge": {
++         "enforce_validation": "enabled",
++         "amount": 20,
++         "maximum_amount": 24,
++         "status": "available"
++      }
++   },
++   "status": "requires_capture"
+ }
+ ```
+ 
+@@ -188,24 +161,15 @@
+ 
+ Specify the top level `amount` field inclusive of the surcharge amount when creating a PaymentIntent:
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-// This example uses the public preview SDK. See https://github.com/stripe/stripe-node#public-preview-sdks
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const paymentIntent = await stripe.paymentIntents.create({
+-  amount: 1020,
+-  currency: "usd",
+-  payment_method: "{{PAYMENTMETHOD_ID}}",
+-  payment_method_types: ["card"],
+-  amount_details: {
+-    surcharge: {
+-      enforce_validation: "enabled",
+-      amount: 20,
+-    },
+-  },
+-});
++```curl
++curl https://api.stripe.com/v1/payment_intents \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -H "Stripe-Version: 2026-03-25.preview" \
++  -d amount=1020 \
++  -d currency=usd \
++  -d "payment_method={{PAYMENTMETHOD_ID}}" \
++  -d "amount_details[surcharge][enforce_validation]=enabled" \
++  -d "amount_details[surcharge][amount]=20"
+ ```
+ 
+ ## Apply surcharge on capture
+@@ -215,24 +179,13 @@
+ - **Adjust the surcharge post-confirmation**: If you need to modify the surcharge amount after confirmation, you can only reduce it. You can’t increase the surcharge amount during capture.
+ - **Multicapture scenarios**: When performing multiple captures on a single PaymentIntent, you can specify how much to surcharge for each individual capture. The sum of each surcharge amount passed during multicapture can’t exceed the surcharge amount passed upon confirmation.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-// This example uses the public preview SDK. See https://github.com/stripe/stripe-node#public-preview-sdks
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const paymentIntent = await stripe.paymentIntents.capture(
+-  "{{PAYMENTINTENT_ID}}",
+-  {
+-    amount_to_capture: 1020,
+-    amount_details: {
+-      surcharge: {
+-        enforce_validation: "enabled",
+-        amount: 20,
+-      },
+-    },
+-  },
+-);
++```curl
++curl https://api.stripe.com/v1/payment_intents/{{PAYMENTINTENT_ID}}/capture \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -H "Stripe-Version: 2026-03-25.preview" \
++  -d amount_to_capture=1020 \
++  -d "amount_details[surcharge][enforce_validation]=enabled" \
++  -d "amount_details[surcharge][amount]=20"
+ ```
+ 
+ ## Refunds
+@@ -256,14 +209,14 @@
+ - If you use surcharging with [Incremental Authorization](https://docs.stripe.com/payments/incremental-authorization.md), you can decrease the surcharge amount using the PaymentIntent capture endpoint if you capture less than you authorize. However, you can’t increase the surcharge amount regardless of how much the amount is increased during incremental authorization.
+ - Surcharging isn’t available when autocapturing with partial authorizations.
+ 
+-## Migration from private preview API changes
++## Migration from private preview API changes 
+ 
+ If you’re currently using the private preview version of surcharging, here are the key changes you need to make to access the public preview version behavior:
+ 
+-| Private Preview                                                         | Public Preview                                                          |
+-| ----------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+-| `amount_surcharge` (top-level)                                          | `amount_details[surcharge][amount]`                                     |
+-| Stripe automatically increments `amount`                                | You specify total `amount` inclusive of surcharge                       |
+-| Amount validation is always enforced                                    | `amount_details[surcharge][enforce_validation]`                         |
+-| Surcharge only on `/update` and `/confirm`                              | Surcharge available on `/create`, `/update`, `/confirm`, and `/capture` |
+-| `maximum_amount` and `status` returned in `payment_method_options` hash | `maximum_amount` and `status` returned in `amount_details` hash         |+| Private Preview | Public Preview |
++| --- | --- |
++| `amount_surcharge` (top-level) | `amount_details[surcharge][amount]` |
++| Stripe automatically increments `amount` | You specify total `amount` inclusive of surcharge |
++| Amount validation is always enforced | `amount_details[surcharge][enforce_validation]` |
++| Surcharge only on `/update` and `/confirm` | Surcharge available on `/create`, `/update`, `/confirm`, and `/capture` |
++| `maximum_amount` and `status` returned in `payment_method_options` hash | `maximum_amount` and `status` returned in `amount_details` hash |

@@ -1,0 +1,71 @@
+--- wiki/sources/source-stripe-ideal-accept-payment.md
++++ tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-ideal-accept-a-payment/attempt-1/candidates/source-stripe-ideal-accept-payment.md
+@@ -2,7 +2,9 @@
+ title: "Stripe: Accept an iDEAL | Wero Payment"
+ type: source
+ date_ingested: 2026-05-03
++date_updated: 2026-11-15
+ original_format: webpage
++canonical_url: https://docs.stripe.com/payments/ideal/accept-a-payment
+ raw_files:
+   - "stripe-ideal-accept-payment-2025.md"
+ tags: [stripe, ideal, wero, netherlands, eur, checkout, elements, ios, android, react-native]
+@@ -10,36 +12,37 @@
+ 
+ ## Summary
+ 
+-Multi-platform integration guide for accepting iDEAL | Wero payments: Checkout (all modes), iOS, Android, React Native, and Elements. No minimum charge amount. 14-bank reference table. Test: "Authorize/Fail test payment" buttons on redirect page.
++[[stripe]]'s archived iDEAL | Wero acceptance guide covers Checkout, iOS, Android, React Native, and web Elements. It describes a single-use bank-redirect payment: the customer authenticates with a bank and returns to the website or app; the merchant checks the PaymentIntent outcome. The archived guide contains the detailed behavior below. The 2026-11-07 capture of https://docs.stripe.com/payments/ideal/accept-a-payment is a variant index only, so it does not independently confirm or revise those behavior claims. See [[stripe-ideal]].
+ 
+-## Key Details
++## Dated acceptance details from the archived guide
+ 
+-### Checkout path
++### Checkout
+ 
+-- `payment_method_types: ['ideal']`, `eur`, payment/setup/subscription all supported
++- The archived Checkout compatibility table marks payment, setup, and subscription modes “Yes”; it lists `eur` for supported and presentment currency. A Checkout Session's line-item Prices must all use `eur`. This is the archived guide's compatibility statement, not a newly verified guarantee for every present-day merchant or flow.
++- In the manual Checkout configuration, add `ideal` to `payment_method_types`; the examples use `mode: "payment"` and EUR line items. The Stripe-hosted example uses `success_url`; the full embedded-page example uses `ui_mode: "embedded_page"` and `return_url`. The same guide points to dynamic payment methods as another Checkout route.
++- The guide says acceptance requires compliance with Stripe's iDEAL Terms of Service. It gives an up-to-180-day refund period and says there is no dispute process; treat these as dated guide statements.
+ 
+-### iOS
++### Payment Intents and native clients
+ 
+-- `STPPaymentMethodParams(billingDetails:)` (requires name) + `STPPaymentHandler.confirmPayment()` → webview
++- The archived iOS, Android, React Native, and Elements PaymentIntent examples create the intent on the server with `currency: "eur"` and `payment_method_types: ["ideal"]`, then pass a client secret to the client. The iOS/Android/React Native/Elements sections say iDEAL | Wero has no minimum charge amount and that a PaymentIntent `amount` can be as low as 1. That amount statement belongs to those archived PaymentIntent sections; it is not a newly verified Checkout minimum.
++- The iOS example collects the customer's full name in billing details and calls `STPPaymentHandler.shared().confirmPayment`, which presents a bank webview. The Android example collects the full name with `PaymentMethodCreateParams.create(ideal:, billingDetails:)` and confirms through `PaymentLauncher`. The archived Android Gradle sample names SDK version `23.5.0`; it is a sample version, not a current-version recommendation.
++- The React Native example collects a full name and calls `confirmPayment(clientSecret, { paymentMethodType: "Ideal", paymentMethodData: { billingDetails: { name } } })`. Its optional deep-link section explains registering a custom URL scheme and forwarding callback URLs to the Stripe SDK when authentication leaves the app.
+ 
+-### Android
++### Web Elements and outcomes
+ 
+-- `PaymentMethodCreateParams.create(ideal:, billingDetails:)` + `PaymentLauncher.confirm()`
++- The archived web Elements path uses the Payment Element with a server-created PaymentIntent. It shows Dashboard-managed automatic payment methods or explicit `payment_method_types: ["ideal"]`, then `stripe.confirmPayment({ elements, confirmParams: { return_url } })`. The customer may visit the bank before returning to that URL.
++- A separate optional manual-redirect section creates an iDEAL PaymentMethod with `stripe.createPaymentMethod`, confirms the PaymentIntent on the server with the PaymentMethod ID and `return_url`, then redirects the browser to `next_action.redirect_to_url.url` when the intent has `requires_action`. It mentions `confirmIdealPayment` as a Stripe.js-managed redirect option. The captured guide does not show an `idealBank` Element or combine that Element with server-side manual confirmation; the earlier source summary's combined claim was unsupported.
++- The return page example retrieves the PaymentIntent and branches on `succeeded`, `processing`, and `requires_payment_method`. The guide recommends handling `payment_intent.succeeded` via an event receiver rather than relying on a client callback to fulfill an order.
++- In the test flow, **Authorize test payment** moves a PaymentIntent from `requires_action` to `succeeded`; **Fail test payment** moves it to `requires_payment_method`. These are test transitions, not evidence of a live payment. The archived bank reference lists 14 values: `abn_amro`, `asn_bank`, `bunq`, `ing`, `knab`, `n26`, `nn`, `rabobank`, `revolut`, `regiobank`, `sns_bank`, `triodos_bank`, `van_lanschot`, and `yoursafe`.
+ 
+-### React Native
++## November 2026 variant navigation
+ 
+-- `confirmPayment(clientSecret, { paymentMethodType: 'Ideal' })` + deep linking required
+-
+-### Elements
+-
+-- Payment Element with `automatic_payment_methods` (recommended) or manual `payment_method_types: ['ideal']`
+-- Also supports legacy `idealBank` element + `stripe.confirmIdealPayment()` (server-side manual redirect)
+-- No minimum charge amount
+-
+-### 14 supported banks
+-
+-abn_amro, asn_bank, bunq, ing, knab, n26, nn, rabobank, revolut, regiobank, sns_bank, triodos_bank, van_lanschot, yoursafe
++The 2026-11-07 canonical capture lists Checkout, Elements with separate Checkout Sessions API and Payment Intents API variants, and mobile iOS, Android, and React Native variants. It contains no variant bodies, eligibility table, API examples, or outcome steps. The split is a navigation change visible in this capture; it supplies no evidence that the archived undivided Elements behavior or other dated details were removed or changed. Fetch and review a specific variant before making a current behavior claim.
+ 
+ ## Raw Sources
+ 
+-- [[stripe-ideal-accept-payment-2025]] — verbatim webpage content (1497 lines, Checkout + iOS + Android + React Native + Elements)
++- [[raw/stripe-ideal-accept-payment-2025|stripe-ideal-accept-payment-2025]] — archived detailed guide (1497 lines; Checkout, iOS, Android, React Native, and Elements), ingested 2026-05-03.
++
++## Related raw API references
++
++- [[raw/stripe-payments-ideal-accept-a-payment-2026-11-07|stripe-payments-ideal-accept-a-payment-2026-11-07]] — 2026-11-07 canonical variant index only; navigation reference, not evidence for acceptance behavior.

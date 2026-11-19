@@ -1,0 +1,175 @@
+{
+  "job_id": "payments-kakao-pay-set-up-future-payments",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-kakao-pay-set-up-future-payments.md": {
+      "job_id": "payments-kakao-pay-set-up-future-payments",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe Docs \u2014 Set up future payments with Kakao Pay\"\ntype: source\ndate_ingested: 2026-05-08\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/kakao-pay/set-up-future-payments\"\nraw_files:\n  - \"stripe-kakao-pay-set-up-future-payments-2025.md\"\ntags: [stripe, south-korea, krw, kakao-pay, recurring, setup-intents, mandate, accounts-v2, nicepay]\n---\n\n## Summary\n\nThe full guide captured on 2026-05-08 describes saving Kakao Pay (`kakao_pay`) for later payments through Checkout setup mode or a Direct API SetupIntent, and a separate PaymentIntent route for saving during a payment. A saved PaymentMethod can later be used in another PaymentIntent. The 2026-11-07 capture is a navigation index linking Checkout and Direct API variants; it does not reverify their steps or establish a change in payment behavior.\n\n## Dated prerequisites and customer identity\n\n- The May guide says Kakao Pay is unavailable in Singapore (old raw lines 12, 147). This is dated availability evidence, not a current eligibility check.\n- Before saving, obtain customer permission, let the customer opt in to terms, and retain their written agreement. For offline charges, the May terms cover the specified transactions, anticipated frequency and timing, amount determination, and subscription cancellation policy; charge within the agreed terms (old raw lines 31-42, 212-223).\n- The May Checkout path requires the customer to authorize use of their NICEPAY account for future payments (old raw lines 90-93).\n- Attach the payment method to a customer-configured Account using `customer_account` on Accounts v2, or to a Customer using `customer` on Customers v1. The May guide says Accounts v2 was generally available for Connect users and in public preview for other Stripe users, who needed a preview API version if participating in that preview (old raw lines 44-87, 159-203). The November index does not establish current access or version requirements.\n\n## Save paths in the May guide\n\n### Checkout setup mode\n\nA server-created Checkout Session uses `mode: \"setup\"`, includes `kakao_pay` in `payment_method_types` (the sample also includes `card`), and supplies either `customer_account` or `customer`. Redirect the customer to the Session URL for authorization (old raw lines 90-138). In the sandbox setup test, select Kakao Pay and \u201cContinue with Kakao Pay\u201d; the hosted page lets the customer authorize or fail setup (old raw lines 139-141). Session creation or reaching a success URL alone does not establish a completed setup or later charge.\n\n### Direct API SetupIntent\n\nCreate a server-side SetupIntent with `payment_method_types: [\"kakao_pay\"]`, `payment_method_data.type: \"kakao_pay\"`, `usage: \"off_session\"` or `\"on_session\"`, and the applicable customer identity. Pass that SetupIntent's client secret to the client. The May client example calls `stripe.confirmKakaoPaySetup` with the client secret, a `return_url`, and online `mandate_data.customer_acceptance` using `infer_from_client: true` (old raw lines 225-265, 334-384). This is a setup path; confirmation and the eventual setup outcome remain distinct from a charge.\n\n### Direct API PaymentIntent that saves during payment\n\nThe separate May payment-and-save path creates a PaymentIntent for `kakao_pay` with the applicable customer identity, `setup_future_usage: \"off_session\"`, `confirm: true`, and a `return_url`; it says to set `mandate_data` if a mandate is needed. Its examples supply online acceptance with `ip_address` and `user_agent` (old raw lines 446-521). A PaymentIntent attempt does not itself prove the payment or future setup succeeded.\n\n### Manual payment redirect example\n\nThe May optional server-side redirect block creates and confirms a Kakao Pay PaymentIntent, checks for `requires_action` and `next_action.type: \"redirect_to_url\"`, and redirects to `next_action.redirect_to_url.url`. Its request omits `customer` or `customer_account`, `setup_future_usage`, and `mandate_data`; it illustrates payment redirect handling, not a complete future-saving route. The guide recommends a webhook to confirm payment status after return (old raw lines 386-445).\n\n## Using and detaching a saved method\n\nFor a later charge, the May guide creates and confirms a new PaymentIntent with the saved `payment_method` ID and matching `customer_account` or `customer`; it sets `off_session: true` when the customer is outside checkout. For recurring payments it requires `capture_method: \"automatic\"` and says manual capture is unsupported (old raw lines 526-569). This capture rule is for later recurring charges, not a SetupIntent parameter. Detaching a reusable PaymentMethod is described with `mandate.updated` and `payment_method.detached` events (old raw lines 572-574).\n\n## Documentation conflicts and outcome limits\n\n- Both May `setup_future_usage` PaymentIntent samples use `currency: \"ngn\"` (old raw lines 473-521), while that guide's manual-payment and saved-method examples use `\"krw\"` (old raw lines 399-408, 539-569), and [[stripe-korea-payment-methods]] states KRW only. Treat NGN as an unresolved sample conflict, not proof of Kakao Pay currency support.\n- The May SetupIntent client-secret paragraph incorrectly describes the secret as part of a PaymentIntent (old raw lines 263-265); the setup request and client confirmation explicitly concern a SetupIntent (old raw lines 225-260, 362-384). The final May testing paragraph calls a Checkout setup test \u201cPay\u201d and describes PaymentIntent states (old raw lines 576-578), whereas the earlier Checkout setup test says \u201cContinue with Kakao Pay\u201d and describes authorization or failure of setup (old raw lines 90-141). Do not apply those PaymentIntent status labels to a SetupIntent outcome.\n- The May saved-method examples spell the placeholder ID differently for Accounts v2 and Customers v1 (`PAYMENTMETHOD_ID` versus `PAYMENT_METHOD_ID`; old raw lines 539-569). A redirect, saved-method reference, or sample state is not proof that an actual future charge succeeded. The November index supplies no status resolution.\n\n## Related Pages\n\n- [[stripe-korea-payment-methods]] \u2014 South Korean payment methods concept and dated Kakao Pay qualifications\n- [[source-stripe-kakao-pay-accept-payment]] \u2014 Kakao Pay one-time acceptance\n- [[source-stripe-kr-card-set-up-future-payments]] \u2014 separate KR card setup guide\n- [[stripe]] \u2014 Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-kakao-pay-set-up-future-payments-2025|Kakao Pay future-payment guide, captured 2026-05-08]] \u2014 full historical Checkout and Direct API guide\n\n## Related raw API references\n\n- [[raw/stripe-payments-kakao-pay-set-up-future-payments-2026-11-07|Kakao Pay future-payment variant index, captured 2026-11-07]] \u2014 navigation only; links to Checkout and Direct API variants without their steps\n",
+      "quotes": [
+        {
+          "text": "Set up future payments with Kakao Pay",
+          "location": "raw/stripe-payments-kakao-pay-set-up-future-payments-2026-11-07.md:5"
+        },
+        {
+          "text": "Learn how to save Kakao Pay to charge your customers later.",
+          "location": "raw/stripe-payments-kakao-pay-set-up-future-payments-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-kakao-pay-set-up-future-payments-2026-11-07.md:11"
+        },
+        {
+          "text": "[Checkout](https://docs.stripe.com/payments/kakao-pay/set-up-future-payments.md?payment-ui=checkout)",
+          "location": "raw/stripe-payments-kakao-pay-set-up-future-payments-2026-11-07.md:13"
+        },
+        {
+          "text": "[Direct API](https://docs.stripe.com/payments/kakao-pay/set-up-future-payments.md?payment-ui=direct-api)",
+          "location": "raw/stripe-payments-kakao-pay-set-up-future-payments-2026-11-07.md:14"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "kakao-setup-v2-dated-scope",
+            "target_path": "wiki/concepts/stripe-korea-payment-methods.md",
+            "update_kind": "durable_fact",
+            "anchor": "- **Accounts v2 + v1 dual-path** throughout (same structure as kr_card save guide)",
+            "proposed_markdown": "- **May 2026 Accounts v2 + v1 paths**: the saved-payment guide shows a customer-configured Account with `customer_account` and a separate Customers v1 `customer` path. At that capture, Accounts v2 was generally available for Connect users, in public preview for other Stripe users, and required a preview API version for preview participants. The November 2026 variant index does not verify current access. See [[source-stripe-kakao-pay-set-up-future-payments]].",
+            "quote_indexes": [
+              0,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "May authority: raw/stripe-kakao-pay-set-up-future-payments-2025.md:44-56,159-203. November raw/stripe-payments-kakao-pay-set-up-future-payments-2026-11-07.md:9-14 is navigation only."
+            ]
+          },
+          {
+            "update_id": "kakao-setup-source-route-qualified",
+            "target_path": "wiki/concepts/stripe-korea-payment-methods.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-kakao-pay-set-up-future-payments]] \u2014 Kakao Pay save/recurring: Accounts v2 + v1, confirmKakaoPaySetup(), NICEPAY account authorization, automatic capture only",
+            "proposed_markdown": "- [[source-stripe-kakao-pay-set-up-future-payments]] \u2014 May 2026 full Kakao Pay save/recurring guide: dated Accounts v2 eligibility and v1 identity, Checkout NICEPAY authorization, Direct API `confirmKakaoPaySetup()`, and automatic capture for later recurring charges; November 2026 capture is a Checkout/Direct API variant index only. The May guide's `ngn` saving examples conflict with its `krw` payment examples, and its optional manual redirect PaymentIntent does not contain the fields for future saving.",
+            "quote_indexes": [
+              0,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Old raw authority: raw/stripe-kakao-pay-set-up-future-payments-2025.md:48-56,90-141,225-260,362-384,386-445,446-521,526-569. November index: raw/stripe-payments-kakao-pay-set-up-future-payments-2026-11-07.md:9-14."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-kakao-pay-set-up-future-payments-2026-11-07.md",
+      "raw_sha256": "e383134bcf1736d7b87e06b4ed53877143654f5c544132adb4d2bbb764c55994",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-kakao-pay-set-up-future-payments-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-kakao-pay-set-up-future-payments-2025.md": [
+      {
+        "start": 1,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 500
+      },
+      {
+        "start": 501,
+        "end": 578
+      }
+    ],
+    "wiki/sources/source-stripe-kakao-pay-set-up-future-payments.md": [
+      {
+        "start": 1,
+        "end": 63
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/8d80621aa0822e4fc0a0d755/content.diff": [
+      {
+        "start": 1,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 450
+      },
+      {
+        "start": 451,
+        "end": 580
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-kakao-pay-set-up-future-payments/attempt-3/receipt.json": [
+      {
+        "start": 1,
+        "end": 247
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 420,
+        "end": 431
+      },
+      {
+        "start": 780,
+        "end": 793
+      }
+    ],
+    "wiki/concepts/stripe-korea-payment-methods.md": [
+      {
+        "start": 1,
+        "end": 151
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "Your customer must authorize you to use their NICEPAY account for future payments through Stripe Checkout.",
+      "location": "raw/stripe-kakao-pay-set-up-future-payments-2025.md:92"
+    },
+    {
+      "text": "Recurring payments must be made with `capture_method: \"automatic\"`. Manual capture isn\u2019t supported.",
+      "location": "raw/stripe-kakao-pay-set-up-future-payments-2025.md:530"
+    },
+    {
+      "text": "If you need to create a mandate, set [mandate_data](https://docs.stripe.com/api/payment_intents/create.md#create_payment_intent-mandate_data).",
+      "location": "raw/stripe-kakao-pay-set-up-future-payments-2025.md:464"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/kakao-pay/set-up-future-payments, the complete November capture establishes the purpose of saving Kakao Pay for later charging and links to Checkout and Direct API variants only (new raw lines 5-14). The May guide requires written customer agreement and, for Checkout, NICEPAY authorization. It distinguishes customer-configured Account (`customer_account`) on Accounts v2 from Customer (`customer`) on v1, and describes a Checkout setup Session, server-created SetupIntent confirmed through client-side `confirmKakaoPaySetup`, or a separate PaymentIntent that saves during payment (old raw lines 31-56, 90-141, 225-260, 362-384, 446-521). May Accounts v2 access was Connect general availability versus public preview for other users with a preview version (old raw lines 48-56). Later saved-method off-session PaymentIntents and automatic capture for recurring payments are distinct from setup (old raw lines 526-569). source-stripe-kakao-pay-set-up-future-payments.md has these routes but previously mislabeled the manual payment redirect as a save path.",
+    "Q2": "At https://docs.stripe.com/payments/kakao-pay/set-up-future-payments, the November capture is a navigation index, not evidence that prior setup behavior was removed or revalidated (new raw lines 9-14; diff lines 3-13, 579-580). source-stripe-kakao-pay-set-up-future-payments.md must retain May-dated permissions, Singapore exclusion, v2/v1 identity and version limits, NICEPAY authorization, SetupIntent client confirmation, later off-session automatic capture and detach events (old raw lines 12-56, 90-141, 225-260, 362-384, 526-574). The May optional manual redirect PaymentIntent has no customer or setup_future_usage and is not a full save route (old raw lines 386-445). Its `ngn` examples conflict with its `krw` examples and the Korean-method concept (old raw lines 473-521, 539-569). The old SetupIntent secret wording and Checkout Pay/PaymentIntent test text mismatch their setup paths (old raw lines 263-265, 576-578), so neither a redirect nor a sample outcome proves successful setup or later charge. The canonical source adds exact URL provenance and keeps November raw only as a dated variant reference."
+  }
+}

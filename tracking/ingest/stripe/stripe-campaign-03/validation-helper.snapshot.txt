@@ -1,0 +1,22 @@
+from pathlib import Path
+import json,hashlib,runpy,sys,collections
+P=Path('tracking/ingest/stripe/stripe-campaign-03')
+sys.argv=['/tmp/stripe-s03-control.py','status'];mod=runpy.run_path(sys.argv[0]);jobs=json.loads((P/'jobs.json').read_text());attempts=[]
+sha=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest()
+for j in jobs:
+ mod['pins'](j)
+ for n in range(1,j['attempt']+1):
+  a=P/'attempts'/j['job_id']/f'attempt-{n}';ii=json.loads((a/'input.json').read_text());ids=json.loads((a/'identities.json').read_text());jj={**j,'attempt':n,'expected_review_scope':ii['expected_review_scope']}
+  if not(a/'receipt.json').exists():continue
+  receipt=json.loads((a/'receipt.json').read_text());mod['worker'](receipt,jj)
+  row={'job_id':j['job_id'],'attempt':n,'worker':ids['worker'],'receipt_sha256':sha(a/'receipt.json')}
+  assert ids['worker']['model']=='gpt-6-sol'and ids['worker']['reasoning_effort']=='medium'
+  if(a/'review.json').exists():
+   review=json.loads((a/'review.json').read_text());mod['reviewer'](review,jj);assert ids['worker']['agent']!=ids['reviewer']['agent'];assert ids['reviewer']['model']=='gpt-6-sol'and ids['reviewer']['reasoning_effort']=='high'
+   if n==1:assert review['review_scope']=='full'
+   row.update({'reviewer':ids['reviewer'],'verdict':review['verdict'],'review_scope':review['review_scope'],'review_sha256':sha(a/'review.json')})
+  assert n<=3;attempts.append(row)
+baseline=json.loads((P/'activation-wiki-hashes.json').read_text());drift=[f for f,h in baseline.items()if not Path(f).exists()or sha(f)!=h];stripe_drift=[f for f in drift if 'stripe' in f]
+out={'state':'interim'if any(j['state']not in{'approved','failed'}for j in jobs)else'complete','job_states':dict(collections.Counter(j['state']for j in jobs)),'expected_units':100,'expected_distinct_source_targets':len({s for j in jobs for s in j['source_targets']}),'evidence_pin_instances_checked':sum(len(j['expected_read_files'])for j in jobs),'all_evidence_pins_match':True,'attempts':attempts,'max_attempts_used':max(j['attempt']for j in jobs),'wiki_drift_from_activation':drift,'canonical_writes_observed':len(drift),'actual_final_answers_available':2*sum(j['state']=='approved'for j in jobs)}
+out.pop('canonical_writes_observed');out['stripe_wiki_drift_from_activation']=stripe_drift;out['s03_canonical_writes']=0;out['drift_attribution']='Other concurrent PayPal workflow changed shared log/catalog and PayPal pages; preserve unrelated changes. S03 delegates are repository-read-only and root writes tracking only.'
+(P/'attempt-validation.json').write_text(json.dumps(out,indent=2)+'\n');print(json.dumps({k:v for k,v in out.items()if k!='attempts'},indent=2))

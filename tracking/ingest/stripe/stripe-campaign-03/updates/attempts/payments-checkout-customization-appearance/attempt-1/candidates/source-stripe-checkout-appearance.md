@@ -1,0 +1,60 @@
+---
+title: "Stripe Checkout: Customize Appearance"
+type: source
+date_ingested: 2026-04-20
+date_updated: 2026-11-15
+original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/checkout/customization/appearance"
+raw_files:
+  - "stripe-checkout-appearance-2025.md"
+tags: [stripe, checkout, branding, appearance, fonts, connect, customization]
+---
+
+## Overview
+
+The full guide captured on 2026-04-20 describes Dashboard branding defaults and per-Checkout Session `branding_settings` for its Hosted page and Embedded page variants. It covers colors, fonts, shapes, names, hosted logo/icon precedence, Connect, invoice branding, and locale-specific font fallback. The 2026-11-07 capture at the same canonical URL contains only a purpose sentence and links to Full page and Embedded form variants. It supplies no replacement body or current field/support matrix (new raw lines 5-14).
+
+## Dated Dashboard and Session branding
+
+The April guide says Dashboard Branding Settings supply Checkout defaults. On its hosted path, a server creating a Checkout Session can set `branding_settings` to override fields; omitted fields use Dashboard defaults. The example uses `mode: "payment"`, a Price/quantity, `branding_settings`, and `success_url` (old raw lines 12-37, 39-69). Its embedded-page example uses `mode: "payment"`, `ui_mode: "embedded_page"`, `branding_settings`, and `return_url` (old raw lines 130-164). These are dated examples, not proof of a payment outcome or a complete current field schema.
+
+| Detail in the April guide | Hosted page | Embedded page |
+| --- | --- | --- |
+| Dashboard branding controls | Logo/icon plus background, button color, font and shapes (old raw lines 14-20) | Background, button color, font and shapes (old raw lines 120-124) |
+| Session `branding_settings` example | `icon`, `logo`, `display_name`, `font_family`, `border_style`, `background_color`, `button_color` (old raw lines 44-68) | `display_name`, `font_family`, `border_style`, `background_color`, `button_color` (old raw lines 141-164) |
+
+The embedded example omits `logo` and `icon`; neither the April guide nor the November index establishes a categorical ban or an exhaustive embedded-field list. Verify the relevant current variant and API field support before relying on that omission.
+
+## Hosted logo and icon precedence
+
+For the April hosted Checkout path, both `logo` and `icon` display the logo on the page and use the icon as favicon. With only `logo`, the Dashboard icon is the favicon. With only `icon`, the icon appears on the page and as favicon (old raw lines 27-35). This precedence is not established for the November variant bodies.
+
+## Connect, invoices and business name
+
+In the April guide, Checkout uses the connected account's brand settings for destination charges with `on_behalf_of` and for platform direct charges. A platform may set `branding_settings` when creating the Checkout Session to override the connected account's settings. For Express or Custom accounts without full Dashboard access, the platform can configure branding through the Accounts API (old raw lines 21-23, 71-73, 126-128, 166-168).
+
+The April guide specifically says invoices for subscriptions and one-time payments **from a Checkout Session** still use Dashboard branding, even when Session branding is customized (old raw lines 37, 139). It says the page or embedded form name can come from Business details or `branding_settings.display_name`; the hosted page can also use a custom domain. It cautions that the business name and logo should remain accurate and recognizable (old raw lines 75-81, 170-174).
+
+## Font and locale boundary
+
+The April Hosted and Embedded page sections each give a 24-font table of unsupported locales. A Session can set `locale` explicitly, or `auto` can select from the customer's browser. If a selected font lacks characters for that locale, Checkout uses a system fallback; an unsupported Serif font falls back to a Serif-based font (old raw lines 83-114, 176-207). For example, the dated table lists Noto Serif as unsupported for `th`, Noto Sans for `ja`/`ko`/`th`, and Roboto for `ja`/`ko`/`zh`/`zh-HK`/`zh-TW` (old raw lines 102-103, 109, 195-196, 202). Consult the full old raw table and a current variant before choosing fonts for a locale; the November index does not revalidate the rows.
+
+## November variant navigation
+
+The 2026-11-07 base capture labels `ui=full-page` and `ui=checkout-form` links as Full page and Embedded form (new raw lines 9-14). The April capture instead includes Hosted page with `payment-ui=stripe-hosted` and Embedded page with `payment-ui=embedded-form` (old raw lines 8-10, 116-118). Without the linked November bodies, the selector names do not establish equivalent surfaces, changed branding behavior, deprecation, current availability, or a payment result.
+
+## Related Pages
+
+- [[stripe-checkout]] — Checkout concept and dated branding route
+- [[stripe]] — Stripe company page
+- [[source-stripe-how-checkout-works]] — Checkout feature overview
+- [[source-stripe-checkout-quickstart]] — Checkout Session setup examples
+- [[source-stripe-checkout-form]] — separate Checkout Form and Appearance API context
+
+## Raw Sources
+
+- [[raw/stripe-checkout-appearance-2025|Checkout appearance full guide, captured 2026-04-20]] — Hosted and Embedded page branding, Connect, invoices, and full font table
+
+## Related raw API references
+
+- [[raw/stripe-payments-checkout-customization-appearance-2026-11-07|Checkout appearance variant index, captured 2026-11-07]] — navigation only; Full page and Embedded form links

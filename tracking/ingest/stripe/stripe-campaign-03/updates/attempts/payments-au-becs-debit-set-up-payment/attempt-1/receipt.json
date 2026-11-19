@@ -1,0 +1,160 @@
+{
+  "job_id": "payments-au-becs-debit-set-up-payment",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-au-becs-set-up-payment.md": {
+      "job_id": "payments-au-becs-debit-set-up-payment",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Save Australia BECS Direct Debit Details for Future Payments\"\ntype: source\ndate_ingested: 2026-05-02\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/au-becs-debit/set-up-payment\"\nraw_files:\n  - \"stripe-au-becs-set-up-payment-2025.md\"\ntags: [stripe, au-becs, becs, australia, aud, setup-intents, elements, ios, android, react-native, mandates, save-payment-method]\n---\n\n## Overview\n\nThis [[stripe]] guide covers using the Setup Intents API to save AU BECS Direct Debit details and a mandate for future payments. The detailed Elements, iOS, Android, and React Native instructions below are from a full capture fetched **2026-05-02**. The **2026-11-07** capture at the same canonical URL is a five-route variant index; it does not reconfirm those instructions or supply the linked Direct API guide. See [[stripe-au-becs-debit]] for the payment-method concept and [[source-stripe-au-becs-accept-payment]] for accepting a payment.\n\n## Key takeaways from the 2026-05-02 full capture\n\n- **Setup and identity:** Create a SetupIntent on the server with `payment_method_types: ['au_becs_debit']` and either `customer_account` for a customer-configured Account v2 or `customer` for Customer v1. Pass its client secret only to the customer-side setup flow; do not log it or put it in URLs. The May capture says Accounts v2 was generally available to Connect users and in public preview for other Stripe users, with a preview version needed in the latter case. That does not prove any account's present access. See old raw lines 31-43, 77-131, 461-465.\n- **DDR consent:** Before creating a BECS debit, the customer must accept a completed Direct Debit Request and its service agreement. The May online flow collects account holder name, BSB, and account number over HTTPS; displays the exact DDR service agreement inline or through a clearly identified link; and displays Stripe's standard authorization text with the merchant name substituted. The accepted DDR and accompanying service agreement must remain shareable with the customer at all times. The guide says Stripe hosts this through the linked Mandate URL. Treat the historical sample wording as a dated guide, not a newly checked legal template. See old raw lines 161-185, 347-371.\n- **Elements HTML/JS:** Mount an `auBankAccount` Element to collect and validate BSB and account number, alongside name, email, and DDR acceptance. Confirm with `stripe.confirmAuBecsDebitSetup(clientSecret, {payment_method: ...})`. The HTML/JS path says a successful setup has SetupIntent status `succeeded` and attaches the PaymentMethod to the specified Customer in its example; error return needs handling. The separate React path uses `AuBankAccountElement`, `useStripe`/`useElements` or `ElementsConsumer`, and requires billing name and email to create a BECS PaymentMethod. See old raw lines 183-287, 369-455, 461-471, 513-517, 557-573.\n- **Mobile setup:** The old iOS flow collects bank details and mandate acknowledgement, builds `STPSetupIntentConfirmParams` with the SetupIntent client secret and form payment-method params, then calls `STPPaymentHandler.confirmSetupIntent`. Its prose names `STPAUBECSFormView`, while its Swift class/delegate use `STPAUBECSDebitFormView`; verify the SDK symbol before implementation. The Android branch uses `BecsDebitWidget` and a `ConfirmSetupIntentParams`/`PaymentLauncher.confirm` example, but its Activity passes `paymentIntentClientSecret` despite declaring `setupIntentClientSecret`, and its test paragraph names `Stripe#confirmSetupIntent`. These old examples do not settle a single executable Android call. The React Native branch uses `AuBECSDebitForm` and `useConfirmSetupIntent().confirmSetupIntent` with a server-created SetupIntent secret. See old raw lines 902-970, 1022-1058, 1110-1118, 1230-1252, 1298-1325, 1386-1417, 1448, 1463-1471, 1589-1593, 1618-1624, 1698-1716.\n- **Setup success versus debit result:** A successful SetupIntent creates a PaymentMethod and Mandate for later use; it does not itself charge or settle funds. The May guide says to share the Mandate URL after successful confirmation and recommends including a confirmation message, bank-statement business name, any applicable amount and schedule, and the DDR link. The Mandate ID is on the SetupIntent's `mandate` field in the `setup_intent.succeeded` event or can be retrieved. A separate, later server-created AUD PaymentIntent using the saved PaymentMethod and `confirm: true` attempts the future payment. The ten BSB `000000` test cases describe **that later PaymentIntent's** status, mandate and dispute outcomes, including `processing` before `succeeded` or `requires_payment_method`. See old raw lines 469-501, 652-659, 671-686, 719-754.\n- **Historical runtime context:** The May Elements examples load Stripe.js directly from `js.stripe.com/dahlia/stripe.js`; the Android dependency example pins `stripe-android:23.5.0`, and the iOS text says iOS 13 or above. These are capture-specific details, not claims about November's linked variants or current SDK support. See old raw lines 143-150, 290-316, 782-784, 1135-1157.\n\n## Later payment test cases in the 2026-05-02 capture\n\nThe table uses BSB `000000` and describes PaymentIntents created **after** saving the PaymentMethod. It does not describe a debit made by SetupIntent confirmation. See old raw lines 671-686, 1093-1108, 1446-1461, 1745-1760.\n\n| Account | Token | Later PaymentIntent test result |\n| --- | --- | --- |\n| `000123456` | `pm_auBecsDebit_success` | `processing` \u2192 `succeeded`; mandate stays `active` |\n| `900123456` | `pm_auBecsDebit_successDelayed` | `processing` \u2192 `succeeded` after three minutes; mandate stays `active` |\n| `111111113` | `pm_auBecsDebit_accountClosed` | `account_closed`; mandate becomes `inactive` |\n| `111111116` | `pm_auBecsDebit_noAccount` | `no_account`; mandate becomes `inactive` |\n| `222222227` | `pm_auBecsDebit_referToCustomer` | `refer_to_customer`; mandate stays `active` |\n| `922222227` | `pm_auBecsDebit_referToCustomerDelayed` | `refer_to_customer` after three minutes; mandate stays `active` |\n| `333333335` | `pm_auBecsDebit_debitNotAuthorized` | `debit_not_authorized`; mandate becomes `inactive` |\n| `666666660` | `pm_auBecsDebit_dispute` | `succeeded`, then an immediate dispute in the test scenario |\n| `343434343` | `pm_auBecsDebit_exceedsWeeklyLimit` | `charge_exceeds_source_limit` |\n| `121212121` | `pm_auBecsDebit_exceedsTransactionLimit` | `charge_exceeds_transaction_limit` |\n\n## Detail locators\n\n- Old Elements SetupIntent creation, customer identities, DDR text, and shareability: raw lines 31-43, 77-131, 161-185, 347-371.\n- Old HTML/JS and React `AuBankAccountElement` setup, confirmation, and billing details: raw lines 183-287, 369-471, 513-573.\n- Old Mandate URL, `setup_intent.succeeded` event, future PaymentIntent, and test result boundaries: raw lines 494-501, 652-686, 719-754.\n- Old iOS prose/code form-name discrepancy and distinct SetupIntent confirmation: raw lines 904-916, 958-960, 1022-1058.\n- Old Android widget, sample variable/call disagreement, and React Native route: raw lines 1230-1252, 1298-1325, 1386-1417, 1448, 1463-1471, 1589-1593, 1698-1716.\n\n## Related\n\n- [[stripe-au-becs-debit]] \u2014 AU BECS method and mandate context.\n- [[source-stripe-au-becs-accept-payment]] \u2014 accepting a payment with dated Checkout, Elements, and mobile routes.\n\n## Raw Sources\n\n- [[raw/stripe-au-becs-set-up-payment-2025|Full setup-payment guide fetched 2026-05-02]] \u2014 factual basis for the dated setup, mandate, mobile, and future-payment details above.\n\n## Related raw API references\n\n- [[raw/stripe-payments-au-becs-debit-set-up-payment-2026-11-07|2026-11-07 variant index, navigation only]] \u2014 Elements, Direct API, iOS, Android, and React Native links. The linked variant bodies were not captured or read here.\n",
+      "quotes": [
+        {
+          "text": "Save Australia BECS Direct Debit details for future payments",
+          "location": "raw/stripe-payments-au-becs-debit-set-up-payment-2026-11-07.md:5"
+        },
+        {
+          "text": "Use the Setup Intents API to save payment method details for future Australia BECS Direct Debit payments.",
+          "location": "raw/stripe-payments-au-becs-debit-set-up-payment-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-au-becs-debit-set-up-payment-2026-11-07.md:11"
+        },
+        {
+          "text": "[Direct API](https://docs.stripe.com/payments/au-becs-debit/set-up-payment.md?payment-ui=direct-api)",
+          "location": "raw/stripe-payments-au-becs-debit-set-up-payment-2026-11-07.md:14"
+        },
+        {
+          "text": "[React Native](https://docs.stripe.com/payments/au-becs-debit/set-up-payment.md?payment-ui=mobile&platform=react-native)",
+          "location": "raw/stripe-payments-au-becs-debit-set-up-payment-2026-11-07.md:18"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "au_becs_setup_source_route",
+            "target_path": "wiki/concepts/stripe-au-becs-debit.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-au-becs-set-up-payment]] \u2014 save for future: SetupIntent (Elements + iOS + Android), AuBankAccountElement, DDR mandate requirements, off-session charging",
+            "proposed_markdown": "- [[source-stripe-au-becs-set-up-payment]] \u2014 2026-05-02 full save-for-future guide: SetupIntent with DDR, Elements, iOS, Android and React Native; a later separate PaymentIntent attempts a debit. The 2026-11-07 capture adds Direct API navigation without inspected instructions.",
+            "quote_indexes": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Old factual authority: raw/stripe-au-becs-set-up-payment-2025.md:8-12,77-131,161-181,469-501,671-686,719-754,757-761,1110-1118,1463-1471,1698-1716. New index: raw/stripe-payments-au-becs-debit-set-up-payment-2026-11-07.md:9-18; Direct API target unread.",
+              "Existing text says off-session charging, while old future-payment example has a later server PaymentIntent with confirm:true and no off_session parameter (old raw lines 719-754)."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-au-becs-debit-set-up-payment-2026-11-07.md",
+      "raw_sha256": "525c4da0ea1b42253b35ca5179584cefe2883ea13e88c06e58be93188340de48",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-au-becs-debit-set-up-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 18
+      }
+    ],
+    "raw/stripe-au-becs-set-up-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 1200
+      },
+      {
+        "start": 1201,
+        "end": 1600
+      },
+      {
+        "start": 1601,
+        "end": 1765
+      }
+    ],
+    "wiki/sources/source-stripe-au-becs-set-up-payment.md": [
+      {
+        "start": 1,
+        "end": 56
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/02620a8f6ab74a74c0eeb612/content.diff": [
+      {
+        "start": 1,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 1200
+      },
+      {
+        "start": 1201,
+        "end": 1600
+      },
+      {
+        "start": 1601,
+        "end": 1771
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 8
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 254,
+        "end": 260
+      }
+    ],
+    "wiki/concepts/stripe-au-becs-debit.md": [
+      {
+        "start": 80,
+        "end": 102
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-au-becs-debit-set-up-payment/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 188
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "A [SetupIntent](https://docs.stripe.com/api/setup_intents.md) is an object that represents your intent to set up a customer\u2019s payment method for future payments.",
+      "location": "raw/stripe-au-becs-set-up-payment-2025.md:79"
+    },
+    {
+      "text": "A successful setup returns a `succeeded` value for the SetupIntent\u2019s `status` property.",
+      "location": "raw/stripe-au-becs-set-up-payment-2025.md:469"
+    },
+    {
+      "text": "The PaymentIntent created with the resulting PaymentMethod transitions from `processing` to `succeeded`.",
+      "location": "raw/stripe-au-becs-set-up-payment-2025.md:677"
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/au-becs-debit/set-up-payment, the complete November capture identifies the Setup Intents API purpose and five variant links\u2014Elements, Direct API, iOS, Android, and React Native\u2014but provides no variant-specific requirements, API bodies, or outcome rules (new raw lines 5-18). The full May guide documents server SetupIntent creation with au_becs_debit and customer-configured Account v2 or Customer v1, client collection of bank details and DDR acceptance, setup confirmation, then a saved PaymentMethod and Mandate (old raw lines 31-43,77-131,161-181,469-501,721-754). source-stripe-au-becs-set-up-payment.md summarizes Elements and iOS/Android but omits the old React Native path, blurs the iOS SetupIntent handler with payment confirmation, and fails to make the later PaymentIntent outcome boundary explicit (source lines 13-52; old raw lines 1022-1058,1463-1471,1698-1716).",
+    "Q2": "For https://docs.stripe.com/payments/au-becs-debit/set-up-payment, November's index is a presentation and navigation change: the diff replaces the detailed May body with five links, including Direct API, whose target was not pinned or read (new raw lines 9-18; diff lines 3-13,1765-1771). The detailed statements in source-stripe-au-becs-set-up-payment.md about DDR consent, Account v2 versus Customer v1, Elements, dated SDK/UI examples and later debits must stay tied to the May capture (old raw lines 35-43,145-181,469-501,719-754,782-784,1135-1157). Correct iOS to STPSetupIntentConfirmParams and confirmSetupIntent; flag the old iOS prose/code symbol mismatch and Android sample variable/call discrepancies (old raw lines 904-916,1022-1058,1298-1325,1386-1417,1448). SetupIntent succeeded is saved-method setup, not proof of a later PaymentIntent's success, funds availability or current account eligibility; the ten tests describe that later PaymentIntent (old raw lines 671-686)."
+  }
+}

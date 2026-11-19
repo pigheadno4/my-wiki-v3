@@ -19,7 +19,7 @@ Stripe auto-retries on Visa/MC if a CB charge is declined for technical reasons,
 
 ## Business Availability
 
-41 countries (including most of Europe + US/CA/AU/HK/JP/MX/SG/NZ). Non-France businesses must process one CB payment first to fully enable the method.
+**May 2026 Stripe overview:** 41 listed business countries (including most of Europe + US/CA/AU/HK/JP/MX/SG/NZ). A business outside France must first process **one payment from a CB-eligible card** to fully enable CB. The November 2026 root capture is only iOS/Web variant navigation and does not revalidate country coverage or current account access.
 
 ## Payment Properties
 
@@ -39,4 +39,4 @@ Stripe auto-retries on Visa/MC if a CB charge is declined for technical reasons,
 
 - [[source-adyen-docs-risk-management-chargeback-guidelines-cartes-bancaires-chargebacks]] — Adyen-specific automatic-defense grounds and non-defendable reason code 45 (2026-09-15 webpage snapshot).
 
-- [[source-stripe-cartes-bancaires]] — primary source: properties, business countries, dispute rules, integration notes
+- [[source-stripe-cartes-bancaires]] — Stripe's May 2026 factual CB overview: technical-decline-only network retry, CB-eligible-card prerequisite outside France, dated properties and dispute rules; November root is iOS/Web navigation only

@@ -1,0 +1,167 @@
+{
+  "job_id": "payments-alipay-accept-a-payment",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-alipay-accept-payment.md": {
+      "job_id": "payments-alipay-accept-a-payment",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Accept an Alipay Payment\"\ntype: source\ndate_ingested: 2026-05-07\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/alipay/accept-a-payment\"\nraw_files:\n  - \"stripe-alipay-accept-payment-2025.md\"\ntags: [stripe, wallets, alipay, china, checkout, ios, android, react-native, direct-api, custom-url-scheme]\n---\n\n## Summary\n\nThe detailed 2026-05-07 guide describes a single-use Alipay payment: the customer authenticates through Alipay after a website or app redirect, then returns for a payment-status notification. Its five paths are Checkout, iOS, Android, React Native, and Direct API. The 2026-11-07 canonical capture supplies only a purpose sentence and links to those variants. It does not revalidate implementation details, eligibility, SDK versions, or payment outcomes.\n\n## Key Details\n\n### Checkout and currency scope (2026-05-07 guide)\n\n- Checkout lists China as customer geography, ten supported currencies (`aud`, `cad`, `eur`, `gbp`, `hkd`, `jpy`, `nzd`, `sgd`, `usd`, `myr`) and eleven presentment currencies including `cny`. Its listed modes are payment yes, setup no, subscription no. Every line-item Price must use the same currency and be one-time; this is not a blanket ability to use any currency from any merchant account (old raw lines 18-40).\n- The hosted and embedded Checkout examples use `mode: \"payment\"` and include `alipay` in `payment_method_types` alongside `card`. Hosted uses `success_url`; embedded uses `return_url` and `ui_mode: \"embedded_page\"` (old raw lines 48-105).\n- The mobile and Direct API sections say the merchant account must have a bank account for a listed currency, and the currency usable for an Alipay payment maps to the merchant country; their tables separately include `cny`. Customers see their purchase amount in CNY. Preserve this distinction from Checkout's supported-versus-presentment lists rather than promising unrestricted currency or current account eligibility (old raw lines 349-367, 639-657, 885-903, 1121-1139).\n\n### Client and server flows (2026-05-07 guide)\n\n- For iOS, Android, React Native, and Direct API, create a PaymentIntent on the server with `alipay`, amount, and a supported currency; pass its client secret to the client. A created Intent is a payment attempt, not a completed charge (old raw lines 223-237, 466-480, 735-749, 924-942).\n- iOS registers a custom URL scheme and forwards the return URL to Stripe; `STPPaymentHandler.confirmPayment` with `STPPaymentMethodAlipayParams` launches the Alipay app or a webview. The old iOS example sets the return URL to `{{URL SCHEME}}://safepay/` (old raw lines 239-322). Its iOS 13 compatibility statement is May-dated (old raw line 151).\n- Android app-to-app requires the Alipay SDK; Stripe `confirmAlipayPayment` passes data through an `AlipayAuthenticator` to Alipay `PayTask.payV2`. The May guide says the Alipay Android SDK cannot process test payments, so full testing of that native path uses live mode. A distinct option without the Alipay SDK calls Stripe `confirmPayment` to open an Alipay WebView; do not apply the app-to-app test limitation to every Android flow (old raw lines 439-441, 504-611). The `23.7.0` dependency is a dated example (old raw lines 394-415).\n- React Native registers a custom URL scheme, forwards the `safepay/` return URL to `handleURLCallback`, and calls `confirmPayment(clientSecret, { paymentMethodType: \"Alipay\" })` (old raw lines 751-857).\n- Web Direct API passes the PaymentIntent client secret to Stripe.js `stripe.confirmAlipayPayment` with `return_url`. The return page must verify PaymentIntent status rather than treating the return as success. For optional manual server redirect, confirm the Intent with a return URL, check `requires_action` plus `next_action.type: \"alipay_handle_redirect\"`, and redirect to that action URL (old raw lines 924-1093). The Stripe.js `dahlia` URL is a May example, not a November-confirmed version (old raw lines 1011-1030).\n- The guide recommends `payment_intent.succeeded` asynchronous events for fulfillment instead of a client callback. Neither a Session, created/confirmed Intent, redirect, app/browser return, or the November index proves successful payment or settlement (old raw lines 323-327, 613-617, 859-863, 1095-1099).\n\n## Conflict and capture boundary\n\nThe existing [[stripe-wallets]] matrix labels Alipay Redirect \u201cNo,\u201d while its Alipay section and this dated full guide describe Alipay authentication through a redirect (old raw lines 18, 909, 1030-1052; concept lines 16 and 319). The reciprocal concept row should be corrected with a May-date qualification. The November raw is a five-link variant index; no linked November variant body was captured. The collection diff's wholesale replacement therefore establishes presentation and navigation only, not a new no-redirect path or a deprecation.\n\n## Related\n\n- [[stripe]] \u2014 Stripe company route.\n- [[stripe-wallets]] \u2014 wallet comparison and Alipay concept route.\n\n## Raw Sources\n\n- [[raw/stripe-alipay-accept-payment-2025|2026-05-07 full Alipay acceptance guide]] \u2014 factual integration and example evidence; 1,139 lines.\n\n## Related raw API references\n\n- [[raw/stripe-payments-alipay-accept-a-payment-2026-11-07|2026-11-07 Alipay variant index]] \u2014 navigation-only capture of Checkout, Direct API, iOS, Android, and React Native links; no linked variant behavior inferred.\n",
+      "quotes": [
+        {
+          "text": "Learn how to accept Alipay payments, a digital wallet popular with customers from China.",
+          "location": "raw/stripe-payments-alipay-accept-a-payment-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-alipay-accept-a-payment-2026-11-07.md:11"
+        },
+        {
+          "text": "- [Checkout](https://docs.stripe.com/payments/alipay/accept-a-payment.md?payment-ui=checkout)",
+          "location": "raw/stripe-payments-alipay-accept-a-payment-2026-11-07.md:13"
+        },
+        {
+          "text": "- [Direct API](https://docs.stripe.com/payments/alipay/accept-a-payment.md?payment-ui=direct-api)",
+          "location": "raw/stripe-payments-alipay-accept-a-payment-2026-11-07.md:14"
+        },
+        {
+          "text": "  - [React Native](https://docs.stripe.com/payments/alipay/accept-a-payment.md?payment-ui=mobile&platform=react-native)",
+          "location": "raw/stripe-payments-alipay-accept-a-payment-2026-11-07.md:18"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "payments-alipay-accept-a-payment-a1-concept-redirect",
+            "target_path": "wiki/concepts/stripe-wallets.md",
+            "update_kind": "durable_fact",
+            "anchor": "| Alipay | `alipay` | No | No | No |",
+            "proposed_markdown": "| Alipay | `alipay` | Yes (2026-05-07 acceptance guide) | No | No |",
+            "quote_indexes": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "The existing matrix row at wiki/concepts/stripe-wallets.md:16 conflicts with the same concept's Alipay section at line 319 and the dated raw/stripe-alipay-accept-payment-2025.md:18, 909, 1030-1052. The 2026-11-07 raw lines 9-18 are a navigation index and do not independently establish current redirect behavior.",
+              "Redirect authentication and customer return do not prove successful payment; the May guide requires PaymentIntent status verification at old raw lines 1030-1052 and recommends payment_intent.succeeded events at 1095-1099."
+            ]
+          },
+          {
+            "update_id": "payments-alipay-accept-a-payment-a1-concept-source",
+            "target_path": "wiki/concepts/stripe-wallets.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-alipay-accept-payment]] \u2014 Alipay integration: 5 paths, safepay/ URL scheme, Android SDK live-mode only, confirmAlipayPayment()",
+            "proposed_markdown": "- [[source-stripe-alipay-accept-payment]] \u2014 2026-05-07 Alipay acceptance guide: Checkout, Direct API and three mobile paths; iOS/React Native safepay return handling, Android app-to-app live-mode test limit versus WebView, and web Direct API `confirmAlipayPayment`. The 2026-11-07 canonical capture is a variant index only.",
+            "quote_indexes": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "The old raw distinguishes Android Alipay SDK app-to-app at raw/stripe-alipay-accept-payment-2025.md:439-441, 504-555 from WebView fallback at 558-611; limit the live-mode-only testing claim to the Alipay SDK path.",
+              "The November index at raw/stripe-payments-alipay-accept-a-payment-2026-11-07.md:9-18 does not verify SDK versions, account eligibility, or payment outcomes."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-alipay-accept-a-payment-2026-11-07.md",
+      "raw_sha256": "2130951fd84457c0a28402584d8d109126d1eb6281073c186eb294ff0b6e98ce",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-alipay-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 18
+      }
+    ],
+    "raw/stripe-alipay-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 1139
+      }
+    ],
+    "wiki/sources/source-stripe-alipay-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 35
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/2d6789a72183afea1e00ae61/content.diff": [
+      {
+        "start": 1,
+        "end": 1145
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-alipay-accept-a-payment/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 204
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 45
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 380,
+        "end": 390
+      },
+      {
+        "start": 725,
+        "end": 737
+      }
+    ],
+    "wiki/concepts/stripe-wallets.md": [
+      {
+        "start": 1,
+        "end": 35
+      },
+      {
+        "start": 300,
+        "end": 325
+      },
+      {
+        "start": 390,
+        "end": 435
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "**Supported currencies**: `aud, cad, eur, gbp, hkd, jpy, nzd, sgd, usd, myr`",
+      "location": "raw/stripe-alipay-accept-payment-2025.md:24"
+    },
+    {
+      "text": "**Subscription mode**: No",
+      "location": "raw/stripe-alipay-accept-payment-2025.md:32"
+    },
+    {
+      "text": "The Alipay Android SDK doesn\u2019t support test payments. To fully test this integration, use [live mode](https://docs.stripe.com/keys.md#test-live-modes).",
+      "location": "raw/stripe-alipay-accept-payment-2025.md:506"
+    },
+    {
+      "text": "The Stripe React Native SDK specifies `safepay/` as the return URL host for bank redirect and digital wallet payment methods.",
+      "location": "raw/stripe-alipay-accept-payment-2025.md:753"
+    },
+    {
+      "text": "Use the [client secret](https://docs.stripe.com/api/payment_intents/object.md#payment_intent_object-client_secret) of the `PaymentIntent` and call `stripe.confirmAlipayPayment` to handle the Alipay redirect.",
+      "location": "raw/stripe-alipay-accept-payment-2025.md:1030"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/alipay/accept-a-payment, the complete November capture, new raw lines 5-18, establishes a wallet acceptance purpose and five variant routes, but no current API prerequisites, merchant eligibility, or payment state. The May guide, old raw lines 18-40, 223-322, 439-441, 504-611, 735-857, 924-1099, describes single-use customer authentication, Checkout payment-only Sessions with same-currency one-time items, server-created PaymentIntents and client secrets, path-specific redirects and return URLs, and verification or events before fulfillment. source-stripe-alipay-accept-payment.md names the five paths but overstates currency choice at line 19; old mobile and Direct API currency tables condition payment currency on country and bank account.",
+    "Q2": "At https://docs.stripe.com/payments/alipay/accept-a-payment, the observed change is presentation and navigation only: new raw lines 9-18 replace a May full body with variant links, while old raw lines 8-1139 retain dated detailed evidence. source-stripe-alipay-accept-payment.md should keep May Checkout mode, currency and country constraints, iOS and React Native safepay handling, Android app-to-app versus WebView distinction, and Direct API return/status qualification. The wallet concept's Redirect No row conflicts with its own Alipay paragraph and old raw lines 18-18, 909-909, 1030-1052; it needs reciprocal correction dated May, not a claim of November-verified behavior. A redirect, return, client callback, or created Intent does not prove payment success. Linked November variants and current SDK or account eligibility were not captured."
+  }
+}

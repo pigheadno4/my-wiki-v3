@@ -1,0 +1,104 @@
+{
+  "job_id": "payments-checkout-dynamically-update-line-items",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "All five pinned SHA-256 values match and I independently read every numbered line of the new raw, old raw, both mapped sources and diff. The November file is correctly classified as a two-link navigation index; both source assessments and actual answers name both mapped basenames. Two material old-guide/current-summary accuracy gaps remain. The dynamic source line 21 says Payment Intents must be replaced with a new PaymentIntent, but old raw line 21 explicitly permits modifying the existing payment amount or creating a new PaymentIntent. The receipt misses this baseline error. Separately, old raw lines 69-74 recommend passing a Session ID and retrieving Session state server-side, but the sample endpoint at old raw lines 93-119 only checks a nonempty ID and a bounded interval, then updates the ID without retrieving or showing ownership/authorization. The finding's 'server creates/retrieves' and Q1's 'server-authorized update' overstate the demonstrated code path and obscure the distinction between guidance and example.",
+  "required_changes": [
+    "Add a definite baseline correction for wiki/sources/source-stripe-checkout-dynamic-line-items.md:21 to findings, conflicts, that source's assessment and both affected answers. Old raw line 21 says Payment Intents API users must manually track line items and adjust the payment amount, either by modifying an existing PaymentIntent amount or creating a new PaymentIntent with adjusted amounts; the source's 'must create a new PaymentIntent' is too narrow. Keep this separate from the November index, which says nothing about Payment Intents.",
+    "Distinguish the old guide's security recommendation from its sample implementation in findings, the dynamic source assessment and Q1/Q2 state-boundary wording. Old raw lines 69-74 recommend passing only a client Session ID, retrieving server-side state and using specific validated actions, but old raw lines 93-119 show no Session retrieval or ownership/authorization check before sessions.update. Do not describe the sample as retrieving or authorizing the target Session; a successful runServerUpdate refresh is not proof of authorization or payment completion. Preserve the recommendation and identify the sample gap as dated baseline evidence, not a November change."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "read_ranges": {
+    "raw/stripe-payments-checkout-dynamically-update-line-items-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-checkout-dynamic-line-items-2025.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 287
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-custom-shipping-options.md": [
+      {
+        "start": 1,
+        "end": 79
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-dynamic-line-items.md": [
+      {
+        "start": 1,
+        "end": 95
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/7ed7aa8ee9e2f22c2b4a428b/content.diff": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 291
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 40
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 41,
+        "end": 41
+      },
+      {
+        "start": 82,
+        "end": 86
+      }
+    ],
+    "wiki/concepts/stripe-checkout.md": [
+      {
+        "start": 125,
+        "end": 150
+      },
+      {
+        "start": 245,
+        "end": 270
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/proposed-queries.md": [
+      {
+        "start": 397,
+        "end": 403
+      }
+    ]
+  },
+  "source_assessment_decisions": [
+    {
+      "source_target": "wiki/sources/source-stripe-checkout-custom-shipping-options.md",
+      "verdict": "approved",
+      "reason": "Its separate April 20 embedded shipping callback and dated hosted/embedded line-item limitation are accurately preserved; the assessment requests only a narrow reciprocal November navigation and UI-scope warning without treating variant labels as behavioral proof."
+    },
+    {
+      "source_target": "wiki/sources/source-stripe-checkout-dynamic-line-items.md",
+      "verdict": "changes_requested",
+      "reason": "The assessment catches mode/version overstatements but misses source line 21's incorrect requirement to create a new PaymentIntent where old raw line 21 also permits modifying the existing amount. It should also distinguish the old guide's Session-retrieval recommendation from its sample endpoint, which does not retrieve or authorize the client-named Session before updating."
+    }
+  ]
+}

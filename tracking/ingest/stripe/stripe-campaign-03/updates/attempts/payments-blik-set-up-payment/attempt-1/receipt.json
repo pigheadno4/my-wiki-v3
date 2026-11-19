@@ -1,0 +1,179 @@
+{
+  "job_id": "payments-blik-set-up-payment",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-blik-set-up-payment.md": {
+      "job_id": "payments-blik-set-up-payment",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Set Up Future BLIK Recurring Payments\"\ntype: source\ndate_ingested: 2026-05-03\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/payments/blik/set-up-payment\nraw_files:\n  - \"stripe-blik-set-up-payment-2025.md\"\ntags: [stripe, blik, poland, pln, recurring, setup-intents, mandates, off-session]\n---\n\n## Summary\n\nThe May 3, 2026 detailed guide describes saving a customer's BLIK PaymentMethod for recurring use through mandate authorization **without an initial payment**. It covers Checkout setup mode, Elements with a SetupIntent, and Direct API setup. The November 7, 2026 capture at the same canonical URL states that purpose and lists those three variant links only; it does not revalidate their current steps, bank support, limits, or outcomes. [May raw lines 4-16, 113-157, 532-623; November raw lines 5-15]\n\n## May 2026 setup prerequisites and paths\n\n**Consent and bank support.** Before collecting a BLIK code, present recurring mandate terms including price, charge cycle, end date and a terms-and-conditions link; the customer must understand and agree. The May guide says not every Polish bank supports BLIK recurring, and names `recurring_not_supported_by_bank` for an unsupported-bank decline. This is dated guide wording, not a live eligibility check. Its sandbox table instead uses `payment_method_provider_decline` with a `recurring_not_supported@` email pattern; the simulation's failure code and email trigger are distinct from the guide's opening decline-code statement. [May raw lines 8-14, 74-82]\n\n**Checkout.** On the server, create a Checkout Session in `setup` mode with `blik` and a Customer. The customer enters a BLIK code and approves the mandate in their banking app; after the Session completes, the guide says a reusable BLIK PaymentMethod is attached to that Customer. A setup Session is not an initial payment. [May raw lines 16-37]\n\n**Elements.** Create or retrieve a Customer, then create a server-side SetupIntent with that Customer, `payment_method_types: [\"blik\"]`, and `usage: \"off_session\"`. Pass the **SetupIntent** client secret to the client Payment Element and call `stripe.confirmSetup` with a `return_url`. The May HTML/JS example uses Stripe.js `dahlia`; this version-specific example is not updated by the November index. After valid confirmation, the SetupIntent is `requires_action` with `next_action.blik_authorize`, and the customer has 60 seconds to approve in the banking app. Use `setup_intent.succeeded` or `setup_intent.setup_failed` for setup outcome, and `mandate.updated` for later mandate status. The May prose at lines 160-162 and its React link at lines 316-318 call this a PaymentIntent client secret, but the surrounding create and confirm steps are for a SetupIntent; do not substitute a PaymentIntent identity. [May raw lines 130-162, 243-250, 316-318, 372-456]\n\n**Direct API.** The May server-side SetupIntent example includes the Customer, `blik`, BLIK code and `usage: \"off_session\"`, then confirms the SetupIntent. This variant explicitly requires `mandate_data.customer_acceptance` of type `online`, including the customer's IP address and user agent. A `requires_action` response with `blik_authorize` means banking-app mandate approval is still pending; the customer has 60 seconds. The guide uses `setup_intent.succeeded`, `setup_intent.setup_failed`, and `mandate.updated` webhooks to distinguish approval, failure, and mandate-status change. The online acceptance fields are stated for this Direct API path, not as a blanket requirement of the other variants. [May raw lines 549-623]\n\n**Setup redirect qualification.** The May Elements `confirmSetup` description supplies a `return_url` and says BLIK may visit an intermediate authorization site before that return. This setup flow should not inherit a blanket \u201cno redirect\u201d statement from the separate one-time BLIK payment path. The November index does not settle present-day navigation inside a variant. [May raw lines 372-399; November raw lines 9-15]\n\n## Later recurring charges and test boundaries\n\nA completed setup saves a Customer-linked PaymentMethod; charging later is a separate server-side PaymentIntent with the saved Customer and PaymentMethod IDs and `off_session: true`. Its `blik_authorize` next action is bank validation against the mandate, not proof the payment succeeded. The May guide requires `payment_intent.succeeded` and `payment_intent.payment_failed` webhooks for final payment status; bank decline returns the PaymentIntent to `requires_payment_method`. The stated PLN-only and 2000 PLN maximum apply to **each later off-session recurring payment**. [May raw lines 39-72, 458-491, 625-658]\n\nThe May sandbox email patterns simulate unsupported banks, mandate rejection or timeout, later mandate inactivation, and off-session declines. The timing and outcomes in those patterns are sandbox examples, not proof of a live bank's support or a completed charge. [May raw lines 74-111, 660-697]\n\n## Related\n\n- [[stripe]] \u2014 Stripe company context.\n- [[stripe-blik]] \u2014 BLIK concept and flow-specific source routes.\n\n## Raw Sources\n\n- [[raw/stripe-blik-set-up-payment-2025|May 3, 2026 detailed BLIK recurring setup guide]] \u2014 historical factual capture with Checkout, Elements and Direct API content; filename follows its earlier convention.\n\n## Related raw API references\n\n- [[raw/stripe-payments-blik-set-up-payment-2026-11-07|November 7, 2026 BLIK setup variant index]] \u2014 navigation-only capture linking Checkout, Elements and Direct API variants; their current content was not fetched here.\n",
+      "quotes": [
+        {
+          "text": "Set up future BLIK recurring payments",
+          "location": "raw/stripe-payments-blik-set-up-payment-2026-11-07.md:5"
+        },
+        {
+          "text": "Save your customer's BLIK payment method for future recurring payments without an initial payment.",
+          "location": "raw/stripe-payments-blik-set-up-payment-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-blik-set-up-payment-2026-11-07.md:11"
+        },
+        {
+          "text": "[Checkout](https://docs.stripe.com/payments/blik/set-up-payment.md?payment-ui=checkout)",
+          "location": "raw/stripe-payments-blik-set-up-payment-2026-11-07.md:13"
+        },
+        {
+          "text": "[Direct API](https://docs.stripe.com/payments/blik/set-up-payment.md?payment-ui=direct-api)",
+          "location": "raw/stripe-payments-blik-set-up-payment-2026-11-07.md:15"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "blik_setup_concept_definition_scope",
+            "target_path": "wiki/concepts/stripe-blik.md",
+            "update_kind": "durable_fact",
+            "anchor": "BLIK is Poland's dominant online payment method. Customers generate a 6-digit code from their banking app and enter it at checkout \u2014 no redirect needed. API enum: `blik`. Customer-initiated (customer authenticates each payment), immediate notification.",
+            "proposed_markdown": "BLIK is Poland's dominant online payment method. In the one-time checkout flow, customers generate a 6-digit banking-app code, enter it at checkout, and authenticate that payment; the capture describes immediate notification without a checkout-page redirect. API enum: `blik`. The separate May 2026 recurring setup guide saves a Customer-linked method after mandate authorization, then uses a later off-session PaymentIntent; those steps must not be read as requiring customer initiation of every later charge. See [[source-stripe-blik-set-up-payment]].",
+            "quote_indexes": [
+              1
+            ],
+            "warnings": [
+              "Baseline flow distinction comes from old raw lines 8-12, 20-37, 39-63, 625-649; new raw lines 5-15 establish purpose and navigation only. Keep one-time payment statements scoped to that flow."
+            ]
+          },
+          {
+            "update_id": "blik_setup_concept_redirect_scope",
+            "target_path": "wiki/concepts/stripe-blik.md",
+            "update_kind": "durable_fact",
+            "anchor": "**No redirect** \u2014 BLIK is unique among bank redirects in that it doesn't require leaving the checkout page.",
+            "proposed_markdown": "**One-time payment flow**: The BLIK payment guide describes no checkout-page redirect. The May 2026 recurring **setup** guide instead calls `stripe.confirmSetup` with a `return_url` and says BLIK may use an intermediate authorization site before returning; see [[source-stripe-blik-set-up-payment]]. The November 2026 setup capture is a variant index only and does not establish current redirect behavior.",
+            "quote_indexes": [
+              1,
+              2
+            ],
+            "warnings": [
+              "May setup guide old raw lines 372-399 has confirmSetup return_url and possible intermediate site; new raw lines 9-15 do not revalidate current variant behavior."
+            ]
+          },
+          {
+            "update_id": "blik_setup_concept_checkout_scope",
+            "target_path": "wiki/concepts/stripe-blik.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Checkout**: `payment_method_types: ['blik']`, `pln`, payment mode only. Refund/dispute window: 13 months.",
+            "proposed_markdown": "**Checkout payment flow**: `payment_method_types: ['blik']`, `pln`, payment mode in the one-time payment guide. The separate May 2026 recurring setup guide documents a Checkout Session in `setup` mode with `blik` and a Customer to save a PaymentMethod without an initial payment; see [[source-stripe-blik-set-up-payment]]. Refund/dispute window for payments: 13 months.",
+            "quote_indexes": [
+              1,
+              3
+            ],
+            "warnings": [
+              "Old raw lines 20-37 explicitly show Checkout setup mode and Customer attachment; the concept's payment-mode-only statement concerns a different one-time payment source. New raw lines 9-15 are variant navigation only."
+            ]
+          },
+          {
+            "update_id": "blik_setup_concept_source_route",
+            "target_path": "wiki/concepts/stripe-blik.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-blik-set-up-payment]] \u2014 SetupIntent (no payment): mandate-only authorization, confirmSetup/Direct API, same constraints and test patterns",
+            "proposed_markdown": "- [[source-stripe-blik-set-up-payment]] \u2014 May 2026 BLIK setup guide: Checkout setup Session, Elements and Direct API mandate authorization without an initial payment; later off-session PaymentIntent is separate. November 2026 capture lists three variant links only",
+            "quote_indexes": [
+              1,
+              2,
+              4
+            ],
+            "warnings": [
+              "Old raw lines 16-37, 130-157, 372-456, 549-623 substantiate the dated three-path setup details and separate later payment; new raw lines 13-15 list links only."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-blik-set-up-payment-2026-11-07.md",
+      "raw_sha256": "d233f517869e7a02455a261291358316e63d83851008f25a64f932e2ff854068",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-blik-set-up-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-blik-set-up-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 697
+      }
+    ],
+    "wiki/sources/source-stripe-blik-set-up-payment.md": [
+      {
+        "start": 1,
+        "end": 44
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/cd5f4f41d50288502743578a/content.diff": [
+      {
+        "start": 1,
+        "end": 700
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-blik-set-up-payment/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 174
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 25
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 265,
+        "end": 276
+      },
+      {
+        "start": 335,
+        "end": 355
+      },
+      {
+        "start": 740,
+        "end": 755
+      }
+    ],
+    "wiki/concepts/stripe-blik.md": [
+      {
+        "start": 1,
+        "end": 64
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "Before collecting the BLIK code, present the mandate terms to the customer, including the price, charge cycle, end date, and a link to your terms and conditions.",
+      "location": "raw/stripe-blik-set-up-payment-2025.md:12"
+    },
+    {
+      "text": "Create a [Checkout Session](https://docs.stripe.com/api/checkout/sessions/create.md) in `setup` mode with `blik` as a payment method type.",
+      "location": "raw/stripe-blik-set-up-payment-2025.md:22"
+    },
+    {
+      "text": "The response includes `status: requires_action` with a `next_action` of type `blik_authorize`:",
+      "location": "raw/stripe-blik-set-up-payment-2025.md:602"
+    },
+    {
+      "text": "You must listen for webhooks to determine the final payment status.",
+      "location": "raw/stripe-blik-set-up-payment-2025.md:649"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/blik/set-up-payment, the complete November capture establishes the purpose\u2014saving BLIK for future recurring payments without an initial payment\u2014and navigation to Checkout, Elements and Direct API variants, but no current parameters or outcomes (new raw lines 5-15). The May 3 guide requires presenting mandate terms before collecting the code and warns some Polish banks do not support recurring setup; it describes a Checkout setup Session, a Customer-linked Elements SetupIntent, and a Direct API SetupIntent with online acceptance IP and user agent (old raw lines 8-37, 130-157, 549-623). A requires_action/blik_authorize SetupIntent still needs banking-app authorization, whereas a later off-session PaymentIntent is a separate payment requiring payment outcome webhooks (old raw lines 372-456, 625-658). source-stripe-blik-set-up-payment.md covers the three paths and later PLN/2000 PLN constraint but omits the central mandate terms and bank-support prerequisites and lacks dated November navigation provenance.",
+    "Q2": "For https://docs.stripe.com/payments/blik/set-up-payment, the November capture is a navigation-only replacement of the May detailed guide; it does not demonstrate deprecation, new bank access, changed setup flow, or successful setup or charge (new raw lines 9-15; old raw lines 8-697). source-stripe-blik-set-up-payment.md should retain May path-specific identities: Checkout setup Session, server-created SetupIntent with client-side confirmSetup and return_url, Direct API online mandate_data, and a separate later off-session PaymentIntent. Setup approval and payment success have different webhooks; the 2000 PLN ceiling is per off-session recurring payment, and the failure email patterns are sandbox-only (old raw lines 20-111, 130-157, 372-456, 549-697). In stripe-blik.md, no-redirect and Checkout payment-mode-only statements need flow-specific qualification because May setup has Checkout setup mode and an Elements return_url with possible intermediate authorization (old raw lines 20-37, 372-399). The old prose inconsistently calls a SetupIntent client secret a PaymentIntent client secret (old raw lines 160-162, 316-318); do not promote that example error into implementation guidance."
+  }
+}

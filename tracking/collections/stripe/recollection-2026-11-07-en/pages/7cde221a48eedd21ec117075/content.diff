@@ -1,0 +1,202 @@
+--- raw/stripe-checkout-add-discounts-2025.md
++++ raw/stripe-payments-advanced-discounts-2026-11-07.md
+@@ -10,49 +10,33 @@
+ - Create customer-facing promotion codes on top of coupons to share directly with customers
+ 
+ > #### Payment Intents API
+->
++> 
+ > If you use the Payment Intents API, you can apply discounts by calculating the discounted amount server-side, and creating or updating the PaymentIntent with the adjusted amount.
+ 
+ ## Create a coupon
+ 
+ Coupons specify a fixed value discount. You can create customer-facing promotion codes that map to a single underlying coupon. This means that the codes `FALLPROMO` and `SPRINGPROMO` can both point to one 25% off coupon. You can create coupons in the [Dashboard](https://dashboard.stripe.com/coupons) or with the [API](https://docs.stripe.com/api.md#coupons):
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const coupon = await stripe.coupons.create({
+-  percent_off: 20,
+-  duration: "once",
+-});
++```curl
++curl https://api.stripe.com/v1/coupons \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d percent_off=20 \
++  -d duration=once
+ ```
+ 
+ ## Use a coupon
+ 
+ To create a session with an applied discount, pass the [coupon ID](https://docs.stripe.com/api/coupons/object.md#coupon_object-id) in the `coupon` parameter of the [discounts](https://docs.stripe.com/api/checkout/sessions/create.md#create_checkout_session-discounts) array. Checkout Sessions support up to one coupon or promotion code.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const session = await stripe.checkout.sessions.create({
+-  line_items: [
+-    {
+-      price: "{{PRICE_ID}}",
+-      quantity: 1,
+-    },
+-  ],
+-  discounts: [
+-    {
+-      coupon: "{{COUPON_ID}}",
+-    },
+-  ],
+-  mode: "payment",
+-  ui_mode: "elements",
+-  return_url: "https://example.com/checkout/return",
+-});
++```curl
++curl https://api.stripe.com/v1/checkout/sessions \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "line_items[0][price]={{PRICE_ID}}" \
++  -d "line_items[0][quantity]=1" \
++  -d "discounts[0][coupon]={{COUPON_ID}}" \
++  -d mode=payment \
++  -d ui_mode=elements \
++  --data-urlencode "return_url=https://example.com/checkout/return"
+ ```
+ 
+ ## Configure a coupon
+@@ -98,33 +82,21 @@
+   -d code=VIPCODE
+ ```
+ 
+-## Use a promotion code
++## Use a promotion code 
+ 
+ On your server, enable customer-redeemable promotion codes using the [allow_promotion_codes](https://docs.stripe.com/api/checkout/sessions/object.md#checkout_session_object-allow_promotion_codes) parameter in a Checkout Session.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const session = await stripe.checkout.sessions.create({
+-  line_items: [
+-    {
+-      price_data: {
+-        unit_amount: 2000,
+-        product_data: {
+-          name: "T-shirt",
+-        },
+-        currency: "usd",
+-      },
+-      quantity: 1,
+-    },
+-  ],
+-  mode: "payment",
+-  ui_mode: "elements",
+-  allow_promotion_codes: true,
+-  return_url: "https://example.com/checkout/return",
+-});
++```curl
++curl https://api.stripe.com/v1/checkout/sessions \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "line_items[0][price_data][unit_amount]=2000" \
++  -d "line_items[0][price_data][product_data][name]=T-shirt" \
++  -d "line_items[0][price_data][currency]=usd" \
++  -d "line_items[0][quantity]=1" \
++  -d mode=payment \
++  -d ui_mode=elements \
++  -d allow_promotion_codes=true \
++  --data-urlencode "return_url=https://example.com/checkout/return"
+ ```
+ 
+ On your client, use [applyPromotionCode](https://docs.stripe.com/js/custom_checkout/apply_promotion_code) to apply a promotion code that your customer enters. Use [removePromotionCode](https://docs.stripe.com/js/custom_checkout/remove_promotion_code) to remove all previously applied promotion codes.
+@@ -139,30 +111,25 @@
+ ```
+ 
+ ```js
+-const checkout = stripe.initCheckoutElementsSdk({ clientSecret });
++const checkout = stripe.initCheckoutElementsSdk({clientSecret});
+ const loadActionsResult = await checkout.loadActions();
+-if (loadActionsResult.type === "success") {
+-  const { actions } = loadActionsResult;
+-  const input = document.getElementById("promotion-code");
+-  document
+-    .getElementById("apply-promotion-code")
+-    .addEventListener("click", () => {
+-      actions.applyPromotionCode(input.value).then((result) => {
+-        if (result.error) {
+-          // Display an error message
+-          document.getElementById("promotion-code-error").textContent =
+-            result.error.message;
+-        } else {
+-          // Clear the input if the promotion code was successfully applied
+-          input.value = "";
+-        }
+-      });
++if (loadActionsResult.type === 'success') {
++  const {actions} = loadActionsResult;
++  const input = document.getElementById('promotion-code');
++  document.getElementById('apply-promotion-code').addEventListener('click', () => {
++    actions.applyPromotionCode(input.value).then((result) => {
++      if (result.error) {
++        // Display an error message
++        document.getElementById('promotion-code-error').textContent = result.error.message;
++      } else {
++        // Clear the input if the promotion code was successfully applied
++        input.value = '';
++      }
+     });
+-  document
+-    .getElementById("remove-promotion-codes")
+-    .addEventListener("click", () => {
+-      actions.removePromotionCode();
+-    });
++  });
++  document.getElementById('remove-promotion-codes').addEventListener('click', () => {
++    actions.removePromotionCode();
++  });
+ }
+ ```
+ 
+@@ -170,9 +137,10 @@
+ 
+ ```jsx
+ import React from 'react';
+-import {useCheckout} from '@stripe/react-stripe-js/checkout';
+-
+-const PromotionCode = () => {const checkoutState = useCheckout();
++import {useCheckoutElements} from '@stripe/react-stripe-js/checkout';
++
++const PromotionCode = () => {
++  const checkoutState = useCheckoutElements();
+   const [draft, setDraft] = React.useState('');
+   const [loading, setLoading] = React.useState(false);
+ 
+@@ -185,13 +153,15 @@
+       <div>Error: {checkoutState.error.message}</div>
+     );
+   }
+-const {applyPromotionCode, removePromotionCode} = checkoutState.checkout;
++
++  const {applyPromotionCode, removePromotionCode} = checkoutState.checkout;
+ 
+   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+     setDraft(e.target.value);
+   };
+   const handleSubmit = () => {
+-    setLoading(true);applyPromotionCode(draft).finally(() => {
++    setLoading(true);
++    applyPromotionCode(draft).finally(() => {
+       setDraft('');
+       setLoading(false);
+     });
+@@ -224,7 +194,7 @@
+ 
+ ### Limit by first-time order
+ 
+-You can also limit the promotion code to first-time customers with [restrictions.first_time_transaction](https://docs.stripe.com/api/promotion_codes/create.md#create_promotion_code-restrictions-first_time_transaction). If a `customer` or `customer_account` isn’t defined, or if a defined `customer` or `customer_account` has no prior payments or non-void _invoices_ (Invoices are statements of amounts owed by a customer. They track the status of payments from draft through paid or otherwise finalized. Subscriptions automatically generate invoices, or you can manually create a one-off invoice), it’s considered a first-time transaction.
++You can also limit the promotion code to first-time customers with [restrictions.first_time_transaction](https://docs.stripe.com/api/promotion_codes/create.md#create_promotion_code-restrictions-first_time_transaction). If a `customer` or `customer_account` isn’t defined, or if a defined `customer` or `customer_account` has no prior payments or non-void *invoices* (Invoices are statements of amounts owed by a customer. They track the status of payments from draft through paid or otherwise finalized. Subscriptions automatically generate invoices, or you can manually create a one-off invoice), it’s considered a first-time transaction.
+ 
+ > Sessions that don’t create a customer create a [guest customer](https://docs.stripe.com/payments/checkout/guest-customers.md) in the Dashboard instead. Promotion codes limited to first-time customers are still accepted for these Sessions.
+ 

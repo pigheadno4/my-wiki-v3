@@ -1,0 +1,179 @@
+{
+  "job_id": "payments-bizum-accept-a-payment",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-bizum-accept-payment.md": {
+      "job_id": "payments-bizum-accept-a-payment",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Accept a Payment with Bizum\"\ntype: source\ndate_ingested: 2026-05-06\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/bizum/accept-a-payment\"\nraw_files:\n  - \"stripe-bizum-accept-payment-2025.md\"\ntags: [stripe, real-time-payments, bizum, spain, eur, checkout, payment-intents, mobile, ios, android]\n---\n\n## Overview\n\nStripe's Bizum acceptance guide. The detailed 2026-05-06 capture documents four web integration variants: hosted Checkout, Elements with the Checkout Sessions API, Elements with the Payment Intents API, and Direct API. It also includes iOS and Android mobile sections. The 2026-11-07 canonical capture is a **variant index only**: it lists the four web routes but contains no current variant bodies and no mobile links. Omission from that index does not establish mobile withdrawal or removal of older behavior. See [[stripe-real-time-payments]] and [[stripe]].\n\n## Key takeaways from the 2026-05-06 detailed capture\n\n- The old guide says buyers need a Spanish IBAN at a Bizum-connected bank and must enable Bizum in their banking app, linking a mobile number to that IBAN. The Direct API variant explicitly requires the merchant to collect that Bizum-registered phone number. These dated prerequisites are not account-eligibility or payment-success findings.\n- In hosted Checkout, the old guide requires all Checkout Session line-item Prices to use the same currency and specifies a total of \u20ac0.50\u2013\u20ac5,000; it tells the merchant to add `bizum` to `payment_method_types` for manual listing. The example uses EUR and `mode: \"payment\"`. The blank compatibility-template fields in the capture do not establish other mode or geography constraints.\n- In the old Elements Checkout Sessions variant, the server creates a Checkout Session and returns its client secret to the front end, which initializes Checkout, mounts the Payment Element, and calls `confirm`. The old guide says these Sessions expire 24 hours after creation. Its `dahlia` Stripe.js sample, `@stripe/stripe-js` 7.0.0 minimum in the HTML/JS section, and React Stripe.js 5.0.0 plus loader 8.0.0 minimum belong to that May variant, not to the November index.\n- In the old Elements Payment Intents variant, the server sets amount and currency, creates a PaymentIntent, and returns its client secret; the client uses the Payment Element and `stripe.confirmPayment` with a `return_url`. That variant describes a possible intermediate redirect. Accounts v2 `customer_account` and Customers v1 `customer` are separate example branches, not simultaneous required fields.\n- In the old Direct API variant, the server creates a PaymentIntent for `bizum` and passes its client secret to the client. The client supplies the collected Bizum-registered phone number as `billing_details[phone]` in `stripe.confirmPayment`, then tells the buyer to approve in their banking app. Stripe.js polls by default; its promise resolves at `succeeded` or failed `requires_payment_method`. The old text also refers to a redirect, so polling is **not** a guarantee of a redirect-free flow. `handleActions: false` disables automatic polling for a manual status-check path.\n- The old iOS section describes StripePaymentsUI installation, a webview, return URL handling, and `STPPaymentHandler.confirmPayment`; the Android section shows a Kotlin `PaymentLauncher` confirmation example. The Android example is not a Compose recipe. Both mobile sections are historical May 2026 evidence; the November index says nothing about their current support or SDK versions.\n- The older test sections say `+34600000002` produces a provider decline and a transition from `requires_action` to `requires_payment_method`, while other test numbers transition to `succeeded`, approximately five seconds after confirmation. Those are **test-only** outcomes. The old guide recommends `payment_intent.succeeded` events and asynchronous handling rather than relying on a client callback. Creating an intent, confirming it, opening the banking app, returning to a page, or receiving an SDK callback does not alone prove payment success.\n\n## Detail locators\n\n- Buyer prerequisite, blank compatibility template, hosted Checkout line items and amount, `bizum` listing, and test phones: [[raw/stripe-bizum-accept-payment-2025|2026-05-06 detailed guide]], lines 8-87.\n- Elements Checkout Sessions server/client roles and dated Stripe.js/React minimums: the same raw, lines 95-239, 252-579. Elements Payment Intents server/client roles, Accounts v2 and Customers v1 examples, redirect language and event handling: lines 581-1124.\n- Direct API phone requirement, EUR statement, confirmation, default/manual polling, test outcomes and post-payment events: the same raw, lines 1126-1349.\n- Dated iOS webview/return URL and Android Kotlin `PaymentLauncher` sections: the same raw, lines 1351-1858. Error-code table: lines 1114-1124, 1339-1349 and 1848-1858.\n\n## Related\n\n- [[stripe-real-time-payments]] \u2014 provider real-time payments concept and reciprocal source route\n- [[source-stripe-bizum]] \u2014 Bizum method details\n\n## Related raw API references\n\n- [[raw/stripe-payments-bizum-accept-a-payment-2026-11-07|2026-11-07 Bizum variant index only]] \u2014 navigation to Checkout, Elements Checkout Sessions, Elements Payment Intents and Direct API; the listed URLs have not been read as current behavioral authority.\n\n## Raw Sources\n\n- [[raw/stripe-bizum-accept-payment-2025|2026-05-06 detailed multi-variant webpage capture]] \u2014 dated factual authority retained in `raw_files`.\n",
+      "quotes": [
+        {
+          "text": "Learn how to set up your integration with Bizum.",
+          "location": "raw/stripe-payments-bizum-accept-a-payment-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-bizum-accept-a-payment-2026-11-07.md:11"
+        },
+        {
+          "text": "- [Checkout](https://docs.stripe.com/payments/bizum/accept-a-payment.md?payment-ui=checkout)",
+          "location": "raw/stripe-payments-bizum-accept-a-payment-2026-11-07.md:13"
+        },
+        {
+          "text": "  - [Checkout Sessions API](https://docs.stripe.com/payments/bizum/accept-a-payment.md?payment-ui=elements&api-integration=checkout)",
+          "location": "raw/stripe-payments-bizum-accept-a-payment-2026-11-07.md:15"
+        },
+        {
+          "text": "- [Direct API](https://docs.stripe.com/payments/bizum/accept-a-payment.md?payment-ui=direct-api)",
+          "location": "raw/stripe-payments-bizum-accept-a-payment-2026-11-07.md:17"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "index": [],
+        "log": [],
+        "concepts": [
+          {
+            "update_id": "bizum-accept-s03-concept-integration",
+            "target_path": "wiki/concepts/stripe-real-time-payments.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Integration**: four paths (Checkout, Checkout Sessions API, PaymentIntents API, Direct API). Direct API requires collecting the customer's Bizum-registered phone number (`billing_details[phone]`); no redirect needed \u2014 Stripe.js polls for result. Mobile supported via iOS (StripePaymentsUI) and Android (Compose) SDKs.",
+            "proposed_markdown": "**Integration (2026-05-06 guide)**: four web variants\u2014hosted Checkout, Elements Checkout Sessions API, Elements Payment Intents API, and Direct API. In the dated Direct API path, collect the customer's Bizum-registered phone number as `billing_details[phone]`; Stripe.js polls by default after confirmation until the PaymentIntent is `succeeded` or failed at `requires_payment_method`. This does not guarantee that no redirect occurs; the old Direct API text mentions redirect handling, and the Elements Payment Intents variant uses a `return_url` with possible intermediate redirect. The old guide also contains iOS StripePaymentsUI/webview and Android Kotlin `PaymentLauncher` examples. The 2026-11-07 canonical capture only indexes the four web variants and does not revalidate mobile support or SDK versions. See [[source-stripe-bizum-accept-payment]].",
+            "quote_indexes": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Replace existing concept line 199, which says no redirect needed and Android Compose. Old factual authority: raw/stripe-bizum-accept-payment-2025.md:938-945, 1126-1130, 1234-1238, 1255-1283, 1518-1563, 1775-1817. New raw/stripe-payments-bizum-accept-a-payment-2026-11-07.md:9-17 is navigation only."
+            ]
+          },
+          {
+            "update_id": "bizum-accept-s03-concept-source-route",
+            "target_path": "wiki/concepts/stripe-real-time-payments.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-bizum-accept-payment]] \u2014 Bizum integration guide: 4 paths, Direct API phone-number collection, mobile SDK support, test data",
+            "proposed_markdown": "- [[source-stripe-bizum-accept-payment]] \u2014 Bizum acceptance: 2026-05-06 detailed Checkout, Elements, Direct API and mobile guide; 2026-11-07 web-variant navigation index only",
+            "quote_indexes": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Replace existing source route at wiki/concepts/stripe-real-time-payments.md:222; older mobile evidence is raw/stripe-bizum-accept-payment-2025.md:1351-1858, while new raw/stripe-payments-bizum-accept-a-payment-2026-11-07.md:9-17 lists only four web routes."
+            ]
+          }
+        ]
+      },
+      "raw_path": "raw/stripe-payments-bizum-accept-a-payment-2026-11-07.md",
+      "raw_sha256": "0f00fe5fd8773bf7b62ff585467408db07f9b758b5aa66abff1f6fe8bf84caf6",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-bizum-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "raw/stripe-bizum-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 1200
+      },
+      {
+        "start": 1201,
+        "end": 1600
+      },
+      {
+        "start": 1601,
+        "end": 1858
+      }
+    ],
+    "wiki/sources/source-stripe-bizum-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 38
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/966be66c54a81bbc0782384e/content.diff": [
+      {
+        "start": 1,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 1200
+      },
+      {
+        "start": 1201,
+        "end": 1863
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 12
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 345,
+        "end": 376
+      },
+      {
+        "start": 742,
+        "end": 750
+      }
+    ],
+    "wiki/concepts/stripe-real-time-payments.md": [
+      {
+        "start": 1,
+        "end": 35
+      },
+      {
+        "start": 185,
+        "end": 222
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-bizum-accept-a-payment/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 172
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "To enable Bizum, buyers need a Spanish IBAN from a bank connected to Bizum. Within their banking app, they can enable Bizum and link their mobile number to their IBAN.",
+      "location": "raw/stripe-bizum-accept-payment-2025.md:16"
+    },
+    {
+      "text": "When accepting a Bizum payment, you must collect the customer\u2019s Bizum-registered phone number.",
+      "location": "raw/stripe-bizum-accept-payment-2025.md:1130"
+    },
+    {
+      "text": "By default, Stripe.js polls for updates to the PaymentIntent after confirmation.",
+      "location": "raw/stripe-bizum-accept-payment-2025.md:1281"
+    },
+    {
+      "text": "This presents a webview where the customer can complete the payment with Bizum.",
+      "location": "raw/stripe-bizum-accept-payment-2025.md:1777"
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/bizum/accept-a-payment, the complete November capture states Bizum integration purpose and indexes Checkout, Elements Checkout Sessions API, Elements Payment Intents API, and Direct API, without documenting current prerequisites, state transitions, account eligibility or outcomes (new raw lines 5-17). The May detailed guide says a buyer needs a Spanish connected-bank IBAN and linked mobile number (old raw lines 16-16), hosted Checkout line-item prices use one currency and its total lies between \u20ac0.50 and \u20ac5,000 (old raw lines 32-37), and Direct API collects the registered phone number for confirmation and default Stripe.js polling to `succeeded` or `requires_payment_method` (old raw lines 1126-1130 and 1255-1283). The mapped source-stripe-bizum-accept-payment.md lists four paths but incorrectly attaches polling and no-redirect wording to Checkout, promises no redirect in Direct API, and calls Android Kotlin PaymentLauncher Compose. The candidate retains dated mobile evidence and separates each UI path.",
+    "Q2": "For https://docs.stripe.com/payments/bizum/accept-a-payment, the November change is navigation and presentation only: the new raw lines 9-17 give four web variant URLs, while the content diff removes the older bundled bodies; it does not demonstrate mobile deprecation or changed payment behavior. In source-stripe-bizum-accept-payment.md, May claims remain dated: the Direct API phone and default polling path is old raw lines 1234-1283, and Elements Payment Intents uses a return_url with possible redirect at old raw lines 938-945. Thus neither the source nor wiki/concepts/stripe-real-time-payments.md may promise a redirect-free Direct API flow; old raw line 1238 even mentions redirect handling. The May Android example is Kotlin PaymentLauncher, not Compose (old raw lines 1775-1817), and the iOS example uses StripePaymentsUI and a webview with return URL (old raw lines 1518-1563). Test phone transitions are test-only (old raw lines 78-87); client callbacks and page returns are weaker evidence than payment_intent.succeeded events (old raw lines 1087-1091). The November index cannot update SDK/version, bank eligibility, settlement or payment success."
+  }
+}

@@ -1,0 +1,62 @@
+--- wiki/sources/source-stripe-checkout-dynamic-shipping.md
++++ tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-custom-shipping-options/attempt-1/candidates/source-stripe-checkout-dynamic-shipping.md
+@@ -2,6 +2,8 @@
+ title: "Dynamically Customize Shipping Options"
+ type: source
+ date_ingested: 2026-04-21
++date_updated: 2026-11-15
++canonical_url: https://docs.stripe.com/payments/checkout/custom-shipping-options
+ original_format: webpage
+ raw_files:
+   - "stripe-checkout-dynamic-shipping-2025.md"
+@@ -10,16 +12,18 @@
+ 
+ ## Summary
+ 
+-Beta feature for dynamically updating shipping options server-side based on the customer's address in Checkout Sessions. Enables address validation, region-specific options, and dynamic rate calculation (including order-total-based rates).
++The April 21, 2026 full guide documents a beta Checkout Sessions `ui_mode: 'elements'` path for address-based server updates to shipping details and options. Its merchant-owned validation and calculation can produce region-specific or order-total-based rates. The November 7 capture at this canonical URL is a 14-line variant index linking Full page and Embedded form; it provides no current implementation contract for either linked body.
+ 
+ ## Key Constraints
+ 
+-- **Payment mode only** — not available in subscription mode
+-- **Beta**: requires `betas: ['custom_checkout_server_updates_1']` on Stripe instance
+-- **React**: requires `@stripe/react-stripe-js@^5.0.0` + `@stripe/stripe-js@^8.0.0`
+-- **Payment Intents**: no built-in support — must manually create a new PaymentIntent with adjusted amounts
++- **April 21 Elements example: payment mode only** — its guide says this dynamic shipping path is unavailable in subscription mode; November's linked variant bodies are uncaptured.
++- **April 21 beta example**: initializes Stripe.js with `betas: ['custom_checkout_server_updates_1']`; the November index does not establish whether either linked variant needs that header.
++- **April 21 React sample**: suggests `@stripe/react-stripe-js@^5.0.0` and `@stripe/stripe-js@^8.0.0`; these are dated sample versions, not a verified November requirement.
++- **Payment Intents alternative in the April guide**: manually update shipping options and modify the existing PaymentIntent amount after selection, or create a new PaymentIntent with adjusted amounts. The guide does not provide a Checkout Session shipping update for that API path.
+ 
+-## Setup
++## April 21 Elements setup
++
++The following Session and client examples are dated to the full April capture. The server owns shipping validation, rate calculation, and the Session update; the client submits completed address details and refreshes local Session state after a successful server update. That update does not complete an order or prove payment success.
+ 
+ ### Session Creation
+ 
+@@ -75,7 +79,7 @@
+ await runServerUpdate(() => updateShippingOptions(aeValue.value));
+ ```
+ 
+-`runServerUpdate` wraps the server call and updates the local session object (`session.shippingOptions`, `session.shippingAddress`) on success.
++`runServerUpdate` wraps the server call and refreshes the local Session shipping state after a successful server update. The April Ruby endpoint leaves validation and calculation as `NotImplementedError` placeholders. Its React example checks `response.type` without parsing the response and returns an undefined `result`; the vanilla JS example interpolates address fields into `innerHTML`. Repair and review the sample before implementation rather than copying those fragments as verified production code.
+ 
+ ## Use Cases
+ 
+@@ -88,9 +92,15 @@
+ 
+ ## Related Pages
+ 
++- [[stripe]] — Stripe company route.
++- [[source-stripe-checkout-custom-shipping-options]] — separate April 20, 2026 Embedded Checkout `onShippingDetailsChange` path; that callback is deprecated in Stripe.js 9.14.0 and is distinct from this April 21 Elements `runServerUpdate` example.
+ - [[source-stripe-charge-shipping]] — basic static shipping rates
+ - [[stripe-checkout]] — Checkout concept page
+ 
+ ## Raw Sources
+ 
+-- [[stripe-checkout-dynamic-shipping-2025]] — verbatim dynamic shipping guide
++- [[raw/stripe-checkout-dynamic-shipping-2025|2026-04-21 full dynamic shipping guide]] — dated Elements beta, payment-mode, server_only and runServerUpdate example
++
++## Related raw API references
++
++- [[raw/stripe-payments-checkout-custom-shipping-options-2026-11-07|2026-11-07 shipping-options variant index]] — navigation-only capture linking Full page (`ui=full-page`) and Embedded form (`ui=checkout-form`); no linked body was captured and neither path's API behavior is inferred.

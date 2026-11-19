@@ -1,0 +1,865 @@
+<!-- Source URL: https://docs.stripe.com/payments/alma -->
+<!-- Fetched: 2026-11-07 -->
+<!-- Discovery: reconciled llms.txt,sitemap.xml -->
+
+# Alma payments
+
+Offer European customers the ability to pay in 2, 3, or 4 installments while getting paid instantly.
+
+[Alma](https://almapay.com/) is a Buy Now, Pay Later payment method available in France, Italy, Spain, Netherlands, Belgium, and Luxembourg that gives your customers payment installment choices.
+
+When customers select Alma as their payment method, Stripe redirects them to Alma’s website, where they get the ability to choose between 2, 3, or 4 installments to complete their purchase. You’re paid immediately.
+Payment method family: Buy now, pay later
+Usability: Single-use
+Access type: Instant provisional access
+Payment confirmation timing: Immediate
+Settlement timing: Up to 3 business days (T+3)
+## Eligibility and availability 
+
+### Account eligibility
+Business location: BE, ES, FR, IT, LU, NL
+Account type: ✓ Merchant, ✓ Platform or marketplace (Connect)
+Business model: ✗ B2B, ✓ B2C
+Business category: View list of prohibited and restricted business categories
+### Unsupported businesses
+
+In addition to the industry and business categories listed in [Prohibited and restricted businesses](https://stripe.com/restricted-businesses), Alma prohibits the following categories:
+
+- Sole proprietorships or individual accounts
+- Business to Business Services
+- Educational services
+- Professional services (including, but not limited to, legal, consulting, and accounting)
+- Transportation services
+- Travel services
+- Telecommunication services and utilities
+- Veterinary services
+
+See a [full list of prohibited activities](https://help.almapay.com/hc/en-gb/articles/360006779359-Which-activities-are-not-eligible-for-payment-with-Alma). Even if an activity isn’t listed as prohibited, your business might still be ineligible for Alma due to risk-related reasons.
+
+Review the list of *merchant category codes* (A Merchant Category Code (MCC) is a four-digit number that classifies the type of goods or services a business offers) that are prohibited or restricted for Alma.
+
+- **Prohibited**: You can’t use this payment method with these MCCs.
+- **Restricted**: You might be able to use this payment method with these MCCs, but you must provide additional information when you create the account.
+
+| MCC | Description | Type |
+| --- | --- | --- |
+| 0763 | Agricultural Cooperative | Prohibited |
+| 3000 | Software | Prohibited |
+| 3001 | Software | Prohibited |
+| 3002 | Software | Prohibited |
+| 3003 | Software | Prohibited |
+| 3004 | Software | Prohibited |
+| 3005 | Software | Prohibited |
+| 3006 | Software | Prohibited |
+| 3007 | Software | Prohibited |
+| 3008 | Software | Prohibited |
+| 3009 | Software | Prohibited |
+| 3010 | Software | Prohibited |
+| 3011 | Software | Prohibited |
+| 3012 | Software | Prohibited |
+| 3013 | Software | Prohibited |
+| 3014 | Software | Prohibited |
+| 3015 | Software | Prohibited |
+| 3016 | Software | Prohibited |
+| 3017 | Software | Prohibited |
+| 3018 | Software | Prohibited |
+| 3019 | Software | Prohibited |
+| 3020 | Software | Prohibited |
+| 3021 | Software | Prohibited |
+| 3022 | Software | Prohibited |
+| 3023 | Software | Prohibited |
+| 3024 | Software | Prohibited |
+| 3025 | Software | Prohibited |
+| 3026 | Software | Prohibited |
+| 3027 | Software | Prohibited |
+| 3028 | Software | Prohibited |
+| 3029 | Software | Prohibited |
+| 3030 | Software | Prohibited |
+| 3031 | Software | Prohibited |
+| 3032 | Software | Prohibited |
+| 3033 | Software | Prohibited |
+| 3034 | Software | Prohibited |
+| 3035 | Software | Prohibited |
+| 3036 | Software | Prohibited |
+| 3037 | Software | Prohibited |
+| 3038 | Software | Prohibited |
+| 3039 | Software | Prohibited |
+| 3040 | Software | Prohibited |
+| 3041 | Software | Prohibited |
+| 3042 | Software | Prohibited |
+| 3043 | Software | Prohibited |
+| 3044 | Software | Prohibited |
+| 3045 | Software | Prohibited |
+| 3046 | Software | Prohibited |
+| 3047 | Software | Prohibited |
+| 3048 | Software | Prohibited |
+| 3049 | Software | Prohibited |
+| 3050 | Software | Prohibited |
+| 3051 | Software | Prohibited |
+| 3052 | Software | Prohibited |
+| 3053 | Software | Prohibited |
+| 3054 | Software | Prohibited |
+| 3055 | Software | Prohibited |
+| 3056 | Software | Prohibited |
+| 3057 | Software | Prohibited |
+| 3058 | Software | Prohibited |
+| 3059 | Software | Prohibited |
+| 3060 | Software | Prohibited |
+| 3061 | Software | Prohibited |
+| 3062 | Software | Prohibited |
+| 3063 | Software | Prohibited |
+| 3064 | Software | Prohibited |
+| 3065 | Software | Prohibited |
+| 3066 | Software | Prohibited |
+| 3067 | Software | Prohibited |
+| 3068 | Software | Prohibited |
+| 3069 | Software | Prohibited |
+| 3070 | Software | Prohibited |
+| 3071 | Software | Prohibited |
+| 3072 | Software | Prohibited |
+| 3073 | Software | Prohibited |
+| 3074 | Software | Prohibited |
+| 3075 | Software | Prohibited |
+| 3076 | Software | Prohibited |
+| 3077 | Software | Prohibited |
+| 3078 | Software | Prohibited |
+| 3079 | Software | Prohibited |
+| 3080 | Software | Prohibited |
+| 3081 | Software | Prohibited |
+| 3082 | Software | Prohibited |
+| 3083 | Software | Prohibited |
+| 3084 | Software | Prohibited |
+| 3085 | Software | Prohibited |
+| 3086 | Software | Prohibited |
+| 3087 | Software | Prohibited |
+| 3088 | Software | Prohibited |
+| 3089 | Software | Prohibited |
+| 3090 | Software | Prohibited |
+| 3091 | Software | Prohibited |
+| 3092 | Software | Prohibited |
+| 3093 | Software | Prohibited |
+| 3094 | Software | Prohibited |
+| 3095 | Software | Prohibited |
+| 3096 | Software | Prohibited |
+| 3097 | Software | Prohibited |
+| 3098 | Software | Prohibited |
+| 3099 | Software | Prohibited |
+| 3100 | Software | Prohibited |
+| 3101 | Software | Prohibited |
+| 3102 | Software | Prohibited |
+| 3103 | Software | Prohibited |
+| 3104 | Software | Prohibited |
+| 3105 | Software | Prohibited |
+| 3106 | Software | Prohibited |
+| 3107 | Software | Prohibited |
+| 3108 | Software | Prohibited |
+| 3109 | Software | Prohibited |
+| 3110 | Software | Prohibited |
+| 3111 | Software | Prohibited |
+| 3112 | Software | Prohibited |
+| 3113 | Software | Prohibited |
+| 3114 | Software | Prohibited |
+| 3115 | Software | Prohibited |
+| 3116 | Software | Prohibited |
+| 3117 | Software | Prohibited |
+| 3118 | Software | Prohibited |
+| 3119 | Software | Prohibited |
+| 3120 | Software | Prohibited |
+| 3121 | Software | Prohibited |
+| 3122 | Software | Prohibited |
+| 3123 | Software | Prohibited |
+| 3124 | Software | Prohibited |
+| 3125 | Software | Prohibited |
+| 3126 | Software | Prohibited |
+| 3127 | Software | Prohibited |
+| 3128 | Software | Prohibited |
+| 3129 | Software | Prohibited |
+| 3130 | Software | Prohibited |
+| 3131 | Software | Prohibited |
+| 3132 | Software | Prohibited |
+| 3133 | Software | Prohibited |
+| 3134 | Software | Prohibited |
+| 3135 | Software | Prohibited |
+| 3136 | Software | Prohibited |
+| 3137 | Software | Prohibited |
+| 3138 | Software | Prohibited |
+| 3139 | Software | Prohibited |
+| 3140 | Software | Prohibited |
+| 3141 | Software | Prohibited |
+| 3142 | Software | Prohibited |
+| 3143 | Software | Prohibited |
+| 3144 | Software | Prohibited |
+| 3145 | Software | Prohibited |
+| 3146 | Software | Prohibited |
+| 3147 | Software | Prohibited |
+| 3148 | Software | Prohibited |
+| 3149 | Software | Prohibited |
+| 3150 | Software | Prohibited |
+| 3151 | Software | Prohibited |
+| 3152 | Software | Prohibited |
+| 3153 | Software | Prohibited |
+| 3154 | Software | Prohibited |
+| 3155 | Software | Prohibited |
+| 3156 | Software | Prohibited |
+| 3157 | Software | Prohibited |
+| 3158 | Software | Prohibited |
+| 3159 | Software | Prohibited |
+| 3160 | Software | Prohibited |
+| 3161 | Software | Prohibited |
+| 3162 | Software | Prohibited |
+| 3163 | Software | Prohibited |
+| 3164 | Software | Prohibited |
+| 3165 | Software | Prohibited |
+| 3166 | Software | Prohibited |
+| 3167 | Software | Prohibited |
+| 3168 | Software | Prohibited |
+| 3169 | Software | Prohibited |
+| 3170 | Software | Prohibited |
+| 3171 | Software | Prohibited |
+| 3172 | Software | Prohibited |
+| 3173 | Software | Prohibited |
+| 3174 | Software | Prohibited |
+| 3175 | Software | Prohibited |
+| 3176 | Software | Prohibited |
+| 3177 | Software | Prohibited |
+| 3178 | Software | Prohibited |
+| 3179 | Software | Prohibited |
+| 3180 | Software | Prohibited |
+| 3181 | Software | Prohibited |
+| 3182 | Software | Prohibited |
+| 3183 | Software | Prohibited |
+| 3184 | Software | Prohibited |
+| 3185 | Software | Prohibited |
+| 3186 | Software | Prohibited |
+| 3187 | Software | Prohibited |
+| 3188 | Software | Prohibited |
+| 3189 | Software | Prohibited |
+| 3190 | Software | Prohibited |
+| 3191 | Software | Prohibited |
+| 3192 | Software | Prohibited |
+| 3193 | Software | Prohibited |
+| 3194 | Software | Prohibited |
+| 3195 | Software | Prohibited |
+| 3196 | Software | Prohibited |
+| 3197 | Software | Prohibited |
+| 3198 | Software | Prohibited |
+| 3199 | Software | Prohibited |
+| 3200 | Software | Prohibited |
+| 3201 | Software | Prohibited |
+| 3202 | Software | Prohibited |
+| 3203 | Software | Prohibited |
+| 3204 | Software | Prohibited |
+| 3205 | Software | Prohibited |
+| 3206 | Software | Prohibited |
+| 3207 | Software | Prohibited |
+| 3208 | Software | Prohibited |
+| 3209 | Software | Prohibited |
+| 3210 | Software | Prohibited |
+| 3211 | Software | Prohibited |
+| 3212 | Software | Prohibited |
+| 3213 | Software | Prohibited |
+| 3214 | Software | Prohibited |
+| 3215 | Software | Prohibited |
+| 3216 | Software | Prohibited |
+| 3217 | Software | Prohibited |
+| 3218 | Software | Prohibited |
+| 3219 | Software | Prohibited |
+| 3220 | Software | Prohibited |
+| 3221 | Software | Prohibited |
+| 3222 | Software | Prohibited |
+| 3223 | Software | Prohibited |
+| 3224 | Software | Prohibited |
+| 3225 | Software | Prohibited |
+| 3226 | Software | Prohibited |
+| 3227 | Software | Prohibited |
+| 3228 | Software | Prohibited |
+| 3229 | Software | Prohibited |
+| 3230 | Software | Prohibited |
+| 3231 | Software | Prohibited |
+| 3232 | Software | Prohibited |
+| 3233 | Software | Prohibited |
+| 3234 | Software | Prohibited |
+| 3235 | Software | Prohibited |
+| 3236 | Software | Prohibited |
+| 3237 | Software | Prohibited |
+| 3238 | Software | Prohibited |
+| 3239 | Software | Prohibited |
+| 3240 | Software | Prohibited |
+| 3241 | Software | Prohibited |
+| 3242 | Software | Prohibited |
+| 3243 | Software | Prohibited |
+| 3244 | Software | Prohibited |
+| 3245 | Software | Prohibited |
+| 3246 | Software | Prohibited |
+| 3247 | Software | Prohibited |
+| 3248 | Software | Prohibited |
+| 3249 | Software | Prohibited |
+| 3250 | Software | Prohibited |
+| 3251 | Software | Prohibited |
+| 3252 | Software | Prohibited |
+| 3253 | Software | Prohibited |
+| 3254 | Software | Prohibited |
+| 3255 | Software | Prohibited |
+| 3256 | Software | Prohibited |
+| 3257 | Software | Prohibited |
+| 3258 | Software | Prohibited |
+| 3259 | Software | Prohibited |
+| 3260 | Software | Prohibited |
+| 3261 | Software | Prohibited |
+| 3262 | Software | Prohibited |
+| 3263 | Software | Prohibited |
+| 3264 | Software | Prohibited |
+| 3265 | Software | Prohibited |
+| 3266 | Software | Prohibited |
+| 3267 | Software | Prohibited |
+| 3268 | Software | Prohibited |
+| 3269 | Software | Prohibited |
+| 3270 | Software | Prohibited |
+| 3271 | Software | Prohibited |
+| 3272 | Software | Prohibited |
+| 3273 | Software | Prohibited |
+| 3274 | Software | Prohibited |
+| 3275 | Software | Prohibited |
+| 3276 | Software | Prohibited |
+| 3277 | Software | Prohibited |
+| 3278 | Software | Prohibited |
+| 3279 | Software | Prohibited |
+| 3280 | Software | Prohibited |
+| 3281 | Software | Prohibited |
+| 3282 | Software | Prohibited |
+| 3283 | Software | Prohibited |
+| 3284 | Software | Prohibited |
+| 3285 | Software | Prohibited |
+| 3286 | Software | Prohibited |
+| 3287 | Software | Prohibited |
+| 3288 | Software | Prohibited |
+| 3289 | Software | Prohibited |
+| 3290 | Software | Prohibited |
+| 3291 | Software | Prohibited |
+| 3292 | Software | Prohibited |
+| 3293 | Software | Prohibited |
+| 3294 | Software | Prohibited |
+| 3295 | Software | Prohibited |
+| 3296 | Software | Prohibited |
+| 3297 | Software | Prohibited |
+| 3298 | Software | Prohibited |
+| 3299 | Software | Prohibited |
+| 3300 | Software | Prohibited |
+| 3301 | Software | Prohibited |
+| 3302 | Software | Prohibited |
+| 3303 | Software | Prohibited |
+| 3304 | Software | Prohibited |
+| 3305 | Software | Prohibited |
+| 3306 | Software | Prohibited |
+| 3307 | Software | Prohibited |
+| 3308 | Software | Prohibited |
+| 3309 | Software | Prohibited |
+| 3310 | Software | Prohibited |
+| 3311 | Software | Prohibited |
+| 3312 | Software | Prohibited |
+| 3313 | Software | Prohibited |
+| 3314 | Software | Prohibited |
+| 3315 | Software | Prohibited |
+| 3316 | Software | Prohibited |
+| 3317 | Software | Prohibited |
+| 3318 | Software | Prohibited |
+| 3319 | Software | Prohibited |
+| 3320 | Software | Prohibited |
+| 3321 | Software | Prohibited |
+| 3322 | Software | Prohibited |
+| 3323 | Software | Prohibited |
+| 3324 | Software | Prohibited |
+| 3325 | Software | Prohibited |
+| 3326 | Software | Prohibited |
+| 3327 | Software | Prohibited |
+| 3328 | Software | Prohibited |
+| 3329 | Software | Prohibited |
+| 3330 | Software | Prohibited |
+| 3331 | Software | Prohibited |
+| 3332 | Software | Prohibited |
+| 3333 | Software | Prohibited |
+| 3334 | Software | Prohibited |
+| 3335 | Software | Prohibited |
+| 3336 | Software | Prohibited |
+| 3337 | Software | Prohibited |
+| 3338 | Software | Prohibited |
+| 3339 | Software | Prohibited |
+| 3340 | Software | Prohibited |
+| 3341 | Software | Prohibited |
+| 3342 | Software | Prohibited |
+| 3343 | Software | Prohibited |
+| 3344 | Software | Prohibited |
+| 3345 | Software | Prohibited |
+| 3346 | Software | Prohibited |
+| 3347 | Software | Prohibited |
+| 3348 | Software | Prohibited |
+| 3349 | Software | Prohibited |
+| 3350 | Software | Prohibited |
+| 3351 | Software | Prohibited |
+| 3352 | Software | Prohibited |
+| 3353 | Software | Prohibited |
+| 3354 | Software | Prohibited |
+| 3355 | Software | Prohibited |
+| 3356 | Software | Prohibited |
+| 3357 | Software | Prohibited |
+| 3358 | Software | Prohibited |
+| 3359 | Software | Prohibited |
+| 3360 | Software | Prohibited |
+| 3361 | Software | Prohibited |
+| 3362 | Software | Prohibited |
+| 3363 | Software | Prohibited |
+| 3364 | Software | Prohibited |
+| 3365 | Software | Prohibited |
+| 3366 | Software | Prohibited |
+| 3367 | Software | Prohibited |
+| 3368 | Software | Prohibited |
+| 3369 | Software | Prohibited |
+| 3370 | Software | Prohibited |
+| 3371 | Software | Prohibited |
+| 3372 | Software | Prohibited |
+| 3373 | Software | Prohibited |
+| 3374 | Software | Prohibited |
+| 3375 | Software | Prohibited |
+| 3376 | Software | Prohibited |
+| 3377 | Software | Prohibited |
+| 3378 | Software | Prohibited |
+| 3379 | Software | Prohibited |
+| 3380 | Software | Prohibited |
+| 3381 | Software | Prohibited |
+| 3382 | Software | Prohibited |
+| 3383 | Software | Prohibited |
+| 3384 | Software | Prohibited |
+| 3385 | Software | Prohibited |
+| 3386 | Software | Prohibited |
+| 3387 | Software | Prohibited |
+| 3388 | Software | Prohibited |
+| 3389 | Software | Prohibited |
+| 3390 | Software | Prohibited |
+| 3391 | Software | Prohibited |
+| 3392 | Software | Prohibited |
+| 3393 | Software | Prohibited |
+| 3394 | Software | Prohibited |
+| 3395 | Software | Prohibited |
+| 3396 | Software | Prohibited |
+| 3397 | Software | Prohibited |
+| 3398 | Software | Prohibited |
+| 3399 | Software | Prohibited |
+| 3400 | Software | Prohibited |
+| 3401 | Software | Prohibited |
+| 3402 | Software | Prohibited |
+| 3403 | Software | Prohibited |
+| 3404 | Software | Prohibited |
+| 3405 | Software | Prohibited |
+| 3406 | Software | Prohibited |
+| 3407 | Software | Prohibited |
+| 3408 | Software | Prohibited |
+| 3409 | Software | Prohibited |
+| 3410 | Software | Prohibited |
+| 3411 | Software | Prohibited |
+| 3412 | Software | Prohibited |
+| 3413 | Software | Prohibited |
+| 3414 | Software | Prohibited |
+| 3415 | Software | Prohibited |
+| 3416 | Software | Prohibited |
+| 3417 | Software | Prohibited |
+| 3418 | Software | Prohibited |
+| 3419 | Software | Prohibited |
+| 3420 | Software | Prohibited |
+| 3421 | Software | Prohibited |
+| 3422 | Software | Prohibited |
+| 3423 | Software | Prohibited |
+| 3424 | Software | Prohibited |
+| 3425 | Software | Prohibited |
+| 3426 | Software | Prohibited |
+| 3427 | Software | Prohibited |
+| 3428 | Software | Prohibited |
+| 3429 | Software | Prohibited |
+| 3430 | Software | Prohibited |
+| 3431 | Software | Prohibited |
+| 3432 | Software | Prohibited |
+| 3433 | Software | Prohibited |
+| 3434 | Software | Prohibited |
+| 3435 | Software | Prohibited |
+| 3436 | Software | Prohibited |
+| 3437 | Software | Prohibited |
+| 3438 | Software | Prohibited |
+| 3439 | Software | Prohibited |
+| 3440 | Software | Prohibited |
+| 3441 | Software | Prohibited |
+| 3442 | Software | Prohibited |
+| 3443 | Software | Prohibited |
+| 3444 | Software | Prohibited |
+| 3445 | Software | Prohibited |
+| 3446 | Software | Prohibited |
+| 3447 | Software | Prohibited |
+| 3448 | Software | Prohibited |
+| 3449 | Software | Prohibited |
+| 3450 | Software | Prohibited |
+| 3451 | Software | Prohibited |
+| 3452 | Software | Prohibited |
+| 3453 | Software | Prohibited |
+| 3454 | Software | Prohibited |
+| 3455 | Software | Prohibited |
+| 3456 | Software | Prohibited |
+| 3457 | Software | Prohibited |
+| 3458 | Software | Prohibited |
+| 3459 | Software | Prohibited |
+| 3460 | Software | Prohibited |
+| 3461 | Software | Prohibited |
+| 3462 | Software | Prohibited |
+| 3463 | Software | Prohibited |
+| 3464 | Software | Prohibited |
+| 3465 | Software | Prohibited |
+| 3466 | Software | Prohibited |
+| 3467 | Software | Prohibited |
+| 3468 | Software | Prohibited |
+| 3469 | Software | Prohibited |
+| 3470 | Software | Prohibited |
+| 3471 | Software | Prohibited |
+| 3472 | Software | Prohibited |
+| 3473 | Software | Prohibited |
+| 3474 | Software | Prohibited |
+| 3475 | Software | Prohibited |
+| 3476 | Software | Prohibited |
+| 3477 | Software | Prohibited |
+| 3478 | Software | Prohibited |
+| 3479 | Software | Prohibited |
+| 3480 | Software | Prohibited |
+| 3481 | Software | Prohibited |
+| 3482 | Software | Prohibited |
+| 3483 | Software | Prohibited |
+| 3484 | Software | Prohibited |
+| 3485 | Software | Prohibited |
+| 3486 | Software | Prohibited |
+| 3487 | Software | Prohibited |
+| 3488 | Software | Prohibited |
+| 3489 | Software | Prohibited |
+| 3490 | Software | Prohibited |
+| 3491 | Software | Prohibited |
+| 3492 | Software | Prohibited |
+| 3493 | Software | Prohibited |
+| 3494 | Software | Prohibited |
+| 3495 | Software | Prohibited |
+| 3496 | Software | Prohibited |
+| 3497 | Software | Prohibited |
+| 3498 | Software | Prohibited |
+| 3499 | Software | Prohibited |
+| 3500 | Software | Prohibited |
+| 4011 | Railroads | Prohibited |
+| 4112 | Passenger Railways | Prohibited |
+| 4119 | Ambulance Services | Prohibited |
+| 4121 | Taxicabs and Limousines | Prohibited |
+| 4131 | Bus Lines | Prohibited |
+| 4511 | Airlines, Air Carriers | Prohibited |
+| 4582 | Airports, Flying Fields | Prohibited |
+| 4784 | Tolls and Bridge Fees | Prohibited |
+| 4789 | Transportation Services (Not Elsewhere Classified) | Prohibited |
+| 4821 | Telegraph Services | Prohibited |
+| 4829 | Money Orders - Wire Transfers | Prohibited |
+| 4900 | Utilities | Prohibited |
+| 5047 | Medical, Dental, Ophthalmic, and Hospital Equipment and Supplies | Prohibited |
+| 5085 | Industrial Supplies (Not Elsewhere Classified) | Prohibited |
+| 5122 | Drugs, Drug Proprietaries, and Druggist Sundries | Prohibited |
+| 5172 | Petroleum and Petroleum Products | Prohibited |
+| 5199 | Nondurable Goods (Not Elsewhere Classified) | Prohibited |
+| 5309 | Duty Free Stores | Prohibited |
+| 5411 | Grocery Stores, Supermarkets | Prohibited |
+| 5451 | Dairy Products Stores | Prohibited |
+| 5462 | Bakeries | Prohibited |
+| 5499 | Miscellaneous Food Stores | Prohibited |
+| 5541 | Service Stations | Prohibited |
+| 5811 | Caterers | Prohibited |
+| 5812 | Eating Places, Restaurants | Prohibited |
+| 5813 | Drinking Places | Prohibited |
+| 5814 | Fast Food Restaurants | Prohibited |
+| 5912 | Drug Stores and Pharmacies | Prohibited |
+| 5921 | Package Stores-Beer, Wine, and Liquor | Prohibited |
+| 5932 | Antique Shops | Prohibited |
+| 5933 | Pawn Shops | Prohibited |
+| 5937 | Antique Reproductions | Prohibited |
+| 5960 | Direct Marketing - Insurance Services | Prohibited |
+| 5962 | Direct Marketing - Travel | Prohibited |
+| 5963 | Door-To-Door Sales | Prohibited |
+| 5964 | Direct Marketing - Catalog Merchant | Prohibited |
+| 5965 | Direct Marketing - Combination Catalog and Retail Merchant | Prohibited |
+| 5966 | Direct Marketing - Outbound Telemarketing | Prohibited |
+| 5967 | Adult Content and Services | Prohibited |
+| 5968 | Direct Marketing - Subscription | Prohibited |
+| 5969 | Direct Marketing - Other | Prohibited |
+| 5973 | Religious Goods Stores | Prohibited |
+| 5976 | Orthopedic Goods - Prosthetic Devices | Prohibited |
+| 6010 | Manual Cash Disburse | Prohibited |
+| 6011 | Financial Service | Prohibited |
+| 6012 | Financial Institutions | Prohibited |
+| 6050 | Software | Prohibited |
+| 6051 | Cryptocurrency exchanges and wallets | Prohibited |
+| 6211 | Security Brokers and Dealers | Prohibited |
+| 6300 | Insurance Underwriting, Premiums | Prohibited |
+| 6532 | Software | Prohibited |
+| 6533 | Software | Prohibited |
+| 6536 | Software | Prohibited |
+| 6537 | Software | Prohibited |
+| 6538 | Software | Prohibited |
+| 6540 | Non-FI, Stored Value Card Purchase and Load | Prohibited |
+| 7276 | Tax Preparation Services | Prohibited |
+| 7277 | Counseling Services | Prohibited |
+| 7297 | Massage Parlors | Prohibited |
+| 7321 | Credit Reporting Agencies | Prohibited |
+| 7513 | Truck and Utility Trailer Rentals | Prohibited |
+| 7800 | Government-Owned Lotteries (US Region only) | Prohibited |
+| 7801 | Government Licensed On-line Casinos (On-Line Gambling) | Prohibited |
+| 7802 | Government-Licensed Horse and Dog Racing | Prohibited |
+| 7995 | Betting and Casino Gambling | Prohibited |
+| 8011 | Doctors | Prohibited |
+| 8031 | Osteopaths | Prohibited |
+| 8041 | Chiropractors | Prohibited |
+| 8042 | Optometrists, Ophthalmologist | Prohibited |
+| 8062 | Hospitals | Prohibited |
+| 8071 | Medical and Dental Labs | Prohibited |
+| 8099 | Medical Services | Prohibited |
+| 8351 | Child Care Services | Prohibited |
+| 8398 | Charitable and Social Service Organizations - Fundraising | Prohibited |
+| 8641 | Civic, Social, Fraternal Associations | Prohibited |
+| 8651 | Political Organizations | Prohibited |
+| 8661 | Religious Organizations | Prohibited |
+| 8675 | Automobile Associations | Prohibited |
+| 8999 | Professional Services | Prohibited |
+| 9211 | Court Costs | Prohibited |
+| 9222 | Fines - Government Administrative Entities | Prohibited |
+| 9223 | Bail and Bond Payments | Prohibited |
+| 9311 | Tax Payments - Government Agencies | Prohibited |
+| 9399 | Government Services (Not Elsewhere Classified) | Prohibited |
+| 9402 | Postal Services - Government Only | Prohibited |
+| 9405 | US Federal Govt Agencies or Departments | Prohibited |
+| 9406 | Government-Owned Lotteries (Non-US region) | Prohibited |
+
+Stripe accounts in the following countries can accept Alma payments that settle in a supported currency.
+
+EMEA: BE, ES, FR, IT, LU, NL
+
+Customers in the following countries can use Alma.
+
+EMEA: BE, ES, FR, IT, LU, NL
+
+### Payment support
+Customer location: BE, ES, FR, IT, LU, NL
+Presentment currency: EUR
+Geographic coverage: ✓ Domestic, ✗ Crossborder
+Transaction limits: Minimum amount: 50.00 EUR
+
+Maximum amount: 5,000.00 EUR
+Cart ranges and geographic availability for payment options are determined by Alma and might change at their discretion. Regardless of the underlying payment option selected, Stripe makes the full amount of the funds (minus fees) available to you upfront and Alma collects the purchase amount from your customer, who repays Alma directly.
+
+The total transaction amount is typically spread equally across the installments, but Alma might occasionally charge your customer more in the first installment based on the customer’s purchase power and other credit factors.
+
+### Payment options
+
+### BE
+
+| Payment option | Description | Amount range |
+| --- | --- | --- |
+| Pay in 2 | Customers pay for the purchase in two interest-free payments. | EUR&nbsp;50–EUR&nbsp;5,000 |
+| Pay in 3 | Customers pay for the purchase in three interest-free payments. | EUR&nbsp;50–EUR&nbsp;5,000 |
+| Pay in 4 | Customers pay for the purchase in four interest-free payments. | EUR&nbsp;50–EUR&nbsp;5,000 |
+
+### ES
+
+| Payment option | Description | Amount range |
+| --- | --- | --- |
+| Pay in 2 | Customers pay for the purchase in two interest-free payments. | EUR&nbsp;50–EUR&nbsp;5,000 |
+| Pay in 3 | Customers pay for the purchase in three interest-free payments. | EUR&nbsp;50–EUR&nbsp;5,000 |
+| Pay in 4 | Customers pay for the purchase in four interest-free payments. | EUR&nbsp;50–EUR&nbsp;5,000 |
+
+### FR
+
+| Payment option | Description | Amount range |
+| --- | --- | --- |
+| Pay in 2 | Customers pay for the purchase in two interest-free payments. | EUR&nbsp;50–EUR&nbsp;5,000 |
+| Pay in 3 | Customers pay for the purchase in three interest-free payments. | EUR&nbsp;50–EUR&nbsp;5,000 |
+| Pay in 4 | Customers pay for the purchase in four interest-free payments. | EUR&nbsp;50–EUR&nbsp;5,000 |
+
+### IT
+
+| Payment option | Description | Amount range |
+| --- | --- | --- |
+| Pay in 2 | Customers pay for the purchase in two interest-free payments. | EUR&nbsp;50–EUR&nbsp;5,000 |
+| Pay in 3 | Customers pay for the purchase in three interest-free payments. | EUR&nbsp;50–EUR&nbsp;5,000 |
+| Pay in 4 | Customers pay for the purchase in four interest-free payments. | EUR&nbsp;50–EUR&nbsp;5,000 |
+
+### LU
+
+| Payment option | Description | Amount range |
+| --- | --- | --- |
+| Pay in 2 | Customers pay for the purchase in two interest-free payments. | EUR&nbsp;50–EUR&nbsp;5,000 |
+| Pay in 3 | Customers pay for the purchase in three interest-free payments. | EUR&nbsp;50–EUR&nbsp;5,000 |
+| Pay in 4 | Customers pay for the purchase in four interest-free payments. | EUR&nbsp;50–EUR&nbsp;5,000 |
+
+### NL
+
+| Payment option | Description | Amount range |
+| --- | --- | --- |
+| Pay in 2 | Customers pay for the purchase in two interest-free payments. | EUR&nbsp;50–EUR&nbsp;5,000 |
+| Pay in 3 | Customers pay for the purchase in three interest-free payments. | EUR&nbsp;50–EUR&nbsp;5,000 |
+| Pay in 4 | Customers pay for the purchase in four interest-free payments. | EUR&nbsp;50–EUR&nbsp;5,000 |
+
+## Capabilities 
+Recurring payments: ✗ Not supported
+
+Payment authorizations:
+  ✗ Extended authorizations
+  ✗ Flexible extended authorizations
+  ✗ Incremental authorizations
+  ✗ Decremental authorizations
+  ✗ Re-authorizations
+
+Payment captures:
+  ✓ Manual capture
+  ✓ Partial capture
+  ✗ Multi-capture
+  ✗ Over-capture
+
+Refunds:
+  ✓ Partial refunds
+  ✓ Full refunds
+  Submission window: 180 days
+  Processing time: 5 minutes
+
+Disputes:
+  ✗ Partial disputes
+  ✓ Full disputes
+  Submission window: 120 days
+### Refunds 
+
+Alma supports full and partial refunds. Alma requires that you submit a refund within 180 days from the original payment using the [Dashboard](https://dashboard.stripe.com/payments) or [Refunds API](https://docs.stripe.com/api/refunds/create.md). This is the maximum the payment method allows. Your return policy determines what you offer customers.
+
+Refunds for Alma payments are asynchronous and take up to 5 minutes to complete. You can’t cancel Alma refunds.
+
+#### Tracking refunds 
+
+To check a refund’s status, open the payment in the [Dashboard](https://dashboard.stripe.com/payments) and click **View details** on the refund entry. You can also [retrieve the Refund object](https://docs.stripe.com/api/refunds/retrieve.md) and check its `status` field.
+
+Stripe notifies you of the final status through a `refund.updated` or `refund.failed` *webhook* (A webhook is a real-time push notification sent to your application as a JSON payload through HTTPS requests) event. When a refund succeeds, the [Refund object](https://docs.stripe.com/api/refunds/object.md) status changes to `succeeded`. If the refund fails, the status changes to `failed` and Stripe returns the amount to your Stripe balance. You must refund the customer using another method.
+
+### Disputes 
+
+Customers have up to 120 calendar days from the date of purchase to file Alma disputes.
+
+#### Dispute process 
+
+- Stripe holds back the disputed amount from your balance until Alma resolves the dispute.
+
+- Stripe requests that you upload compelling evidence that you fulfilled the purchase order [using the Stripe Dashboard](https://docs.stripe.com/disputes/responding.md#respond). This evidence can include:
+
+  - A received return confirmation (for shipped goods returned from the customer to you)
+  - The tracking ID
+  - The shipping date
+  - A record of purchase for intangible goods, such as IP address or email receipt
+  - A record of purchase for services or physical goods, such as phone number or proof of receipt
+
+- This information helps Alma determine if a dispute is valid or if it should be rejected. Make sure the evidence you provide contains as much detail as possible from what the customer provided at checkout. You must submit the requested information within 14 calendar days. Alma makes a decision within 25 calendar days of evidence submission. If Alma resolves the dispute with you winning, Stripe returns the disputed amount to your Stripe balance. If Alma rules in favor of the customer, the balance charge becomes permanent.
+
+#### Dispute notifications 
+
+After the customer initiates a dispute, Stripe notifies you through email, the Stripe Dashboard, and an API `charge.dispute.created` event (if your integration is set up to receive [webhooks](https://docs.stripe.com/webhooks.md)).
+
+#### Responding to disputes 
+
+You have 14 calendar days from dispute creation to submit evidence.
+
+We request that you upload compelling evidence proving that you fulfilled the purchase order [using the Stripe Dashboard](https://docs.stripe.com/disputes/responding.md#respond). This evidence can include the:
+
+- Tracking ID
+- Shipping date
+- Record of purchase for intangible goods, such as IP address or email receipt
+- Record of purchase for services or physical goods, such as phone number or proof of receipt
+- Record of refund (for purchases you’ve already refunded)
+
+You can submit evidence and manage Alma disputes in the [Dashboard](https://dashboard.stripe.com/disputes) or programmatically using the [Disputes API](https://docs.stripe.com/api/disputes/update.md). In the Dashboard, go to the **Needs response** tab, click the disputed payment, then click **Counter dispute** to submit your evidence, or **Accept dispute** to accept the loss. To submit evidence through the API, upload supporting files using the [Files API](https://docs.stripe.com/api/files/create.md) and include the returned file IDs when you update the [Dispute Evidence object](https://docs.stripe.com/api/disputes/update.md).
+
+#### Dispute outcomes 
+
+If Alma resolves the dispute in your favor, Stripe returns the disputed amount to your Stripe balance.
+
+If they rule in favor of the customer, the balance charge becomes permanent. Dispute fees are non-refundable regardless of the outcome.
+
+### Fraud and liability 
+
+Customers must authenticate Alma payments by logging into their Alma account. This requirement helps reduce the risk of fraud or unrecognized payments.
+
+While Alma covers losses incurred from customer fraud, Alma might contact you and request to stop or pause shipment before incurring any losses. Please comply promptly with these requests.
+
+> Alma requires merchants to maintain reasonable fraud and dispute rates. Increases to your fraud and dispute rates might result in losing access to Alma.
+
+## Stripe product support 
+Checkout UIs:
+  ✓ Full page (Recommended)
+  ✓ Payment Links
+  ✓ Embedded form
+  ✓ Payment Element
+  ✗ Express Checkout Element
+  ✗ Payment Method Messaging Element
+  ✓ In-app payments
+
+Products:
+  ✗ Managed Payments
+  ✗ Billing
+  ✗ Invoicing
+  ✗ Customer Portal
+  ✗ Radar
+  ✗ Terminal
+  ✓ Connect
+
+APIs:
+  ✓ Checkout Sessions (Recommended)
+  ✓ Payment Intents
+  ✗ Payment Intents with setup_future_usage
+  ✗ Setup Intents
+  ✗ Off-session payments
+## Customer terms 
+
+Alma requires that you add the following terms to your general terms of sale:
+
+- Customers can make purchases in installments using Alma.
+- A customer’s purchase using Alma is subject to Alma’s terms and conditions.
+- Non-approval by Alma for a purchase can result in the cancellation of that purchase.
+- A customer using Alma to purchase a good or service has a period of 14 calendar days in which they can withdraw the purchase.
+
+## Connect 
+
+Alma is available for online marketplaces using [Stripe Connect](https://stripe.com/connect). These online marketplaces include businesses such as Deliveroo and ManoMano that collect payments from customers, and later pay out to sub-accounts or service providers. Alma isn’t available for platforms that onboard other businesses and enable them to accept payments directly, such as Shopify or Squarespace.
+
+> Online marketplaces need to submit an onboarding request from the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods) to get access to Alma. Stripe sends email updates about the progress of all requests, and the current status is also reflected on the [Payment methods settings page](https://dashboard.stripe.com/settings/payment_methods).
+
+The following [Connect charges](https://docs.stripe.com/connect/charges.md) types, typically used by online marketplaces, are available to businesses using Alma.
+
+| Destination charges | Separate charges and transfers | Direct charges | `on_behalf_of` |
+| --- | --- | --- | --- |
+| ✓ Supported | ✓ Supported | ✓ Supported | ✓ Supported |
+
+## Customer experience 
+
+#### 1. Select payment method
+
+The customer selects Alma as their payment method.
+
+#### 2. Create or log in
+
+Stripe redirects the customer to Alma's website.
+
+#### 3. Accept terms
+
+The customer chooses between 2, 3, or 4 installments to complete their purchase.
+
+#### 4. Payment Complete
+
+You're paid immediately.
+
+### Transaction identifiers 
+
+Alma payments include a `transaction_id` field and an `installments.count` field on the payment method details. Use `transaction_id` to cross-reference a payment with Alma’s own records. If you need to reference the underlying charge, expand [`latest_charge`](https://docs.stripe.com/api/payment_intents/object.md#payment_intent_object-latest_charge) on the PaymentIntent.
+
+## Enable Alma 
+
+If you use Stripe front-end products, enable Alma in your [payment method settings](https://dashboard.stripe.com/settings/payment_methods). Stripe automatically determines which payment methods are most relevant to each customer.
+
+If your integration requires manually listing payment methods, you can [configure Alma as an accepted payment method](https://docs.stripe.com/payments/alma/accept-a-payment.md).

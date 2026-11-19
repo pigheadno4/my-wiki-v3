@@ -58,3 +58,6 @@ In the 2026-05-13 hosted Checkout example, the server creates a Session with a r
 ## Sources
 
 - [[source-stripe-subscriptions-amazon-pay]] — Stripe docs: Amazon Pay subscription integration (3 paths: SetupIntents, PaymentIntents, Checkout)
+- [[source-stripe-amazon-pay]] — May and November 2026 full Amazon Pay overviews: wallet availability, US USD-only row, refund/dispute windows, product support, hosted authorization and optional Charge transaction ID
+- [[source-stripe-amazon-pay-accept-payment]] — May 2026 one-time acceptance guide for Checkout, Elements, Direct API, iOS, and Android; November 2026 capture supplies variant navigation only
+- [[source-stripe-amazon-pay-set-up-future-payments]] — May 2026 save-for-later guide: Checkout setup, Direct API, iOS, and Android; November 2026 capture is variant navigation only

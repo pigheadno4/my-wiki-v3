@@ -2,44 +2,42 @@
 title: "Stripe Docs — South Korean payment methods"
 type: source
 date_ingested: 2026-05-08
+date_updated: 2026-11-15
+canonical_url: https://docs.stripe.com/payments/countries/korea
 original_format: webpage
 raw_files:
+  - "stripe-payments-countries-korea-2026-11-07.md"
   - "stripe-korea-payment-methods-2025.md"
 tags: [stripe, south-korea, krw, local-payment-methods, kakao-pay, naver-pay, samsung-pay, payco, wallets, installments]
 ---
 
 ## Summary
 
-Stripe supports South Korean local payment methods via a local processor partner — no local entity required. Covers all locally-issued KR cards plus Kakao Pay, Naver Pay, Samsung Pay, and PAYCO.
+The May 8 and November 7, 2026 Stripe overviews describe KRW payments from South Korean customers through local cards and wallets, using Stripe and a local processor partner without requiring a local South Korean entity. They do not designate a legal merchant-of-record role. The November capture adds an optional early-access interest form for more descriptive decline codes; it does not document access being granted or actual decline-code output.
 
 ## Key Facts
 
-- **Local processor model** (not MoR): Stripe + local processor partner
-- **Currency**: KRW only; **28 merchant countries**; **Payout**: T+4 US / T+7 elsewhere
-- **4-day funding** after payment approval
-- **Payment methods**:
-  - All local KR cards — one-time + recurring
-  - Kakao Pay — one-time + recurring (not SG)
-  - Naver Pay — one-time + recurring
-  - Samsung Pay — one-time only
-  - PAYCO — one-time only
-- **Manual capture**: Yes; **Partial capture**: No; **Connect**: Yes
-- **Disputes**: Yes — 365-day customer window, **7 days** to respond, 45-day decision, final; 7 reason codes
-- **Refunds**: Full + partial, 365-day window; Korean consumer law mandates 7-day right for goods/services, pro-rated for subscriptions
-- **Installments**: ≥50,000 KRW; merchant gets full amount upfront; customer repays issuer
-- **Subscription requirements**: 30-day notice before price change, 7-day payment reminder
+- **Market and enablement**: The guide lists 28 merchant account countries for KRW payments and South Korean customer location. For Stripe front-end products, enable South Korean payment methods in Dashboard payment-method settings; Stripe then selects relevant methods to display. The separate decline-code preview registration is not this enablement step. The guide also links Checkout, Elements, Invoicing, Payment Links, Subscriptions, and a Payment Intents API path. It cautions businesses to meet applicable South Korean legal and tax requirements; the page alone does not determine a merchant's legal role or compliance.
+- **Payment stages**: In the described Checkout flow, a Pay click redirects the customer to the local processor or method provider, where the customer authenticates. This is not itself proof of approval. The page says funds become available in the Stripe account four days **after payment approval**. The property panel separately lists payout timing of T+4 for US accounts and T+7 outside the US; Stripe-balance availability and external payout are distinct stages.
+- **Method matrix**: All local South Korean cards, Kakao Pay, and Naver Pay support one-time and recurring payments in the overview. Samsung Pay and PAYCO are listed one-time only. Kakao Pay is unavailable in Singapore. The general “Recurring payments: Yes” property applies to the group, not each method. The guide lists Connect and manual capture support but no partial capture. Links to individual methods are routes to their own requirements, not details established by this overview.
+- **Preview decline codes**: The November page invites users to register interest, with an email and preview identifier, in more descriptive South Korean decline codes. It gives no enrollment criteria, provisioned-access confirmation, rollout date, response schema, or observed code. No preview registration was performed.
+- **Installments**: For local card purchases of at least 50,000 KRW, issuers can offer installments to customers. Stripe says the business receives the full purchase amount “up front” relative to the customer's installments and keeps it if the customer cannot complete repayment to the issuer. This does not replace the guide's four-day post-approval Stripe-balance availability or the account's payout schedule.
+- **Refunds**: Full and partial refunds can be submitted within 365 calendar days of the original charge. The captures describe South Korean customers as **generally** entitled to a full refund within seven days of receiving goods or services, except when used or damaged, and give other contract-mismatch and unused-subscription conditions. They describe prorated cancellation during a subscription. These are dated provider statements with conditions, not a legal determination for a specific transaction.
+- **Disputes**: The captures list a 365-calendar-day customer filing window, seven days for the merchant to respond and submit evidence, a decision within 45 days after evidence, and a final outcome. Seven listed reason codes include credit not processed, duplicate, fraudulent, general, product not received, product unacceptable, and subscription canceled. Strong authentication is described as reducing fraud/unrecognized-payment risk, not eliminating disputes.
+- **Subscription changes**: Both captures say a merchant offering subscriptions to South Korean customers must **notify and obtain customer consent at least 30 days** before a price increase or charging for a previously free service, and remind the customer seven days before actual payment by email, text, or mail. The page advises making cancellation easy to minimize disputes; a checkout checkbox is an illustrative best practice, not a sole mandated implementation in this page.
 
-## CDN Assets
+## Captured asset
 
-- `raw/assets/stripe-korea-payment-flow.mp4` — payment flow demo video (6.5 MB)
+- `raw/assets/stripe-korea-payment-flow.mp4` — video asset referenced in the May capture. The November capture uses a remote video URL; that presentation change is not evidence of a different authorization flow.
 
 ## Related Pages
 
-- [[stripe-korea-payment-methods]] — concept page
-- [[source-stripe-local-payment-methods-by-country]] — hub page linking Nigeria + South Korea guides
-- [[stripe-wallets]] — Samsung Pay also appears as a Stripe wallet PM
-- [[stripe]] — Stripe company page
+- [[stripe]] — Stripe company route.
+- [[stripe-korea-payment-methods]] — concept and reciprocal timing, legal-wording, and consent qualifications.
+- [[source-stripe-local-payment-methods-by-country]] — regional hub.
+- [[stripe-wallets]] — wallet context.
 
 ## Raw Sources
 
-- [[stripe-korea-payment-methods-2025]] — verbatim webpage content
+- [[raw/stripe-payments-countries-korea-2026-11-07|2026-11-07 full South Korean methods overview]] — newer factual capture, 214 lines; contains the decline-code preview-interest invitation.
+- [[raw/stripe-korea-payment-methods-2025|2026-05-08 South Korean methods overview]] — retained historical factual capture, 203 lines.

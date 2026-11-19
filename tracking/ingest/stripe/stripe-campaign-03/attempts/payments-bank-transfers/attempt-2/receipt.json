@@ -1,0 +1,248 @@
+{
+  "job_id": "payments-bank-transfers",
+  "attempt": 2,
+  "raw_path": "raw/stripe-payments-bank-transfers-2026-11-07.md",
+  "raw_sha256": "5c0919337904b63634b3ecee148383f6c49ce85183d171185c5b8125902dbd1c",
+  "prior_raw_path": "raw/stripe-bank-transfers-2025.md",
+  "prior_raw_sha256": "8f3e3c3f0966339c3104ab3cdbd40242ec1d3bea96966489035cc9acfce2c7e7",
+  "source_targets": [
+    "wiki/sources/source-stripe-bank-transfers.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-bank-transfers.md": "3329394453408e321d76adda9810568b92e1d80fa08c230e128d7610ee9c6690"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-bank-transfers-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 453
+      },
+      {
+        "start": 140,
+        "end": 145
+      },
+      {
+        "start": 380,
+        "end": 418
+      }
+    ],
+    "raw/stripe-bank-transfers-2025.md": [
+      {
+        "start": 1,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 408
+      },
+      {
+        "start": 140,
+        "end": 145
+      },
+      {
+        "start": 380,
+        "end": 397
+      }
+    ],
+    "wiki/sources/source-stripe-bank-transfers.md": [
+      {
+        "start": 1,
+        "end": 39
+      },
+      {
+        "start": 15,
+        "end": 35
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/db06fdb0d2a7bc9870b5f77a/content.diff": [
+      {
+        "start": 1,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 450
+      },
+      {
+        "start": 451,
+        "end": 607
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 303,
+        "end": 315
+      }
+    ],
+    "wiki/concepts/stripe-bank-transfers.md": [
+      {
+        "start": 1,
+        "end": 142
+      },
+      {
+        "start": 32,
+        "end": 50
+      }
+    ],
+    "wiki/concepts/stripe-customer-balance.md": [
+      {
+        "start": 1,
+        "end": 67
+      },
+      {
+        "start": 40,
+        "end": 49
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/proposed-queries.md": [
+      {
+        "start": 187,
+        "end": 194
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-bank-transfers/attempt-2/input.json": [
+      {
+        "start": 1,
+        "end": 72
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-bank-transfers/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 199
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-bank-transfers/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 109
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Bank transfers support IBAN localization for DE, FR, IE, and NL.",
+      "location": "raw/stripe-payments-bank-transfers-2026-11-07.md:20"
+    },
+    {
+      "text": "| Cross-border payments | Not supported |",
+      "location": "raw/stripe-payments-bank-transfers-2026-11-07.md:111"
+    },
+    {
+      "text": "| Transaction limits | Bank transfers don\u2019t have additional payment-method-specific amount limits.",
+      "location": "raw/stripe-payments-bank-transfers-2026-11-07.md:112"
+    },
+    {
+      "text": "| Disputes | [Supported for USD transactions only](https://docs.stripe.com/payments/bank-transfers.md#disputes) |",
+      "location": "raw/stripe-payments-bank-transfers-2026-11-07.md:171"
+    },
+    {
+      "text": "Checkout doesn\u2019t support bank transfers in subscription or setup mode. Invoices and Subscriptions only support the [send_invoice](https://docs.stripe.com/api/invoices/object.md#invoice_object-collection_method) collection method.",
+      "location": "raw/stripe-payments-bank-transfers-2026-11-07.md:409"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "| GBP | - GB |",
+      "location": "raw/stripe-bank-transfers-2025.md:99"
+    },
+    {
+      "text": "Bank transfers don\u2019t support Payment Links or International transfers.",
+      "location": "raw/stripe-bank-transfers-2025.md:408"
+    },
+    {
+      "text": "Bank transfer payments can\u2019t be reversed except for USD and CAD transactions.",
+      "location": "raw/stripe-bank-transfers-2025.md:358"
+    },
+    {
+      "text": "If unreconciled funds are held in the customer balance for more than 75 days, Stripe automatically attempts to return the funds to the customer\u2019s bank account.",
+      "location": "raw/stripe-bank-transfers-2025.md:144"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The November capture retains the core push-transfer model: a virtual bank account receives customer-initiated funds, Stripe places them in Customer cash balance for reconciliation, and the customer can send a different amount than owed (new raw lines 5-9, 140-144; old raw lines 4-8, 140-144). The existing source captures the model at lines 13-17 but its line 21 says 'auto-returned' where the raw says Stripe attempts return after more than 75 days, with a conditional 90-day sweep if customer bank-account information cannot be determined (new raw line 144; old raw line 144). The related bank-transfer concept line 37 already has that condition, whereas customer-balance concept line 47 omits it and needs a reciprocal correction alongside source line 21 and bank-transfer concept line 36's 75-day wording.",
+    "A material availability delta expands the November GBP merchant-location table beyond GB to numerous listed countries including AU, CA, HK, SG and US; the prior GBP row was GB only (new raw lines 64-101; old raw lines 99-101). The EUR-or-USD, JPY and MXN rows remain separately scoped by currency (new raw lines 28-63, 102-103). The current concept still says GBP 'GB only' at line 28 and needs correction with date and currency scope.",
+    "New metadata says reusable, instant provisional access, delayed payment confirmation, standard payout schedule and IBAN localization for DE/FR/IE/NL (new raw lines 14-20), replacing a prior properties list that said payment confirmation 'No' and standard payout timing (old raw lines 14-56). Treat provisional access, confirmation and settlement as different states and do not infer funds availability from the label alone.",
+    "New support rows clarify cross-border not supported and no additional method-specific amount limits beyond Stripe's currency charge limits (new raw lines 105-112). Both captures also describe US domestic and international SWIFT wires, 3\u20135 business day settlement, and no Stripe-supported international-wire refunds (new raw lines 146-162; old raw lines 146-162). This apparent cross-border/international-transfer conflict requires a visible reciprocal qualification, not erasure of either passage.",
+    "The November capability row says USD disputes only but the same capture's dispute subsection says USD and CAD bank transfers can be reversed and describes CAD ACH reversals (new raw lines 164-194). The earlier capture likewise described USD and CAD reversal exceptions while its properties panel said US dispute support only (old raw lines 44-46, 356-366). Current source line 29 and concept lines 19, 51-55 state USD/CAD without that conflict, so attach reciprocal warnings rather than asserting CAD support is settled.",
+    "New product/API support is more explicit: full-page/embedded Checkout and Payment Element, Billing, Invoicing and Connect are listed; Payment Links, Express Checkout Element, in-app payments, Customer Portal, Radar and Terminal are marked unsupported; Checkout Sessions and PaymentIntents supported, but SetupIntents and setup_future_usage not; Checkout subscription/setup mode excluded, Invoices and Subscriptions restricted to send_invoice (new raw lines 384-417). The old support tables already supported Checkout and PaymentIntents while excluding Checkout setup/subscription modes, SetupIntents, setup_future_usage and manual capture (old raw lines 382-396). Current source line 23's 'PaymentIntents only' must mean only among Intent APIs; unqualified, it misleadingly excludes supported Checkout Sessions. Keep API enum customer_balance and distinguish Checkout Sessions from SetupIntents. This is baseline clarification, not a newly created Checkout capability.",
+    "The current source's 'International wires (US only)' at line 25 matches the two captured US wire sections (new raw lines 146-162; old raw lines 146-162), but source line 35 simultaneously says international transfers unsupported. The source and concept line 43/47-49 should preserve both as a documented conflict with product/region qualification. No runtime availability can be settled from these captures.",
+    "The new sender-information example changes from a Node SDK retrieval call to a curl call at the same customer cash-balance-transaction endpoint (new raw lines 204-227; old raw lines 183-213). Region-specific funded schemas remain examples (new raw lines 229-368; old raw lines 215-354); source line 31 is historically accurate for the prior capture but should be dated rather than presented as the November example.",
+    "The newly added customer-experience sequence says payment completes after Stripe reconciles funds (new raw lines 431-447). Selection, instructions, transfer initiation, cash-balance funding and successful reconciliation are distinct stages; neither instant provisional access nor a funded transaction alone proves invoice or PaymentIntent success."
+  ],
+  "substantive_changes": [
+    "GBP business-location eligibility broadens from GB alone in May to a many-country list in November, subject to the row's GBP currency scope (old raw lines 99-101; new raw lines 64-103).",
+    "November explicitly adds IBAN localization DE/FR/IE/NL, instant provisional access and delayed confirmation metadata, cross-border exclusion, and no separate bank-transfer amount limits beyond currency charge limits (new raw lines 14-20, 105-112; old raw lines 14-56).",
+    "November explicitly lists Invoices and Subscriptions as send_invoice only and expands support/unsupported product rows and customer experience sequence (new raw lines 384-417, 431-447; old raw lines 103-112, 382-396).",
+    "The replacement of the Node SDK sender retrieval snippet with curl and the MX example heading correction are presentation/example changes at the same API path and object type, not a demonstrated API behavior change (old raw lines 197-213, 299-325; new raw lines 218-227, 313-340; diff lines 241-260, 405-408)."
+  ],
+  "historical_claims_to_preserve": [
+    "Preserve old May 5, 2026 GBP 'GB only' row as historical evidence, while routing current overview to the November expanded GBP list; never apply GBP geography to EUR/USD, JPY or MXN (old raw lines 58-101; new raw lines 24-103).",
+    "Preserve virtual-account/customer cash-balance reconciliation, 75-day automatic return attempt, conditional 90-day sweep, Checkout Customer requirement, and the distinction between funds received and paid invoice or PaymentIntent (old raw lines 130-144; new raw lines 130-144, 431-447).",
+    "Preserve dated US international SWIFT wire text, 3\u20135 business-day timing, USD-only US wire currency and merchant-managed refund limitation alongside the explicit cross-border/international-transfer exclusions (old raw lines 146-162, 406-408; new raw lines 105-112, 146-162, 427-429).",
+    "Preserve prior Node SDK example as dated sample and new curl example as current capture's presentation of the Cash Balance Transactions API; their funded sender fields and network codes remain region-specific examples (old raw lines 197-213, 215-354; new raw lines 204-227, 229-368).",
+    "Preserve Connect all-charge-types description with on_behalf_of exclusion and separate connected-account activation/capability requirements for direct charges (old raw lines 368-380; new raw lines 370-382)."
+  ],
+  "conflicts": [
+    "Within November capture: USD-only disputes capability row (new raw line 171) conflicts with the USD-and-CAD reversal section (new raw lines 184-194). Old raw similarly combines US-only panel (old raw lines 44-46) with USD/CAD reversal section (old raw lines 356-366). Current source line 29 and bank-transfer concept lines 19, 51-55 need reciprocal warning and cannot settle CAD eligibility.",
+    "Within both captures: US international SWIFT wire acceptance (new raw lines 146-162; old raw lines 146-162) conflicts in wording with 'cross-border payments not supported' and 'International transfers' unsupported (new raw lines 105-112, 427-429; old raw lines 406-408). Current source lines 25, 35 and concept lines 43, 47-49 should warn mutually and avoid a blanket 'all international transfers supported' or 'all unsupported' inference.",
+    "Current concept line 28 says GBP is GB only, directly contradicted by November GBP eligibility row (new raw lines 64-101); source line 19 refers readers to that concept. Update the concept and any source route that depends on it.",
+    "Current source and bank-transfer concept say unreconciled funds are 'auto-returned at 75 days' (source line 21; bank-transfer concept line 36), while both captures say Stripe attempts a return after more than 75 days (old raw line 144; new raw line 144). The source line 21 and customer-balance concept line 47 also omit the condition that Stripe sweeps at day 90 if it cannot determine the customer's bank account information; bank-transfer concept line 37 already states that condition. Correct both unconditional outcomes reciprocally.",
+    "Current source line 23's 'PaymentIntents only' can imply Checkout Sessions unsupported, contrary to explicit November Checkout Sessions plus Payment Intents support (new raw lines 384-415) and the prior Checkout plus PaymentIntents support (old raw lines 382-394). Qualify it as PaymentIntents among Intent APIs, with SetupIntents and setup_future_usage unsupported, while retaining customer_balance enum."
+  ],
+  "unresolved_questions": [
+    "The captured page does not reconcile whether its USD-only dispute support row excludes or supersedes its CAD ACH reversal paragraph; follow-up authority would be needed for a definitive CAD operational claim (new raw lines 171, 184-194).",
+    "The captured page does not define how its US international SWIFT section maps to its cross-border and international-transfer exclusions; do not infer an exception's complete product scope or live eligibility (new raw lines 105-112, 146-162, 427-429).",
+    "The pricing field contains an undefined URL segment and the unsupported-businesses EU/UK headings have no categories beneath them; these captured artifacts cannot support a price or a list of EU/UK excluded categories (new raw lines 19, 419-425)."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-bank-transfers.md",
+    "wiki/concepts/stripe-customer-balance.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-bank-transfers.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add the November raw as dated provenance and update GBP eligibility, IBAN localization, limits, support/collection-method details and the new curl sender example while retaining old Node sample as May evidence (new raw lines 14-20, 64-112, 204-227, 384-417; source lines 4-7, 19, 31-35).",
+        "Correct the 75-day return wording to an attempt and preserve conditional 90-day sweep in source line 21; customer-balance concept line 47 also needs the if-bank-details-unavailable condition, while bank-transfer concept line 37 already has it (old and new raw line 144).",
+        "Qualify source line 23's 'PaymentIntents only' as limited to Intent APIs: both Checkout Sessions and PaymentIntents are supported, while SetupIntents and setup_future_usage are unsupported; retain customer_balance enum. This is baseline wording clarification, because old raw lines 382-394 also support Checkout (new raw lines 384-415).",
+        "Warn reciprocally about USD-only capability row versus CAD reversal details, and cross-border exclusions versus US international SWIFT wire passage (new raw lines 105-112, 146-162, 164-194, 427-429; source lines 25, 29, 35)."
+      ],
+      "conflicts": [
+        "GBP 'GB only' is in the routed concept, not the November table (concept line 28; new raw lines 64-101).",
+        "The source currently flattens USD/CAD disputes and international wires versus exclusion without explaining the source's internal contradictions (source lines 25, 29, 35; new raw lines 105-112, 146-162, 164-194, 427-429).",
+        "The unqualified 'PaymentIntents only' at source line 23 conflicts with Checkout Sessions support in both captures (old raw lines 382-394; new raw lines 384-415); source line 21 and customer-balance concept line 47 also overstate the conditional 90-day sweep (old and new raw line 144)."
+      ],
+      "reason": "The new capture contains material geographic and support detail, and the existing summary has overconfident baseline claims and unmarked internal-document conflicts."
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/bank-transfers, the complete November capture describes a customer-initiated push to Stripe-provided virtual bank details, then a Customer cash-balance ledger used for reconciliation; a transfer or funded transaction is distinct from completed payment after reconciliation (new raw lines 5-9, 140-144, 204-227, 431-447). Enable the method in Dashboard; Checkout requires a specified Customer, and eligibility is merchant-country plus currency specific, with EUR/GBP/JPY/MXN/USD presentment (new raw lines 11-20, 22-112, 116-138). Compared with May, GBP eligibility expands beyond GB and support/collection-method boundaries are more explicit (old raw lines 58-112, 382-396; new raw lines 64-103, 384-417). Both captures support Checkout Sessions and PaymentIntents with customer_balance enum but exclude SetupIntents, so source-stripe-bank-transfers.md line 23's 'PaymentIntents only' needs to be scoped to Intent APIs rather than implying Checkout is unavailable (old raw lines 382-394; new raw lines 384-415). That source also needs updated geography, dated examples and a corrected 75-day return attempt with conditional 90-day sweep (source lines 19-35; old and new raw line 144).",
+    "Q2": "For https://docs.stripe.com/payments/bank-transfers, substantive November additions include wider GBP merchant locations, IBAN localization, provisional-access and delayed-confirmation labels, method-limit clarification, explicit send_invoice support for Invoices and Subscriptions, and a more detailed product matrix (old raw lines 14-112, 382-396; new raw lines 14-112, 384-417). The Node-to-curl sender example, MX heading correction, table styling and customer-experience prose are presentation or explanatory changes, not proof of a new API or settlement behavior (old raw lines 197-213, 299-325; new raw lines 204-227, 313-340, 431-447). source-stripe-bank-transfers.md must retain May facts with date, qualify its PaymentIntents-only shorthand because Checkout Sessions were already supported, and warn both directions: November USD-only dispute row versus CAD reversal section, and cross-border/international-transfer exclusions versus its US SWIFT-wire section (source lines 23-35; old raw lines 382-394; new raw lines 105-112, 146-194, 384-415, 427-429). The bank-transfer concept line 37 already conditions a 90-day sweep on missing bank details, but customer-balance concept line 47 and source line 21 omit that condition; both old raw line 144 and new raw line 144 require it and state a return attempt after more than 75 days. Customer, cash-balance transaction, PaymentIntent, Checkout Session, Invoice, and connected account remain different identities; provisional access, receipt of funds, reconciliation, payout and successful payment are different outcomes."
+  }
+}

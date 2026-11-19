@@ -9,9 +9,9 @@ Part of [[stripe-installments]] — Stripe's installments family (also includes 
 
 ## Definition
 
-Japan card installments (分割払い) allow customers to split credit card purchases over multiple billing statements. Merchant receives full amount upfront; card company handles credit and collection.
+Japan card installments (分割払い) let customers split credit-card purchases over multiple billing statements. The merchant receives the full transaction amount as with a standard card payment, while the card issuer provides credit and collects installments; funds become available on the same schedule as other card payments, with standard payout timing.
 
-**Restrictions**: Japan Stripe accounts only; JP-issued credit cards only (no debit/prepaid); JPY only; no recurring/off-session use.
+**Restrictions**: Japan Stripe accounts, Japanese-issued credit cards (not debit or prepaid) and JPY. Recurring installment payments are marked unsupported. The guide also says not to use installments for other off-session payments where the customer does not choose the plan when making the payment; it does not establish support for another off-session case.
 
 ## Plan Types
 
@@ -50,4 +50,4 @@ Unavailable: Jun 16–Jul 15 and Nov 16–Dec 15.
 ## Sources
 
 - [[source-stripe-jp-installments]] — primary source: properties, brand support table, bonus windows, requirements
-- [[source-stripe-jp-installments-accept-payment]] — integration guide: Checkout, Payment Element, Direct API (4-step), Invoices, Payment Links; test cards
+- [[source-stripe-jp-installments-accept-payment]] — 2026-05-01 full integration guide for Checkout, Payment Element, Direct API, Invoices, Payment Links and sandbox cards; its 2026-11-07 canonical capture is only a five-variant navigation index. With dynamic payment methods, the May guide says installments appear automatically and the `enabled` field is omitted in the PaymentIntent path.

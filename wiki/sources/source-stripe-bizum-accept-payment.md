@@ -2,37 +2,44 @@
 title: "Stripe: Accept a Payment with Bizum"
 type: source
 date_ingested: 2026-05-06
+date_updated: 2026-11-15
 original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/bizum/accept-a-payment"
 raw_files:
   - "stripe-bizum-accept-payment-2025.md"
 tags: [stripe, real-time-payments, bizum, spain, eur, checkout, payment-intents, mobile, ios, android]
 ---
 
-## Summary
+## Overview
 
-Integration guide for Bizum across four paths: Checkout (hosted), Checkout Sessions API (Elements), PaymentIntents API, and Direct API. Covers web and mobile (iOS/Android). Direct API requires explicitly collecting the customer's Bizum-registered phone number.
+Stripe's Bizum acceptance guide. The detailed 2026-05-06 capture documents four web integration variants: hosted Checkout, Elements with the Checkout Sessions API, Elements with the Payment Intents API, and Direct API. It also includes iOS and Android mobile sections. The 2026-11-07 canonical capture is a **variant index only**: it lists the four web routes but contains no current variant bodies and no mobile links. Omission from that index does not establish mobile withdrawal or removal of older behavior. See [[stripe-real-time-payments]] and [[stripe]].
 
-## Key Details
+## Key takeaways from the 2026-05-06 detailed capture
 
-**Four integration paths**:
-- **Checkout**: `payment_method_types: ['bizum']`, EUR only, €0.50–€5,000 — no redirect required, Stripe.js polls
-- **Checkout Sessions API**: standard Elements path with `currency: 'eur'`
-- **PaymentIntents API**: standard `payment_method_types: ['bizum']` path
-- **Direct API**: must collect Bizum-registered phone number from customer and pass as `billing_details[phone]` to `stripe.confirmPayment`; Stripe.js polls for result (no redirect)
+- The old guide says buyers need a Spanish IBAN at a Bizum-connected bank and must enable Bizum in their banking app, linking a mobile number to that IBAN. The Direct API variant explicitly requires the merchant to collect that Bizum-registered phone number. These dated prerequisites are not account-eligibility or payment-success findings.
+- In hosted Checkout, the old guide requires all Checkout Session line-item Prices to use the same currency and specifies a total of €0.50–€5,000; it tells the merchant to add `bizum` to `payment_method_types` for manual listing. The example uses EUR and `mode: "payment"`. The blank compatibility-template fields in the capture do not establish other mode or geography constraints.
+- In the old Elements Checkout Sessions variant, the server creates a Checkout Session and returns its client secret to the front end, which initializes Checkout, mounts the Payment Element, and calls `confirm`. The old guide says these Sessions expire 24 hours after creation. Its `dahlia` Stripe.js sample, `@stripe/stripe-js` 7.0.0 minimum in the HTML/JS section, and React Stripe.js 5.0.0 plus loader 8.0.0 minimum belong to that May variant, not to the November index.
+- In the old Elements Payment Intents variant, the server sets amount and currency, creates a PaymentIntent, and returns its client secret; the client uses the Payment Element and `stripe.confirmPayment` with a `return_url`. That variant describes a possible intermediate redirect. Accounts v2 `customer_account` and Customers v1 `customer` are separate example branches, not simultaneous required fields.
+- In the old Direct API variant, the server creates a PaymentIntent for `bizum` and passes its client secret to the client. The client supplies the collected Bizum-registered phone number as `billing_details[phone]` in `stripe.confirmPayment`, then tells the buyer to approve in their banking app. Stripe.js polls by default; its promise resolves at `succeeded` or failed `requires_payment_method`. The old text also refers to a redirect, so polling is **not** a guarantee of a redirect-free flow. `handleActions: false` disables automatic polling for a manual status-check path.
+- The old iOS section describes StripePaymentsUI installation, a webview, return URL handling, and `STPPaymentHandler.confirmPayment`; the Android section shows a Kotlin `PaymentLauncher` confirmation example. The Android example is not a Compose recipe. Both mobile sections are historical May 2026 evidence; the November index says nothing about their current support or SDK versions.
+- The older test sections say `+34600000002` produces a provider decline and a transition from `requires_action` to `requires_payment_method`, while other test numbers transition to `succeeded`, approximately five seconds after confirmation. Those are **test-only** outcomes. The old guide recommends `payment_intent.succeeded` events and asynchronous handling rather than relying on a client callback. Creating an intent, confirming it, opening the banking app, returning to a page, or receiving an SDK callback does not alone prove payment success.
 
-**Mobile SDKs**: iOS (Swift via StripePaymentsUI) and Android (Compose) both supported. Use `automatic_payment_methods` or explicit `payment_method_types: ['bizum']`.
+## Detail locators
 
-**Test phone numbers** (status transitions ~5 seconds after confirmation):
+- Buyer prerequisite, blank compatibility template, hosted Checkout line items and amount, `bizum` listing, and test phones: [[raw/stripe-bizum-accept-payment-2025|2026-05-06 detailed guide]], lines 8-87.
+- Elements Checkout Sessions server/client roles and dated Stripe.js/React minimums: the same raw, lines 95-239, 252-579. Elements Payment Intents server/client roles, Accounts v2 and Customers v1 examples, redirect language and event handling: lines 581-1124.
+- Direct API phone requirement, EUR statement, confirmation, default/manual polling, test outcomes and post-payment events: the same raw, lines 1126-1349.
+- Dated iOS webview/return URL and Android Kotlin `PaymentLauncher` sections: the same raw, lines 1351-1858. Error-code table: lines 1114-1124, 1339-1349 and 1848-1858.
 
-| Phone number | Outcome |
-| --- | --- |
-| `+34600000002` | Decline — `payment_method_provider_decline` |
-| Any other | Success → `succeeded` |
+## Related
 
-**Error codes**: `payment_intent_invalid_currency`, `missing_required_parameter`, `payment_intent_payment_attempt_failed`, `payment_intent_authentication_failure`, `payment_intent_redirect_confirmation_without_return_url`.
+- [[stripe-real-time-payments]] — provider real-time payments concept and reciprocal source route
+- [[source-stripe-bizum]] — Bizum method details
 
-**Note**: "Determine compatibility" fields (Customer Geography, Supported currencies, Payment/Setup/Subscription mode) are blank in the source page — template not filled in.
+## Related raw API references
+
+- [[raw/stripe-payments-bizum-accept-a-payment-2026-11-07|2026-11-07 Bizum variant index only]] — navigation to Checkout, Elements Checkout Sessions, Elements Payment Intents and Direct API; the listed URLs have not been read as current behavioral authority.
 
 ## Raw Sources
 
-- [[stripe-bizum-accept-payment-2025]] — verbatim webpage content (1,858 lines); fixed `*Prices*` ×2, `*PaymentIntent*` ×2, `*client secret*` ×6, `*webhook*` ×4
+- [[raw/stripe-bizum-accept-payment-2025|2026-05-06 detailed multi-variant webpage capture]] — dated factual authority retained in `raw_files`.

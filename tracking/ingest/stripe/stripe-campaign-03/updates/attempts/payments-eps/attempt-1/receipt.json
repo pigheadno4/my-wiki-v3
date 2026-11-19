@@ -1,0 +1,175 @@
+{
+  "job_id": "payments-eps",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-eps.md": {
+      "job_id": "payments-eps",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: EPS Payments\"\ntype: source\ndate_ingested: 2026-05-03\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/eps\"\nraw_files:\n  - \"stripe-payments-eps-2026-11-07.md\"\n  - \"stripe-eps-2025.md\"\ntags: [stripe, eps, austria, eur, bank-redirect, authenticated]\n---\n\n## Overview\n\n[[stripe]] describes EPS as a single-use Austrian customer bank redirect payment method, with EUR presentment, immediate payment result notification, instant provisional access and the standard payout schedule. A customer chooses a bank, signs in and authorizes there, then may optionally return to the business. The bank result, browser return and eventual payout are separate states. See [[stripe-eps]] and [[stripe-bank-redirects]]. [November raw lines 5-14, 113-137]\n\n## Eligibility and limits\n\n- EPS customers are in Austria; the November page lists Stripe account business locations across 40 countries, merchant and Connect platform/marketplace account types, B2B and B2C, and domestic/cross-border coverage. It states that an account might be reviewed after activation and can appeal capability restrictions. Country-list inclusion, Dashboard enablement and an activated account do not establish this particular account's EPS eligibility. [November raw lines 16-39]\n- Presentment currency is EUR, with a 1.00 EUR minimum in the November capture. The May capture also listed Austrian customers, EUR and the same business countries, but did not state this minimum. [May raw lines 14-22, 56-99; November raw lines 19-40]\n- The November page labels EPS single-use and recurring payments unsupported. Manual/partial/multi/overcapture, extended/incremental/decremental/re-authorization, SetupIntents, PaymentIntents with `setup_future_usage`, and off-session payments are marked unsupported. These exclusions prevent treating Billing support as an automatic recurring EPS charge path. [May raw lines 28-50; November raw lines 10-14, 41-65, 105-112]\n\n## Payment flow and integration\n\nThe customer selects EPS, chooses a bank, is redirected to its login page, enters bank credentials and has up to one hour for bank authorization by a bank-provided method such as scanner or SMS. The customer immediately sees success or failure, and may optionally return to the business website. The May diagram-based flow had these stages without the one-hour statement. A return to the website alone is not confirmation of success or settlement. [May raw lines 113-132; November raw lines 113-137]\n\nThe November matrix marks full-page Checkout, Payment Links, embedded form, Payment Element, in-app payments, Billing, Invoicing, Radar, Connect, Checkout Sessions and PaymentIntents supported. It marks Express Checkout Element, Payment Method Messaging Element, Customer Portal, Terminal and Managed Payments unsupported. The older May list was shorter; omissions there are not proof of non-support. If using Stripe front-end products, enable EPS in payment method settings; manual payment-method lists need explicit configuration. This setting is separate from account eligibility. [May raw lines 101-111, 134-148; November raw lines 86-112, 145-149]\n\n**Dated Invoicing and subscription boundary:** The May 2026 EPS page explicitly described Invoicing as invite-only and excluded Checkout subscription/setup modes. The separate May bank-redirects matrix listed EPS Subscriptions with `send_invoice` only. The November EPS page marks Invoicing and Billing supported and includes a `send_invoice`-only footnote after its product/API matrix, while also marking recurring and off-session payments unsupported. The text capture does not unambiguously attach the footnote to one product row. Preserve the May invite condition as historical; the November omission of that condition does not prove it was lifted for every account. An invoice collection route does not imply Checkout subscription mode or automatic recurring charges. Confirm the account and route-specific eligibility before using them. [May EPS raw lines 101-111; May bank-redirects raw lines 24-34; November EPS raw lines 42, 86-112; [[source-stripe-bank-redirects]]]\n\n## Refunds and disputes\n\n- A full or partial EPS refund may be submitted through the Dashboard or Refunds API within 180 days of payment; multiple partial refunds must not exceed the original amount. It cannot be canceled once submitted. Stripe processes it as a separate bank-account credit, not a card-style reversal, and it may not be labeled as a refund on the bank statement. Typical receipt is 1\u20133 days depending on the bank, with no guaranteed maximum. The May capture stated the 180-day window without these later details. [May raw lines 154-156; November raw lines 57-72]\n- Track `Refund.status` in the Dashboard or Refunds API and `refund.updated`/`refund.failed` webhooks. A `succeeded` Refund object is the successful refund state; on `failed`, Stripe returns the amount to the Stripe balance and the business must refund the customer another way. Submission is not receipt or success. [November raw lines 74-78]\n- EPS bank authentication means Stripe describes no **standard dispute/chargeback process** for EPS. It does not eliminate customer complaints: a customer contacting the bank can be directed back to the merchant, who may refund. [May raw lines 150-152; November raw lines 80-84]\n\n## Statement descriptors\n\nFor this non-card payment, use `statement_descriptor` rather than the card-only `statement_descriptor_suffix`; an unset payment descriptor falls back to the account-level descriptor. For Connect destination charges, Stripe says the platform descriptor applies by default, or the connected-account descriptor when `on_behalf_of` is set. What appears on the bank statement varies by bank. [November raw lines 139-143]\n\n## Raw Sources\n\n- [[raw/stripe-payments-eps-2026-11-07|2026-11-07 full EPS overview]] \u2014 149 lines; expanded eligibility, capabilities, refund lifecycle and customer experience\n- [[raw/stripe-eps-2025|2026-05-03 EPS overview]] \u2014 156 lines; earlier properties, diagrams and invite-only Invoicing footnote\n",
+      "quotes": [
+        {
+          "text": "Transaction limits: Minimum amount: 1.00 EUR",
+          "location": "raw/stripe-payments-eps-2026-11-07.md:40"
+        },
+        {
+          "text": "You can\u2019t cancel an EPS refund after submitting it.",
+          "location": "raw/stripe-payments-eps-2026-11-07.md:68"
+        },
+        {
+          "text": "You must refund the customer using another method.",
+          "location": "raw/stripe-payments-eps-2026-11-07.md:78"
+        },
+        {
+          "text": "1. Only supports send_invoice collection method.",
+          "location": "raw/stripe-payments-eps-2026-11-07.md:112"
+        },
+        {
+          "text": "The customer has up to 1 hour to complete bank authorization",
+          "location": "raw/stripe-payments-eps-2026-11-07.md:129"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "s03-eps-refund-state",
+            "target_path": "wiki/concepts/stripe-eps.md",
+            "update_kind": "durable_fact",
+            "anchor": "- **Refunds**: Up to 180 days",
+            "proposed_markdown": "- **Refunds**: Submit full or multiple partial refunds within 180 days; total partial refunds cannot exceed the payment. Submission cannot be canceled. EPS refunds are separate bank credits, typically received in 1\u20133 days but without a guaranteed maximum. Track `Refund.status` and `refund.updated`/`refund.failed`; after failure, Stripe returns funds to the Stripe balance and the business must refund by another method. See [[source-stripe-eps]] (November 2026).",
+            "quote_indexes": [
+              1,
+              2
+            ],
+            "warnings": [
+              "The 180-day baseline is raw/stripe-eps-2025.md:154-156; expanded lifecycle is raw/stripe-payments-eps-2026-11-07.md:57-78."
+            ]
+          },
+          {
+            "update_id": "s03-eps-invoicing-boundary",
+            "target_path": "wiki/concepts/stripe-eps.md",
+            "update_kind": "durable_fact",
+            "anchor": "- **Checkout restrictions**: Not in subscription or setup mode\n- **Invoicing**: Invite-only; ECE: not supported",
+            "proposed_markdown": "- **Checkout restrictions**: The May 2026 EPS page excluded Checkout subscription/setup modes; the November 2026 page marks recurring, SetupIntents and off-session payment support unavailable. A `send_invoice` route is not automatic recurring EPS charging.\n- **Invoicing**: May 2026 called it invite-only; November marks it supported and adds a `send_invoice`-only footnote whose row attachment is unclear in the text capture. Neither capture proves current account entitlement. Express Checkout Element is unsupported. See [[source-stripe-eps]] for the dated comparison.",
+            "quote_indexes": [
+              3
+            ],
+            "warnings": [
+              "Historical invite-only and Checkout restriction: raw/stripe-eps-2025.md:101-111; November support/footnote/recurring limits: raw/stripe-payments-eps-2026-11-07.md:42,86-112.",
+              "Older shared matrix lists EPS Subscriptions with send_invoice only: raw/stripe-bank-redirects-2025.md:24-34."
+            ]
+          },
+          {
+            "update_id": "s03-eps-shared-bank-redirect-scope",
+            "target_path": "wiki/concepts/stripe-bank-redirects.md",
+            "update_kind": "durable_fact",
+            "anchor": "- **Subscriptions**: only iDEAL|Wero, Bancontact, EPS, FPX, P24 \u2014 all via `send_invoice` only (not `charge_automatically`)\n- **Invoicing**: FPX full support; iDEAL|Wero full support; Bancontact/EPS/P24 invite-only; BLIK/TWINT unsupported",
+            "proposed_markdown": "- **Subscriptions**: The May 2026 bank-redirect matrix lists iDEAL|Wero, Bancontact, EPS, FPX and P24 via `send_invoice` only. For EPS this is a per-invoice collection route, not automatic recurring charging or Checkout subscription mode; the November EPS overview labels recurring and off-session support unavailable. See [[source-stripe-eps]].\n- **Invoicing**: The May 2026 matrix marks FPX and iDEAL|Wero supported and Bancontact/EPS/P24 invite-only; BLIK/TWINT unsupported. The November EPS page instead marks EPS Invoicing supported with a `send_invoice`-only footnote whose row attachment is unclear in the text capture. Preserve the dated conflict; EPS entitlement for a particular account remains unverified. See [[source-stripe-eps]].",
+            "quote_indexes": [
+              3
+            ],
+            "warnings": [
+              "May shared source matrix and footnote: raw/stripe-bank-redirects-2025.md:24-34; May EPS Invoicing invite statement: raw/stripe-eps-2025.md:101-111.",
+              "November EPS recurring, matrix and footnote: raw/stripe-payments-eps-2026-11-07.md:42,86-112. Other bank-redirect method facts are unchanged."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-eps-2026-11-07.md",
+      "raw_sha256": "191290a30d2d2be1a57de5b6173afedf2b915802633cec0613e18f479a4695b6",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-eps-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 149
+      }
+    ],
+    "raw/stripe-eps-2025.md": [
+      {
+        "start": 1,
+        "end": 156
+      }
+    ],
+    "wiki/sources/source-stripe-eps.md": [
+      {
+        "start": 1,
+        "end": 28
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/3e175d37a181e8efa2d9a194/content.diff": [
+      {
+        "start": 1,
+        "end": 125
+      },
+      {
+        "start": 126,
+        "end": 250
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-eps/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 213
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 19
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 260,
+        "end": 280
+      },
+      {
+        "start": 740,
+        "end": 755
+      }
+    ],
+    "wiki/concepts/stripe-eps.md": [
+      {
+        "start": 1,
+        "end": 47
+      }
+    ],
+    "wiki/concepts/stripe-bank-redirects.md": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ],
+    "wiki/sources/source-stripe-bank-redirects.md": [
+      {
+        "start": 1,
+        "end": 45
+      }
+    ],
+    "raw/stripe-bank-redirects-2025.md": [
+      {
+        "start": 1,
+        "end": 55
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "2Available by invite only.",
+      "location": "raw/stripe-eps-2025.md:111"
+    },
+    {
+      "text": "EPS payments can be refunded up to 180 days after the original payment date.",
+      "location": "raw/stripe-eps-2025.md:156"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/eps, the new capture documents Austrian customer EPS bank redirects in EUR, a 1.00 EUR minimum, 40 listed account business countries, merchant and Connect support, possible post-activation review, and no automatic recurring, off-session or manual-capture route. The customer chooses a bank and has up to one hour to authorize there; immediate success/failure display, optional browser return, provisional access and standard payout are distinct states. Old raw lines 8-54, 56-99 and 113-156 already established the Austrian/EUR redirect, no recurring support and 180-day refunds; new raw lines 16-78, 86-112 and 113-143 add limits, detailed refund outcomes and descriptor rules. source-stripe-eps.md is May-only, omits those November qualifications and repeats an undated invite-only Invoicing claim.",
+    "Q2": "At https://docs.stripe.com/payments/eps, substantive November additions include the 1.00 EUR minimum, possible account review, one-hour bank authorization, explicit API/product exclusions and refund lifecycle: non-cancelable separate bank credits, bank-dependent typical 1\u20133 days without a maximum, status webhooks and an alternate refund after failure (old raw lines 150-156; new raw lines 16-78, 86-112, 113-137). May's invite-only Invoicing statement conflicts with November's supported mark and ambiguously attached send_invoice footnote (old raw lines 101-111; new raw lines 96-112). source-stripe-eps.md and both EPS concepts need reciprocal dated warnings; the May shared bank-redirect matrix's send_invoice Subscriptions row is not proof of recurring charging or Checkout subscription mode. The old diagrams-to-prose, expanded tables and pricing link are presentation/navigation changes. Front-end enablement does not verify account eligibility, and an optional return does not prove payment or payout."
+  }
+}

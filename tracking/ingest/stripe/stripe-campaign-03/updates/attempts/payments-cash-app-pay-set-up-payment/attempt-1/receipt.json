@@ -1,0 +1,165 @@
+{
+  "job_id": "payments-cash-app-pay-set-up-payment",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-cash-app-pay-set-up-payment.md": {
+      "job_id": "payments-cash-app-pay-set-up-payment",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Set Up Future Cash App Pay Payments\"\ntype: source\ndate_ingested: 2026-05-07\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/payments/cash-app-pay/set-up-payment\nraw_files:\n  - \"stripe-cash-app-pay-set-up-payment-2025.md\"\ntags: [stripe, wallets, cash-app-pay, setup-intent, recurring, off-session, mandate, cashtag, ios, android]\n---\n\n## Summary\n\n[[stripe]]'s 2026-05-07 detailed guide describes saving Cash App Pay for later charges through four individual routes: Checkout, Direct API, iOS, and Android. A reusable PaymentMethod is associated with a Customer, and the customer authorizes future use. A later charge uses a separate PaymentIntent; saving a method does not itself charge it. The 2026-11-07 capture of https://docs.stripe.com/payments/cash-app-pay/set-up-payment is only a four-variant index and does not verify the current bodies of those routes. See [[stripe-wallets]].\n\n## Dated setup details from the May 2026 guide\n\n### Customer identity and Checkout\n\n- The May guide says to create or retrieve a Customer and associate its ID with the merchant's own customer record before saving a Cash App Pay PaymentMethod for reuse. Its opening note conditionally recommends customer-configured Accounts v2 objects for most use cases, while saying Accounts v2 was generally available for Connect users and in preview for others; that dated note does not override the Customer-based examples here.\n- The Checkout example creates a server-side Session with `mode: \"setup\"`, `customer: customer.id`, `success_url`, and `payment_method_types: [\"card\", \"cashapp\"]`, then redirects to the returned Session URL for customer authorization. The prior source's one-type list omitted `card` from this example. The example does not prove the list is mandatory for every Checkout configuration.\n- The May Checkout testing section distinguishes a sandbox approval/decline page from the live Cash App redirect or QR scan, which it describes as automatically approved. That is a dated description of the authorization experience, not evidence of a successful future charge.\n\n### Direct API: save, authenticate, and charge later\n\n- The Direct API route distinguishes a SetupIntent to save details before the amount or date is known from a PaymentIntent that charges at checkout and saves the method with `setup_future_usage`. The May SetupIntent example uses `payment_method_types: [\"cashapp\"]`, a Customer ID and `usage: \"off_session\"` (the prose also allows `on_session`). The PaymentIntent example uses `confirm: true`, `setup_future_usage: \"off_session\"`, `return_url`, the Customer ID, an amount and USD currency. These are route-specific examples, not proof that every value is universally required.\n- A custom form must present written authorization before confirming the SetupIntent or PaymentIntent for future off-session use. The guide says to show it the first time the customer's $Cashtag is saved and gives recommended wording; do not turn the example brand text into a required literal.\n- In the **browser Direct API** flow, `stripe.confirmCashappSetup(clientSecret, { payment_method: { type: \"cashapp\" }, return_url })` confirms the SetupIntent. On mobile, Cash App authorization redirects back to the SetupIntent's `return_url` with setup and redirect parameters. On desktop, the customer scans a QR code. This Stripe.js method is not the Checkout, iOS, or Android confirmation method.\n- The May guide says the authentication session expires after 10 minutes; the desktop QR code can be refreshed up to 20 times before the SetupIntent returns to the guide's `require_payment_method` wording and the process restarts. In manual action handling, a `requires_action` SetupIntent exposes `next_action.cashapp_handle_redirect_or_display_qr_code`: mobile `mobile_auth_url`, desktop QR image URLs and expiry, and `hosted_instructions_url`. The mobile URL expires after 30 seconds; if missed, `stripe.retrieveSetupIntent` obtains a new URL. The May manual sample inconsistently checks `result.paymentIntent.status` while reading `result.setupIntent.next_action`; use the prose and object-specific state boundary rather than that mixed-object condition as a recipe.\n- After successful in-app authentication, the guide says the SetupIntent moves to `succeeded` and yields a reusable PaymentMethod ID. A later PaymentIntent uses that same PaymentMethod with the Customer and `off_session: true` when the customer is outside checkout. A created intent, `requires_action`, QR display, or redirect is not a successful setup or later payment.\n\n### Mobile SDKs and revocation\n\n- The dated iOS path creates a Customer-linked SetupIntent, constructs `STPPaymentMethodCashAppParams()`, and calls `STPPaymentHandler.shared().confirmSetupIntent` with a return URL. The dated Android path uses `PaymentMethodCreateParams.createCashAppPay()`, `ConfirmSetupIntentParams`, and `PaymentLauncher.confirm`; its Gradle sample specifies Stripe Android `23.7.0`, a historical sample version. Android's captured variant says \u201cAvailable in: US.\u201d\n- For revocation in the May guide, Cash App deactivation sends `mandate.updated`; the merchant subscribes and detaches the PaymentMethod. A merchant UI can also trigger detach. After either detach call, `payment_method.detached` is sent. These event and detach claims are not reverified by the November index.\n\n## November 2026 variant navigation\n\nThe 2026-11-07 canonical root capture names Checkout, Direct API, iOS, and Android variants. It has no variant body, request fields, mandate rules, authentication windows, revocation instructions, or success states. Its replacement of the detailed combined guide is a navigation change in this capture, not proof those features were removed or changed. Fetch a specific variant before making a current behavior claim.\n\n## Raw Sources\n\n- [[raw/stripe-cash-app-pay-set-up-payment-2025|stripe-cash-app-pay-set-up-payment-2025]] \u2014 detailed combined guide (850 lines; Checkout, Direct API, iOS, Android), fetched 2026-05-07.\n\n## Related raw API references\n\n- [[raw/stripe-payments-cash-app-pay-set-up-payment-2026-11-07|stripe-payments-cash-app-pay-set-up-payment-2026-11-07]] \u2014 2026-11-07 canonical variant index only; navigation reference, not payment-behavior evidence.\n",
+      "quotes": [
+        {
+          "text": "Learn how to save Cash App Pay details and charge your customers later.",
+          "location": "raw/stripe-payments-cash-app-pay-set-up-payment-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-cash-app-pay-set-up-payment-2026-11-07.md:11"
+        },
+        {
+          "text": "- [Checkout](https://docs.stripe.com/payments/cash-app-pay/set-up-payment.md?payment-ui=checkout)",
+          "location": "raw/stripe-payments-cash-app-pay-set-up-payment-2026-11-07.md:13"
+        },
+        {
+          "text": "- [Direct API](https://docs.stripe.com/payments/cash-app-pay/set-up-payment.md?payment-ui=direct-api)",
+          "location": "raw/stripe-payments-cash-app-pay-set-up-payment-2026-11-07.md:14"
+        },
+        {
+          "text": "  - [Android](https://docs.stripe.com/payments/cash-app-pay/set-up-payment.md?payment-ui=mobile&platform=android)",
+          "location": "raw/stripe-payments-cash-app-pay-set-up-payment-2026-11-07.md:17"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "cashapp_setup_wallets_dated_route",
+            "target_path": "wiki/concepts/stripe-wallets.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Save/recurring**: Checkout (setup mode) or Direct API via `stripe.confirmCashappSetup()` (SetupIntent). **`mobile_auth_url` expires 30 seconds** \u2014 must redirect immediately. SetupIntent: 10-min session; desktop QR refreshable 20\u00d7. Authorization text required (first save of customer's $Cashtag). Revocation: `mandate.updated` \u2192 `detachPaymentMethod`. iOS: `STPPaymentHandler.confirmSetupIntent()`. Android: `PaymentLauncher.confirm()`.",
+            "proposed_markdown": "**Save for later (2026-05-07 guide)**: The Checkout sample creates a Customer-linked `mode: 'setup'` Session with `payment_method_types: ['card', 'cashapp']`; the browser Direct API path uses `stripe.confirmCashappSetup()` for a SetupIntent. These are separate routes. The same guide describes a 10-minute SetupIntent authentication session, up to 20 desktop QR refreshes, and a `mobile_auth_url` that expires after 30 seconds (retrieve the SetupIntent for a new URL if missed). A custom form shows future-use authorization terms on the first save of a customer's $Cashtag. Cash App revocation sends `mandate.updated`, after which the merchant detaches the PaymentMethod; merchant-initiated detach is another route, and detach sends `payment_method.detached`. iOS uses `STPPaymentHandler.confirmSetupIntent()` and Android uses `PaymentLauncher.confirm()`. The 2026-11-07 canonical capture lists four variants but no current behavior; see [[source-stripe-cash-app-pay-set-up-payment]] for the dated setup and outcome boundaries.",
+            "quote_indexes": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Old raw/stripe-cash-app-pay-set-up-payment-2025.md:33-79,140-159,266-296,345-361,430-437,598-624,774-818 supplies the dated facts. New raw/stripe-payments-cash-app-pay-set-up-payment-2026-11-07.md:9-17 supplies navigation only; do not attribute May behavior to November. The old manual handling sample at lines 327-330 mixes paymentIntent.status with setupIntent.next_action and is not promoted as a recipe."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-cash-app-pay-set-up-payment-2026-11-07.md",
+      "raw_sha256": "9e2a64d47b5fa6337ae80befbbb62f4f4ab1dd6bfa75fc9f1663fa93f3bba58c",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-cash-app-pay-set-up-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "raw/stripe-cash-app-pay-set-up-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 850
+      }
+    ],
+    "wiki/sources/source-stripe-cash-app-pay-set-up-payment.md": [
+      {
+        "start": 1,
+        "end": 35
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/19c118e2d7704dc34ff88dfb/content.diff": [
+      {
+        "start": 1,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 855
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-cash-app-pay-set-up-payment/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 200
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 20
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 390,
+        "end": 404
+      }
+    ],
+    "wiki/concepts/stripe-wallets.md": [
+      {
+        "start": 120,
+        "end": 166
+      }
+    ],
+    "wiki/concepts/stripe-cash-app-pay.md": [
+      {
+        "start": 1,
+        "end": 71
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "payment_method_types: [\"card\", \"cashapp\"],",
+      "location": "raw/stripe-cash-app-pay-set-up-payment-2025.md:74"
+    },
+    {
+      "text": "The `mobile_auth_url` expires after 30 seconds.",
+      "location": "raw/stripe-cash-app-pay-set-up-payment-2025.md:352"
+    },
+    {
+      "text": "The authorization terms only need to be displayed the first time you save a customer\u2019s $Cashtag.",
+      "location": "raw/stripe-cash-app-pay-set-up-payment-2025.md:144"
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/cash-app-pay/set-up-payment, the complete raw/stripe-payments-cash-app-pay-set-up-payment-2026-11-07.md at new raw lines 1-17 establishes the purpose of saving Cash App Pay details for later charges and links four variants: Checkout, Direct API, iOS and Android. It contains no current body, prerequisites, request fields, authorization states or charge result. The matched raw/stripe-cash-app-pay-set-up-payment-2025.md at old raw lines 1-850 describes Customer-associated Checkout setup, a Direct API SetupIntent to save before charging or a PaymentIntent with setup_future_usage to charge and save, then later off-session PaymentIntents using the saved PaymentMethod. SetupIntent creation, requires_action, successful authentication and succeeded are distinct boundaries. The mapped wiki/sources/source-stripe-cash-app-pay-set-up-payment.md retained key older details but dropped card from the old Checkout example and used stripe.confirmCashappSetup as though it applied across variants; the candidate scopes that method to the browser Direct API path and adds dated provenance.",
+    "Q2": "For https://docs.stripe.com/payments/cash-app-pay/set-up-payment, the change at new raw lines 9-17 in raw/stripe-payments-cash-app-pay-set-up-payment-2026-11-07.md is a navigation-only root index, not a demonstrated capability, mandate or SDK change from old raw lines 1-850 in raw/stripe-cash-app-pay-set-up-payment-2025.md. In wiki/sources/source-stripe-cash-app-pay-set-up-payment.md, keep May 2026 Customer association, the ['card','cashapp'] Checkout setup example, Direct API SetupIntent versus PaymentIntent paths, first-save authorization notice, 10-minute authentication, 20 QR refreshes, 30-second mobile_auth_url recovery, separate iOS/Android methods and revocation events dated. The source's prior ['cashapp'] Checkout list conflicted with old raw line 74, and its global confirmCashappSetup phrase conflicted with old Checkout and mobile routes; the wallet concept gets a reciprocal dated correction. Old manual code mixes paymentIntent and setupIntent objects, so it is not a verified recipe. Following a variant link, creating an intent, showing a QR code, redirecting, or returning does not prove saved setup or a future successful payment; the November variant bodies remain unread."
+  }
+}

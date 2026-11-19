@@ -1,0 +1,47 @@
+---
+title: "Stripe: Bancontact Payments"
+type: source
+date_ingested: 2026-05-03
+date_updated: 2026-11-15
+original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/bancontact"
+raw_files:
+  - "stripe-payments-bancontact-2026-11-07.md"
+  - "stripe-bancontact-2025.md"
+tags: [stripe, bancontact, belgium, eur, bank-redirect, sepa-debit, authenticated]
+---
+
+## Overview
+
+[[stripe]]'s Bancontact overview describes a single-use, customer-authenticated bank redirect for customers in Belgium paying in EUR with a Bancontact card or app linked to a Belgian bank account. The 2026-11-07 capture distinguishes instant provisional access, immediate payment success or failure confirmation, and settlement on the standard payout schedule. Neither authentication nor the browser return alone establishes settlement. See [[stripe-bancontact]] and [[stripe-bank-redirects]].
+
+## Key takeaways
+
+- **Eligibility and limits (2026-11-07):** Belgian customer location, EUR presentment, domestic or cross-border payments, and a 0.50 EUR minimum. The page lists supported merchant and Connect business locations and B2B/B2C models; it warns that accounts can be reviewed after activation. Listed countries do not establish an individual account's eligibility.
+- **Refunds (2026-11-07):** Full or partial refunds may be submitted within 730 days/two years of the original payment, through the Dashboard or Refunds API. This replaces the 180-day limit stated by the 2026-05-03 capture. Submission cannot be canceled and is not proof of completion. Bancontact refunds are separate bank credits, not reversals; funds typically reach the bank in 2–5 days, varying by bank. Check Refund `status` or final `refund.updated`/`refund.failed` events. On failure, Stripe returns funds to the Stripe balance and the customer must be refunded another way. A refund reference may be shared after `succeeded`, if available.
+- **Disputes and capture:** The page says Bancontact does not support the standard dispute/chargeback process; customers who contact their bank are directed to the merchant, who can refund. Manual, partial, multi- and over-capture are unsupported.
+- **Products and APIs (2026-11-07):** Full-page Checkout, Payment Links, embedded form, Payment Element and in-app payments are listed, as are Checkout Sessions and Payment Intents. Express Checkout Element, Customer Portal, Terminal, off-session Bancontact payments, native recurring payments, PaymentIntents with `setup_future_usage`, and SetupIntents are marked unsupported. Billing and Invoicing are marked supported with a `send_invoice`-only collection-method footnote. The May capture listed Invoicing as invite-only; the new matrix does not establish when or for whom that gate changed.
+- **Customer and Connect flow (2026-11-07):** The customer selects Bancontact, is redirected, pays by card or app/QR, authenticates within one hour, sees an immediate success/failure result, and is described as automatically returning to the merchant page. The May diagrams called merchant return optional; do not make return a payment-proof or universal guarantee. For connected accounts using Express or no Stripe-hosted Dashboard, request `bancontact_payments` and check that the capability is `active` before accepting payments. Enabling the method alone is not charge success.
+
+## Dated setup boundary
+
+The May overview called recurring payments possible through [[stripe-sepa-debit]], and separate May [[source-stripe-bancontact-set-up-payment|setup]] and [[source-stripe-bancontact-save-during-payment|save-during-payment]] guides describe Bancontact-initiated SetupIntent or PaymentIntent `setup_future_usage` flows that generate a SEPA Direct Debit PaymentMethod. The November overview marks native Bancontact recurring, SetupIntents and Bancontact PaymentIntents with `setup_future_usage` unsupported. These captures do not establish whether the older Bancontact-to-SEPA paths remain supported for a given account or integration. Do not reinterpret the newer exclusions as a proven ban on all SEPA reuse, or the older guides as proof of current setup support.
+
+## Detail locators
+
+- New raw lines 18–40: account, customer and payment eligibility; lines 41–65: capability matrix.
+- New raw lines 66–88: refund submission, separate credit, final status, failure and standard dispute boundary.
+- New raw lines 90–116: Checkout, product and API support; `send_invoice` footnote.
+- New raw lines 117–147: redirect, one-hour authentication, result and return wording; statement descriptors, including platform default for Connect destination charges and connected-account descriptor with `on_behalf_of`.
+- New raw lines 149–155: method enabling, manual configuration and active Connect capability.
+- Old raw lines 14–54, 101–111, 113–141 and 166–168: historical properties, invite-only Invoicing footnote, optional merchant return and 180-day refund claim.
+
+## Related
+
+- [[source-stripe-bancontact-accept-payment]] — Bancontact acceptance integration variants.
+- [[source-stripe-bancontact-set-up-payment]] and [[source-stripe-bancontact-save-during-payment]] — dated Bancontact-to-SEPA setup/save guides; see setup boundary above.
+
+## Raw Sources
+
+- [[raw/stripe-payments-bancontact-2026-11-07|Bancontact overview, captured 2026-11-07]] — full later overview and support matrix.
+- [[raw/stripe-bancontact-2025|Bancontact overview, captured 2026-05-03]] — earlier properties, illustrated flows and historical refund limit.

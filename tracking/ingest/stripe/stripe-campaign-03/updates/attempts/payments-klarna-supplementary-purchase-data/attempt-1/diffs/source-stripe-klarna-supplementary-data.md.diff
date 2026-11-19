@@ -1,0 +1,56 @@
+--- wiki/sources/source-stripe-klarna-supplementary-data.md
++++ tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-klarna-supplementary-purchase-data/attempt-1/candidates/source-stripe-klarna-supplementary-data.md
+@@ -2,32 +2,41 @@
+ title: "Stripe: Klarna Supplementary Purchase Data"
+ type: source
+ date_ingested: 2026-05-06
++date_updated: 2026-11-15
+ original_format: webpage
++canonical_url: https://docs.stripe.com/payments/klarna/supplementary-purchase-data
+ raw_files:
++  - "stripe-payments-klarna-supplementary-purchase-data-2026-11-07.md"
+   - "stripe-klarna-supplementary-data-2025.md"
+ tags: [stripe, bnpl, klarna, supplementary-data, preview, verticals, fraud, acceptance-rates]
+ ---
+ 
+ ## Summary
+ 
+-Public preview feature for sending Klarna-specific industry vertical data to improve acceptance rates and fraud assessment. Covers 8 verticals, API parameter structure, and update semantics.
++The May 6 and November 7, 2026 captures describe the same Klarna-only public preview for sending industry-specific supplementary purchase data on a PaymentIntent. The data can help underwriting, fraud assessment and post-purchase transparency, but an acceptance increase is possible rather than assured; impact varies with transactions and data. The newer capture changes the examples from Node SDK with explicit Klarna selection to curl with automatic payment methods, without documenting a change to eligibility, authorization or payment outcomes. [November raw lines 9-59, 61-84; May raw lines 8-58, 60-115]
+ 
+-## Key Details
++## Key details
+ 
+-**Status**: Public preview — requires API version header `2025-11-17.preview`.
++**Preview gate.** The API request needs the `2025-11-17.preview` version header **or a later preview version header**. This allowance appears in both captures; the previous source's exact-only wording was too narrow. [November raw lines 9-11; May raw lines 8-10]
+ 
+-**Parameter**: `payment_method_options.klarna.supplementary_purchase_data` on create/update/confirm PaymentIntent.
++**PaymentIntent scope and identity.** Send `payment_method_options.klarna.supplementary_purchase_data` when creating, updating or confirming a PaymentIntent. Each vertical has an array of hashes, and one request may include multiple verticals. The captured examples make server-side secret-key PaymentIntent requests; adding data or creating a PaymentIntent does not by itself establish that Klarna was offered, a payment was authorized, or an outcome improved. [November raw lines 55-84, 349-416; May raw lines 54-115, 564-705]
+ 
+-**8 supported verticals**: events, insurance, vouchers, train, bus, ferry, organized trips/tours, marketplace sellers. (Travel — lodging/car/air — uses generic `industry-metadata` API instead.)
++**Eight Klarna-only verticals.** The page covers events, standalone insurance policies, vouchers, train, bus and ferry transportation, organized trips and tours, and marketplace sellers. Its insurance vertical represents a primary standalone policy; nested insurance in event and transport examples is example detail. Lodging, car rental and air transportation are routed to the separate travel and entertainment industry metadata documentation shared with cards. The page links to versioned preview API references for the full per-vertical field formats; those linked schemas are outside these captures. [November raw lines 38-53, 86-94, 132-162, 165-347]
+ 
+-**Benefits**: higher acceptance rates, post-purchase transparency, fraud assessment, risk monitoring. No fee changes; no validation feedback provided.
++**Potential benefits and limits.** Klarna can use details for customer transparency, disputes and returns, underwriting, fraud assessment and risk monitoring. Historical data can increase legitimate approvals, but the page says any authorization-rate impact varies by transaction pattern and data; Stripe and Klarna give no feedback on whether specific well-formed data qualifies for improved outcomes. Supplementary data does not change Klarna transaction fees. These statements are provider descriptions, not measured outcomes for an account. [November raw lines 13-36; May raw lines 12-35]
+ 
+-**Update semantics**:
+-- Updating a vertical's array **fully replaces** it for that vertical
+-- Omitting a vertical in update preserves existing data
+-- Set vertical to `""` to unset it
+-- Set `supplementary_purchase_data: ""` to clear all
++**Update and removal semantics.** Updating one vertical's array fully replaces that vertical's previous array, while omitted verticals remain unchanged. Set one vertical to an empty string to remove only that vertical, or set the whole `supplementary_purchase_data` parameter to an empty string to clear all supplementary data from the PaymentIntent. The same rules appear in both captures. [November raw lines 349-412; May raw lines 564-701]
++
++**Example provenance.** May's Node SDK examples specify `payment_method_types: ["klarna"]`. November's curl examples use `automatic_payment_methods[enabled]=true` while retaining the `payment_method_options[klarna][supplementary_purchase_data]` path. This is an example and payment-method-selection difference; the curl flag alone does not prove Klarna will be available or selected for a particular transaction. Neither example reports a completed payment. [May raw lines 60-115, 564-701; November raw lines 61-84, 349-412]
++
++**Testing boundary.** The page advises simulating API calls with a sandbox key and attaching a payment method via update before confirming. This is testing guidance, not evidence that a live payment or underwriting outcome occurred. [November raw lines 414-416; May raw lines 703-705]
++
++## Related
++
++- [[stripe]] — Stripe company context.
++- [[stripe-bnpl]] — Klarna and other BNPL methods; routes to this preview source.
+ 
+ ## Raw Sources
+ 
+-- [[stripe-klarna-supplementary-data-2025]] — verbatim webpage content (705 lines)
++- [[raw/stripe-payments-klarna-supplementary-purchase-data-2026-11-07|November 7, 2026 Klarna supplementary purchase data]] — full page with curl and automatic-payment-methods examples.
++- [[raw/stripe-klarna-supplementary-data-2025|May 6, 2026 Klarna supplementary purchase data]] — full historical page with Node SDK and explicit-Klarna examples; filename follows its earlier convention.

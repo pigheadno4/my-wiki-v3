@@ -2,32 +2,48 @@
 title: "Stripe: Bizum Payments"
 type: source
 date_ingested: 2026-05-06
+date_updated: 2026-11-15
 original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/bizum"
 raw_files:
+  - "stripe-payments-bizum-2026-11-07.md"
   - "stripe-bizum-2025.md"
-tags: [stripe, real-time, bizum, spain, eur, phone-authentication]
+tags: [stripe, real-time, bizum, spain, eur, phone-authentication, connect]
 ---
 
 ## Summary
 
-Overview of Bizum — a Spanish real-time payment method using phone-number authentication via the buyer's bank app. No Connect. No manual capture. Notable for the longest refund window (395 days) and longest merchant evidence window (40 days) of any reviewed payment method.
+Bizum is a customer-initiated, real-time payment method for customers in Spain: the customer enters a Bizum-registered phone number and approves the payment in their bank app. The 2026-11-07 page changes the 2026-05-06 guide's **Connect support: No** to **Yes**, lists Connect as a supported product, and adds platform/connected-account capability and statement-descriptor guidance (new raw lines 9-51, 86-95, 189-209; old raw lines 8-50, 85-93). This is a documented support change, not proof that any particular account's capability is active or a payment has succeeded.
 
-## Key Details
+## Payment scope and UI boundaries
 
-**Real-time payment** — Spain customers only, EUR only. **No Connect**. **No manual capture**. 28 merchant countries (all EUR).
+- **Customer and currency**: customers are in Spain; Bizum payments are presentment and supported-currency `eur` only. The page lists 28 eligible Stripe business locations, a separate merchant-account dimension from customer location (new raw lines 13-19, 53-84, 211-221).
+- **Confirmation and capture**: customer-initiated bank-app approval; no recurring payments and no manual capture. Payout timing is listed as Standard (new raw lines 9-47).
+- **Product support**: Connect, Payment Links, Checkout and Elements are listed. Checkout excludes subscription and setup modes; Express Checkout Element does not support Bizum. The overview routes to Checkout and Elements guides but does not specify a client/server confirmation sequence (new raw lines 86-110).
+- **Amount**: 0.50–5,000 EUR per charge (new raw lines 112-116). Both captures add “or the equivalent for other supported currencies” to the limits, yet both supported-currency sections say Bizum only supports `eur` (old raw lines 112-114, 187-197; new raw lines 114-116, 211-221). Do not infer any additional currency from that boilerplate.
 
-**Authentication**: buyer enters Bizum-registered phone number → approves in bank app.
+## Onboarding and capability state
 
-**Transaction limits**: min €0.50, max €5,000.
+Before requesting Bizum access, companies supply a valid `company.tax_id` or `company.vat_id`; individuals or sole proprietors supply `individual.id_number` (DNI/NIE for Spain, standard personal ID elsewhere). Set `business_type` on the account. The page lists prohibited categories, including gambling, crypto, charities, financial institutions, jewelry/precious metals and political organizations (new raw lines 118-150).
 
-**Onboarding requirements**: must provide tax ID (companies) or national ID (DNI/NIE for Spain, or country equivalent). Must set `business_type`. Capability stays `pending` until verified.
+The Bizum payments capability remains `pending` until onboarding compliance is verified; requesting it or entering identity data is not activation (new raw lines 141-154). For Connect, the November guide says to set `bizum_payments` to `active` on the platform account **and** on each connected account that will accept Bizum. The old May guide stated Connect support “No” and had no Connect product entry. Preserve those as dated snapshots rather than treating the May claim as current (old raw lines 36-38, 85-93; new raw lines 37-39, 86-95, 189-195).
 
-**Disputes**: 120-day customer window; **40-day** merchant evidence window (longest of any method reviewed); 90-day Bizum decision.
+## Connect merchant-name and descriptor routing
 
-**Refunds**: **395-day** window (longest of any payment method reviewed); async (up to 5 min).
+The November Connect section says charge type can change the default statement descriptor and merchant name shown in the bank app and confirmation email. Direct charges take the descriptor from the connected account. Destination charges and separate charges/transfers take it from the platform unless `on_behalf_of` selects the connected account (new raw lines 197-209). This is a routing rule for the documented charge types, not evidence that a given connected account has active Bizum capability.
 
-**Prohibited**: gambling, crypto, jewelry/precious metals, financial institutions, political/religious organizations, charities, timeshares.
+## Disputes and refunds
+
+- Customers can initiate a Bizum dispute within 120 calendar days for suspected fraud, double payment or amount mismatch. Stripe holds back the disputed amount pending resolution and can notify through email, Dashboard or `charge.dispute.created`. Submit requested evidence within 40 calendar days; Bizum gives a decision within 90 calendar days. A submitted evidence packet does not settle the dispute (new raw lines 156-178).
+- Full and partial refunds are supported up to 395 days after purchase. Refunds are asynchronous and can take up to five minutes. Final state arrives through `refund.updated` or `refund.failed`; a successful Refund reaches `succeeded`, while a failed one reaches `failed`, returns the amount to Stripe balance and requires an alternative customer refund arrangement (new raw lines 180-187). A refund request alone is not a completed return.
+
+## Related Pages
+
+- [[stripe-real-time-payments]] — real-time methods concept and dated Connect correction
+- [[source-stripe-bizum-accept-payment]] — Bizum integration paths and payment flow
+- [[stripe]] — Stripe company page
 
 ## Raw Sources
 
-- [[stripe-bizum-2025]] — verbatim webpage content (197 lines); fixed `_before_` + `_webhook_` → `*italic*`
+- [[raw/stripe-payments-bizum-2026-11-07|Bizum overview, captured 2026-11-07]] — current pinned full page with Connect support and capability guidance
+- [[raw/stripe-bizum-2025|Bizum overview, captured 2026-05-06]] — historical full page stating Connect support No

@@ -1,0 +1,18 @@
+--- wiki/concepts/stripe-elements.md
++++ tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-elements.md
+@@ -137,6 +137,7 @@
+ - **Layout**: `layout.type: 'tabs'` or `'accordion'`; accordion can show/hide radio buttons
+ - **Appearance API**: themes (`stripe`, `night`, `flat`, `none`) + CSS variables; `@stripe/stripe-js@9.15.0` adds the typed `buttonBoxShadow` variable
+ - **Creation options**: `layout`, `defaultValues`, `business`, `paymentMethodOrder`, `fields`, `readOnly`, `terms`, `wallets`, `walletOptions`, and `applePay` in the retained v9.14 contract
++- **Payment method customization (November 7, 2026 guide)**: The Payment Element auto-hides ineligible methods, lets `paymentMethodOrder` prioritize available types and `layout.visibleAccordionItemsCount` control accordion display, and accepts `disallowedCardBrands` / `disallowedCardFundingTypes` at **Elements-group initialization**. Card entry is checked in the browser, not enforced as server policy; use a separately configured Radar rule or server confirmation with a ConfirmationToken for that policy. Funding can be unknown/unavailable. Apple Pay prepaid and Google Pay debit filtering have stated limits; Elements with Checkout Sessions separately enforces blocked funding types at confirmation. See [[source-stripe-payment-element-customize-payment-methods]].
+ - **Post-creation update boundary in `@stripe/stripe-js@9.14.0`**: `defaultValues`, `business`, `paymentMethodOrder`, `fields`, `readOnly`, `terms`, `layout`, `applePay`, and `walletOptions` are accepted by the typed `update()` call; `wallets` remains creation-only
+ - **Combining**: Link Authentication (contact/autofill) + Address (shipping) + Payment Element work together; when combined with Express Checkout, wallets only appear in Express Checkout
+ - **Link legal agreement**: cannot be removed (compliance requirement)
+@@ -205,6 +206,7 @@
+ - [[source-github-stripe-js]] — package-qualified `@stripe/stripe-js@8.11.0` through `9.16.0` loader, runtime boundary, public type surface, and Elements history
+ - [[source-stripe-elements-advanced-payments]] — Checkout Sessions vs Payment Intents feature matrix
+ - [[source-stripe-payment-element]] — Payment Element reference: layout, Appearance API, 8 options, combining elements, 17 error codes
++- [[source-stripe-payment-element-customize-payment-methods]] — April 21 and November 7, 2026 guides: enabled methods, ordering, card filters, browser/server enforcement boundary and accordion count
+ - [[source-stripe-payment-element-best-practices]] — Best practices: LLM instruction, HTML confirm pattern, 7-item checklist, 5-item features checklist
+ - [[source-stripe-payment-element-vs-card-element]] — Payment Element vs Card Element: 7 comparison tables, Card Element is legacy, migration guide
+ - [[source-stripe-payment-element-migration]] — Migration guide: CardElement → PaymentElement (PaymentIntent + SetupIntent paths), 11 Elements options, elements.submit() pattern

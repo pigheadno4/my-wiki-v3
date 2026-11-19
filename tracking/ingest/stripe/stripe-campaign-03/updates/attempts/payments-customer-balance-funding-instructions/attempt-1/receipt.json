@@ -1,0 +1,174 @@
+{
+  "job_id": "payments-customer-balance-funding-instructions",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-customer-balance-funding-instructions.md": {
+      "job_id": "payments-customer-balance-funding-instructions",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Customer Balance Funding Instructions\"\ntype: source\ndate_ingested: 2026-05-05\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/payments/customer-balance/funding-instructions\nraw_files:\n  - \"stripe-payments-customer-balance-funding-instructions-2026-11-07.md\"\n  - \"stripe-customer-balance-funding-instructions-2025.md\"\ntags: [stripe, customer-balance, bank-transfers, funding-instructions, virtual-bank-account]\n---\n\n## Summary\n\nThis guide shows how to give a customer bank-transfer funding details before their first payment **without creating a PaymentIntent**. In Dashboard, a business adds a bank-transfer account to the customer's cash balance and views its funding instructions. Through the Customers funding-instructions API, a server requests region and currency and receives `financial_addresses` with `supported_networks` for the customer to use. Creating or displaying instructions is not an incoming transfer, reconciliation, available funds, or payment success. [November raw lines 5-33; May raw lines 4-32]\n\n## Key details\n\n**Dashboard and API identity.** The Dashboard flow selects a Customer, country and currency, creates the relevant cash balance, then opens its bank-transfer funding instructions. The server-side API examples use `/v1/customers/{CUSTOMER_ID}/funding_instructions` with `funding_type=bank_transfer`, a regional `bank_transfer[type]`, and matching currency. May shows the same route in Node.js `stripe.customers.createFundingInstructions`; November shows curl. That example-language switch does not imply SDK deprecation or a changed funding lifecycle. [November raw lines 15-90; May raw lines 14-136]\n\n**Accounts v2 qualification (November).** For a **customer-configured Account**, the November guide says to call the v1 Customers funding-instructions endpoint with its `Account` ID in the path, such as `/v1/customers/acct_xxxxx/funding_instructions`. It says Accounts v2 is generally available for Connect users and in public preview for other Stripe users; participants in that preview need a preview version. This is a route for a specific Account configuration, not a claim that an Account ID and a Customer object are interchangeable in all contexts or that an account has access. [November raw lines 92-97]\n\n**Regional request and response shapes.** The captured examples use US `us_bank_transfer`/USD with ABA and SWIFT address hashes, UK `gb_bank_transfer`/GBP with a sort-code hash, EU `eu_bank_transfer`/EUR with an IBAN/BIC and requested country, JP `jp_bank_transfer`/JPY with a zengin hash, and MX `mx_bank_transfer`/MXN with a SPEI/CLABE hash. `supported_networks` belongs to each returned financial address; these examples do not guarantee a particular customer's response. [November raw lines 35-90, 98-301; May raw lines 34-136, 138-346]\n\n| Captured address | May 5, 2026 networks | November 7, 2026 networks |\n| --- | --- | --- |\n| US ABA | ACH, domestic US wire | ACH, domestic US wire |\n| US SWIFT | SWIFT | SWIFT |\n| UK sort code | Bacs, FPS | Bacs, **CHAPS**, FPS |\n| EU IBAN | SEPA | SEPA |\n| JP zengin | zengin | zengin |\n| MX SPEI | SPEI | SPEI |\n\nThe UK CHAPS entry is a documented addition to the November sort-code response table, not proof that every returned address supports CHAPS or that a transfer completed. [May raw lines 152-158, 178-183, 214-222, 250-255, 286-291, 324-329; November raw lines 112-118, 137-142, 172-181, 208-214, 243-248, 280-285]\n\n**EU VBAN conditions.** The SEPA bank-transfer pricing description includes up to 1,000 virtual bank account numbers and says to contact Stripe for more; neither capture states a \u201cper account\u201d denominator. The restriction for Spain is specifically on **creating new localized VBANs**, so use another listed EU VBAN country for that purpose. The captured sentence for the allowed country list is incomplete; the NL request is an example, not a complete country list. [May raw lines 72-98; November raw lines 55-70]\n\n**Live versus sandbox details.** In live mode Stripe says it supplies each customer a **unique set of bank-transfer details**, which may contain multiple financial-address types; it does not promise exactly one unique VBAN per customer. In sandboxes/test environments, the bank details are invalid and **might not always be unique**. The example account numbers in the tables are illustrative, not live details to send funds to. [May raw lines 28-32, 138-201; November raw lines 29-33, 98-159]\n\n**Ownership letter provenance.** The May guide described a Dashboard PDF letter that confirms the merchant owns the virtual account when bank details appear Stripe-owned. The November parent page instead links to a separate bank-account-ownership-letter page. That child page was not captured here, so the May Dashboard/PDF steps remain historical rather than a verified current workflow. [May raw lines 348-363; November raw lines 303-305]\n\n## Related\n\n- [[stripe]] \u2014 Stripe company context.\n- [[stripe-customer-balance]] \u2014 Customer cash-balance and funding concept.\n\n## Raw Sources\n\n- [[raw/stripe-payments-customer-balance-funding-instructions-2026-11-07|November 7, 2026 funding-instructions guide]] \u2014 full capture with curl examples, Accounts v2 note and UK CHAPS address-table entry.\n- [[raw/stripe-customer-balance-funding-instructions-2025|May 5, 2026 funding-instructions guide]] \u2014 historical full capture with Node.js examples and Dashboard ownership-letter steps; filename follows its earlier convention.\n",
+      "quotes": [
+        {
+          "text": "Provide customer balance funding instructions without creating a PaymentIntent.",
+          "location": "raw/stripe-payments-customer-balance-funding-instructions-2026-11-07.md:7"
+        },
+        {
+          "text": "Use the Customer Balance Funding Instructions API to retrieve a set of `financial_addresses` that can receive funds from the customer.",
+          "location": "raw/stripe-payments-customer-balance-funding-instructions-2026-11-07.md:31"
+        },
+        {
+          "text": "To create or retrieve funding instructions for a customer-configured [Account](https://docs.stripe.com/api/v2/core/accounts/object.md#v2_account_object-configuration-customer), use the Customers API endpoint with the `Account` ID as the path parameter, for example `v1/customers/acct_xxxxx/funding_instructions`.",
+          "location": "raw/stripe-payments-customer-balance-funding-instructions-2026-11-07.md:96"
+        },
+        {
+          "text": "- `chaps`",
+          "location": "raw/stripe-payments-customer-balance-funding-instructions-2026-11-07.md:178"
+        },
+        {
+          "text": "To provide your customer with proof of account ownership, [download a bank account ownership letter](https://docs.stripe.com/payments/customer-balance/funding-instructions/account-ownership-letter.md).",
+          "location": "raw/stripe-payments-customer-balance-funding-instructions-2026-11-07.md:305"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "funding_instructions_concept_accounts_v2_scope",
+            "target_path": "wiki/concepts/stripe-customer-balance.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Retrieve**: `stripe.customers.retrieve(id, { expand: ['cash_balance'] })`. Also works for Accounts v2 objects: `GET /v1/customers/acct_xxxxx`.",
+            "proposed_markdown": "**Retrieve cash balance**: `stripe.customers.retrieve(id, { expand: ['cash_balance'] })`; the existing Accounts v2 example uses `GET /v1/customers/acct_xxxxx`. Separately, the November 2026 [[source-stripe-customer-balance-funding-instructions]] guide says a customer-configured Account can use its Account ID at `/v1/customers/acct_xxxxx/funding_instructions`. Its Accounts v2 note says Connect users have general availability, while other Stripe users are in public preview and preview participants need a preview version; this route does not imply account-specific access.",
+            "quote_indexes": [
+              2
+            ],
+            "warnings": [
+              "New raw lines 92-97 qualify the customer-configured Account ID path by Connect GA, other-user public preview and preview version. This is distinct from retrieving a Customer cash balance."
+            ]
+          },
+          {
+            "update_id": "funding_instructions_concept_region_scope",
+            "target_path": "wiki/concepts/stripe-customer-balance.md",
+            "update_kind": "durable_fact",
+            "anchor": "Per-region `financial_addresses` format: US \u2192 ABA (ACH/wire) + SWIFT; UK \u2192 sort_code (Bacs/FPS); EU \u2192 IBAN/BIC (SEPA, max 1,000 VBANs, ES unavailable); JP \u2192 zengin; MX \u2192 SPEI/CLABE.",
+            "proposed_markdown": "Per-region `financial_addresses` examples: US \u2192 ABA (ACH/domestic wire) and SWIFT; UK \u2192 sort_code (May: Bacs/FPS; November 2026: Bacs/CHAPS/FPS); EU \u2192 IBAN/BIC (SEPA); JP \u2192 zengin; MX \u2192 SPEI/CLABE. The captured SEPA pricing description includes up to 1,000 VBANs without a stated per-account denominator; Spain's restriction applies to creating **new localized VBANs**, not all funding instructions. Networks describe the captured address schema, not every actual customer's returned address. See [[source-stripe-customer-balance-funding-instructions]].",
+            "quote_indexes": [
+              3
+            ],
+            "warnings": [
+              "UK sort-code CHAPS is added in new raw lines 172-181 compared with old raw lines 214-222. Both raw lines 59,70 (new) and 76,98 (old) omit a per-account denominator and restrict Spain only for new localized VBAN creation."
+            ]
+          },
+          {
+            "update_id": "funding_instructions_concept_unique_set",
+            "target_path": "wiki/concepts/stripe-customer-balance.md",
+            "update_kind": "durable_fact",
+            "anchor": "Live mode: unique VBAN per customer. Account ownership PDF letter downloadable from Dashboard.",
+            "proposed_markdown": "Live mode: Stripe says each customer receives a unique **set of bank-transfer details**, not necessarily one VBAN; a response can contain distinct financial-address types. Sandbox/test details are invalid and might not always be unique. The May 2026 funding guide describes a Dashboard PDF ownership letter; the November page links to a separate letter page whose content was not in this capture. See [[source-stripe-customer-balance-funding-instructions]].",
+            "quote_indexes": [
+              1,
+              4
+            ],
+            "warnings": [
+              "Both old raw line 32 and new raw line 33 say unique set of details in live mode and invalid test details that might not always be unique; neither says one VBAN per customer. New raw lines 106-159 show ABA and SWIFT types. Ownership-letter PDF steps are old raw lines 348-363; new raw lines 303-305 only link a child page."
+            ]
+          },
+          {
+            "update_id": "funding_instructions_concept_source_route",
+            "target_path": "wiki/concepts/stripe-customer-balance.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-customer-balance-funding-instructions]] \u2014 createFundingInstructions API, per-region financial_addresses schemas, EU VBAN limit, account ownership letter",
+            "proposed_markdown": "- [[source-stripe-customer-balance-funding-instructions]] \u2014 May/November 2026 funding-instructions guide: Customer/API address shapes, UK CHAPS table addition, Accounts v2 customer-configured Account route, SEPA VBAN limit, and dated ownership-letter route",
+            "quote_indexes": [
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "New raw lines 92-97, 172-181, 303-305 add the scoped Accounts v2 note, CHAPS list entry, and linked letter route; May raw lines 34-136 and 348-363 retain dated Node.js and PDF-step evidence."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-customer-balance-funding-instructions-2026-11-07.md",
+      "raw_sha256": "7480e7a0e10282867f1d7d571a2de5f60e18deb33f1550d622095bd81bcd3b8a",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-customer-balance-funding-instructions-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 305
+      }
+    ],
+    "raw/stripe-customer-balance-funding-instructions-2025.md": [
+      {
+        "start": 1,
+        "end": 363
+      }
+    ],
+    "wiki/sources/source-stripe-customer-balance-funding-instructions.md": [
+      {
+        "start": 1,
+        "end": 37
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/f2279abb053320da6d0379a6/content.diff": [
+      {
+        "start": 1,
+        "end": 565
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-customer-balance-funding-instructions/attempt-3/receipt.json": [
+      {
+        "start": 1,
+        "end": 264
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 25
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 305,
+        "end": 315
+      },
+      {
+        "start": 744,
+        "end": 752
+      }
+    ],
+    "wiki/concepts/stripe-customer-balance.md": [
+      {
+        "start": 1,
+        "end": 82
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "Stripe offers invalid bank transfer details to all customers in testing environments. Unlike live mode, these invalid details might not always be unique.",
+      "location": "raw/stripe-customer-balance-funding-instructions-2025.md:32"
+    },
+    {
+      "text": "Stripe\u2019s [bank transfer fees](https://stripe.com/pricing/local-payment-methods) in SEPA countries include up to 1000 virtual bank account numbers (VBANs).",
+      "location": "raw/stripe-customer-balance-funding-instructions-2025.md:76"
+    },
+    {
+      "text": "Creating new localized virtual bank account numbers is currently unavailable for Spain (ES).",
+      "location": "raw/stripe-customer-balance-funding-instructions-2025.md:98"
+    },
+    {
+      "text": "Click the button to download a confirmation letter in a PDF format with today\u2019s date.",
+      "location": "raw/stripe-customer-balance-funding-instructions-2025.md:360"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/customer-balance/funding-instructions, the November guide lets a business provide Customer cash-balance bank-transfer details before the first payment without a PaymentIntent, through Dashboard or a server-side v1 Customers funding_instructions request returning financial_addresses and per-address supported_networks (new raw lines 5-33, 35-90). The regional schemas distinguish US ABA/SWIFT, UK sort code, EU IBAN/BIC, JP zengin and MX SPEI/CLABE; November adds CHAPS to the UK sort-code list (new raw lines 98-301; old raw lines 138-346). For a customer-configured Account, November permits its Account ID in that Customers route under the stated Accounts v2 Connect-GA or other-user-preview/version conditions (new raw lines 92-97). source-stripe-customer-balance-funding-instructions.md already covers the older regions but omits CHAPS and Accounts v2, overstates a single live unique VBAN and categorical sandbox non-uniqueness, adds an unsupported 'per account' SEPA denominator, and lacks November provenance. Showing instructions does not establish a received transfer, reconciled funds or payment success.",
+    "Q2": "For https://docs.stripe.com/payments/customer-balance/funding-instructions, May Node.js examples become November curl examples and tables are reformatted, but the core Customer funding-instructions purpose and regional address identity persist (old raw lines 4-136; new raw lines 5-90). Substantive documentation changes are the UK CHAPS network-list entry and Accounts v2 customer-configured Account path, with Connect GA versus other-user preview/version qualifiers (old raw lines 214-222; new raw lines 92-97, 172-181). November redirects ownership-letter instructions to a child page, whereas May describes Dashboard PDF steps; no current child workflow follows from the link (old raw lines 348-363; new raw lines 303-305). source-stripe-customer-balance-funding-instructions.md and the reciprocal stripe-customer-balance concept should say live-mode unique **set of details**, invalid sandbox details that might not always be unique, SEPA fee inclusion of 1000 VBANs without a per-account denominator, and Spain restriction only for new localized VBAN creation (old raw lines 28-32, 72-98; new raw lines 29-33, 55-70). The added CHAPS listing is a schema example, not proof that a particular account gets CHAPS or that a payment settled."
+  }
+}

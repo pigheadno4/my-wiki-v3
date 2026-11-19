@@ -1,0 +1,159 @@
+{
+  "job_id": "payments-blik-accept-a-payment",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-blik-accept-a-payment-2026-11-07.md",
+  "raw_sha256": "34ab9060906b86316b498ec584c1bdd18f3533b64ae2ae4c5e0f0ea2597b4746",
+  "prior_raw_path": "raw/stripe-blik-accept-payment-2025.md",
+  "prior_raw_sha256": "026f82aaede415a5e6223ecf63bd06511b54502c2d16894a516defab16a94743",
+  "source_targets": [
+    "wiki/sources/source-stripe-blik-accept-payment.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-blik-accept-payment.md": "260de000f65bd373815888b8d9248dc1cd30f896fd5aa83d3ef7cdd4c319f73a"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-blik-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "raw/stripe-blik-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 1190
+      }
+    ],
+    "wiki/sources/source-stripe-blik-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 46
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/54841018d57c5d28915a4f7b/content.diff": [
+      {
+        "start": 1,
+        "end": 1195
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 265,
+        "end": 275
+      },
+      {
+        "start": 746,
+        "end": 755
+      }
+    ],
+    "wiki/concepts/stripe-blik.md": [
+      {
+        "start": 1,
+        "end": 64
+      }
+    ],
+    "wiki/sources/source-stripe-blik.md": [
+      {
+        "start": 1,
+        "end": 35
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/proposed-queries.md": [
+      {
+        "start": 236,
+        "end": 242
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Learn how to accept BLIK, a common payment method in Poland.",
+      "location": "raw/stripe-payments-blik-accept-a-payment-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-blik-accept-a-payment-2026-11-07.md:11"
+    },
+    {
+      "text": "- [Checkout](https://docs.stripe.com/payments/blik/accept-a-payment.md?payment-ui=checkout)",
+      "location": "raw/stripe-payments-blik-accept-a-payment-2026-11-07.md:13"
+    },
+    {
+      "text": "- [Direct API](https://docs.stripe.com/payments/blik/accept-a-payment.md?payment-ui=direct-api)",
+      "location": "raw/stripe-payments-blik-accept-a-payment-2026-11-07.md:14"
+    },
+    {
+      "text": "  - [Android](https://docs.stripe.com/payments/blik/accept-a-payment.md?payment-ui=mobile&platform=android)",
+      "location": "raw/stripe-payments-blik-accept-a-payment-2026-11-07.md:17"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "The BLIK code is valid for 2 minutes; customers have 60 seconds to authorize the payment after starting a payment.",
+      "location": "raw/stripe-blik-accept-payment-2025.md:20"
+    },
+    {
+      "text": "`confirmBlikPayment` doesn\u2019t return until the confirmation succeeds or fails.",
+      "location": "raw/stripe-blik-accept-payment-2025.md:478"
+    },
+    {
+      "text": "After confirming the PaymentIntent with valid parameters, the PaymentIntent\u2019s `status` becomes `requires_action`.",
+      "location": "raw/stripe-blik-accept-payment-2025.md:673"
+    },
+    {
+      "text": "After confirmation with valid parameters, the status of the PaymentIntent becomes `requires_action` and `onPaymentResult` is called with `PaymentResult.Completed`.",
+      "location": "raw/stripe-blik-accept-payment-2025.md:1139"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Semantic raw delta: the November capture is a 17-line index pointing to Checkout, Direct API, iOS and Android variants (new raw lines 5-17; diff lines 3-21 and 1191-1195). The May combined guide already had those four sections (old raw lines 8-10, 196-204, 728-734 and 963-969). A short index does not imply deprecation, changed integration mechanics, SDK support or account eligibility.",
+    "Baseline summary accuracy: current source line 28 labels stripe.confirmBlikPayment 'Synchronous' and suggests that not returning until success/failure proves a completed payment. The guide shows an awaited Promise-like call in React (old raw lines 522-566), says Stripe.js polling can be disabled via handleActions false (old raw lines 478 and 522), and then describes PaymentIntent requires_action/next_action blik_authorize with a separate 60-second bank authorization (old raw lines 673-685). Replace the blocking/success implication with an asynchronous confirmation and explicit Intent-status outcome boundary; wiki/concepts/stripe-blik.md line 49 repeats the broad synchronous label.",
+    "Baseline summary omits the two-minute code validity beside its 60-second authorization window (source lines 27-30 versus old raw lines 18-20 and 451-457). It also omits Android's PaymentMethodOptionsParams.Blik plus PaymentLauncher route and its Completed-callback-not-payment-success warning (old raw lines 1079-1143), despite naming Android at source lines 13 and 46. iOS succeeded handlerStatus similarly accompanies requires_action, so only subsequent PaymentIntent succeeded confirms the payment (old raw lines 892-914).",
+    "The May Checkout compatibility is PLN, payment mode yes, setup/subscription not yet, with PLN Checkout line items; hosted, embedded_page and elements Session examples are distinct UI modes (old raw lines 22-38 and 53-130). The new top-level index has no separate Elements link (new raw lines 13-17), which does not withdraw the May Session example. The old Direct API React Elements provider is optional infrastructure for other methods, while BLIK code collection remains a custom form (old raw lines 308-310 and 358-408).",
+    "The dated May guide states 13-month refunds/disputes with no appeal for bank disputes, plus sandbox-only arbitrary six-digit success and email-pattern simulations (old raw lines 145-188, 687-726 and 1163-1190). Those are not November-verified live behavior. The Direct API React code comments say the customer redirects away (old raw lines 573-574 and 641-642), conflicting with the prose no-redirect BLIK code/bank-app flow (old raw lines 18-20 and 478-522); keep the prose-supported method behavior qualified and do not infer a browser redirect from generic sample comments."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "May 3, 2026 guide: BLIK single-use six-digit code, two-minute code lifetime, bank-app push approval within 60 seconds, PLN-only Checkout payment mode and same-currency line items (old raw lines 18-38). November only names variants (new raw lines 5-17).",
+    "May guide: Checkout hosted, embedded_page and elements Session examples, plus optional description and statement_descriptor display limits in the banking app (old raw lines 53-139). The new index lacks an Elements link, but does not establish removal.",
+    "May guide: Direct API creates a server PaymentIntent, returns its client secret, then collects code on client for confirmBlikPayment; requires_action/blik_authorize is an intermediate state and succeeded/payment_intent.succeeded is fulfillment evidence, while payment_failed returns to requires_payment_method (old raw lines 219-239, 308-310, 449-478 and 673-685).",
+    "May guide: iOS and Android handler completion can occur while PaymentIntent remains requires_action; poll Intent status and show payment confirmation only on succeeded (old raw lines 892-914 and 1111-1143). Android 23.5.0 and Stripe.js dahlia are dated sample versions (old raw lines 344-353 and 1001-1011).",
+    "May guide: sandbox success uses any six digits and failure email patterns cover immediate invalid/expired code, delayed bank/provider declines and 60-second timeouts; 13-month refund and dispute windows have a no-appeal warning (old raw lines 145-188, 687-726 and 1163-1190)."
+  ],
+  "conflicts": [
+    "Current source line 28 and reciprocal wiki/concepts/stripe-blik.md line 49 call confirmBlikPayment synchronous; old raw lines 478, 522-566 and 673-685 describe an awaited confirmation, optional polling control and a separate requires_action bank step. The phrase risks conflating confirmation result with completed payment.",
+    "Current source line 34 says iOS poll succeeded but does not state that the handler's succeeded result can precede actual payment success; old raw lines 892-914 explicitly pair succeeded handlerStatus with requires_action. The Android Completed callback has the same boundary (old raw lines 1120-1143).",
+    "Old raw Direct API React comments at lines 573-574 and 641-642 mention redirecting away, whereas old raw lines 18-20 and 478-522 describe code entry and app authorization without a browser redirect; source line 28 and concept line 23 should avoid grounding a universal browser behavior on either generic comment."
+  ],
+  "unresolved_questions": [
+    "The November index does not include the linked variant bodies (new raw lines 11-17), so their current UI behavior, requirements, SDK versions and availability are unverified."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-blik.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-blik-accept-payment.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add November index as separately dated navigation and retain May full-guide provenance (new raw lines 9-17; current source lines 4-8 and 44-46). Correct 'Synchronous' to awaited confirmation with a separate requires_action/blik_authorize bank step; state that native handler Completed/succeeded is not PaymentIntent succeeded (current source lines 27-34; old raw lines 478, 673-685, 910-914 and 1139-1143). Add two-minute code validity, Android flow locator and no-appeal dispute warning (old raw lines 18-20, 151-157 and 1079-1143)."
+      ],
+      "conflicts": [
+        "The relevant wiki/concepts/stripe-blik.md line 49 repeats the broad synchronous description and lines 21-23 present an unconditional no-redirect confirmation, requiring a dated outcome and sample-comment qualification (old raw lines 573-574, 641-642 and 673-685)."
+      ],
+      "reason": "The November capture changes navigation only, but independent inspection of the May guide exposes material baseline summary state and timing omissions. A later coordinator source correction is warranted without asserting a current Stripe behavior change."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/blik/accept-a-payment, the complete November capture establishes a four-variant index for Checkout, Direct API, iOS and Android (new raw lines 5-17), not updated payment behavior. The May guide describes a PLN-only single-use six-digit BLIK code valid two minutes, followed by bank-app push approval within 60 seconds; Checkout permits payment mode, not setup or subscription, and requires PLN line items (old raw lines 18-38). Direct API creates a server PaymentIntent and passes its client secret to the client for code confirmation; requires_action with blik_authorize follows valid confirmation, and only later succeeded/payment_intent.succeeded supports fulfillment (old raw lines 219-239, 449-478 and 673-685). iOS and Android handler success/Completed can precede payment success (old raw lines 910-914 and 1139-1143). The mapped source-stripe-blik-accept-payment.md covers the routes and sandbox failures but calls confirmation synchronous and omits that native outcome distinction and code lifetime (current source lines 13-42).",
+    "Q2": "At https://docs.stripe.com/payments/blik/accept-a-payment, the November difference is presentation/navigation: the new index names four previously documented paths and does not refresh or deprecate the May mechanics (new raw lines 9-17; old raw lines 8-20, 196-204, 728-734 and 963-969). source-stripe-blik-accept-payment.md should retain dated hosted, embedded and Elements Checkout Session examples, PLN/payment-mode constraints, 13-month refund/dispute window with no appeal, and sandbox-only six-digit and email-pattern tests (old raw lines 22-38, 53-188). Its 'synchronous' label should be qualified as an awaited Stripe.js confirmation, since requires_action/blik_authorize and native handler completion precede bank authorization and PaymentIntent succeeded (old raw lines 478-522, 673-685, 910-914 and 1139-1143). The reciprocal stripe-blik concept repeats that label; generic React sample comments about browser redirection conflict with the documented no-redirect code/app flow (wiki/concepts/stripe-blik.md lines 21-23 and 49; old raw lines 573-574). Dated dahlia and Android 23.5.0 examples do not prove current runtime, eligibility or successful settlement."
+  }
+}

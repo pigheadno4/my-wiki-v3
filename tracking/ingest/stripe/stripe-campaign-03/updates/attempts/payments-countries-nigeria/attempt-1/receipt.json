@@ -1,0 +1,177 @@
+{
+  "job_id": "payments-countries-nigeria",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-nigeria-payment-methods.md": {
+      "job_id": "payments-countries-nigeria",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe Docs \u2014 Nigerian payment methods\"\ntype: source\ndate_ingested: 2026-05-08\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/countries/nigeria\"\nraw_files:\n  - \"stripe-payments-countries-nigeria-2026-11-07.md\"\n  - \"stripe-nigeria-payment-methods-2025.md\"\ntags: [stripe, nigeria, naira, local-payment-methods, merchant-of-record, bank-transfer, wallets]\n---\n\n## Overview\n\n[[stripe]] describes Nigerian local payments through a **Nigerian partner acting as merchant of record**, so a business using this route does not need a local Nigerian entity. A customer starts on Stripe's checkout page, then clicks Pay and is redirected to the partner and its local processor's localized checkout to complete payment. This partner-MoR route is distinct from [[stripe-managed-payments]], where Stripe is the merchant of record. See [[stripe-nigeria-payment-methods]]. [May raw lines 4-14; November raw lines 5-15]\n\n## Scope and access\n\n- The captured page identifies Nigerian customers, NGN presentment, and **US Stripe accounts** accepting Naira payments with USD settlement. It lists customer-authenticated confirmation, standard payout timing, Connect support, manual capture, and full/partial refunds at the family-property level. These statements do not establish a particular account's entitlement or a transaction outcome. [May raw lines 27-73; November raw lines 28-74]\n- The November capture adds an **invite-request** section. Its example posts a business email to a preview registration endpoint; this is an invitation request, not proof of invitation, activation or approval. Dashboard payment-method enablement, Checkout/Elements/Payment Links navigation and Payment Intents API navigation are separate integration surfaces, not substitutes for access approval. No registration request was made here. [November raw lines 76-103]\n- When the Nigerian merchant-of-record provider processes a local transaction, the page says that provider remits customer VAT and that presentment pricing should include VAT. This condition belongs to this partner-MoR route; it is not a blanket claim about every Nigeria transaction or Stripe Managed Payments. [May raw lines 23-25; November raw lines 24-26]\n- The customer is redirected to the partner's localized experience. **After authorization and approval**, the guide says funds become available in the Stripe account after three days. This is distinct from its separate standard-payout-timing property; initiating a redirect does not prove approval, funds availability or payout. [May raw lines 49-51, 92-94; November raw lines 50-52, 105-107]\n\n## Dated payment-method matrix\n\n| Method | May 2026 one-time / recurring | November 2026 one-time / recurring |\n| --- | --- | --- |\n| Naira card | Yes / Yes | Yes / Yes |\n| Naira bank transfer | Yes / Coming soon | Yes / No |\n| Naira wallet | Coming soon / No | No / No |\n\nThe November overview prose nevertheless says businesses can accept a selection of local wallets and cards, while its specific Naira wallet matrix cell says No for both one-time and recurring. The exact wallet route or availability is unresolved in this capture. \u201cComing soon\u201d is May's historical wording; November's \u201cNo\u201d is the captured table status, not evidence that a live wallet or recurring bank-transfer feature was withdrawn or will never launch. The generic \u201cRecurring payments: Yes\u201d property applies at the family level and is narrowed by the card Yes/Yes versus transfer/wallet cells. [May raw lines 45-47, 96-104; November raw lines 9-11, 46-48, 109-117]\n\n## Refund and dispute boundaries\n\nThe page allows full and partial refunds and says they can only be **submitted** within 365 calendar days of the original charge. Some Nigerian method transactions can take up to seven calendar days from purchase to return a refund status; submission is not a completed refund. Customer-initiated disputes cannot be challenged through this route. Funds are removed immediately **when Stripe is notified that the relevant payment service provider has accepted a request** to return customer funds, not merely when a customer complains; resolve directly with the customer. These conditions persist across both captures. [May raw lines 65-67, 106-114; November raw lines 66-68, 119-127]\n\n## Related\n\n- [[stripe-nigeria-payment-methods]] \u2014 method scope, dated matrix and integration routes\n- [[stripe-managed-payments]] \u2014 distinct Stripe-as-MoR product\n- [[source-stripe-local-payment-methods-by-country]] \u2014 country-method hub\n- [[source-stripe-ng-card-accept-payment]] \u2014 card integration guide\n- [[source-stripe-ng-bank-transfer-accept-payment]] \u2014 bank-transfer integration guide\n\n## Raw Sources\n\n- [[raw/stripe-payments-countries-nigeria-2026-11-07|2026-11-07 full Nigeria methods overview]] \u2014 127 lines; invite request and revised method matrix\n- [[raw/stripe-nigeria-payment-methods-2025|2026-05-08 Nigeria methods overview]] \u2014 114 lines; earlier \u201cComing soon\u201d table statuses\n",
+      "quotes": [
+        {
+          "text": "Accept Nigerian local payment methods without a local entity.",
+          "location": "raw/stripe-payments-countries-nigeria-2026-11-07.md:7"
+        },
+        {
+          "text": "To request an invite, enter your business email address below.",
+          "location": "raw/stripe-payments-countries-nigeria-2026-11-07.md:78"
+        },
+        {
+          "text": "| [Naira bank transfer](https://docs.stripe.com/payments/ng-bank-transfer/accept-a-payment.md) | Yes | No |",
+          "location": "raw/stripe-payments-countries-nigeria-2026-11-07.md:116"
+        },
+        {
+          "text": "| Naira wallet | No | No |",
+          "location": "raw/stripe-payments-countries-nigeria-2026-11-07.md:117"
+        },
+        {
+          "text": "Payments made with Nigerian payment methods can only be submitted for refund within 365 calendar days",
+          "location": "raw/stripe-payments-countries-nigeria-2026-11-07.md:121"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "s03-nigeria-wallet-definition",
+            "target_path": "wiki/concepts/stripe-nigeria-payment-methods.md",
+            "update_kind": "durable_fact",
+            "anchor": "Stripe enables acceptance of Nigerian local payment methods (Naira cards, bank transfers, and wallets) without a local Nigerian entity, via a **merchant of record** model through a Nigerian partner. See [[stripe-managed-payments]] for the broader MoR framework.",
+            "proposed_markdown": "Stripe describes acceptance of Nigerian local methods through a **Nigerian partner as merchant of record**, without a local Nigerian entity. The November 2026 matrix lists Naira cards and one-time bank transfers; it marks Naira wallet No/No, despite overview prose mentioning local wallets. The May 2026 matrix instead said wallet one-time was \u201cComing soon.\u201d Treat wallet availability as unresolved in this capture; see [[source-stripe-nigeria-payment-methods]]. This partner-MoR route is distinct from [[stripe-managed-payments]], where Stripe is MoR.",
+            "quote_indexes": [
+              0,
+              3
+            ],
+            "warnings": [
+              "May raw lines 4-10, 96-104 and November raw lines 5-11, 109-117 preserve the same-page wallet contradiction and dated table change.",
+              "wiki/concepts/stripe-managed-payments.md:8-10,105-107 identifies Stripe as MoR in that separate product."
+            ]
+          },
+          {
+            "update_id": "s03-nigeria-method-matrix",
+            "target_path": "wiki/concepts/stripe-nigeria-payment-methods.md",
+            "update_kind": "durable_fact",
+            "anchor": "| Method | One-time | Recurring |\n| --- | --- | --- |\n| Naira cards | Yes | Yes |\n| Naira bank transfer | Yes | Coming soon |\n| Naira wallet | Coming soon | No |",
+            "proposed_markdown": "| Method | May 2026 one-time / recurring | November 2026 one-time / recurring |\n| --- | --- | --- |\n| Naira cards | Yes / Yes | Yes / Yes |\n| Naira bank transfer | Yes / Coming soon | Yes / No |\n| Naira wallet | Coming soon / No | No / No |\n\nThe November overview also mentions local wallets in prose; its wallet matrix says No/No. This is an unresolved within-page discrepancy, not proof of current wallet availability or a prior live withdrawal. See [[source-stripe-nigeria-payment-methods]].",
+            "quote_indexes": [
+              2,
+              3
+            ],
+            "warnings": [
+              "May matrix: raw/stripe-nigeria-payment-methods-2025.md:100-104; November matrix: raw/stripe-payments-countries-nigeria-2026-11-07.md:109-117; wallet prose: raw/stripe-payments-countries-nigeria-2026-11-07.md:11."
+            ]
+          },
+          {
+            "update_id": "s03-nigeria-source-route",
+            "target_path": "wiki/concepts/stripe-nigeria-payment-methods.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-nigeria-payment-methods]] \u2014 Nigeria overview: MoR model, Naira cards/bank transfer/wallet, VAT, disputes, refunds",
+            "proposed_markdown": "- [[source-stripe-nigeria-payment-methods]] \u2014 May and November 2026 Nigeria partner-MoR overview: card/bank-transfer matrix, unresolved wallet prose versus No/No table, invite request, conditional VAT, disputes and refunds",
+            "quote_indexes": [
+              1,
+              3
+            ],
+            "warnings": [
+              "Do not treat wallet navigation as an available integration; raw/stripe-payments-countries-nigeria-2026-11-07.md:11 conflicts with raw/stripe-payments-countries-nigeria-2026-11-07.md:117. Coordinator owns index routes."
+            ]
+          },
+          {
+            "update_id": "s03-nigeria-invite-boundary",
+            "target_path": "wiki/concepts/stripe-nigeria-payment-methods.md",
+            "update_kind": "durable_fact",
+            "anchor": "Dashboard-driven: enable Naira payment methods in Stripe Dashboard \u2192 auto-surfaced in Checkout/Elements/Payment Links. Also available via Payment Intents API.",
+            "proposed_markdown": "The November 2026 overview includes an invite-request step. Requesting an invite or enabling a method in the Dashboard does not establish approval or account eligibility. For an eligible account, the guide routes Stripe front-end products through Dashboard payment-method settings, links Checkout/Elements and Payment Links, and points to the Payment Intents API; see [[source-stripe-nigeria-payment-methods]] for the dated access boundary.",
+            "quote_indexes": [
+              1
+            ],
+            "warnings": [
+              "Invite-request example: raw/stripe-payments-countries-nigeria-2026-11-07.md:76-85; Dashboard/API navigation: lines 88-103. No invite or account status was verified."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-countries-nigeria-2026-11-07.md",
+      "raw_sha256": "1ce05f1eb9f56bafe9bd4f8659767658f47bcbcbc4b26c8fcdfbf29b4eb6bddf",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-countries-nigeria-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 127
+      }
+    ],
+    "raw/stripe-nigeria-payment-methods-2025.md": [
+      {
+        "start": 1,
+        "end": 114
+      }
+    ],
+    "wiki/sources/source-stripe-nigeria-payment-methods.md": [
+      {
+        "start": 1,
+        "end": 41
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/a16d92aac4295aac94614bd7/content.diff": [
+      {
+        "start": 1,
+        "end": 64
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-countries-nigeria/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 214
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 22
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 417,
+        "end": 425
+      },
+      {
+        "start": 786,
+        "end": 792
+      }
+    ],
+    "wiki/concepts/stripe-nigeria-payment-methods.md": [
+      {
+        "start": 1,
+        "end": 82
+      }
+    ],
+    "wiki/concepts/stripe-managed-payments.md": [
+      {
+        "start": 1,
+        "end": 35
+      },
+      {
+        "start": 95,
+        "end": 107
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "| [Naira bank transfer](https://docs.stripe.com/payments/ng-bank-transfer/accept-a-payment.md) | Yes         | Coming soon |",
+      "location": "raw/stripe-nigeria-payment-methods-2025.md:103"
+    },
+    {
+      "text": "| Naira wallet                                                                                 | Coming soon | No          |",
+      "location": "raw/stripe-nigeria-payment-methods-2025.md:104"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/countries/nigeria, Nigerian customers can pay in NGN through a Nigerian partner acting as merchant of record, with no local Nigerian entity required; the documented business route is US Stripe accounts with USD settlement. A customer moves from Stripe checkout to the partner processor, and funds become available in the Stripe account three days only after authorization and approval. The November capture adds an invite-request step. Its table shows card Yes/Yes, bank transfer Yes/No and wallet No/No for one-time/recurring, although its prose still mentions wallets. The May table said Coming soon for bank-transfer recurring and wallet one-time (old raw lines 4-25, 96-114; new raw lines 5-26, 76-127). source-stripe-nigeria-payment-methods.md retains the older table, omits invite gating and needs conditional VAT, refund and dispute state clarity.",
+    "Q2": "At https://docs.stripe.com/payments/countries/nigeria, the substantive changes are the new invitation request and two matrix cells changing from May \u201cComing soon\u201d to November \u201cNo\u201d (old raw lines 96-104; new raw lines 76-85, 109-117). source-stripe-nigeria-payment-methods.md and its concept need dated reciprocal warnings: November prose still says a selection of local wallets can be accepted while its wallet row is No/No, so neither current wallet availability nor withdrawal of a prior live feature is established. Buyer/customer wording, VAT-link formatting and Elements quickstart links are presentation or navigation. The Nigerian partner is MoR for this route; Stripe Managed Payments names Stripe as MoR. VAT remittance is conditional on partner-processed local transactions, three-day funds availability follows approval, refund submission has a 365-day limit, and dispute balance removal follows PSP acceptance plus Stripe notification (old raw lines 23-25, 69-114; new raw lines 24-26, 70-127). An invite request, Dashboard enablement or redirect proves neither eligibility nor successful payment or settlement."
+  }
+}

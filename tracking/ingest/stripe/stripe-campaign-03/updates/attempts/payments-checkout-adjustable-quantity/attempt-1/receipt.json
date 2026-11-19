@@ -1,0 +1,147 @@
+{
+  "job_id": "payments-checkout-adjustable-quantity",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-checkout-adjustable-quantities.md": {
+      "job_id": "payments-checkout-adjustable-quantity",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Make Line Item Quantities Adjustable\"\ntype: source\ndate_ingested: 2026-04-21\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/checkout/adjustable-quantity\"\nraw_files:\n  - \"stripe-checkout-adjustable-quantities-2025.md\"\ntags: [stripe, checkout-sessions, line-items, adjustable-quantity, updateLineItemQuantity, fulfillment]\n---\n\n## Summary\n\nThe full 2026-04-21 guide describes quantity adjustment for Checkout Session line items. Its server and client examples use the Checkout Elements path (`ui_mode: \"elements\"`). The 2026-11-07 capture at this URL is only a variant index for Full page and Embedded form; it does not contain either variant body or renew the April API, bounds, or lifecycle details. The April integration changes quantities, not the set of line items.\n\n## Session Setup (2026-04-21 Elements example)\n\nSet `line_items[].adjustable_quantity.enabled: true` while creating the Checkout Session on the server. The captured Node example uses `mode: \"payment\"`, `ui_mode: \"elements\"`, and a `return_url`:\n\n```js\nstripe.checkout.sessions.create({\n  line_items: [{\n    price_data: { /* currency, product_data, unit_amount */ },\n    quantity: 1,\n    adjustable_quantity: {\n      enabled: true,\n      minimum: 0,   // default: 0\n      maximum: 100, // example override; default: 99; allowed up to 999999\n    },\n  }],\n  mode: \"payment\",\n  ui_mode: \"elements\",\n  return_url: \"{{RETURN_URL}}\",\n});\n```\n\nThe April guide says the default minimum is 0 and maximum is 99; `adjustable_quantity.maximum` may be set up to 999999. Checkout prevents removal of the last remaining item. Adding a new line item is outside this quantity-only integration. See old raw lines 14-49.\n\n## Client Quantity Update (2026-04-21 Elements example)\n\nThe April HTML/JS example initializes `stripe.initCheckoutElementsSdk({ clientSecret })`, calls `loadActions()`, takes a line-item ID and current quantity from the loaded Session's `lineItems`, and calls `actions.updateLineItemQuantity({ lineItem, quantity })` on interaction. Its React example uses `useCheckout` and `checkoutState.checkout.updateLineItemQuantity`. These calls are shown for that captured Elements/custom Checkout route; the November variant index does not establish them for both linked UI variants. See old raw lines 51-110.\n\n```js\nactions.updateLineItemQuantity({ lineItem: lineItemId, quantity: newQty });\n// React example: checkoutState.checkout.updateLineItemQuantity({ lineItem: props.lineItem, quantity: props.quantity + 1 });\n```\n\nThe `lineItem` argument is the Checkout Session line-item ID, not a Product or Price ID.\n\n## Payment Intents Boundary (2026-04-21)\n\nThe guide separately says Payment Intents API integrations must track line-item changes themselves and modify the payment amount or create a new PaymentIntent with adjusted amounts. This is distinct from `updateLineItemQuantity` on the Checkout Session client path. See old raw lines 8-12.\n\n## Post-Payment Reconciliation (2026-04-21)\n\nAfter payment completes, the guide says to request finalized line items and quantities. A removed item is absent from the line-items response. Its Node `checkout.session.completed` webhook example calls `stripe.checkout.sessions.listLineItems(session.id, { limit: 100 }, ...)`; the suggested `checkout_session.metadata` and `price.metadata` map those items to an internal order. The example's `fulfillOrder` is an unfinished TODO that throws, so the snippet illustrates reconciliation plumbing rather than successful fulfillment of an order. It does not establish any observed payment outcome. See old raw lines 113-181.\n\n## November Variant Index\n\nThe 2026-11-07 root capture gives a short purpose sentence and links to `?ui=full-page` and `?ui=checkout-form` versions. Neither linked body is pinned here. Their current setup, controls, bounds, and payment lifecycle remain unresolved from this capture.\n\n## Related Pages\n\n- [[stripe]] \u2014 Stripe company route.\n- [[stripe-checkout]] \u2014 Checkout concept and reciprocal dated quantity scope.\n- [[source-stripe-how-checkout-works]] \u2014 broader Checkout overview.\n- [[source-stripe-checkout-dynamic-amounts]] \u2014 separately scoped dynamic amount updates.\n\n## Related raw API references\n\n- [[raw/stripe-payments-checkout-adjustable-quantity-2026-11-07|2026-11-07 adjustable-quantity variant index]] \u2014 navigation only; links to Full page and Embedded form variants without their bodies.\n\n## Raw Sources\n\n- [[raw/stripe-checkout-adjustable-quantities-2025|2026-04-21 full adjustable-quantity guide]] \u2014 dated factual evidence for the Elements example and reconciliation pattern.\n",
+      "quotes": [
+        {
+          "text": "# Make line item quantities adjustable",
+          "location": "raw/stripe-payments-checkout-adjustable-quantity-2026-11-07.md:5-5"
+        },
+        {
+          "text": "Enable your customers to adjust the quantity of items during checkout.",
+          "location": "raw/stripe-payments-checkout-adjustable-quantity-2026-11-07.md:7-7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-checkout-adjustable-quantity-2026-11-07.md:11-11"
+        },
+        {
+          "text": "[Full page](https://docs.stripe.com/payments/checkout/adjustable-quantity.md?ui=full-page)",
+          "location": "raw/stripe-payments-checkout-adjustable-quantity-2026-11-07.md:13-13"
+        },
+        {
+          "text": "[Embedded form](https://docs.stripe.com/payments/checkout/adjustable-quantity.md?ui=checkout-form)",
+          "location": "raw/stripe-payments-checkout-adjustable-quantity-2026-11-07.md:14-14"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "payments-checkout-adjustable-quantity-concept-scope",
+            "target_path": "wiki/concepts/stripe-checkout.md",
+            "update_kind": "durable_fact",
+            "anchor": "- **Adjustable quantities**: `adjustable_quantity: { enabled: true, minimum, maximum }` on line_items; defaults 0\u201399; absolute max 999,999; last item cannot be removed; client update via `actions.updateLineItemQuantity({ lineItem: id, quantity })` (React: `checkoutState.checkout.updateLineItemQuantity`); fetch finalized quantities via `sessions.listLineItems(id, { limit: 100 })` post-payment; store internal IDs in `metadata` for reconciliation; quantity changes only \u2014 cannot add new line items",
+            "proposed_markdown": "- **Adjustable quantities (2026-04-21 Elements example)**: Enable `adjustable_quantity` on Checkout Session `line_items` at server-side Session creation; the captured payment-mode example uses `ui_mode: 'elements'`. Defaults are minimum 0 and maximum 99, with configurable maximum up to 999999; the last item cannot be removed and adding line items is outside this quantity-only integration. For the captured Elements/custom Checkout client route, `actions.updateLineItemQuantity({ lineItem: id, quantity })` (React: `checkoutState.checkout.updateLineItemQuantity`) updates by Session line-item ID. After payment completes, the guide shows retrieving finalized quantities via `sessions.listLineItems(id, { limit: 100 })` and using metadata to reconcile internal IDs; its fulfillment handler is an unfinished TODO, not evidence of successful fulfillment. The 2026-11-07 capture is only a Full page/Embedded form variant index and does not verify that either variant uses these same calls. See [[source-stripe-checkout-adjustable-quantities]].",
+            "quote_indexes": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Old raw lines 14-49 and 51-115 establish the 2026-04-21 Elements example and dated behavior; old raw lines 134-139 show an unfinished throwing fulfillment TODO. New raw lines 9-14 supply navigation only, not either variant body."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-checkout-adjustable-quantity-2026-11-07.md",
+      "raw_sha256": "f1ba1a42d6219376d8bb5f286391e212db53b2fae5d767312e3cff8547ebbe7e",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-checkout-adjustable-quantity-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-checkout-adjustable-quantities-2025.md": [
+      {
+        "start": 1,
+        "end": 95
+      },
+      {
+        "start": 96,
+        "end": 181
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-adjustable-quantities.md": [
+      {
+        "start": 1,
+        "end": 72
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/30b86d1c7bb1ee35864977d8/content.diff": [
+      {
+        "start": 1,
+        "end": 95
+      },
+      {
+        "start": 96,
+        "end": 185
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-checkout-adjustable-quantity/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 171
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 80,
+        "end": 95
+      }
+    ],
+    "wiki/concepts/stripe-checkout.md": [
+      {
+        "start": 1,
+        "end": 35
+      },
+      {
+        "start": 115,
+        "end": 170
+      },
+      {
+        "start": 240,
+        "end": 280
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "If you use the Payment Intents API, you must manually track line item updates and modify the payment amount, or by creating a new PaymentIntent with adjusted amounts.",
+      "location": "raw/stripe-checkout-adjustable-quantities-2025.md:12-12"
+    },
+    {
+      "text": "Other line item updates, such as adding new line items, aren\u2019t supported for this integration.",
+      "location": "raw/stripe-checkout-adjustable-quantities-2025.md:16-16"
+    },
+    {
+      "text": "Checkout prevents the customer from removing an item if it\u2019s the only item remaining.",
+      "location": "raw/stripe-checkout-adjustable-quantities-2025.md:49-49"
+    },
+    {
+      "text": "After the payment completes, you can make a request for the finalized",
+      "location": "raw/stripe-checkout-adjustable-quantities-2025.md:115-115"
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/checkout/adjustable-quantity, stripe-payments-checkout-adjustable-quantity-2026-11-07.md (new raw lines 5-14) establishes only the topic and links to Full page and Embedded form variants; their bodies are absent, so it establishes no current API, setup, or payment state. stripe-checkout-adjustable-quantities-2025.md (old raw lines 8-49, 51-115) documents server-created Checkout Session line_items with adjustable_quantity, a payment-mode Elements example, and client updateLineItemQuantity by Session line-item ID. Defaults are 0\u201399, a maximum can reach 999999, and the last item stays. Payment Intents require separate manual amount tracking. source-stripe-checkout-adjustable-quantities.md retains this historical behavior, but its broad client summary needs the Elements/date qualification; finalized line-item retrieval follows completed payment and its unfinished handler does not prove fulfillment.",
+    "Q2": "For https://docs.stripe.com/payments/checkout/adjustable-quantity, stripe-payments-checkout-adjustable-quantity-2026-11-07.md (new raw lines 5-14) changes the root capture to a shorter purpose statement and Full page/Embedded form navigation. It supplies no substantive verified API or lifecycle delta. Preserve stripe-checkout-adjustable-quantities-2025.md (old raw lines 10-18, 23-49, 51-181) as dated evidence for Elements server setup, client quantity updates, quantity bounds, Payment Intents' separate amount handling, and post-payment reconciliation. In source-stripe-checkout-adjustable-quantities.md and its reciprocal Checkout concept route, qualify the historical UI and clarify that listLineItems and the throwing TODO are an example, not a successful fulfillment outcome. The linked November variant bodies were not captured, so their client APIs or parity with the April example cannot be inferred."
+  }
+}

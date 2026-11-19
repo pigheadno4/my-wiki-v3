@@ -65,3 +65,4 @@ Merchant is responsible for network compliance. Most networks restrict to card-n
 
 - [[source-stripe-multicapture]] — full integration guide (Stripe-hosted, embedded, Elements), test cards, Connect/refund details
 - [[source-stripe-payment-line-items-flexible]] — multicapture with payment line items (aggregation rules)
+- [[source-stripe-flexible-features-migration]] — 2026-05-11 full beta-to-GA migration guide for the dated version header, full-remaining-amount error, event switch and uncaptured-funds representation; November capture is variant navigation only

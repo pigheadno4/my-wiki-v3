@@ -1,0 +1,213 @@
+{
+  "job_id": "payments-flexible-features-migration",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-flexible-features-migration.md": {
+      "job_id": "payments-flexible-features-migration",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe \u2014 Flexible Payment Features Beta-to-GA Migration\"\ntype: source\ndate_ingested: 2026-05-11\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/flexible-features-migration\"\nraw_files:\n  - \"stripe-flexible-features-migration-2026.md\"\ntags: [stripe, incremental-authorization, overcapture, extended-authorization, multicapture, migration, ic-plus]\n---\n\n## Overview\n\nThe **2026-05-11 full guide** describes migration of four non-card-present flexible payment scenarios from private beta to general release: incremental authorization, overcapture, extended authorization and multicapture. It documents PaymentIntent card request changes, post-confirmation `latest_charge` status checks and capture behavior. The **2026-11-07 capture is only a variant index** for the four scenarios; it does not contain the variant bodies or verify their current API behavior. For feature-specific current rules, follow the linked variant and dedicated guide. See [[stripe]], [[stripe-incremental-authorization]], [[stripe-overcapture]], [[stripe-extended-authorization]] and [[stripe-multicapture]].\n\n## May 2026 migration details\n\n### Incremental authorization\n\nThe formerly optional `request_incremental_authorization_support: true` becomes a required pre-confirmation request, `payment_method_options.card.request_incremental_authorization: \"if_available\"`, in this dated beta-to-GA migration. After confirmation, the expanded `latest_charge.payment_method_details.card.incremental_authorization.status` reports `available` or `unavailable`; requesting is not proof of availability. The `increment_authorization` endpoint step is unchanged (May raw lines 22-150).\n\n### Overcapture\n\nThe beta had no request parameter; the May GA migration requires `payment_method_options.card.request_overcapture: \"if_available\"` before PaymentIntent confirmation. The expanded `latest_charge.payment_method_details.card.overcapture` provides `status` (`available` or `unavailable`) and, in the example, `maximum_amount_capturable`. Where available, the guide uses the capture endpoint with `amount_to_capture` up to that maximum; the capture endpoint step itself is unchanged (May raw lines 153-229). The example amount and maximum are illustrative, not account-level availability.\n\n### Extended authorization\n\nThe May migration adds a mandatory pre-confirmation `payment_method_options.card.request_extended_authorization: \"if_available\"` where beta had no such step. The guide says `capture_before` is now present even without using extended authorization, and capture must occur before that field's date; the capture endpoint step is unchanged (May raw lines 231-310).\n\n> [!warning] Contradiction in the 2026-05-11 full guide\n> Its prose says `latest_charge.payment_method_details.card.extended_authorization.status` has `available`/`unavailable` values (May raw line 264), while the adjacent response example uses `enabled`/`disabled` (May raw lines 280-284). The November variant index has no response schema, so it does not resolve the discrepancy. Do not treat either value set as verified by that index.\n\n### Multicapture\n\nThe May beta-to-GA guide adds a mandatory pre-confirmation `payment_method_options.card.request_multicapture: \"if_available\"`. For its beta migration, it instructs passing `multicapture_migrate_to_ga_from_beta` in the `Stripe-Version` header before confirmation; the Node example pins `2026-04-22.preview; multicapture_migrate_to_ga_from_beta`. This is a **dated migration example**, not a current API-version prescription. Check `latest_charge.payment_method_details.card.multicapture.status` for `available`/`unavailable` after confirmation (May raw lines 312-374).\n\nMultiple partial captures require the PaymentIntent to remain `requires_capture`. A non-final capture with `final_capture: false` can leave a capturable remainder, as the 700-of-1000 example shows. In the GA behavior described by this guide, trying to capture the **full remaining capturable amount** with `final_capture: false` returns HTTP 400; the beta example had captured the remaining 300 and reached `succeeded` (May raw lines 376-476). This boundary concerns the remaining amount, not any capture equal to the original authorized amount.\n\nThe May table changes a **non-final** capture event from `charge.captured` to `charge.updated`; final capture remains `charge.captured`. For `final_capture=true`, GA does not create a refund *to represent uncaptured funds*; this does not mean refunds generally cease (May raw lines 478-489).\n\n### Combining overcapture and incremental authorization\n\nThe May example requests both features on one manually captured card PaymentIntent, then inspects each status on the expanded `latest_charge`. **Only if both are available after confirmation** does its strategy offer overcapture when desired capture is at or below `maximum_amount_capturable`, or incremental authorization before capture for a higher desired amount (May raw lines 491-549). A request or example response does not prove live feature access, successful incremental authorization or capture.\n\n## Detail locators\n\n- May full guide: incremental authorization lines 22-150; overcapture 153-229; extended authorization 231-310; multicapture 312-489; combined strategy 491-549.\n- November variant index: new raw lines 5-16. The four URLs are navigation to unpinned variant bodies in this update.\n\n## Related raw API references\n\n- [[raw/stripe-payments-flexible-features-migration-2026-11-07|2026-11-07 variant index]] \u2014 navigation only: incremental authorization, overcapture, extended authorization and multicapture variant URLs; no behavioral body captured.\n\n## Raw Sources\n\n- [[raw/stripe-flexible-features-migration-2026|2026-05-11 full migration guide]]\n",
+      "quotes": [
+        {
+          "text": "Adapt your beta advanced payment scenarios to the general release.",
+          "location": "raw/stripe-payments-flexible-features-migration-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-flexible-features-migration-2026-11-07.md:11"
+        },
+        {
+          "text": "[Incremental authorization](https://docs.stripe.com/payments/flexible-features-migration.md?flex-payment-features=incremental-auth)",
+          "location": "raw/stripe-payments-flexible-features-migration-2026-11-07.md:13"
+        },
+        {
+          "text": "[Overcapture](https://docs.stripe.com/payments/flexible-features-migration.md?flex-payment-features=overcapture)",
+          "location": "raw/stripe-payments-flexible-features-migration-2026-11-07.md:14"
+        },
+        {
+          "text": "[Extended authorization](https://docs.stripe.com/payments/flexible-features-migration.md?flex-payment-features=extended-auth)",
+          "location": "raw/stripe-payments-flexible-features-migration-2026-11-07.md:15"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "flex-migration-incremental-authorization-route",
+            "target_path": "wiki/concepts/stripe-incremental-authorization.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-incremental-authorization]] \u2014 full guide with availability tables, SCA rules, API limits, test cards",
+            "proposed_markdown": "- [[source-stripe-incremental-authorization]] \u2014 full guide with availability tables, SCA rules, API limits, test cards\n- [[source-stripe-flexible-features-migration]] \u2014 2026-05-11 full beta-to-GA migration guide for the pre-confirmation request rename and post-confirmation status; November capture is variant navigation only",
+            "quote_indexes": [
+              2
+            ],
+            "warnings": [
+              "May raw lines 22-150 document the migration; new raw lines 9-16 provide only variant navigation. Preserve status as a post-confirmation latest_charge result, not a guarantee from the request."
+            ]
+          },
+          {
+            "update_id": "flex-migration-overcapture-route",
+            "target_path": "wiki/concepts/stripe-overcapture.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-payment-line-items-flexible]] \u2014 overcapture with payment line items",
+            "proposed_markdown": "- [[source-stripe-payment-line-items-flexible]] \u2014 overcapture with payment line items\n- [[source-stripe-flexible-features-migration]] \u2014 2026-05-11 full beta-to-GA migration guide for pre-confirmation request and conditional charge maximum; November capture is variant navigation only",
+            "quote_indexes": [
+              3
+            ],
+            "warnings": [
+              "May raw lines 153-229, 491-549 document the request, availability and combined strategy. New raw lines 9-16 are navigation only. Do not infer a live maximum or availability from the example."
+            ]
+          },
+          {
+            "update_id": "flex-migration-extended-authorization-route",
+            "target_path": "wiki/concepts/stripe-extended-authorization.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-extended-authorization]] \u2014 full guide with network tables, 2023 changes, test cards, 3 integration paths",
+            "proposed_markdown": "- [[source-stripe-extended-authorization]] \u2014 full guide with network tables, 2023 changes, test cards, 3 integration paths\n- [[source-stripe-flexible-features-migration]] \u2014 2026-05-11 full beta-to-GA migration guide for the pre-confirmation request and capture_before; the guide's status prose and JSON example conflict, and November capture is variant navigation only",
+            "quote_indexes": [
+              4
+            ],
+            "warnings": [
+              "May raw line 264 says extended_authorization.status available/unavailable, but adjacent JSON at lines 280-284 says enabled/disabled; new raw lines 9-16 have no schema and cannot resolve it. Preserve the concept's separate full-guide route."
+            ]
+          },
+          {
+            "update_id": "flex-migration-multicapture-route",
+            "target_path": "wiki/concepts/stripe-multicapture.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-payment-line-items-flexible]] \u2014 multicapture with payment line items (aggregation rules)",
+            "proposed_markdown": "- [[source-stripe-payment-line-items-flexible]] \u2014 multicapture with payment line items (aggregation rules)\n- [[source-stripe-flexible-features-migration]] \u2014 2026-05-11 full beta-to-GA migration guide for the dated version header, full-remaining-amount error, event switch and uncaptured-funds representation; November capture is variant navigation only",
+            "quote_indexes": [
+              0
+            ],
+            "warnings": [
+              "May raw lines 320-350, 376-489 document these beta-to-GA details. New raw lines 9-16 are navigation only. The 2026-04-22.preview header is a dated transition example, not current version advice."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-flexible-features-migration-2026-11-07.md",
+      "raw_sha256": "6d4b80bef975859f79483dd42a5f431ff327ddf3237255fc8b847b830cbe1597",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-flexible-features-migration-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 16
+      }
+    ],
+    "raw/stripe-flexible-features-migration-2026.md": [
+      {
+        "start": 1,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 450
+      },
+      {
+        "start": 451,
+        "end": 549
+      }
+    ],
+    "wiki/sources/source-stripe-flexible-features-migration.md": [
+      {
+        "start": 1,
+        "end": 69
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/4da748b044317061c7ae4561/content.diff": [
+      {
+        "start": 1,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 450
+      },
+      {
+        "start": 451,
+        "end": 553
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-flexible-features-migration/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 210
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 24
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 562,
+        "end": 576
+      },
+      {
+        "start": 704,
+        "end": 713
+      }
+    ],
+    "wiki/concepts/stripe-incremental-authorization.md": [
+      {
+        "start": 1,
+        "end": 67
+      }
+    ],
+    "wiki/concepts/stripe-overcapture.md": [
+      {
+        "start": 1,
+        "end": 65
+      }
+    ],
+    "wiki/concepts/stripe-extended-authorization.md": [
+      {
+        "start": 1,
+        "end": 54
+      }
+    ],
+    "wiki/concepts/stripe-multicapture.md": [
+      {
+        "start": 1,
+        "end": 67
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "Your _PaymentIntent_ (API object that represents your intent to collect payment from a customer, tracking charge attempts and payment state changes throughout the process) must include a request for incremental authorization before confirmation.",
+      "location": "raw/stripe-flexible-features-migration-2026.md:32"
+    },
+    {
+      "text": "The status values is `available` or `unavailable` depending on the customer\u2019s payment method.",
+      "location": "raw/stripe-flexible-features-migration-2026.md:264"
+    },
+    {
+      "text": "attempting to capture the full remaining amount with the `final_capture` parameter set to `false` returns a 400 error.",
+      "location": "raw/stripe-flexible-features-migration-2026.md:416"
+    },
+    {
+      "text": "if both features are available, you have options on the next steps to capture a larger amount than initially authorized:",
+      "location": "raw/stripe-flexible-features-migration-2026.md:546"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/flexible-features-migration, the complete November capture is a 16-line variant index: it names the beta-to-general-release subject and links incremental authorization, overcapture, extended authorization and multicapture variants, but establishes no API behavior (new raw lines 5-16). The May full guide documents required pre-confirmation PaymentIntent card requests, post-confirmation latest_charge feature statuses, conditional captures and the dated multicapture transition header (old raw lines 22-150, 153-350). It also covers requires_capture state, multicapture events/refund representation and combining overcapture with incremental authorization only when both features are available (old raw lines 376-549). The mapped source-stripe-flexible-features-migration.md captures the four branches but overstates the multicapture full-amount boundary and leaves the combined strategy unconditional. Requests, example responses and confirmation do not prove account eligibility, availability or payment success.",
+    "Q2": "At https://docs.stripe.com/payments/flexible-features-migration, the November change is variant navigation, not a demonstrated substantive API change: new raw lines 9-16 link unpinned bodies while old raw lines 8-549 provide dated full instructions. source-stripe-flexible-features-migration.md should keep May 2026 parameter renames, mandatory requests, charge-status paths, capture and webhook transitions, and the 2026-04-22.preview multicapture header as historical claims. It should place the November index only in related raw navigation. The old guide says GA HTTP 400 applies to final_capture=false on the full remaining capturable amount, and its combination strategy requires both feature statuses available after confirmation (old raw lines 376-416, 491-549). Its extended authorization prose says available/unavailable but the adjacent JSON says enabled/disabled (old raw lines 264-284); the November index cannot adjudicate that conflict or establish current version, SDK, merchant access, capture or payment outcome."
+  }
+}

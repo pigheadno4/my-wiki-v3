@@ -7,14 +7,14 @@ tags: [stripe, bacs, bank-debit, uk, gbp, mandates, disputes]
 
 ## Definition
 
-Bacs Direct Debit lets UK businesses pull funds from customers' UK bank accounts. API enum: `bacs_debit`. Business-initiated, delayed notification, reusable. Disputes are final and uncontestable.
+Bacs Direct Debit lets businesses in the November 2026 supported-location list debit customers' UK bank accounts in GBP under a Direct Debit Instruction mandate. API enum: `bacs_debit`. It is reusable and delayed; disputes are final and cannot be countered or appealed. The May guide described UK Stripe businesses and an outside-UK platform path for UK connected accounts; see [[source-stripe-bacs-direct-debit]] for the dated change.
 
-**Currency**: GBP only. **Country**: UK customers; UK business accounts only (platforms outside UK can initiate on behalf of UK connected accounts).
+**Currency/customer**: GBP presentment and GB bank-account customers. **Merchant location**: May listed UK Stripe accounts plus outside-UK platforms for UK connected accounts; November lists additional supported merchant countries and cross-border coverage, subject to approval, identity verification and account/MCC conditions.
 
 ## Limits
 
-- Per transaction: 100,000 GBP
-- New users: 10,000 GBP weekly (increases as you process more)
+- Per transaction: November default **10,000 GBP**; May said **100,000 GBP** (dated conflict). Contact support for higher limits.
+- New users: separate **10,000 GBP weekly** limit, which increases as they process more Bacs payments.
 
 ## Settlement
 
@@ -42,7 +42,7 @@ Mandate events:
 
 ## Debit Notifications
 
-Stripe auto-emails customers when mandate is created and before each debit. Custom email templates require approval from Stripe.
+Bacs requires notice when bank details are collected/confirmed and before each debit. May said Stripe emailed by default; November excepts enterprise accounts with a custom service user number (SUN) from Stripe's default sending. Sending your own notices requires eligibility and approval. These mandate/advance-debit notices are not payment-success receipts; the SUN exception does not remove the notice duty.
 
 ## Disputes
 
@@ -59,14 +59,14 @@ Stripe auto-emails customers when mandate is created and before each debit. Cust
 
 ## Connect
 
-- `bacs_debit_payments` capability required for `on_behalf_of`
-- UK platforms don't need capability for destination charges
-- `settings.bacs_debit_payments.display_name` enables Custom Branding
+- November: supported-location platforms can use destination charges with or without `on_behalf_of`, but must first enable Bacs Direct Debit on the platform before accepting payments. Omitting `on_behalf_of` makes the platform settlement merchant; with it, the supported-location connected account additionally needs `bacs_debit_payments` capability. Platform enablement and connected-account capability do not by themselves establish account approval or identity verification.
+- May: UK-platform destination charges for UK connected accounts were described as capability-exempt, while outside-UK platforms needed it; keep this as dated and scope-specific.
+- `settings.bacs_debit_payments.display_name` enables Custom Branding on the connected account.
 
 ## Custom Branding
 
 - 50 GBP/month per active account
-- Business name appears on new mandates 5 business days after request
+- May said the name appears on new mandates five business days after request; November says Custom Branding typically activates in ten business days and appears on mandates created after activation. A request is not proof of activation.
 - Set via `settings.bacs_debit_payments.display_name` on capability request or account update
 - Without display_name: defaults to Stripe branding
 - Unused accounts revert to Stripe branding automatically
@@ -79,7 +79,7 @@ Stripe auto-emails customers when mandate is created and before each debit. Cust
 
 ## Integration
 
-**Checkout**: `payment_method_types: ['bacs_debit']`, `mode: 'payment'` + `setup_future_usage: 'off_session'`. Handle 3 async events: `checkout.session.completed` → `checkout.session.async_payment_succeeded` (fulfill) / `checkout.session.async_payment_failed` (retry).
+**Checkout (May 2, 2026 guide)**: A manually configured payment-mode Session example selects `payment_method_types: ['bacs_debit']`; `payment_intent_data.setup_future_usage: 'off_session'` is in its optional save-for-later example. Handle `checkout.session.completed` as debit authorization, then `checkout.session.async_payment_succeeded` for later payment success and fulfillment or `checkout.session.async_payment_failed` for follow-up. A `success_url` redirect does not prove payment success.
 
 **Elements**: Create Customer → Payment Element (collects mandate automatically) → PaymentIntent → `stripe.confirmPayment`. Handle `payment_intent.succeeded` / `payment_intent.processing` / `payment_intent.payment_failed`.
 
@@ -100,7 +100,7 @@ Stripe auto-emails customers when mandate is created and before each debit. Cust
 
 ## Billing Retries
 
-Private preview. Automatic retry of failed payments caused by insufficient funds. Works for subscription invoices and one-off invoices.
+May labeled Direct Debit retries private preview. November omits that label and describes insufficient-funds retries for subscription and/or one-off invoices: up to two automatic retries within 30 days of the original attempt, with no debit-failure fee for Stripe-initiated retries. The capture does not prove account-specific availability.
 
 ## Bacs subscriptions: Checkout guide
 
@@ -114,6 +114,6 @@ The 2026-05-13 and 2026-11-07 Bacs subscription guide documents a Checkout path 
 
 ## Sources
 
-- [[source-stripe-bacs-direct-debit]] — primary source: settlement, mandates, disputes, refunds, Connect, Custom Branding
-- [[source-stripe-bacs-accept-payment]] — integration guide: Checkout + Elements paths, 11 test accounts, 6 failure codes, target_date, mandate reference prefix
+- [[source-stripe-bacs-direct-debit]] — 2026-05-02 and 2026-11-07 Bacs overview: dated merchant scope and limits, DDI mandate/notice conditions, delayed outcomes, refunds/disputes, Connect, branding and retries
+- [[source-stripe-bacs-accept-payment]] — May 2, 2026 full Checkout and web Elements Bacs payment guide, including delayed payment states, sandbox cases, optional target dates, and mandate prefix rules; November 7 capture is a Checkout/Elements variant index for navigation only.
 - [[source-stripe-subscriptions-bacs-debit]] — Bacs subscription Checkout guide (2026-05-13 and 2026-11-07): delayed fulfillment, sandbox-copy change, nine test accounts, and deprecated dynamic tax-rate field

@@ -1,0 +1,165 @@
+{
+  "job_id": "payments-extended-authorization",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-extended-authorization.md": {
+      "job_id": "payments-extended-authorization",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe \u2014 Extended Authorization (Online)\"\ntype: source\ndate_ingested: 2026-05-11\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/extended-authorization\"\nraw_files:\n  - \"stripe-extended-authorization-2026.md\"\ntags: [stripe, extended-authorization, capture, payment-intents, checkout, ic-plus, sca, visa, mastercard]\n---\n\n## Summary\n\nThe May 11, 2026 full guide describes an IC+ online card feature that can extend an uncaptured authorization beyond the usual seven-day online window, up to 30 days under qualifying network and merchant-category rules. It covers hosted Checkout, embedded Checkout, and an advanced PaymentIntent/Elements path. The November 7, 2026 capture at the same canonical URL is only a three-variant index and does not verify current eligibility, rules, code, or outcomes. An authorization hold is not capture or available funds.\n\n## Capture boundary and required payment state\n\nThe operational details and network table below are dated to May 11, 2026. The guide's hosted and embedded Checkout availability prose requires `mode: 'payment'` and `payment_intent_data.capture_method: 'manual'` on the Checkout Session; the advanced path requires `capture_method: 'manual'` on the PaymentIntent and confirms an uncaptured authorization. Set `payment_method_options.card.request_extended_authorization: 'if_available'` as a request, then inspect the associated Charge. Requesting the feature alone does not prove it was enabled. The guide's example PaymentIntent is `requires_capture`, with `amount_capturable` positive and `amount_received: 0`; this is distinct from capture, payment settlement, or available funds.\n\n> [!warning] Contradiction in the May guide: hosted and embedded Checkout creation snippets set payment mode and `if_available` but omit the manual-capture parameter required by their own availability prose. The embedded return-page prose also calls a `complete` Checkout Session a succeeded payment, while the same guide's uncaptured example remains `requires_capture` with no amount received. Do not use those snippets or a return-page status alone to infer a working extended hold or captured funds; verify the PaymentIntent/Charge and capture state.\n\n## Default vs Extended Windows\n\n- May guide default: seven days for most online card networks; two days for in-person Terminal, which has separate rules.\n- May guide extended upper bound: up to 30 days, conditional on network, merchant category, pricing, and payment-specific eligibility; use the Charge deadline rather than the table as a capture schedule.\n\n## Availability by Network (May 11, 2026 capture)\n\nThe main availability text lists Visa, Mastercard, American Express, and Discover; a separate limited-support beta table lists Diners Club and UnionPay. These are dated category and network descriptions, not a current availability guarantee for a particular merchant or payment.\n\n| Network | Category | Window |\n| --- | --- | --- |\n| Visa | Hotel, lodging, vehicle rental, cruise line | 30 days (effective 29d 18h) |\n| Visa | All other (CIT only, no Japan/healthcare/bill/debt) | 30 days + **0.08% fee** |\n| Mastercard (excl. Maestro/Cirrus) | All categories | 30 days |\n| AmEx | Lodging and vehicle rental only | 30 days (must capture by end of stay/rental) |\n| Discover | Airline, bus, car rental, cruise, commuter, ferry, hotel, lodging, railway | 30 days |\n| Diners Club (beta, US via Discover) | All categories | 30 days |\n| UnionPay (beta) | Global excl. US/CA | 27\u201329 days |\n| UnionPay (beta, US/CA via Discover) | T&E categories | 30 days |\n\n**September 2023 changes reported in the May 2026 capture**:\n- Discover removed: eating/drinking, boat rental, RV/truck, timeshares, taxicabs, trailer parks, equipment rental, amusement parks\n- Visa reduced from 31\u219230 days (effective 29d 18h buffer) to avoid non-compliance fees\n\n## API and state boundaries (May 11, 2026)\n\n**Prerequisite**: IC+ pricing in the guide. Hosted/embedded Checkout uses a payment-mode Session with manual capture; advanced PaymentIntent uses `capture_method: 'manual'`. Blended-pricing users are directed to Stripe support for feature access. Neither pricing nor a request establishes per-payment enablement.\n\n**Request**: `payment_method_options.card.request_extended_authorization: 'if_available'`\n\n**Check actual extension on associated Charge after confirmation**: `charge.payment_method_details.card.extended_authorization.status` \u2192 `enabled` or `disabled`\n\n**Capture deadline**: `charge.payment_method_details.card.capture_before` (Unix timestamp) is the payment-specific validity deadline; the May guide says the window does not change after Checkout Session completion or PaymentIntent confirmation. Network rules can change, so use this field rather than calculating a deadline from the table. `requires_capture` means authorized and uncaptured, not paid out.\n\n## Key Constraints (May 11, 2026)\n\n- AmEx: must capture by end of customer's stay or rental (not just within 30 days)\n- Visa non-T&E: +0.08% fee per transaction; only for customer-initiated transactions; excludes Japan and healthcare/bill/debt repayment merchants\n- Capture no later than the relevant `capture_before` deadline and applicable category constraint. The network table is a dated guide, not the authoritative deadline for one payment.\n- The old guide says merchants remain responsible for applicable network rules and law; the table alone cannot establish a compliant use case or a successful capture.\n\n## Best Practices\n\nUse clear statement descriptors to minimize disputes (customers may not recognize held funds after 30 days).\n\n## Related Pages\n\n- [[stripe]] \u2014 provider\n- [[stripe-extended-authorization]] \u2014 concept page\n- [[stripe-terminal-extended-authorizations]] \u2014 in-person extended authorizations (different availability rules)\n- [[stripe-overcapture]] \u2014 related IC+ capture feature\n\n## Raw Sources\n\n- [[raw/stripe-extended-authorization-2026|May 11, 2026 full online extended-authorization guide]] \u2014 hosted Checkout, embedded Checkout, and advanced PaymentIntent variants, including dated network tables and examples.\n\n## Related raw API references\n\n- [[raw/stripe-payments-extended-authorization-2026-11-07|November 7, 2026 hosted, embedded, and advanced variant index]] \u2014 navigation only; the three variant bodies were not captured in this packet.\n",
+      "quotes": [
+        {
+          "text": "Learn how to use extended authorizations to capture online card payments up to 30 days after authorization.",
+          "location": "raw/stripe-payments-extended-authorization-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-extended-authorization-2026-11-07.md:11"
+        },
+        {
+          "text": "[Full hosted page](https://docs.stripe.com/payments/extended-authorization.md?platform=web&ui=stripe-hosted)",
+          "location": "raw/stripe-payments-extended-authorization-2026-11-07.md:13"
+        },
+        {
+          "text": "[Full embedded page](https://docs.stripe.com/payments/extended-authorization.md?platform=web&ui=embedded-page)",
+          "location": "raw/stripe-payments-extended-authorization-2026-11-07.md:14"
+        },
+        {
+          "text": "[Advanced integration](https://docs.stripe.com/payments/extended-authorization.md?platform=web&ui=elements)",
+          "location": "raw/stripe-payments-extended-authorization-2026-11-07.md:15"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "payments-extended-authorization-manual-capture",
+            "target_path": "wiki/concepts/stripe-extended-authorization.md",
+            "update_kind": "durable_fact",
+            "anchor": "Extended authorizations increase the card authorization validity window from the default **7 days** (online) to up to **30 days**, allowing you to hold customer funds longer before capturing. Used for travel, hospitality, and rental bookings where the final amount isn't known at authorization time. **IC+ pricing required.**",
+            "proposed_markdown": "In the May 11, 2026 full guide, extended authorizations can increase an online card authorization window from the usual **7 days** to up to **30 days**, subject to network and category rules, while the funds remain uncaptured. The guide describes hosted and embedded payment-mode Checkout Sessions with **manual capture**, or an advanced PaymentIntent with `capture_method: 'manual'`; it offers the feature to IC+ users and directs blended-pricing users to support. The November 7 index only links variant bodies and does not renew current eligibility or setup rules. The May Checkout snippets omit manual capture despite the guide's prerequisite prose, so do not treat those snippets alone as a complete working hold.",
+            "quote_indexes": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Old raw lines 12-26, 184-198, and 482-496 establish dated defaults, IC+ access, and manual capture. Old raw lines 111-132 and 264-287 omit capture_method in Checkout snippets; old raw lines 547-572 show the advanced manual-capture and requires_capture state. New raw lines 9-15 are navigation only."
+            ]
+          },
+          {
+            "update_id": "payments-extended-authorization-source-route",
+            "target_path": "wiki/concepts/stripe-extended-authorization.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-extended-authorization]] \u2014 full guide with network tables, 2023 changes, test cards, 3 integration paths",
+            "proposed_markdown": "- [[source-stripe-extended-authorization]] \u2014 May 11, 2026 full guide for hosted Checkout, embedded Checkout, and advanced PaymentIntent online extended holds, network tables and September 2023 changes; the November 7 capture is a three-variant navigation index only.",
+            "quote_indexes": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Old raw lines 8-10, 180-182, and 478-480 identify the three full variants; old raw lines 28-56, 169-178 and 592-601 support dated tables and tests. New raw lines 9-15 provide variant links, not current rules."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-extended-authorization-2026-11-07.md",
+      "raw_sha256": "17798395d8bc1bf2fbec7235703f44254213c7a79f61973f128f9296170e2c8a",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-extended-authorization-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-extended-authorization-2026.md": [
+      {
+        "start": 1,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 480
+      },
+      {
+        "start": 481,
+        "end": 605
+      }
+    ],
+    "wiki/sources/source-stripe-extended-authorization.md": [
+      {
+        "start": 1,
+        "end": 63
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/38531886593a59d4ea8cc2b2/content.diff": [
+      {
+        "start": 1,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 480
+      },
+      {
+        "start": 481,
+        "end": 608
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 45
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 566,
+        "end": 575
+      },
+      {
+        "start": 706,
+        "end": 714
+      }
+    ],
+    "wiki/concepts/stripe-extended-authorization.md": [
+      {
+        "start": 1,
+        "end": 54
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-extended-authorization/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 176
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "is set to `payment` and [capture_method]",
+      "location": "raw/stripe-extended-authorization-2026.md:22"
+    },
+    {
+      "text": "Rely on the [capture_before field]",
+      "location": "raw/stripe-extended-authorization-2026.md:562"
+    },
+    {
+      "text": "\"status\": \"requires_capture\"",
+      "location": "raw/stripe-extended-authorization-2026.md:572"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/extended-authorization, the complete November capture states only that online card authorizations can allow capture up to 30 days later and links hosted, embedded, and advanced web variants (new raw lines 5-15). The May 11 full capture supplies the dated prerequisites and states: IC+ access, payment-mode Checkout Sessions with manual capture or an advanced manually captured PaymentIntent, conditional network and merchant-category windows, and a request using `if_available` (old raw lines 12-56, 184-228, 482-560). After confirmation, the associated Charge's extended_authorization.status says enabled or disabled and capture_before supplies the payment-specific deadline; the example PaymentIntent is requires_capture with amount_received zero, not captured funds (old raw lines 140-166, 295-321, 562-589). source-stripe-extended-authorization.md had the network summary but omitted the manual-capture prerequisite and the November navigation boundary (source lines 11-49, 61-63).",
+    "Q2": "At https://docs.stripe.com/payments/extended-authorization, the November change is a navigation-only presentation of three variant links, not demonstrated new authorization behavior (new raw lines 9-15; diff lines 1-13, 604-608). source-stripe-extended-authorization.md should retain May 11, 2026 IC+ conditions, seven-day online default, category-dependent upper bounds, Visa's 29-day-18-hour effective window, fee and CIT exclusions, AmEx end-of-stay rule, September 2023 Discover change, and beta Diners/UnionPay entries as dated (old raw lines 12-56, 184-228, 482-526). Manual capture is an explicit Checkout and PaymentIntent prerequisite, though the old hosted and embedded Checkout snippets omit the parameter (old raw lines 22, 111-132, 194, 264-287, 492, 547-560). The old embedded return-page prose equates Session complete with success, yet the nearby PaymentIntent example is requires_capture with amount_received zero; neither a redirect nor the authorization proves capture or settlement (old raw lines 295-321, 427-458). Requesting if_available is conditional, and Charge extended_authorization.status plus capture_before must be inspected for the actual extension and deadline (old raw lines 140-166, 562-589). Current variant content and eligibility remain unresolved by the index."
+  }
+}

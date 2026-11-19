@@ -1,0 +1,12 @@
+from pathlib import Path
+import json,sys
+P=Path('tracking/ingest/stripe/stripe-campaign-03');job,field,a,b=sys.argv[1:];j=next(j for j in json.loads((P/'jobs.json').read_text())if j['job_id']==job)
+if field.startswith('source'):
+ i=int(field.removeprefix('source')or'0');p=j['source_targets'][i]
+else:p=j[field]
+lines=Path(p).read_text().splitlines();a=int(a);b=min(int(b),len(lines));assert 1<=a<=b
+print(p,'LINES',a,'-',b,'OF',len(lines))
+for n in range(a,b+1):
+ s=lines[n-1]
+ if s.lstrip().startswith('|'):s=' | '.join(c.strip()for c in s.split('|'))
+ print(f'{n:5} {s}')

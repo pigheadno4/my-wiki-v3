@@ -1,0 +1,213 @@
+{
+  "job_id": "payments-checkout-dynamically-update-line-items",
+  "attempt": 2,
+  "source_results": {
+    "wiki/sources/source-stripe-checkout-custom-shipping-options.md": {
+      "job_id": "payments-checkout-dynamically-update-line-items",
+      "attempt": 2,
+      "quotes": [
+        {
+          "text": "Update line items in response to changes made during checkout.",
+          "location": "raw/stripe-payments-checkout-dynamically-update-line-items-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-checkout-dynamically-update-line-items-2026-11-07.md:11"
+        },
+        {
+          "text": "[Full page](https://docs.stripe.com/payments/checkout/dynamically-update-line-items.md?ui=full-page)",
+          "location": "raw/stripe-payments-checkout-dynamically-update-line-items-2026-11-07.md:13"
+        },
+        {
+          "text": "[Embedded form](https://docs.stripe.com/payments/checkout/dynamically-update-line-items.md?ui=checkout-form)",
+          "location": "raw/stripe-payments-checkout-dynamically-update-line-items-2026-11-07.md:14"
+        }
+      ],
+      "raw_path": "raw/stripe-payments-checkout-dynamically-update-line-items-2026-11-07.md",
+      "raw_sha256": "07af3f2153c82617d503907f956b3924d03325bf839a1aeed489e896a7339fd4",
+      "status": "candidate_ready",
+      "source_page": "---\ntitle: \"Stripe Checkout: Dynamically Customize Shipping Options\"\ntype: source\ndate_ingested: 2026-04-20\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/checkout/custom-shipping-options\"\nraw_files:\n  - \"stripe-checkout-custom-shipping-options-2025.md\"\n  - \"stripe-checkout-dynamic-line-items-2025.md\"\ntags: [stripe, checkout, shipping, dynamic-shipping, embedded, checkout-sessions, onShippingDetailsChange, dynamic-line-items]\n---\n\n## Summary\n\nThe separate 2026-04-20 shipping guide describes updating shipping options from a customer's address in an Embedded Checkout page using a server endpoint and client `onShippingDetailsChange` callback. Its payment-mode shipping flow is distinct from the 2026-04-21 Elements Checkout Sessions line-item update example. The 2026-11-07 capture at the line-items URL is a Full page/Embedded form variant index only; it does not establish current support or a replacement shipping flow.\n\n## Key Takeaways\n\n- **Dated UI and mode scope**: The April shipping guide says hosted Checkout does not support dynamically customizing shipping options, directs this use case to Embedded page or Checkout Elements, and limits its embedded shipping example to payment mode (shipping raw lines 8-29). These are April claims, not current support verification.\n- **Session setup**: Use `ui_mode: \"embedded_page\"`, `permissions.update_shipping_details: \"server_only\"`, `shipping_address_collection.allowed_countries`, and an initial zero-amount shipping option. The server-only permission prevents automatic client-side shipping-detail updates (shipping raw lines 32-79).\n- **Server endpoint**: Retrieve the Checkout Session by ID, validate the submitted address, calculate shipping options, and update `collected_information.shipping_details` plus `shipping_options` with the secret key (shipping raw lines 81-149).\n- **Stripe.js version boundary**: `@stripe/stripe-js@9.14.0` still declares `StripeEmbeddedCheckoutOptions.onShippingDetailsChange`, but marks it deprecated because dynamic shipping updates are deprecated in Embedded Checkout (raw/github/stripe/stripe-js/snapshots/2026-08-21-8daa6fa/files/types/stripe-js/embedded-checkout.d.ts:164-169; [[source-github-stripe-js]]). Treat the April callback setup below as historical guidance for pinned-version maintenance; verify Stripe's current replacement before a new implementation. The declaration does not show callback removal or establish runtime availability.\n- **Client callback**: The dated vanilla JS `stripe.createEmbeddedCheckoutPage()` and React `EmbeddedCheckoutProvider` examples pass `onShippingDetailsChange`, which receives the Session ID and shipping details. Return a Promise resolving to `{type: \"accept\"}` for rendered options or `{type: \"reject\", errorMessage}` for an error (shipping raw lines 177-223, 244-307). Callback acceptance is a shipping UI result, not payment success.\n\n## Use Cases\n\n- Validate a shipping address and let the customer choose a preferred address.\n- Show region-specific methods and calculate rates from the entered address.\n- Offer an order-total threshold such as free shipping. The April shipping guide points to the separate dynamic line-items guide for quantity or cross-sell changes (shipping raw lines 20-25).\n\n## Integration Pattern\n\n```\nServer creates an embedded-page, payment-mode Checkout Session\n  -> Customer enters shipping address\n  -> onShippingDetailsChange sends checkoutSessionId and shippingDetails to server\n  -> Server retrieves Session, validates address, calculates options\n  -> Server updates collected_information.shipping_details and shipping_options\n  -> Client callback resolves accept or reject for the shipping UI\n```\n\nThis is the April historical integration pattern; Stripe.js 9.14.0 subsequently deprecates `onShippingDetailsChange` for Embedded Checkout dynamic shipping updates (declaration lines 164-169). Verify the current replacement before new implementation. The April server and client examples are illustrative; validate the caller and target Session before a server-side update. A successful UI callback alone does not establish order completion.\n\n## Dynamic Line Items: Dated UI Scope\n\nAs of this source's 2026-04-20 snapshot, the shipping summary recorded dynamic line-item updates as unsupported in hosted Checkout and still developing for embedded Checkout. The separate 2026-04-21 line-items capture demonstrates `ui_mode: \"elements\"` with a server `sessions.update` and client `runServerUpdate` in a subscription example (line-items raw lines 47-63, 65-149, 170-287). That Elements path is not the `embedded_page` shipping callback above. The November 2026 line-items index labels Full page and Embedded form variants but contains no variant body or support matrix (new raw lines 9-14). Do not infer that the April UI limitation persists, was reversed, or that \u201cEmbedded form\u201d equals April `ui_mode: \"elements\"`.\n\n## Related Pages\n\n- [[source-stripe-checkout-shipping]] \u2014 Static ShippingRate API\n- [[source-stripe-checkout-dynamic-line-items]] \u2014 April Elements line-item update example and November variant navigation\n- [[stripe-checkout]] \u2014 Checkout concept and dated UI qualifications\n- [[stripe]] \u2014 Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-checkout-custom-shipping-options-2025|Dynamic shipping guide, captured 2026-04-20]] \u2014 Embedded page shipping callback and server update\n- [[raw/stripe-checkout-dynamic-line-items-2025|Dynamic line-items guide, captured 2026-04-21]] \u2014 separate Elements Checkout Session example used for the dated comparison\n\n## Related raw API references\n\n- [[raw/stripe-payments-checkout-dynamically-update-line-items-2026-11-07|Dynamic line-items variant index, captured 2026-11-07]] \u2014 navigation only; Full page and Embedded form links\n",
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "checkout-dynamic-lines-dated-scope",
+            "target_path": "wiki/concepts/stripe-checkout.md",
+            "update_kind": "durable_fact",
+            "anchor": "- **Dynamic line items**: **not supported** in hosted or embedded Checkout; **supported** in Elements path (Checkout Sessions API) via beta `runServerUpdate` pattern (SDK `2025-03-31.basil`+) \u2014 use cases: inventory checks, cross-sells, subscription interval toggle, order-total-based shipping/tax updates; see [[source-stripe-checkout-dynamic-line-items]]",
+            "proposed_markdown": "- **Dynamic line items (dated UI scope)**: The 2026-04-20 shipping summary recorded hosted/embedded Checkout line-item updates as unsupported or in development. A separate 2026-04-21 guide demonstrates an Elements Checkout Session in subscription mode with a server `sessions.update` and client `runServerUpdate` pattern; its code sets `apiVersion: \"2025-03-31.basil\"`. The 2026-11-07 capture is a Full page/Embedded form variant index with no support matrix or implementation body. Do not infer current hosted, embedded, Elements, or payment-mode support from its labels. See [[source-stripe-checkout-custom-shipping-options]] and [[source-stripe-checkout-dynamic-line-items]].",
+            "quote_indexes": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "warnings": [
+              "Old authority: raw/stripe-checkout-dynamic-line-items-2025.md:35-63,65-149,170-176; shipping source wiki/sources/source-stripe-checkout-custom-shipping-options.md:62-69, with underlying separate shipping raw raw/stripe-checkout-custom-shipping-options-2025.md:8-43. November raw/stripe-payments-checkout-dynamically-update-line-items-2026-11-07.md:9-14 is navigation only."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      }
+    },
+    "wiki/sources/source-stripe-checkout-dynamic-line-items.md": {
+      "job_id": "payments-checkout-dynamically-update-line-items",
+      "attempt": 2,
+      "quotes": [
+        {
+          "text": "Update line items in response to changes made during checkout.",
+          "location": "raw/stripe-payments-checkout-dynamically-update-line-items-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-checkout-dynamically-update-line-items-2026-11-07.md:11"
+        },
+        {
+          "text": "[Full page](https://docs.stripe.com/payments/checkout/dynamically-update-line-items.md?ui=full-page)",
+          "location": "raw/stripe-payments-checkout-dynamically-update-line-items-2026-11-07.md:13"
+        },
+        {
+          "text": "[Embedded form](https://docs.stripe.com/payments/checkout/dynamically-update-line-items.md?ui=checkout-form)",
+          "location": "raw/stripe-payments-checkout-dynamically-update-line-items-2026-11-07.md:14"
+        }
+      ],
+      "raw_path": "raw/stripe-payments-checkout-dynamically-update-line-items-2026-11-07.md",
+      "raw_sha256": "07af3f2153c82617d503907f956b3924d03325bf839a1aeed489e896a7339fd4",
+      "status": "candidate_ready",
+      "source_page": "---\ntitle: \"Dynamically Update Line Items\"\ntype: source\ndate_ingested: 2026-04-21\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/checkout/dynamically-update-line-items\"\nraw_files:\n  - \"stripe-checkout-dynamic-line-items-2025.md\"\ntags: [stripe, checkout-sessions, line-items, dynamic-updates, runServerUpdate, beta, subscription, payment-intents]\n---\n\n## Summary\n\nThe 2026-04-21 full guide demonstrates a subscription interval toggle in Checkout Sessions with `ui_mode: \"elements\"`: the client requests a server update, the server changes the Session's line items, and `runServerUpdate` refreshes the client Session. The 2026-11-07 capture at this URL is only an index for Full page and Embedded form variants. It does not confirm their implementation steps, UI support, mode scope, or current version requirements.\n\n## Dated scope and prerequisites\n\n- The existing source labels this feature beta, but the pinned April guide does not establish a beta gate. That guide says to use `2025-03-31.basil` or later as an SDK version; its Node sample sets `apiVersion: \"2025-03-31.basil\"`. The capture does not identify a server SDK package version by that string. Check the relevant API and SDK compatibility before implementation (old raw lines 23-45).\n- The concrete April Session uses `ui_mode: \"elements\"`, `mode: \"subscription\"`, a Price and quantity in `line_items`, and a `return_url` (old raw lines 47-63). This example demonstrates subscription mode; neither it nor the November variant labels proves payment-mode support.\n- The separate April 20 shipping source describes an `embedded_page` shipping callback and records a dated hosted/embedded line-item limitation. Its UI and `onShippingDetailsChange` callback are distinct from this Elements `runServerUpdate` example. The November \u201cEmbedded form\u201d label alone does not resolve that scope (old raw lines 47-63; new raw lines 9-14).\n- For the Payment Intents API, the April guide says to track line-item updates manually and either modify an existing PaymentIntent amount or create a new PaymentIntent with adjusted amounts (old raw lines 19-21). A new Intent is not mandatory in the cited wording.\n\n## Server update and trust boundary\n\nThe April guide recommends action-specific endpoints, such as changing a subscription interval. It warns that client data can be modified; pass a Session ID and retrieve authoritative Session state from Stripe instead of trusting client-passed Session data (old raw lines 65-75). Validate the caller's authority over the target Session.\n\nThe illustrative endpoint checks for a nonempty client-supplied `checkout_session_id` and a `monthly` or `yearly` interval, selects a trusted server-side Price ID, and calls `stripe.checkout.sessions.update(checkout_session_id, { line_items })`. It handles Stripe invalid-request and unexpected errors (old raw lines 93-140). The sample does **not** show the recommended Session retrieval or an ownership/authorization check before updating the named Session. Its `{type: \"success\"}` response therefore proves neither target authorization nor a completed payment or subscription.\n\n## Complete line-item array rule\n\nThe April update operation requires retransmitting the entire `line_items` array. Keep an item by its ID; update it by ID plus changed fields; add with `price` and `quantity` but no ID; remove by omitting its ID; reorder by putting its ID at the desired position (old raw lines 143-149).\n\n## Client `runServerUpdate` pattern\n\nThe dated HTML/JS example sends `actions.getSession().id` and the selected interval to its endpoint inside `checkout.runServerUpdate`; React uses `checkoutState.checkout.runServerUpdate` and the checkout ID (old raw lines 170-174, 184-223, 226-287). The method gives the update function 20 seconds; catch rejected promises/timeouts and handle non-OK responses. The samples change the local toggle only after an OK response. A successful response refreshes the client Session object with new line items; it is not payment or subscription completion (old raw lines 174-176, 205-223, 228-230, 260-274).\n\n## Dated use cases\n\nThe April guide illustrates a monthly/yearly subscription price toggle and lists inventory checks on quantity changes, complimentary products at an order threshold, shipping-rate recalculation combined with separate shipping guidance, and tax-rate updates when Stripe Tax is not used (old raw lines 10-17). These examples do not establish November Full page or Embedded form support.\n\n## Related Pages\n\n- [[source-stripe-checkout-custom-shipping-options]] \u2014 separate April Embedded Checkout shipping callback and dated line-item limitation\n- [[source-stripe-checkout-dynamic-shipping]] \u2014 related dynamic shipping pattern with its own UI scope\n- [[stripe-checkout]] \u2014 Checkout concept and dated UI boundaries\n- [[stripe]] \u2014 Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-checkout-dynamic-line-items-2025|Dynamic line-items full guide, captured 2026-04-21]] \u2014 dated Elements subscription example, server update, and client refresh\n\n## Related raw API references\n\n- [[raw/stripe-payments-checkout-dynamically-update-line-items-2026-11-07|Dynamic line-items variant index, captured 2026-11-07]] \u2014 navigation only; Full page and Embedded form links\n",
+      "suggestions": {
+        "company": [],
+        "concepts": [],
+        "index": [],
+        "log": []
+      }
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-checkout-dynamically-update-line-items-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-checkout-dynamic-line-items-2025.md": [
+      {
+        "start": 1,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 287
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-custom-shipping-options.md": [
+      {
+        "start": 1,
+        "end": 79
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-dynamic-line-items.md": [
+      {
+        "start": 1,
+        "end": 95
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/7ed7aa8ee9e2f22c2b4a428b/content.diff": [
+      {
+        "start": 1,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 291
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-checkout-dynamically-update-line-items/attempt-3/receipt.json": [
+      {
+        "start": 1,
+        "end": 180
+      },
+      {
+        "start": 181,
+        "end": 235
+      }
+    ],
+    "raw/stripe-checkout-custom-shipping-options-2025.md": [
+      {
+        "start": 1,
+        "end": 115
+      },
+      {
+        "start": 116,
+        "end": 225
+      },
+      {
+        "start": 226,
+        "end": 334
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 36,
+        "end": 44
+      },
+      {
+        "start": 80,
+        "end": 85
+      },
+      {
+        "start": 766,
+        "end": 772
+      }
+    ],
+    "wiki/concepts/stripe-checkout.md": [
+      {
+        "start": 129,
+        "end": 155
+      },
+      {
+        "start": 245,
+        "end": 268
+      }
+    ],
+    "raw/github/stripe/stripe-js/snapshots/2026-08-21-8daa6fa/files/types/stripe-js/embedded-checkout.d.ts": [
+      {
+        "start": 1,
+        "end": 130
+      },
+      {
+        "start": 131,
+        "end": 201
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "If you use the Payment Intents API, you must manually track line item updates and modify the payment amount, or by creating a new PaymentIntent with adjusted amounts.",
+      "location": "raw/stripe-checkout-dynamic-line-items-2025.md:21"
+    },
+    {
+      "text": "When updating line items, you must retransmit the entire array of line items.",
+      "location": "raw/stripe-checkout-dynamic-line-items-2025.md:143"
+    },
+    {
+      "text": "To use this feature, ensure your SDK version is `2025-03-31.basil` or later.",
+      "location": "raw/stripe-checkout-dynamic-line-items-2025.md:35"
+    },
+    {
+      "text": "`runServerUpdate` enforces a 20-second timeout for your update function.",
+      "location": "raw/stripe-checkout-dynamic-line-items-2025.md:176"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/checkout/dynamically-update-line-items, the complete November capture establishes only a line-item-update purpose and Full page/Embedded form links (new raw lines 5-14). It gives no current prerequisites, Session identity rule, mode support, or payment outcome. The April guide demonstrates a subscription-mode Checkout Session with `ui_mode: \"elements\"`; the client passes a Session ID to an action-specific server endpoint and wraps it in `runServerUpdate`, while the server retransmits the full line-item array (old raw lines 47-149, 170-287). Guidance says retrieve authoritative Session data server-side, but the sample updates a client-named ID without showing retrieval or ownership validation (old raw lines 69-74, 93-119). source-stripe-checkout-dynamic-line-items.md needs that distinction, a corrected PaymentIntent alternative, and dated mode/version language. source-stripe-checkout-custom-shipping-options.md covers a separate April embedded shipping callback and dated hosted/embedded line-item limitation. The retained `@stripe/stripe-js@9.14.0` declaration marks `onShippingDetailsChange` deprecated because dynamic shipping updates are deprecated in Embedded Checkout, while still declaring the callback (SDK raw lines 164-169); new work must verify a current replacement. This version boundary does not come from the navigation-only November line-item index. A Session refresh is neither caller authorization nor payment completion.",
+    "Q2": "At https://docs.stripe.com/payments/checkout/dynamically-update-line-items, the November replacement is navigation-only in the pinned capture; neither variant body was supplied (old raw lines 4-287; new raw lines 9-14). source-stripe-checkout-dynamic-line-items.md must keep the April Elements subscription example, full-array update, server/client trust boundary, and 20-second `runServerUpdate` timeout dated (old raw lines 35-63, 65-149, 170-287). Its PaymentIntent claim must allow modifying the existing amount or creating a new Intent after manually tracking items (old raw lines 19-21). The guide calls Basil an SDK version while code sets `apiVersion`, and its sample shows no Session retrieval or ownership check despite advising retrieval (old raw lines 35-45, 69-74, 93-119). source-stripe-checkout-custom-shipping-options.md must retain its separate April payment-mode `onShippingDetailsChange` example and historical UI limitation, adjacent to the known `@stripe/stripe-js@9.14.0` deprecation: the SDK declaration still includes the callback but says Embedded Checkout dynamic shipping updates are deprecated (SDK raw lines 164-169). New implementations should verify a current replacement; neither callback removal nor runtime support follows from that declaration or November's Full page/Embedded form labels. The Checkout concept needs a reciprocal dated warning; callback acceptance or Session update does not establish purchase success."
+  }
+}

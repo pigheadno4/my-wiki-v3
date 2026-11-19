@@ -1,0 +1,49 @@
+---
+title: "Add Discounts (Checkout Sessions)"
+type: source
+date_ingested: 2026-04-21
+date_updated: 2026-11-15
+original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/advanced/discounts"
+raw_files:
+  - "stripe-payments-advanced-discounts-2026-11-07.md"
+  - "stripe-checkout-add-discounts-2025.md"
+tags: [stripe, checkout-sessions, discounts, coupons, promotion-codes, applyPromotionCode, elements]
+---
+
+## Summary
+
+The 2026-04-21 and 2026-11-07 captures document coupons and customer-facing promotion codes for discounts in Checkout Sessions with the Elements UI. A server can apply a coupon when creating a Session, or enable customer-entered promotion codes; Checkout Elements actions apply or remove a code during checkout. Checkout Sessions support at most one coupon or promotion code. This page focuses on the Elements promotion-code actions; [[source-stripe-checkout-discounts]] covers the broader coupon API and restrictions.
+
+The guide distinguishes Payment Intents: calculate a discounted amount on the server, then create or update the PaymentIntent with that amount. It does not document a PaymentIntent coupon parameter. Applying a discount or receiving an action result is not proof that a payment completed.
+
+## Client-side promotion-code actions
+
+For HTML and JavaScript, initialize the Checkout Elements SDK with a Session client secret, call `loadActions()`, and use its success-state `actions.applyPromotionCode(input.value)`; display an error when the result includes one. `actions.removePromotionCode()` removes **all** previously applied promotion codes. The React example obtains the same `applyPromotionCode` and `removePromotionCode` actions from `checkoutState.checkout`, after handling loading and error states.
+
+The **2026-04-21** React example imports and calls `useCheckout()` from `@stripe/react-stripe-js/checkout`. The **2026-11-07** example imports and calls `useCheckoutElements()` from that same entrypoint. This is a dated example change. It does not prove removal of `useCheckout()`, a minimum compatible package version, or a new runtime capability; see the separately versioned React binding evidence in [[stripe-checkout]].
+
+## Session setup
+
+- To apply a coupon on the server, provide its ID as `discounts: [{ coupon: 'COUPON_ID' }]` when creating a Checkout Session.
+- To let customers enter a promotion code, set `allow_promotion_codes: true` when creating the Session; the Elements client then calls the actions above. The captured examples use `mode=payment`, `ui_mode=elements`, and a `return_url`.
+- The April capture illustrates Session and coupon creation in Node.js; the November capture illustrates corresponding requests with curl. The request parameters and discount path remain aligned, so the sample-language change alone does not imply a server API change or Node.js removal.
+
+## Coupon and promotion-code rules
+
+- A coupon can define `percent_off` or `amount_off`, `currency`, `max_redemptions`, `redeem_by`, and `applies_to` product IDs. Multiple customer-facing promotion codes can reference one coupon and inherit its product restrictions. Deleting a coupon prevents future applications.
+- A promotion code references an existing coupon and can be restricted to `customer` or `customer_account`. Its `code` is case-insensitive. Active customer-restricted codes can reuse text across different customers, while an active general-use code cannot share that text with another active code. After inactivating a code, the text can be reused for a new code.
+- `restrictions.first_time_transaction` can limit use to first-time customers. A customer or customer-configured Account with no prior payments or non-void invoices can meet that condition; Sessions that create a guest customer can still accept first-time-only codes.
+- `minimum_amount` and `minimum_amount_currency` are evaluated when the code is redeemed. For a subscription, the minimum applies only to its initial payment.
+- A promotion-code `expires_at` cannot exceed its coupon's `redeem_by`; the coupon expiry fills it when omitted. Its `max_redemptions` cannot exceed the coupon's maximum. If the underlying coupon becomes invalid, the code reaches its redemption maximum, or its expiry passes, the code becomes permanently inactive and cannot be reactivated. Deleting a promotion code prevents future applications.
+
+## Related Pages
+
+- [[stripe]] — company overview
+- [[stripe-checkout]] — Checkout Sessions and versioned React binding context
+- [[source-stripe-checkout-discounts]] — additional coupon restrictions and separately dated no-cost order behavior
+
+## Raw Sources
+
+- [[raw/stripe-payments-advanced-discounts-2026-11-07|Full discounts guide captured 2026-11-07]]
+- [[raw/stripe-checkout-add-discounts-2025|Full discounts guide captured 2026-04-21]]

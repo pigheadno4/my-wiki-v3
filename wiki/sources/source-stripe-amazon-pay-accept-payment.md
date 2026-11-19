@@ -2,34 +2,43 @@
 title: "Stripe: Accept a Payment with Amazon Pay"
 type: source
 date_ingested: 2026-05-07
+date_updated: 2026-11-15
 original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/amazon-pay/accept-a-payment"
 raw_files:
   - "stripe-amazon-pay-accept-payment-2025.md"
 tags: [stripe, wallets, amazon-pay, checkout, elements, direct-api, ios, android, manual-capture, authorization]
 ---
 
-## Summary
+## Overview
 
-Integration guide for Amazon Pay via Checkout, Elements (PaymentIntents), Direct API, iOS, and Android. 10-minute authorization window. Separate authorization + capture supported (7-day capture window). Error code note: docs say `payment_intent_invalid_currency` only supports USD — contradicts multi-currency overview.
+The May 7, 2026 full guide describes one-time Amazon Pay acceptance through hosted or embedded Checkout, Payment Element, Direct API, iOS, and Android. It depicts Amazon account authentication after a redirect. The November 7 capture at this URL is a five-destination variant index, not refreshed integration instructions. It does not establish current eligibility, currency support, SDK requirements, or a payment outcome. See [[stripe]] and [[stripe-amazon-pay]].
 
-## Key Details
+## Key takeaways from the May 2026 guide
 
-**Four web integration paths + iOS + Android**.
+- **Checkout choice and flow:** The guide describes dynamic payment methods, then manual configuration for merchants choosing not to use them. Its manual Checkout Session examples list `amazon_pay` in `payment_method_types` and require same-currency line items. The Stripe-hosted example has `success_url`; the full embedded page example has `ui_mode: "embedded_page"` and `return_url`. Manual listing is a path choice, not a universal prerequisite.
+- **Elements, Direct API, and mobile:** Elements and Direct API examples create PaymentIntents on the server and pass a PaymentIntent client secret to the client. Elements uses the Payment Element with `stripe.confirmPayment`; Direct API uses `stripe.confirmPayment` with Amazon Pay `payment_method_data` and `return_url`. The iOS example uses `STPPaymentHandler.confirmPayment`, an app return URL, and webview callback; the Android example uses `PaymentLauncher.confirm`. The mobile examples recommend Mobile Payment Element while demonstrating separate low-level confirmation. These are May examples, not verified November SDK flows.
+- **Two separate deadlines:** In the Elements failed-payment section, when an Amazon Pay PaymentIntent is `requires_action` after redirect to Amazon, the customer has ten minutes to act. A decline or no action within that period detaches the PaymentMethod and returns the Intent to `requires_payment_method`. Optional `capture_method: manual` instead gives a seven-day capture window after authorization reaches `requires_capture`; an uncaptured Intent is canceled and a `payment_intent.canceled` event is sent. The guide permits partial capture and optional cancellation.
+- **Outcome boundary:** A created Session or Intent, browser/app return, or mobile callback is not itself proof of success or capture. The Elements return-page example retrieves the PaymentIntent and distinguishes `succeeded`, `processing`, and `requires_payment_method`; the guide directs post-payment actions to `payment_intent.succeeded` events rather than client callbacks. Its sandbox approve/decline page, live Amazon website redirect, and Android live mobile-app redirect are environment-specific descriptions.
+- **Unresolved currency contradiction:** The May Elements error table says `payment_intent_invalid_currency` means Amazon Pay only supports USD, while the same guide's Direct API table lists twelve currencies (`aud`, `gbp`, `dkk`, `eur`, `hkd`, `jpy`, `nzd`, `nok`, `zar`, `sek`, `chf`, `usd`) with a US exception. The table and error text conflict. This source does not resolve merchant or path eligibility from that contradiction, and the November index provides no currency body.
 
-**Checkout**: `payment_method_types: ['amazon_pay']`. Redirect to Amazon.
+## Detail locators
 
-**Elements (PaymentIntents)**: `stripe.confirmPayment` with `return_url`. **10-minute authorization window** — PaymentIntent reverts to `requires_payment_method` if not completed.
+- Checkout dynamic/manual choice, Session examples, same-currency lines, hosted `success_url`, and embedded `return_url`: [[raw/stripe-amazon-pay-accept-payment-2025|May full guide]], lines 8–100.
+- Elements server-created PaymentIntent and client secret, Payment Element, `stripe.confirmPayment`, return status, ten-minute `requires_action` deadline, optional manual capture, and error table: same raw, lines 108–696. The May Elements example requires HTTPS for a live checkout page and loads `dahlia` Stripe.js; those are dated instructions.
+- Direct API PaymentIntent/secret/redirect, event handling, and twelve-currency table: same raw, lines 698–892.
+- iOS SDK/setup, app return URL, `STPPaymentHandler`, and event boundary: same raw, lines 894–1160. The guide's iOS 13+ statement is May-dated.
+- Android SDK/setup, `PaymentLauncher`, events, and sandbox/live testing: same raw, lines 1162–1381. Android `stripe-android:23.7.0` is the old example, not a current floor.
 
-**Separate authorization + capture**: `capture_method: 'manual'`. 7-day capture window; `payment_intent.canceled` if window expires. Can partially capture with `amount_to_capture`.
+## Related
 
-**Direct API**: `stripe.confirmPayment` with `payment_method_data: { type: 'amazon_pay' }` + `return_url`.
-
-**iOS**: Mobile Payment Element recommended (standard `STPPaymentHandler`).
-
-**Error code note**: `payment_intent_invalid_currency` description says "only supports usd" — likely a doc error given the multi-currency table in the overview page.
-
-**Error codes**: `payment_intent_invalid_currency`, `missing_required_parameter`, `payment_intent_payment_attempt_failed`, `payment_intent_redirect_confirmation_without_return_url`.
+- [[source-stripe-amazon-pay]] — Amazon Pay product and country/currency overview.
+- [[stripe-amazon-pay]] — Amazon Pay concept and reciprocal source route.
 
 ## Raw Sources
 
-- [[stripe-amazon-pay-accept-payment-2025]] — verbatim webpage content (1,381 lines); fixed `*Prices*` ×1, `*client secret*` ×4, `*webhook*` ×4; 1 PNG screenshot downloaded to assets/
+- [[raw/stripe-amazon-pay-accept-payment-2025|Amazon Pay accept-payment full guide, fetched 2026-05-07]] — dated factual evidence for the integration and conflict above.
+
+## Related raw API references
+
+- [[raw/stripe-payments-amazon-pay-accept-a-payment-2026-11-07|Amazon Pay accept-payment variant index, fetched 2026-11-07]] — navigation-only capture listing Checkout, Elements, Direct API, iOS, and Android. Its linked variant bodies were not fetched in this packet; this index does not revise May behavior.

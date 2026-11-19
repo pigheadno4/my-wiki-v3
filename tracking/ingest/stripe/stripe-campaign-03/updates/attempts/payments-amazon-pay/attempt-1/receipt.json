@@ -1,0 +1,225 @@
+{
+  "job_id": "payments-amazon-pay",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-amazon-pay.md": {
+      "job_id": "payments-amazon-pay",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Amazon Pay Payments\"\ntype: source\ndate_ingested: 2026-05-07\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/amazon-pay\"\nraw_files:\n  - \"stripe-payments-amazon-pay-2026-11-07.md\"\n  - \"stripe-amazon-pay-2025.md\"\ntags: [stripe, wallets, amazon-pay, worldwide, multi-currency, manual-capture, disputes, recurring, sepa, a-to-z-guarantee]\n---\n\n## Overview\n\nAmazon Pay is a reusable wallet that lets customers check out with information held in their Amazon account. In the November 2026 overview, the customer signs in and authorizes on Amazon's hosted page; Stripe confirms after Amazon authorization and Amazon returns the customer to the merchant's success or confirmation page. The page labels confirmation immediate, access instant provisional, and settlement on the **standard payout schedule**. The return page alone does not independently prove a successful charge or an immediate payout. See [[stripe]], [[stripe-amazon-pay]], and [[stripe-wallets]] (new raw lines 5-15, 170-182; old raw lines 8-12, 24-38).\n\n## Eligibility and currencies\n\n- Customers worldwide may use Amazon Pay, while the November capture lists Stripe account locations AT, BE, CH, CY, DE, DK, ES, FR, GB, HU, IE, IT, LU, NL, PT, SE and US. It marks B2B and B2C and domestic and cross-border use, subject to account enablement (new raw lines 16-43; old raw lines 16-18, 56-76).\n- The November account-location table permits the twelve listed presentment currencies\u2014AUD, CHF, DKK, EUR, GBP, HKD, JPY, NOK, NZD, SEK, USD and ZAR\u2014for the sixteen listed European locations, but **US accounts are USD only**. It gives minimum amounts of 0.50 USD, 0.50 GBP and 0.50 EUR, referring other currencies to Stripe's currency minima (new raw lines 40-51). The May prose says US is an exception to multi-currency support, but its adjacent table lists US with all twelve currencies (old raw lines 136-142). That older internal table/prose conflict is dated; November's explicit US row resolves it for this captured overview.\n- November marks MCC **6051, cryptocurrency exchanges and wallets, prohibited** (new raw lines 22-30). Merchant or Connect support flags and a listed country do not establish a particular account's category eligibility or activation.\n- Amazon Pay stores card credentials and the page lists US alternative methods including Amazon Store Card, installment products, Citi Flex Pay, Affirm and Shop with Points; listed European markets have SEPA Direct Debit (new raw lines 53-60; old raw lines 144-151). These are method examples, not a guarantee that each customer will see every option.\n\n## Capabilities and product routes\n\nThe November matrix marks recurring, manual and partial capture, full and partial refunds, and full disputes supported; it marks extended/incremental/decremental/re-authorization, multicapture, overcapture and partial disputes unsupported (new raw lines 62-87). The 90-day refund limit and 240-day general dispute limit are filing/submission windows, not success or settlement windows.\n\nNovember lists hosted and embedded Checkout, Payment Links, Payment Element, Express Checkout Element, in-app payments, Billing, Invoicing, Customer Portal, Radar and Connect, plus Checkout Sessions, PaymentIntents, PaymentIntents with `setup_future_usage`, SetupIntents and off-session payments. Payment Method Messaging Element, Managed Payments and Terminal are marked unsupported (new raw lines 145-169). The May page had a shorter product list and already stated recurring, Connect and manual capture support (old raw lines 32-50, 78-85). These product flags do not prove identical setup on every UI, unrestricted Connect configuration, live merchant activation, or an off-session payment outcome.\n\n## Refund and dispute boundaries\n\n- Full or partial refunds may be submitted within **90 days of the original payment**. Amazon Pay returns funds to the original form of payment; some non-card transactions may take **up to 14 calendar days to return a final status**. Track the Refund `status` and `refund.updated`/`refund.failed`; a failed refund returns money to the Stripe balance and requires another customer refund method (new raw lines 78-100). May phrased the 14-day interval as starting from purchase (old raw lines 107-111); November does not specify that origin, so do not carry it forward as a new clock.\n- Customers have up to **240 calendar days from purchase** to file an Amazon Pay dispute. For a chargeback, evidence is **typically due within 10 calendar days** of dispute creation. An A-to-z Guarantee claim has **90 calendar days from purchase** to be filed and a **six-calendar-day** evidence response period; it incurs no dispute fee. Use the actual Dashboard deadline or Dispute `evidence_details.due_by`, not the typical interval (new raw lines 102-143). The May page stated a generic ten-day evidence period and described fee-free A-to-z claims without the separate six-day/90-day limits (old raw lines 113-134).\n- Stripe withholds disputed amount and applicable fee; Amazon Pay decides within 90 calendar days after evidence submission. A merchant win returns amount and fee to the Stripe balance; a customer win makes the charge permanent. The November Dispute object has `payment_method_details.amazon_pay.dispute_type = claim` for an A-to-z claim (new raw lines 106-143). The old page used a less specific `dispute_type = claim` description (old raw line 132).\n\n## Hosted authorization and identifiers\n\nAmazon controls how long the customer has to complete its hosted checkout step; Stripe does not configure an authorization-session timeout for that step (new raw lines 170-182). This statement is about Amazon's hosted session, not a universal lifetime for every PaymentIntent or integration path. The November overview links to a separate accept-payment guide, but that route does not itself update any older path-specific example.\n\nTo obtain an Amazon Pay transaction ID, retrieve the PaymentIntent with `expand[]=latest_charge` and read `latest_charge.payment_method_details.amazon_pay.transaction_id`, or retrieve the referenced Charge. Without expansion, `latest_charge` is a Charge ID; the Amazon transaction ID might be absent if Amazon does not provide one. Stripe passes the merchant statement descriptor to Amazon, but Amazon and the funding source control its appearance on the customer statement (new raw lines 184-188).\n\n## Detail locators\n\n- November account/category/currency and alternative payment method details: new raw lines 16-60; May account/currency and alternative methods: old raw lines 14-85, 136-151.\n- November capability, refund, disputes and product support: new raw lines 62-169; May refund/dispute baseline: old raw lines 107-134.\n- November hosted checkout and Charge identifier: new raw lines 170-194.\n\n## Raw Sources\n\n- [[raw/stripe-payments-amazon-pay-2026-11-07|Amazon Pay overview \u2014 2026-11-07 full capture]]\n- [[raw/stripe-amazon-pay-2025|Amazon Pay overview \u2014 2026-05-07 full capture (historical filename)]]\n",
+      "quotes": [
+        {
+          "text": "| United States | USD |",
+          "location": "raw/stripe-payments-amazon-pay-2026-11-07.md:49"
+        },
+        {
+          "text": "| 6051 | Cryptocurrency exchanges and wallets | Prohibited |",
+          "location": "raw/stripe-payments-amazon-pay-2026-11-07.md:30"
+        },
+        {
+          "text": "You typically have 10 calendar days from dispute creation to respond to a chargeback, and 6 calendar days to respond to an A-to-z Guarantee claim.",
+          "location": "raw/stripe-payments-amazon-pay-2026-11-07.md:123"
+        },
+        {
+          "text": "Amazon controls how long the customer has to complete this step; Stripe doesn't configure an authorization-session timeout.",
+          "location": "raw/stripe-payments-amazon-pay-2026-11-07.md:178"
+        },
+        {
+          "text": "Without expansion, `latest_charge` is a Charge ID.",
+          "location": "raw/stripe-payments-amazon-pay-2026-11-07.md:188"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "amazon-overview-concept-route",
+            "target_path": "wiki/concepts/stripe-amazon-pay.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-subscriptions-amazon-pay]] \u2014 Stripe docs: Amazon Pay subscription integration (3 paths: SetupIntents, PaymentIntents, Checkout)",
+            "proposed_markdown": "- [[source-stripe-subscriptions-amazon-pay]] \u2014 Stripe docs: Amazon Pay subscription integration (3 paths: SetupIntents, PaymentIntents, Checkout)\n- [[source-stripe-amazon-pay]] \u2014 May and November 2026 full Amazon Pay overviews: wallet availability, US USD-only row, refund/dispute windows, product support, hosted authorization and optional Charge transaction ID",
+            "quote_indexes": [
+              0,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "The existing concept has only the subscription-guide source despite its general wallet claim. New raw lines 9-51, 90-143, 145-188 and old raw lines 8-38, 107-151 support the overview route. Its support flags do not establish live account eligibility or a successful payment."
+            ]
+          },
+          {
+            "update_id": "amazon-overview-wallet-currency",
+            "target_path": "wiki/concepts/stripe-wallets.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Worldwide customers**. 12 currencies (USD, AUD, GBP, DKK, EUR, HKD, JPY, NZD, NOK, ZAR, SEK, CHF). 17 merchant countries (US + 16 European).",
+            "proposed_markdown": "**Worldwide customers**. The November 2026 overview lists 17 Stripe-account locations (US and 16 European) and 12 presentment currencies; its account table limits **US accounts to USD**, while the sixteen European locations have all twelve listed currencies. MCC 6051 (cryptocurrency exchanges and wallets) is prohibited. The May overview's US-exception prose conflicts with its all-currency table; November gives an explicit USD-only US row. Listed scope does not prove an individual account's enablement.",
+            "quote_indexes": [
+              0,
+              1
+            ],
+            "warnings": [
+              "New raw lines 18-51 show the account list, MCC 6051 and explicit US USD-only currency row. Old raw lines 56-76, 136-142 show the May account list and internal US-exception/table conflict. Replace the existing unqualified country/currency line."
+            ]
+          },
+          {
+            "update_id": "amazon-overview-wallet-dispute",
+            "target_path": "wiki/concepts/stripe-wallets.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Disputes**: **240-day** customer window \u2014 longest of any payment method reviewed. 10-day evidence submission, 90-day Amazon decision. A-to-z Guarantee claims (`dispute_type = claim`) don't incur dispute fees.",
+            "proposed_markdown": "**Disputes**: The November 2026 overview gives customers 240 days from purchase for general Amazon Pay disputes, but 90 days for A-to-z Guarantee claims. Chargeback evidence is typically due within 10 calendar days; claim evidence within 6. Use the Dashboard or Dispute `evidence_details.due_by` for the actual deadline. Amazon Pay decides within 90 days after evidence submission; a claim has `payment_method_details.amazon_pay.dispute_type = claim` and no dispute fee. The May overview gave a generic 10-day evidence window.",
+            "quote_indexes": [
+              2
+            ],
+            "warnings": [
+              "New raw lines 102-143 separate chargeback and A-to-z filing/evidence clocks and give exact due_by and dispute_type paths. Old raw lines 113-134 contain the generic May ten-day statement. The old 'longest of any payment method reviewed' comparison is not established by these overview captures."
+            ]
+          },
+          {
+            "update_id": "amazon-overview-wallet-recurring",
+            "target_path": "wiki/concepts/stripe-wallets.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Recurring**: Yes \u2014 full subscriptions, no invite required.",
+            "proposed_markdown": "**Recurring**: November 2026 overview marks recurring, Billing, Invoicing, PaymentIntents with `setup_future_usage`, SetupIntents and off-session payments supported. It does not establish invite-free access for every account, an identical flow on every UI or a successful future charge.",
+            "quote_indexes": [
+              3
+            ],
+            "warnings": [
+              "New raw lines 62-63 and 145-169 provide support flags but no account invitation/activation guarantee. Old raw lines 32-34 and 78-85 support the older broad recurring/product baseline, not the existing no-invite assertion."
+            ]
+          },
+          {
+            "update_id": "amazon-overview-wallet-hosted-timeout",
+            "target_path": "wiki/concepts/stripe-wallets.md",
+            "update_kind": "durable_fact",
+            "anchor": "**10-minute authorization window** (Elements/Direct API).",
+            "proposed_markdown": "**Authorization timing**: the November overview says Amazon controls its hosted checkout step and Stripe sets no authorization-session timeout there; consult the separately dated accept-payment guide for path-specific PaymentIntent timing.",
+            "quote_indexes": [
+              3
+            ],
+            "warnings": [
+              "Replace only the unqualified timing clause within the existing integration line. New raw lines 170-182 concern Amazon-hosted checkout duration. The existing 10-minute summary belongs to a separate May accept-payment guide, not this overview; do not infer one universal timeout across hosted and Elements/API paths."
+            ]
+          },
+          {
+            "update_id": "amazon-overview-wallet-source-route",
+            "target_path": "wiki/concepts/stripe-wallets.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-amazon-pay]] \u2014 Amazon Pay: worldwide, 12 currencies, 240-day disputes, manual capture, SEPA+installments via Amazon",
+            "proposed_markdown": "- [[source-stripe-amazon-pay]] \u2014 May and November 2026 Amazon Pay overviews: worldwide customers, US USD-only currency row, claim-specific dispute deadlines, refund status and optional Charge transaction ID; account and path qualifications apply",
+            "quote_indexes": [
+              0,
+              2,
+              4
+            ],
+            "warnings": [
+              "New raw lines 38-51, 88-143, 184-188 support the updated navigation label; old raw lines 16-22, 107-151 retain the May baseline and its US-currency contradiction."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-amazon-pay-2026-11-07.md",
+      "raw_sha256": "fdccb9471eadbce9962f75f68c727b45ed6e4a070c64c8e122c363ded87985bd",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-amazon-pay-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 105
+      },
+      {
+        "start": 106,
+        "end": 194
+      }
+    ],
+    "raw/stripe-amazon-pay-2025.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 151
+      }
+    ],
+    "wiki/sources/source-stripe-amazon-pay.md": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/a3798fea7aaeff765eabbe5d/content.diff": [
+      {
+        "start": 1,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 278
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-amazon-pay/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 210
+      },
+      {
+        "start": 211,
+        "end": 219
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 35
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 382,
+        "end": 391
+      },
+      {
+        "start": 682,
+        "end": 690
+      }
+    ],
+    "wiki/concepts/stripe-amazon-pay.md": [
+      {
+        "start": 1,
+        "end": 60
+      }
+    ],
+    "wiki/concepts/stripe-wallets.md": [
+      {
+        "start": 1,
+        "end": 105
+      },
+      {
+        "start": 418,
+        "end": 432
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "You can create Amazon Pay payments in any of the supported currencies, regardless of the country your business operates in with the exception of the US.",
+      "location": "raw/stripe-amazon-pay-2025.md:138"
+    },
+    {
+      "text": "You must submit the requested information within 10 calendar days.",
+      "location": "raw/stripe-amazon-pay-2025.md:130"
+    },
+    {
+      "text": "For some Amazon Pay transactions that use non-card payment methods, refunds can take up to 14 calendar days from the purchase date to return a status.",
+      "location": "raw/stripe-amazon-pay-2025.md:111"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/amazon-pay, the November full capture documents a reusable Amazon-account wallet for worldwide customers, with seventeen listed merchant account locations. Customers authorize on Amazon's hosted page, Stripe confirms after authorization, and Amazon returns them; the return page alone is not independent proof of successful payment or standard-schedule payout (new raw lines 5-51, 170-182; old raw lines 8-38). Sixteen listed European account locations can use twelve presentment currencies, while the US row is USD only; MCC 6051 is prohibited and minimum amounts are specified for USD, GBP and EUR. The capture supports recurring, manual and partial capture, refund, disputes and numerous UI/API routes, but flags do not establish live merchant eligibility or off-session success (new raw lines 18-100, 145-169; old raw lines 56-85). source-stripe-amazon-pay.md has the baseline wallet and windows but overgeneralizes dispute evidence, invite-free recurring and unrestricted Connect, and lacks the optional Charge transaction ID path.",
+    "Q2": "For https://docs.stripe.com/payments/amazon-pay, substantive November changes include an explicit US USD-only currency row resolving the May prose/table conflict, MCC 6051 exclusion, claim-specific 90-day filing and six-day evidence response versus the general 240-day dispute and typical ten-day chargeback clocks, and Dispute due_by as actual deadline (new raw lines 18-51, 102-143; old raw lines 113-142). The expanded product/API matrix, Amazon-controlled hosted-step duration, and optional latest_charge/Charge transaction ID are new qualifications (new raw lines 145-188; old raw lines 78-85). The old video and quickstart omission is presentational/navigation, not a feature removal. source-stripe-amazon-pay.md must retain May history, including its dated 14-day refund wording and US-currency conflict; November's 14 days concerns final refund status, not a new clock from purchase (new raw lines 88-100; old raw lines 107-111). The separate old accept-payment guide's PaymentIntent timing has a different subject from Amazon-hosted duration; no general UI timeout or successful payment follows from redirect, provisional access or an account-support mark."
+  }
+}

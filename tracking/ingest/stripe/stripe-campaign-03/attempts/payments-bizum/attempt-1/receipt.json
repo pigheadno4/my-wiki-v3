@@ -1,0 +1,145 @@
+{
+  "job_id": "payments-bizum",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-bizum-2026-11-07.md",
+  "raw_sha256": "9a1417140f315c10961a3df46e9cd0da6f253b46f5e6296a4638af0e02c5c06f",
+  "prior_raw_path": "raw/stripe-bizum-2025.md",
+  "prior_raw_sha256": "fa534ef955566352dcbccf7fbf29a5b90f8c080c8293db774c3fe36070af28be",
+  "source_targets": [
+    "wiki/sources/source-stripe-bizum.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-bizum.md": "13737a8af030cde45baaf414b035694cbd3555174b4c5679f986da2e9d7068d9"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-bizum-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 221
+      }
+    ],
+    "raw/stripe-bizum-2025.md": [
+      {
+        "start": 1,
+        "end": 197
+      }
+    ],
+    "wiki/sources/source-stripe-bizum.md": [
+      {
+        "start": 1,
+        "end": 33
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/1c8b70076338ba7f5008d6c0/content.diff": [
+      {
+        "start": 1,
+        "end": 122
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 370,
+        "end": 371
+      }
+    ],
+    "wiki/concepts/stripe-real-time-payments.md": [
+      {
+        "start": 180,
+        "end": 225
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "- **Connect support**",
+      "location": "raw/stripe-payments-bizum-2026-11-07.md:37"
+    },
+    {
+      "text": "Set the `bizum_payments` capability to `active` on your platform account, and on any connected accounts you want to enable Bizum for.",
+      "location": "raw/stripe-payments-bizum-2026-11-07.md:195"
+    },
+    {
+      "text": "The Bizum payments capability stays in a `pending` state until compliance with Bizum onboarding requirements is verified.",
+      "location": "raw/stripe-payments-bizum-2026-11-07.md:154"
+    },
+    {
+      "text": "You must submit the requested information within 40 calendar days. Bizum provides a decision within 90 calendar days.",
+      "location": "raw/stripe-payments-bizum-2026-11-07.md:178"
+    },
+    {
+      "text": "Bizum only supports payments in `eur`.",
+      "location": "raw/stripe-payments-bizum-2026-11-07.md:213"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "- **Connect support**",
+      "location": "raw/stripe-bizum-2025.md:36"
+    },
+    {
+      "text": "  No",
+      "location": "raw/stripe-bizum-2025.md:38"
+    },
+    {
+      "text": "1Not supported when using Checkout in subscription mode or setup mode.",
+      "location": "raw/stripe-bizum-2025.md:91"
+    },
+    {
+      "text": "The Bizum payments capability stays in a `pending` state until compliance with Bizum onboarding requirements is verified.",
+      "location": "raw/stripe-bizum-2025.md:152"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The paired 2026-05-06 capture says Connect No and lacks Connect in product support; the 2026-11-07 capture says Connect Yes, adds it to product support, and documents active bizum_payments on both platform and each accepting connected account. Descriptor defaults follow charge type: direct uses connected account; destination and separate charges/transfers use platform unless on_behalf_of selects connected account. This is the sole central substantive change (old raw lines 36-38, 85-93, 178-197; new raw lines 37-39, 86-95, 189-209; source lines 13, 17).",
+    "Bizum remains a Spain-customer, EUR-only, customer-initiated real-time payment using the Bizum-registered phone number and bank-app approval. Merchant-location list has 28 countries, but listed merchant location is distinct from customer location and settlement/presentment currency. Recurring and manual capture remain No; Checkout setup/subscription mode and Express Checkout Element remain unsupported (old raw lines 8-50, 52-93, 187-197; new raw lines 9-51, 53-95, 211-221; source lines 17-19).",
+    "The 0.50-5,000 EUR charge range, restricted categories, company tax ID or VAT ID versus individual personal ID, business_type and pending-until-verification capability status are unchanged. Requesting capability does not mean it is active or that a payment succeeded (old raw lines 110-152; new raw lines 112-154; source lines 21-23, 29).",
+    "Disputes and refunds retain the old state boundaries: 120-day customer dispute initiation, 40-calendar-day evidence submission, 90-day Bizum decision, held disputed amount, 395-day full/partial refund window, asynchronous refunds up to five minutes, and final succeeded/failed Refund webhook/object status. A submitted refund or evidence packet is not final outcome (old raw lines 154-185; new raw lines 156-187; source lines 25-27).",
+    "The source's 'longest of any reviewed payment method' claims are comparisons not established by either Bizum raw; keep them out of an authority claim or verify against the defined comparison set. This is a baseline summary accuracy issue separate from the Connect delta (source lines 13, 25, 27; old raw lines 154-185; new raw lines 156-187)."
+  ],
+  "substantive_changes": [
+    "Connect support changes from No to Yes, with new Connect product listing, bizum_payments capability requirement for platform and connected accounts, and charge-type/on_behalf_of descriptor routing (old raw lines 36-38, 85-93, 187-197; new raw lines 37-39, 86-95, 189-209)."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the 2026-05-06 raw's Connect No as a dated snapshot and explicitly juxtapose its 2026-11-07 Yes rather than silently editing old provenance (old raw lines 36-38, 85-93; new raw lines 37-39, 86-95, 189-209).",
+    "Retain stable Spain-customer/EUR, phone/bank-app authorization, 28 merchant-location list, no recurring/manual capture, Checkout-mode/ECE exclusions, onboarding pending state, limits, disputes and refunds with their original date and outcome qualifications (old raw lines 8-197; new raw lines 9-221)."
+  ],
+  "conflicts": [
+    "Current source says No Connect twice (source lines 13, 17), matched to old raw No (old raw lines 36-38), but new raw says Yes and specifies platform/connected-account capability and descriptor routing (new raw lines 37-39, 189-209). Reciprocal dated warning is required.",
+    "The real-time-payments concept repeats No Connect at wiki/concepts/stripe-real-time-payments.md line 189; link its older statement to the new dated Connect route, without treating capture as proof that a specific account has active capability (new raw lines 37-39, 154, 189-209).",
+    "Both captures' limits prose says 'or the equivalent for other supported currencies' while each supported-currencies section says only eur (old raw lines 112-114, 187-197; new raw lines 114-116, 211-221). Preserve the EUR-only explicit table and flag the boilerplate contradiction rather than asserting other presentment currencies."
+  ],
+  "unresolved_questions": [
+    "The capture does not prove any particular platform or connected account has bizum_payments active; compliance verification and account capability status are distinct from the new product support statement (new raw lines 141-154, 189-195).",
+    "The overview does not define a particular SDK/UI flow beyond linked Checkout and Elements routes; do not infer a client/server confirmation sequence or payment success from its product listing (new raw lines 86-110, 156-187)."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-real-time-payments.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-bizum.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add exact canonical URL and 2026-11-07 pinned provenance while preserving 2026-05-06 raw; correct No Connect to a dated old/new contrast with bizum_payments on platform and accepting connected accounts and descriptor routing (source lines 1-17, 31-33; old raw lines 36-38; new raw lines 37-39, 189-209).",
+        "Preserve existing Spanish-customer/EUR, onboarding, limits, disputes and refunds with final state qualifiers; avoid unverified 'longest' comparisons (source lines 17-29; old raw lines 8-197; new raw lines 9-221)."
+      ],
+      "conflicts": [
+        "Existing No Connect contradicts the new capture's Yes and Connect section (source lines 13, 17; new raw lines 37-39, 189-209).",
+        "Both captures' other-currency-equivalent wording conflicts with their EUR-only supported-currency sections (old raw lines 112-114, 187-197; new raw lines 114-116, 211-221)."
+      ],
+      "reason": "The new raw reverses a central support claim and adds concrete platform/connected-account requirements; the source currently makes the old state appear timeless."
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/bizum, the 2026-11-07 capture documents a Spain-customer, EUR-only, phone-number and bank-app-authorized real-time method, with no recurring or manual capture and Checkout setup/subscription mode and ECE exclusions (new raw lines 9-51, 53-95, 211-221). Access requires business identity details and business_type; capability stays pending until compliance verification, and a requested capability is not active acceptance or payment success (new raw lines 141-154). Disputes have 120-day initiation, 40-day merchant evidence and 90-day decision boundaries; refunds have a 395-day window and asynchronous final status (new raw lines 156-187). The paired old raw said No Connect (old raw lines 36-38), while new raw says Yes and requires bizum_payments active on platform and accepting connected accounts with charge-type descriptor rules (new raw lines 189-209). source-stripe-bizum.md still repeats No Connect and must distinguish the dated states (source lines 13, 17).",
+    "Q2": "For https://docs.stripe.com/payments/bizum, the substantive change is Connect No in the 2026-05-06 capture versus Connect Yes with active platform/connected-account capability and descriptor rules in the 2026-11-07 capture (old raw lines 36-38, 85-93; new raw lines 37-39, 189-209). source-stripe-bizum.md and the Bizum concept must preserve the old claim as dated and warn reciprocally about the new one. The buyer-to-customer word change, Elements quickstart URL, heading/inline-code formatting and slightly reworded limits/dispute prose are presentation or navigation differences, with the same numeric and lifecycle facts (old raw lines 95-185; new raw lines 97-187). Both captures say EUR only despite boilerplate 'equivalent other supported currencies'; do not infer another currency. Checkout mode exclusions are UI-specific, capability pending is not active, and dispute evidence/refund submission is not final adjudication or refund success."
+  }
+}

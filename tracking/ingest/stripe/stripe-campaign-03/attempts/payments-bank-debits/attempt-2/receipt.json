@@ -1,0 +1,237 @@
+{
+  "job_id": "payments-bank-debits",
+  "attempt": 2,
+  "raw_path": "raw/stripe-payments-bank-debits-2026-11-07.md",
+  "raw_sha256": "69b056a3357388ab54104b753b1250bf197ec17b8f292139d61b9c0b51e76e4f",
+  "prior_raw_path": "raw/stripe-bank-debits-2025.md",
+  "prior_raw_sha256": "dc7840f54751e99e311a9863cc68fceb1907729014bf31425d791a8bef30a741",
+  "source_targets": [
+    "wiki/sources/source-stripe-bank-debits.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-bank-debits.md": "0a7499863490aacc604e1db8e2d24c64aff47631e6cdd3ff6269c7dc2a023d4d"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-bank-debits-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 35
+      },
+      {
+        "start": 36,
+        "end": 61
+      },
+      {
+        "start": 9,
+        "end": 24
+      },
+      {
+        "start": 43,
+        "end": 55
+      }
+    ],
+    "raw/stripe-bank-debits-2025.md": [
+      {
+        "start": 1,
+        "end": 35
+      },
+      {
+        "start": 36,
+        "end": 60
+      },
+      {
+        "start": 8,
+        "end": 23
+      },
+      {
+        "start": 43,
+        "end": 54
+      }
+    ],
+    "wiki/sources/source-stripe-bank-debits.md": [
+      {
+        "start": 1,
+        "end": 41
+      },
+      {
+        "start": 11,
+        "end": 38
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/5eb7ab422cd45d9fc6c81928/content.diff": [
+      {
+        "start": 1,
+        "end": 66
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 237,
+        "end": 245
+      },
+      {
+        "start": 735,
+        "end": 744
+      }
+    ],
+    "wiki/concepts/stripe-instant-bank-payments.md": [
+      {
+        "start": 1,
+        "end": 61
+      },
+      {
+        "start": 59,
+        "end": 76
+      }
+    ],
+    "wiki/sources/source-stripe-instant-bank-payments.md": [
+      {
+        "start": 1,
+        "end": 80
+      }
+    ],
+    "raw/stripe-instant-bank-payments-2025.md": [
+      {
+        "start": 118,
+        "end": 133
+      },
+      {
+        "start": 4,
+        "end": 12
+      },
+      {
+        "start": 48,
+        "end": 60
+      },
+      {
+        "start": 103,
+        "end": 109
+      },
+      {
+        "start": 119,
+        "end": 130
+      },
+      {
+        "start": 4,
+        "end": 10
+      },
+      {
+        "start": 103,
+        "end": 108
+      }
+    ],
+    "wiki/concepts/stripe-ach-direct-debit.md": [
+      {
+        "start": 1,
+        "end": 30
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/proposed-queries.md": [
+      {
+        "start": 173,
+        "end": 179
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "payment confirmation takes several business days.",
+      "location": "raw/stripe-payments-bank-debits-2026-11-07.md:16"
+    },
+    {
+      "text": "This permission is called a mandate.",
+      "location": "raw/stripe-payments-bank-debits-2026-11-07.md:21"
+    },
+    {
+      "text": "You can\u2019t use the Payment Element to create SetupIntents for Bacs Direct Debit.",
+      "location": "raw/stripe-payments-bank-debits-2026-11-07.md:39"
+    },
+    {
+      "text": "PaymentIntents support confirmation with Bacs Direct Debit payment methods when the",
+      "location": "raw/stripe-payments-bank-debits-2026-11-07.md:54"
+    },
+    {
+      "text": "Pre-authorized debit in Canada doesn\u2019t support the",
+      "location": "raw/stripe-payments-bank-debits-2026-11-07.md:54"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "payment confirmation takes several business days.",
+      "location": "raw/stripe-bank-debits-2025.md:15"
+    },
+    {
+      "text": "You can\u2019t use the Payment Element to create SetupIntents for Bacs Direct Debit.",
+      "location": "raw/stripe-bank-debits-2025.md:38"
+    },
+    {
+      "text": "`us_bank_account`",
+      "location": "raw/stripe-bank-debits-2025.md:46"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The paired overview pages retain the same general bank-debit flow: merchant can pull from a customer's bank account for one-time or recurring purchases after the customer supplies bank details and grants a debit mandate; some routes use microdeposits or bank-login verification, and traditional bank-debit confirmation can take several business days (old raw lines 8-23; new raw lines 9-24). Mandate authorization, optional verification, PaymentIntent confirmation and funds availability are distinct states; the three-step illustration is not a promise of immediate payment completion. The overview cautions immediate-delivery and dispute-sensitive businesses rather than prohibiting all such use (old raw lines 13-16; new raw lines 14-17).",
+    "The one substantive product-table delta is the combined 'Instant Bank Payments or ACH Direct Debit' row's Mobile Payment Element mark changing from supported in May to unsupported in November, with its other product marks stable (old raw lines 29-36, especially line 31; new raw lines 30-37, especially line 32; diff lines 16-31). The row names two methods but does not split the mobile mark by method, so the captures do not establish which path changed or whether a merchant's platform/runtime support was removed. The dedicated May Instant Bank Payments raw still lists Mobile Payment Element at raw/stripe-instant-bank-payments-2025.md lines 123-129, echoed by source-stripe-instant-bank-payments.md line 21 and concept stripe-instant-bank-payments.md line 41; retain that as dated authority and add a reciprocal disagreement warning, not a silent overwrite.",
+    "The API table remains method-specific and materially unchanged: ACH us_bank_account supports PaymentIntents, SetupIntents and setup_future_usage but not manual capture; Bacs bacs_debit has a SetupIntent table unsupported mark with a Checkout setup-mode footnote, and its PaymentIntent confirmation requires a Stripe-owned-flow mandate (old raw lines 44-53; new raw lines 45-54). AU BECS, NZ BECS, ACSS and SEPA have their own enum/SetupIntent rows; all six table rows mark manual capture unsupported and redirect 'No' (old raw lines 44-53; new raw lines 45-54). This ACH API row is not an API-support statement for Link Instant Bank Payments, which is only paired with ACH in the product table (old raw lines 29-31, 44-46; new raw lines 30-32, 45-47).",
+    "Bacs' table footnotes must be read as route-specific qualifications: Payment Element cannot create Bacs SetupIntents, Checkout setup mode can create them, and PaymentIntent confirmation works after a Mandate from Checkout, Payment Element or Payment Links (old raw lines 38, 47, 53; new raw lines 39, 48, 54). ACSS/Canadian PADs exclude Payment Links and Mobile Payment Element in the product table, Checkout subscription mode and deferred-intent creation in footnotes; those limits are unchanged despite the now-updated quickstart link (old raw lines 35, 38, 50, 53; new raw lines 36, 39, 51, 54). A displayed \u2713 or dashboard setting does not establish a particular merchant's eligibility, mandate collection or completed debit.",
+    "Current source-stripe-bank-debits.md retains May-only provenance and accurately lists the six API enums, no manual capture in those six API rows, Bacs and ACSS exceptions (source lines 4-8, 15-41; old raw lines 29-53; new raw lines 30-54). It misses the new combined-row Mobile Payment Element conflict. Its line 13 'Confirmation takes several business days' and line 28 'No manual capture support' are overbroad if applied to Instant Bank Payments: the older dedicated Link method page documents immediate confirmation and manual capture (raw/stripe-instant-bank-payments-2025.md lines 4-10, 48-58, 105-107). Source line 19 combines ACH and IBP in one method/enum row, but us_bank_account belongs to the ACH API row, not a demonstrated IBP API identity (old raw lines 29-31, 44-47; new raw lines 30-32, 45-48). Narrow these source statements to the listed debit API methods and distinguish Link IBP with dated provider-specific authority.",
+    "The migration advice is unchanged: existing Sources, Tokens or Bank Accounts integrations are advised to follow the ACH-specific or general guide toward Payment Intents, rather than the page proving migration has occurred (old raw lines 55-60; new raw lines 56-61). New raw changes to an external flow SVG URL, Bacs link target, ACSS quickstart link, table formatting, italics and heading spacing are presentation/navigation changes, not new mandate, eligibility or settlement rules (diff lines 3-15, 16-66). The source can add November provenance while keeping May historical wording and the mobile-mark disagreement.",
+    "Source-stripe-bank-debits.md line 37 says bank debits are 'Not suitable' for immediate delivery or dispute-sensitive businesses, but both overview captures say they 'might not be a good fit' and that only some bank-debit methods favor customers in disputes (old raw lines 13-16; new raw lines 14-17). This is a conditional suitability warning, not a universal prohibition or all-method dispute rule. It also cannot be applied unchanged to the dedicated Link Instant Bank Payments path, which the dated method-specific page says confirms immediately (raw/stripe-instant-bank-payments-2025.md lines 4-10, 105-107). Source line 28's 'no redirect required' belongs to the six named API-table rows, each marked No, and does not establish Link IBP's API or UI route from the combined product row (old raw lines 29-31, 44-53; new raw lines 30-32, 45-54).",
+    "Targeted retry personally reread old raw lines 8-23 and 43-54, new raw lines 9-24 and 43-55, mapped source lines 11-38, and dedicated historical IBP raw lines 4-10 and 103-108 after verifying unchanged pinned files and prior receipt/review hashes; initial full-file proof remains above."
+  ],
+  "substantive_changes": [
+    "The combined Instant Bank Payments-or-ACH row's Mobile Payment Element support mark changes from \u2713 to unsupported (old raw line 31; new raw line 32; diff lines 16-31). Because it is a combined row and the dedicated May IBP guide says Mobile Payment Element supported, record the dated documentation disagreement without assigning a precise method or inferring live removal (raw/stripe-instant-bank-payments-2025.md lines 123-129).",
+    "No change is shown in the mandate initiation flow, method-specific API enums/support, Bacs SetupIntent/Mandate qualifications, Canadian PAD restrictions, setup_future_usage modal note or migration advice (old raw lines 8-23, 38-60; new raw lines 9-24, 39-61).",
+    "The existing source's blanket delayed-confirmation/no-manual-capture/no-redirect claims, combined ACH/IBP enum presentation and categorical 'Not suitable' advice are separate baseline summary-scope problems, not new November raw changes (source lines 13, 19, 26-28, 37; raw/stripe-instant-bank-payments-2025.md lines 4-10, 48-58, 105-107; old raw lines 13-16, 29-31, 44-53; new raw lines 14-17, 30-32, 45-54)."
+  ],
+  "historical_claims_to_preserve": [
+    "Preserve May 2, 2026's supported Mobile Payment Element mark in the combined IBP/ACH product row as dated capture history; November changes that row to unsupported, but neither identifies a single-method runtime removal (old raw lines 1-2, 29-31; new raw lines 1-3, 30-32).",
+    "Preserve the dedicated May 8, 2026 Link Instant Bank Payments claim of Mobile Payment Element support, immediate confirmation and manual capture as distinct dated authority, alongside its method-specific concept/source, with reciprocal warning against the new combined-row mark and the bank-debits summary's blanket timing/capture statements (raw/stripe-instant-bank-payments-2025.md lines 4-10, 48-58, 105-107, 123-129; source-stripe-instant-bank-payments.md lines 17-21; concept stripe-instant-bank-payments.md lines 26-41).",
+    "Preserve Bacs Checkout setup mode and Stripe-owned-flow mandate conditions, ACSS route exclusions and six API row limitations as old-and-new documented constraints; neither a product \u2713 nor a link path is account entitlement or proof of successful debit (old raw lines 29-53; new raw lines 30-54)."
+  ],
+  "conflicts": [
+    "Old overview combined row marks Mobile Payment Element supported at old raw line 31, November combined row marks it unsupported at new raw line 32, while the dedicated May IBP raw lines 123-129 and its source/concept line 21/41 respectively say supported. Add dated reciprocal warnings at source-stripe-bank-debits.md and the Link IBP source/concept; combined-row scope prevents assigning this solely to ACH or IBP or calling it a verified platform deprecation.",
+    "Source-stripe-bank-debits.md line 13 generalizes multi-day confirmation, but dedicated IBP raw lines 4-10 and 105-107 say Link IBP confirms instantly, unlike ACH. Source line 28 generalizes no manual capture from the six API rows while dedicated IBP raw lines 48-58 say manual capture supported; qualify both by method and avoid collapsing Link IBP into ACH us_bank_account (old raw lines 29-31, 44-47; new raw lines 30-32, 45-48).",
+    "Source line 19 labels the combined ACH/Instant Bank Payments entry with us_bank_account, but the overview uses the combined label only in the product matrix; the API matrix names ACH Direct Debit alone for us_bank_account (old raw lines 29-31, 44-47; new raw lines 30-32, 45-47). Do not infer a separate IBP enum or identical API/capture semantics.",
+    "Source line 37's categorical 'Not suitable' claim overstates the old/new overview's 'might not be a good fit' warning and its 'some bank debit methods' dispute caveat (old raw lines 13-16; new raw lines 14-17). The immediate-delivery timing rationale also does not hold universally for Link Instant Bank Payments, which the dedicated May page says confirms immediately (raw/stripe-instant-bank-payments-2025.md lines 4-10, 105-107).",
+    "Source line 28's 'no redirect required' is supported for the six API-table rows marked No (old raw lines 44-53; new raw lines 45-54), not for Link Instant Bank Payments merely because it shares a product-table row with ACH (old raw lines 29-31; new raw lines 30-32). Scope the source claim and keep the potential return_url footnote modal, rather than infer a universal IBP client flow."
+  ],
+  "unresolved_questions": [
+    "The combined product row does not say whether ACH, Link Instant Bank Payments, both, or a platform-specific integration lost Mobile Payment Element support; an exact current method/client answer needs direct route authority beyond this dated packet (old raw line 31; new raw line 32; raw/stripe-instant-bank-payments-2025.md lines 123-129).",
+    "The overview's diagram and support tables do not verify a merchant's mandate, verification, eligibility, payment confirmation, finality, funds availability or actual payout; method-specific delayed versus instant confirmation remains essential (old raw lines 8-23, 29-53; new raw lines 9-24, 30-54)."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-instant-bank-payments.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-bank-debits.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add November raw/canonical provenance while keeping May as dated history; record combined IBP/ACH Mobile Payment Element supported-to-unsupported table mark with the row's non-separable method scope (source lines 4-8, 15-24, 39-41; old raw lines 29-31; new raw lines 30-32).",
+        "Correct broad timing and capture statements at source lines 13 and 28: delayed confirmation/no manual capture describe listed bank-debit API rows, but the separate Link Instant Bank Payments guide says instant confirmation and manual capture supported (raw/stripe-instant-bank-payments-2025.md lines 4-10, 48-58, 105-107; old raw lines 44-53; new raw lines 45-54). Scope line 28's 'no redirect required' to the six listed API rows marked No, not the combined product row's Link IBP branch (old raw lines 29-31, 44-53; new raw lines 30-32, 45-54).",
+        "Correct source line 37's categorical 'Not suitable' language to the captures' conditional 'might not be a good fit' for immediate delivery or dispute-sensitive businesses, with only some methods favoring customers during disputes; the timing rationale does not cover Link IBP's documented immediate confirmation (old raw lines 13-16; new raw lines 14-17; raw/stripe-instant-bank-payments-2025.md lines 4-10, 105-107).",
+        "Separate source line 19's combined product-row label from the ACH-only us_bank_account API enum, and retain Bacs Mandate/Checkout setup and Canadian PAD footnotes as route-specific constraints (source lines 19, 31-35; old raw lines 29-31, 38, 44-53; new raw lines 30-32, 39, 45-54).",
+        "Reciprocally warn the dedicated Link IBP source/concept that the November combined-row mobile mark conflicts with their May supported integration statement, without inferring actual entitlement or product removal (source-stripe-instant-bank-payments.md line 21; concept stripe-instant-bank-payments.md line 41; raw/stripe-instant-bank-payments-2025.md lines 123-129; new raw line 32)."
+      ],
+      "conflicts": [
+        "The November combined IBP/ACH Mobile Payment Element unsupported mark conflicts with its May supported mark and the dedicated May IBP Mobile Payment Element support claim; the row does not isolate either method (old raw line 31; new raw line 32; raw/stripe-instant-bank-payments-2025.md lines 123-129).",
+        "Existing source lines 13, 19 and 28 conflate delayed ACH-style debit behavior/API identity with Link IBP, whose May dedicated raw says instant confirmation/manual capture supported; line 28's no-redirect mark belongs only to the six API rows (raw/stripe-instant-bank-payments-2025.md lines 4-10, 48-58, 105-107; old raw lines 44-53; new raw lines 45-54).",
+        "Existing source line 37 turns a conditional suitability warning into a categorical prohibition and treats customer-favoring dispute rules as all-method and multi-day confirmation as universal, contrary to both overview captures and dated Link IBP authority (old raw lines 13-16; new raw lines 14-17; raw/stripe-instant-bank-payments-2025.md lines 4-10, 105-107)."
+      ],
+      "reason": "November changes a consequential but combined-row mobile support mark; the current source also needs correction of pre-existing ACH-versus-Link IBP timing/capture/redirect scope errors and categorical suitability advice, with reciprocal dated warnings, while the mandate and six-method API behavior otherwise remain stable."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/bank-debits, the November overview describes mandate-authorized pulls from a customer's bank account for one-time or recurring purchases, sometimes with pre-payment microdeposit or bank-login verification; traditional bank debits can take several business days to confirm, so the page says they might not fit immediate delivery, and only some methods favor customers in disputes (new raw lines 9-24). Product support is a table by method and UI, while the API table separately lists six debit enums and modal Bacs mandate/Checkout setup and Canadian PAD route restrictions; its six No redirect marks are not an IBP API statement (new raw lines 26-54). A mandate, verification or displayed product mark is not a completed debit or payout. The May overview had the same general flow and API constraints (old raw lines 8-23, 25-53), but its combined Instant Bank Payments/ACH Mobile Payment Element cell was supported where November says unsupported (old raw line 31; new raw line 32). source-stripe-bank-debits.md captures the six enums and exceptions but lacks that dated difference and overgeneralizes multi-day confirmation, no manual capture, no redirect and categorical unsuitability across Link Instant Bank Payments (source lines 13-37; dedicated May IBP raw lines 4-10, 48-58, 105-107).",
+    "Q2": "For https://docs.stripe.com/payments/bank-debits, the substantive documentation delta is the combined Instant Bank Payments-or-ACH Direct Debit Mobile Payment Element cell changing from supported to unsupported; it cannot be assigned to one of the two methods or treated as proven live removal (old raw line 31; new raw line 32). The dedicated May IBP page, source and concept still list Mobile Payment Element supported, so source-stripe-bank-debits.md and the IBP route need reciprocal dated warnings (raw/stripe-instant-bank-payments-2025.md lines 123-129; source-stripe-instant-bank-payments.md line 21; concept stripe-instant-bank-payments.md line 41). Separate baseline source defects are blanket multi-day confirmation/no-manual-capture/no-redirect, a combined ACH/IBP us_bank_account label, and line 37's categorical 'Not suitable' advice; both overview raws say 'might not be a good fit' and only some methods favor customers in disputes, while the six No redirect marks belong to API rows and Link IBP's dedicated page says instant confirmation and manual capture supported (old raw lines 13-16, 29-31, 44-53; new raw lines 14-17, 30-32, 45-54; raw/stripe-instant-bank-payments-2025.md lines 4-10, 48-58, 105-107). The flow SVG URL, Bacs link target, ACSS quickstart link, table spacing and italics are presentational/navigation changes (diff lines 3-66). Preserve May provenance and method-specific mandate/Checkout setup, delayed-versus-instant confirmation, eligibility and client-route distinctions; neither a table checkmark, mandate, redirect note nor PaymentIntent creation proves final payment, funds availability or account access."
+  }
+}

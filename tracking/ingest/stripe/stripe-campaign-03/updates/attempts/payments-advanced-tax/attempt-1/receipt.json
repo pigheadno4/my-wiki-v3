@@ -1,0 +1,197 @@
+{
+  "job_id": "payments-advanced-tax",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-checkout-collect-taxes.md": {
+      "job_id": "payments-advanced-tax",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Collect Taxes \u2014 Checkout Sessions and Payment Intents\"\ntype: source\ndate_ingested: 2026-04-21\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/advanced/tax\"\nraw_files:\n  - \"stripe-checkout-collect-taxes-2025.md\"\ntags: [stripe, tax, checkout-sessions, payment-intents, stripe-tax, tax-api, tax-calculations, tax-id, reversal, automatic-tax]\n---\n\n## Summary\n\nThe April 21, 2026 full guide covers custom Elements tax collection through Checkout Sessions and Payment Intents. Its Checkout Sessions example uses `automatic_tax`; its Payment Intents section presents a choice between Stripe-managed Payment Intents tax handling and a custom Tax API flow (`stripe.tax.calculations.create`) for greater reversal and recording control. It also covers path-specific Tax ID Element collection and preview verification. The November 7 capture is a variant index only and does not establish current behavior or beta status.\n\n> See also [[source-stripe-checkout-taxes]] for existing CS tax coverage.\n\n## Capture boundary\n\nThe operational details below are from the full April 21, 2026 capture. The November 7, 2026 capture at the same canonical URL gives only a purpose statement and links to Checkout Sessions and Payment Intents variants. Those variant bodies were not included in this packet. Read April details as dated guidance; the index neither renews nor withdraws their API, UI, SDK, legal, eligibility, or outcome claims.\n\n## Checkout Sessions Path (April 21, 2026)\n\n### Setup\n\nThe captured example creates a Checkout Session with `mode: 'payment'` and `ui_mode: 'elements'`. Stripe Tax calculates only where the account is registered to collect tax; the guide says to enable `automatic_tax` and supply a line-item tax code and tax behavior or use Dashboard defaults. The example is a request shape, not proof of a completed payment or correct tax outcome.\n\n```js\nstripe.checkout.sessions.create({\n  automatic_tax: { enabled: true },\n  line_items: [{\n    price_data: {\n      product_data: { name: 'T-shirt', tax_code: 'txcd_99999999' },\n      tax_behavior: 'exclusive', // or 'inclusive'\n      unit_amount: 2000, currency: 'usd',\n    },\n    quantity: 1,\n  }],\n  billing_address_collection: 'auto', // collect minimal tax address via Payment Element\n});\n```\n\n### Address Collection for Tax\n\n| Setting | Behavior |\n| --- | --- |\n| `billing_address_collection: 'auto'` | Payment Element collects country + postal code (minimum) |\n| `billing_address_collection: 'required'` | Must use Address Element or custom form for full address |\n| `fields.billingDetails.address: 'never'` | Must collect tax address another way |\n| `fields.billingDetails.address.postalCode: 'never'` | **Returns error** \u2014 postal code required for some countries |\n| `fields.billingDetails.address.country: 'never'` | Customer's detected country used |\n\nFor the April guide's minimum billing-address collection path, omit `shipping_address_collection`: when supplied, Stripe uses shipping address details for tax instead. `billing_address_collection: 'required'` calls for a full billing address via Address Element or a custom form. Minimum country/postal-code input can differ from the tax result for a full address in some regions; the guide recommends full address collection where relevant. `action.updateBillingAddress` returns an error in this Payment Element path because it can conflict with that collection.\n\n### Render Tax Amounts\n\n```js\n// React: from checkoutState.checkout.total\ncheckout.total.subtotal.amount\ncheckout.total.taxExclusive.amount  // or taxInclusive \u2014 use the right one\ncheckout.total.total.amount\n\n// HTML+JS: from session.total on 'change' event\nsession.total.taxExclusive.amount\n```\n\n### Tax ID Collection (April preview)\n\n`tax_id_collection: { enabled: true }` is a server-side Checkout Session setting. The separate client-side Tax ID Element is marked public preview in the April guide and uses the captured `custom_checkout_tax_id_1` flag. Collection targets business tax IDs; correct format during checkout is not government validity. For an existing Customer, `customer_update.address` or `.shipping` set to `auto` replaces previously saved address data with checkout-entered data. No November variant body was read to confirm current flag or preview status.\n\n```js\n// Enable on session\ntax_id_collection: { enabled: true }\n\n// Beta flag + element\nconst stripe = Stripe('PK', { betas: ['custom_checkout_tax_id_1'] });\nconst taxIdElement = checkout.createTaxIdElement();\n// or React: <TaxIdElement /> from '@stripe/react-stripe-js/checkout'\n```\n\nAfter session: `session.customer_details.tax_ids[].type / .value`; saved to `customer.tax_ids` if customer attached.\n\n### Real-Time Tax ID Verification (April public preview)\n\n```js\nconst taxIdElement = checkout.createTaxIdElement({\n  verification: { taxId: { mode: 'if_supported' } },\n});\n// Requires beta: 'custom_checkout_tax_id_verification_1'\n// 'change' event includes verification.taxId.status: 'pending'|'verified'|'unverified'|'unavailable'\n// Falls back to format validation + async if government DB unavailable\n// Supports: ABN (AU), EU VAT, GB VAT\n```\n\n## Payment Intents Path: Tax choices and custom Tax API (April 21, 2026)\n\nThe older guide distinguishes a Payment Intents tax integration, where Stripe handles tax transactions and flat-amount refund reversals automatically, from the custom Tax API for line-item reversal control, multiple processors, or control over transaction recording. The calculations, recording and reversal examples below describe the **custom Tax API** option; they do not describe every Payment Intents tax integration. Stripe Tax calculation requires tax registrations in applicable jurisdictions.\n\n### Calculate Tax\n\n```js\nconst calculation = await stripe.tax.calculations.create({\n  currency: 'usd',\n  line_items: [{ amount: 1000, reference: 'L1', tax_code: 'txcd_99999999' }],\n  customer_details: {\n    address: { line1: '920 5th Ave', city: 'Seattle', state: 'WA', postal_code: '98104', country: 'US' },\n    address_source: 'shipping',\n  },\n  shipping_cost: { amount: 500 },\n});\n```\n\nThe April examples include multiple items and shipping cost, a New York clothing quantity example, EU inclusive pricing, and a `ship_from_details` beta example for Illinois-origin rules. They illustrate dated cases, not current tax-law or account eligibility guarantees. The calculated `amount_total` can set a PaymentIntent amount; the guide stores the calculation ID in PaymentIntent metadata or the order database before taking payment. A calculation, returned `client_secret`, or browser return does not establish payment success.\n\n### Record Transaction\n\n```js\nawait stripe.tax.transactions.createFromCalculation({\n  calculation: calculation.id,\n  reference: 'order_123',\n});\n```\n\nAfter the customer pays, the April custom Tax API guide calls for a separate tax transaction from the calculation so the tax appears in Stripe Tax reporting. It suggests an order endpoint after successful submission or a `payment_intent.succeeded` webhook, with a unique transaction and line-item reference; a calculation alone does not appear on the Tax Transactions page. The calculation can be used for transaction creation until its `expires_at`, described as 90 days after creation; tax is not recalculated when the transaction is recorded.\n\n### Reversal\n\n```js\nawait stripe.tax.transactions.createReversal({\n  original_transaction: 'tax_txn_...',\n  reference: 'refund_123',\n  mode: 'full', // or 'partial' with line_items\n});\n```\n\nUse `mode: 'partial'` for line-item control in this dated custom Tax API path. The guide caps partial reversals at 30 per sale, rejects reversal above collected tax, and warns that a full reversal does not undo prior partial reversals. Disproportionate partial tax refunds can make reports unreliable because taxable amounts and reasons are not adjusted automatically. Record a separate tax reversal after issuing a refund; a refund request alone is not a tax reversal.\n\n### IP-Based Tax Estimate\n\nThe April guide offers IP geolocation for an initial estimate before address entry and advises against using it for the final tax amount because IP location can differ from the customer's actual location. See the old raw for request details.\n\n### Choose PI Tax Integration\n\n| Approach | Use when |\n| --- | --- |\n| Payment Intents tax integration | Stripe handles tax transactions and reversals automatically; flat-amount refund reversals fit |\n| **Custom Tax API** | Need line-item reversal control, multiple payment processors, or control over recording timing |\n\n## Supported Tax ID Types\n\nThe April guide's two tax-ID tables enumerate 107 country/type rows, 96 distinct country codes, and 80 distinct enum types; those counts describe the capture, not verified current coverage. Examples marked with \"Impact in Tax Calculation\" include:\n- EU VAT (`eu_vat`) \u2014 all EU countries\n- GB VAT (`gb_vat`), AU ABN (`au_abn`), IN GST (`in_gst`), CA GST/HST (`ca_gst_hst`), SG GST (`sg_gst`)\n- Full tables and the tax-impact footnote are in the April raw. A listed tax ID format does not itself establish legal exemption or government validity.\n\n## Tax ID validation boundaries (April 21, 2026)\n\n- **Checkout Sessions Tax ID Element:** During the Session, Stripe checks format, not government validity. The guide describes later asynchronous government-database checks for AU ABN, EU VAT, and GB VAT.\n- **Payment Intents Tax ID Element:** During payment or setup confirmation, Stripe checks format, not government validity, and the guide describes asynchronous government checks for the same three types. Its captured client initialization uses `elements_tax_id_1`; a `CustomerSession` is optional for collection but needed in the documented save and redisplay flow. Saving the tax ID to the Customer is conditional on successful payment and appropriate CustomerSession permissions.\n- **Element real-time verification:** The dated Checkout and Payment Intents preview examples use `custom_checkout_tax_id_verification_1` and `elements_tax_id_verification_1` respectively. With `mode: 'if_supported'`, the `change` event can report `pending`, `verified`, `unverified`, or `unavailable`. If a government database is unavailable, the guide says verification falls back to synchronous format checking followed by asynchronous verification. The November index cannot confirm current preview or beta requirements.\n- **Custom Tax API calculation:** `customer_details.tax_ids` can yield `tax_id_invalid` for invalid format, but the Tax API does **not** automatically check government databases. Validate through the separate customer tax ID validation route if that check is required before calculation. This is distinct from the Tax ID Element flows above.\n\n## Related Pages\n\n- [[stripe]] \u2014 Stripe company\n- [[stripe-tax]] \u2014 Stripe Tax concept page\n- [[stripe-tax-id-element]] \u2014 Tax ID Element concept page\n- [[source-stripe-checkout-taxes]] \u2014 CS automatic tax (earlier source)\n- [[source-stripe-tax-id-element]] \u2014 Tax ID Element source\n\n## Raw Sources\n\n- [[raw/stripe-checkout-collect-taxes-2025|April 21, 2026 full guide]] \u2014 dated Checkout Sessions and Payment Intents content, including custom Tax API and Tax ID Element flows.\n\n## Related raw API references\n\n- [[raw/stripe-payments-advanced-tax-2026-11-07|November 7, 2026 variant index]] \u2014 navigation only; links to Checkout Sessions and Payment Intents variant URLs, whose bodies were not captured here.\n",
+      "quotes": [
+        {
+          "text": "Learn how to use Stripe Tax to calculate and collect taxes in your custom integration with Elements.",
+          "location": "raw/stripe-payments-advanced-tax-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-advanced-tax-2026-11-07.md:11"
+        },
+        {
+          "text": "[Checkout Sessions API](https://docs.stripe.com/payments/advanced/tax.md?api-integration=checkout)",
+          "location": "raw/stripe-payments-advanced-tax-2026-11-07.md:13"
+        },
+        {
+          "text": "[Payment Intents API](https://docs.stripe.com/payments/advanced/tax.md?api-integration=elements)",
+          "location": "raw/stripe-payments-advanced-tax-2026-11-07.md:14"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "payments-advanced-tax-stripe-tax-source",
+            "target_path": "wiki/concepts/stripe-tax.md",
+            "update_kind": "durable_fact",
+            "anchor": "- [[source-stripe-checkout-collect-taxes]] \u2014 Comprehensive tax guide: CS automatic_tax + Tax ID Element + real-time verification; PI Tax API (calculate/record/reverse), 100+ tax ID types",
+            "proposed_markdown": "- [[source-stripe-checkout-collect-taxes]] \u2014 April 21, 2026 full guide for Checkout Sessions automatic tax, Tax ID Element preview flows, and the Payment Intents choice between Stripe-managed tax handling and custom Tax API calculation, transaction recording, and reversals. Its tax-ID tables enumerate 107 country/type rows, 96 distinct country codes, and 80 distinct enum types; the November 7, 2026 capture is a variant index only.",
+            "quote_indexes": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "warnings": [
+              "Old raw lines 431-545 and 2445-2559 support the dated table counts; lines 553-559 support the two Payment Intents choices. New raw lines 9-14 are navigation only and cannot establish current coverage or behavior."
+            ]
+          },
+          {
+            "update_id": "payments-advanced-tax-tax-id-source",
+            "target_path": "wiki/concepts/stripe-tax-id-element.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-tax-id-element]] \u2014 April 21 captured examples for both API paths, listed regions, visibility, and conditional Payment Intents save/redisplay; November 7 variant index linked for navigation",
+            "proposed_markdown": "- [[source-stripe-tax-id-element]] \u2014 April 21 captured examples for both API paths, listed regions, visibility, and conditional Payment Intents save/redisplay; November 7 variant index linked for navigation\n- [[source-stripe-checkout-collect-taxes]] \u2014 April 21, 2026 advanced tax guide includes dated Checkout Sessions and Payment Intents Tax ID Element preview and verification flows; the November 7 capture at that URL only links to variants.",
+            "quote_indexes": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "warnings": [
+              "Old raw lines 306-429 and 2249-2443 support the dated Tax ID Element flows; old raw lines 1667-1681 distinguish custom Tax API calculations from Element government validation. New raw lines 9-14 provide navigation, not current beta or validation evidence."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-advanced-tax-2026-11-07.md",
+      "raw_sha256": "91eebd0772ab694f2ce0245c2d23aa715c4fac2f6e5dc29714eb198fbe69e313",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-advanced-tax-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-checkout-collect-taxes-2025.md": [
+      {
+        "start": 1,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 1200
+      },
+      {
+        "start": 1201,
+        "end": 1600
+      },
+      {
+        "start": 1601,
+        "end": 2000
+      },
+      {
+        "start": 2001,
+        "end": 2400
+      },
+      {
+        "start": 2401,
+        "end": 2599
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-collect-taxes.md": [
+      {
+        "start": 1,
+        "end": 159
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/31df18ba2a4b06c73255bd00/content.diff": [
+      {
+        "start": 1,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 1300
+      },
+      {
+        "start": 1301,
+        "end": 1700
+      },
+      {
+        "start": 1701,
+        "end": 2100
+      },
+      {
+        "start": 2101,
+        "end": 2500
+      },
+      {
+        "start": 2501,
+        "end": 2601
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 60
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 72,
+        "end": 90
+      },
+      {
+        "start": 776,
+        "end": 792
+      }
+    ],
+    "wiki/concepts/stripe-tax-id-element.md": [
+      {
+        "start": 1,
+        "end": 78
+      }
+    ],
+    "wiki/concepts/stripe-tax.md": [
+      {
+        "start": 1,
+        "end": 124
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-advanced-tax/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 226
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "Stripe offers two ways to handle tax in custom payment flows. Choose based on how much control you need over tax reversals:",
+      "location": "raw/stripe-checkout-collect-taxes-2025.md:555"
+    },
+    {
+      "text": "The Tax API doesn\u2019t automatically validate tax IDs against government databases.",
+      "location": "raw/stripe-checkout-collect-taxes-2025.md:1681"
+    },
+    {
+      "text": "During the Checkout Session, Stripe verifies that the provided tax IDs are formatted correctly, but not that they\u2019re valid.",
+      "location": "raw/stripe-checkout-collect-taxes-2025.md:410"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/advanced/tax, the complete November capture states only the purpose of using Stripe Tax with custom Elements and offers Checkout Sessions and Payment Intents variant links (new raw lines 5-14). It establishes no current prerequisites, payment or tax outcome, or beta status. The April full guide describes registered tax jurisdictions, Checkout Sessions automatic tax with tax code and tax behavior, and the Payment Intents choice between Stripe-managed tax handling and custom Tax API calculation, payment, separate transaction recording and reversals (old raw lines 16-24, 553-570, 879-898). The mapped source-stripe-checkout-collect-taxes.md represented only the custom Tax API choice for Payment Intents, overstated tax-ID coverage, and conflated Element asynchronous government checks with custom Tax API format validation (old raw lines 408-416, 431-545, 1667-1681, 2424-2430; source lines 13, 86, 138-148).",
+    "Q2": "At https://docs.stripe.com/payments/advanced/tax, November changes are variant presentation and navigation, not a proven functional replacement (new raw lines 9-14; diff lines 1-16, 2597-2601). In source-stripe-checkout-collect-taxes.md the April Checkout Sessions Elements address behavior, tax-ID beta flags, and Payment Intents custom Tax API calculation, payment, recording, 90-day expiry, reversal limits, and testing caveats remain dated to the old capture (old raw lines 64-117, 306-429, 879-898, 1036-1040, 1415-1425). Correct the older summary's PI-only framing, unsupported 100+ country and type counts, and unqualified asynchronous government-check wording (source lines 13, 86, 138-148; old raw lines 431-545, 553-559, 1667-1681, 2445-2559). The dated Tax ID Element flows perform format checks during Session or payment/setup confirmation and describe later checks for AU ABN, EU VAT and GB VAT; custom Tax API calculation checks tax-ID format but does not automatically validate against government databases (old raw lines 408-416, 1667-1681, 2424-2430). The November index cannot resolve current UI/version, client/server, legal, eligibility, or successful payment and reporting outcomes."
+  }
+}

@@ -2,7 +2,9 @@
 title: "Stripe: Accept a Bancontact Payment"
 type: source
 date_ingested: 2026-05-03
+date_updated: 2026-11-15
 original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/bancontact/accept-a-payment"
 raw_files:
   - "stripe-bancontact-accept-payment-2025.md"
 tags: [stripe, bancontact, belgium, eur, checkout, elements, ios, android, react-native]
@@ -10,35 +12,46 @@ tags: [stripe, bancontact, belgium, eur, checkout, elements, ios, android, react
 
 ## Summary
 
-Multi-platform integration guide for accepting Bancontact payments: Checkout, Direct API (Elements + React), iOS, Android, and React Native. Covers PaymentIntent creation, `preferred_language`, bank account details on charge, and optional server-side redirect flow.
+Bancontact is a single-use, customer-authenticated payment method in the detailed 2026-05-03 guide. The customer redirects to Bancontact's website or app to authorize a EUR payment, then returns; the guide describes immediate notification but directs the merchant to verify the PaymentIntent status and use asynchronous events for business actions. It covers Checkout, Direct API with Stripe.js or React, iOS, Android, and React Native. The 2026-11-07 canonical capture is a purpose sentence and links to five variants only; it supplies no new integration behavior.
 
 ## Key Details
 
-### Checkout path
+### Checkout (2026-05-03 guide)
 
-- `payment_method_types: ['card', 'bancontact']`, `eur` only
-- Payment/setup/subscription modes all supported
-- No special test numbers — select Bancontact and click Pay
+- The guide requires Bancontact Terms of Service compliance, lists EUR as supported and presentment currency, and says all Checkout line-item Prices must be in EUR. It lists Checkout payment, setup, and subscription mode compatibility. This is a Checkout compatibility statement; Bancontact itself is single-use, while later recurring debit requires a separate SEPA Direct Debit route (old raw lines 18-38).
+- To configure methods manually, include `bancontact` in `payment_method_types`; the example is `["card", "bancontact"]`, not an exclusive Bancontact-only requirement. The Stripe-hosted payment Session example uses `success_url`; the embedded-page example uses `return_url` and `ui_mode: "embedded_page"` (old raw lines 46-103).
+- The old Checkout test directions say no special Bancontact test number is needed: select Bancontact and click Pay. Refund window up to 180 days and no dispute process are dated guide claims (old raw lines 110-120).
 
-### Direct API path
+### Direct API and return status (2026-05-03 guide)
 
-- `stripe.confirmBancontactPayment(clientSecret, { payment_method: { billing_details: { name } }, return_url })` — redirects to Bancontact, immediate result on return
-- `preferred_language`: `fr`, `nl`, `de`, or `en` (default) — set via `payment_method_options.bancontact.preferred_language`
-- Bank account details on charge: `bank_code`, `bank_name`, `bics`, `iban_last4`, `preferred_language`, `verified_name`
-- Optional server-side redirect: create + confirm PaymentIntent, check `requires_action` + `redirect_to_url`, redirect manually; retrieve status via `retrievePaymentIntent` on return
+- Create a Bancontact PaymentIntent server-side with amount in `eur`, then pass its client secret to the client. The Bancontact authorization page defaults to English; `payment_method_options.bancontact.preferred_language` can select `fr`, `nl`, or `de` (old raw lines 149-188).
+- Web HTML/JS and React collect the customer's full first and last name. Stripe.js `stripe.confirmBancontactPayment(clientSecret, { payment_method: { billing_details: { name } }, return_url })` redirects the customer to Bancontact (old raw lines 257-265, 338-388). The May example loads Stripe.js from the dated `dahlia` URL; it is not proof of a current November SDK version (old raw lines 295-306, 344-361).
+- On return, the browser receives `payment_intent` and `payment_intent_client_secret` query parameters. The guide tells the merchant to call `retrievePaymentIntent` and inspect `paymentIntent.status === "succeeded"`; return alone does not establish success. It also recommends `payment_intent.succeeded` asynchronous events rather than relying on a client callback (old raw lines 535-558, 619-623).
+- Optional manual server redirect: create and confirm a PaymentIntent with `payment_method_data.billing_details.name` and `return_url`; only redirect to `next_action.redirect_to_url.url` when status is `requires_action` and the action type is `redirect_to_url`. A webhook is recommended to confirm status after return (old raw lines 637-700).
+- The resulting Charge example shows `bank_code`, `bank_name`, `bics`, `iban_last4`, `preferred_language`, and `verified_name` under Bancontact payment-method details. This is one sample payload, not a guarantee every field is populated for each payment (old raw lines 561-615).
 
-### iOS
+### Mobile clients (2026-05-03 guide)
 
-- `STPPaymentMethodBancontactParams` + `STPPaymentMethodBillingDetails` (name required) + `STPPaymentHandler.confirmPayment()` → webview redirect
+- iOS, Android, and React Native each create a EUR Bancontact PaymentIntent on the server and obtain its client secret in the client (old raw lines 801-853, 992-1051, 1210-1269).
+- iOS collects a full billing name with `STPPaymentMethodBancontactParams` and `STPPaymentMethodBillingDetails`, then calls `STPPaymentHandler.confirmPayment` to present a payment webview (old raw lines 856-897). The iOS 13 compatibility note belongs to the May capture (old raw line 729).
+- Android uses `PaymentMethodCreateParams.createBancontact(billingDetails)` and `PaymentLauncher.confirm`; its `23.5.0` dependency is a May example, not November-verified current SDK guidance (old raw lines 945-965, 1053-1109).
+- React Native collects name and email, then calls `confirmPayment(clientSecret, { paymentMethodType: 'Bancontact', paymentMethodData: { billingDetails } })`. This is not the web Stripe.js `confirmBancontactPayment` method. The old React Native snippet has malformed/truncated surrounding example structure, so use the method identification as documentary evidence rather than runnable code. The guide also describes returning from bank apps by deep linking and forwarding a custom URL to `handleURLCallback` (old raw lines 1272-1345, 1365-1425).
+- A client confirmation call, a redirect, callback, example Charge, or browser/app return does not by itself prove successful payment or settlement; verify PaymentIntent status or handle the documented asynchronous event (old raw lines 535-558, 619-623, 1347-1351).
 
-### Android
+## Capture boundary
 
-- `PaymentMethodCreateParams.createBancontact(billingDetails)` + `PaymentLauncher.confirm()`
+The 2026-11-07 raw is a five-link index for Checkout, Direct API, iOS, Android, and React Native. The collection diff removes the May detailed body and adds variant links at the canonical page. None of those linked November variants was captured in this pin, so the index cannot establish changed requirements, current SDK versions, eligibility, or payment outcomes. Retain the May guide as dated evidence.
 
-### React Native
+## Related
 
-- `confirmBancontactPayment()` (truncated in paste — same pattern as iOS/Android)
+- [[stripe]] — Stripe company route.
+- [[stripe-bancontact]] — Bancontact concept and related source routes.
+- [[stripe-sepa-debit]] — separate recurring debit route after saving a mandate.
 
 ## Raw Sources
 
-- [[stripe-bancontact-accept-payment-2025]] — verbatim webpage content (1425 lines, Checkout + Direct API + iOS + Android + React Native sections)
+- [[raw/stripe-bancontact-accept-payment-2025|2026-05-03 full Bancontact acceptance guide]] — factual implementation and example evidence; 1,425 lines.
+
+## Related raw API references
+
+- [[raw/stripe-payments-bancontact-accept-a-payment-2026-11-07|2026-11-07 Bancontact variant index]] — navigation-only capture of Checkout, Direct API, iOS, Android, and React Native links; no linked variant behavior inferred.

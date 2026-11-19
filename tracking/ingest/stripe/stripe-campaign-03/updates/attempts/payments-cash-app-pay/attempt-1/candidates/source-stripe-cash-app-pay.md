@@ -1,0 +1,44 @@
+---
+title: "Stripe: Cash App Pay Payments"
+type: source
+date_ingested: 2026-05-07
+date_updated: 2026-11-15
+original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/cash-app-pay"
+raw_files:
+  - "stripe-payments-cash-app-pay-2026-11-07.md"
+  - "stripe-cash-app-pay-2025.md"
+tags: [stripe, wallets, cash-app-pay, us, usd, manual-capture, disputes, off-session-liability, connect, cloning]
+---
+
+## Overview
+
+Cash App Pay is a reusable US wallet method funded by a customer's Cash App balance or linked debit card. The balance is used when it covers the whole order; otherwise the linked debit card is used, and the two cannot be combined in one order. Mobile checkout redirects to Cash App; desktop checkout displays a QR code. The 2026-11-07 overview says the customer has **10 minutes to authenticate in the app**. A redirect, QR scan or return to checkout is an authentication step, not independent evidence of a succeeded PaymentIntent. See [[stripe]], [[stripe-cash-app-pay]], and [[stripe-wallets]]. (New raw lines 5-14, 99-108, 229-245; old raw lines 12-17, 105-109.)
+
+## Access, payment, and eligibility boundaries
+
+- The November property matrix describes **instant provisional access** to the *payment method* and warns that an account can be reviewed after activation. Separately, it lists **immediate payment confirmation** and settlement **up to two business days (T+2)** for a payment. The older page said standard payout timing applies. Provisional access, confirmation, settlement, and actual payout are different questions; none proves permanent account eligibility or a completed specific payment. (New raw lines 10-14, 18-23; old raw lines 37-47.)
+- November lists US merchant and customer location, USD presentment, domestic rather than cross-border coverage, a USD 0.50 minimum, B2C rather than B2B, and excludes US-territory merchant accounts. It says no business-level maximum is enforced, while Cash App sets variable customer limits; below USD 2,000 is a recommendation to reduce decline likelihood, not a hard ceiling. The May capture explicitly mentioned US-based travelers outside the US who can access Cash App. The November domestic-US matrix does not explain whether that dated traveler exception still applies; do not infer a particular travel transaction's eligibility. (New raw lines 18-23, 91-108; old raw lines 21-27, 61-65, 105-109.)
+- November distinguishes **Prohibited** MCCs from **Restricted** MCCs that may require more account information. The old overview separately prohibited B2B businesses, financial services, gift-card purchases, and platforms focused on fundraising, donations or alcohol sales. November's restricted alcohol-related MCC rows do not establish that a previously described alcohol-focused platform is allowed; business model and actual MCC must be reconciled for the account. Stripe's baseline account website requirements still apply, and post-activation eligibility review is possible. (New raw lines 18-89; old raw lines 111-118.)
+
+## Capabilities and customer outcomes
+
+- Recurring use, manual and partial capture, full and partial refunds, Checkout Sessions, PaymentIntents, PaymentIntents with `setup_future_usage`, and SetupIntents are listed as supported in November. Extended, flexible extended, incremental, decremental and re-authorizations, multi-capture, over-capture, and partial disputes are marked unsupported. The UI matrix includes full-page Checkout, Payment Links, embedded form, Payment Element and in-app payments; it marks Express Checkout Element and Terminal unsupported. This matrix describes method support, not a verified payment or current merchant enablement. (New raw lines 110-135, 202-224; old raw lines 37-77.)
+- The overview's ten-minute in-app step does not replace every integration timer. The separately captured 2026-05-07 acceptance guide described a **60-minute authentication session** and up to 20 desktop QR refreshes, while also saying a Cash App Pay PaymentIntent in `requires_action` must receive customer action **within ten minutes after redirect** or the PaymentMethod is detached and the Intent returns to `requires_payment_method`. These are differently scoped historical statements, not a universal 60-minute or 10-minute guarantee. (New raw lines 235-245; retained acceptance raw lines 1130-1144, 1226-1234.)
+- Refund requests must be submitted within 90 days; partial and full refunds are supported. November says processing can take up to ten business days, refunds cannot be canceled, and they are never reversals: Cash App Pay returns funds to the customer's original balance or linked funding source. Check the Refund object's `status` or `refund.updated`/`refund.failed` events. A failed refund returns funds to the Stripe balance and needs another customer refund route. The older page already described the 90-day asynchronous refund and event outcomes; request submission alone is not completion. (New raw lines 126-150; old raw lines 120-124.)
+- November says a Cash App Pay payment can be disputed only once and only in full. A customer has a stated 120-calendar-day window, the merchant has 13 calendar days for evidence, and Cash App Pay decides within 58 calendar days of dispute creation. The dispute amount and fee are withheld on opening; the fee is nonrefundable even if the merchant wins. The dispute's `reason` and `evidence_due_by` are on the Dispute object; Dashboard and Disputes/Files APIs provide evidence routes. The May page also described a 120-day clock **from expected receipt** for nondelivery, while November says **from purchase**. These captures do not resolve which trigger governs a particular current claim; check the case deadline rather than assuming one. (New raw lines 132-190; old raw lines 126-155.)
+- On-session customer-fraud liability is assigned to Cash App after authenticated login. For saved off-session transactions without that customer authentication, Cash App assigns customer-fraud liability to the merchant. This dated boundary appears in both captures; evidence submission does not determine a dispute outcome. (New raw lines 192-196; old raw lines 126-130.)
+
+## Connect and descriptors
+
+- A saved Cash App Pay PaymentMethod may be reused for recurring purchases only with the business of record that received the customer's off-session authorization. It cannot be cloned across connected accounts when those accounts are different businesses of record. The May overview additionally instructed platforms to have `cashapp_payments` active on both the platform and relevant connected accounts; November lists Connect support but omits that explicit activation instruction, so the older requirement remains dated, not proven removed. (New raw lines 198-224; old raw lines 165-197.)
+- Bank statements use the `CashApp*` prefix with the merchant/company name. A dynamic `statement_descriptor` for a PaymentIntent, or `payment_intent_data.statement_descriptor` through Checkout/Payment Links, appears in Cash App but not external bank/card statements. Connect charge type and whether a payment method was saved by the platform can change the business-of-record name/descriptor; direct charges use the connected account, while destination/separate charges commonly use the platform subject to the documented `on_behalf_of` and saved-method distinctions. (New raw lines 247-273; old raw lines 157-193.)
+
+## Raw Sources
+
+- [[raw/stripe-payments-cash-app-pay-2026-11-07|Cash App Pay overview, 2026-11-07]] — full eligibility, capability, refund, dispute, and descriptor capture.
+- [[raw/stripe-cash-app-pay-2025|Cash App Pay overview, 2026-05-07]] — retained earlier overview with traveler, Connect capability and nondelivery dispute-clock wording.
+
+## Related raw API references
+
+- [[raw/stripe-cash-app-pay-accept-payment-2025|Cash App Pay acceptance guide, 2026-05-07]] — separate historical integration guide for scoped authentication timers; not a primary raw for this overview.

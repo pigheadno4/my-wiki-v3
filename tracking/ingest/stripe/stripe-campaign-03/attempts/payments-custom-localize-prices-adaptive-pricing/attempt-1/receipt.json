@@ -1,0 +1,194 @@
+{
+  "job_id": "payments-custom-localize-prices-adaptive-pricing",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md",
+  "raw_sha256": "2df8d3f2829f5371bf9bee4af500714992cb9940bcd5997e368de488385c2eb2",
+  "prior_raw_path": "raw/stripe-adaptive-pricing-elements-2025.md",
+  "prior_raw_sha256": "89fb4d82e67a4904ff8e104cf73d59e9957c5af0febaf98177cdf2ea95e48573",
+  "source_targets": [
+    "wiki/sources/source-stripe-adaptive-pricing-elements.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-adaptive-pricing-elements.md": "7fa73724b3357b176b5a23895b41211b9ad3d1f53bd4893d09dd79672b59c44b"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 440
+      }
+    ],
+    "raw/stripe-adaptive-pricing-elements-2025.md": [
+      {
+        "start": 1,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 426
+      }
+    ],
+    "wiki/sources/source-stripe-adaptive-pricing-elements.md": [
+      {
+        "start": 1,
+        "end": 97
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/908bc0067b7896029b220886/content.diff": [
+      {
+        "start": 1,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 278
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 89,
+        "end": 97
+      }
+    ],
+    "wiki/concepts/stripe-adaptive-pricing.md": [
+      {
+        "start": 1,
+        "end": 79
+      }
+    ],
+    "wiki/concepts/stripe-currency-selector-element.md": [
+      {
+        "start": 1,
+        "end": 67
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/proposed-queries.md": [
+      {
+        "start": 439,
+        "end": 446
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Stripe uses machine learning to determine the most relevant presentment currency",
+      "location": "raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md:11"
+    },
+    {
+      "text": "You must configure this client-side setting and also enable Adaptive Pricing in the Checkout Session for an [eligible currency](https://docs.stripe.com/payments/custom/localize-prices/adaptive-pricing.md#restrictions).",
+      "location": "raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md:134"
+    },
+    {
+      "text": "If `currencyOptions` is empty, verify that the transaction meets all of the following criteria:",
+      "location": "raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md:110"
+    },
+    {
+      "text": "Adaptive Pricing only supports Indian businesses that [accept international payments](https://docs.stripe.com/india-accept-international-payments.md).",
+      "location": "raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md:232"
+    },
+    {
+      "text": "For cross-border subscriptions, Adaptive Pricing supports only card payments, Link, Apple Pay, and Google Pay.",
+      "location": "raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md:197"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Stripe infers the presentment currency from the customer\u2019s public IP address",
+      "location": "raw/stripe-adaptive-pricing-elements-2025.md:10"
+    },
+    {
+      "text": "Adaptive Pricing isn\u2019t supported for Indian businesses.",
+      "location": "raw/stripe-adaptive-pricing-elements-2025.md:217"
+    },
+    {
+      "text": "- Use [custom amounts](https://docs.stripe.com/payments/checkout/pay-what-you-want.md).",
+      "location": "raw/stripe-adaptive-pricing-elements-2025.md:227"
+    },
+    {
+      "text": "The [useCheckout](https://docs.stripe.com/js/react_stripe_js/checkout/use_checkout) hook",
+      "location": "raw/stripe-adaptive-pricing-elements-2025.md:55"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The November guide remains specifically for Adaptive Pricing with Checkout Sessions API and Elements, not Payment Intents API (new raw lines 5-11, 228-234; old raw lines 4-10, 213-219). Client-side SDK readiness uses adaptivePricing.allowed=true in initCheckoutElementsSdk or CheckoutElementsProvider options, while Dashboard or per-Session adaptive_pricing.enabled controls server-side/session activation; an eligible settlement currency and Currency Selector rendering are separate prerequisites (new raw lines 30-38, 74-95, 108-115, 132-164, 228-243). Source lines 17-34 describe most pieces but line 25's 'REQUIRED to activate' is incomplete without the Session and eligibility prerequisites.",
+    "The new text changes currency-selection description from public-IP inference in April to ML selection of relevant presentment currency in November (old raw line 10; new raw line 11). It does not prove IP is never an input. The guide still describes 150-plus customer markets and a 24-hour exchange-rate guarantee (new raw lines 11-18, 247-417; old raw lines 10-17, 233-403).",
+    "The current source and main concept exclude all Indian businesses (source line 61; concept line 62), whereas November now says only Indian businesses accepting international payments are supported (new raw line 232; old raw line 217). This is a substantive eligibility reversal requiring reciprocal source/concept correction, with account-specific eligibility unverified.",
+    "The November local-method list has 26 named entries, adding Alipay, Bacs Debit, Bizum, Pay by Bank, Satispay and SEPA Debit to the 20-entry April list (new raw lines 166-197; old raw lines 149-174; diff lines 169-196). Source lines 52-56, main concept lines 36-42 and Stripe index line 93 remain at 20. Treat this as the page's list, not a promise that every method is available for every merchant/country; retain the cross-border subscription restriction to card, Link, Apple Pay and Google Pay.",
+    "The React example changes from useCheckout to useCheckoutElements and updates the linked currencyOptions location (old raw lines 53-69, 90-101; new raw lines 52-72, 93-106; diff lines 46-108). HTML+JS uses checkout.loadActions/getSession and preformatted total.total.amount in both captures (old raw lines 35-51; new raw lines 34-50). Record hook/API spelling as capture-specific, not prove deprecation or runtime breakage of the old hook.",
+    "November adds an empty-currencyOptions troubleshooting checklist: allowed readiness, merchant-of-record settlement eligibility, cross-border customer, and supported currency pair (new raw lines 108-115). The selector may be mounted but shows nothing when no options exist (new raw lines 74-106). Current source line 48 covers the no-options display but not the new diagnostic conditions.",
+    "The current currency-selector concept says adaptivePricing.allowed=true 'in the Checkout Session' (concept line 16). November's troubleshooting checklist also says this (new raw line 112), but its explicit configuration section places camel-case allowed in client init/provider options and snake-case adaptive_pricing.enabled on Checkout Session/Dashboard control (new raw lines 132-164). The concept needs the client/Session distinction and a warning about the guide's inconsistent checklist wording, while retaining its separately sourced route and must-render law distinction (concept lines 10-28; new raw lines 74-78).",
+    "New guide adds that disabling Adaptive Pricing does not affect active local-currency subscriptions already paid, clarifies subscriptions omit local/integration amounts in selector, and keeps the cross-border subscription method limit (new raw lines 30-32, 117-125, 197; old raw lines 31-33, 103-115, 174). These are narrower lifecycle/UI facts than a blanket subscription guarantee.",
+    "Internal documentation tension persists: new raw says the API Checkout Session remains in integration currency with localized customer context under presentment_details (new raw line 38), but testing text says the Checkout Session object changes currency, payment_method_types and amount_total to local currency (new raw line 203). The old capture said both as well (old raw lines 39, 180). Main concept line 52 asserts the first reading as always true. Flag both passages and distinguish Elements Session from API Checkout Session; do not resolve the contradiction by assertion.",
+    "The old custom-amount exclusion (old raw lines 223-229; source lines 58-65; concept lines 58-66) is omitted from the November exclusion list (new raw lines 238-243; diff lines 240-246). Omission alone does not establish support, so retain it only as a dated April claim with unresolved November applicability, not as a current categorical exclusion or a newly supported case.",
+    "Testing changes its illustrative Session request from Node SDK to curl while retaining +location_XX customer_email and ui_mode=elements; it is a test-location simulation, not real merchant eligibility proof or payment success (old raw lines 182-211; new raw lines 205-226). Fees and refund description remain materially the same in the two captures and should stay dated, especially 2\u20134% conversion fee and original-rate refund (old raw lines 405-420; new raw lines 419-434)."
+  ],
+  "substantive_changes": [
+    "Indian-business eligibility changes from outright unsupported in April to conditional support for businesses accepting international payments in November (old raw line 217; new raw line 232).",
+    "November explicitly requires both client-side adaptivePricing.allowed readiness and Checkout Session/Dashboard Adaptive Pricing enablement for eligible settlement currency, and adds troubleshooting criteria for empty currencyOptions (old raw lines 117-147; new raw lines 108-115, 132-164).",
+    "The listed local-currency payment methods expand from 20 to 26 names, while cross-border subscription methods remain restricted (old raw lines 149-174; new raw lines 166-197).",
+    "The React example changes hook from useCheckout to useCheckoutElements, and the new guide adds subscription selector-display and disabling-lifecycle qualifications (old raw lines 31-33, 53-69, 103-115; new raw lines 30-32, 52-72, 117-125).",
+    "The IP-specific description is replaced with ML-based relevant-currency selection, without proving IP is excluded as an input (old raw line 10; new raw line 11)."
+  ],
+  "historical_claims_to_preserve": [
+    "Preserve the April public-IP phrasing, Indian-business exclusion, custom-amount exclusion, Node testing sample and useCheckout React hook as dated prior-capture claims; November changes or omits these, but omission does not prove deprecation or new custom-amount support (old raw lines 10, 53-69, 192-209, 213-229; new raw lines 11, 52-72, 205-243).",
+    "Preserve the lasting distinction between the localized Elements Session and the API Checkout Session's integration currency/presentment_details in one passage, but show the contradictory testing passage instead of flattening the outcome (old raw lines 35-39, 176-180; new raw lines 34-38, 199-203).",
+    "Preserve the 24-hour guarantee, integration/settlement-currency prerequisite, merchant-of-record settlement requirement, manual-capture and currency_options restrictions, cross-border subscription method limit, fee allocation and original-rate refund as capture-scoped guide statements (old raw lines 12-17, 174, 213-229, 405-420; new raw lines 13-18, 197, 228-245, 419-434)."
+  ],
+  "conflicts": [
+    "Current source line 61 and main concept line 62 say Indian businesses unsupported, contradicting November line 232's conditional support for businesses accepting international payments; update both reciprocally and retain the April exclusion as historical (old raw line 217).",
+    "Current source lines 52-54 and main concept lines 38-40 state 20 local methods, but November lists 26 names (new raw lines 166-195); update count/list with date and payment-method eligibility caveat. Stripe index line 93 also carries the stale 20 count.",
+    "November's checklist line 112 calls adaptivePricing.allowed a Checkout Session field, but its configuration at lines 132-164 places that camel-case setting in client init/provider options and uses adaptive_pricing.enabled for per-Checkout-Session control. Current currency-selector concept line 16 repeats the checklist placement; expose this internal wording conflict and distinguish the two documented settings reciprocally.",
+    "The guide itself gives incompatible-sounding API Checkout Session currency statements at new raw lines 38 and 203 (old raw lines 39 and 180), and the main concept line 52 chooses one unconditionally. Preserve the Elements Session versus API Session distinction and mark the unresolved testing-text conflict.",
+    "Source line 63 and concept line 64 give a current categorical custom-amount exclusion from April, while November's exclusion list omits custom amounts (old raw lines 223-229; new raw lines 238-243). Date the old restriction; do not infer reversal from omission."
+  ],
+  "unresolved_questions": [
+    "The captured November guide does not reconcile whether its testing paragraph's local Checkout Session currency/amount_total wording refers to a different representation or condition than its API Checkout Session integration-currency/presentment_details paragraph (new raw lines 38, 203).",
+    "The November omission of custom amounts from restrictions does not establish whether that case is now supported; a separate current authoritative answer would be needed (old raw line 227; new raw lines 238-243).",
+    "The new conditional India statement is documentary support only; this review does not verify a particular Indian merchant's international-payments permission, settlement currencies, currency pair, or payment-method access (new raw lines 108-115, 228-236)."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-adaptive-pricing.md",
+    "wiki/concepts/stripe-currency-selector-element.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-adaptive-pricing-elements.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add November raw provenance, conditional India support, the 26-entry method list, client plus Session enablement and empty-currencyOptions diagnostic conditions (new raw lines 108-115, 132-197, 228-236; source lines 4-7, 13-65).",
+        "Date April-only custom-amount restriction and old hook/Node examples; record November useCheckoutElements and curl examples without inferring deprecation (old raw lines 53-69, 192-209, 223-229; new raw lines 52-72, 205-226, 238-243).",
+        "Warn about inconsistent Checkout Session currency passages (new raw lines 38, 203) and distinguish Elements Session values from API Checkout Session/presentment_details."
+      ],
+      "conflicts": [
+        "Source line 61's blanket Indian exclusion is contradicted by November line 232.",
+        "Source lines 52-54's 20-method count is outdated against November lines 166-195.",
+        "Source line 25's activation comment can hide separate server/session and settlement prerequisites at new raw lines 108-115, 132-164; the new guide's checklist line 112 itself misplaces camel-case allowed on the Checkout Session compared with its client examples at lines 132-161."
+      ],
+      "reason": "The pinned new guide changes eligibility and method coverage and clarifies activation and UI conditions, while the existing mapped summary preserves April-only restrictions as current facts."
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/custom/localize-prices/adaptive-pricing, the November guide documents local-currency presentment through Checkout Sessions API with Elements, not Payment Intents API. Stripe selects a relevant currency, converts the price, and presents formatted localized values; the client Elements Session, API Checkout Session and customer presentment_details must be kept distinct (new raw lines 5-18, 34-38). Rendering the Currency Selector, setting client adaptivePricing.allowed=true, enabling Adaptive Pricing for the Session or in Dashboard, eligible merchant-of-record settlement currency, cross-border customer and supported pair are separate conditions (new raw lines 74-115, 132-164, 228-243). Compared with April, Indian businesses become conditionally supported and the listed methods expand to 26 (old raw lines 149-174, 213-229; new raw lines 166-197, 228-245). source-stripe-adaptive-pricing-elements.md still states the prior India exclusion and 20 methods (source lines 52-65), so it needs a dated correction and November provenance.",
+    "Q2": "For https://docs.stripe.com/payments/custom/localize-prices/adaptive-pricing, substantive changes include conditional Indian-business support, six added named local methods, a two-sided client and Checkout Session enablement explanation, currencyOptions diagnostics, and a React useCheckoutElements example (old raw lines 53-69, 117-174, 213-229; new raw lines 52-72, 108-197, 228-245). The Node-to-curl test example, formatting and image URL changes are presentational; the older custom-amount exclusion is omitted, which alone proves no new support. source-stripe-adaptive-pricing-elements.md must preserve April IP wording, useCheckout and custom-amount restriction as dated history while updating India and method coverage (source lines 52-65). Both captures conflict internally on whether API Checkout Session currency and amount_total stay in integration currency or show local values during testing (old raw lines 39, 180; new raw lines 38, 203); the source and concept should expose that unresolved distinction. Dashboard enablement, Session activation, client readiness, price display, exchange-rate guarantee, payment completion and refund are separate states or outcomes, not a single success claim."
+  }
+}

@@ -1,0 +1,15 @@
+<!-- Source URL: https://docs.stripe.com/payments/finalize-payments-on-the-server -->
+<!-- Fetched: 2026-11-07 -->
+<!-- Discovery: reconciled llms.txt,sitemap.xml -->
+
+# Finalize payments on the server
+
+Build an integration where you render the Payment Element before you create a PaymentIntent or SetupIntent, then confirm the Intent from your server.
+
+## Index
+
+This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:
+
+- [Accept a payment](https://docs.stripe.com/payments/finalize-payments-on-the-server.md?platform=web&type=payment)
+- [Set up a payment method](https://docs.stripe.com/payments/finalize-payments-on-the-server.md?platform=web&type=setup)
+- [Create a subscription](https://docs.stripe.com/payments/finalize-payments-on-the-server.md?platform=web&type=subscription)

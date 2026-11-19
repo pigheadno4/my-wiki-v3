@@ -1,0 +1,199 @@
+{
+  "job_id": "payments-affirm",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-affirm-2026-11-07.md",
+  "raw_sha256": "2e804842d790cb11dc2587f34b31fc0a0f2b9fd49942b8c72383fc6db7892ef3",
+  "prior_raw_path": "raw/stripe-affirm-2025.md",
+  "prior_raw_sha256": "d7ec45406efb55ca364dd18beb3f7029ceed97a46c0bfda0c387c610b5999061",
+  "source_targets": [
+    "wiki/sources/source-stripe-affirm.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-affirm.md": "c161aa77ecd8dc85e4fc473e5696a6b12bd246419217e6a3f961723dc0dc8cfd"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-affirm-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 140
+      },
+      {
+        "start": 141,
+        "end": 280
+      },
+      {
+        "start": 281,
+        "end": 426
+      }
+    ],
+    "raw/stripe-affirm-2025.md": [
+      {
+        "start": 1,
+        "end": 130
+      },
+      {
+        "start": 131,
+        "end": 242
+      }
+    ],
+    "wiki/sources/source-stripe-affirm.md": [
+      {
+        "start": 1,
+        "end": 47
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/fed3fca2a68c4ad5f27128aa/content.diff": [
+      {
+        "start": 1,
+        "end": 130
+      },
+      {
+        "start": 131,
+        "end": 260
+      },
+      {
+        "start": 261,
+        "end": 390
+      },
+      {
+        "start": 391,
+        "end": 520
+      },
+      {
+        "start": 521,
+        "end": 635
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 23
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 318,
+        "end": 328
+      },
+      {
+        "start": 742,
+        "end": 751
+      }
+    ],
+    "wiki/concepts/stripe-bnpl.md": [
+      {
+        "start": 1,
+        "end": 61
+      },
+      {
+        "start": 231,
+        "end": 245
+      },
+      {
+        "start": 249,
+        "end": 257
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/proposed-queries.md": [
+      {
+        "start": 26,
+        "end": 32
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Private preview business location: GB",
+      "location": "raw/stripe-payments-affirm-2026-11-07.md:20"
+    },
+    {
+      "text": "Private preview presentment currency: GBP",
+      "location": "raw/stripe-payments-affirm-2026-11-07.md:181"
+    },
+    {
+      "text": "Customers have up to 120 calendar days from the date of purchase to file Affirm disputes.",
+      "location": "raw/stripe-payments-affirm-2026-11-07.md:315"
+    },
+    {
+      "text": "Affirm reviews your evidence and issues a final decision within 60 calendar days of dispute creation.",
+      "location": "raw/stripe-payments-affirm-2026-11-07.md:320"
+    },
+    {
+      "text": "After the payment completes, expand `latest_charge` on the PaymentIntent to retrieve the Affirm transaction ID from `latest_charge.payment_method_details.affirm.transaction_id`.",
+      "location": "raw/stripe-payments-affirm-2026-11-07.md:420"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Customers can file a dispute after the date of purchase and there isn\u2019t a time limitation for filing.",
+      "location": "raw/stripe-affirm-2025.md:182"
+    },
+    {
+      "text": "which can take a maximum of 30 calendar days from dispute creation.",
+      "location": "raw/stripe-affirm-2025.md:190"
+    },
+    {
+      "text": "Affirm makes a decision within 15 calendar days of evidence submission.",
+      "location": "raw/stripe-affirm-2025.md:202"
+    },
+    {
+      "text": "Affirm pauses the customer\u2019s payment plan",
+      "location": "raw/stripe-affirm-2025.md:172"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Central behavior: Affirm is single-use BNPL with customer redirect to Affirm or its mobile app, plan choice and repayment authorization; buyer repays Affirm while Stripe makes the order amount less fees available to the merchant upfront after acceptance (new raw lines 5-14, 212-216, 385-412; old raw lines 4-12, 97-105). New access label 'instant provisional', immediate confirmation and settlement up to T+2 are distinct states (new raw lines 10-14). A redirect, plan selection or browser return after authorization is not by itself a succeeded PaymentIntent, final settlement or merchant eligibility (new raw lines 391-412).",
+    "Material regional addition: May capture covered US and Canada with USD/CAD (old raw lines 6-8, 16-22, 56-61); November adds GB business and customer location and GBP only as private preview, not generally available (new raw lines 7-9, 18-22, 165-185). Domestic-only matching business/customer country remains and dynamic Payment Element or Checkout Session filters by shipping-address country then client IP; explicit payment_method_types requires merchant-side eligibility filtering or dynamic methods (new raw lines 182-186, 262-269; old raw lines 77, 235-242). US Pay in 30 is USD 35-50; US/CA Pay in 4 and monthly tiers remain; UK preview lists Pay in 3 GBP 50-500 and monthly GBP 100-30,000 (new raw lines 188-210; old raw lines 97-149). Do not apply UK or financing tiers across markets without package and preview conditions.",
+    "New eligibility detail: B2C rather than B2B, publicly accessible website with customer-local-currency prices, possible post-activation review, and prohibited/restricted MCC table with some Restricted rows requiring account information (new raw lines 18-45, 47-163). May already listed major prohibited/conditional categories and healthcare additional requirements (old raw lines 151-164); the new MCC table is more granular and does not itself approve a merchant or mean every similarly named category is barred without its actual MCC. New matrix lists manual capture but not partial/multi/over-capture; no recurring, SetupIntent, setup_future_usage or off-session payments (new raw lines 271-296, 356-380). May already said recurring no, manual capture yes, Express Checkout Element no, and subscription/setup Checkout modes unsupported (old raw lines 32-54, 63-75). November's Invoicing and Customer Portal checks do not imply subscriptions or subscription invoices (new raw lines 366-380; old raw line 75).",
+    "Material dispute conflict: May stated no customer filing time limit, max 30 days from creation to resolve, 15 days for merchant evidence and 15 days after evidence for a decision (old raw lines 178-202; current source line 37). November states 120 calendar days from purchase to file, each repeated dispute an independent object, 15 days from opening for evidence, and decision within 60 days of creation (new raw lines 293-296, 313-350). Preserve both dated claims and warn reciprocally in source/concept; do not substitute 60 days for the evidence deadline. May already had email/Dashboard/charge.dispute.created notification, Dashboard evidence and an API response link (old raw lines 184-202); November gives reason/evidence_due_by fields and detailed Dashboard/API/Files submission (new raw lines 322-350).",
+    "Refund comparison: both captures allow full/partial refunds within 120 days, say refunds are asynchronous and final refund.updated/refund.failed or Refund.status matters, and do not allow cancellation after processing begins (new raw lines 287-311; old raw lines 170-176). November adds up-to-two-day processing and says remaining scheduled payments are canceled rather than May's 'pauses customer plan' wording; both say amounts already paid are returned less interest (new raw lines 299-311; old raw lines 172-176). May alone states multiple partial refunds, no fee credits and inability to refund while a dispute is open (old raw lines 172-174); keep those dated rather than infer November removed them. Refund submission or pending status is not successful refund completion.",
+    "Current source accuracy axis: source-stripe-affirm.md frontmatter lines 1-9 lacks canonical_url and lists only May raw; lines 17, 37 omit UK private preview and retain now-conflicting no-limit/30-day dispute claims. Source line 33 overstates 'Platforms don't qualify for 0% APR plans': the raw excludes platforms from Pay in 30 and monthly 0% APR plans, while Pay in 4 is listed at 0% APR (new raw lines 194-210, 239-260; old raw lines 105-149). Source line 35's paused-plan/no-fee-credit wording is May-only and needs November cancellation distinction (new raw lines 299-311; old raw lines 172-176). Source line 37 'Affirm covers fraud losses' needs customer-fraud and stop/pause-shipment qualification (new raw line 354; old raw line 180). The related concept stripe-bnpl at lines 16 and 53 repeats outdated region/limit/dispute facts and its 'Subscriptions' cell conflicts with no recurring and old Checkout subscription-mode restriction (new raw lines 271-272, 366-380; old raw lines 63-75). Root index line 7 and Stripe index lines 322, 747 route to that concept and source."
+  ],
+  "substantive_changes": [
+    "GB/GBP is newly described as private preview, with a GB Pay in 3 option and UK-specific 0% table rows; US/CA remain generally listed (new raw lines 7-22, 165-210, 216-260; old raw lines 6-22, 105-149).",
+    "Dispute terms conflict materially: 120-day customer filing window and 60-day decision from creation in November versus no filing limit, max 30-day resolution and 15-day post-evidence decision in May; merchant evidence deadline stays 15 days (new raw lines 313-350; old raw lines 178-202).",
+    "Newly explicit website eligibility/MCC restrictions, T+2 settlement label, two-day refund processing, remaining-payment cancellation, product/API exclusions and transaction ID path (new raw lines 10-14, 35-45, 47-163, 271-311, 356-380, 414-420; old raw lines 14-95, 151-176, 204-242)."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the May 6 US/Canada coverage, USD/CAD, Standard/Enhanced package terms and platform limitation dated (old raw lines 6-22, 105-149), while marking GB/GBP as November private preview (new raw lines 18-22, 165-210). Do not label May as a proof of UK availability.",
+    "Keep May's no-time-limit customer dispute and 30-day maximum-resolution/15-day post-evidence-decision statements as historical claims visibly superseded in the captured November overview, rather than silently rewriting the May raw or source's date (old raw lines 182-202; new raw lines 313-320; source lines 4, 37).",
+    "Keep May's Connect `affirm_payments` capability, correct connected-account MCC and merchant-of-record/charge-type notes as dated detail not renewed by November's generic Connect support checkmark (old raw lines 215-233; new raw lines 20-23, 366-380; source line 41). Also keep May's no-processing-fee-credit and active-dispute refund prohibition dated where relevant (old raw lines 172-174)."
+  ],
+  "conflicts": [
+    "Current source line 37 and concept stripe-bnpl line 53 repeat May's no customer filing limit and 30-day resolution, directly conflicting with November's 120-day filing and 60-day decision from creation (old raw lines 182-202; new raw lines 313-320). A reciprocal dated warning is required in source and concept.",
+    "Current source line 17 and concept stripe-bnpl line 16 say only US/CA, while November adds GB/GBP private preview (new raw lines 18-22, 165-210; old raw lines 6-22); UK preview must not be presented as general UK support.",
+    "Current source line 33 and concept stripe-bnpl line 49 broadly exclude platforms from all 0% APR plans, whereas both raw versions specifically exclude Pay in 30 and monthly 0% APR plans and list Pay in 4 as 0% APR (old raw lines 105-149; new raw lines 194-210, 216-260).",
+    "Current source line 35 says Affirm pauses the plan after refund, matching May raw line 172, while November says it cancels remaining scheduled payments (new raw lines 299-305); preserve the difference as dated, not an inferred universal downstream state."
+  ],
+  "unresolved_questions": [
+    "The private-preview GB/GBP listing does not establish access for a particular UK merchant or buyer, and November's Standard table contains UK Pay in 3 rows whereas the Enhanced table does not list them; the capture does not resolve Enhanced-package UK Pay in 3 availability (new raw lines 18-22, 198-210, 218-260).",
+    "The overview does not establish actual approval, succeeded PaymentIntent, captured funds, settlement arrival, refund success or dispute outcome for any transaction (new raw lines 10-14, 301-311, 313-350, 385-420)."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-bnpl.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-affirm.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add canonical_url: https://docs.stripe.com/payments/affirm and the November raw while retaining May provenance and date (source lines 1-9, 45-47; old raw line 1; new raw line 1).",
+        "Add GB/GBP only as private preview and its GB Pay in 3/payment ranges, local-currency public website and MCC eligibility conditions, settlement timing, product/API support exclusions, and latest_charge Affirm transaction ID locator (new raw lines 18-22, 35-45, 47-210, 271-296, 356-380, 414-420; source lines 13-43).",
+        "Correct source line 37's May-only no-limit/30-day dispute statement with reciprocal dated November 120-day filing and 60-day decision from opening; preserve 15-day evidence window and multiple-dispute object qualification (old raw lines 178-202; new raw lines 313-350).",
+        "Narrow platform 0% APR exclusion to Pay in 30 and monthly 0% plans; date May paused-plan/no-fee-credit/open-dispute refund details and add November canceled-remaining-payments/two-day processing; qualify fraud coverage as customer fraud with stop-shipment requests (source lines 33, 35-37; old raw lines 105-149, 172-180; new raw lines 216-260, 299-311, 354)."
+      ],
+      "conflicts": [
+        "May no filing limit/30-day resolution in source line 37 conflicts with November 120-day filing/60-day decision (old raw lines 182-202; new raw lines 313-320).",
+        "US/CA-only source line 17 omits November GB private preview, but preview cannot be treated as general availability (new raw lines 18-22, 165-210).",
+        "Broad platform 0% APR exclusion and paused refund plan at source lines 33, 35 need narrower or dated qualification against both captures (old raw lines 105-149, 172-176; new raw lines 216-260, 299-311)."
+      ],
+      "reason": "The November overview materially changes region and dispute guidance and expands eligibility, refund, product and identifier detail; the current May-only source also contains baseline overbroad platform and fraud claims. The source should be corrected with dated reciprocal warnings, not silently replaced."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/affirm, the November capture documents single-use Affirm BNPL for domestic B2C purchases: US/CA merchants and customers with USD/CAD, plus GB/GBP only in private preview, can be redirected to Affirm to choose and authorize a repayment plan (new raw lines 7-22, 165-210, 385-401). A public website with customer-local-currency prices, eligible MCC and account review can matter; dynamic Checkout/Payment Element country filtering uses shipping country then geocoded IP, while explicitly listed payment_method_types requires merchant eligibility filtering (new raw lines 24-45, 182-186, 262-269). Checkout Sessions and PaymentIntents are supported but recurring, SetupIntents, setup_future_usage and off-session payments are not; immediate confirmation, upfront availability after payment acceptance and up-to-T+2 settlement are distinct states (new raw lines 10-14, 212-216, 271-296, 356-380). The May capture covered only US/CA, recorded no customer dispute filing limit and a 30-day maximum resolution (old raw lines 6-22, 178-202); November says 120 days to file and decision within 60 days of opening (new raw lines 313-320). source-stripe-affirm.md preserves May but its US/CA-only and no-limit/30-day summary is now conflicted (source lines 17, 37).",
+    "Q2": "At https://docs.stripe.com/payments/affirm, November's property and product tables and reordered customer flow are partly presentation, but GB/GBP private preview, 120-day customer dispute filing, 60-day decision from creation, explicit eligibility/MCC and product limits, two-day refund processing and canceled remaining installments are substantive compared with May (new raw lines 18-22, 35-45, 165-210, 271-320, 356-380; old raw lines 6-22, 63-77, 170-202). source-stripe-affirm.md must retain dated May Connect capability/MCC and no-fee-credit/open-dispute refund claims (old raw lines 172-174, 215-233), while warning reciprocally about its old no-limit/30-day dispute and US/CA-only claims (source lines 17, 35-41; new raw lines 18-22, 313-320). Platforms were excluded from Pay in 30 and monthly 0% APR plans, not all 0% APR options (old raw lines 105-149; new raw lines 216-260). UK remains preview; Checkout/PaymentIntent support is not recurring support, and a redirect, loan authorization, refund request or return page is not proof of succeeded payment, settlement or completed refund (new raw lines 356-420)."
+  }
+}

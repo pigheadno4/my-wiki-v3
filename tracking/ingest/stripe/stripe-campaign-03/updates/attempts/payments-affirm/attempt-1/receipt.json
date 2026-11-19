@@ -1,0 +1,195 @@
+{
+  "job_id": "payments-affirm",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-affirm.md": {
+      "job_id": "payments-affirm",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Affirm Payments\"\ntype: source\ndate_ingested: 2026-05-06\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/affirm\"\nraw_files:\n  - \"stripe-payments-affirm-2026-11-07.md\"\n  - \"stripe-affirm-2025.md\"\ntags: [stripe, bnpl, affirm, buy-now-pay-later, installments, connect, disputes]\n---\n\n## Summary\n\n[[stripe]] describes Affirm as a single-use, domestic B2C buy now, pay later method. The customer chooses Affirm, is redirected to Affirm's site or installed mobile app, selects a repayment plan, and authorizes it within 12 hours; Affirm collects the installments. After payment acceptance, Stripe says it makes the order amount less fees available to the business upfront. The November capture separately labels access **instant provisional**, confirmation **immediate**, and settlement **up to T+2**. A redirect, plan choice, or return to the merchant site alone does not establish a succeeded PaymentIntent, merchant access, or settlement. See [[stripe-bnpl]].\n\n## Geography and eligibility\n\n- **2026-05-06 capture**: US and Canada customer and business locations, with USD or CAD presentment.\n- **2026-11-07 capture**: US/CA remain listed; GB business and customer locations and GBP presentment are marked **private preview**, not general availability. The business and customer must be in the same country; cross-border transactions are excluded. The November account matrix permits merchant and platform/marketplace account types but excludes B2B.\n- The November guide says an account might undergo review after activation and requires a publicly accessible website displaying customer-local-currency prices. Its MCC table distinguishes **prohibited** codes from **restricted** codes requiring additional account information. The older broad category list also names B2B services, home improvement, titled goods/auto loans, professional services, NFTs, and pre-orders; healthcare has additional requirements. Use the actual MCC and account review, not the category label alone, to assess a particular merchant.\n- Dynamic payment methods on Payment Element or Checkout Session filter country by shipping-address country first, then geocoded client IP. With explicit `payment_method_types`, the integration must present Affirm only to eligible customers or use dynamic payment methods. Display or configuration does not prove a buyer's loan approval.\n\n## Payment options and financing\n\n- **US (November)**: Pay in 30, USD 35\u201350 in the payment-options table (the package table caps its row at USD 49.99); Pay in 4, USD 50\u2013500; monthly installments, USD 100\u201330,000 and up to 36 months.\n- **CA (November)**: Pay in 4, CAD 50\u2013500; monthly installments, CAD 100\u201330,000.\n- **GB private preview (November)**: Pay in 3, GBP 50\u2013500; monthly installments, GBP 100\u201330,000. The Standard package table lists UK Pay in 3 rows, while Enhanced does not; do not infer an Enhanced UK Pay in 3 option from the overview.\n- Standard is the default financing package; Enhanced adds listed 0% APR monthly tiers. Affirm sets term and cart ranges, which can change at its discretion, and rates can be 10\u201336% APR subject to eligibility. Businesses with Dashboard access can view or change packages, except connected accounts and platforms. The captures exclude platforms from **Pay in 30 and monthly 0% APR plans**; they list Pay in 4 as 0% APR, so the exclusion is not every 0% plan.\n\n## Product and transaction boundaries\n\nThe November support matrix lists full-page Checkout, Payment Links, embedded form, Payment Element, Payment Method Messaging Element, in-app payments, Connect, Invoicing, Customer Portal, Terminal, Checkout Sessions, and PaymentIntents. It excludes Express Checkout Element, Billing, Managed Payments, Radar, SetupIntents, PaymentIntents with `setup_future_usage`, and off-session payments. The capabilities matrix says **no recurring payments**; Invoicing or Customer Portal checkmarks do not imply subscriptions. The May guide specifically excludes Checkout subscription/setup modes and subscription invoices.\n\nManual capture is listed, while partial, multi, and over-capture are excluded. Extended, flexible extended, incremental, decremental, and re-authorizations are also excluded in the November matrix. Full and partial refunds are supported; partial disputes are not.\n\n## Refunds\n\nBoth captures permit submitting full or partial refunds within **120 days of the original payment** through Dashboard or Refunds API. The November guide says processing is asynchronous and takes up to two days; refunds cannot be canceled. Check the Refund object's `status` or Dashboard, and use final `refund.updated` or `refund.failed` events. A failed refund returns the amount to the Stripe balance and requires another customer-refund method. Submission or `pending` is not success.\n\nThe November guide says a refund cancels remaining scheduled payments and returns amounts the customer already paid, less interest paid. The May guide instead says Affirm **pauses** the customer plan after initiation. Preserve this as a dated wording difference rather than equating the downstream states. May alone also states multiple partial refunds are possible, processing fees are not credited back, and an active dispute blocks refund creation; these are May-dated details not revalidated by omission in November.\n\n## Disputes and fraud\n\n> [!warning] Dated dispute-timing conflict\n> The May capture says customers have **no filing time limit**, Stripe withholds the disputed amount for resolution of up to **30 calendar days from creation**, and Affirm decides within **15 days of evidence submission**. The November capture instead says customers have **120 calendar days from purchase** to file and Affirm issues a decision within **60 calendar days of dispute creation**. The merchant evidence deadline is **15 calendar days from dispute opening/creation** in both. Use the November statement as the newer captured overview; keep the May terms visible as historical claims rather than treating the two timelines as compatible.\n\nOn a November-documented dispute, Stripe immediately withholds the disputed amount. Affirm can receive multiple disputes for one payment; each is an independent object requiring its own response and counted in metrics. Email, Dashboard, and `charge.dispute.created` notify the business. The Dashboard and Dispute `reason` and `evidence_due_by` fields identify reason and deadline. In Dashboard, **Needs response \u2192 Counter dispute** submits evidence or **Accept dispute** accepts loss; the Disputes API can submit evidence using Files API IDs. A merchant win returns the disputed amount to the Stripe balance; a customer win makes the balance charge permanent. These are documented outcomes, not a guarantee that submitted evidence wins.\n\nThe guide says customers authenticate in their Affirm account and Affirm covers losses from **customer fraud**. Stripe may ask the business on Affirm's behalf to stop or pause shipment before losses occur; comply promptly with that request. This is not a blanket protection for all dispute reasons.\n\n## Connect and transaction identity\n\nThe **May guide** specifies direct charges, destination charges, and separate charges and transfers. Platforms must enable Affirm and request the connected account's `affirm_payments` capability; correct connected-account MCC matters, and charge type can affect the merchant name displayed at Affirm redirect and merchant-of-record identity. November's generic Connect checkmark does not independently renew those specific configuration claims.\n\nThe **November guide** says the customer's bank statement shows Affirm plus a merchant identifier derived from business information or the configured descriptor suffix. Set a custom descriptor on the PaymentIntent before confirmation if desired. After payment completion, expand `latest_charge` on the PaymentIntent; `latest_charge.payment_method_details.affirm.transaction_id` is the Affirm transaction ID for customer support. The identifier is post-completion data, not evidence that a redirect or browser return succeeded.\n\n## Raw Sources\n\n- [[raw/stripe-payments-affirm-2026-11-07|2026-11-07 Affirm overview]] \u2014 full newer page capture (426 lines).\n- [[raw/stripe-affirm-2025|2026-05-06 Affirm overview]] \u2014 prior full page capture (242 lines); historical terms retained, including the original summary's italic-markup normalization and MP4 link note.\n",
+      "quotes": [
+        {
+          "text": "Private preview business location: GB",
+          "location": "raw/stripe-payments-affirm-2026-11-07.md:20"
+        },
+        {
+          "text": "Private preview presentment currency: GBP",
+          "location": "raw/stripe-payments-affirm-2026-11-07.md:181"
+        },
+        {
+          "text": "Customers have up to 120 calendar days from the date of purchase to file Affirm disputes.",
+          "location": "raw/stripe-payments-affirm-2026-11-07.md:315"
+        },
+        {
+          "text": "Affirm reviews your evidence and issues a final decision within 60 calendar days of dispute creation.",
+          "location": "raw/stripe-payments-affirm-2026-11-07.md:320"
+        },
+        {
+          "text": "After the payment completes, expand `latest_charge` on the PaymentIntent to retrieve the Affirm transaction ID from `latest_charge.payment_method_details.affirm.transaction_id`.",
+          "location": "raw/stripe-payments-affirm-2026-11-07.md:420"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "affirm-bnpl-method-row",
+            "target_path": "wiki/concepts/stripe-bnpl.md",
+            "update_kind": "durable_fact",
+            "anchor": "| Affirm | `affirm` | US, CA | $50\u2013$30k | Subscriptions, Terminal |",
+            "proposed_markdown": "| Affirm | `affirm` | US, CA; GB private preview | US USD 35\u201330k across eligible options; CA CAD 50\u201330k; GB preview GBP 50\u201330k | Single-use; no recurring payments, SetupIntents, or off-session use; Terminal listed |",
+            "quote_indexes": [
+              0,
+              1
+            ],
+            "warnings": [
+              "New raw/stripe-payments-affirm-2026-11-07.md:18-22,177-210,271-296,356-380; old raw/stripe-affirm-2025.md:16-22,32-54,63-75. The prior 'Subscriptions' cell is wrong; Invoicing/Customer Portal support does not imply subscription invoices. GB is private preview only."
+            ]
+          },
+          {
+            "update_id": "affirm-bnpl-financing",
+            "target_path": "wiki/concepts/stripe-bnpl.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Financing packages**: Standard (default) and Enhanced (more 0% APR tiers). Configurable in Dashboard; platforms excluded from 0% APR plans.",
+            "proposed_markdown": "**Financing packages**: Standard (default) and Enhanced (additional listed monthly 0% APR tiers); eligible businesses with Dashboard access can view or change the package, except platforms and connected accounts. The captured platform exclusion applies to Pay in 30 and monthly 0% APR plans; Pay in 4 is separately listed at 0% APR. GB Pay in 3 appears in the November Standard table but not Enhanced, so do not infer Enhanced GB availability.",
+            "quote_indexes": [
+              0,
+              1
+            ],
+            "warnings": [
+              "Corrects overbroad exclusion against raw/stripe-affirm-2025.md:105-149 and raw/stripe-payments-affirm-2026-11-07.md:212-260. November GB is private preview (raw/stripe-payments-affirm-2026-11-07.md:18-22,177-203)."
+            ]
+          },
+          {
+            "update_id": "affirm-bnpl-refunds",
+            "target_path": "wiki/concepts/stripe-bnpl.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Refunds**: up to 120 days; async processing (`refund.updated`/`refund.failed` webhooks); no fee credits returned.",
+            "proposed_markdown": "**Refunds**: full or partial refunds can be submitted within 120 days; November describes asynchronous processing of up to two days and remaining scheduled payments canceled, with final `Refund.status` or `refund.updated`/`refund.failed` determining completion. May alone says no processing-fee credit, multiple partial refunds and no refund creation during an open dispute, and describes the customer plan as paused rather than canceled; retain those as dated claims.",
+            "quote_indexes": [
+              2,
+              3
+            ],
+            "warnings": [
+              "November raw/stripe-payments-affirm-2026-11-07.md:287-311; May raw/stripe-affirm-2025.md:170-176. The refund plan-state wording differs; do not equate pause with cancel or infer successful refund from submission."
+            ]
+          },
+          {
+            "update_id": "affirm-bnpl-disputes",
+            "target_path": "wiki/concepts/stripe-bnpl.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Disputes**: no time limit for customer to file; 30-day resolution; 15-day merchant evidence window; Affirm covers fraud losses.",
+            "proposed_markdown": "**Disputes**: November capture says customers have 120 calendar days from purchase to file, merchants have 15 days from dispute creation to submit evidence, and Affirm issues a decision within 60 days of creation; repeated disputes are separate objects. **Dated conflict:** May capture said no customer filing limit, up to 30 days from creation for resolution and a decision within 15 days after evidence submission. Affirm's loss coverage is stated for customer fraud, with possible stop-or-pause-shipment requests; it is not a universal dispute guarantee. See [[source-stripe-affirm]].",
+            "quote_indexes": [
+              2,
+              3
+            ],
+            "warnings": [
+              "Reciprocal dated conflict: raw/stripe-affirm-2025.md:178-202 versus raw/stripe-payments-affirm-2026-11-07.md:313-354. Both give a 15-day merchant evidence window; do not confuse it with the 60-day November decision window."
+            ]
+          },
+          {
+            "update_id": "affirm-bnpl-source-route",
+            "target_path": "wiki/concepts/stripe-bnpl.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-affirm]] \u2014 Affirm deep-dive: financing packages, payment tiers, refunds, disputes, prohibited categories, Connect requirements",
+            "proposed_markdown": "- [[source-stripe-affirm]] \u2014 Affirm overview captured May and November 2026: domestic US/CA plus GB private preview, financing, eligibility/MCC rules, dated refund and dispute timing conflict, product limits and May Connect detail",
+            "quote_indexes": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "warnings": [
+              "Route reflects raw/stripe-payments-affirm-2026-11-07.md:18-45,165-210,271-380 and historical raw/stripe-affirm-2025.md:170-233; GB remains private preview."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-affirm-2026-11-07.md",
+      "raw_sha256": "2e804842d790cb11dc2587f34b31fc0a0f2b9fd49942b8c72383fc6db7892ef3",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-affirm-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 426
+      }
+    ],
+    "raw/stripe-affirm-2025.md": [
+      {
+        "start": 1,
+        "end": 242
+      }
+    ],
+    "wiki/sources/source-stripe-affirm.md": [
+      {
+        "start": 1,
+        "end": 47
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/fed3fca2a68c4ad5f27128aa/content.diff": [
+      {
+        "start": 1,
+        "end": 635
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-affirm/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 199
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 23
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 318,
+        "end": 328
+      },
+      {
+        "start": 742,
+        "end": 751
+      }
+    ],
+    "wiki/concepts/stripe-bnpl.md": [
+      {
+        "start": 1,
+        "end": 61
+      },
+      {
+        "start": 231,
+        "end": 257
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "Customers can file a dispute after the date of purchase and there isn\u2019t a time limitation for filing.",
+      "location": "raw/stripe-affirm-2025.md:182"
+    },
+    {
+      "text": "which can take a maximum of 30 calendar days from dispute creation.",
+      "location": "raw/stripe-affirm-2025.md:190"
+    },
+    {
+      "text": "Affirm makes a decision within 15 calendar days of evidence submission.",
+      "location": "raw/stripe-affirm-2025.md:202"
+    },
+    {
+      "text": "Affirm pauses the customer\u2019s payment plan",
+      "location": "raw/stripe-affirm-2025.md:172"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/affirm, the complete November capture describes single-use domestic B2C Affirm financing for US/CA merchants and customers, with GB/GBP only in private preview. The customer redirects to Affirm's site or installed app, selects and authorizes a plan within 12 hours, and Affirm collects repayment; Stripe's provisional access, immediate confirmation, upfront availability less fees and up-to-T+2 settlement are distinct claims (new raw lines 5-22,165-216,385-420). Website, local-currency pricing, actual MCC and account review can constrain eligibility; dynamic Checkout/Payment Element filtering uses shipping country then client IP, while explicit payment_method_types needs merchant-side eligibility filtering (new raw lines 35-45,182-186,262-269). The capture excludes recurring, SetupIntents, setup_future_usage and off-session payments while listing manual capture (new raw lines 271-296,356-380). The May capture covered US/CA and had different dispute and refund-plan wording (old raw lines 6-22,170-202). source-stripe-affirm.md needs those November qualifications, plus corrections to its platform APR and fraud shorthand.",
+    "Q2": "At https://docs.stripe.com/payments/affirm, November materially adds GB/GBP private preview, website and MCC eligibility detail, explicit product/API and capture exclusions, up-to-two-day asynchronous refund processing, remaining-payment cancellation, a transaction-ID locator, and a 120-day filing/60-day decision dispute timetable (new raw lines 18-45,165-210,271-320,356-420). The reorganized tables and customer-flow layout are presentation, not proof of account access or a completed transaction. source-stripe-affirm.md must retain May's dated US/CA package context, Connect affirm_payments/MCC/charge-type requirements and no-fee-credit/open-dispute refund statements (old raw lines 6-22,105-149,170-176,215-233). Its May no-filing-limit/30-day resolution and paused-plan claims conflict with November's 120-day/60-day and canceled-remaining-payments statements (old raw lines 172-202; new raw lines 299-320). Both give 15 days for merchant evidence, a distinct deadline. Platforms are excluded from Pay in 30 and monthly 0% APR offers, not every 0% APR plan. UK remains preview, Enhanced UK Pay in 3 is unproven, and a redirect, authorization, refund submission, evidence submission, or browser return does not establish success, settlement, refund completion or a dispute win."
+  }
+}

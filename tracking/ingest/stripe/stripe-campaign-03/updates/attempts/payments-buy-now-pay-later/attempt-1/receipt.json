@@ -1,0 +1,261 @@
+{
+  "job_id": "payments-buy-now-pay-later",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-bnpl-overview.md": {
+      "job_id": "payments-buy-now-pay-later",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Buy Now, Pay Later Overview\"\ntype: source\ndate_ingested: 2026-05-06\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/buy-now-pay-later\"\nraw_files:\n  - \"stripe-payments-buy-now-pay-later-2026-11-07.md\"\n  - \"stripe-bnpl-overview-2025.md\"\ntags: [stripe, bnpl, buy-now-pay-later, klarna, affirm, afterpay, installments, payments]\n---\n\n## Overview\n\nStripe's 7 November 2026 overview describes buy now, pay later (BNPL) methods that let a buyer repay a provider in installments while the merchant is described as paid immediately and in full. The buyer chooses a BNPL service, creates or logs into its account, accepts or declines the repayment terms, then returns to the merchant site. This is a documented checkout flow, not evidence of an individual buyer's approval, a successful payment, or a merchant payout. Subscription-schedule installment plans are a separate option mentioned by the page.\n\n## Key takeaways\n\n- Dynamic payment methods are enabled by default and configured in Dashboard. Stripe displays relevant *eligible* methods for the buyer through standard Checkout, including Stripe-hosted or embedded pages, Elements checkout, and a hosted invoice page. A custom payments form can list methods manually using the method-specific guides. Display does not establish account access or buyer approval.\n- The **product support** matrix has eleven named BNPL methods: Affirm, Afterpay/Clearpay, Alma, Billie, Klarna, Kriya, Mondu, Scalapay, SeQura, Sunbit, and Zip. Its Connect column says Supported for all eleven. The separate May 2026 Kriya, Mondu, SeQura, and Scalapay method captures say Connect **No**. The captures do not reconcile this scope conflict; do not treat the overview cell as universal Connect eligibility.\n- The **API support** matrix has only ten rows; Scalapay is absent. All *listed* methods show PaymentIntents support and a redirect requirement. Only Klarna shows SetupIntents support. Manual capture is unsupported for Sunbit and Zip; the other listed rows show support. This matrix alone establishes no Scalapay PaymentIntent, setup, manual capture, or redirect behavior.\n- The November API matrix marks `setup_future_usage` supported for Billie, Klarna, Kriya, Mondu, and Sunbit. It marks SeQura unsupported, whereas the May matrix marked SeQura supported. Sunbit was supported in both snapshots but was omitted from this source's former summary. The table footnote says non-card/bank-debit methods either do not support this parameter or support only `off_session`; the matrix does not promise every session mode.\n- The November product matrix changes Affirm Subscriptions from May's supported-with-`send_invoice` to Unsupported, and Customer Portal from Unsupported to Supported. Affirm Invoicing remains `send_invoice` only; Terminal remains Supported. The prior May Subscriptions cell is dated history, not a November entitlement.\n- Klarna Checkout now has a buyer-country/payment-option qualification instead of the former generic Checkout subscription/setup footnotes. Klarna Subscriptions remains Supported, while Terminal is **Private preview** rather than May's Unsupported. Its prior Subscriptions `send_invoice` marker disappears; that omission does not prove automatic collection or any recurring option for every country/buyer. Express Checkout Element support excludes saving during payment via `setup_future_usage`.\n- Mondu, Scalapay, and SeQura gain Mobile Payment Element support in the November product table. SeQura Invoicing becomes Supported only for `send_invoice`. Afterpay/Clearpay Invoicing remains Private preview. Matrix labels describe the captured documentation, not a merchant account's activation.\n\n## Detail locators\n\n- November product rows and footnotes: new raw lines 39-55. May product rows and footnotes: old raw lines 38-54. Checkout footnotes 1 and 2 still exclude subscription and setup modes for methods carrying them; Klarna uses November footnote 5 instead.\n- November API rows and footnotes: new raw lines 57-72. May API rows and footnotes: old raw lines 56-71. The redirect column covers its ten rows; confirmation may require `return_url`.\n- The transaction table separately lists Affirm (Canada/US; 50 USD minimum and up to 30,000 USD or local equivalent), Afterpay/Clearpay (five countries; 1\u20134,000 USD or local equivalent), Klarna (country and option dependent, 10 USD minimum or local equivalent and variable maximum), Meses sin intereses (Mexico, 3\u201324 billing cycles, 100 MXN per month minimum), and Zip (AU/US with product-specific limits). Affirm's credit limit is 20,000 USD/CAD; a transaction up to 30,000 USD/CAD requires a buyer down payment. These are table terms, not an offer to a particular buyer. New raw lines 74-91; old raw lines 73-91.\n- The Payment Method Messaging Element can present BNPL messaging on product and cart pages. It does not prove the buyer can select or complete a method. New raw lines 93-95; old raw lines 93-95.\n\n## Related\n\n- [[stripe]] \u2014 company\n- [[stripe-bnpl]] \u2014 BNPL concept and method-specific routes\n\n## Raw Sources\n\n- [[raw/stripe-payments-buy-now-pay-later-2026-11-07|Stripe BNPL overview, captured 2026-11-07]] \u2014 full current captured page\n- [[raw/stripe-bnpl-overview-2025|Stripe BNPL overview, captured 2026-05-06]] \u2014 prior matched capture\n- [[raw/stripe-kriya-2025|Kriya method capture, 2026-05-06]]; [[raw/stripe-mondu-2025|Mondu method capture, 2026-05-06]]; [[raw/stripe-sequra-2025|SeQura method capture, 2026-05-06]]; [[raw/stripe-scalapay-2025|Scalapay method capture, 2026-05-06]] \u2014 method-specific Connect-No conflict at lines 36-38\n",
+      "quotes": [
+        {
+          "text": "Stripe handles the logic for dynamically displaying the most relevant eligible payment methods to each customer.",
+          "location": "raw/stripe-payments-buy-now-pay-later-2026-11-07.md:21"
+        },
+        {
+          "text": "| [Affirm](https://docs.stripe.com/payments/affirm.md) | \u2713 Supported | \u2713 Supported 1,2 | \u2713 Supported | \u2713 Supported | - Unsupported | \u2713 Supported | - Unsupported | \u2713 Supported 4 | \u2713 Supported | \u2713 Supported |",
+          "location": "raw/stripe-payments-buy-now-pay-later-2026-11-07.md:43"
+        },
+        {
+          "text": "| [Klarna](https://docs.stripe.com/payments/klarna.md) | \u2713 Supported | \u2713 Supported 5 | \u2713 Supported | \u2713 Supported | \u2713 Supported3 | \u2713 Supported | \u2713 Supported | \u2713 Supported 4 | - Unsupported | (Private preview) |",
+          "location": "raw/stripe-payments-buy-now-pay-later-2026-11-07.md:47"
+        },
+        {
+          "text": "| [SeQura](https://docs.stripe.com/payments/sequra.md) | `sequra` | \u2713 Supported | - Unsupported | \u2713 Supported | - Unsupported | Yes |",
+          "location": "raw/stripe-payments-buy-now-pay-later-2026-11-07.md:68"
+        },
+        {
+          "text": "5 Availability varies by buyer country and Klarna payment option.",
+          "location": "raw/stripe-payments-buy-now-pay-later-2026-11-07.md:55"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "bnpl-overview-definition-2026",
+            "target_path": "wiki/concepts/stripe-bnpl.md",
+            "update_kind": "durable_fact",
+            "anchor": "Stripe supports 11 buy now, pay later (BNPL) payment methods. Merchants are paid immediately and in full; customers pay nothing or a portion at purchase time and repay in installments. All BNPL methods require a redirect.",
+            "proposed_markdown": "Stripe's 7 November 2026 overview lists 11 buy now, pay later (BNPL) methods. It describes merchants as paid immediately and in full while customers pay nothing or a portion at purchase time and repay a provider in installments. The overview's **ten-row API table** marks all listed methods as requiring redirect; Scalapay is absent, so the table does not establish a redirect or PaymentIntent claim for it. Buyer selection and return to the merchant site do not establish approval or completed payment. See [[source-stripe-bnpl-overview]].",
+            "quote_indexes": [
+              0,
+              3
+            ],
+            "warnings": [
+              "New raw lines 11,32-37,39-53,59-72; old raw lines 10,31-36,38-52,58-71."
+            ]
+          },
+          {
+            "update_id": "bnpl-overview-affirm-row-2026",
+            "target_path": "wiki/concepts/stripe-bnpl.md",
+            "update_kind": "durable_fact",
+            "anchor": "| Affirm | `affirm` | US, CA | $50\u2013$30k | Subscriptions, Terminal |",
+            "proposed_markdown": "| Affirm | `affirm` | US, CA | $50\u2013$30k | Terminal; November overview marks Subscriptions Unsupported and Customer Portal Supported (May overview had Subscriptions with `send_invoice` and Portal Unsupported) |",
+            "quote_indexes": [
+              1
+            ],
+            "warnings": [
+              "New raw line 43 and footnote line 55; old raw lines 42,54. This is the overview product cell, not a universal Affirm entitlement."
+            ]
+          },
+          {
+            "update_id": "bnpl-overview-sequra-row-2026",
+            "target_path": "wiki/concepts/stripe-bnpl.md",
+            "update_kind": "durable_fact",
+            "anchor": "| SeQura | `sequra` | \u2014 | \u2014 | setup_future_usage |",
+            "proposed_markdown": "| SeQura | `sequra` | \u2014 | \u2014 | November overview marks `setup_future_usage` Unsupported (May overview marked Supported); Invoicing `send_invoice` only |",
+            "quote_indexes": [
+              3,
+              4
+            ],
+            "warnings": [
+              "New raw lines 51,55,68; old raw lines 50,54,67."
+            ]
+          },
+          {
+            "update_id": "bnpl-overview-sunbit-row-2026",
+            "target_path": "wiki/concepts/stripe-bnpl.md",
+            "update_kind": "durable_fact",
+            "anchor": "| Sunbit | `sunbit` | \u2014 | \u2014 | No manual capture |",
+            "proposed_markdown": "| Sunbit | `sunbit` | \u2014 | \u2014 | `setup_future_usage` Supported; no manual capture (both May and November API tables) |",
+            "quote_indexes": [
+              3
+            ],
+            "warnings": [
+              "New raw line 69; old raw line 68. Baseline omission from concept, not a November change."
+            ]
+          },
+          {
+            "update_id": "bnpl-overview-api-2026",
+            "target_path": "wiki/concepts/stripe-bnpl.md",
+            "update_kind": "durable_fact",
+            "anchor": "All BNPL methods support:\n\n- PaymentIntents \u2713\n- Redirect required \u2713\n\n**Manual capture**: Affirm, Afterpay, Alma, Billie, Klarna, Kriya, Mondu, SeQura \u2713 (Sunbit, Zip \u2717)\n\n**SetupIntents**: Klarna only\n\n**setup_future_usage**: Billie, Klarna, Kriya, Mondu, SeQura\n\n**Express Checkout Element**: Klarna only (no `setup_future_usage` when using ECE)",
+            "proposed_markdown": "The November 2026 overview's API matrix has ten rows, omitting Scalapay. Its listed methods show PaymentIntents support and redirect required; this is not an all-eleven claim. Manual capture is supported for Affirm, Afterpay/Clearpay, Alma, Billie, Klarna, Kriya, Mondu, and SeQura, and unsupported for Sunbit and Zip. Klarna alone shows SetupIntents support. `setup_future_usage` is supported for Billie, Klarna, Kriya, Mondu, and Sunbit; SeQura changed from May Supported to November Unsupported. The parameter's session support remains qualified by the API table footnote. Klarna alone shows Express Checkout Element support in the product matrix, where saving during payment via `setup_future_usage` is excluded. See [[source-stripe-bnpl-overview]].\n\n**Connect conflict**: Both overview product matrices mark all eleven methods Supported on Connect, while the May method-specific captures for Kriya, Mondu, SeQura, and Scalapay say Connect No. This is an unresolved dated source conflict, not an established account entitlement; see [[source-stripe-bnpl-overview]] and the individual method sources.",
+            "quote_indexes": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "New raw lines 41-55,59-72; old raw lines 40-54,58-71; raw/stripe-kriya-2025.md, raw/stripe-mondu-2025.md, raw/stripe-sequra-2025.md, raw/stripe-scalapay-2025.md lines 36-38. Do not infer Scalapay API coverage."
+            ]
+          },
+          {
+            "update_id": "bnpl-overview-kriya-connect-2026",
+            "target_path": "wiki/concepts/stripe-bnpl.md",
+            "update_kind": "durable_fact",
+            "anchor": "**B2B only** \u2014 UK only, GBP only. **No Connect support** \u2014 only BNPL method without it.",
+            "proposed_markdown": "**B2B only** \u2014 UK only, GBP only. Its May method-specific capture says **Connect No**, as do May Mondu, SeQura, and Scalapay captures. Both overview product tables mark Connect Supported for all eleven methods; the scope conflict remains unresolved. See [[source-stripe-bnpl-overview]].",
+            "quote_indexes": [
+              1,
+              2
+            ],
+            "warnings": [
+              "Kriya May raw lines 36-38 and Mondu/SeQura/Scalapay May raw lines 36-38; old overview raw lines 40-52 and new overview raw lines 41-53."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-buy-now-pay-later-2026-11-07.md",
+      "raw_sha256": "1e3dee3e052f4edd7f130e5297e254fef697c2820de92d68b9367632e4476b50",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-buy-now-pay-later-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 55
+      },
+      {
+        "start": 56,
+        "end": 95
+      }
+    ],
+    "raw/stripe-bnpl-overview-2025.md": [
+      {
+        "start": 1,
+        "end": 55
+      },
+      {
+        "start": 56,
+        "end": 95
+      }
+    ],
+    "wiki/sources/source-stripe-bnpl-overview.md": [
+      {
+        "start": 1,
+        "end": 37
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/166e04e3d94f9ad950a494c5/content.diff": [
+      {
+        "start": 1,
+        "end": 60
+      },
+      {
+        "start": 61,
+        "end": 118
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 12
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 318,
+        "end": 324
+      },
+      {
+        "start": 744,
+        "end": 749
+      }
+    ],
+    "wiki/concepts/stripe-bnpl.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 245
+      }
+    ],
+    "wiki/sources/source-stripe-kriya.md": [
+      {
+        "start": 1,
+        "end": 19
+      }
+    ],
+    "wiki/sources/source-stripe-mondu.md": [
+      {
+        "start": 1,
+        "end": 19
+      }
+    ],
+    "wiki/sources/source-stripe-sequra.md": [
+      {
+        "start": 1,
+        "end": 19
+      }
+    ],
+    "wiki/sources/source-stripe-scalapay.md": [
+      {
+        "start": 1,
+        "end": 19
+      }
+    ],
+    "raw/stripe-kriya-2025.md": [
+      {
+        "start": 1,
+        "end": 171
+      }
+    ],
+    "raw/stripe-mondu-2025.md": [
+      {
+        "start": 1,
+        "end": 140
+      },
+      {
+        "start": 141,
+        "end": 261
+      }
+    ],
+    "raw/stripe-sequra-2025.md": [
+      {
+        "start": 1,
+        "end": 170
+      },
+      {
+        "start": 171,
+        "end": 329
+      }
+    ],
+    "raw/stripe-scalapay-2025.md": [
+      {
+        "start": 1,
+        "end": 170
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "\u2713 Supported 4",
+      "location": "raw/stripe-bnpl-overview-2025.md:42"
+    },
+    {
+      "text": "| [SeQura](https://docs.stripe.com/payments/sequra.md)",
+      "location": "raw/stripe-bnpl-overview-2025.md:67"
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/buy-now-pay-later, new raw lines 9-38 establish provider-managed installments, a described immediate full merchant payment, default Dashboard-configured dynamic display to eligible buyers, and a checkout path through provider selection, account sign-in, repayment-term acceptance or decline, and return. Return is not approval, payment success, or observed payout. New raw lines 39-95 give eleven product rows but only ten API rows, excluding Scalapay; those listed show PaymentIntents and redirect. old raw lines 8-36 and 38-95 provide the matched May baseline. source-stripe-bnpl-overview.md retained stale Affirm Subscriptions and SeQura future-use claims, omitted Sunbit's baseline future-use support, and overstated all-eleven API coverage. The proposed source records dated cells, limits, and the individual method Connect conflict without asserting account entitlement.",
+    "Q2": "For https://docs.stripe.com/payments/buy-now-pay-later, the substantive deltas are Affirm's Subscriptions and Customer Portal cells, Klarna's buyer-country/payment-option Checkout condition and Terminal private preview, Mondu/Scalapay/SeQura mobile support, SeQura send_invoice Invoicing, and SeQura setup_future_usage becoming unsupported (new raw lines 41-72; old raw lines 40-71). Table spacing, list numbering, and the Elements quickstart URL change are presentation or navigation. May cells remain dated in source-stripe-bnpl-overview.md and its concept route. Both overview Connect tables conflict with May Kriya/Mondu/SeQura/Scalapay method captures, so the proposed reciprocal concept warning preserves that unresolved scope. The disappeared Klarna subscription footnote does not prove automatic collection; private preview is not general access. Eligibility, buyer approval, payment outcome, and merchant payout are distinct from a displayed option or browser return."
+  }
+}

@@ -1,0 +1,201 @@
+{
+  "job_id": "payments-au-becs-debit-accept-a-payment",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-au-becs-accept-payment.md": {
+      "job_id": "payments-au-becs-debit-accept-a-payment",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Accept an Australia BECS Direct Debit Payment\"\ntype: source\ndate_ingested: 2026-05-02\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/au-becs-debit/accept-a-payment\"\nraw_files:\n  - \"stripe-au-becs-accept-payment-2025.md\"\ntags: [stripe, au-becs, becs, australia, aud, checkout, elements, ios, android, react-native, payment-intents]\n---\n\n## Overview\n\nThis [[stripe]] integration guide covers accepting AU BECS Direct Debit payments through Checkout, web Elements with either the Checkout Sessions API or Payment Intents API, iOS, Android, and React Native. The detailed instructions below come from the full capture fetched **2026-05-02**. The **2026-11-07** capture at the same canonical URL is a variant index only; it lists six parameterized routes but does not reconfirm their instructions, prerequisites, SDK symbols, or payment outcomes. See [[stripe-au-becs-debit]] for the payment-method concept.\n\n## Key takeaways from the 2026-05-02 full capture\n\n- **Checkout:** The guide identifies Australia as the customer geography, `aud` as both supported and presentment currency, and payment, setup, and subscription modes. All Checkout line-item Prices must use `aud`. The manual configuration example includes `au_becs_debit` in `payment_method_types`; the guide also points to dynamic payment methods. Hosted and `embedded_page` examples are separate. See old raw lines 8-100.\n- **Checkout Sessions API with Elements:** The server creates a Checkout Session with `ui_mode: 'elements'`, an AUD line item, and a `return_url`, then passes its client secret to the browser. The HTML/JS path uses `initCheckoutElementsSdk`, `loadActions`, a Payment Element, and Checkout's `actions.confirm()`; the React path uses `CheckoutElementsProvider` and `useCheckoutElements`. A valid customer email is required to complete the Session, but it can be supplied through `updateEmail`, Session creation's `customer_email`/`customer_account`/`customer`, or a previously validated email at confirmation. See old raw lines 178-180, 239-307, 358-455, 543-665.\n- **Web Payment Intents API with Elements:** This is a distinct route. The Payment Element collects details on the client; the server determines the amount and creates an AUD PaymentIntent, optionally listing `au_becs_debit` manually, and returns its client secret. The shown client path calls `stripe.confirmPayment` with a `return_url`; a return or redirect alone does not establish the final debit result. See old raw lines 1752-1758, 1819-1929, 2029-2167, 2310-2337.\n- **Mobile PaymentIntent routes:** iOS, Android, and React Native collect bank details and mandate acknowledgement on the client, create an AUD PaymentIntent on the server, and confirm on the client. The May guide's iOS prose calls the form `STPAUBECSFormView`, while its Swift code and delegate use `STPAUBECSDebitFormView`; verify the SDK symbol before implementing. The Android prose/layout use `BecsDebitWidget`, and the prose names `PaymentLauncher.confirm`. The Android example instead passes `ConfirmSetupIntentParams` and `setupIntentClientSecret` inside a PaymentIntent flow, while its testing text names `Stripe#confirmPayment()`; the guide does not resolve that executable-call inconsistency. React Native names `AuBECSDebitForm` and `useConfirmPayment().confirmPayment`. See old raw lines 721-735, 826-894, 952-1025, 1080-1094, 1160-1182, 1322-1357, 1421, 1443-1455, 1527-1531, 1556-1562, 1642-1679.\n- **Saving for reuse and customer identity:** The PaymentIntent branches describe `setup_future_usage: 'off_session'` for reuse, and say BECS only accepts that value for this parameter. Their examples distinguish `customer_account` for a customer-configured Account v2 from `customer` for Customer v1. The May guide says Accounts v2 is generally available for Connect users and public preview for other Stripe users, with preview version selection for the latter; it does not establish any particular account's access. See old raw lines 193-205, 890-950, 1260-1320, 1560-1618, 1773-1787.\n- **Delayed finality and mandates:** In the May PaymentIntent routes, BECS is delayed notification; a PaymentIntent typically remains `processing` for two business days after daily submission to the BECS network. `payment_intent.processing` means submission, while `payment_intent.succeeded` supports fulfillment and `payment_intent.payment_failed` reports decline. Final `debit_not_authorized`, `account_closed`, and `no_account` failures inactivate the mandate; `refer_to_customer` leaves it active. The guide recommends webhooks for final success or failure. After confirming the PaymentIntent, it tells iOS and Android implementers to share the Mandate URL; retrieval differs for API version 2022-08-01 or older. See old raw lines 1014-1054, 1377-1417, 1699-1726, 2310-2337.\n- **Debit date:** The optional `target_date` is three to fifteen days in the future. A weekend, holiday, nonbusiness day, or date fewer than three business days away can shift debit to the next available business day. It operates on a best-effort basis and banks may process on different dates. The PaymentIntent section separately describes cancellation up to three business days before the configured date. See old raw lines 135-146, 708-719, 2358-2369.\n\n## Test accounts in the 2026-05-02 capture\n\nBSB `000000` pairs with these test accounts and tokens. The first success case is a `processing` \u2192 `succeeded` transition, not a general promise of immediate live success. The guide describes immediate sandbox webhook outcomes for test numbers, while live events follow the underlying success or failure delays. See old raw lines 114-125, 706, 1073, 1436, 2356.\n\n| Account | Token | Documented test result |\n| --- | --- | --- |\n| `000123456` | `pm_auBecsDebit_success` | PaymentIntent `processing` \u2192 `succeeded`; mandate stays `active` |\n| `900123456` | `pm_auBecsDebit_successDelayed` | `processing` \u2192 `succeeded` after three minutes; mandate stays `active` |\n| `111111113` | `pm_auBecsDebit_accountClosed` | `account_closed`; mandate becomes `inactive` |\n| `111111116` | `pm_auBecsDebit_noAccount` | `no_account`; mandate becomes `inactive` |\n| `222222227` | `pm_auBecsDebit_referToCustomer` | `refer_to_customer`; mandate stays `active` |\n| `922222227` | `pm_auBecsDebit_referToCustomerDelayed` | `refer_to_customer` after three minutes; mandate stays `active` |\n| `333333335` | `pm_auBecsDebit_debitNotAuthorized` | `debit_not_authorized`; mandate becomes `inactive` |\n| `666666660` | `pm_auBecsDebit_dispute` | `succeeded`, then an immediate dispute in the test scenario |\n| `343434343` | `pm_auBecsDebit_exceedsWeeklyLimit` | `charge_exceeds_source_limit` |\n| `121212121` | `pm_auBecsDebit_exceedsTransactionLimit` | `charge_exceeds_transaction_limit` |\n\n## Detail locators\n\n- May Checkout compatibility, modes, manual/dynamic method choices, refund and dispute notes: old raw lines 8-49, 127-146.\n- May Checkout Elements HTML/JS versus React setup and historical Stripe.js/package minimums: old raw lines 239-349, 358-665.\n- May iOS form-name disagreement and mandate/API-version detail: old raw lines 729-735, 826-884, 952-1025.\n- May Android widget and confirmation-prose/example disagreement: old raw lines 1088-1094, 1160-1182, 1322-1357, 1421.\n- May React Native collection/confirmation: old raw lines 1443-1455, 1527-1531, 1642-1679.\n- May web Payment Intents API, including Payment Element and server/client boundary: old raw lines 1752-1758, 1819-1929, 2029-2167.\n- May delayed outcome, mandate status, and sandbox/live distinction: old raw lines 1027-1054, 1390-1436, 1699-1745, 2310-2356.\n\n## Related\n\n- [[stripe-au-becs-debit]] \u2014 AU BECS method, mandates, settlement, disputes, and other integration routes.\n- [[source-stripe-au-becs-set-up-payment]] \u2014 save bank details for later payments.\n\n## Raw Sources\n\n- [[raw/stripe-au-becs-accept-payment-2025|Full accept-payment guide fetched 2026-05-02]] \u2014 factual basis for the dated integration and test details above.\n\n## Related raw API references\n\n- [[raw/stripe-payments-au-becs-debit-accept-a-payment-2026-11-07|2026-11-07 variant index, navigation only]] \u2014 Checkout; Elements with Checkout Sessions API or Payment Intents API; iOS, Android, and React Native. The linked variant bodies were not captured or read here.\n",
+      "quotes": [
+        {
+          "text": "Learn to accept Australia BECS Direct Debit payments.",
+          "location": "raw/stripe-payments-au-becs-debit-accept-a-payment-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-au-becs-debit-accept-a-payment-2026-11-07.md:11"
+        },
+        {
+          "text": "[Checkout](https://docs.stripe.com/payments/au-becs-debit/accept-a-payment.md?payment-ui=checkout)",
+          "location": "raw/stripe-payments-au-becs-debit-accept-a-payment-2026-11-07.md:13"
+        },
+        {
+          "text": "[Payment Intents API](https://docs.stripe.com/payments/au-becs-debit/accept-a-payment.md?payment-ui=elements&api-integration=paymentintents)",
+          "location": "raw/stripe-payments-au-becs-debit-accept-a-payment-2026-11-07.md:16"
+        },
+        {
+          "text": "[React Native](https://docs.stripe.com/payments/au-becs-debit/accept-a-payment.md?payment-ui=mobile&platform=react-native)",
+          "location": "raw/stripe-payments-au-becs-debit-accept-a-payment-2026-11-07.md:20"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "au_becs_accept_checkout_dated",
+            "target_path": "wiki/concepts/stripe-au-becs-debit.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Checkout**: `payment_method_types: ['au_becs_debit']`, `aud` currency required. Supports payment/setup/subscription modes. Optional `target_date` (3\u201315 days, best-effort).",
+            "proposed_markdown": "**Checkout (2026-05-02 full guide)**: Australian customer geography and `aud` prices for every line item; payment, setup, and subscription modes. The guide shows manual `payment_method_types: ['au_becs_debit']` as well as a dynamic-payment-method route. Optional `target_date` is 3\u201315 days ahead and best effort; nonbusiness dates or dates fewer than three business days out can shift the debit. See [[source-stripe-au-becs-accept-payment]].",
+            "quote_indexes": [
+              0,
+              1,
+              2
+            ],
+            "warnings": [
+              "Old factual authority: raw/stripe-au-becs-accept-payment-2025.md:8-49,135-146. New index raw/stripe-payments-au-becs-debit-accept-a-payment-2026-11-07.md:9-20 is navigation only."
+            ]
+          },
+          {
+            "update_id": "au_becs_accept_mobile_and_web_routes",
+            "target_path": "wiki/concepts/stripe-au-becs-debit.md",
+            "update_kind": "durable_fact",
+            "anchor": "**iOS**: `STPAUBECSFormView` collects name/email/BSB/account + displays BECS Terms. Confirm with `STPPaymentHandler.confirmPayment`. Share mandate URL after confirmation.\n\n**Android**: `AUBECSDirectDebitWidget` + `stripe.confirmAuBecsDebitPayment()`.",
+            "proposed_markdown": "**Web Elements (2026-05-02 full guide)**: Two distinct routes are documented: Checkout Sessions API with a server-created Session, client secret and Checkout Elements confirmation; and Payment Intents API with a server-created PaymentIntent, Payment Element and client `stripe.confirmPayment`.\n\n**iOS (2026-05-02 full guide)**: The form collects name, email, BSB and account number and displays BECS Terms; the prose names `STPAUBECSFormView`, while Swift code/delegate name `STPAUBECSDebitFormView`. The guide uses `STPPaymentHandler.confirmPayment` and says to share the mandate URL after confirmation. Verify the SDK symbol before implementation.\n\n**Android (2026-05-02 full guide)**: Prose/layout name `BecsDebitWidget`. The prose names `PaymentLauncher.confirm`, but the Kotlin example passes SetupIntent parameters inside a PaymentIntent section and testing text names `Stripe#confirmPayment()`. The guide does not establish a consistent executable call; see [[source-stripe-au-becs-accept-payment]].\n\n**React Native (2026-05-02 full guide)**: `AuBECSDebitForm` collects details and mandate acknowledgement; its shown client path calls `useConfirmPayment().confirmPayment` using a server-created PaymentIntent client secret. `processing` is distinct from final `succeeded`.",
+            "quote_indexes": [
+              1,
+              3,
+              4
+            ],
+            "warnings": [
+              "Old factual authority: raw/stripe-au-becs-accept-payment-2025.md:239-307,609-665,729-735,826-884,952-1025,1088-1094,1160-1182,1322-1357,1421,1443-1455,1527-1531,1642-1679,1752-1758,2029-2167. New index lines 9-20 only routes to unread variants.",
+              "Existing Android concept text says AUBECSDirectDebitWidget and stripe.confirmAuBecsDebitPayment(), unsupported by the paired full guide; the iOS prose/code names conflict within that guide."
+            ]
+          },
+          {
+            "update_id": "au_becs_accept_source_route",
+            "target_path": "wiki/concepts/stripe-au-becs-debit.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-au-becs-accept-payment]] \u2014 integration guide: Checkout + Elements + iOS + Android, 10 test accounts, target_date",
+            "proposed_markdown": "- [[source-stripe-au-becs-accept-payment]] \u2014 2026-05-02 full accept-payment guide: Checkout, Elements via Checkout Sessions or Payment Intents, iOS, Android, React Native, test accounts and target_date; 2026-11-07 capture provides variant navigation only",
+            "quote_indexes": [
+              1,
+              3,
+              4
+            ],
+            "warnings": [
+              "Old factual authority: raw/stripe-au-becs-accept-payment-2025.md:8-10,156-158,721-723,1080-1082,1443-1445,1752-1754. New navigation: raw/stripe-payments-au-becs-debit-accept-a-payment-2026-11-07.md:9-20."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-au-becs-debit-accept-a-payment-2026-11-07.md",
+      "raw_sha256": "e3e60dc0f00b668aa22299ebc018c6d216a48c1f8a238c49e08585631db091ae",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-au-becs-debit-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 20
+      }
+    ],
+    "raw/stripe-au-becs-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 1200
+      },
+      {
+        "start": 1201,
+        "end": 1600
+      },
+      {
+        "start": 1601,
+        "end": 2000
+      },
+      {
+        "start": 2001,
+        "end": 2374
+      }
+    ],
+    "wiki/sources/source-stripe-au-becs-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 61
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/6eea5abfefe43562fcb726cd/content.diff": [
+      {
+        "start": 1,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 1200
+      },
+      {
+        "start": 1201,
+        "end": 1600
+      },
+      {
+        "start": 1601,
+        "end": 2000
+      },
+      {
+        "start": 2001,
+        "end": 2382
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 7
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 250,
+        "end": 262
+      },
+      {
+        "start": 735,
+        "end": 745
+      }
+    ],
+    "wiki/concepts/stripe-au-becs-debit.md": [
+      {
+        "start": 1,
+        "end": 102
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-au-becs-debit-accept-a-payment/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 198
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "**Supported currencies**: `aud`",
+      "location": "raw/stripe-au-becs-accept-payment-2025.md:26"
+    },
+    {
+      "text": "The PaymentIntent status transitions from `processing` to `succeeded`. The mandate status remains `active`.",
+      "location": "raw/stripe-au-becs-accept-payment-2025.md:116"
+    },
+    {
+      "text": "Use [BecsDebitWidget](https://stripe.dev/stripe-android/payments-core/com.stripe.android.view/-becs-debit-widget/index.html), Stripe\u2019s prebuilt BECS payment details collection UI",
+      "location": "raw/stripe-au-becs-accept-payment-2025.md:1088"
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/au-becs-debit/accept-a-payment, the full November capture establishes the page\u2019s identity and six selectable variant routes\u2014Checkout, Elements Checkout Sessions, Elements Payment Intents, iOS, Android and React Native\u2014but no variant-specific prerequisites, SDK symbols, or payment states (new raw lines 5-20). The 2026-05-02 full guide establishes dated Australian geography and AUD prices, Session versus PaymentIntent server objects, client collection/confirmation and mandate acknowledgement, conditional Account v2 versus Customer v1 reuse, and delayed processing before success or failure (old raw lines 18-49,193-205,239-243,890-950,1027-1054,1443-1455,1752-1758). The mapped source-stripe-au-becs-accept-payment.md currently omits the React Native and separate web Payment Intents routes, gives unsupported Android names, and labels a processing-to-succeeded test immediate (source lines 13-48).",
+    "Q2": "For https://docs.stripe.com/payments/au-becs-debit/accept-a-payment, the observed November change is a navigation-only capture: the diff removes the May full body and adds six variant links, without proving a product change or removal (new raw lines 9-20; diff lines 3-20,2375-2382). source-stripe-au-becs-accept-payment.md must retain May 2026 AUD/mode, server/client, customer identity, historical UI/SDK-version, best-effort target_date, delayed status and sandbox/live test facts as dated (old raw lines 18-49,197-205,318-349,1027-1054,135-146,2356-2369). Its Android widget and call conflict with the paired guide, whose own confirmation prose and example disagree; iOS prose and Swift symbol names also disagree (old raw lines 729,840,1088-1094,1322-1357,1421). A redirect, client confirmation, processing state or sandbox immediacy cannot establish live success, account eligibility or present-day SDK behavior."
+  }
+}

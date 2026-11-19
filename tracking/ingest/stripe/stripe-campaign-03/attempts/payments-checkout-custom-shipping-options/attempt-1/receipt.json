@@ -1,0 +1,179 @@
+{
+  "job_id": "payments-checkout-custom-shipping-options",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-checkout-custom-shipping-options-2026-11-07.md",
+  "raw_sha256": "f3e2f63126cc83ca32f3d4b37650bc3acab9f3d66b75408c9c938ad79e2298a2",
+  "prior_raw_path": "raw/stripe-checkout-dynamic-shipping-2025.md",
+  "prior_raw_sha256": "36c65607e157bb82f259f66ba2d18468214b353aa2e02335497a49968f39ac09",
+  "source_targets": [
+    "wiki/sources/source-stripe-checkout-dynamic-shipping.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-checkout-dynamic-shipping.md": "92524814c7a89955a3b975244ea7123a78dce96bab41ff3e1afdb0874d56e0a6"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-checkout-custom-shipping-options-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-checkout-dynamic-shipping-2025.md": [
+      {
+        "start": 1,
+        "end": 125
+      },
+      {
+        "start": 126,
+        "end": 245
+      },
+      {
+        "start": 246,
+        "end": 362
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-dynamic-shipping.md": [
+      {
+        "start": 1,
+        "end": 96
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/11e4a5fa64e2bcf48babc55a/content.diff": [
+      {
+        "start": 1,
+        "end": 125
+      },
+      {
+        "start": 126,
+        "end": 245
+      },
+      {
+        "start": 246,
+        "end": 366
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 23
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 35,
+        "end": 46
+      },
+      {
+        "start": 76,
+        "end": 88
+      }
+    ],
+    "wiki/concepts/stripe-checkout.md": [
+      {
+        "start": 132,
+        "end": 152
+      },
+      {
+        "start": 255,
+        "end": 265
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-custom-shipping-options.md": [
+      {
+        "start": 1,
+        "end": 79
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/proposed-queries.md": [
+      {
+        "start": 369,
+        "end": 375
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "# Dynamically customize shipping options",
+      "location": "raw/stripe-payments-checkout-custom-shipping-options-2026-11-07.md:5"
+    },
+    {
+      "text": "Update shipping options based on a customer's shipping address.",
+      "location": "raw/stripe-payments-checkout-custom-shipping-options-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-checkout-custom-shipping-options-2026-11-07.md:11"
+    },
+    {
+      "text": "[Full page](https://docs.stripe.com/payments/checkout/custom-shipping-options.md?ui=full-page)",
+      "location": "raw/stripe-payments-checkout-custom-shipping-options-2026-11-07.md:13"
+    },
+    {
+      "text": "[Embedded form](https://docs.stripe.com/payments/checkout/custom-shipping-options.md?ui=checkout-form)",
+      "location": "raw/stripe-payments-checkout-custom-shipping-options-2026-11-07.md:14"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Only supported in [payment mode]",
+      "location": "raw/stripe-checkout-dynamic-shipping-2025.md:19"
+    },
+    {
+      "text": "If you use the Payment Intents API, you must manually update shipping options and modify the payment amount based on a selected shipping option, or by creating a new PaymentIntent with adjusted amounts.",
+      "location": "raw/stripe-checkout-dynamic-shipping-2025.md:23"
+    },
+    {
+      "text": "betas: [\"custom_checkout_server_updates_1\"]",
+      "location": "raw/stripe-checkout-dynamic-shipping-2025.md:134"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The complete November 7 base capture is a 14-line navigation index: it says shipping options can be updated based on a customer's shipping address and links Full page and Embedded form variants (new raw lines 5-14). It contains no variant body, API contract, UI-mode support statement, beta/version prerequisite, payment-mode limitation, shipping calculation, error outcome or payment-success rule. The diff replaces the April 21 body with two links (diff lines 3-13, 365-366); absence of details does not establish removal, general availability or deprecation.",
+    "The April 21 detailed capture is a separate dated `ui_mode: elements` Checkout Sessions payment-mode example, not confirmed instructions for either November Full page or Embedded form link (old raw lines 17-52; new raw lines 9-14). It configures allowed shipping countries and server_only update_shipping_details, then a server endpoint retrieves the Session, validates address, calculates options using address and line items, and updates collected_information.shipping_details and shipping_options (old raw lines 25-123). This is a server-side Checkout Session mutation, not a client payment-success event; the Ruby validation and calculation functions deliberately raise NotImplementedError until merchant logic is supplied (old raw lines 76-90).",
+    "The dated Elements client uses Stripe.js beta custom_checkout_server_updates_1, with React package suggestions @stripe/react-stripe-js ^5 and @stripe/stripe-js ^8, and wraps a server call in runServerUpdate after ShippingAddressElement getValue completes (old raw lines 126-159, 175-244, 246-341). A successful server update refreshes local Session shipping options but does not by itself confirm an order or payment. The React sample references response.type/message without parsing the response and returns an undefined result (old raw lines 271-291); it is not copy-ready. The JS sample interpolates address fields into innerHTML (old raw lines 187-193); do not promote that sample as a safe rendering requirement.",
+    "Historical scope matters: old raw line 19 says the detailed dynamic shipping path is payment mode only, not subscription mode. The Payment Intents API has no automatic Checkout shipping update in this guide; the old text says manually update shipping options and modify the amount based on the selection, or create a new PaymentIntent with adjusted amounts (old raw lines 21-23). Current source line 20 incorrectly collapses that to 'must manually create a new PaymentIntent', omitting modify-existing as the documented alternative. Current source lines 13-20 also present beta and React version requirements without attaching the April Elements-path date; new raw lines 9-14 do not verify those for its variants.",
+    "The mapped source frontmatter at source-stripe-checkout-dynamic-shipping.md lines 1-9 lacks canonical_url and cites only the April raw; add the exact https://docs.stripe.com/payments/checkout/custom-shipping-options URL attested by old raw line 1 and new raw line 1, retain the April evidence/date and add November navigation separately. Its use cases at source lines 80-87 reflect the old guide's address validation, region options and order-total calculations (old raw lines 10-15), but are not refreshed by the November index. Source line 78's updated Session state should stay conditioned on a successful server update, not checkout completion.",
+    "Root index line 7 routes to Stripe index line 82 and concept stripe-checkout lines 141-142, 261. A separate April 20 source-stripe-checkout-custom-shipping-options.md lines 14-22 and 62-69 documents a historical `ui_mode: embedded_page`/onShippingDetailsChange flow, while the mapped April 21 source uses `ui_mode: elements`/runServerUpdate (old raw lines 25-52, 126-159). The concept at line 141 records Stripe.js 9.14.0 deprecation of the Embedded Checkout callback. These paths and version boundaries must be reciprocal; the November link labels alone do not tell us which current variant supports either historical implementation. Unread linked November variant bodies remain navigation only."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "Retain April 21 Elements Checkout Sessions server_only and runServerUpdate beta details as dated evidence, including payment-mode-only scope and React package/beta examples (old raw lines 17-52, 126-159, 246-341; source lines 13-20). November new raw lines 9-14 do not renew these implementation claims.",
+    "Retain the old Payment Intents alternative accurately: manually update shipping and modify the existing payment amount, or create a new PaymentIntent with adjusted amount (old raw lines 21-23); source line 20 currently omits the first option.",
+    "Keep the separate historical Embedded Checkout onShippingDetailsChange path and concept's later Stripe.js 9.14.0 deprecation note dated and scoped to that callback (wiki/sources/source-stripe-checkout-custom-shipping-options.md lines 14-22; wiki/concepts/stripe-checkout.md line 141). Neither changes the old Elements runServerUpdate evidence or proves November Full page behavior."
+  ],
+  "conflicts": [
+    "Current source line 20 says Payment Intents must manually create a new PaymentIntent, but old raw lines 21-23 also permit modifying the amount of an existing PaymentIntent after manually updating shipping options.",
+    "Mapped source lines 13-20 describe April `ui_mode: elements` beta behavior under the same canonical URL that now shows only Full page and Embedded form navigation (new raw lines 9-14; old raw lines 25-52, 126-159). Scope as dated Elements evidence and avoid treating November labels as proof of that beta path or proof of its removal.",
+    "The separate source-stripe-checkout-custom-shipping-options.md lines 14-22 and concept stripe-checkout line 141 describe a historical Embedded Checkout callback plus its later deprecation, distinct from mapped source lines 24-78's Elements/runServerUpdate path. A reciprocal route/qualification is needed so readers do not conflate the callbacks or infer a new Full page implementation from the November index."
+  ],
+  "unresolved_questions": [
+    "The November Full page and Embedded form variant bodies were not included in the pin; their present API parameters, SDK versions, supported Checkout modes and callback behavior cannot be verified from new raw lines 9-14.",
+    "The April React example's response/result mismatch and the client HTML interpolation require implementation-specific repair before reuse (old raw lines 187-193, 271-291); no live execution, checkout completion or payment outcome was observed."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-checkout.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-checkout-dynamic-shipping.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add exact canonical_url: https://docs.stripe.com/payments/checkout/custom-shipping-options and November Full page/Embedded form index raw while retaining April 21 detailed raw and date (source lines 1-9, 94-96; old raw line 1; new raw lines 1, 9-14).",
+        "Date the existing server_only, ui_mode elements, beta and React-version guidance as the April Elements Checkout Sessions path; the November links do not establish implementation behavior or current beta need (source lines 13-19, 24-78; old raw lines 17-52, 126-159, 246-341; new raw lines 9-14).",
+        "Correct source line 20's Payment Intents wording to include manual shipping/amount update of an existing PaymentIntent or creating a new adjusted PaymentIntent, exactly as old raw lines 21-23 state.",
+        "Flag the old React snippet's undefined result/unparsed response and distinguish the separate historical Embedded Checkout onShippingDetailsChange path and its versioned deprecation from this Elements runServerUpdate path (old raw lines 271-291; wiki/sources/source-stripe-checkout-custom-shipping-options.md lines 14-22; wiki/concepts/stripe-checkout.md line 141)."
+      ],
+      "conflicts": [
+        "Source line 20 drops the old raw's modify-existing PaymentIntent alternative (old raw lines 21-23).",
+        "Source lines 13-20's unqualified beta detail cannot be projected onto November Full page/Embedded form variant links at new raw lines 9-14; the separate embedded callback version caveat is in wiki/concepts/stripe-checkout.md line 141."
+      ],
+      "reason": "The November capture changes navigation/provenance only, but the current summary has a material PaymentIntent alternative omission and needs explicit April Elements/beta scope and reciprocal Embedded Checkout callback distinction. A source correction is warranted without claiming a new provider behavior."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/checkout/custom-shipping-options, the complete November capture establishes the purpose of address-based shipping-option updates and two variant links, Full page and Embedded form, but no current API steps or payment outcome (new raw lines 5-14). The April 21 capture separately documents a payment-mode Checkout Sessions `ui_mode: elements` beta: set allowed shipping countries and server_only permission, retrieve the Session, validate address, calculate options, update shipping_details and shipping_options server-side, then have the client wrap that request in runServerUpdate (old raw lines 17-62, 126-159, 246-341). Its React/Stripe.js beta/version instructions are dated; the example leaves validation and calculation unimplemented (old raw lines 76-90, 126-150). source-stripe-checkout-dynamic-shipping.md summarizes that path but omits the Payment Intents option to modify an existing amount, and its beta scope and April provenance should be explicit (source lines 13-20, 24-78). A successful shipping update changes Session data, not payment success.",
+    "Q2": "At https://docs.stripe.com/payments/checkout/custom-shipping-options, the November change is navigation and presentation: Full page and Embedded form links replace the April detailed Elements body, without proving that the old beta path was removed or that either November variant uses it (new raw lines 9-14; old raw lines 17-52, 126-159). source-stripe-checkout-dynamic-shipping.md needs November provenance and canonical URL while preserving April payment-mode, client/server, beta and React-version scope as dated (source lines 1-20, 94-96). Its Payment Intents sentence must include manually modifying an existing PaymentIntent amount as well as creating a new one (source line 20; old raw lines 21-23). A separate historical Embedded Checkout onShippingDetailsChange callback has a versioned deprecation warning in stripe-checkout concept line 141; it should not be conflated with Elements runServerUpdate or inferred for the November links. The April React example's response/result mismatch and unimplemented server business logic prevent copy-ready inference (old raw lines 76-90, 271-291). Server-update success and address display do not confirm an order or payment."
+  }
+}

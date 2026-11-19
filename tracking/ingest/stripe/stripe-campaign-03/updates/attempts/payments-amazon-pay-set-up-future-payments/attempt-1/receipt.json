@@ -1,0 +1,139 @@
+{
+  "job_id": "payments-amazon-pay-set-up-future-payments",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-amazon-pay-set-up-future-payments.md": {
+      "job_id": "payments-amazon-pay-set-up-future-payments",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Set Up Future Amazon Pay Payments\"\ntype: source\ndate_ingested: 2026-05-07\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/amazon-pay/set-up-future-payments\"\nraw_files:\n  - \"stripe-amazon-pay-set-up-future-payments-2025.md\"\ntags: [stripe, wallets, amazon-pay, setup-intent, recurring, off-session, mandates, ios, android]\n---\n\n## Overview\n\nThe May 7, 2026 guide describes saving Amazon Pay details for later charges through hosted Checkout, Direct API, iOS, and Android. The November 7 capture is only a four-route variant index; it supplies no refreshed setup, mandate, SDK, or payment behavior. See [[stripe]] and [[stripe-amazon-pay]].\n\n## Key takeaways from the May 2026 guide\n\n- **Permission and identity:** The guide calls for customer permission, opt-in terms, and a record of written agreement before saving a method. For later off-session payments, the terms cover permission, frequency/timing, amount determination, and subscription cancellation policy where applicable. Saved details attach to a customer identity: the dated Accounts v2 examples use a customer-configured Account and `customer_account`, while Customers v1 uses a Customer and `customer`. The May text describes Accounts v2 as generally available for Connect and public preview for others, with a preview version for participants; this is historical account guidance, not a current eligibility assertion.\n- **Hosted Checkout versus Direct API:** Checkout creates a Session in `setup` mode; its Customers v1 example includes `amazon_pay`, a Customer ID, and `success_url`, then sends the customer to the Session URL for authorization. Direct API can create a SetupIntent for saving without an immediate charge, with `usage` described as `off_session` or `on_session`; the example chooses `off_session`. Its client example calls `stripe.confirmAmazonPaySetup` with the SetupIntent client secret, `return_url`, and online `mandate_data`. A distinct pay-now route creates a PaymentIntent with `setup_future_usage: off_session`; its prose says to provide `mandate_data` if needed, and the examples include it.\n- **Later charge and state boundary:** After obtaining the saved PaymentMethod, the later server PaymentIntent uses the same PaymentMethod ID; `off_session: true` applies when the customer is not in that checkout flow. The Checkout test describes a SetupIntent moving from `requires_action` to `succeeded`. A completed setup or browser return does not prove that a later PaymentIntent was confirmed or paid. In the optional manual PaymentIntent redirect branch only, check `requires_action` and `next_action.type: redirect_to_url`; after return, verify payment status, for example through a webhook.\n- **Authorization notice:** For a custom form, the May guide requires a written authorization notice before confirming a SetupIntent or PaymentIntent and recommends example words; the exact sample text is not stated as mandatory. Its line saying to show authorization \u201cafter the first time\u201d conflicts with its before-confirmation line and the Android first-save wording. Keep that timing ambiguity visible rather than interpreting it as permission to omit first-save notice.\n- **Mobile and detach:** The iOS example calls `STPPaymentHandler.confirmSetupIntent` with a SetupIntent client secret and app return URL; the Android example uses `PaymentLauncher.confirm` and `PaymentMethodCreateParams.createAmazonPay()`. iOS 13+ and Android 23.7.0 are May SDK statements. Server-side PaymentMethod detach deactivates the reusable method and is described as emitting `mandate.updated` and `payment_method.detached`.\n\n## Detail locators\n\n- Consent, Accounts v2 versus Customers v1, hosted Checkout setup, and test SetupIntent transition: [[raw/stripe-amazon-pay-set-up-future-payments-2025|May full guide]], lines 29\u2013120.\n- Direct API consent/notice, SetupIntent, client confirmation, optional manual PaymentIntent redirect, and pay-now saving: same raw, lines 149\u2013530.\n- Later PaymentIntent with saved method and detach events: same raw, lines 532\u2013578.\n- iOS setup, first-save notice, `STPPaymentHandler`, later charge, and detach: same raw, lines 580\u2013841.\n- Android setup, first-save notice, `PaymentLauncher`, later charge, and detach: same raw, lines 843\u20131143.\n\n## Related\n\n- [[source-stripe-amazon-pay-accept-payment]] \u2014 one-time acceptance guide.\n- [[source-stripe-subscriptions-amazon-pay]] \u2014 separate subscription integration guide.\n- [[stripe-amazon-pay]] \u2014 concept and reciprocal source route.\n\n## Raw Sources\n\n- [[raw/stripe-amazon-pay-set-up-future-payments-2025|Amazon Pay future-payment full guide, fetched 2026-05-07]] \u2014 dated factual authority.\n\n## Related raw API references\n\n- [[raw/stripe-payments-amazon-pay-set-up-future-payments-2026-11-07|Amazon Pay future-payment variant index, fetched 2026-11-07]] \u2014 navigation-only links for Checkout, Direct API, iOS, and Android. Linked bodies were not fetched in this packet and do not revise the May guide here.\n",
+      "quotes": [
+        {
+          "text": "Learn how to save Amazon Pay details and charge your customers later.",
+          "location": "raw/stripe-payments-amazon-pay-set-up-future-payments-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-amazon-pay-set-up-future-payments-2026-11-07.md:11"
+        },
+        {
+          "text": "- [Checkout](https://docs.stripe.com/payments/amazon-pay/set-up-future-payments.md?payment-ui=checkout)",
+          "location": "raw/stripe-payments-amazon-pay-set-up-future-payments-2026-11-07.md:13"
+        },
+        {
+          "text": "- [Direct API](https://docs.stripe.com/payments/amazon-pay/set-up-future-payments.md?payment-ui=direct-api)",
+          "location": "raw/stripe-payments-amazon-pay-set-up-future-payments-2026-11-07.md:14"
+        },
+        {
+          "text": "  - [Android](https://docs.stripe.com/payments/amazon-pay/set-up-future-payments.md?payment-ui=mobile&platform=android)",
+          "location": "raw/stripe-payments-amazon-pay-set-up-future-payments-2026-11-07.md:17"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "amazon-pay-future-concept-route",
+            "target_path": "wiki/concepts/stripe-amazon-pay.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-subscriptions-amazon-pay]] \u2014 Stripe docs: Amazon Pay subscription integration (3 paths: SetupIntents, PaymentIntents, Checkout)",
+            "proposed_markdown": "- [[source-stripe-subscriptions-amazon-pay]] \u2014 Stripe docs: Amazon Pay subscription integration (3 paths: SetupIntents, PaymentIntents, Checkout)\n- [[source-stripe-amazon-pay-set-up-future-payments]] \u2014 May 2026 save-for-later guide: Checkout setup, Direct API, iOS, and Android; November 2026 capture is variant navigation only",
+            "quote_indexes": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "May factual authority: raw/stripe-amazon-pay-set-up-future-payments-2025.md:8-12,122-126,580-584,843-847. November navigation only: raw/stripe-payments-amazon-pay-set-up-future-payments-2026-11-07.md:9-17. Keep separate from the May 13 subscription guide."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-amazon-pay-set-up-future-payments-2026-11-07.md",
+      "raw_sha256": "cdcaf97cf7b6a6392b3e5d50b455ceac1b45e83af761acffb9a67d6289dd460c",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-amazon-pay-set-up-future-payments-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "raw/stripe-amazon-pay-set-up-future-payments-2025.md": [
+      {
+        "start": 1,
+        "end": 1143
+      }
+    ],
+    "wiki/sources/source-stripe-amazon-pay-set-up-future-payments.md": [
+      {
+        "start": 1,
+        "end": 37
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/7f9fdcb14b953ab3e16d511e/content.diff": [
+      {
+        "start": 1,
+        "end": 1148
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-amazon-pay-set-up-future-payments/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 196
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 22
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 382,
+        "end": 394
+      },
+      {
+        "start": 682,
+        "end": 692
+      }
+    ],
+    "wiki/concepts/stripe-amazon-pay.md": [
+      {
+        "start": 1,
+        "end": 60
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "Create a Checkout Session in `setup` mode to collect the required information.",
+      "location": "raw/stripe-amazon-pay-set-up-future-payments-2025.md:105"
+    },
+    {
+      "text": "Your custom payment form must present a written notice of authorization before confirming",
+      "location": "raw/stripe-amazon-pay-set-up-future-payments-2025.md:210"
+    },
+    {
+      "text": "We recommend that you use the following text for your custom payment form:",
+      "location": "raw/stripe-amazon-pay-set-up-future-payments-2025.md:214"
+    },
+    {
+      "text": "Check that the `PaymentIntent` has a status of `requires_action` and the type for `next_action` is `redirect_to_url`.",
+      "location": "raw/stripe-amazon-pay-set-up-future-payments-2025.md:411"
+    },
+    {
+      "text": "When confirming a PaymentIntent, use the same payment method ID from the previous SetupIntent or PaymentIntent object.",
+      "location": "raw/stripe-amazon-pay-set-up-future-payments-2025.md:534"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/amazon-pay/set-up-future-payments, the November capture only establishes the save-for-later purpose and four navigation destinations: Checkout, Direct API, iOS, Android (new raw lines 5\u201317). The May guide documents customer permission and written terms, hosted Checkout Session in setup mode, Direct API SetupIntent or pay-now PaymentIntent saving, and iOS/Android client confirmation (old raw lines 29\u201340, 88\u2013120, 225\u2013260, 362\u2013384, 453\u2013527, 759\u2013785, 1023\u20131075). Accounts v2 customer-configured Account with `customer_account` and Customers v1 Customer with `customer` are distinct dated identity alternatives (old raw lines 46\u201385, 225\u2013260). A saved PaymentMethod is reused in a later confirmed PaymentIntent with `off_session: true` when outside checkout (old raw lines 532\u2013574). source-stripe-amazon-pay-set-up-future-payments.md summarizes the paths but overstates exact sample notice words and broadens the optional PaymentIntent `next_action` branch (source lines 13\u201333). A SetupIntent success or browser return is not later payment success.",
+    "Q2": "At https://docs.stripe.com/payments/amazon-pay/set-up-future-payments, the November change is presentation and navigation only: four variant links replace the combined guide in this capture (new raw lines 9\u201317; diff lines 3\u201313 and 1144\u20131148). No substantive behavior, availability, or SDK change follows. source-stripe-amazon-pay-set-up-future-payments.md should retain May-only permissions, Accounts v2/Customers v1 identity fork, hosted setup Session, direct SetupIntent or PaymentIntent saving, iOS/Android SDK examples, later off-session PaymentIntent, and detach events (old raw lines 29\u2013120, 149\u2013260, 453\u2013578, 681\u2013785, 919\u20131143). Its broad `redirect_to_url` wording belongs only to the optional manually redirected PaymentIntent in `requires_action` (old raw lines 386\u2013444); SetupIntent uses a different client redirect (old raw lines 362\u2013384). The first-save notice is required but sample wording is recommended, and the May text conflicts internally about timing (old raw lines 208\u2013216, 1011\u20131020). A return, setup completion, SDK callback, or November link does not prove later charge success or current account eligibility."
+  }
+}

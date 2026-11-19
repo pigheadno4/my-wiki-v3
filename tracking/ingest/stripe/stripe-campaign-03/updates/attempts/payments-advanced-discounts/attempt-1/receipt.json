@@ -1,0 +1,149 @@
+{
+  "job_id": "payments-advanced-discounts",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-checkout-add-discounts.md": {
+      "job_id": "payments-advanced-discounts",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Add Discounts (Checkout Sessions)\"\ntype: source\ndate_ingested: 2026-04-21\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/advanced/discounts\"\nraw_files:\n  - \"stripe-payments-advanced-discounts-2026-11-07.md\"\n  - \"stripe-checkout-add-discounts-2025.md\"\ntags: [stripe, checkout-sessions, discounts, coupons, promotion-codes, applyPromotionCode, elements]\n---\n\n## Summary\n\nThe 2026-04-21 and 2026-11-07 captures document coupons and customer-facing promotion codes for discounts in Checkout Sessions with the Elements UI. A server can apply a coupon when creating a Session, or enable customer-entered promotion codes; Checkout Elements actions apply or remove a code during checkout. Checkout Sessions support at most one coupon or promotion code. This page focuses on the Elements promotion-code actions; [[source-stripe-checkout-discounts]] covers the broader coupon API and restrictions.\n\nThe guide distinguishes Payment Intents: calculate a discounted amount on the server, then create or update the PaymentIntent with that amount. It does not document a PaymentIntent coupon parameter. Applying a discount or receiving an action result is not proof that a payment completed.\n\n## Client-side promotion-code actions\n\nFor HTML and JavaScript, initialize the Checkout Elements SDK with a Session client secret, call `loadActions()`, and use its success-state `actions.applyPromotionCode(input.value)`; display an error when the result includes one. `actions.removePromotionCode()` removes **all** previously applied promotion codes. The React example obtains the same `applyPromotionCode` and `removePromotionCode` actions from `checkoutState.checkout`, after handling loading and error states.\n\nThe **2026-04-21** React example imports and calls `useCheckout()` from `@stripe/react-stripe-js/checkout`. The **2026-11-07** example imports and calls `useCheckoutElements()` from that same entrypoint. This is a dated example change. It does not prove removal of `useCheckout()`, a minimum compatible package version, or a new runtime capability; see the separately versioned React binding evidence in [[stripe-checkout]].\n\n## Session setup\n\n- To apply a coupon on the server, provide its ID as `discounts: [{ coupon: 'COUPON_ID' }]` when creating a Checkout Session.\n- To let customers enter a promotion code, set `allow_promotion_codes: true` when creating the Session; the Elements client then calls the actions above. The captured examples use `mode=payment`, `ui_mode=elements`, and a `return_url`.\n- The April capture illustrates Session and coupon creation in Node.js; the November capture illustrates corresponding requests with curl. The request parameters and discount path remain aligned, so the sample-language change alone does not imply a server API change or Node.js removal.\n\n## Coupon and promotion-code rules\n\n- A coupon can define `percent_off` or `amount_off`, `currency`, `max_redemptions`, `redeem_by`, and `applies_to` product IDs. Multiple customer-facing promotion codes can reference one coupon and inherit its product restrictions. Deleting a coupon prevents future applications.\n- A promotion code references an existing coupon and can be restricted to `customer` or `customer_account`. Its `code` is case-insensitive. Active customer-restricted codes can reuse text across different customers, while an active general-use code cannot share that text with another active code. After inactivating a code, the text can be reused for a new code.\n- `restrictions.first_time_transaction` can limit use to first-time customers. A customer or customer-configured Account with no prior payments or non-void invoices can meet that condition; Sessions that create a guest customer can still accept first-time-only codes.\n- `minimum_amount` and `minimum_amount_currency` are evaluated when the code is redeemed. For a subscription, the minimum applies only to its initial payment.\n- A promotion-code `expires_at` cannot exceed its coupon's `redeem_by`; the coupon expiry fills it when omitted. Its `max_redemptions` cannot exceed the coupon's maximum. If the underlying coupon becomes invalid, the code reaches its redemption maximum, or its expiry passes, the code becomes permanently inactive and cannot be reactivated. Deleting a promotion code prevents future applications.\n\n## Related Pages\n\n- [[stripe]] \u2014 company overview\n- [[stripe-checkout]] \u2014 Checkout Sessions and versioned React binding context\n- [[source-stripe-checkout-discounts]] \u2014 additional coupon restrictions and separately dated no-cost order behavior\n\n## Raw Sources\n\n- [[raw/stripe-payments-advanced-discounts-2026-11-07|Full discounts guide captured 2026-11-07]]\n- [[raw/stripe-checkout-add-discounts-2025|Full discounts guide captured 2026-04-21]]\n",
+      "quotes": [
+        {
+          "text": "Checkout Sessions support up to one coupon or promotion code.",
+          "location": "raw/stripe-payments-advanced-discounts-2026-11-07.md:33"
+        },
+        {
+          "text": "On your server, enable customer-redeemable promotion codes using the",
+          "location": "raw/stripe-payments-advanced-discounts-2026-11-07.md:91"
+        },
+        {
+          "text": "import {useCheckoutElements} from '@stripe/react-stripe-js/checkout';",
+          "location": "raw/stripe-payments-advanced-discounts-2026-11-07.md:144"
+        },
+        {
+          "text": "Since promotion code restrictions are checked at redemption time, the minimum transaction amount only applies to the initial payment for a subscription.",
+          "location": "raw/stripe-payments-advanced-discounts-2026-11-07.md:207"
+        },
+        {
+          "text": "You can\u2019t reactivate these promotion codes.",
+          "location": "raw/stripe-payments-advanced-discounts-2026-11-07.md:223"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "payments-advanced-discounts-checkout-source-route",
+            "target_path": "wiki/concepts/stripe-checkout.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-checkout-discounts]] \u2014 Discounts: Coupon API, apply to session, promotion codes, all restriction params, uniqueness rules, lifecycle",
+            "proposed_markdown": "- [[source-stripe-checkout-discounts]] \u2014 Discounts: Coupon API, apply to session, promotion codes, all restriction params, uniqueness rules, lifecycle\n- [[source-stripe-checkout-add-discounts]] \u2014 April and November 2026 Checkout Elements discounts guide: server Session coupon or promotion-code setup and client apply/remove actions; the dated React example changes from `useCheckout()` to `useCheckoutElements()` without establishing removal of the older hook.",
+            "quote_indexes": [
+              0,
+              1,
+              2
+            ],
+            "warnings": [
+              "The source's old raw lines 176-178 use useCheckout(), while new raw lines 144-147 use useCheckoutElements(); this is a dated website example difference. The existing concept's React binding discussion at lines 69-98 separately retains versioned useCheckout alias evidence, so this route must not claim removal or a package-version floor.",
+              "Old raw lines 34-36 and new raw lines 31-33 both say at most one coupon or promotion code per Checkout Session. Server setup appears at old raw lines 104-133 and new raw lines 89-106; no payment completion is established."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-advanced-discounts-2026-11-07.md",
+      "raw_sha256": "76c610b98a6377366675e6586f603aeef264e9c6f63eecee29b2c8f345c2ba60",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-advanced-discounts-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 227
+      }
+    ],
+    "raw/stripe-checkout-add-discounts-2025.md": [
+      {
+        "start": 1,
+        "end": 130
+      },
+      {
+        "start": 131,
+        "end": 256
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-add-discounts.md": [
+      {
+        "start": 1,
+        "end": 66
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/7cde221a48eedd21ec117075/content.diff": [
+      {
+        "start": 1,
+        "end": 110
+      },
+      {
+        "start": 111,
+        "end": 202
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-advanced-discounts/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 179
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 30
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 35,
+        "end": 95
+      }
+    ],
+    "wiki/concepts/stripe-checkout.md": [
+      {
+        "start": 1,
+        "end": 115
+      },
+      {
+        "start": 138,
+        "end": 160
+      },
+      {
+        "start": 255,
+        "end": 272
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-discounts.md": [
+      {
+        "start": 1,
+        "end": 81
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "import {useCheckout} from '@stripe/react-stripe-js/checkout';",
+      "location": "raw/stripe-checkout-add-discounts-2025.md:176"
+    },
+    {
+      "text": "Checkout Sessions support up to one coupon or promotion code.",
+      "location": "raw/stripe-checkout-add-discounts-2025.md:36"
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/advanced/discounts, source-stripe-checkout-add-discounts.md now records the Checkout Sessions discount path: a server applies a coupon ID in discounts or enables allow_promotion_codes for customer entry; the Checkout Elements client calls applyPromotionCode or removePromotionCode, with the latter removing all previously applied codes. Both captures limit a Session to one coupon or promotion code (old raw lines 34-36; new raw lines 31-33) and keep coupon, customer or customer_account, first-time, minimum-amount, redemption, expiry and inactivation qualifications (old raw lines 220-256; new raw lines 191-227). Payment Intents instead require the merchant to calculate the discounted amount server-side before creating or updating the Intent (old raw lines 15-17; new raw lines 16-18). The mapped source correctly summarized core actions but lacked November provenance and the dated React example difference. Applying a code does not prove a completed payment.",
+    "Q2": "For https://docs.stripe.com/payments/advanced/discounts, source-stripe-checkout-add-discounts.md distinguishes the substantive developer-facing example change: the April React snippet imports and calls useCheckout(), while November imports and calls useCheckoutElements() from the same checkout entrypoint (old raw lines 172-191; new raw lines 140-161). The action methods and loading/error shape remain; the captures do not prove removal of the older hook, a minimum package version, or runtime compatibility for a specific integration. Node.js coupon and Session snippets become curl requests with corresponding parameters, while JavaScript style and invoice emphasis also change (old raw lines 23-59, 108-131; new raw lines 24-44, 93-104). Preserve the April sample as dated evidence, retain both raw links, and use the versioned React concept for alias qualification. Server Session setup, client discount application, and payment outcome are distinct states; no live redemption or payment was exercised."
+  }
+}

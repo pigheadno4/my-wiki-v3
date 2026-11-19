@@ -1,0 +1,60 @@
+---
+title: "Stripe: Alipay Payments"
+type: source
+date_ingested: 2026-05-07
+date_updated: 2026-11-15
+canonical_url: "https://docs.stripe.com/payments/alipay"
+original_format: webpage
+raw_files:
+  - "stripe-payments-alipay-2026-11-07.md"
+  - "stripe-alipay-2025.md"
+tags: [stripe, wallets, alipay, china, cny, multi-currency, connect, recurring]
+---
+
+## Summary
+
+[[stripe]] describes Alipay as a single-use China-based wallet with more than a billion active users worldwide. Customers use Alipay credentials or the app; the November page lists China (CN) as the customer location and domestic and cross-border coverage. The May page described Chinese consumers, overseas Chinese and travelers. Those identity and location statements have different scope; the November country field alone does not settle eligibility for every overseas user or traveler.
+
+The November page labels method access **instant provisional**, payment confirmation **immediate** and settlement on the **standard payout schedule**. Merchant account activation or method enablement does not prove permanent eligibility, an individual successful payment or completed payout.
+
+## Merchant eligibility and payment support
+
+- Merchants and Connect platforms/marketplaces in 39 listed countries can use Alipay for B2B or B2C, subject to account eligibility. The November page lists AT, AU, BE, BG, CA, CH, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GI, GR, HK, HR, HU, IE, IT, JP, LI, LT, LU, LV, MT, MY, NL, NO, NZ, PT, RO, SE, SG, SI, SK and US. It lists CN for customer location. The quoted USD-equivalent transaction bounds are **0.50–999,999.99 USD**, not a universal denomination for every currency.
+- The business must meet Stripe restricted-business and Alipay prohibited-business requirements. The November page adds a prohibited MCC table, distinguishes prohibited MCCs from restricted MCCs requiring more information, and says Stripe may review eligibility after activation. The business website must be public, accessible without login or redirect, show goods/services and prices, state delivery terms, disclose drop-shipping, and meet Stripe account activation requirements. Listed location is not account-specific approval.
+- The account needs a bank account in a currency mapped to its country. The November presentment list is AUD, CAD, CHF, CNY, EUR, GBP, HKD, JPY, MYR, NZD, SGD and USD. The default local Alipay currency is `cny`, and customers also see the amount in CNY. The currency/country table is the authority for which payments an account can create: CNY maps to any listed country; CHF to Switzerland; GBP to Gibraltar/UK; EUR to many listed European countries including Croatia, Hungary and Liechtenstein; USD to many listed merchant countries, not just the US. AUD, CAD, HKD, JPY, MYR, NZD and SGD map respectively to AU, CA, HK, JP, MY, NZ and SG.
+- **Dated currency change:** the May 2026 page and the former summary listed CNY plus ten other currencies, with USD mapped only to the US, and mentioned a case-by-case Stripe Support route for other bank-account currencies. The November table adds CHF and broader EUR/GBP/USD country mappings, and omits the Support exception. The omission does not establish that the earlier exception was withdrawn.
+
+## Capabilities and product scope
+
+For standard one-time payments, the November matrix supports full-page and embedded Checkout, Payment Links, Payment Element, Invoicing/Hosted Invoice Page, Radar, Connect, Checkout Sessions and PaymentIntents. It marks Managed Payments, Billing, Customer Portal, Terminal, Express Checkout Element, Payment Method Messaging Element, SetupIntents, `setup_future_usage`, off-session payments, recurring payments, manual/partial/multi/over capture and authorization extensions unsupported. Full and partial refunds are supported; the standard dispute process is not.
+
+**Private-preview qualification:** the same November page permits recurring Invoicing, Checkout subscription/setup mode and saving Alipay for future payments only through an invite-only recurring-payments private preview with individual Alipay approval. This qualifies the standard unsupported matrix; neither the matrix nor the preview text proves a particular merchant has access. The May page also marked subscriptions and Invoicing invite-only.
+
+The “In-app payments” exclusion refers to Mobile Payment Element (PaymentSheet). The page separately allows custom iOS, Android and React Native Alipay integrations; the [[source-stripe-alipay-accept-payment]] guide owns their platform-specific URL schemes, SDK behavior and state handling.
+
+## Customer flow, refunds and disputes
+
+On mobile the customer continues in the Alipay app or mobile website; on desktop they sign in or scan a QR code in the app. They review the amount and exchange rate and authorize within **five minutes**. The page describes a merchant return after success, but arriving at a return page alone is not proof of success or settlement.
+
+Submit a full or partial refund within **90 days** through Dashboard or Refunds API. It is asynchronous, can take up to **five minutes**, cannot be canceled, and is never a reversal. Alipay returns funds to the original Alipay balance or linked payment source. Check Refund `status` or final `refund.updated`/`refund.failed` events; a failed refund returns funds to the Stripe balance and requires another way to refund the customer. Submission does not establish `succeeded`.
+
+Alipay authentication reduces fraud; Alipay has **no standard customer chargeback/dispute process** and a dispute does not withdraw funds from the Stripe balance. A customer who contacts Alipay about an issue might be referred back to the merchant, who can issue a full or partial refund.
+
+## Descriptor and reconciliation identities
+
+Stripe sends a merchant name and order description as separate fields; a payment statement descriptor becomes the order description, otherwise the account-level descriptor is used. Alipay controls the customer history display and can localize, shorten, reformat or omit fields. There is no fixed `ALIPAY*MERCHANT` combination, and Stripe cannot guarantee what a linked bank/card issuer shows. To reconcile with Alipay records, expand or retrieve the PaymentIntent's `latest_charge` and read `payment_intent.latest_charge.payment_method_details.alipay.transaction_id`; that is the Alipay transaction ID, not a promise about issuer display.
+
+## Connect access
+
+Destination charges and separate charges and transfers are supported. Connected accounts with standard Dashboard access can enable Alipay there. For accounts without that access, the platform must request `alipay_payments`; requesting the capability through the API is in private preview. Contact Stripe Support before direct charges or `on_behalf_of`. The broad Connect checkmark does not make those charge types generally available. The May page made the same partial-support distinction.
+
+## Related
+
+- [[stripe]] — Stripe company page.
+- [[stripe-wallets]] — wallet-method concept and source routes.
+- [[source-stripe-alipay-accept-payment]] — platform-specific integration guide.
+
+## Raw Sources
+
+- [[raw/stripe-payments-alipay-2026-11-07]] — full webpage capture fetched 2026-11-07 (214 lines).
+- [[raw/stripe-alipay-2025]] — earlier webpage capture fetched 2026-05-07 (170 lines); fixed `*webhook*` ×1.

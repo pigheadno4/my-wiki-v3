@@ -1,0 +1,120 @@
+{
+  "job_id": "payments-cards-overview",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-how-cards-work.md": {
+      "job_id": "payments-cards-overview",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: How Cards Work\"\ntype: source\ndate_ingested: 2026-05-01\ndate_updated: 2026-11-15\ncanonical_url: \"https://docs.stripe.com/payments/cards/overview\"\noriginal_format: webpage\nraw_files:\n  - \"stripe-payments-cards-overview-2026-11-07.md\"\n  - \"stripe-how-cards-work-2025.md\"\ntags: [stripe, cards, authorization, capture, card-account-updater, webhooks]\n---\n\n## Summary\n\n[[stripe]] explains an online card payment as **format check \u2192 possible customer authentication \u2192 bank authorization hold \u2192 capture**. Both the 2026-05-01 and 2026-11-07 captures describe the same state sequence and saved-card update boundaries. Formatting is not card validation, an authorization hold is not captured funds, and capture is described as issuer-to-**merchant/Stripe-user account** money movement, not a bank payout-arrival guarantee.\n\n## Card payment flow\n\n1. Stripe checks that supplied card details are correctly formatted, such as a non-expired expiration date. This does **not** guarantee that the card itself is valid.\n2. Some banks, especially in regulated regions such as Europe and India, **might** prompt the customer to authenticate. The overview does not state that every card payment uses a particular SCA or 3D Secure protocol.\n3. The bank checks for sufficient funds and, if successful, **holds** the amount on the customer's account for the merchant. That hold is the authorization state; it is not capture or settlement.\n4. On **capture**, the page describes money moving from the issuing bank to the merchant's account. The two captures do not establish any individual transaction's success, final bank settlement or payout arrival.\n\n## Saved-card updates and invoice default\n\nA saved-card update can change only name, billing address, expiration date or metadata. Other card changes require deleting the card and creating a new one. Customer-facing processes can let customers update or replace saved cards.\n\nFor the default payment method used by invoices and subscriptions, update the **Customer** object's `invoice_settings.default_payment_method` with a **PaymentMethod ID**. The May capture illustrates a Node SDK `stripe.customers.update(...)` call with example Customer/PaymentMethod IDs; the November capture illustrates the same field with secret-key curl to `/v1/customers/{CUSTOMER_ID}`. These are dated client-language examples of the same Customer update, not an SDK deprecation or a different object identity. Checkout's handling of saved methods is linked for separate reading; other scenarios require integration-specific code.\n\n## Automatic saved-card updates\n\nStripe attempts to update saved card details through participating card networks when an issuer replaces a physical card, including lost or expired cards. **Issuer participation is required**. The page says this is widely supported in the US for American Express, Visa, Mastercard and Discover, while international support varies. It is not possible to identify in advance which specific cards support automatic updates; no update is guaranteed for an individual card.\n\nAn API-driven card update emits `payment_method.updated`; a network-driven automatic update emits `payment_method.automatically_updated`. These events carry the new expiration date and last four digits. If the new details include a new card number, the card fingerprint changes. The captures describe this issuer/network mechanism but do not name it \u201cCard Account Updater\u201d; that product label requires a separate source and should not be attributed to this overview.\n\n## Related\n\n- [[stripe]] \u2014 Stripe company page.\n- [[stripe-payment-methods]] \u2014 payment-method context.\n- [[stripe-authorization-boost]] \u2014 separately sourced Card Account Updater terminology.\n\n## Raw Sources\n\n- [[raw/stripe-payments-cards-overview-2026-11-07]] \u2014 full webpage capture fetched 2026-11-07 (64 lines); direct secret-key curl example.\n- [[raw/stripe-how-cards-work-2025]] \u2014 earlier full webpage capture fetched 2026-05-01 (72 lines); Node SDK example.\n",
+      "quotes": [
+        {
+          "text": "There\u2019s no guarantee that the card itself is valid yet.",
+          "location": "raw/stripe-payments-cards-overview-2026-11-07.md:17-17"
+        },
+        {
+          "text": "Some banks, especially in regulated regions such as Europe and India, might prompt the customer to authenticate a purchase.",
+          "location": "raw/stripe-payments-cards-overview-2026-11-07.md:21-21"
+        },
+        {
+          "text": "The money moves from the issuing bank to your account.",
+          "location": "raw/stripe-payments-cards-overview-2026-11-07.md:29-29"
+        },
+        {
+          "text": "invoice_settings[default_payment_method]={{PAYMENTMETHOD_ID}}",
+          "location": "raw/stripe-payments-cards-overview-2026-11-07.md:42-42"
+        },
+        {
+          "text": "The `payment_method.automatically_updated` event notifies you of automatic card updates from the network.",
+          "location": "raw/stripe-payments-cards-overview-2026-11-07.md:56-56"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-cards-overview-2026-11-07.md",
+      "raw_sha256": "89f3a939f380795cd4dec26681430ce2350294fc10f2befdaef425daed75f0dd",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-cards-overview-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 64
+      }
+    ],
+    "raw/stripe-how-cards-work-2025.md": [
+      {
+        "start": 1,
+        "end": 72
+      }
+    ],
+    "wiki/sources/source-stripe-how-cards-work.md": [
+      {
+        "start": 1,
+        "end": 31
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/51d0a07402d3270e7f02c5f6/content.diff": [
+      {
+        "start": 1,
+        "end": 83
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-cards-overview/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 115
+      },
+      {
+        "start": 116,
+        "end": 152
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 221,
+        "end": 228
+      }
+    ],
+    "wiki/concepts/stripe-payment-methods.md": [
+      {
+        "start": 81,
+        "end": 100
+      }
+    ],
+    "wiki/concepts/stripe-authorization-boost.md": [
+      {
+        "start": 25,
+        "end": 42
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "There\u2019s no guarantee that the card itself is valid yet.",
+      "location": "raw/stripe-how-cards-work-2025.md:16-16"
+    },
+    {
+      "text": "invoice_settings: {",
+      "location": "raw/stripe-how-cards-work-2025.md:46-46"
+    },
+    {
+      "text": "Automatic card updates require",
+      "location": "raw/stripe-how-cards-work-2025.md:59-59"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/cards/overview, the complete November capture describes the same four-step card flow as May: Stripe checks formatting without proving card validity, a bank might require customer authentication, successful authorization holds funds, and capture moves money from the issuing bank to the merchant account (old raw lines 10-28; new raw lines 11-29). It also limits saved-card edits, places the invoice/subscription default PaymentMethod ID on the Customer's invoice_settings.default_payment_method, and distinguishes API-driven from network-driven update events with issuer-participation and fingerprint qualifications (old raw lines 30-66; new raw lines 31-58). source-stripe-how-cards-work.md summarizes those topics but its capture-to-Stripe destination is inaccurate, and its SCA/3DS and named Card Account Updater labels exceed the wording of this overview (source lines 13-27). Formatting, authentication or an authorization hold does not prove capture or payout.",
+    "Q2": "For https://docs.stripe.com/payments/cards/overview, no substantive payment-state or saved-card capability change appears between the paired captures: the differences are wording, headings/emphasis and a May Node SDK Customer-update example replaced by November direct secret-key curl for the same invoice_settings.default_payment_method field (old raw lines 30-66; new raw lines 31-58). This does not deprecate Node, alter Customer versus PaymentMethod identity or make an issuer network update universal. The revised source-stripe-how-cards-work.md preserves both dated raw examples and corrects captured funds from 'Stripe' to the merchant account (old raw line 28; new raw line 29). Authentication is conditional; this overview does not name SCA/3DS or Card Account Updater, so those labels need separate evidence rather than false attribution. Related Cards, Checkout, co-badged and integration-options links are navigation only. Format validation, authorization hold, capture and bank payout are different boundaries, with no individual successful transaction established by either page."
+  }
+}

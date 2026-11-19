@@ -1,0 +1,95 @@
+--- raw/stripe-afterpay-clearpay-messaging-2025.md
++++ raw/stripe-payments-afterpay-clearpay-site-messaging-2026-11-07.md
+@@ -1,7 +1,13 @@
+-# Display Afterpay or Clearpay messaging
++# [Deprecated] Display Afterpay or Clearpay messaging
+ 
+ Inform customers that you accept payments with Afterpay (also known as Clearpay in the UK).
+ 
++The content on this page is deprecated and is superseded by:
++
++- [Payment Method Messaging Element](https://docs.stripe.com/elements/payment-method-messaging.md)
++
++> #### Deprecated
++> 
+ > This doc refers to a *Legacy* (Technology that's no longer recommended) feature that’s no longer available in the latest version of Stripe.js. We recommend you use the [Payment Method Messaging Element](https://docs.stripe.com/elements/payment-method-messaging.md) to dynamically show your customers relevant buy now, pay later payment options for their purchase.
+ 
+ Let your customers know you accept payments with Afterpay by including the Afterpay messaging Element on your site. We suggest adding the messaging Element to your product, cart, and payment pages. The [afterpayClearpayMessage](https://docs.stripe.com/js/elements_object/create_element?type=afterpayClearpayMessage) Element takes care of:
+@@ -33,21 +39,19 @@
+ ```javascript
+ // Set your publishable key. Remember to change this to your live publishable key in production!
+ // See your keys here: https://dashboard.stripe.com/apikeys
+-const stripe = Stripe("<<YOUR_PUBLISHABLE_KEY>>");
++const stripe = Stripe('<<YOUR_PUBLISHABLE_KEY>>');
+ 
+ const elements = stripe.elements();
+ 
+ const options = {
+   amount: 1000, // 10.00 USD
+-  currency: "USD",
++  currency: 'USD'
+ };
+ 
+-const afterpayClearpayMessageElement = elements.create(
+-  "afterpayClearpayMessage",
+-  options,
+-);
++const afterpayClearpayMessageElement =
++  elements.create('afterpayClearpayMessage', options);
+ 
+-afterpayClearpayMessageElement.mount("#afterpay-clearpay-message");
++afterpayClearpayMessageElement.mount('#afterpay-clearpay-message');
+ ```
+ 
+ #### React
+@@ -63,23 +67,18 @@
+ On your product, cart, and payment pages, include the `AfterpayClearpayMessageElement` Component:
+ 
+ ```jsx
+-import {
+-  Elements,
+-  AfterpayClearpayMessageElement,
+-} from "@stripe/react-stripe-js";
+-import { loadStripe } from "@stripe/stripe-js";
++import {Elements, AfterpayClearpayMessageElement} from '@stripe/react-stripe-js';
++import {loadStripe} from '@stripe/stripe-js';
+ 
+ // Set your publishable key. Remember to change this to your live publishable key in production!
+ // See your keys here: https://dashboard.stripe.com/apikeys
+-const stripePromise = loadStripe("<<YOUR_PUBLISHABLE_KEY>>");
++const stripePromise = loadStripe('<<YOUR_PUBLISHABLE_KEY>>');
+ 
+ const ProductDetail = () => (
+   <div>
+     {/* ... */}
+     <Elements stripe={stripePromise}>
+-      <AfterpayClearpayMessageElement
+-        options={{ amount: 1000, currency: "USD" }}
+-      />
++      <AfterpayClearpayMessageElement options={{amount: 1000, currency: 'USD'}} />
+     </Elements>
+   </div>
+ );
+@@ -107,11 +106,11 @@
+ 
+ ## Handle ineligible items
+ 
+-You can’t use Afterpay for certain [prohibited business categories](https://docs.stripe.com/payments/afterpay-clearpay.md#prohibited-business-categories). If you sell items in these categories, you can still display the messaging Element to clearly indicate Afterpay isn’t available.
++You can’t use Afterpay for certain [prohibited business categories](https://docs.stripe.com/payments/afterpay-clearpay.md#prohibited-and-restricted-business-categories). If you sell items in these categories, you can still display the messaging Element to clearly indicate Afterpay isn’t available.
+ 
+ Use the `isEligible` or `isCartEligible` options to indicate that the current product or cart isn’t eligible.
+ 
+-Afterpay also has [default transactions limits](https://docs.stripe.com/payments/afterpay-clearpay.md#collection-schedule) for each country. When the provided `amount` exceeds these limits, the Element automatically displays ineligible price range messaging. You can customize this message by hiding the lower or upper limit with `showLowerLimit` and `showUpperLimit`.
++Afterpay also has [default transactions limits](https://docs.stripe.com/payments/afterpay-clearpay.md#payment-options) for each country. When the provided `amount` exceeds these limits, the Element automatically displays ineligible price range messaging. You can customize this message by hiding the lower or upper limit with `showLowerLimit` and `showUpperLimit`.
+ 
+ ## Locale and currency
+ 
+@@ -121,7 +120,7 @@
+ 
+ Supported currencies: `USD`, `CAD`, `AUD`, `NZD`, `GBP`
+ 
+-Afterpay’s messaging always the appropriate number of installments a user can pay based on their locale and country. For more information, see [payment collection](https://docs.stripe.com/payments/afterpay-clearpay.md#collection-schedule).
++Afterpay’s messaging always the appropriate number of installments a user can pay based on their locale and country. For more information, see [payment collection](https://docs.stripe.com/payments/afterpay-clearpay.md#payment-options).
+ 
+ #### HTML + JS
+ 

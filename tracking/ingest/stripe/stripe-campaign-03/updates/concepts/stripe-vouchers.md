@@ -1,0 +1,123 @@
+---
+title: "Cash Vouchers (Stripe)"
+type: concept
+category: technology
+tags: [stripe, vouchers, boleto, konbini, multibanco, oxxo, cash, in-person, brazil, japan, portugal, mexico]
+---
+
+## Definition
+
+Cash voucher payment methods let customers complete online purchases in-person at authorized locations (convenience stores, ATMs, banks). Customers receive a digital voucher code after checkout and pay with cash at a physical location. Stripe supports four voucher methods.
+
+## Supported Methods
+
+| Method | API enum | Country | Currency | Subscriptions | Invoicing | SetupIntents |
+| --- | --- | --- | --- | --- | --- | --- |
+| Boleto | `boleto` | Brazil | BRL | Yes | Yes | Yes |
+| Konbini | `konbini` | Japan | JPY | send_invoice only | send_invoice only | No |
+| Multibanco | `multibanco` | Portugal | EUR | send_invoice only | send_invoice only | No |
+| OXXO | `oxxo` | Mexico | MXN | No | No | No |
+
+**No manual capture.** Voucher presentation depends on the method and integration. In the dated Boleto guide, Checkout redirects to `hosted_voucher_url`; live Elements/Checkout Sessions API and Elements/Payment Intents API Pay flows redirect to the Boleto website; Direct API `stripe.confirmBoletoPayment()` opens a voucher modal by default. See [[source-stripe-boleto-accept-payment]].
+
+## Payment Flow
+
+1. Customer selects voucher payment at checkout
+2. Customer receives digital voucher with reference code (email or app)
+3. Customer pays in-person with cash at authorized location (convenience store, ATM, bank)
+4. Merchant receives payment notification after the customer pays; timing differs by method. For Konbini, voucher issuance is provisional, while Stripe confirms asynchronously and marks the PaymentIntent succeeded after store cash payment (November 7, 2026 guide).
+
+## Use Cases and Limitations
+
+**Best for**: customers without cards or bank accounts; markets with low card authorization rates (e.g., Mexico).
+
+**Not suitable for**: delivery before payment confirmation, since voucher issuance is not payment. Confirmation timing varies by method; Konbini confirms asynchronously after store cash payment, not after a universal one-business-day delay. Refund support also varies: Konbini supports full and partial bank-transfer refunds with customer action.
+
+## Connect Notes
+
+- Boleto, Multibanco, OXXO: standard Connect support
+- Konbini Connect: the May 7, 2026 guide described an invite for charges made `on_behalf_of` other accounts. The November 7, 2026 guide separately describes a Japanese platform settling destination charges or separate charges and transfers on its own account with its own activation and no `on_behalf_of`; the connected account need not activate Konbini. The own-account route does not establish the current status of the earlier on-behalf-of invite.
+
+## Boleto Details
+
+**Regulated by Central Bank of Brazil**. BR merchants only. BRL only.
+
+**Timing (dated):** The 2026-11-07 overview says confirmation takes **up to one business day**, typically the next business day after payment, and labels settlement **up to two business days (T+2)** without defining its start event. The 2026-05-07 overview says funds become available for payout two business days **after confirmation**. Voucher issue and provisional method access are not paid status; settlement, payout availability and payout arrival are separate.
+
+**Amount limits**: 5.00 – 49,999.99 BRL.
+
+**Refunds and disputes:** Stripe Boleto full/partial refund capability is unsupported; the 2026-05-07 page advises a separate customer-credit process. Customers cannot file standard Boleto chargebacks. Bank-side mishandling can still occur, and Stripe **contacts the merchant with next steps**; the captures do not promise Stripe handles resolution alone.
+
+**Recurring and setup:** Billing/subscriptions, Invoicing, Customer Portal, SetupIntents and PaymentIntents with `setup_future_usage` are listed as supported, but the 2026-11-07 overview excludes **off-session Boleto payments**. The 2026-05-07 subscription guide's `charge_automatically` plus `off_session: true` is a Subscription creation example, not proof of off-session voucher collection; its invoice guide says the customer still must pay each voucher. The overview does not resolve whether that older request remains accepted.
+
+**Integration (2026-05-07 guide)**: 4 paths (Checkout, Elements/Checkout Sessions API, Elements/Payment Intents API, Direct API). Checkout redirects to `hosted_voucher_url` rather than `success_url`; `checkout.session.completed` means voucher creation, `checkout.session.async_payment_succeeded` means payment, and `checkout.session.async_payment_failed` includes expiry or another failure. Both live Elements variants say Pay redirects to the Boleto website; the Payment Intents API client call uses `stripe.confirmPayment` with a `return_url`. Direct API recommends client `stripe.confirmBoletoPayment()` with a voucher modal, permits optional server confirmation, and requires name, email, CPF/CNPJ and Brazilian address. `expires_after_days` is 0–60 days (default 3), expiring at 23:59 America/Sao_Paulo. For a voucher already paid, Direct API says `payment_intent.succeeded` arrives next business day, Monday-Friday excluding Brazilian holidays; funds are not immediately available. The 2026-11-07 capture is variant navigation only. [[source-stripe-boleto-accept-payment]]
+
+**Subscriptions and invoices**: both `send_invoice` and `charge_automatically` are documented. For automatic collection, the Boleto PaymentMethod must be attached and set as the default on a Customers v1 Customer or a customer-configured Accounts v2 Account; the customer name, Brazilian address and tax ID must be available. Accounts v2 uses `customer_account` and `configuration.customer.billing.default_payment_method`, while Customers v1 uses `customer` and `invoice_settings.default_payment_method` (2026-11-07 guide; Accounts v2 preview/version access remains conditional). In `send_invoice`, customers re-enter details and the invoice has a due date; voucher expiration is separate and defaults to three days. Even with `charge_automatically`, Boleto is not an auto-debit: the customer must pay the voucher for success. See [[source-stripe-boleto-invoices]] and [[source-stripe-boleto-subscription]]. The recurring guide requires fresh full name, address and tax ID for each send-invoice period. Its generic Dashboard option to refund a last subscription payment does not establish Boleto refund support; [[source-stripe-boleto]] documents no Boleto refunds.
+
+## Konbini Details
+
+**Japan-only** cash voucher, JPY only, JP merchants only. Pay at FamilyMart, Lawson, Ministop, Seicomart.
+
+**Payment state**: instructions give instant provisional access; payment confirmation is delayed until cash is paid at the store. Stripe then confirms asynchronously and marks the PaymentIntent `succeeded`. The November guide says funds are available for payout after four business days, with settlement on the standard payout schedule; it does not promise an actual payout on day four.
+
+**Amount limits**: 120 JPY – 300,000 JPY.
+
+**Refunds**: full and partial bank-transfer refunds are supported, but cash cannot return to the original source. Stripe emails the customer for bank details; processing waits for the customer's response. Track `Refund.status` and final `refund.updated` or `refund.failed` events; on failure the amount returns to Stripe balance and another refund method is required.
+
+**Billing**: `send_invoice` only (no `charge_automatically`).
+
+**Connect**: the May guide's invite was scoped to `on_behalf_of` charges for other accounts. The November guide adds a Japanese platform own-account destination-charge or separate-charge-and-transfer route using its own Konbini activation without `on_behalf_of`; the connected account need not activate Konbini. Customer Portal remains unsupported in the November product matrix.
+
+**Integration (May detailed path; November product support)**: Checkout, Payment Element, and Direct API are listed; Express Checkout Element is unsupported. The following Checkout and Direct API details remain attributed to the May 7, 2026 integration guide. Checkout: `hosted_voucher_url` redirect (not `success_url`), same 3 async webhook events as Boleto. `expires_after_days`: 1–60 days, default 3, expiry at 23:59:59 JST. `expires_at` (Unix timestamp) mutually exclusive with `expires_after_days`. `product_description`: up to 22 Shift JIS chars shown at kiosk. `confirmation_number`: 10–11 digits (commonly customer phone); all-zeros blocked; if too common → rejected. Direct API: `stripe.confirmKonbiniPayment()`; `next_action.konbini_display_details` has per-store `payment_code` + `confirmation_number`. Expiration buffer prevents premature failures. Refund: customer provides bank account → 45-day timeout → failed.
+
+**Prohibited categories (dated scope)**: the May 7, 2026 guide listed sole proprietors in business under three years and dating sites, plus RMT, gambling, information selling, MLM, gore, unscientific offerings, prohibited medical products, public-order offenses, import forwarding, transfers, loans, vaping and fortune-telling. The November 7, 2026 guide does not repeat the broad under-three-year or dating-site prose; it instead requires a sole proprietor's website to show a physical-premises exterior photo and lists Dating and Escort Services MCC 7273 as prohibited, alongside a table of other prohibited MCCs. Do not infer that omitted categories became eligible. Financial partner and store chains may still reject an application.
+
+## Multibanco Details
+
+**Portugal customers only, EUR only**. 33 merchant countries (Europe + US, includes Gibraltar).
+
+**Two flows**: online banking (entity + reference → log in → pay) and ATM (entity + reference → pay at ATM).
+
+**Confirmation delay**: several days, especially over weekends (bank transfer-based). Konbini also waits for customer action: its voucher instructions give provisional access, and Stripe confirms asynchronously after the customer pays cash at a store; the November guide says notification follows that store payment, not voucher issuance.
+
+**Amount limits**: €0.50 – €99,999.
+
+**Refunds**: **365-day** window. Typically 1 day to customer. `destination_details.multibanco.reference` provides refund identifier.
+
+**No disputes** (customer pushes funds).
+
+**Billing**: `send_invoice` only. No recurring. Capability: `multibanco_payments`.
+
+**Connect**: Direct, Destination, Separate charges and transfers (standard, no invite required).
+
+**Integration**: Checkout, Direct API, iOS/Android SDK. `hosted_voucher_url` redirect. 7-day voucher expiry → `processing` (4-day bank transfer buffer) → `requires_payment_method`. If funds arrive after buffer → Stripe auto-refunds. `stripe.confirmMultibancoPayment()` for web Direct API; email only required. `next_action.multibanco_display_details`: `entity`, `reference`, `expires_at`, `hosted_voucher_url`.
+
+## OXXO Details
+
+**Mexico-only** cash voucher, MXN only, MX merchants only. OXXO convenience stores only.
+
+**Payment confirmation**: next business day (with settled funds).
+
+**Amount limits**: 10.00 – 10,000.00 MXN (lowest ceiling of all 4 vouchers).
+
+**No refunds**. **No disputes**. **No subscriptions or invoicing** (most limited of the 4 vouchers).
+
+**Connect**: Yes (standard, no invite required).
+
+**Integration**: Checkout, Checkout Sessions API, Payment Intents API, Direct API, iOS, Android. `hosted_voucher_url` redirect. `expires_after_days`: 1–7 days (default 3), expiry at 23:59 America/Mexico_City. `stripe.confirmOxxoPayment()` for web Direct API; email only required. `next_action.oxxo_display_details.expires_after` (note: `expires_after`, not `expires_at` as with Multibanco/Konbini).
+
+**Unsupported categories** (4): Direct Marketing - Other, Direct Marketing - Subscription, Gift/Card/Novelty/Souvenir Shops, Service Stations.
+
+## Sources
+
+- [[source-stripe-vouchers]] — hub page: 4 methods, product/API support matrices
+- [[source-stripe-boleto]] — Boleto overview: Brazil BRL voucher, provisional access, asynchronous up-to-one-business-day confirmation, November T+2 settlement versus dated May payout-availability wording, no Stripe refunds or off-session payments
+- [[source-stripe-boleto-accept-payment]] — 2026-05-07 Boleto integration guide: four distinct UI/API paths, voucher creation versus paid state, expiry, Direct API billing/tax ID and cancellation limits; 2026-11-07 capture is variant navigation only
+- [[source-stripe-boleto-subscription]] — Boleto subscriptions: both send_invoice + charge_automatically, tax ID required for auto-charge, setup flow
+- [[source-stripe-boleto-invoices]] — Boleto invoice guide (2026-05-07 and 2026-11-07): send_invoice versus charge_automatically, Customers v1 and preview-qualified customer-configured Accounts v2 examples, invoice finalization versus voucher payment
+- [[source-stripe-konbini]] — Konbini: Japan JPY cash voucher, delayed payment until store cash, asynchronous PaymentIntent success, funds available for payout after four business days; dated eligibility and Connect route differences between May and November 2026
+- [[source-stripe-konbini-accept-payment]] — Konbini integration: Checkout + Direct API, confirmKonbiniPayment(), confirmation_number, product_description, expires_after_days
+- [[source-stripe-multibanco]] — Multibanco: Portugal voucher, 2 flows (online/ATM), delayed confirmation, 365-day refunds, send_invoice only
+- [[source-stripe-multibanco-accept-payment]] — Multibanco integration: 3 paths + mobile, 7-day expiry + 4-day buffer, confirmMultibancoPayment(), entity+reference
+- [[source-stripe-oxxo]] — OXXO: Mexico cash voucher, next-biz-day confirmation, 10–10k MXN, no refunds, no subscriptions, 4 prohibited categories
+- [[source-stripe-oxxo-accept-payment]] — OXXO integration: 4 paths + mobile, confirmOxxoPayment(), expires_after (not expires_at), 1–7 day expiry

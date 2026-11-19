@@ -1,0 +1,160 @@
+{
+  "job_id": "payments-billie-accept-a-payment",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-billie-accept-payment.md": {
+      "job_id": "payments-billie-accept-a-payment",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Accept a Payment with Billie\"\ntype: source\ndate_ingested: 2026-05-06\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/billie/accept-a-payment\"\nraw_files:\n  - \"stripe-billie-accept-payment-2025.md\"\ntags: [stripe, bnpl, billie, buy-now-pay-later, b2b, checkout, payment-intents, elements, mobile]\n---\n\n## Overview\n\nThe May 6, 2026 full guide describes integrating Billie's single-use, business Pay by Invoice method across hosted Checkout, Checkout Sessions with Elements, Payment Intents with Elements, Direct API, iOS, and Android. It gives 7\u2013120 day payment terms and describes customer authorization through a redirect. The November 7 capture at the canonical URL is only a six-destination variant index; it supplies navigation, not refreshed payment behavior, availability, or eligibility. See [[stripe]] and [[stripe-bnpl]].\n\n## Key takeaways from the May 2026 guide\n\n- **Path-specific compatibility:** Hosted Checkout and Checkout Sessions with Elements each list EUR supported and presentment currency, payment mode yes, and setup/subscription modes no. Checkout Session line-item Prices must share one currency; the hosted Checkout section gives a 0.01 EUR minimum. The Payment Intents with Elements section uses EUR in examples, without an Elements-wide EUR-only compatibility statement. Direct API and both mobile sections list country-mapped EUR, SEK, NOK, DKK, GBP, and CHF. These historical path descriptions do not resolve current variant behavior.\n- **Different return destinations:** Hosted Checkout's Session example uses `success_url`. The Checkout Sessions with Elements examples use `return_url`. The Payment Intents with Elements and Direct API redirect-confirmation paths provide `return_url`; the latter also explains a `requires_action` / `redirect_to_url` manual redirect. The iOS section uses an app return URL and callback for webview dismissal. A blanket `return_url` requirement across every path is unsupported.\n- **Separate objects and outcomes:** The May guide creates Checkout Sessions or PaymentIntents on the server, passes a client secret to the client, and then confirms or redirects on the selected path. Creating a Session or Intent, returning to an app or page, or receiving a client callback does not itself establish payment success. For post-payment actions, the guide directs readers to the `payment_intent.succeeded` event rather than a client callback.\n- **Optional manual capture:** In the PaymentIntent section, `capture_method: manual` authorizes first. After successful authorization the Intent reaches `requires_capture`; a capture request must follow within seven days or Stripe cancels the Intent and emits `payment_intent.canceled`. The guide also describes optional cancellation.\n- **Advice and testing:** Unified `line_items` cart data is recommended to maximize approval rates and was marked early access, not a universal required field. The sandbox Billie flow offers an approve/decline test page; the described live path redirects to Billie. The guide's `dahlia` Stripe.js, React package floors, iOS compatibility, and Android 23.7.0 are May examples, not verified November requirements.\n\n## Detail locators\n\n- Hosted Checkout compatibility, Session creation, and `success_url`: [[raw/stripe-billie-accept-payment-2025|May full guide]], lines 22\u201375.\n- Checkout Sessions with Elements compatibility, server-created Session/client secret, and `return_url` examples: same raw, lines 93\u2013208; client confirmation and testing, lines 494\u2013574.\n- Payment Intents with Elements server/client flow, redirect confirmation, events, optional capture, line-item advice, sandbox/live testing, and error codes: same raw, lines 576\u20131170. The error table includes `payment_intent_invalid_currency`, `payment_intent_authentication_failure`, and `payment_intent_redirect_confirmation_without_return_url` for PaymentIntent confirmation.\n- Direct API redirect, status check, country-currency list, and error codes: same raw, lines 1172\u20131407.\n- iOS and Android PaymentIntent/client-secret and SDK examples, callbacks, and country-currency lists: same raw, lines 1409\u20131914.\n\n## Related\n\n- [[source-stripe-billie]] \u2014 Billie product, country, dispute, refund, and Connect details.\n- [[stripe-bnpl]] \u2014 provider BNPL index and reciprocal source route.\n\n## Raw Sources\n\n- [[raw/stripe-billie-accept-payment-2025|Billie accept-payment full guide, fetched 2026-05-06]] \u2014 factual evidence for the dated integration details above.\n\n## Related raw API references\n\n- [[raw/stripe-payments-billie-accept-a-payment-2026-11-07|Billie accept-payment variant index, fetched 2026-11-07]] \u2014 navigation-only capture listing Checkout; Elements via Checkout Sessions API or Payment Intents API; Direct API; iOS; and Android. The linked variants were not fetched in this packet, so this index does not revise the May guide's mechanics or prove current support.\n",
+      "quotes": [
+        {
+          "text": "Learn how to set up your integration with Billie.",
+          "location": "raw/stripe-payments-billie-accept-a-payment-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-billie-accept-a-payment-2026-11-07.md:11"
+        },
+        {
+          "text": "- [Checkout](https://docs.stripe.com/payments/billie/accept-a-payment.md?payment-ui=checkout)",
+          "location": "raw/stripe-payments-billie-accept-a-payment-2026-11-07.md:13"
+        },
+        {
+          "text": "  - [Payment Intents API](https://docs.stripe.com/payments/billie/accept-a-payment.md?payment-ui=elements&api-integration=paymentintents)",
+          "location": "raw/stripe-payments-billie-accept-a-payment-2026-11-07.md:16"
+        },
+        {
+          "text": "  - [Android](https://docs.stripe.com/payments/billie/accept-a-payment.md?payment-ui=mobile&platform=android)",
+          "location": "raw/stripe-payments-billie-accept-a-payment-2026-11-07.md:20"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "billie-accept-bnpl-integration-note",
+            "target_path": "wiki/concepts/stripe-bnpl.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Integration notes**: Payment terms 7\u2013120 days (not just 30). `return_url` required. Manual capture: 7-day window. `line_items` data improves approval rates.",
+            "proposed_markdown": "**Integration notes (May 2026 guide)**: Payment terms 7\u2013120 days (not just 30). Hosted Checkout's example uses `success_url`; Checkout Sessions with Elements examples use `return_url`, and PaymentIntent redirect confirmation provides `return_url`. Optional PaymentIntent manual capture has a 7-day window. Early-access Unified `line_items` data is recommended to improve approval rates. See [[source-stripe-billie-accept-payment]] for path details and the November 2026 navigation-only index.",
+            "quote_indexes": [
+              1,
+              2,
+              3
+            ],
+            "warnings": [
+              "Historical authority: raw/stripe-billie-accept-payment-2025.md:20,49-75,131-165,933-939,1100-1152,1299-1327. New raw/stripe-payments-billie-accept-a-payment-2026-11-07.md:9-20 is navigation only; it does not revalidate these behaviors."
+            ]
+          },
+          {
+            "update_id": "billie-accept-bnpl-source-route",
+            "target_path": "wiki/concepts/stripe-bnpl.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-billie-accept-payment]] \u2014 Billie integration: 7-120 day terms, return_url required, 7-day manual capture, line_items tip",
+            "proposed_markdown": "- [[source-stripe-billie-accept-payment]] \u2014 May 2026 Billie integration guide: 7\u2013120 day terms, path-specific return destinations, optional 7-day PaymentIntent capture; November 2026 variant index is navigation only",
+            "quote_indexes": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Historical authority: raw/stripe-billie-accept-payment-2025.md:20,49-75,131-165,933-939,1100-1152,1299-1327. November index: raw/stripe-payments-billie-accept-a-payment-2026-11-07.md:9-20."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-billie-accept-a-payment-2026-11-07.md",
+      "raw_sha256": "8607971844eb858a8edce21fb3b44a17b6af6ebcad174df881e472c70fd2ced5",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-billie-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 20
+      }
+    ],
+    "raw/stripe-billie-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 1914
+      }
+    ],
+    "wiki/sources/source-stripe-billie-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 29
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/c416d9960dad8fc64cdde069/content.diff": [
+      {
+        "start": 1,
+        "end": 1922
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 12
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 315,
+        "end": 335
+      },
+      {
+        "start": 747,
+        "end": 747
+      }
+    ],
+    "wiki/concepts/stripe-bnpl.md": [
+      {
+        "start": 1,
+        "end": 115
+      },
+      {
+        "start": 240,
+        "end": 268
+      }
+    ],
+    "wiki/sources/source-stripe-billie.md": [
+      {
+        "start": 1,
+        "end": 35
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-billie-accept-a-payment/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 157
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "Billie is a [single-use](https://docs.stripe.com/payments/payment-methods.md#usage) payment method that offers businesses Pay by Invoice where they offer payment terms ranging from 7-120 days.",
+      "location": "raw/stripe-billie-accept-payment-2025.md:20"
+    },
+    {
+      "text": "**Supported currencies**: `eur`",
+      "location": "raw/stripe-billie-accept-payment-2025.md:26"
+    },
+    {
+      "text": "You can create Billie payments in the currencies that map to your country. The default local currency for Billie is `eur`.",
+      "location": "raw/stripe-billie-accept-payment-2025.md:1388"
+    },
+    {
+      "text": "Stripe cancels the PaymentIntent and sends a [payment_intent.canceled](https://docs.stripe.com/api/events/types.md#event_types-payment_intent.canceled) event if the payment isn\u2019t captured during the 7-day window.",
+      "location": "raw/stripe-billie-accept-payment-2025.md:1102"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/billie/accept-a-payment, the complete November capture establishes only a variant index for Checkout, Elements with Checkout Sessions or Payment Intents, Direct API, iOS, and Android (new raw lines 5\u201320). The matched May full guide establishes dated single-use business Pay by Invoice, 7\u2013120 day terms, server-created Session or PaymentIntent/client-secret handoff, client confirmation and redirect, and event-based outcome handling (old raw lines 20\u201341, 131\u2013165, 813\u2013835, 933\u2013939, 1082\u20131094). Checkout and Checkout Sessions compatibility says EUR and payment mode only; Direct API and mobile give broader country-currency lists (old raw lines 22\u201341, 101\u2013118, 1388\u20131395, 1657\u20131664, 1877\u20131884). The sole mapped source-stripe-billie-accept-payment.md overstates EUR across Elements and `return_url` across paths and omits mobile routes (current source lines 13\u201325). A Session, Intent, client secret, redirect, callback, and `payment_intent.succeeded` are distinct artifacts or states; the index confirms no current success or eligibility.",
+    "Q2": "At https://docs.stripe.com/payments/billie/accept-a-payment, the November capture is a presentation and navigation change, with six variant destinations replacing the combined May guide in this capture (new raw lines 9\u201320; diff lines 3\u201321 and 1915\u20131922). No substantive payment behavior, currency, availability, or deprecation change is established. source-stripe-billie-accept-payment.md should preserve May-dated terms, path-specific currency matrices, optional seven-day PaymentIntent manual capture and cancellation, early-access line-item recommendation, sandbox approve/decline versus live Billie redirect, and webhook/event outcome boundary (old raw lines 20\u201341, 1082\u20131158, 1388\u20131395, 1657\u20131664, 1877\u20131884). Hosted Checkout shows `success_url`, embedded Checkout Sessions shows `return_url` in examples, and PaymentIntent redirect confirmation supplies `return_url` (old raw lines 49\u201375, 131\u2013165, 933\u2013939, 1299\u20131327). The BNPL concept's two unqualified `return_url` claims need reciprocal correction. May `dahlia`, React, iOS, and Android 23.7.0 examples remain dated; neither client return nor mobile callback establishes settlement or current SDK requirements."
+  }
+}

@@ -1,0 +1,43 @@
+---
+title: "Stripe — Payment Element Across Multiple Processors"
+type: source
+date_ingested: 2026-05-11
+date_updated: 2026-11-15
+original_format: webpage
+canonical_url: https://docs.stripe.com/payments/forwarding-third-party-processors
+raw_files:
+  - "stripe-payments-forwarding-third-party-processors-2026-11-07.md"
+  - "stripe-forwarding-third-party-2026.md"
+tags: [stripe, vault-and-forward, payment-element, multiprocessor, create-payment-method]
+---
+
+## Summary
+
+This Stripe guide describes collecting card details with Payment Element, creating a Stripe PaymentMethod on the client, then asking a merchant server to create a ForwardingRequest for a configured third-party processor. Stripe forwarding access and destination configuration require contacting Stripe support. The November 2026 capture adds an explicit relay diagram: Stripe sends card data to the processor, receives its response, redacts **identified** PCI-sensitive data and relays the response to the merchant server. That diagram does not claim exhaustive redaction or a successful processor charge. [May raw lines 4-17, 189-191; November raw lines 5-29, 197-200]
+
+## Flow and boundaries
+
+1. On the client, set up Payment Element with `mode: 'payment'` and `paymentMethodCreation: 'manual'`. After form submission, call `elements.submit()`, then `stripe.createPaymentMethod({ elements, params })`; handle immediate collection or creation errors. These examples use Stripe.js and React variants, and their sample 1099 USD amount is an example, not a required processor amount. [May raw lines 15-187; November raw lines 27-195]
+2. Send the resulting **PaymentMethod ID** to the merchant server. The client sample calls `/create-forwarding-request`; the server, rather than the browser, owns the forwarding request and destination credentials. Creating a PaymentMethod is collection/tokenization, not a Stripe PaymentIntent confirmation or a third-party authorization. [May raw lines 70-105, 147-174; November raw lines 82-118, 148-182]
+3. After Stripe support configures the destination, the server sample calls `stripe.forwarding.requests.create` with `payment_method`, destination `url`, destination API and idempotency headers, a JSON request body with blank card fields, and `replacements` for `card_number`, `card_expiry`, `card_cvc` and `cardholder_name`. It instructs testing a destination endpoint before connecting the third-party processor. The destination contract and credentials are example-specific; no actual merchant access or successful forwarding was tested here. [May raw lines 189-240; November raw lines 197-242]
+4. The November diagram says the processor responds to Stripe, which redacts identified PCI-sensitive data and relays a response to the server; the server then handles the client result. The server example checks `forwardedReq.response_details.status`, parses `response_details.body` on its 200 branch, and catches errors; the client example branches on error or status. These branches demonstrate response handling, not a guarantee that the processor accepted, captured or settled a payment. [November raw lines 15-25, 244-279; May raw lines 242-277]
+
+**200 response qualification.** The related May Vault and Forward guide says Stripe treats **a response received from the destination endpoint** as success at the forwarding API layer and returns HTTP 200 even if that destination responded 400; it says the destination response code and message are in the response body. This condition is narrower than “Stripe always returns 200.” The integration sample separately checks `response_details.status` and catches request errors. Keep the forwarding HTTP result, destination response details, and actual processor payment outcome distinct. [Related May Vault and Forward raw lines 289-293, 748-756; November raw lines 244-257]
+
+**No Stripe payment conclusion.** The related guide says Vault and Forward does not confirm or capture Stripe PaymentIntents; using a separate processor requires care to avoid duplicate capture, and post-transaction refunds or disputes belong with that processor. A PaymentMethod ID, ForwardingRequest, redacted relay or HTTP 200 therefore does not establish a Stripe or third-party payment success. [Related May Vault and Forward raw lines 22-34, 287-293, 748-756]
+
+## Capture comparison
+
+The May 11 and November 7, 2026 captures keep the same client calls, forwarding request fields and response branches. Most visible changes are code quote/indentation/wrapping. November turns the earlier diagram reference into an explicit seven-step text diagram with the identified-PCI-data redaction boundary. Neither capture states a new required SDK version or changed API contract. [May raw lines 13-277; November raw lines 15-279]
+
+## Related
+
+- [[stripe]] — Stripe company context.
+- [[stripe-vault-and-forward]] — forwarding concept and reciprocal source route.
+- [[source-stripe-vault-and-forward]] — related Vault and Forward API guide; the conditional destination-response HTTP 200 rule is sourced there.
+
+## Raw Sources
+
+- [[raw/stripe-payments-forwarding-third-party-processors-2026-11-07|November 7, 2026 Payment Element multiprocessor guide]] — full capture with explicit relay/redaction diagram.
+- [[raw/stripe-forwarding-third-party-2026|May 11, 2026 Payment Element multiprocessor guide]] — prior full guide capture with the same core request flow.
+- [[raw/stripe-vault-and-forward-2026|May 11, 2026 related Vault and Forward API guide]] — fully read supporting authority for the conditional HTTP 200, no Stripe capture, and post-transaction boundaries.

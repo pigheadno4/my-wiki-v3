@@ -7,7 +7,7 @@ tags: [stripe, authorization-boost, adaptive-acceptance, card-account-updater, n
 
 ## Definition
 
-Authorization Boost is Stripe's suite of AI-driven features that improve card-not-present (CNP) payment success rates and, for IC+ pricing customers, reduce network costs. Accessible via Dashboard → Optimization page.
+Authorization Boost is Stripe's suite of card-not-present (CNP) payment optimization features. Adaptive Acceptance uses AI to reformat and selectively retry requests; card account updater uses card-network updater services, and network tokens use network-issued credentials. The Optimization Dashboard estimates recovery and, for IC+ businesses, potential network cost savings. These are not guaranteed outcomes or evidence that a feature is enabled for a particular merchant.
 
 > Stripe doesn't guarantee outcomes. Calculations are probabilistic estimates.
 
@@ -59,8 +59,8 @@ Substitutes raw card numbers with network-issued tokens. Tokens stay current eve
 - Per-feature breakdown: recovered volume, recovered payments, success rate increase, cost savings
 - "Show summary" toggle for aggregate view
 - Download with per-payment detail + likelihood estimates
-- Cost savings shown only if ≥ $100 USD equivalent in last 12 months (IC+ only)
-- Success rate chart: raw rate (not deduplicated), blue dotted line = estimated rate without optimizations
+- Cost-savings estimates for IC+ businesses appear after at least 100 USD equivalent across Adaptive Acceptance and network tokens in the last 12 months. The Dashboard displays these estimates only for domestic US and Canada payments, though savings might also occur elsewhere; token-related fees such as VDCU are excluded and can reduce net benefit.
+- Payment-success-rate chart: CNP payments only; raw rate counts all attempts for the same purchase, whereas the deduplicated rate uses the final purchase outcome. The blue dotted line is an estimated rate without optimizations, not a measured control group.
 
 ## A/B Test Before Buying
 
@@ -74,18 +74,18 @@ Run a **30-day A/B test** (free; only billed for already-enabled features) to me
 
 ## Stripe Recommendations (General)
 
-Stripe surfaces up to 3 recommendations at a time on the Acceptance page, updated daily. Each includes an estimated annual revenue impact (recent month × avg increase × 12). Not professional advice.
+Stripe surfaces zero to three account-dependent recommendations at a time on the Acceptance page and updates them daily. Each has an **estimated impact**, which can be a revenue/payment-volume increase **or** fraud-model improvement; only applicable revenue estimates use recent monthly all or relevant volume × average increase × 12 with a stable-volume assumption. They are suggestions for business review, not professional advice or guaranteed outcomes. See [[source-stripe-payments-recommendations]] (May/November 2026 captures).
 
 **Five recommendation types**:
 
-1. **NTID for MIT payments**: supply network transaction ID from prior on-session transaction to reduce 3DS triggers on off-session payments
+1. **NTID for MIT payments**: on an off-session merchant-initiated transaction, a prior on-session transaction or validation **from the same customer** can provide the network transaction ID. Stripe says it handles this when all payments pass through Stripe; with other processors it may lack the ID unless supplied at PaymentIntent creation. The reported authorization and 3DS effects are recommendations, not guaranteed results.
 2. **Share postal codes for Visa credit**: enables AVS → more favorable interchange rates in US
 3. **Remove blunt AVS/CVC Radar rules**: replace `Block if CVC verification fails` + `Block if postal code verification fails` with risk-score variants
-4. **Reduce 3DS on low-risk transactions**: unnecessary 3DS hurts success rates outside SCA regions; use Radar Authentication control for automatic targeting
+4. **Reduce optional 3DS on low-risk transactions**: the captured guide recommends limiting requests outside regions with authentication requirements; API-requested 3DS and Dashboard Radar rules are separate controls. Payments that require 3DS by regulation remain subject to it. Radar Authentication control is a separate option for Stripe to request 3DS when it might reduce fraud.
 5. **Fix 3DS integration**: high abandonment rate signals an integration issue
 
 ## Sources
 
 - [[source-stripe-payments-optimization]] — primary: Authorization Boost features, probabilistic calculation methodology, IC+ cost savings, dashboard features
 - [[source-stripe-authorization-boost-ab-test]] — A/B test guide: 30-day test design, CAU exception, cancel/cooldown rules, 37-day results, impact formula
-- [[source-stripe-payments-recommendations]] — General recommendations: NTID, AVS/Visa, Radar rule swap, 3DS reduction, 3DS integration check
+- [[source-stripe-payments-recommendations]] — May/November 2026 general recommendations: conditional revenue or fraud-model estimates, NTID, AVS/Visa, Radar rules, optional 3DS and integration review

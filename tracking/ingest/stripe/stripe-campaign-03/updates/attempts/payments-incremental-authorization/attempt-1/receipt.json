@@ -1,0 +1,159 @@
+{
+  "job_id": "payments-incremental-authorization",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-incremental-authorization.md": {
+      "job_id": "payments-incremental-authorization",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe \u2014 Incremental Authorization (Online)\"\ntype: source\ndate_ingested: 2026-05-11\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/incremental-authorization\"\nraw_files:\n  - \"stripe-incremental-authorization-2026.md\"\ntags: [stripe, incremental-authorization, capture, payment-intents, checkout, ic-plus, sca, visa, mastercard]\n---\n\n## Summary\n\n[[stripe]] incremental authorization increases the authorized amount on a **confirmed, uncaptured PaymentIntent** before capture. The detailed workflow and constraints below come from the 2026-05-11 three-variant guide; the 2026-11-07 base-URL capture is only an index of Stripe-hosted, full embedded, and advanced web variants. The linked November variants were not captured here, so this index does not renew the May eligibility, sample code, or API claims. See [[stripe-incremental-authorization]].\n\n## Statement Behavior\n\n- Before capture, each successful increment appears as a separate pending card statement entry (for example, a 10 USD authorization incremented to 15 USD appears as 10 USD plus 5 USD pending entries).\n- After capture, the pending entries are removed and one final captured-amount entry appears. This describes statement presentation, not settlement or funds availability.\n\n## Availability (2026-05-11 guide)\n\nStripe describes this as an **IC+ pricing** feature; standard-pricing users are directed to contact support for access. Card network, merchant country, payment type, category, and issuer conditions apply. Requesting the feature does not establish account eligibility.\n\n| Network | Merchant country | Payment type | Merchant categories or qualification |\n| --- | --- | --- | --- |\n| Visa | Global | All card payment types | All categories |\n| Mastercard | Global except MX users and JPY transactions for JP users | All card payment types | All categories |\n| American Express | Global | All card payment types | All categories; some issuers return `unavailable` |\n| Discover | Global | All card payment types | Listed travel, transportation, grocery, EV charging, dining, rental, parking, amusement, and recreation categories |\n| Discover | Global | Card not present | Taxicabs and limousines |\n| Diners Club (beta, through Discover) | US, CA, UK | Card present | Listed travel and entertainment categories |\n| Diners Club (beta, through Discover) | Global | Card not present | Listed categories including taxicabs and limousines |\n| UnionPay and JCB (beta, through Discover) | Global | Card not present | Listed categories including taxicabs and limousines |\n\nThe detailed category inventory is in the May raw at `raw/stripe-incremental-authorization-2026.md:28-55,605-632`. The guide says an attempt outside its criteria errors. Its leading bullet lists only Visa, Mastercard, American Express, and Discover, followed by the separate limited-support beta rows; do not treat the beta rows as universal current access.\n\n## Prerequisites and integration paths (2026-05-11 guide)\n\n- For **Stripe-hosted Checkout**, the guide requires a server-created Checkout Session with `mode=payment` and `capture_method=manual`, requests `payment_method_options.card.request_incremental_authorization=if_available`, then redirects to the Session URL. Its hosted example also includes embedded mount/return material; keep those UI instructions scoped to their respective variants.\n- For **full embedded Checkout**, the guide again requires `mode=payment` and manual capture, sets `ui_mode=embedded_page`, returns the Session `client_secret` from the server, and mounts Checkout with Stripe.js or React. The return page can retrieve Session status (`complete` or `open` in the example), but a return or completed Session is not evidence of a later increment or capture.\n- For the **advanced/Elements path**, the guide creates and confirms a card PaymentIntent with `capture_method=manual` and `request_incremental_authorization=if_available`. Increment only after confirmation while it remains uncaptured; use the PaymentIntent update method instead to adjust amount before confirmation. The guide also describes `never` as disabling future increments.\n- **Internal sample conflict**: the May prose explicitly requires `capture_method=manual` for Checkout, while its hosted and embedded Checkout Session creation snippets omit that parameter. Preserve the prose prerequisite; the snippets do not demonstrate that automatic capture works.\n\nAfter the Checkout Session or PaymentIntent confirmation, check the **latest Charge** at `latest_charge.payment_method_details.card.incremental_authorization.status` for `available` or `unavailable`. The May guide says it is `unavailable` if the feature was not requested. `if_available` is a request, not proof of support.\n\n## Increment and capture (2026-05-11 guide)\n\nCall `POST /v1/payment_intents/{id}/increment_authorization` on the confirmed, uncaptured PaymentIntent with `amount` equal to the **new total authorization**, not the increment delta. The May guide allows a maximum of **10 incremental authorization attempts per PaymentIntent**, including failed attempts; it does not promise ten successful increments. Each individual increment is capped at the greater of 500 USD (or local equivalent) above, or 500% above, the previously authorized amount.\n\nA successful increment returns a PaymentIntent with the increased amount. On `card_declined`, the previous authorized amount remains capturable and accompanying updates to fields such as metadata, application fee, transfer data, description, and descriptor are not saved. Capture separately with the PaymentIntent capture endpoint before the **original** authorization expires; increments do not extend its validity period. Neither a feature-availability status nor an increased authorization demonstrates capture, settlement, or funds availability.\n\n## SCA and customer disclosure (2026-05-11 guide)\n\nWhen both business and cardholder are in SCA countries, the May guide says requesting the feature at initial authorization configures the payment method for future off-session use. Initial authorization requires 3DS; later increments are merchant-initiated and may be SCA-exempt, but merchant-initiated transactions do not benefit from the described 3DS liability shift. Disclose saved off-session use during the initial transaction. The guide separately discusses customer agreement, records, estimated-amount notice, and network-rule compliance; these remain dated guidance, not a current legal determination.\n\n## Related\n\n- [[stripe-terminal-incremental-authorizations]] \u2014 separate in-person Terminal variant.\n- [[stripe-extended-authorization]] \u2014 separate feature for a longer authorization window.\n\n## Raw Sources\n\n- [[raw/stripe-incremental-authorization-2026|2026-05-11 detailed guide]] \u2014 full historical capture of all three UI variants (771 lines); factual source for this page.\n\n## Related raw API references\n\n- [[raw/stripe-payments-incremental-authorization-2026-11-07|2026-11-07 base-URL variant index]] \u2014 navigation-only capture listing Stripe-hosted, full embedded, and advanced web URLs; the variant pages themselves were not read and this index supplies no refreshed behavior or API evidence.\n",
+      "quotes": [
+        {
+          "text": "Increase an existing authorization on a confirmed PaymentIntent before you capture it.",
+          "location": "raw/stripe-payments-incremental-authorization-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-incremental-authorization-2026-11-07.md:11"
+        },
+        {
+          "text": "[Stripe-hosted page](https://docs.stripe.com/payments/incremental-authorization.md?platform=web&ui=stripe-hosted)",
+          "location": "raw/stripe-payments-incremental-authorization-2026-11-07.md:13"
+        },
+        {
+          "text": "[Full embedded page](https://docs.stripe.com/payments/incremental-authorization.md?platform=web&ui=embedded-page)",
+          "location": "raw/stripe-payments-incremental-authorization-2026-11-07.md:14"
+        },
+        {
+          "text": "[Advanced integration](https://docs.stripe.com/payments/incremental-authorization.md?platform=web&ui=elements)",
+          "location": "raw/stripe-payments-incremental-authorization-2026-11-07.md:15"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "incremental-auth-beta-card-present",
+            "target_path": "wiki/concepts/stripe-incremental-authorization.md",
+            "update_kind": "durable_fact",
+            "anchor": "- Beta (Diners Club, UnionPay, JCB): same T&E categories via Discover, CNP only",
+            "proposed_markdown": "- Beta via Discover (2026-05-11 guide): Diners Club supports card-present payments in US/CA/UK for listed categories and card-not-present payments globally for listed categories including taxicabs; UnionPay and JCB have listed card-not-present support. These are dated guide conditions, not current account eligibility.",
+            "quote_indexes": [
+              1,
+              4
+            ],
+            "warnings": [
+              "Baseline correction from raw/stripe-incremental-authorization-2026.md:46-55,623-632; November raw/stripe-payments-incremental-authorization-2026-11-07.md:9-15 is navigation only and does not refresh eligibility."
+            ]
+          },
+          {
+            "update_id": "incremental-auth-ten-attempts",
+            "target_path": "wiki/concepts/stripe-incremental-authorization.md",
+            "update_kind": "durable_fact",
+            "anchor": "- Max 10 increments per PaymentIntent",
+            "proposed_markdown": "- Max 10 incremental authorization **attempts** per PaymentIntent, including failed attempts (2026-05-11 guide)",
+            "quote_indexes": [
+              0,
+              1
+            ],
+            "warnings": [
+              "The prior wording promises ten successful increments; raw/stripe-incremental-authorization-2026.md:333-349,542-558,729-745 explicitly limits attempts. raw/stripe-payments-incremental-authorization-2026-11-07.md:9-15 is navigation only."
+            ]
+          },
+          {
+            "update_id": "incremental-auth-concept-route",
+            "target_path": "wiki/concepts/stripe-incremental-authorization.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-incremental-authorization]] \u2014 full guide with availability tables, SCA rules, API limits, test cards",
+            "proposed_markdown": "- [[source-stripe-incremental-authorization]] \u2014 2026-05-11 three-variant guide for Checkout and advanced PaymentIntent prerequisites, dated eligibility, SCA and increment/capture limits; 2026-11-07 base-URL capture is only a variant index",
+            "quote_indexes": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Historical factual authority raw/stripe-incremental-authorization-2026.md:8-771; navigation-only index raw/stripe-payments-incremental-authorization-2026-11-07.md:9-15. The three linked November variant pages were not captured."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-incremental-authorization-2026-11-07.md",
+      "raw_sha256": "66e4ab2c78fb5fee6fa3fb22494dec326853a68482c0eb6f1a50208e8fbc9089",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-incremental-authorization-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-incremental-authorization-2026.md": [
+      {
+        "start": 1,
+        "end": 771
+      }
+    ],
+    "wiki/sources/source-stripe-incremental-authorization.md": [
+      {
+        "start": 1,
+        "end": 64
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/17a543403c1b0b9aa78e1ff1/content.diff": [
+      {
+        "start": 1,
+        "end": 774
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-incremental-authorization/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 190
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 45
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 568,
+        "end": 576
+      },
+      {
+        "start": 706,
+        "end": 713
+      }
+    ],
+    "wiki/concepts/stripe-incremental-authorization.md": [
+      {
+        "start": 1,
+        "end": 67
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "You have a maximum of 10 incremental authorization attempts per PaymentIntent.",
+      "location": "raw/stripe-incremental-authorization-2026.md:337"
+    },
+    {
+      "text": "You can only perform incremental authorizations on uncaptured payments after [PaymentIntent confirmation](https://docs.stripe.com/api/payment_intents/confirm.md).",
+      "location": "raw/stripe-incremental-authorization-2026.md:678"
+    },
+    {
+      "text": "The PaymentIntent object remains capturable for the previously authorized amount.",
+      "location": "raw/stripe-incremental-authorization-2026.md:347"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/incremental-authorization, the complete November capture states the purpose\u2014raise an existing authorization on a confirmed PaymentIntent before capture\u2014and directs readers to Stripe-hosted, full embedded, or advanced web variants (new raw lines 5-15). It establishes no fresh eligibility or execution contract. The May capture supplies IC+ and card/category conditions, Checkout payment-mode and manual-capture prerequisites, and the advanced confirmed, uncaptured card PaymentIntent path (old raw lines 14-55,383-395,668-701). After requesting if_available, check latest Charge card incremental_authorization.status; call the PaymentIntent increment endpoint with a new total and capture separately before the original hold expires (old raw lines 163-187,333-363,701-758). source-stripe-incremental-authorization.md retained much of this guide, but its ten-increment wording and omitted state prerequisites required correction.",
+    "Q2": "For https://docs.stripe.com/payments/incremental-authorization, the November capture is a navigation-only variant index (new raw lines 9-15); the diff is predominantly the May guide's three detailed variants being replaced at the base URL (old raw lines 8-771). No substantive new network rule, API parameter, limit, UI behavior, or availability is demonstrated. Keep dated IC+ conditions, beta rows, SCA/3DS and merchant-initiated liability qualifications, ten-attempt maximum, cap and failure behavior, and separate capture deadline in source-stripe-incremental-authorization.md (old raw lines 14-91,333-375,592-666,729-771). The old Checkout creation examples omit manual capture despite explicit prose requiring it (old raw lines 20,134-155,389,484-507), so the source carries that conflict. Its hosted section also contains embedded mount and return snippets; UI labels must remain variant-scoped. A Checkout return, available status, or increased authorization does not establish capture, settlement, or funds availability. The linked November variant pages were not read, and the November index must not be treated as behavioral authority."
+  }
+}

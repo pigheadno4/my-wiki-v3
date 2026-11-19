@@ -1,0 +1,11 @@
+--- wiki/concepts/stripe-currency-selector-element.md
++++ tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-currency-selector-element.md
+@@ -13,7 +13,7 @@
+ 
+ > Only works with Checkout Sessions API (`ui_mode: 'elements'` + `initCheckoutElementsSdk`).
+ 
+-To display currency options on this Checkout Sessions Elements path, the November 2026 guide says to enable Adaptive Pricing, set `adaptivePricing.allowed` to `true` **in the Checkout Session**, and use an integration or price currency eligible for settlement by the merchant of record. The April capture already restricted the selector to Checkout Sessions; these new display prerequisites do not imply PaymentIntents support or account-specific eligibility. See [[source-stripe-currency-selector-element]] (https://docs.stripe.com/elements/currency-selector-element; April `raw/stripe-currency-selector-element-2025.md:8-10`; November `raw/stripe-elements-currency-selector-element-2026-11-07.md:11-21`).
++To display currency options on this Checkout Sessions Elements path, the November Adaptive Pricing configuration section puts client readiness at `adaptivePricing: { allowed: true }` in `initCheckoutElementsSdk` or `CheckoutElementsProvider` options, and uses Dashboard settings or per-Session `adaptive_pricing.enabled` to enable Adaptive Pricing. The integration or price currency must be eligible for settlement by the merchant of record, the customer cross-border, and the currency pair supported. Its troubleshooting bullet says the Checkout Session includes camel-case `adaptivePricing.allowed`, which conflicts with the explicit client versus Session configuration; treat that bullet's field placement as unresolved rather than a separate verified Session recipe. These conditions do not imply Payment Intents support or account-specific eligibility. See [[source-stripe-currency-selector-element]] for the selector guide and [[source-stripe-adaptive-pricing-elements]] for the November configuration (`raw/stripe-payments-custom-localize-prices-adaptive-pricing-2026-11-07.md:108-115,132-164`).
+ 
+ Initialized from the checkout instance, not from `elements.create(...)`:
+ 

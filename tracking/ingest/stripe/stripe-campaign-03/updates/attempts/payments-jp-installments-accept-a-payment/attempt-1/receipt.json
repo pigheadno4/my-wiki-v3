@@ -1,0 +1,207 @@
+{
+  "job_id": "payments-jp-installments-accept-a-payment",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-jp-installments-accept-payment.md": {
+      "job_id": "payments-jp-installments-accept-a-payment",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Accept Installment Card Payments (Japan)\"\ntype: source\ndate_ingested: 2026-05-01\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/jp-installments/accept-a-payment\"\nraw_files:\n  - \"stripe-jp-installments-accept-payment-2025.md\"\ntags: [stripe, japan, installments, checkout, payment-element, payment-intents, invoices, payment-links]\n---\n\n## Summary and evidence boundary\n\nThe full guide captured **2026-05-01** describes Japan installment card payments through Checkout, Payment Element, Direct Payment Intents API, Invoices, and Payment Links, with sandbox card examples. It points to separate Japan installment compatibility requirements; see [[stripe-jp-installments]] and [[source-stripe-jp-installments]] for the dated JP account, card, currency, plan, and bonus-window context.\n\nThe **2026-11-07** canonical capture at this URL is a variant index with links for Checkout, Elements, Direct API, Invoices, and No code/Payment Links. It provides no implementation parameters, eligibility, test-card behavior, or payment outcome. The instructions below remain attributed to the May full guide; the November index does not establish that any variant was removed, changed, or currently available to a particular account.\n\n## Checkout and Payment Element \u2014 May 2026 guide\n\n- **Checkout:** For dynamic payment methods, the May guide says installments appear automatically. Otherwise its server Checkout Session example sets `payment_method_options.card.installments.enabled: true`. Installments are for Session `payment` mode, not `setup` or `subscription`. Creating the Session and redirecting to its URL are steps in checkout, not payment-success evidence.\n- **Payment Element:** The same dynamic-method distinction applies when creating the server PaymentIntent: installments appear automatically with dynamic payment methods, so **omit** `payment_method_options[card][installments][enabled]` entirely. With a non-dynamic configuration, the example sets it to `true`. Setting it to `false` with dynamic methods may cause errors. Return the PaymentIntent client secret to the browser, initialize Elements, and use `confirmPayment` with the Payment Element and a `return_url`. A `processing_error` or `transaction_not_allowed` decline may mean the issuer does not support the selected plan; the guide says to retry with another plan or without installments.\n\n## Direct API \u2014 May 2026 guide\n\n1. Collect card details in browser Stripe.js and a Card Element, then create a PaymentMethod with the publishable key; load Stripe.js directly from `js.stripe.com`.\n2. Send the PaymentMethod ID to the server. Create a JPY PaymentIntent with the card installment option enabled for this Direct API example, but **do not confirm it yet**; return its ID and `payment_method_options.card.installments.available_plans` for this card. The example's plan counts are illustrative, not a guarantee for every issuer or card.\n3. Let the customer choose a returned plan or immediate payment on the client and send that selection to the server.\n4. Confirm the PaymentIntent on the server with the selected `payment_method_options.card.installments.plan`, and inspect the returned status. After a plan is set, it persists until explicitly unset. If a card with an installment plan declines and the customer retries with a card without installments, explicitly unset the plan when confirming again.\n\nPlan availability, selection, or a confirmation request does not establish a successful charge. The May example displays a success message only for a returned `succeeded` status.\n\n## Invoices and Payment Links \u2014 May 2026 guide\n\n- **Invoices:** Installments apply to individual invoices, not subscriptions. The guide requires `collection_method: 'send_invoice'`, not `charge_automatically`. An API example uses `customer_account` for a customer-configured Account or `customer` for a Customer, with a Price and card installments enabled in invoice payment settings. The customer chooses a plan on the hosted invoice page; after payment, the guide retrieves the Invoice's PaymentIntent to inspect the selected plan. Invoice creation or delivery alone is not payment.\n- **Payment Links:** The May guide says installments can be enabled or disabled in Dashboard payment-method settings and are enabled by default for that route. This is dated guide text, not a fresh November settings check.\n\n## Sandbox examples \u2014 May 2026 guide\n\n| Brand | Success test card | Failure test card |\n| --- | --- | --- |\n| Visa | `4000003920000003` | `4000003920000029` (`card_declined`) |\n| Mastercard | `5200003920000008` | \u2014 |\n| JCB | `3530111333300000` | \u2014 |\n| Diners | `36000039200009` | \u2014 |\n\nPaymentMethod examples: `pm_card_jp`, `pm_card_jp_mastercard`, `pm_card_jcb`, `pm_card_jp_diners`, and declined `pm_card_jp_visa_installmentsDeclined`. The declined Visa example can return available plans before the issuer declines the transaction; plan availability is not authorization.\n\n## Related Pages\n\n- [[stripe]] \u2014 company overview\n- [[stripe-jp-installments]] \u2014 Japan requirements, brand support, and bonus windows\n- [[stripe-installments]] \u2014 wider installments family\n- [[source-stripe-jp-installments]] \u2014 dated Japan installment properties and eligibility\n\n## Raw Sources\n\n- [[raw/stripe-jp-installments-accept-payment-2025|Full multi-variant guide captured 2026-05-01]]\n\n## Related raw API references\n\n- [[raw/stripe-payments-jp-installments-accept-a-payment-2026-11-07|Canonical variant-navigation index captured 2026-11-07]] \u2014 links to Checkout, Elements, Direct API, Invoices, and No code/Payment Links; no variant implementation behavior is established by this index.\n",
+      "quotes": [
+        {
+          "text": "# Accept installment card payments",
+          "location": "raw/stripe-payments-jp-installments-accept-a-payment-2026-11-07.md:5"
+        },
+        {
+          "text": "Learn how to accept credit card payments using installments across a variety of Stripe products.",
+          "location": "raw/stripe-payments-jp-installments-accept-a-payment-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-jp-installments-accept-a-payment-2026-11-07.md:11"
+        },
+        {
+          "text": "[Direct API](https://docs.stripe.com/payments/jp-installments/accept-a-payment.md?payment-ui=direct-api)",
+          "location": "raw/stripe-payments-jp-installments-accept-a-payment-2026-11-07.md:15"
+        },
+        {
+          "text": "[No code](https://docs.stripe.com/payments/jp-installments/accept-a-payment.md?payment-ui=payment-links)",
+          "location": "raw/stripe-payments-jp-installments-accept-a-payment-2026-11-07.md:17"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "payments-jp-installments-accept-a-payment-jp-concept-route",
+            "target_path": "wiki/concepts/stripe-jp-installments.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-jp-installments-accept-payment]] \u2014 integration guide: Checkout, Payment Element, Direct API (4-step), Invoices, Payment Links; test cards",
+            "proposed_markdown": "- [[source-stripe-jp-installments-accept-payment]] \u2014 2026-05-01 full integration guide for Checkout, Payment Element, Direct API, Invoices, Payment Links and sandbox cards; its 2026-11-07 canonical capture is only a five-variant navigation index. With dynamic payment methods, the May guide says installments appear automatically and the `enabled` field is omitted in the PaymentIntent path.",
+            "quote_indexes": [
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "The November raw lines 9-17 are navigation only; all behavior in this replacement comes from old raw lines 28-55, 82-106, 124-487, 489-763. The May source's prior unconditional enabled:true summary conflicted with old raw lines 30, 84, 106 and is corrected in the proposed source. Do not infer current variant behavior from the index."
+            ]
+          },
+          {
+            "update_id": "payments-jp-installments-accept-a-payment-family-concept-route",
+            "target_path": "wiki/concepts/stripe-installments.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-jp-installments-accept-payment]] \u2014 Japan installments integration guide: Checkout/Elements/Direct API/Invoices/Payment Links",
+            "proposed_markdown": "- [[source-stripe-jp-installments-accept-payment]] \u2014 2026-05-01 Japan installment integration guide for Checkout, Elements, Direct API, Invoices and Payment Links; the 2026-11-07 capture at its canonical URL supplies variant navigation only.",
+            "quote_indexes": [
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Old raw lines 14-763 provide the full five-route guide and test examples. New raw lines 9-17 identify variant URLs only and do not refresh parameter, eligibility, or outcome claims."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-jp-installments-accept-a-payment-2026-11-07.md",
+      "raw_sha256": "6f5e9b494a589b13fa82bf76b81e6744c1fc525989164a43a7758f33d59871b0",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-jp-installments-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "raw/stripe-jp-installments-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 110
+      },
+      {
+        "start": 111,
+        "end": 220
+      },
+      {
+        "start": 221,
+        "end": 330
+      },
+      {
+        "start": 331,
+        "end": 440
+      },
+      {
+        "start": 441,
+        "end": 550
+      },
+      {
+        "start": 551,
+        "end": 660
+      },
+      {
+        "start": 661,
+        "end": 763
+      }
+    ],
+    "wiki/sources/source-stripe-jp-installments-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 46
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/ef6ec21fe39049e4f48fa813/content.diff": [
+      {
+        "start": 1,
+        "end": 110
+      },
+      {
+        "start": 111,
+        "end": 220
+      },
+      {
+        "start": 221,
+        "end": 330
+      },
+      {
+        "start": 331,
+        "end": 440
+      },
+      {
+        "start": 441,
+        "end": 550
+      },
+      {
+        "start": 551,
+        "end": 660
+      },
+      {
+        "start": 661,
+        "end": 768
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-jp-installments-accept-a-payment/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 233
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 228,
+        "end": 235
+      }
+    ],
+    "wiki/concepts/stripe-jp-installments.md": [
+      {
+        "start": 1,
+        "end": 53
+      }
+    ],
+    "wiki/concepts/stripe-installments.md": [
+      {
+        "start": 1,
+        "end": 49
+      }
+    ],
+    "wiki/sources/source-stripe-jp-installments.md": [
+      {
+        "start": 1,
+        "end": 29
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 466,
+        "end": 473
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "If you use dynamic payment methods, don\u2019t set `payment_method_options[card][installments][enabled]`.",
+      "location": "raw/stripe-jp-installments-accept-payment-2025.md:106"
+    },
+    {
+      "text": "Installments only works with `payment` mode, not `setup` or `subscription` mode.",
+      "location": "raw/stripe-jp-installments-accept-payment-2025.md:32"
+    },
+    {
+      "text": "You must explicitly unset `payment_method_options[card][installments][plan]` when confirming the PaymentIntent again to indicate the absence of an installment plan.",
+      "location": "raw/stripe-jp-installments-accept-payment-2025.md:487"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/jp-installments/accept-a-payment, the complete November capture establishes five variant links and no implementation behavior (new raw lines 5-17). The May full guide retains the actual Checkout, Payment Element, Direct API, Invoices and Payment Links instructions (old raw lines 8-763). For dynamic methods, installments appear automatically; the Payment Element route says omit the installments enabled field, while non-dynamic Session and PaymentIntent examples set true (old raw lines 28-55, 82-106). The Direct API path collects a PaymentMethod in the client, creates an unconfirmed server PaymentIntent, returns available plans, receives customer choice, then confirms server-side; a previously selected plan must be explicitly cleared when retrying without one (old raw lines 128-251, 304-487). Invoices use send_invoice for individual invoices, with Customer versus customer-configured Account identity, and the old guide lists Payment Links and sandbox cards. source-stripe-jp-installments-accept-payment.md had an unconditional enabled:true summary that needed correction. Neither available plans, a Session URL, nor an invoice establishes payment success.",
+    "Q2": "For https://docs.stripe.com/payments/jp-installments/accept-a-payment, the apparent 763-line to 17-line change is a full guide becoming a variant navigation index, not evidence that routes or capabilities were removed (old raw lines 14-763; new raw lines 9-17). source-stripe-jp-installments-accept-payment.md must retain May provenance for all parameters, Japan restrictions, test values and client/server steps, and place the November raw only under Related raw API references. Its Checkout and Payment Element summaries previously generalized enabled:true; the old guide already says dynamic methods expose installments automatically, and the PaymentIntent path says omit the enabled field entirely (old raw lines 28-55, 82-106). This is a baseline conflict, not a new product change. Keep payment mode, send_invoice-only individual invoices, customer_account versus customer, plan persistence and issuer decline qualifications dated to May (old raw lines 32, 483-526, 751-763). The linked November variants were not pinned or read, so no current API, account eligibility, UI or outcome claim follows from them."
+  }
+}

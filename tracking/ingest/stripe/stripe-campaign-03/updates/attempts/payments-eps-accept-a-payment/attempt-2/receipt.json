@@ -1,0 +1,212 @@
+{
+  "job_id": "payments-eps-accept-a-payment",
+  "attempt": 2,
+  "source_results": {
+    "wiki/sources/source-stripe-eps-accept-payment.md": {
+      "job_id": "payments-eps-accept-a-payment",
+      "attempt": 2,
+      "source_page": "---\ntitle: \"Stripe: Accept an EPS Payment\"\ntype: source\ndate_ingested: 2026-05-03\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/eps/accept-a-payment\"\nraw_files:\n  - \"stripe-eps-accept-payment-2025.md\"\ntags: [stripe, eps, austria, eur, checkout, ios, android, react-native, elements, bank-redirect]\n---\n\n## Overview\n\n[[stripe]] acceptance guide for EPS, an Austrian bank-redirect method. The detailed 2026-05-03 capture covers Checkout, iOS, Android, React Native, and a legacy Elements integration. The 2026-11-07 base-URL capture is a five-variant index only; it does not verify the current content, SDK support, eligibility, or outcomes of the linked variants. See [[stripe-eps]].\n\n## Key takeaways \u2014 2026-05-03 detailed capture\n\n- **Payment identity:** The old guide describes EPS as single-use, with customer bank authentication via redirect and a return to the merchant site. It says EPS use must accord with the EPS Terms of Service. An EPS PaymentMethod cannot be saved to a Customer or reused for another payment (lines 26-28, 1542-1544).\n- **Checkout conditions:** The captured compatibility list names Europe, US, CA, NZ, SG, HK, JP, AU, and MX as supported business locations; EUR for supported and presentment currency; payment mode yes; setup and subscription modes no. A Checkout Session needs same-currency, one-time line items, and the manual example uses EUR and adds eps to payment_method_types. Hosted Checkout uses success_url, while the embedded example uses return_url. These are dated guide claims, not a current account eligibility check (lines 30-47, 55-112).\n- **Name collection is path-specific:** The iOS, Android, and React Native custom-form sections collect the customer's full name for billing details. The legacy Elements form collects an account holder name. The hosted Checkout section does not instruct the merchant to add a manual name input (lines 49-121, 267-306, 472-480, 678-720, 979-1003, 1129-1156).\n- **Server/client boundary:** The native and legacy Elements paths create a EUR PaymentIntent on the server and send its client secret to the client for confirmation. The client secret can complete the charge and the guide says not to log, embed in URLs, or expose it beyond the customer. Checkout instead creates a Checkout Session (lines 69-112, 231-253, 430-452, 636-658, 853-873, 1129-1135).\n- **Outcome boundary:** The bank return and its PaymentIntent query parameters let the merchant retrieve and display status; they do not themselves prove success. The captured test path has requires_action to succeeded for authenticated success, or requires_payment_method for a failed test. The guide ties completed payment to payment_intent.succeeded and advises listening for events instead of client callbacks. Its sample Source/Charge JSON includes pending status, not a completed live result (lines 332-336, 532-536, 742-746, 1330-1401, 1475-1528).\n\n## Integration paths and locators \u2014 2026-05-03\n\n- **iOS:** STPPaymentMethodEPSParams and billing name are passed with a PaymentIntent client secret to STPPaymentHandler.confirmPayment; the old capture says its iOS SDK supports iOS 13 or above. See lines 157-159, 231-336.\n- **Android:** PaymentMethodCreateParams.createEps(billingDetails) is passed to PaymentLauncher.confirm; the captured Gradle example pins stripe-android 23.5.0. See lines 383-403, 430-536.\n- **React Native:** The captured confirmPayment example passes paymentMethodType: 'Eps' and paymentMethodData.billingDetails with the collected name. In the dated StripeProvider sample, urlScheme is annotated as required for 3D Secure and bank redirects (lines 623-627), which is material to this EPS bank-redirect path. A separate section headed \u201cOptional: Handle deep linking\u201d describes registering a custom URL scheme, forwarding returns through handleURLCallback, and says universal links are unsupported for that return setup (lines 768-828). Keep the sample's bank-redirect scheme note alongside the optional handler section; neither passage establishes the same setup for Checkout, iOS, Android, or every React Native payment path. See lines 623-627, 636-720, 768-828.\n- **Elements, legacy in the old capture:** The epsBank Element and EpsBankElement examples use stripe.confirmEpsPayment with account holder billing name and return_url. The old guide explicitly says epsBank is unavailable in the latest Stripe.js and recommends Payment Element; the November index does not show whether its linked Elements variant retains this implementation. See lines 830-835, 953-973, 979-1025, 1129-1156.\n- **Optional manual redirect in the old Elements section:** Server-side PaymentIntent confirmation with return_url and optional bank leads to requires_action and next_action.redirect_to_url; the customer is sent to that URL and later returns. The documented pending sample is not success. See lines 1447-1540. The old bank-values table is at lines 1593-1623; it is not a verified current list.\n\n## Related\n\n- [[stripe-eps]] \u2014 EPS concept and reciprocal source route.\n- [[source-stripe-eps]] \u2014 method overview and broader properties.\n\n## Raw Sources\n\n- [[raw/stripe-eps-accept-payment-2025|EPS acceptance detailed capture, 2026-05-03]] \u2014 dated integration and state evidence.\n\n## Related raw API references\n\n- [[raw/stripe-payments-eps-accept-a-payment-2026-11-07|EPS acceptance variant index, 2026-11-07]] \u2014 navigation only: Checkout, Elements, iOS, Android, and React Native. Linked variant bodies were not in this pin.\n",
+      "quotes": [
+        {
+          "text": "Learn how to accept EPS, a common payment method in Austria.",
+          "location": "raw/stripe-payments-eps-accept-a-payment-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-eps-accept-a-payment-2026-11-07.md:11"
+        },
+        {
+          "text": "- [Checkout](https://docs.stripe.com/payments/eps/accept-a-payment.md?payment-ui=checkout)",
+          "location": "raw/stripe-payments-eps-accept-a-payment-2026-11-07.md:13"
+        },
+        {
+          "text": "- [Elements](https://docs.stripe.com/payments/eps/accept-a-payment.md?payment-ui=elements)",
+          "location": "raw/stripe-payments-eps-accept-a-payment-2026-11-07.md:14"
+        },
+        {
+          "text": "  - [React Native](https://docs.stripe.com/payments/eps/accept-a-payment.md?payment-ui=mobile&platform=react-native)",
+          "location": "raw/stripe-payments-eps-accept-a-payment-2026-11-07.md:18"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "eps-accept-concept-rn-scope",
+            "target_path": "wiki/concepts/stripe-eps.md",
+            "update_kind": "durable_fact",
+            "anchor": "**React Native**: `confirmPayment(clientSecret, { paymentMethodType: 'Eps' })` + deep linking required.",
+            "proposed_markdown": "**React Native (dated 2026-05-03 guide)**: The example uses `confirmPayment(clientSecret, { paymentMethodType: 'Eps', paymentMethodData: { billingDetails } })` after collecting a name. Its StripeProvider sample marks `urlScheme` required for 3D Secure and bank redirects, including this EPS bank-redirect path (old raw lines 623-627). A separate section headed \u201cOptional: Handle deep linking\u201d describes a custom URL scheme, forwarding with `handleURLCallback`, and unsupported universal links for that return setup (old raw lines 768-828). This does not establish the same React Native scheme setup for Checkout, iOS, Android, or every payment path. See [[source-stripe-eps-accept-payment]].",
+            "quote_indexes": [
+              1,
+              4
+            ],
+            "warnings": [
+              "Replace only the existing React Native integration line. Old factual authority: raw/stripe-eps-accept-payment-2025.md:623-627,678-720,768-828. The provider sample annotates urlScheme required for bank redirects, while a later handler section is headed optional; retain both dated statements. November raw/stripe-payments-eps-accept-a-payment-2026-11-07.md:9-18 is navigation only."
+            ]
+          },
+          {
+            "update_id": "eps-accept-concept-source-route",
+            "target_path": "wiki/concepts/stripe-eps.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-eps-accept-payment]] \u2014 integration guide: Checkout + iOS + Android + React Native + Elements (legacy)",
+            "proposed_markdown": "- [[source-stripe-eps-accept-payment]] \u2014 2026-05-03 detailed EPS acceptance guide for Checkout, native SDKs, and legacy Elements, with scoped name collection and outcome checks; the 2026-11-07 base capture is a five-variant navigation index.",
+            "quote_indexes": [
+              1,
+              2,
+              4
+            ],
+            "warnings": [
+              "Replace only the existing source-list line. Old detailed authority: raw/stripe-eps-accept-payment-2025.md:16-47,134-159,358-400,558-604,830-835,970-973,1330-1401."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-eps-accept-a-payment-2026-11-07.md",
+      "raw_sha256": "29d60c18fe2c97dc898d259bac2e4980b032add5faddaecdab41f360fe0d0231",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-eps-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 18
+      }
+    ],
+    "raw/stripe-eps-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 900
+      },
+      {
+        "start": 901,
+        "end": 1200
+      },
+      {
+        "start": 1201,
+        "end": 1500
+      },
+      {
+        "start": 1501,
+        "end": 1623
+      },
+      {
+        "start": 600,
+        "end": 635
+      },
+      {
+        "start": 760,
+        "end": 830
+      }
+    ],
+    "wiki/sources/source-stripe-eps-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 42
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/f2a7e957d13e1b9a9de47b71/content.diff": [
+      {
+        "start": 1,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 1200
+      },
+      {
+        "start": 1201,
+        "end": 1629
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 22
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 268,
+        "end": 278
+      },
+      {
+        "start": 748,
+        "end": 755
+      }
+    ],
+    "wiki/concepts/stripe-eps.md": [
+      {
+        "start": 1,
+        "end": 47
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-eps-accept-a-payment/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 141
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-eps-accept-a-payment/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 176
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-eps-accept-a-payment/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 100
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-eps-accept-a-payment/attempt-1/candidates/source-stripe-eps-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 44
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-eps-accept-a-payment/attempt-1/diffs/source-stripe-eps-accept-payment.md.diff": [
+      {
+        "start": 1,
+        "end": 69
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "EPS is a [single use](https://docs.stripe.com/payments/payment-methods.md#usage) payment method where customers are required to [authenticate](https://docs.stripe.com/payments/payment-methods.md#customer-actions) their payment.",
+      "location": "raw/stripe-eps-accept-payment-2025.md:26"
+    },
+    {
+      "text": "**Setup mode**: No",
+      "location": "raw/stripe-eps-accept-payment-2025.md:40"
+    },
+    {
+      "text": "You can\u2019t reuse EPS *PaymentMethods* (PaymentMethods represent your customer's payment instruments, used with the Payment Intents or Setup Intents APIs) or save them to customers.",
+      "location": "raw/stripe-eps-accept-payment-2025.md:1544"
+    },
+    {
+      "text": "urlScheme=\"your-url-scheme\" // required for 3D Secure and bank redirects",
+      "location": "raw/stripe-eps-accept-payment-2025.md:626"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/eps/accept-a-payment, the complete November capture establishes only EPS's Austrian payment-method identity and five variant links for Checkout, Elements, iOS, Android, and React Native (new raw lines 5-18). It contains no current prerequisite, API request, authentication state, or outcome detail. The May capture describes EPS as single-use bank authentication and redirect subject to its terms, with EUR payment-only Checkout and one-time line items (old raw lines 26-47). Its native and legacy Elements paths create a PaymentIntent server-side and pass a client secret for client confirmation, while Checkout creates a Session (old raw lines 49-112, 231-253, 830-873). In the dated React Native StripeProvider sample, urlScheme is marked required for bank redirects, while a later optional section describes custom-scheme return handling (old raw lines 623-627, 768-828). Old test transitions and event advice separate requires_action, succeeded, and requires_payment_method (old raw lines 1330-1401). source-stripe-eps-accept-payment.md covers the routes but its original line 13 overgeneralizes manual name collection beyond native and legacy Elements paths.",
+    "Q2": "At https://docs.stripe.com/payments/eps/accept-a-payment, the change shown by the pinned diff is a navigation-only root index with five routes (new raw lines 9-18; diff lines 3-17 and 1624-1629), not evidence that old EPS behavior or a legacy warning was removed from linked variants. source-stripe-eps-accept-payment.md should retain May 3, 2026 factual provenance, with November navigation only. The name field belongs to native and legacy Elements examples (old raw lines 267-306, 472-480, 678-720, 979-1003), while hosted Checkout lacks that manual input instruction (old raw lines 49-121). The dated React Native provider sample marks urlScheme required for bank redirects (old raw lines 623-627); the separately optional deep-link section explains custom-scheme registration and handleURLCallback and says universal links are unsupported (old raw lines 768-828). This is not a universal Checkout or native-SDK requirement. Accounts v2 preview wording, Stripe.js dahlia and Android 23.5.0 examples, the 27-bank list, and optional manual redirect remain dated (old raw lines 8-14, 399-403, 1447-1544, 1593-1623). Bank return and pending sample data do not establish success; check PaymentIntent status and payment_intent.succeeded event (old raw lines 1330-1401)."
+  }
+}

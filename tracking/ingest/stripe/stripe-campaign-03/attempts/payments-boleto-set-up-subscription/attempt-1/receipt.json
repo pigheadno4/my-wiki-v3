@@ -1,0 +1,210 @@
+{
+  "job_id": "payments-boleto-set-up-subscription",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-boleto-set-up-subscription-2026-11-07.md",
+  "raw_sha256": "72961f9c2767d72998a02b0cb2eeffd3889f2319511349ca64b54d4edcadd197",
+  "prior_raw_path": "raw/stripe-boleto-subscription-2025.md",
+  "prior_raw_sha256": "ee506d277da54b4f3d3d76511862d26a183fb71cd0b70b619a6b0f023ae4bb9c",
+  "source_targets": [
+    "wiki/sources/source-stripe-boleto-subscription.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-boleto-subscription.md": "6dabbe6677048581b8d39bd6c9badc9fec24c08fc828f4fe2b0ff6cd73da8220"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-boleto-set-up-subscription-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 441
+      }
+    ],
+    "raw/stripe-boleto-subscription-2025.md": [
+      {
+        "start": 1,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 417
+      }
+    ],
+    "wiki/sources/source-stripe-boleto-subscription.md": [
+      {
+        "start": 1,
+        "end": 40
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/dc4c839e81bdf4417e1415ac/content.diff": [
+      {
+        "start": 1,
+        "end": 130
+      },
+      {
+        "start": 131,
+        "end": 230
+      },
+      {
+        "start": 231,
+        "end": 330
+      },
+      {
+        "start": 331,
+        "end": 430
+      },
+      {
+        "start": 431,
+        "end": 530
+      },
+      {
+        "start": 531,
+        "end": 625
+      },
+      {
+        "start": 626,
+        "end": 715
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 369,
+        "end": 380
+      }
+    ],
+    "wiki/concepts/stripe-vouchers.md": [
+      {
+        "start": 1,
+        "end": 70
+      },
+      {
+        "start": 70,
+        "end": 119
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 568,
+        "end": 576
+      }
+    ],
+    "wiki/sources/source-stripe-boleto.md": [
+      {
+        "start": 1,
+        "end": 31
+      }
+    ],
+    "wiki/sources/source-stripe-boleto-invoices.md": [
+      {
+        "start": 1,
+        "end": 31
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users.",
+      "location": "raw/stripe-payments-boleto-set-up-subscription-2026-11-07.md:83"
+    },
+    {
+      "text": "To join the Accounts v2 preview, go to [Account previews and features](https://dashboard.stripe.com/settings/previews) in your Dashboard and enable **Reusable payment methods for Global Payouts**.",
+      "location": "raw/stripe-payments-boleto-set-up-subscription-2026-11-07.md:85"
+    },
+    {
+      "text": "Create a customer-configured [Account](https://docs.stripe.com/api/v2/core/accounts/create.md#v2_create_accounts-configuration-customer) or [Customer](https://docs.stripe.com/api/customers/create.md) when your customer creates an account with your business, or when saving a payment method. Associate the object\u2019s ID with your own internal representation of a customer.",
+      "location": "raw/stripe-payments-boleto-set-up-subscription-2026-11-07.md:91"
+    },
+    {
+      "text": "-d \"customer_account={{CUSTOMERACCOUNT_ID}}\"",
+      "location": "raw/stripe-payments-boleto-set-up-subscription-2026-11-07.md:341"
+    },
+    {
+      "text": "If you [represent your customers as customer-configured Account objects](https://docs.stripe.com/accounts-v2/use-accounts-as-customers.md), replace `customer` in this example with `customer_account`.",
+      "location": "raw/stripe-payments-boleto-set-up-subscription-2026-11-07.md:422"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users.",
+      "location": "raw/stripe-boleto-subscription-2025.md:10"
+    },
+    {
+      "text": "payment_method_types: [\"card\", \"boleto\"]",
+      "location": "raw/stripe-boleto-subscription-2025.md:325"
+    },
+    {
+      "text": "collection_method: \"charge_automatically\"",
+      "location": "raw/stripe-boleto-subscription-2025.md:347"
+    },
+    {
+      "text": "If you configure `add_invoice_items` on future phases, invoice items won\u2019t be generated until that phase begins.",
+      "location": "raw/stripe-boleto-subscription-2025.md:413"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The unchanged core setup requires enabling Boleto in payment settings and a Stripe-hosted confirmation link, then choosing send_invoice or charge_automatically (old raw lines 18-36; new raw lines 9-29). A sent invoice needs a due date and customer entry of name, address and tax ID each cycle; automatic collection relies on the customer's default Boleto PaymentMethod and emails a voucher, whose expiration need not match invoice due dates (old raw lines 24-36; new raw lines 17-29).",
+    "The new guide makes the earlier Accounts v2 recommendation actionable: customer-configured Account creation with configuration.customer and an explicit 2026-10-28.preview header for preview users, versus Customers v1 creation; v1 PaymentMethod attach uses customer_account for the Account path and customer for the Customer path; default payment method is configuration.customer.billing.default_payment_method versus invoice_settings.default_payment_method (old raw lines 8-14, 98-188; new raw lines 81-91, 95-220).",
+    "The new subscription and Checkout examples carry customer_account or customer for the two identity paths; both retain send_invoice/charge_automatically, default_incomplete, days_until_due or off_session, and Checkout mode=subscription with Boleto voucher expiration (old raw lines 302-378; new raw lines 326-416). Subscription schedules retain future/current phase add_invoice_items timing, with a new customer_account substitution instruction (old raw lines 380-413; new raw lines 418-437).",
+    "Old send_invoice example explicitly set payment_settings.payment_method_types to card and boleto (old raw lines 310-329); both new cURL examples omit that parameter (new raw lines 336-358). This is a material example delta, not proof that the setting became invalid or unnecessary; current source line 34 should retain its dated old-example scope and explain the new omission. Other Node-to-cURL changes, list numbering, example names/start_date and changed navigation links are presentation or sample changes (diff lines 1-715).",
+    "The current source only cites the May 2026 old raw (source lines 4-7, 38-40) and models only Customer v1 (source lines 13, 28-34); it needs November provenance and a version/identity-aware Account v2 addition. Its 'charge_automatically' wording must not imply automatic cash debit or payment success: the related Boleto invoice source says the customer still actively pays a voucher (wiki/sources/source-stripe-boleto-invoices.md:13,25; wiki/concepts/stripe-vouchers.md:55).",
+    "Related source and concept context says Boleto refunds are unavailable (wiki/sources/source-stripe-boleto.md:25; wiki/concepts/stripe-vouchers.md:49). The generic Dashboard subscription-edit option to refund the last payment (old raw line 286; new raw line 312) cannot be taken as a Boleto refund capability; add a reciprocal scope warning if describing that UI option in this Boleto summary."
+  ],
+  "substantive_changes": [
+    "Explicit, parameterized Accounts v2 customer-configured Account flow alongside retained Customers v1, including preview/version condition, v2 configuration.customer, v1 customer_account attachment/subscription/Checkout identity and v2 billing default field (old raw lines 8-14, 98-188, 302-413; new raw lines 81-220, 336-437).",
+    "The old send_invoice sample's explicit card/Boleto payment_method_types is absent from both November cURL samples (old raw lines 310-329; new raw lines 336-358); treat as changed sample contents with requirement status unresolved, not policy removal."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain the 2026-05-07 old raw and source provenance, including the older Node Customer v1 example and explicit card/Boleto payment method list (source lines 4-7, 34, 38-40; old raw lines 310-329). Add the 2026-11-07 capture without rewriting history.",
+    "The old Accounts v2 recommendation and preview scope already existed in May (old raw lines 8-14); the November capture adds concrete API examples and preview enrollment wording (new raw lines 81-113), not first support for Accounts v2.",
+    "Preserve both captures' collection-method and delayed voucher behavior (old raw lines 24-36, 302-378; new raw lines 17-29, 326-416) and the separate invoice source's active voucher-payment qualification (wiki/sources/source-stripe-boleto-invoices.md:13,25)."
+  ],
+  "conflicts": [
+    "Generic Dashboard subscription-edit text offers refunding the last payment (old raw line 286; new raw line 312), while Boleto-specific source says no Boleto refunds (wiki/sources/source-stripe-boleto.md:25); the Dashboard statement needs a payment-method scope caveat wherever repeated, and the Boleto no-refund warning should point back to the generic UI limit.",
+    "The old send_invoice example and current source line 34 specify card plus Boleto payment_method_types, whereas the new Customer v1 and Account v2 send_invoice examples omit it (old raw lines 310-329; new raw lines 336-358). Preserve both dated examples and avoid asserting either universal requirement or deprecation from omission."
+  ],
+  "unresolved_questions": [
+    "The pinned page does not establish whether omitting payment_settings.payment_method_types in November changes the default allowed payment methods for any account; live account configuration and API behavior were not tested (new raw lines 336-358).",
+    "The document states Accounts v2 is generally available for Connect and public preview for others but provides a 2026-10-28.preview example; account-specific preview enrollment and version availability were not verified (new raw lines 81-113)."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-vouchers.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-boleto-subscription.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add the November raw provenance and explicit Account v2 versus Customer v1 paths with version/preview gates and distinct identity/default-payment fields (source lines 4-7, 28-34, 38-40; new raw lines 81-220, 336-416).",
+        "Keep both collection-method descriptions and Boleto voucher email, expiration, due-date, and tax-ID prerequisites, qualifying charge_automatically as voucher generation rather than auto-debit (source lines 13-36; new raw lines 17-29; wiki/sources/source-stripe-boleto-invoices.md:25).",
+        "Date the old explicit payment_method_types example because November samples omit it; do not claim the setting was removed or forbidden (old raw lines 310-329; new raw lines 336-358; source line 34)."
+      ],
+      "conflicts": [
+        "Generic subscription Dashboard refund option is not evidence of Boleto refund support (new raw line 312; wiki/sources/source-stripe-boleto.md:25).",
+        "Old explicit card/Boleto sample and new omitted list require reciprocal dated qualification (old raw lines 310-329; new raw lines 336-358)."
+      ],
+      "reason": "New identity/version-specific Accounts v2 procedures and changed send_invoice sample materially outgrow the Customer-only summary; preserve old evidence and payment outcome boundaries."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/boleto/set-up-subscription, enable Boleto and the hosted confirmation link, then choose send_invoice, which requires a due date and fresh customer details per cycle, or charge_automatically, which needs a default Boleto PaymentMethod carrying name, Brazilian address and tax ID and emails a voucher each cycle. The new guide supplies customer-configured Accounts v2 and Customers v1 alternatives: an Account ID travels as customer_account through attach, subscription and Checkout calls, while a Customer ID travels as customer; their default-payment fields differ. Accounts v2 has a Connect/general-availability versus other-user preview/version boundary. Subscription and Checkout creation, including default_incomplete or success_url, do not prove voucher payment. These details span old raw lines 8-36, 98-188, 302-413 and new raw lines 9-29, 81-220, 326-437. source-stripe-boleto-subscription.md captures the older Customer v1 flow but lacks the new concrete Account path and provenance.",
+    "Q2": "At https://docs.stripe.com/payments/boleto/set-up-subscription, the substantive November addition is a concrete Accounts v2 route with configuration.customer, customer_account and a preview-version example, beyond the prior recommendation in old raw lines 8-14, 98-188 versus new raw lines 81-220. The old send_invoice code explicitly lists card and Boleto methods, while new samples omit that list (old raw lines 310-329; new raw lines 336-358); preserve both as dated examples without inferring deprecation or defaults. Node-to-cURL conversion, numbering, links and sample timestamps are presentation or navigation. source-stripe-boleto-subscription.md should retain May provenance and add November's identity boundaries. Keep secret-key calls server-side, qualify Accounts v2 preview eligibility, and distinguish generated/emailed vouchers and a Checkout success URL from cash payment, invoice settlement or subscription activation. The generic Dashboard refund menu must be scoped against the Boleto-specific no-refund source."
+  }
+}

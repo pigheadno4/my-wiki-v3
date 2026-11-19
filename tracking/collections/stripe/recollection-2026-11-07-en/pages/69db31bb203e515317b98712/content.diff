@@ -1,0 +1,96 @@
+--- raw/stripe-forwarding-token-vault-2026.md
++++ raw/stripe-payments-forwarding-token-vault-2026-11-07.md
+@@ -5,38 +5,40 @@
+ Create a [PaymentMethod](https://docs.stripe.com/api/payment_methods.md) and [forward](https://docs.stripe.com/api/forwarding/request.md) the payment method to your token vault.
+ 
+ > #### Request access
+->
++> 
+ > To gain access to use Stripe’s forwarding service, contact [Stripe support](https://dashboard.stripe.com/login?redirect=https%3A%2F%2Fsupport.stripe.com%2Fcontact%2Femail%3Fquestion%3Dother%26topic%3Dpayment_apis%26subject%3DHow%2520can%2520I%2520access%2520the%2520Vault%2520and%2520Forward%2520API%3F%26body%3DWhat%2520endpoint%28s%29%2520would%2520you%2520like%2520to%2520forward%2520card%2520details%2520to%3F).
+-> Forward card details to your own token vault (See full diagram at https://docs.stripe.com/payments/forwarding-token-vault)
++
++Forward card details to your own token vault (See full diagram at https://docs.stripe.com/payments/forwarding-token-vault)
++
++```text
++[Server] -- Create a PaymentMethod --> [Stripe]
++[Stripe] -- Stripe returns a PaymentMethod object --> [Server]
++[Server] -- Call the Vault and Forward API with the PaymentMethod you provide --> [Stripe]
++[Stripe] -- Stripe forwards the request with card data --> [Token vault]
++[Token vault] -- Token vault endpoint returns a response --> [Stripe]
++[Stripe] -- Stripe redacts identified PCI sensitive data and relays the response --> [Server]
++```
+ 
+ ## Create a PaymentMethod
+ 
+-To collect card details and send them to Stripe for use with the Vault and Forward API, use the Payment Element to create [a PaymentMethod](https://docs.stripe.com/payments/finalize-payments-on-the-server-legacy.md?type=payment#create-pm). After you create a PaymentMethod, we automatically store card details in Stripe’s PCI compliant vault. If you have your own frontend, you can still use the Vault and Forward API by [creating a PaymentMethod directly](https://docs.stripe.com/api/payment_methods/create.md).
++To collect card details and send them to Stripe for use with the Vault and Forward API, use the Payment Element to create [a PaymentMethod](https://docs.stripe.com/payments/finalize-payments-on-the-server-legacy.md?type=payment#create-pm). After you create a PaymentMethod, we automatically store card details in Stripe’s PCI compliant vault. If you have your own front end, you can still use the Vault and Forward API by [creating a PaymentMethod directly](https://docs.stripe.com/api/payment_methods/create.md).
+ 
+ ## Create a ForwardingRequest
+ 
+ Pass the PaymentMethod ID to the Request endpoint on your server. Stripe provides a test endpoint (`https://forwarding-api-demo.stripedemos.com/tokens`) and a test payment method (`pm_card_visa`) to verify that you can successfully retrieve card credentials from Stripe’s vault. Send the card details to this test endpoint before you connect your integration with your in-house vault.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const request = await stripe.forwarding.requests.create({
+-  payment_method: "pm_card_visa",
+-  url: "https://forwarding-api-demo.stripedemos.com/tokens",
+-  request: {
+-    headers: [
+-      {
+-        name: "Authorization",
+-        value:
+-          "Bearer eyJhbGciOiJIUzI1NiJ9.Zm9yd2FyZGluZy1hcGktZGVtbw.2qoK37CNBmMjMDRERSYUSE-YrjsTgGhHnxMeqOxjrAg",
+-      },
+-    ],
+-    body: '{"metadata":{"reference":"Your Token Reference"},"card":{"number":"","exp_month":"","exp_year":"","cvc":"","name":""}}',
+-  },
+-  replacements: ["card_number", "card_expiry", "card_cvc", "cardholder_name"],
+-});
++```curl
++curl https://api.stripe.com/v1/forwarding/requests \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d payment_method=pm_card_visa \
++  --data-urlencode "url=https://forwarding-api-demo.stripedemos.com/tokens" \
++  -d "request[headers][0][name]=Authorization" \
++  -d "request[headers][0][value]=Bearer eyJhbGciOiJIUzI1NiJ9.Zm9yd2FyZGluZy1hcGktZGVtbw.2qoK37CNBmMjMDRERSYUSE-YrjsTgGhHnxMeqOxjrAg" \
++  --data-urlencode "request[body]={\"metadata\":{\"reference\":\"Your Token Reference\"},\"card\":{\"number\":\"\",\"exp_month\":\"\",\"exp_year\":\"\",\"cvc\":\"\",\"name\":\"\"}}" \
++  -d "replacements[0]=card_number" \
++  -d "replacements[1]=card_expiry" \
++  -d "replacements[2]=card_cvc" \
++  -d "replacements[3]=cardholder_name"
+ ```
+ 
+ ## Configure your in-house token vault endpoint
+@@ -69,7 +71,7 @@
+ 
+ Make sure that your vault receives a JSON object with the following shape.
+ 
+-```javascript
++```json
+ {
+   "card": {
+     "number": "4242424242424242",
+@@ -88,13 +90,13 @@
+ 
+ The Vault and Forward API places the decrypted data into the following fields:
+ 
+-| Field name  | Type   | Description                                                                                                                                                                                                    |
+-| ----------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+-| `number`    | String | The 15- or 16- digit PAN of the card.                                                                                                                                                                          |
+-| `exp_month` | String | Two-digit number representing the card’s expiration month.                                                                                                                                                     |
+-| `exp_year`  | String | Four-digit number representing the card’s expiration year.                                                                                                                                                     |
+-| `name`      | String | The cardholder name.                                                                                                                                                                                           |
+-| `cvc`       | String | The card verification value. This only becomes available for the first API request to Stripe after tokenization. We remove this information from our system after a short time period. Don’t store this value. |
++| Field name | Type | Description |
++| --- | --- | --- |
++| `number` | String | The 15- or 16- digit PAN of the card. |
++| `exp_month` | String | Two-digit number representing the card’s expiration month. |
++| `exp_year` | String | Four-digit number representing the card’s expiration year. |
++| `name` | String | The cardholder name. |
++| `cvc` | String | The card verification value. This only becomes available for the first API request to Stripe after tokenization. We remove this information from our system after a short time period. Don’t store this value. |
+ 
+ You don’t need to support all of these fields in your vault. The Vault and Forward API places values into the request only if they’re present in the request body that you send to the Vault and Forward API. Additionally, you can include additional fields in the request body, which the Vault and Forward API passes to the receiving endpoint.
+ 

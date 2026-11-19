@@ -1,0 +1,211 @@
+{
+  "job_id": "payments-checkout-dynamically-update-line-items",
+  "attempt": 2,
+  "raw_path": "raw/stripe-payments-checkout-dynamically-update-line-items-2026-11-07.md",
+  "raw_sha256": "07af3f2153c82617d503907f956b3924d03325bf839a1aeed489e896a7339fd4",
+  "prior_raw_path": "raw/stripe-checkout-dynamic-line-items-2025.md",
+  "prior_raw_sha256": "0368db063f825d9ba6185b1289beb7ebd5096edddb112e3928d62ea33aab8386",
+  "source_targets": [
+    "wiki/sources/source-stripe-checkout-custom-shipping-options.md",
+    "wiki/sources/source-stripe-checkout-dynamic-line-items.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-checkout-custom-shipping-options.md": "9a994e859d0bad5e6021f7de47322cbc2faa82c872c9f14af8484a6580154fea",
+    "wiki/sources/source-stripe-checkout-dynamic-line-items.md": "ed63199ed23112cc90aae4b99e8940788981c0abc31d2e28afaeed6b82524186"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-checkout-dynamically-update-line-items-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      },
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-checkout-dynamic-line-items-2025.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 287
+      },
+      {
+        "start": 1,
+        "end": 160
+      },
+      {
+        "start": 165,
+        "end": 190
+      },
+      {
+        "start": 240,
+        "end": 287
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-custom-shipping-options.md": [
+      {
+        "start": 1,
+        "end": 79
+      },
+      {
+        "start": 1,
+        "end": 79
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-dynamic-line-items.md": [
+      {
+        "start": 1,
+        "end": 95
+      },
+      {
+        "start": 1,
+        "end": 95
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/7ed7aa8ee9e2f22c2b4a428b/content.diff": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 291
+      }
+    ],
+    "wiki/concepts/stripe-checkout.md": [
+      {
+        "start": 140,
+        "end": 143
+      },
+      {
+        "start": 254,
+        "end": 264
+      },
+      {
+        "start": 140,
+        "end": 143
+      },
+      {
+        "start": 254,
+        "end": 264
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Update line items in response to changes made during checkout.",
+      "location": "/Users/tengtao/Development/wiki-v2/raw/stripe-payments-checkout-dynamically-update-line-items-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "/Users/tengtao/Development/wiki-v2/raw/stripe-payments-checkout-dynamically-update-line-items-2026-11-07.md:11"
+    },
+    {
+      "text": "[Full page](https://docs.stripe.com/payments/checkout/dynamically-update-line-items.md?ui=full-page)",
+      "location": "/Users/tengtao/Development/wiki-v2/raw/stripe-payments-checkout-dynamically-update-line-items-2026-11-07.md:13"
+    },
+    {
+      "text": "[Embedded form](https://docs.stripe.com/payments/checkout/dynamically-update-line-items.md?ui=checkout-form)",
+      "location": "/Users/tengtao/Development/wiki-v2/raw/stripe-payments-checkout-dynamically-update-line-items-2026-11-07.md:14"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "To use this feature, ensure your SDK version is `2025-03-31.basil` or later.",
+      "location": "/Users/tengtao/Development/wiki-v2/raw/stripe-checkout-dynamic-line-items-2025.md:35"
+    },
+    {
+      "text": "ui_mode: \"elements\"",
+      "location": "/Users/tengtao/Development/wiki-v2/raw/stripe-checkout-dynamic-line-items-2025.md:53"
+    },
+    {
+      "text": "When updating line items, you must retransmit the entire array of line items.",
+      "location": "/Users/tengtao/Development/wiki-v2/raw/stripe-checkout-dynamic-line-items-2025.md:143"
+    },
+    {
+      "text": "`runServerUpdate` enforces a 20-second timeout for your update function.",
+      "location": "/Users/tengtao/Development/wiki-v2/raw/stripe-checkout-dynamic-line-items-2025.md:176"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The November 14-line capture states a generic line-item-update purpose and links Full page and Embedded form variants (new raw lines 5-14). It contains no implementation body, permission matrix, API version, SDK code, line-item mutation rule or outcome. The April 21 capture is a detailed Checkout Session ui_mode: elements subscription example (old raw lines 4-63,93-149,170-287); its detail is neither renewed nor revoked by the index.",
+    "April old flow separates server authority and client refresh: the guide recommends server-side Checkout Session retrieval, but its sample endpoint checks only a nonempty client-supplied Session ID and a constrained interval before sessions.update with a full line_items array; client passes session ID, wraps a server call in runServerUpdate, handles non-ok/rejection and 20-second timeout, then changes local toggle only after success (old raw lines 47-149,170-287). Client-provided Session data is untrusted; Payment Intents API users must track line items and adjust an existing PaymentIntent amount or create a new PaymentIntent with adjusted amounts (old raw lines 19-21,65-75). A successful update is Session state refresh, not payment/subscription completion.",
+    "The source-stripe-checkout-dynamic-line-items.md summary says beta, works both payment and subscription modes, and requires SDK version 2025-03-31.basil+ (source lines 13-22). Old raw line 35 calls this an SDK version but code line 43 sets apiVersion; it shows a subscription example only (old raw lines 35-63), so the summary's both-mode claim is not established by the pinned old guide alone. Preserve the guide's literal wording while qualifying example versus demonstrated support and API-version field. November links cannot confirm these details (new raw lines 11-14).",
+    "The source-stripe-checkout-custom-shipping-options.md primarily summarizes its separate April 20 shipping guide and explicitly dates its hosted/embedded dynamic-line-item unsupported statement to 2026-04-20 (source lines 14-22,62-69). The April 21 dynamic-line-items guide shows an Elements path, not hosted/embedded Checkout (old raw lines 47-63). The November Full page/Embedded form labels are navigation and create a current-scope question, not proof of support or a contradiction of the dated shipping-page claim (new raw lines 11-14).",
+    "Both sources need reciprocal provenance and scope warnings: the shipping source also lists the old line-items raw in frontmatter and links the dynamic source (source-stripe-checkout-custom-shipping-options.md:6-9,62-79); the dynamic source links the Checkout concept (source-stripe-checkout-dynamic-line-items.md:87-95). Concept stripe-checkout.md line 142 repeats the dated UI support claim as unqualified current language, while line 141 already dates shipping callback deprecation.",
+    "Baseline source correction: source-stripe-checkout-dynamic-line-items.md line 21 says Payment Intents API users must create a new PaymentIntent. Old raw line 21 permits either modifying the payment amount on an existing PaymentIntent or creating a new PaymentIntent with adjusted amounts, after manually tracking line-item updates. The November index at new raw lines 5-14 contains no Payment Intents guidance; this is a current-summary error, not a new semantic change.",
+    "Old raw lines 69-74 recommend action-specific server endpoints and using a client-provided Session ID to retrieve trustworthy Session state from Stripe. However, the dated sample at old raw lines 93-119 checks only a nonempty checkout_session_id and a monthly/yearly interval, then calls sessions.update on that ID; it shows no Session retrieval or ownership/authorization check. The current dynamic source lines 44-48 states the recommendation, while its endpoint sketch lines 30-41 likewise shows no retrieval. Keep recommendation and sample behavior distinct; a sample success response or runServerUpdate refresh does not prove target authorization or payment completion."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "April 20 shipping-page claim that dynamic line-item updates were unsupported in hosted and developing in embedded Checkout is dated in source-stripe-checkout-custom-shipping-options.md:62-69; do not replace it with a November index-derived support claim.",
+    "April 21 Elements Checkout Sessions example: server API-version field 2025-03-31.basil, ui_mode elements, subscription price toggle, full-array id rules, trusted server Session retrieval, and 20-second runServerUpdate client timeout (old raw lines 19-21,33-149,170-287). These are not current Full page or Embedded form implementation instructions from new raw lines 9-14.",
+    "The shipping and dynamic-line-item features use related but distinct updates and UI scopes; old raw lines 14-17 describes combining shipping-rate changes with line-item changes, while the shipping source describes embedded-page onShippingDetailsChange and payment-mode-only flow (source-stripe-checkout-custom-shipping-options.md:14-22,62-69).",
+    "April 21 old raw line 21 explicitly allows Payment Intents users to adjust an existing PaymentIntent amount or create a new PaymentIntent, after manually tracking line-item updates; current dynamic source line 21 narrows this incorrectly.",
+    "April 21 old raw lines 69-74 recommend server-side Session retrieval from an untrusted client ID, whereas the illustrative endpoint in old raw lines 93-119 does not demonstrate retrieval or Session ownership/authorization. Preserve both as dated, distinct evidence."
+  ],
+  "conflicts": [
+    "source-stripe-checkout-custom-shipping-options.md:64-69 says hosted/embedded line-item updates unsupported as of April 20; source-stripe-checkout-dynamic-line-items.md:13-22 and old raw lines 47-63 show a separate April 21 Elements Checkout Sessions path. November Full page/Embedded form variant labels at new raw lines 13-14 require a reciprocal dated UI-scope warning, not an inferred reversal or deprecation.",
+    "source-stripe-checkout-dynamic-line-items.md:13,20 asserts both payment and subscription modes, while the pinned old guide demonstrates subscription and does not expressly state payment-mode support (old raw lines 47-63). Treat payment-mode support as unresolved from these captures.",
+    "source-stripe-checkout-dynamic-line-items.md:19 says SDK version 2025-03-31.basil, mirroring old raw line 35, yet old code line 43 uses apiVersion. Avoid silently equating server SDK package version with Stripe API version.",
+    "Current dynamic source line 21 says a new PaymentIntent is mandatory, but old raw line 21 explicitly permits modifying the existing PaymentIntent amount or creating a new one. New raw lines 5-14 do not address Payment Intents.",
+    "Security recommendation versus example within the April guide: old raw lines 69-74 advise retrieving Session state server-side, but the old raw lines 93-119 sample updates the client-named ID without shown retrieval or ownership/authorization validation. Dynamic source lines 44-48 preserve the recommendation; its lines 30-41 sketch does not implement it."
+  ],
+  "unresolved_questions": [
+    "The linked November Full page and Embedded form variant bodies were not pinned or read, so their actual supported UI, mode, version, server/client, security and runServerUpdate requirements remain unknown (new raw lines 11-14).",
+    "The exact relationship between November 'Embedded form' navigation label and April ui_mode elements/Embedded Checkout terminology is not established by the index alone (old raw lines 47-63; new raw lines 11-14).",
+    "The dated sample does not establish that the caller owns the client-supplied Checkout Session ID; no authorization or live request behavior was verified."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-checkout.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-checkout-custom-shipping-options.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Retain the separate April 20 shipping guide provenance and dated dynamic-line-item limitation at source lines 4-9,62-69; add a reciprocal note that November's line-items page now indexes Full page and Embedded form variants but provides no support details (new raw lines 9-14). Distinguish shipping onShippingDetailsChange from line-items runServerUpdate and avoid claiming the shipping source's feature was renewed or reversed."
+      ],
+      "conflicts": [
+        "Its April 20 hosted/embedded unsupported claim (source lines 62-69) and the November variant navigation (new raw lines 11-14) need adjacent dated scope language; neither proves current hosted/embedded behavior."
+      ],
+      "reason": "This mapped source reuses the old dynamic-line-items raw and its dated UI limitation can be misread as current after the new variant index; a narrow provenance/scope warning is needed without rewriting the separate shipping guidance."
+    },
+    {
+      "source_target": "wiki/sources/source-stripe-checkout-dynamic-line-items.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add exact canonical URL and November variant-index raw route while retaining April 21 detailed raw link (source lines 1-9,93-95; new raw lines 1-14). Date the server/client runServerUpdate and full-array rules to April Elements example; no November detail renews them (old raw lines 33-149,170-287).",
+        "Qualify source lines 13,19-22: pinned old guide demonstrates ui_mode elements in subscription mode and labels 2025-03-31.basil an SDK version while code sets apiVersion; the guide alone does not prove both modes or SDK package version. Preserve PaymentIntent manual-amount boundary and Session-update-versus-payment outcome (old raw lines 19-21,35-63,143-149).",
+        "Correct source line 21: old raw line 21 allows changing the amount of an existing PaymentIntent or creating a new PaymentIntent with adjusted amounts after manual line-item tracking; do not require a new Intent.",
+        "Separate security guidance (old raw lines 69-74; source lines 44-48) from illustrative code (old raw lines 93-119; source lines 30-41): the code does not show retrieving the client-named Session or checking ownership/authorization before update. State this gap without attributing it to November's index."
+      ],
+      "conflicts": [
+        "Source lines 13,19-20 overstate demonstrated mode/version scope from old raw lines 35-63; November index lines 9-14 does not resolve it.",
+        "Coordinate with shipping source dated hosted/embedded limitation and Checkout concept line 142; November labels alone do not override them.",
+        "Current source line 21 'must create a new PaymentIntent' contradicts old raw line 21's modify-existing-or-create-new alternatives.",
+        "Old raw lines 69-74 recommend server retrieval; old raw lines 93-119 and source sketch lines 30-41 do not demonstrate it or target authorization."
+      ],
+      "reason": "Navigation-only November raw delta, but the mapped dynamic summary needs dual-date provenance, mode/version scope, correction of its overly narrow PaymentIntent alternative, and a clear recommendation-versus-sample security boundary. April detail remains dated."
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/checkout/dynamically-update-line-items, the entire November capture establishes only a line-item-update purpose and Full page and Embedded form navigation (new raw lines 5-14), without implementation prerequisites or success states. The April Elements Checkout Sessions subscription example uses a client runServerUpdate call and server sessions.update of the complete line_items array (old raw lines 47-149,170-287). Its guidance recommends retrieving trustworthy Session state from a client-provided ID (old raw lines 69-74), but the sample endpoint checks only a nonempty ID and interval before updating that ID (old raw lines 93-119); it does not show retrieval or ownership authorization. Payment Intents users must manually track line items and may modify an existing Intent amount or create a new Intent (old raw lines 19-21). source-stripe-checkout-dynamic-line-items.md incorrectly requires a new Intent and overstates mode/version scope; source-stripe-checkout-custom-shipping-options.md describes a separate dated embedded shipping callback and hosted/embedded limitation. Neither a Session refresh nor sample success proves authorization or payment completion.",
+    "Q2": "For https://docs.stripe.com/payments/checkout/dynamically-update-line-items, replacement of April detail by two November variant links is navigation-only in the pinned capture (old raw lines 4-287; new raw lines 9-14); the unread variants cannot establish current UI, API, SDK or mode behavior. Preserve April's Elements subscription example, complete-array update, 20-second runServerUpdate timeout and untrusted-client guidance as dated. Critically, old raw lines 69-74 recommend server Session retrieval but its sample at old raw lines 93-119 updates a client-named Session without shown retrieval or ownership check. source-stripe-checkout-dynamic-line-items.md must also correct its PaymentIntent claim: old raw line 21 allows modifying an existing Intent amount or creating a new one. source-stripe-checkout-custom-shipping-options.md retains its distinct April embedded shipping callback and dated hosted/embedded limitation; the November labels prove no reversal. The Checkout concept needs reciprocal UI and date qualification, and update acceptance is neither target authorization nor payment success."
+  }
+}

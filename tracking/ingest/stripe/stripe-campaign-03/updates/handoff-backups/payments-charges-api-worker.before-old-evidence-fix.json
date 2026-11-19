@@ -1,0 +1,146 @@
+{
+  "job_id": "payments-charges-api",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-legacy-apis.md": {
+      "job_id": "payments-charges-api",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe Legacy APIs\"\ntype: source\ndate_ingested: 2026-04-20\ndate_updated: 2026-11-15\ncanonical_url: \"https://docs.stripe.com/payments/charges-api\"\noriginal_format: webpage\nraw_files:\n  - \"stripe-payments-charges-api-2026-11-07.md\"\n  - \"stripe-older-apis-2025.md\"\n  - \"stripe-charges-api-legacy-2025.md\"\n  - \"stripe-payment-intents-migration-2025.md\"\n  - \"stripe-sources-api-2025.md\"\n  - \"stripe-sources-to-payment-methods-migration-2025.md\"\n  - \"stripe-charges-vs-payment-intents-2025.md\"\n  - \"stripe-upgrade-integration-2025.md\"\ntags: [stripe, legacy, charges-api, sources-api, payment-intents, migration]\n---\n\n## Summary\n\n[[stripe]] reference to legacy Charges, Tokens and Sources APIs and migration paths. The 2026-11-07 Charges page now deprecates **card-payment creation** on Charges, says Stripe plans to remove that support and bars new integrations from creating payments through Charges. It gives no removal date or general shutdown of Charge retrieval/refunds. Other API status claims below retain their separate April 2026 sources.\n\n## Key Takeaways\n\n- **Sources API** (local payment methods): deprecated + **being turned off** — migration required\n- **Sources API** (card payments): deprecated but not being turned off\n- **Charges API (dated conflict)**: the 2026-04-20 older-APIs page said Charges remained available and was not going away; a separate April comparison said Charges was not being deprecated. The 2026-11-07 Charges page instead deprecates **creating card payments** on Charges, plans to remove that support, and says **new integrations cannot use Charges to create payments**. No date or fate of existing read/refund operations is given. These claims have different dates and scopes.\n- **ACH (old) API**: the 2026-04-20 older-APIs page said it remained available without future development; the November Charges page does not address ACH\n- **Current APIs**: Payment Intents + Setup Intents + Payment Methods — SCA-ready, Terminal support, all future features\n\n## Charges API vs Payment Intents API\n\n| Step | Charges API (legacy) | Payment Intents API |\n| --- | --- | --- |\n| 1 | Collect payment info via Elements | Create PaymentIntent server-side |\n| 2 | Tokenize via Stripe.js → token | Send client_secret to client |\n| 3 | Send token to server | Collect payment info via Elements |\n| 4 | Create Charge server-side | Handle 3DS client-side via Stripe.js |\n| 5 | Fulfill on success | Fulfill via webhook on success |\n\nCharges API does **not** support: SCA, India businesses, bank-requested card authentication. In the legacy flow, browser Elements data is tokenized by Stripe.js; the token goes to the merchant server for Charge creation, and fulfillment follows **successful payment**, not mere token or Charge request creation. PaymentIntents are created server-side, the client receives a client secret and handles 3DS with Stripe.js/mobile SDK, and the comparison directs fulfillment from success webhooks. These are actor and outcome boundaries, not executable authorization for a new Charges integration.\n\n## Other Details (Charges API)\n\n- **Refunds**: the April Node example uses `stripe.refunds.create({ charge: id, amount?: cents })`; November shows equivalent server-side secret-key curl to `POST /v1/refunds` with a Charge ID and optional integer `amount` in the currency's minor unit. A refund request example is not evidence of successful refund.\n- **Apple Pay (legacy)**: `PKPayment → createToken → Charge` (new path uses PaymentIntent)\n- **Dynamic statement descriptor**: 22 char limit; dynamic portion appended with `*` separator; Stripe allots 10 chars each side; use Dashboard \"shortened descriptor\" (2–10 chars) to give more room to dynamic portion\n- **Metadata**: supported; use with Radar rules; do not store PII or card details in metadata or Charge `description`. For PaymentIntents, read/update `metadata` and `description` on the **PaymentIntent**: the corresponding Charge fields are not guaranteed to stay consistent. A Charge metadata value is not a substitute for PaymentIntent state.\n- **Declines**: inspect the failed-payment API error and, where provided, its Charge ID to retrieve `outcome`; `charge.failed` webhooks signal unsuccessful charges. Do not infer success from tokenization or an attempted request.\n\n**Example surface:** November changes the refunds, descriptor and metadata illustrations from April Node SDK snippets to curl with a secret key; it does not say the SDK is deprecated. The Apple Pay legacy example still converts a `PKPayment` through `createTokenWithPayment` into a Token and then a server Charge. That example does not override the new-integration bar.\n\n## Charges vs Payment Intents: Historical comparison\n\nThe following use-case table comes from the separate 2026-04-20 Charges-versus-PaymentIntents guide. It describes legacy/existing Charges integrations; it is **not** a recommendation or permission for a new US/Canada Charges integration after the 2026-11-07 card-payment-creation deprecation notice.\n\n| | Charges API | Payment Intents API |\n| --- | --- | --- |\n| Use case | US/Canada simple card-only integrations | All products, all payment methods |\n| SCA ready | No | Yes |\n| Terminal (in-person) | No | Yes |\n| New features | No | Yes (only here) |\n\n**Charge object read migration** — `charge.payment_method_details` + `charge.billing_details` provide a consistent read path for charges from either API:\n\n| Old | New |\n| --- | --- |\n| `charge.source` | `charge.payment_method_details` |\n| `charge.source.id` | `charge.payment_method` |\n| `charge.source.name` | `charge.billing_details.name` |\n| `charge.source.address_zip` | `charge.billing_details.address.postal_code` |\n| `charge.source.brand: \"MasterCard\"` | `charge.payment_method_details.card.brand: \"mastercard\"` |\n| `tokenization_method: \"android_pay\"` | `card.wallet.type: \"google_pay\"` |\n| `charge.source.type == 'three_d_secure'` | `charge.payment_method_details.card.three_d_secure.succeeded` |\n\n## Sources → Payment Methods Migration\n\n**Key conceptual shift**: `Source` is stateful (has `status`); `PaymentMethod` is stateless — the PaymentIntent owns the state.\n\n**3 migration paths** (complexity order):\n\n| Path | Complexity | Server | Client |\n| --- | --- | --- | --- |\n| Stripe Checkout | Low | Create CheckoutSession | Not needed |\n| Payment Element | Medium | Create PaymentIntent | Render Payment Element with client_secret |\n| Own form | High | Create PaymentIntent | Custom form + JS SDK |\n\n**Key details:**\n\n- `requires_action` → 48h timeout → auto-transitions to `requires_payment_method`\n- Webhook: `source.chargeable/failed/canceled` → not applicable; `charge.succeeded` still fires (no forced update), also listen to `payment_intent.succeeded`\n- **Reusable legacy methods** (Alipay, Bacs DD, SEPA DD): don't auto-migrate — use Dashboard data migration tool\n- **Legacy cards/tokens saved to Customer**: backward-compatible with Payment Methods API — same underlying object, no migration needed\n- Store both `Charge ID` and `PaymentIntent ID` going forward (fetch Charge ID from `latest_charge`)\n\n## Integration Upgrade Map\n\n| Legacy | Recommended | Key benefit |\n| --- | --- | --- |\n| Card Element | Payment Element | 100+ payment methods; dynamic presentment by location/currency |\n| Legacy Checkout | Checkout or Payment Links | Adaptive Pricing, Dynamic payment methods, embed or redirect |\n| Payment Request Button | Express Checkout Element | Apple Pay + Amazon Pay + Google Pay + Link + PayPal simultaneously |\n| Manual payment methods | Dynamic payment methods | Dashboard-managed; Stripe selects eligible methods per transaction |\n\n## Related Pages\n\n- [[stripe]] — Stripe company page (API Deprecations table)\n- [[source-stripe-payment-intents]] — current Payment Intents API\n\n## Sources API Concepts\n\n4 characteristics classify every Source object:\n\n| Characteristic | Values | Notes |\n| --- | --- | --- |\n| Pull vs Push | Pull = merchant debits customer; Push = customer sends funds | Cards = pull; iDEAL/Sofort/ACH Credit = push |\n| Flow | none / redirect / code verification / receiver | Determines customer action required before source is chargeable |\n| Usage | `single_use` / `reusable` | Single-use → `consumed` after charge; reusable must be attached to Customer |\n| Confirmation | synchronous / asynchronous | Async charge starts `pending`; webhook required for fulfillment |\n\n**Receiver flow detail**: if not fully charged, funds credited to balance after 60 days. If source becomes chargeable but no charge is made, source is canceled and payment refunded automatically.\n\nAll push payment methods (Alipay, Bancontact, giropay, iDEAL, Przelewy24, WeChat Pay, Sofort, Multibanco) are now **deprecated**.\n\n## Migration Guide (Charges → Payment Intents)\n\n- **Incremental migration** is safe — run both APIs in parallel during transition\n- **API version rename** (pre-2019-02-11): `requires_source` → `requires_payment_method`; `requires_source_action` → `requires_action`\n- **Elements migration**: server creates PI → client calls `confirmCardPayment` → fulfill via `payment_intent.succeeded` webhook\n- **Saving cards in checkout**: set `setup_future_usage` (`on_session` / `off_session`) on the PaymentIntent\n- **Saving cards outside checkout**: use SetupIntent + `confirmCardSetup` instead of `createToken`/`createSource`\n- **Off-session payments**: must explicitly flag + pass payment method ID (no default source fallback)\n- **Access saved methods**: use `list payment methods` API — `customer.sources` won't include new PaymentMethods\n- **Regulatory test cards**: 4000002500003155 (auth on first), 4000002760003184 (always), 4000008260003178 (auth then insufficient_funds), 4000000000003055 (supports but not required)\n\n## Raw Sources\n\n- [[raw/stripe-payments-charges-api-2026-11-07]] — 2026-11-07 full Charges page (160 lines); scoped card-payment-creation deprecation and new-integration bar.\n- [[raw/stripe-older-apis-2025]] — migration notice: Sources/Charges/ACH deprecation status\n- [[raw/stripe-charges-api-legacy-2025]] — Charges API: flow comparison, refunds, Apple Pay, statement descriptors, metadata, declines\n- [[raw/stripe-payment-intents-migration-2025]] — Charges→PaymentIntents migration: incremental approach, confirmCardPayment, setup_future_usage, confirmCardSetup, off-session flagging, test cards\n- [[raw/stripe-sources-api-2025]] — Sources API concepts: 4 characteristics (pull/push, flow, usage, sync/async), 4 flow types, single-use vs reusable, async pending→webhook pattern; all push methods deprecated\n- [[raw/stripe-sources-to-payment-methods-migration-2025]] — Sources/Tokens→PaymentMethods migration: 3 paths (Checkout/Element/own form), stateless PaymentMethod vs stateful Source, 48h requires_action timeout, webhook mapping, reusable legacy method migration tool, legacy card backward-compat\n- [[raw/stripe-charges-vs-payment-intents-2025]] — Charges vs PaymentIntents: 3 API options, Charges = US/Canada simple cards not SCA-ready, PI = all methods + SCA + Terminal; charge object read migration field mapping; brand/Google Pay rename\n- [[raw/stripe-upgrade-integration-2025]] — Integration upgrade map: Card Element→Payment Element, Legacy Checkout→Checkout/Payment Links, Payment Request Button→Express Checkout Element, Manual→Dynamic payment methods\n",
+      "quotes": [
+        {
+          "text": "We’ve deprecated use of the Charges API to create card payments and plan to remove support.",
+          "location": "raw/stripe-payments-charges-api-2026-11-07.md:17-17"
+        },
+        {
+          "text": "New integrations can’t use the Charges API to create payments.",
+          "location": "raw/stripe-payments-charges-api-2026-11-07.md:17-17"
+        },
+        {
+          "text": "The Charges API doesn’t support the following features, many of which are required for credit card compliance:",
+          "location": "raw/stripe-payments-charges-api-2026-11-07.md:19-19"
+        },
+        {
+          "text": "If using both the Payment Intent and Charge objects, you’re not guaranteed to see consistent values for these fields.",
+          "location": "raw/stripe-payments-charges-api-2026-11-07.md:133-133"
+        },
+        {
+          "text": "Don’t store any sensitive information (personally identifiable information, card details, and so on) as metadata or in the charge’s `description` parameter.",
+          "location": "raw/stripe-payments-charges-api-2026-11-07.md:153-153"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-charges-api-2026-11-07.md",
+      "raw_sha256": "f2849177e58b70c4135df3cb9b36218549a174fbaab446da6b19f89d79dc30bb",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-charges-api-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 160
+      }
+    ],
+    "raw/stripe-charges-api-legacy-2025.md": [
+      {
+        "start": 1,
+        "end": 91
+      },
+      {
+        "start": 92,
+        "end": 182
+      }
+    ],
+    "wiki/sources/source-stripe-legacy-apis.md": [
+      {
+        "start": 1,
+        "end": 70
+      },
+      {
+        "start": 71,
+        "end": 136
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/7401e9cedac333e40575821d/content.diff": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 193
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-charges-api/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 144
+      }
+    ],
+    "raw/stripe-older-apis-2025.md": [
+      {
+        "start": 1,
+        "end": 34
+      }
+    ],
+    "raw/stripe-charges-vs-payment-intents-2025.md": [
+      {
+        "start": 1,
+        "end": 72
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 168,
+        "end": 177
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 20,
+        "end": 26
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "The content of this section refers to a _Legacy_ (Technology that's no longer recommended) feature.",
+      "location": "raw/stripe-charges-api-legacy-2025.md:10-10"
+    },
+    {
+      "text": "Use [PaymentIntents](https://docs.stripe.com/payments/accept-a-payment.md) for new integrations.",
+      "location": "raw/stripe-charges-api-legacy-2025.md:19-19"
+    },
+    {
+      "text": "Although unsupported, these APIs aren’t going away.",
+      "location": "raw/stripe-older-apis-2025.md:22-22"
+    },
+    {
+      "text": "While we aren’t deprecating Charges, new features are only available with the Payment Intents API.",
+      "location": "raw/stripe-charges-vs-payment-intents-2025.md:20-20"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/charges-api, the November capture now labels Charges card-payment creation deprecated, says Stripe plans to remove that support and bars new integrations from creating payments through Charges, recommending Checkout or PaymentIntents (new raw lines 5-25). The April matched Charges page called Charges/Tokens legacy and recommended PaymentIntents but did not state removal or a hard bar (old raw lines 4-21). Both show browser Elements collection, Stripe.js tokenization, server Charge creation and fulfillment only upon successful payment; the PaymentIntent comparison moves intent creation to the server, client authentication to Stripe.js/mobile SDK and success-driven fulfillment to webhooks (old raw lines 23-39; new raw lines 27-41). The mapped source-stripe-legacy-apis.md groups seven historical raws and incorrectly says Charges are not being removed while its old US/Canada table sounds like a current option (source lines 23-25, 47-54). Its revision must date the separate older-APIs and comparison claims, scope the new deprecation to card-payment creation, and preserve ACH/Sources claims as separate evidence. No removal date or general end of Charge read/refund operations is established.",
+    "Q2": "For https://docs.stripe.com/payments/charges-api, the material change is a stronger lifecycle restriction: the April capture called Charges legacy and not recommended for new integration, while November says card-payment creation is deprecated, planned for removal and unavailable to new integrations (old raw lines 8-21; new raw lines 15-25). The Node-to-curl examples for refunds, descriptor and metadata, heading edits and replacement links are presentation/client-language changes, not evidence that Node SDK support ended (old raw lines 41-175; new raw lines 43-153). source-stripe-legacy-apis.md must retain April raw/date, add November provenance and qualify the older not-being-removed statement and Charges use-case table. Browser tokenization is client-side, secret-key Charge/refund calls are server-side, and PaymentIntent metadata/description are not guaranteed identical to Charge fields (new raw lines 27-41, 131-139). The Apple Pay Token-to-Charge sample remains historical, and neither token creation, a Charge request, nor a UI return proves successful payment or fulfillment. The November notice does not resolve existing-account cutoff, Charge retrieval/refunds, ACH or Sources support."
+  }
+}

@@ -1,0 +1,187 @@
+{
+  "job_id": "payments-customer-balance-refunding",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-bank-transfers-refunds.md": {
+      "job_id": "payments-customer-balance-refunding",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Refund Bank Transfer Payments\"\ntype: source\ndate_ingested: 2026-05-05\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/customer-balance/refunding\"\nraw_files:\n  - \"stripe-payments-customer-balance-refunding-2026-11-07.md\"\n  - \"stripe-bank-transfers-refunds-2025.md\"\ntags: [stripe, bank-transfers, refunds, customer-balance, payments]\n---\n\n## Summary\n\nThe November 7, 2026 full guide and the older capture describe three destinations or origins: refund a bank-transfer payment to the customer's bank, refund that payment to the customer's **cash balance**, or return available customer cash balance to the customer's bank. The two bank-directed procedures have different origins and cancellation surfaces. The older capture also includes locally downloaded screenshots and Node examples; the newer capture presents curl examples and CDN images without establishing a new refund capability.\n\n## Payment refund to the customer's bank\n\nStripe needs destination bank account details. It may already have them from the transfer; when details are missing or ambiguous, Stripe requests them at the email on the Customer object. If the Customer has no email, creating the refund can fail; update the Customer or supply another address with `instructions_email`. Stripe might perform additional checks before processing or requesting bank details. A payment can be refunded up to **180 days after creation**. Each refund, including a partial refund, might incur a fee.\n\nFrom the payment page, select **Refund**, enter the amount and details, and submit. The November API example creates a Refund using `payment_intent` and optional `instructions_email`:\n\n```bash\ncurl https://api.stripe.com/v1/refunds \\\n  -u \"<<YOUR_SECRET_KEY>>:\" \\\n  -d \"payment_intent={{PAYMENTINTENT_ID}}\" \\\n  --data-urlencode \"instructions_email=customeremail@example.com\"\n```\n\nThe May capture shows the corresponding `stripe.refunds.create({ payment_intent, instructions_email })` Node example. These are dated examples of the same path, not evidence of client or API removal.\n\nFor a **bank-directed payment refund**, the documented Refund states are:\n\n| Event | Refund status |\n| --- | --- |\n| Created while awaiting bank details | `requires_action` |\n| Customer supplies bank details and processing begins | `pending` |\n| Successfully paid out to customer | `succeeded` |\n| Recipient bank returns funds | `requires_action` again; Stripe asks for corrected details |\n| Remains in `requires_action` at the stated timeout | `failed`, with `refund.failed` |\n| Canceled before the customer supplies details | `canceled` |\n\n`pending` means processing, not receipt by the customer. Track the Refund in the Dashboard or retrieve its Refund object. `instructions_email` records the recipient address; while waiting for a reply, `next_action.display_details.email_sent` can show the address and send time, which the guide also ties to transition into `requires_action`.\n\n### Cancel this payment refund\n\nBefore the customer supplies bank details, cancel the `requires_action` refund on the payment page using **Cancel refund**; if several partial refunds are waiting, select the correct Refund. The November API example is `POST /v1/refunds/{id}/cancel`; the older capture shows `stripe.refunds.cancel({ refund: id })`. Cancellation changes the Refund to `canceled`; with no other refunds, the payment returns to its original pre-refund state.\n\n## Payment refund to customer cash balance\n\nOn the payment page, choose **Refund** and then **Customer cash balance** in the **Destination** dropdown. The credit succeeds immediately, is free of charge, and leaves funds available for future payments on the merchant's site. This guide gives a Dashboard procedure for this direction. Neither pinned capture documents a `destination: 'customer_balance'` API argument for it; the `origin: 'customer_balance'` request below is the *reverse* direction. Do not apply the bank-directed `requires_action` lifecycle or possible fee to this immediate credit.\n\n## Return available customer cash balance to the customer's bank\n\nFor available cash balance, such as an excess bank transfer, open the Customer's **Cash Balance** row in **Payment methods** and choose **Initiate Refund**. The API example creates a Refund with `origin=customer_balance`, `customer`, `amount`, and `currency`; `instructions_email` can override the Customer's default address:\n\n```bash\ncurl https://api.stripe.com/v1/refunds \\\n  -u \"<<YOUR_SECRET_KEY>>:\" \\\n  -d amount=1099 \\\n  -d currency=usd \\\n  -d \"customer={{CUSTOMER_ID}}\" \\\n  --data-urlencode \"instructions_email=jenny.rosen@example.com\" \\\n  -d origin=customer_balance\n```\n\nThe older capture gives the same parameters in a Node `stripe.refunds.create` example. The Customer identity and cash-balance origin distinguish this from refunding a PaymentIntent.\n\n### Cancel this cash-balance return\n\nOnly an unprocessed return can be canceled, before the customer submits bank account details. The captured guide directs users to the **Dashboard only**: open the Customer's cash-balance details, use the refund row's overflow menu, and select **Cancel**. The refund amount is credited back to available cash balance. The payment-refund cancellation API above is not presented as the interface for this cash-balance return.\n\n## Captured 45-day wording conflict\n\nBoth captures say the customer has **45 days from receipt of the request** to submit bank details and that, without a valid response, Stripe cancels the refund and returns funds to customer cash balance. Their bank-refund status table instead says a Refund still in `requires_action` **45 days after creation** becomes `failed`; nearby prose says `refund.failed` fires and the merchant must return the funds outside Stripe. These passages leave the start of the clock, resulting status, and funds destination unresolved. Preserve both dated statements and confirm the actual Refund and ledger state before deciding how to return funds; a created or pending Refund does not prove customer receipt.\n\n## International wires and sandbox\n\nThe guide says Stripe does not support automatic refunds or automated refund emails for international **SWIFT** payments. Its manual route is to move unreconciled customer cash balance into the merchant's Stripe account balance (or wait for the guide's **75-day** sweep statement), pay out to the merchant's external bank, collect the customer's bank details directly, then send and notify the customer through a separate method. This is not a native Stripe SWIFT refund.\n\nThe captures list sandbox fixtures for IBAN countries, Japan, Mexico, the United Kingdom, and the United States. In a sandbox, refund instruction emails go only to addresses linked to the Stripe account. The test helper `POST /v1/test_helpers/refunds/{id}/expire` simulates refund expiration in a sandbox; the fixtures and helper do not establish live account eligibility or a live payout outcome.\n\n## Related\n\n- [[stripe]] \u2014 company context.\n- [[stripe-bank-transfers]] \u2014 bank transfer payment and refund context.\n- [[stripe-customer-balance]] \u2014 cash balance and invoice balance distinction.\n\n## Raw Sources\n\n- [[raw/stripe-payments-customer-balance-refunding-2026-11-07|November 7, 2026 full refund guide]] \u2014 full webpage capture fetched 2026-11-07, curl examples and CDN image references (257 lines).\n- [[raw/stripe-bank-transfers-refunds-2025|Earlier full refund guide]] \u2014 earlier full webpage capture used for the 2026-05-05 ingest, Node examples and five locally downloaded CDN images in `raw/assets/` (270 lines).\n",
+      "quotes": [
+        {
+          "text": "Customers have 45 days from receipt of the request to submit bank account details.",
+          "location": "raw/stripe-payments-customer-balance-refunding-2026-11-07.md:19"
+        },
+        {
+          "text": "A refund to the customer cash balance succeeds immediately.",
+          "location": "raw/stripe-payments-customer-balance-refunding-2026-11-07.md:86"
+        },
+        {
+          "text": "To refund a customer\u2019s cash balance with the API, set the",
+          "location": "raw/stripe-payments-customer-balance-refunding-2026-11-07.md:114"
+        },
+        {
+          "text": "You can only cancel un-processed refunds.",
+          "location": "raw/stripe-payments-customer-balance-refunding-2026-11-07.md:128"
+        },
+        {
+          "text": "Stripe doesn\u2019t support refunds for international (SWIFT) payments",
+          "location": "raw/stripe-payments-customer-balance-refunding-2026-11-07.md:159"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "s03-refunding-bank-transfers-refunds",
+            "target_path": "wiki/concepts/stripe-bank-transfers.md",
+            "update_kind": "durable_fact",
+            "anchor": "## Refunds\n\nFour refund flows:\n\n1. **Payment \u2192 customer bank**: Stripe emails customer for bank details; 45-day window; may incur fee; 180-day refund window from payment creation.\n2. **Cancel pending refund**: `stripe.refunds.cancel({ refund: id })` \u2014 only while `requires_action`.\n3. **Payment \u2192 customer cash balance**: immediate and free.\n4. **Cash balance \u2192 customer bank**: `stripe.refunds.create({ origin: 'customer_balance', customer, amount, currency })`.\n\nRefund status: `requires_action` \u2192 `pending` \u2192 `succeeded` / back to `requires_action` (bank rejection) \u2192 `failed` at 45 days (`refund.failed` event). Customer email required.\n\nInternational (SWIFT) refunds: **not supported** \u2014 manual process required.",
+            "proposed_markdown": "## Refunds\n\nThree distinct paths are documented in [[source-stripe-bank-transfers-refunds]]:\n\n1. **Bank-transfer payment \u2192 customer bank**: Stripe needs destination bank details and may request them by Customer email (or `instructions_email`); missing Customer email can make refund creation fail. A payment can be refunded within 180 days of creation, and each bank-directed refund, including a partial refund, might incur a fee. Its Refund can move `requires_action` \u2192 `pending` \u2192 `succeeded`; a bank return can move it back to `requires_action`. `pending` is processing, while `succeeded` marks successful payout.\n2. **Bank-transfer payment \u2192 customer cash balance**: choose **Customer cash balance** as the Dashboard refund destination. This succeeds immediately and is free. The pinned guide does not document a `destination: 'customer_balance'` API argument for this path.\n3. **Available cash balance \u2192 customer bank**: use the Customer's cash-balance Dashboard refund flow or create a Refund with `origin: 'customer_balance'`, `customer`, `amount`, and `currency`, optionally `instructions_email`. This is a return of available cash balance, distinct from refunding a PaymentIntent.\n\nThe bank-directed **payment refund** can be canceled while it is still `requires_action` and before bank details arrive, using the payment Dashboard or `POST /v1/refunds/{id}/cancel` (older Node example: `stripe.refunds.cancel({ refund: id })`). An **available cash-balance return** can be canceled only before bank details arrive, through the Dashboard; cancellation credits the amount back to available cash balance.\n\n**45-day warning:** The pinned guide says 45 days from the customer's receipt of the bank-detail request and a return to customer cash balance, but its status table says `failed` at 45 days after Refund creation and nearby prose says `refund.failed` with a return outside Stripe. Those clock and funds-destination statements are unresolved in the capture. Confirm the Refund and balance state rather than treating creation or `pending` as customer receipt.\n\nInternational (SWIFT) refunds and automated refund emails are **not supported**; the guide describes a separate manual return path.",
+            "quote_indexes": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Replace only the exact ## Refunds section. New raw lines 19,49,54 and old raw lines 18,52,57 conflict on the 45-day clock and post-failure funds destination.",
+              "The older Node cancel example is preserved as dated; the new capture shows the API endpoint at new raw lines 72-82."
+            ]
+          },
+          {
+            "update_id": "s03-refunding-customer-cash-routes",
+            "target_path": "wiki/concepts/stripe-customer-balance.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Constraints**: cannot be topped up directly; not a digital wallet or e-money; can only be used for future payments or returned to the customer's bank account.",
+            "proposed_markdown": "**Constraints**: cannot be topped up directly; not a digital wallet or e-money; can only be used for future payments or returned to the customer's bank account.\n\n**Refund and return routes**: A bank-transfer payment refunded to the Customer cash balance through the Dashboard succeeds immediately and is free; this differs from returning available cash balance to the customer's bank. For the latter, [[source-stripe-bank-transfers-refunds]] documents a Refund with `origin: 'customer_balance'`, Customer ID, amount, and currency, or a Dashboard flow. An unprocessed return can be canceled through the Dashboard before bank details arrive, crediting the amount back to available cash balance. Bank-directed Refunds can require details and pass through `requires_action` and `pending`; those states do not show customer receipt. The captured guide has unresolved 45-day clock and post-failure funds-location wording (new raw lines 19, 49, 54; old raw lines 18, 52, 57).",
+            "quote_indexes": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "warnings": [
+              "Append to the exact existing cash-balance constraint paragraph only. The guide does not establish a payment-to-cash-balance API destination parameter.",
+              "New raw lines 19,49,54 and old raw lines 18,52,57 are internally inconsistent on the 45-day clock and funds destination."
+            ]
+          },
+          {
+            "update_id": "s03-refunding-customer-source-route",
+            "target_path": "wiki/concepts/stripe-customer-balance.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-customer-balance-funding-instructions]] \u2014 createFundingInstructions API, per-region financial_addresses schemas, EU VBAN limit, account ownership letter",
+            "proposed_markdown": "- [[source-stripe-customer-balance-funding-instructions]] \u2014 createFundingInstructions API, per-region financial_addresses schemas, EU VBAN limit, account ownership letter\n- [[source-stripe-bank-transfers-refunds]] \u2014 bank-transfer payment refunds, available cash-balance returns, cancellation boundaries, and captured 45-day wording conflict",
+            "quote_indexes": [
+              1,
+              2,
+              3
+            ],
+            "warnings": [
+              "Append the source link to the existing Sources list without altering other routes."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-customer-balance-refunding-2026-11-07.md",
+      "raw_sha256": "5d68ddd822570f6e369d1cf6c56a4cd2b4f7dec4f12e848d1bb72351faca957c",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-customer-balance-refunding-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 130
+      },
+      {
+        "start": 131,
+        "end": 257
+      }
+    ],
+    "raw/stripe-bank-transfers-refunds-2025.md": [
+      {
+        "start": 1,
+        "end": 135
+      },
+      {
+        "start": 136,
+        "end": 270
+      }
+    ],
+    "wiki/sources/source-stripe-bank-transfers-refunds.md": [
+      {
+        "start": 1,
+        "end": 46
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/5725728e98a5a9fdea794809/content.diff": [
+      {
+        "start": 1,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 180
+      },
+      {
+        "start": 181,
+        "end": 315
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-customer-balance-refunding/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 215
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 22
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 305,
+        "end": 316
+      },
+      {
+        "start": 742,
+        "end": 752
+      }
+    ],
+    "wiki/concepts/stripe-bank-transfers.md": [
+      {
+        "start": 1,
+        "end": 146
+      }
+    ],
+    "wiki/concepts/stripe-customer-balance.md": [
+      {
+        "start": 1,
+        "end": 82
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "A refund to the customer cash balance succeeds immediately.",
+      "location": "raw/stripe-bank-transfers-refunds-2025.md:93"
+    },
+    {
+      "text": "Refund is in `requires_action` 45 days after creation",
+      "location": "raw/stripe-bank-transfers-refunds-2025.md:52"
+    },
+    {
+      "text": "After the customer submits their bank account details, you can\u2019t cancel a refund.",
+      "location": "raw/stripe-bank-transfers-refunds-2025.md:139"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/customer-balance/refunding, the full new capture separates refunding a bank-transfer PaymentIntent to the customer's bank, crediting that payment to customer cash balance, and returning available cash balance to a customer bank. The old raw lines 10-61 and new raw lines 11-58 agree that the bank route needs bank details, may request them through Customer email or instructions_email, can fail creation without an email, and has a 180-day payment refund window. Its Refund may move requires_action to pending to succeeded, return to requires_action on bank rejection, fail after a stated timeout, or be canceled before details arrive. The old raw lines 91-135 and new raw lines 84-124 distinguish immediate free cash-balance credit from an origin=customer_balance return, with Customer identity, amount and currency. source-stripe-bank-transfers-refunds.md currently overgeneralizes the bank status table and gives an unsupported payment-to-cash-balance API destination sample; the revised source scopes those statements and retains the two cancellation procedures.",
+    "Q2": "At https://docs.stripe.com/payments/customer-balance/refunding, the old raw lines 29-42,75-89,119-135 and new raw lines 30-39,72-82,112-124 show chiefly Node-to-curl sample changes; image URLs, step numbers, table layout, and the Refund retrieval link also change without establishing a new refund capability. source-stripe-bank-transfers-refunds.md should retain May 2026 Node and local-image provenance beside the November 2026 full capture, plus dated 180-day, email, possible fee, SWIFT manual-return, sandbox, and test-helper details. The captured guide conflicts internally: new raw line 19 measures 45 days from request receipt and says funds return to cash balance, whereas lines 49 and 54 measure after creation and say failed/refund.failed with return outside Stripe; old raw lines 18,52,57 already contain this conflict. The revised source and bounded concept warnings preserve it. A created or pending bank-directed Refund is not successful payout, and no live refund or customer receipt was tested."
+  }
+}

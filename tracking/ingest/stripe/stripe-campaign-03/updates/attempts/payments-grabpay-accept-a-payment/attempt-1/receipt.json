@@ -1,0 +1,187 @@
+{
+  "job_id": "payments-grabpay-accept-a-payment",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-grabpay-accept-payment.md": {
+      "job_id": "payments-grabpay-accept-a-payment",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Accept a GrabPay Payment\"\ntype: source\ndate_ingested: 2026-05-07\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/payments/grabpay/accept-a-payment\nraw_files:\n  - \"stripe-grabpay-accept-payment-2025.md\"\ntags: [stripe, wallets, grabpay, singapore, malaysia, checkout, ios, android, react-native, direct-api, no-minimum]\n---\n\n## Summary\n\n[[stripe]]'s archived GrabPay acceptance guide describes five variants: Checkout, Direct API, iOS, Android, and React Native. It describes a single-use wallet redirect in which the customer authorizes at GrabPay, returns to the merchant website or app, and the merchant checks the PaymentIntent result. Its detailed rules and examples are from the 2026-05-07 capture. The 2026-11-07 capture of https://docs.stripe.com/payments/grabpay/accept-a-payment is a variant index only and does not independently establish current payment behavior. See [[stripe-wallets]].\n\n## Dated acceptance details from the May 2026 guide\n\n### Merchant, currency, and Checkout conditions\n\n- The guide says subscriptions and using GrabPay for future payments were not supported at that capture. For Checkout it requires one-time line items and the same currency for every line item; split mixed currencies into separate Checkout Sessions. It pairs Singapore-based businesses and Singapore customers with SGD, and Malaysia-based businesses and Malaysia customers with MYR. These are dated guide conditions, not proof of current account eligibility.\n- GrabPay is described as single-use. The Checkout guide offers dynamic payment methods or manual configuration with `grabpay` in `payment_method_types`. Its sample Sessions use `mode: \"payment\"`; the Stripe-hosted sample has `success_url`, while the embedded-page sample has `ui_mode: \"embedded_page\"` and `return_url`.\n- The iOS, Android, React Native, and Direct API sections say there is no minimum GrabPay charge and the PaymentIntent `amount` value can be as low as `1` with `sgd` or `myr` currency. This is the archived API-amount wording, not a claim that the minimum is one whole SGD or MYR, and it does not establish a Checkout minimum.\n\n### PaymentIntent and mobile clients\n\n- The mobile and Direct API examples create a PaymentIntent on the server with an amount, `sgd` or `myr`, and `payment_method_types: [\"grabpay\"]`, then give the client its client secret. Intent creation or possession of the secret does not mean the payment succeeded.\n- iOS uses `STPPaymentMethodGrabPayParams()` and `STPPaymentHandler.shared().confirmPayment` to present a GrabPay webview. To let the webview dismiss after authentication, the archived guide allows a **custom URL scheme or universal link** with the app delegate forwarding the URL to Stripe; its sample sets a `returnURL`. The earlier source's custom-scheme-only requirement was too narrow.\n- Android collects the customer's full name in `PaymentMethod.BillingDetails`, passes that to `PaymentMethodCreateParams.createGrabPay`, and calls `PaymentLauncher.confirm`. The archived Gradle sample pins Stripe Android `23.7.0`; this is a dated sample version.\n- React Native collects the customer's full name and calls `confirmPayment(clientSecret, { paymentMethodType: \"GrabPay\", paymentMethodData: { billingDetails } })`. Its return-flow instructions say to register a custom URL scheme, configure it, and forward URLs with `handleURLCallback`; that section explicitly says universal links are unsupported. Do not transfer that React Native restriction to native iOS.\n\n### Direct API and outcome boundary\n\n- The browser Direct API sample uses `stripe.confirmGrabPayPayment(clientSecret, { return_url })` to start the GrabPay redirect. The return page retrieves the PaymentIntent and displays its status; arriving at `return_url` alone is not success.\n- A separate optional manual-redirect path confirms the PaymentIntent on the server with `payment_method_data: { type: \"grabpay\" }` and `return_url`. Its `requires_action` result contains `next_action.type: \"redirect_to_url\"`; the merchant then sends the browser to that URL. The redirect is an authorization step, not a succeeded charge.\n- The archived test flow uses a Stripe-hosted GrabPay page with authorize or fail choices. For business actions, the guide recommends listening for `payment_intent.succeeded` through an event receiver instead of relying on the client callback. The older guide also links the applicable GrabPay SG and MY transaction limits and branding assets; those linked limits are not restated by the November index.\n\n## November 2026 variant navigation\n\nThe canonical root capture lists Checkout, Direct API, and mobile iOS, Android, and React Native destinations. It provides no variant bodies, current merchant or customer eligibility, amount rule, SDK instructions, subscription status, or payment outcome. The root-body replacement in the diff is a navigation change; omission of the archived details is not evidence of deprecation or reversal. Review a specific variant before making a current behavior claim.\n\n## Raw Sources\n\n- [[raw/stripe-grabpay-accept-payment-2025|stripe-grabpay-accept-payment-2025]] \u2014 detailed GrabPay guide (1,134 lines; Checkout, iOS, Android, React Native, Direct API), fetched 2026-05-07.\n\n## Related raw API references\n\n- [[raw/stripe-payments-grabpay-accept-a-payment-2026-11-07|stripe-payments-grabpay-accept-a-payment-2026-11-07]] \u2014 2026-11-07 canonical variant index only; navigation reference, not factual payment-behavior evidence.\n",
+      "quotes": [
+        {
+          "text": "Learn how to accept GrabPay, a common payment method in Southeast Asia.",
+          "location": "raw/stripe-payments-grabpay-accept-a-payment-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-grabpay-accept-a-payment-2026-11-07.md:11"
+        },
+        {
+          "text": "- [Checkout](https://docs.stripe.com/payments/grabpay/accept-a-payment.md?payment-ui=checkout)",
+          "location": "raw/stripe-payments-grabpay-accept-a-payment-2026-11-07.md:13"
+        },
+        {
+          "text": "- [Direct API](https://docs.stripe.com/payments/grabpay/accept-a-payment.md?payment-ui=direct-api)",
+          "location": "raw/stripe-payments-grabpay-accept-a-payment-2026-11-07.md:14"
+        },
+        {
+          "text": "  - [React Native](https://docs.stripe.com/payments/grabpay/accept-a-payment.md?payment-ui=mobile&platform=react-native)",
+          "location": "raw/stripe-payments-grabpay-accept-a-payment-2026-11-07.md:18"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "grabpay_accept_wallets_integration_correction",
+            "target_path": "wiki/concepts/stripe-wallets.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Integration**: Checkout, iOS, Android, React Native, Direct API. **No minimum charge amount** (can be as low as 1 SGD/MYR). Subscriptions explicitly not supported. Android: `name` required in billing details. Direct API: `stripe.confirmGrabPayPayment()`. Custom URL scheme required for iOS/React Native.",
+            "proposed_markdown": "**Integration (2026-05-07 guide)**: Checkout, Direct API, iOS, Android, and React Native are five documented variants. The guide says GrabPay has no minimum charge and a PaymentIntent API `amount` may be as low as `1` with SGD or MYR; it does not state a one-whole-SGD/MYR minimum. Subscriptions and future payments were unsupported in that guide. Android collects a billing full name; Direct API uses `stripe.confirmGrabPayPayment()`. Native iOS permits a custom URL scheme **or universal link** for app return and forwards the URL to Stripe; React Native separately requires a custom URL scheme and says universal links are unsupported. The 2026-11-07 canonical root capture is a variant index only; it does not reverify those behavior rules. See [[source-stripe-grabpay-accept-payment]].",
+            "quote_indexes": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Baseline correction from old raw/stripe-grabpay-accept-payment-2025.md:8,215,245-298,473-490,715-725,878,982-1005; new raw/stripe-payments-grabpay-accept-a-payment-2026-11-07.md:9-18 supports variant navigation only. Preserve separate iOS and React Native return-link rules, dated amount wording and no subscription claim."
+            ]
+          },
+          {
+            "update_id": "grabpay_accept_wallets_reciprocal_route",
+            "target_path": "wiki/concepts/stripe-wallets.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-grabpay-accept-payment]] \u2014 GrabPay integration: 4 paths + mobile, no minimum charge, confirmGrabPayPayment(), Android needs billing name",
+            "proposed_markdown": "- [[source-stripe-grabpay-accept-payment]] \u2014 2026-05-07 detailed GrabPay acceptance guide for five variants (Checkout, Direct API, iOS, Android, React Native), with dated no-minimum PaymentIntent wording, platform-specific return links and payment outcome bounds; 2026-11-07 root capture is navigation only",
+            "quote_indexes": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Corrects existing concept line 409 count against new raw/stripe-payments-grabpay-accept-a-payment-2026-11-07.md:13-18 and old raw/stripe-grabpay-accept-payment-2025.md:10-12,112-114,360-362,572-574,853-855; route is to the existing source, and November capture remains navigation only."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-grabpay-accept-a-payment-2026-11-07.md",
+      "raw_sha256": "9ef211e08b053ed3de94fc69a7b3327500eb00c0a5cd90607a9846b8255f4782",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-grabpay-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 18
+      }
+    ],
+    "raw/stripe-grabpay-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 1000
+      },
+      {
+        "start": 1001,
+        "end": 1134
+      }
+    ],
+    "wiki/sources/source-stripe-grabpay-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 35
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/aa73011fa6ecb7497cffe480/content.diff": [
+      {
+        "start": 1,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 1000
+      },
+      {
+        "start": 1001,
+        "end": 1140
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-grabpay-accept-a-payment/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 147
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 12
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 390,
+        "end": 410
+      }
+    ],
+    "wiki/concepts/stripe-wallets.md": [
+      {
+        "start": 250,
+        "end": 280
+      },
+      {
+        "start": 396,
+        "end": 416
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "*Subscriptions* (A Subscription represents the product details associated with the plan that your customer subscribes to. Allows you to charge the customer on a recurring basis) and using GrabPay for future payments aren\u2019t currently supported.",
+      "location": "raw/stripe-grabpay-accept-payment-2025.md:8"
+    },
+    {
+      "text": "There is no minimum charge amount for GrabPay so the payment amount can be as low as 1.",
+      "location": "raw/stripe-grabpay-accept-payment-2025.md:215"
+    },
+    {
+      "text": "configure a [custom URL scheme](https://developer.apple.com/documentation/xcode/allowing_apps_and_websites_to_link_to_your_content/defining_a_custom_url_scheme_for_your_app) or [universal link](https://developer.apple.com/documentation/xcode/allowing_apps_and_websites_to_link_to_your_content)",
+      "location": "raw/stripe-grabpay-accept-payment-2025.md:247"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/grabpay/accept-a-payment, the complete raw/stripe-payments-grabpay-accept-a-payment-2026-11-07.md at new raw lines 1-18 establishes only the GrabPay title, Southeast Asia purpose sentence, and five variant links: Checkout, Direct API, iOS, Android and React Native. It states no present-day payment prerequisite, account eligibility, currency constraint, state transition or completed outcome. The matched raw/stripe-grabpay-accept-payment-2025.md at old raw lines 1-1134 documents the dated single-use redirect, unsupported subscriptions/future use, Singapore/SGD and Malaysia/MYR pairing, one-time same-currency Checkout, server PaymentIntent and client secret, platform returns, and event-based outcome handling. The mapped wiki/sources/source-stripe-grabpay-accept-payment.md covered the paths but miscounted them, overread the API amount wording as a whole-currency amount, and incorrectly made the iOS custom URL scheme the only return method. The candidate source and reciprocal [[stripe-wallets]] concept replacements correct those baseline errors.",
+    "Q2": "For https://docs.stripe.com/payments/grabpay/accept-a-payment, the difference at new raw lines 9-18 in raw/stripe-payments-grabpay-accept-a-payment-2026-11-07.md is the root page becoming a variant index; old raw lines 8-1134 in raw/stripe-grabpay-accept-payment-2025.md remain dated authority for the detailed Checkout, Direct API and mobile examples. The new capture does not substantively change or deprecate the old behavior. In wiki/sources/source-stripe-grabpay-accept-payment.md, retain the May 2026 no-recurring, SG/MY merchant-customer currency, branding, SDK sample and Direct API details with dates. Correct the five-versus-four route count in source and concept, and warn reciprocally that old raw line 247 permits either iOS custom URL scheme or universal link while old raw lines 715-725 restrict React Native to a custom scheme. The old PaymentIntent amount can be 1, without an explicit one-whole-SGD/MYR minimum. A created intent, requires_action redirect, browser return, SDK callback or test-page approval is not final payment success; the old guide recommends payment_intent.succeeded events for business actions."
+  }
+}

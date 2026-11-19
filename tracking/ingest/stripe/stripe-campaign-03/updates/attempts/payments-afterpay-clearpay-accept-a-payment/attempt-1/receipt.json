@@ -1,0 +1,204 @@
+{
+  "job_id": "payments-afterpay-clearpay-accept-a-payment",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-afterpay-clearpay-accept-payment.md": {
+      "job_id": "payments-afterpay-clearpay-accept-a-payment",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Accept an Afterpay or Clearpay Payment\"\ntype: source\ndate_ingested: 2026-05-06\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/afterpay-clearpay/accept-a-payment\"\nraw_files:\n  - \"stripe-afterpay-clearpay-accept-payment-2025.md\"\ntags: [stripe, bnpl, afterpay, clearpay, buy-now-pay-later, checkout, payment-intents, elements]\n---\n\n## Overview\n\nStripe's Afterpay/Clearpay acceptance guide. The detailed 2026-05-06 capture covers Checkout, Elements with the Checkout Sessions API, Elements with the Payment Intents API, a legacy Direct API section, and iOS, Android, and React Native sections. The 2026-11-07 capture at the canonical URL is a **variant index only**: it names Checkout, both Elements API choices, Direct API, iOS, Android, and React Native, but contains none of their current instructions. Its links are navigation, not evidence that the older requirements still apply today or that an omitted older instruction was removed. See [[stripe-bnpl]] and [[stripe]].\n\n## Key takeaways from the 2026-05-06 detailed capture\n\n- The method identifier is `afterpay_clearpay`. The old guide identifies Afterpay as Clearpay in the UK and lists Australia, Canada, New Zealand, the UK, and the US. It tells merchants to check account eligibility in Payment methods settings before integration. These are captured documentation claims, not a finding that any particular account is eligible.\n- In the Checkout and Elements Checkout Sessions variants, the old guide limits Afterpay Checkout Sessions to `payment` mode, one-time line items, and domestic-currency Prices; it lists `aud`, `cad`, `nzd`, `gbp`, and `usd`. The hosted and embedded Checkout examples use `afterpay_clearpay` in `payment_method_types`. Passing shipping through `payment_intent_data[shipping]` is optional guidance to improve loan acceptance, not a required field.\n- In the old Elements Checkout Sessions variant, the server creates a Checkout Session and returns its client secret; the client initializes Checkout and confirms with the Payment Element. That section says Checkout Sessions expire 24 hours after creation. Its Stripe.js and React package minimums are specific to that dated variant; the November index does not update them.\n- In the old Elements Payment Intents variant, the server decides amount and currency, creates a PaymentIntent, and returns its client secret for client-side `stripe.confirmPayment` with a `return_url`. Accounts v2 `customer_account` and Customers v1 `customer` appear as separate examples, not interchangeable required fields. The older legacy Direct API path uses `confirmAfterpayClearpayPayment` or a server-managed redirect; for the server-managed option it requires `payment_method_data.billing_details` and `return_url`, while `payment_intent.shipping` is optional but recommended. The old mobile variants use server-created PaymentIntents and platform SDK confirmation; React Native's old section explicitly marks that integration as legacy.\n- The old Checkout event table treats `checkout.session.completed` as customer authorization and says to wait for success or failure. `payment_intent.succeeded` marks payment success; `payment_intent.payment_failed` marks failure and return to `requires_payment_method`. The guide recommends event/webhook status checks for fulfillment instead of relying on a browser return or client callback. A return URL or initiated confirmation does not itself establish a successful payment.\n- For an old-guide Afterpay PaymentIntent already in `requires_action`, the customer has three hours after redirect to act; on inactivity, the PaymentMethod detaches and the PaymentIntent returns to `requires_payment_method` (old raw lines 217-220). The separate error-code table describes `payment_intent_payment_attempt_expired` for a payment session not authorized three hours after initial checkout creation (lines 223-231). These descriptions have different clock anchors and must not be compressed into an unconditional three-hour PaymentIntent cancellation.\n- The older test-mode instructions say an uncaptured manually captured PaymentIntent auto-expires ten minutes after authorization (old raw lines 203-211, 1744-1750). This is a test-mode qualification, not the live capture window. The old Elements Payment Intents manual-capture section says Stripe cancels the PaymentIntent after seven days without capture (lines 1262-1266), while its legacy Direct API and mobile sections describe up to 13 days after authorization, including first-installment refund and `payment_intent.canceled` on failure to capture (lines 1567-1571, 2022-2026, 2374-2378, 2766-2770). The same dated capture therefore conflicts across variants; the November index does not resolve which timing applies now.\n\n## Detail locators\n\n- Checkout compatibility, eligibility, session creation, hosted/embedded examples, shipping and fulfillment events: [[raw/stripe-afterpay-clearpay-accept-payment-2025|2026-05-06 detailed capture]], lines 14-49, 51-110, 189-199.\n- Checkout test, failed-payment state and error-code clocks: the same raw, lines 203-231. Elements Checkout Sessions server/client flow and dated SDK notes: lines 242-284, 359-386, 399-735.\n- Elements Payment Intents server/client flow, account/customer examples, events, and seven-day manual capture: the same raw, lines 736-1328. Legacy Direct API billing/redirect, 13-day capture and webhooks: lines 1328-1779.\n- iOS, Android and React Native old variant bodies and their dated SDK/deep-link examples: the same raw, lines 1781-2871.\n\n## Related\n\n- [[stripe-bnpl]] \u2014 provider BNPL concept and this source route\n- [[source-stripe-afterpay-clearpay]] \u2014 method-level geography, installment, dispute and refund details\n\n## Related raw API references\n\n- [[raw/stripe-payments-afterpay-clearpay-accept-a-payment-2026-11-07|2026-11-07 variant index only]] \u2014 names Checkout, Elements Checkout Sessions, Elements Payment Intents, Direct API, iOS, Android and React Native; follow the indexed URLs for their current bodies before making a current behavioral or SDK claim.\n\n## Raw Sources\n\n- [[raw/stripe-afterpay-clearpay-accept-payment-2025|2026-05-06 detailed multi-variant webpage capture]] \u2014 historical factual authority; retained in `raw_files`.\n",
+      "quotes": [
+        {
+          "text": "Learn how to accept Afterpay (also known as Clearpay in the UK), a payment method in the US, CA, UK, AU, and NZ.",
+          "location": "raw/stripe-payments-afterpay-clearpay-accept-a-payment-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-afterpay-clearpay-accept-a-payment-2026-11-07.md:11"
+        },
+        {
+          "text": "[Checkout Sessions API](https://docs.stripe.com/payments/afterpay-clearpay/accept-a-payment.md?payment-ui=elements&api-integration=checkout)",
+          "location": "raw/stripe-payments-afterpay-clearpay-accept-a-payment-2026-11-07.md:15"
+        },
+        {
+          "text": "[Direct API](https://docs.stripe.com/payments/afterpay-clearpay/accept-a-payment.md?payment-ui=direct-api)",
+          "location": "raw/stripe-payments-afterpay-clearpay-accept-a-payment-2026-11-07.md:17"
+        },
+        {
+          "text": "[React Native](https://docs.stripe.com/payments/afterpay-clearpay/accept-a-payment.md?payment-ui=mobile&platform=react-native)",
+          "location": "raw/stripe-payments-afterpay-clearpay-accept-a-payment-2026-11-07.md:21"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "index": [],
+        "log": [],
+        "concepts": [
+          {
+            "update_id": "afterpay-accept-s03-bnpl-integration-state",
+            "target_path": "wiki/concepts/stripe-bnpl.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Integration notes**: 3-hour expiry for `requires_action` PaymentIntents (vs Affirm's 12 hours). `billing_details` required for manual PaymentIntent path. Shipping optional but improves auth rates.",
+            "proposed_markdown": "**Integration notes (2026-05-06 guide)**: After redirect, a `requires_action` Afterpay PaymentIntent with no customer action for 3 hours detaches its PaymentMethod and returns to `requires_payment_method`; the guide's separate `payment_intent_payment_attempt_expired` entry uses 3 hours after initial checkout creation for an unsuccessful authorization. In its legacy server-managed Direct API redirect, `payment_method_data.billing_details` and `return_url` are required; shipping is optional but recommended for authentication. The old Elements Payment Intents manual-capture section says 7 days, while legacy Direct API/mobile sections say 13 days and describe refund of the first installment if uncaptured. These variant-specific old statements conflict; the 2026-11-07 variant index does not resolve current timing. See [[source-stripe-afterpay-clearpay-accept-payment]].",
+            "quote_indexes": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Existing concept text at wiki/concepts/stripe-bnpl.md:75 compresses old raw/stripe-afterpay-clearpay-accept-payment-2025.md:217-231 into an unqualified expiry; old lines 219 and 231 use different anchors/states.",
+              "Old raw/stripe-afterpay-clearpay-accept-payment-2025.md:1262-1266 says seven days for Elements Payment Intents; lines 1567-1571, 2022-2026, 2374-2378, 2766-2770 say 13 days for legacy Direct API/mobile. New raw:9-21 is navigation only."
+            ]
+          },
+          {
+            "update_id": "afterpay-accept-s03-bnpl-source-route",
+            "target_path": "wiki/concepts/stripe-bnpl.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-afterpay-clearpay-accept-payment]] \u2014 Afterpay integration: 3-hour expiry, billing_details required, 3 paths, shipping tip",
+            "proposed_markdown": "- [[source-stripe-afterpay-clearpay-accept-payment]] \u2014 Afterpay/Clearpay acceptance: 2026-05-06 detailed variant guide, three-hour inactive state transition, variant-specific capture-window conflict; 2026-11-07 index adds navigation routes only",
+            "quote_indexes": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Replace the existing three-path/expiry label at wiki/concepts/stripe-bnpl.md:256. Old factual basis: raw/stripe-afterpay-clearpay-accept-payment-2025.md:217-231, 1262-1266, 1567-1571; new navigation basis: raw/stripe-payments-afterpay-clearpay-accept-a-payment-2026-11-07.md:9-21."
+            ]
+          }
+        ]
+      },
+      "raw_path": "raw/stripe-payments-afterpay-clearpay-accept-a-payment-2026-11-07.md",
+      "raw_sha256": "ab4b247b73b505a9ce0f6ae2fe4a87b5d38e8968fba1d374183f440ff202b353",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-afterpay-clearpay-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 21
+      }
+    ],
+    "raw/stripe-afterpay-clearpay-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 1000
+      },
+      {
+        "start": 1001,
+        "end": 1400
+      },
+      {
+        "start": 1401,
+        "end": 1800
+      },
+      {
+        "start": 1801,
+        "end": 2200
+      },
+      {
+        "start": 2201,
+        "end": 2600
+      },
+      {
+        "start": 2601,
+        "end": 2871
+      }
+    ],
+    "wiki/sources/source-stripe-afterpay-clearpay-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 33
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/544841b0bae827bd4420a36e/content.diff": [
+      {
+        "start": 1,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 1400
+      },
+      {
+        "start": 1401,
+        "end": 2000
+      },
+      {
+        "start": 2001,
+        "end": 2600
+      },
+      {
+        "start": 2601,
+        "end": 2880
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 312,
+        "end": 335
+      },
+      {
+        "start": 723,
+        "end": 755
+      }
+    ],
+    "wiki/concepts/stripe-bnpl.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 239,
+        "end": 281
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-afterpay-clearpay-accept-a-payment/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 312
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "If they take no action within 3 hours, the [PaymentMethod](https://docs.stripe.com/api/payment_methods/object.md) detaches and the object status for the [PaymentIntent](https://docs.stripe.com/api/payment_intents/object.md) automatically transitions to `requires_payment_method`.",
+      "location": "raw/stripe-afterpay-clearpay-accept-payment-2025.md:219"
+    },
+    {
+      "text": "Stripe cancels the PaymentIntent and sends a [payment_intent.canceled](https://docs.stripe.com/api/events/types.md#event_types-payment_intent.canceled) event if the payment isn\u2019t captured during the 7-day window.",
+      "location": "raw/stripe-afterpay-clearpay-accept-payment-2025.md:1264"
+    },
+    {
+      "text": "You then have up to 13 days after authorization to capture the rest of the payment.",
+      "location": "raw/stripe-afterpay-clearpay-accept-payment-2025.md:1569"
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/afterpay-clearpay/accept-a-payment, the complete November capture establishes the Afterpay/Clearpay identity, five country names, and navigation to seven variants only (new raw lines 5-21). It establishes no current account eligibility, checkout prerequisites, parameter contract, state transition, SDK minimum, or payment outcome. The matched May 2026 raw documents Checkout payment mode, one-time line items and domestic currency (old raw lines 16-35), server-created Checkout Sessions and PaymentIntents with client secrets and client confirmation (old raw lines 280-284 and 967-978, 1095-1102), and authorization versus success or failure events (old raw lines 189-199). The mapped source-stripe-afterpay-clearpay-accept-payment.md lists just three paths and compresses the three-hour PaymentIntent transition. The candidate adds dated old authority, the seven-route navigation index, and the precise inactive state outcome without implying an executed payment.",
+    "Q2": "For https://docs.stripe.com/payments/afterpay-clearpay/accept-a-payment, the substantive change established by the pinned November raw is only presentation and navigation: it replaces a bundled multi-variant capture with URLs for Checkout, two Elements APIs, Direct API and three mobile variants (new raw lines 9-21; diff lines 3-15 and 2872-2880). The source-stripe-afterpay-clearpay-accept-payment.md candidate keeps May 2026 behavioral claims historical. Its older three-hour statement must say the inactive requires_action PaymentIntent detaches its PaymentMethod and returns to requires_payment_method after redirect (old raw lines 217-220), distinct from the error table's three hours after initial checkout creation (old raw lines 223-231). The old Elements manual-capture section says seven days, while legacy Direct API/mobile sections say 13 days with refund effects (old raw lines 1262-1266, 1567-1571, 2022-2026). Variant-specific SDK, UI, account/customer, billing, shipping, test-mode and webhook qualifications prevent universal current claims. The November index does not prove deprecation, settlement or successful payment."
+  }
+}

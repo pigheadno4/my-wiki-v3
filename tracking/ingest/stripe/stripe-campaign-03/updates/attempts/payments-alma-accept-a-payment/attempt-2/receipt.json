@@ -1,0 +1,213 @@
+{
+  "job_id": "payments-alma-accept-a-payment",
+  "attempt": 2,
+  "source_results": {
+    "wiki/sources/source-stripe-alma-accept-payment.md": {
+      "job_id": "payments-alma-accept-a-payment",
+      "attempt": 2,
+      "source_page": "---\ntitle: \"Stripe: Accept a Payment with Alma\"\ntype: source\ndate_ingested: 2026-05-06\ndate_updated: 2026-11-15\ncanonical_url: https://docs.stripe.com/payments/alma/accept-a-payment\noriginal_format: webpage\nraw_files:\n  - \"stripe-alma-accept-payment-2025.md\"\ntags: [stripe, bnpl, alma, buy-now-pay-later, checkout, payment-intents, elements, ios, android]\n---\n\n## Summary\n\nThe 2026-11-07 capture of Stripe's Alma acceptance guide is a variant index. It links Checkout, Elements, Direct API, iOS, and Android, but contains no integration steps or payment behavior. The five paths and details below come from the retained 2026-05-06 guide; the November index neither revalidates nor removes them. See [[stripe]] and [[stripe-bnpl]].\n\n## Dated integration details (2026-05-06 capture)\n\nAlma is described as a single-use method for 2, 3, or 4 installments. Customers authorize with Alma after a redirect. The old guide's explicit Alma PaymentIntent examples use `eur`; its currency tables and invalid-currency error say Alma supports EUR. The old iOS and Android *dynamic payment-method* examples instead set `currency: \"usd\"`. Those generic examples conflict with the Alma currency tables and do not establish USD Alma eligibility. Check the applicable variant and currently pinned currency authority before using either mobile example as Alma eligibility guidance. (Old raw lines 18-18, 703-713, 938-945, 1051-1087, 1194-1200, 1300-1335, 1413-1420.)\n\n- **Checkout:** The hosted Checkout Session example uses `success_url`; embedded Checkout uses `return_url`. The old guide requires same-currency line items for its Checkout path. These Session examples must not inherit the PaymentIntent confirmation requirement below. (Old raw lines 33-90.)\n- **Elements and Direct API:** Create a PaymentIntent with the amount and supported currency on the server, send its client secret to the client, and confirm for Alma. The old error table says to provide a `return_url` **when confirming a PaymentIntent with Alma**; Elements and Direct API confirmation examples include it. The Direct API variant also shows an optional server confirmation and manual redirect after `requires_action` and `next_action.redirect_to_url`. (Old raw lines 127-173, 392-394, 703-713, 733-750, 822-910.)\n- **iOS and Android:** The old guide includes separate Mobile Payment Element branches. Its iOS SDK statement is iOS 13+ and its Android Gradle sample uses version 23.7.0; these are historical sample details, not a November SDK compatibility check. Android prose names `PaymentHandler.confirmPayment`, while its Kotlin sample uses `PaymentLauncher.confirm`; verify the selected SDK/version API before copying that flow. (Old raw lines 946-972, 1154-1173, 1220-1265, 1362-1405.)\n\n## Authorization, capture, and outcome boundaries (2026-05-06 capture)\n\n- In the old Elements branch, mobile authentication redirects to Alma and then to the PaymentIntent `return_url`; desktop web shows a QR code. An authentication session expires after one hour, and the desktop QR code can be refreshed up to 20 times. For an Alma PaymentIntent left in `requires_action` without action for an hour, the old guide says Stripe detaches the PaymentMethod and moves the PaymentIntent to `requires_payment_method`. This is a scoped state claim, not a universal expiry for all intents. (Old raw lines 605-620, 693-702.)\n- When `capture_method: \"manual\"` is used, successful authorization moves the PaymentIntent to `requires_capture`; capture is a separate request. Stripe cancels an uncaptured PaymentIntent after the seven-day window and emits `payment_intent.canceled`. This window applies to that manual-capture flow. (Old raw lines 622-665.)\n- A browser return, client callback, or QR modal closing does not by itself prove final payment or capture. Inspect PaymentIntent status on return and handle `payment_intent.succeeded` through an event handler before fulfillment actions. The old sandbox flow redirects to a test approval/decline page, whereas the live flow redirects to Alma. (Old raw lines 488-543, 617-618, 670-692, 912-917.)\n- The old error table includes `payment_intent_invalid_currency` (Alma only `eur`), `missing_required_parameter`, `payment_intent_payment_attempt_failed`, and `payment_intent_redirect_confirmation_without_return_url`. The last error is specific to confirming an Alma PaymentIntent. (Old raw lines 703-713.)\n\n## Related raw API references\n\n- [[raw/stripe-payments-alma-accept-a-payment-2026-11-07|Alma acceptance variant index, 2026-11-07]] \u2014 2026-11-07 variant-navigation index only; it links five UI/platform branches and supplies no refreshed behavioral rule.\n\n## Raw Sources\n\n- [[raw/stripe-alma-accept-payment-2025|Alma acceptance guide, 2026-05-06]] \u2014 2026-05-06 detailed webpage capture (1437 lines; filename retained), including Checkout, Elements, Direct API, iOS, and Android variants.\n",
+      "quotes": [
+        {
+          "text": "Accept a payment with Alma",
+          "location": "raw/stripe-payments-alma-accept-a-payment-2026-11-07.md:5-5"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-alma-accept-a-payment-2026-11-07.md:11-11"
+        },
+        {
+          "text": "[Direct API](https://docs.stripe.com/payments/alma/accept-a-payment.md?payment-ui=direct-api)",
+          "location": "raw/stripe-payments-alma-accept-a-payment-2026-11-07.md:15-15"
+        },
+        {
+          "text": "[Android](https://docs.stripe.com/payments/alma/accept-a-payment.md?payment-ui=mobile&platform=android)",
+          "location": "raw/stripe-payments-alma-accept-a-payment-2026-11-07.md:18-18"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "payments-alma-accept-a-payment-bnpl-integration",
+            "target_path": "wiki/concepts/stripe-bnpl.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Integration notes**: **1-hour expiry** for `requires_action` PaymentIntents (shortest of all BNPL methods). `return_url` required. Desktop auth via QR code (expires 1h, refreshable up to 20 times). Manual capture: 7-day window.",
+            "proposed_markdown": "**Integration notes (2026-05-06 guide)**: For an Alma PaymentIntent in `requires_action`, if the customer takes no action within one hour after redirect to Alma, its PaymentMethod is detached and the Intent transitions to `requires_payment_method`. The old Elements desktop flow uses a QR code (one-hour authentication session; up to 20 refreshes). A `return_url` is required when confirming an Alma PaymentIntent; the old hosted Checkout example instead uses `success_url`, while embedded Checkout uses `return_url`. The seven-day capture window applies when `capture_method: manual` is used. Old iOS/Android dynamic-method USD examples conflict with the guide's EUR-only Alma tables/error and do not establish USD Alma eligibility. See [[source-stripe-alma-accept-payment]].",
+            "quote_indexes": [
+              1,
+              3
+            ],
+            "warnings": [
+              "Historical authority is old raw lines 40-90, 605-620, 622-665, 693-713 (especially line 699: no action within one hour after redirect), 1051-1087, 1194-1200, 1300-1335, 1413-1420; new raw lines 9-18 are navigation only. Concept hash must equal 29257bf1a59b6e4750c9c3b815cc55de420759f91b1f67e190d92c1720dba495.",
+              "The old mobile USD dynamic examples conflict with EUR-only Alma tables. Do not infer current USD eligibility."
+            ]
+          },
+          {
+            "update_id": "payments-alma-accept-a-payment-bnpl-source-route",
+            "target_path": "wiki/concepts/stripe-bnpl.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-alma-accept-payment]] \u2014 Alma integration: 1-hour expiry, QR code desktop auth (20 refreshes), return_url required, 7-day manual capture",
+            "proposed_markdown": "- [[source-stripe-alma-accept-payment]] \u2014 2026-05-06 Alma integration guide: five Checkout/Elements/Direct API/iOS/Android paths; Elements one-hour authentication and desktop QR (up to 20 refreshes); `return_url` when confirming an Alma PaymentIntent (hosted Checkout uses `success_url`, embedded Checkout uses `return_url`); seven-day manual-capture window. The 2026-11-07 capture is a variant index, not refreshed behavior.",
+            "quote_indexes": [
+              1,
+              2,
+              3
+            ],
+            "warnings": [
+              "Old raw lines 40-90 and 703-713 scope return_url by UI/PaymentIntent; new raw lines 9-18 only list variants. The same unqualified claim occurs in wiki/stripe-index.md line 329 and needs coordinator reconciliation."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-alma-accept-a-payment-2026-11-07.md",
+      "raw_sha256": "fac7f8bb894d4042ed98d3193a20f5b2761f4c5e15d557ac78d04549fad7a874",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-alma-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 18
+      }
+    ],
+    "raw/stripe-alma-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 1200
+      },
+      {
+        "start": 1201,
+        "end": 1437
+      },
+      {
+        "start": 605,
+        "end": 620
+      },
+      {
+        "start": 693,
+        "end": 713
+      }
+    ],
+    "wiki/sources/source-stripe-alma-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 31
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/67cf9eb00b8960d6d4b40f6b/content.diff": [
+      {
+        "start": 1,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 1000
+      },
+      {
+        "start": 1001,
+        "end": 1200
+      },
+      {
+        "start": 1201,
+        "end": 1443
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-alma-accept-a-payment/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 229
+      }
+    ],
+    "wiki/concepts/stripe-bnpl.md": [
+      {
+        "start": 1,
+        "end": 110
+      },
+      {
+        "start": 247,
+        "end": 264
+      },
+      {
+        "start": 77,
+        "end": 92
+      },
+      {
+        "start": 255,
+        "end": 260
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 323,
+        "end": 334
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-alma-accept-a-payment/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 173
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-alma-accept-a-payment/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 147
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-alma-accept-a-payment/attempt-1/candidates/source-stripe-alma-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 38
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-alma-accept-a-payment/attempt-1/diffs/source-stripe-alma-accept-payment.md.diff": [
+      {
+        "start": 1,
+        "end": 51
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "Alma is a [single-use](https://docs.stripe.com/payments/payment-methods.md#usage) payment method where customers choose to pay between 2, 3, or 4 installments.",
+      "location": "raw/stripe-alma-accept-payment-2025.md:18-18"
+    },
+    {
+      "text": "Provide a `return_url` when confirming a PaymentIntent with Alma.",
+      "location": "raw/stripe-alma-accept-payment-2025.md:712-712"
+    },
+    {
+      "text": "An authentication session expires after 1 hour. You can refresh the QR code up to 20 times",
+      "location": "raw/stripe-alma-accept-payment-2025.md:619-619"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/alma/accept-a-payment, the complete November capture establishes the title and five variant links, including Android, but no prerequisite, identity, state, or payment behavior (new raw lines 5-18). The retained May guide describes single-use 2/3/4-installment Alma, server-created Sessions or PaymentIntents, client-secret confirmation, mobile redirect and Elements desktop QR, PaymentIntent status inspection, event-based success, and conditional capture (old raw lines 18-90, 127-173, 488-543, 605-673). source-stripe-alma-accept-payment.md omitted Android and stated an unqualified return_url requirement. The revised source restores five routes, scopes return_url to Alma PaymentIntent confirmation, and dates the details. The BNPL concept and Stripe index contain reciprocal unqualified wording that needs correction.",
+    "Q2": "At https://docs.stripe.com/payments/alma/accept-a-payment, the November change is navigation only: links replace the old full body, without evidence of changed Alma behavior, removal, SDK support, or eligibility (new raw lines 9-18; diff lines 3-20, 1438-1443). In source-stripe-alma-accept-payment.md, May details remain dated: Elements one-hour authentication and QR refresh, requires_action transition, manual capture and seven-day deadline, and payment_intent.succeeded rather than browser-return proof (old raw lines 605-713, 912-917). The old hosted Checkout uses success_url, embedded Checkout uses return_url, and the PaymentIntent error names its confirmation boundary (old raw lines 40-90, 703-713). The old mobile USD examples conflict with EUR-only tables, and Android prose/code disagree on confirmation API (old raw lines 1051-1087, 1194-1200, 1300-1335, 1362-1420). These need explicit source and reciprocal concept warnings, with no inferred USD access or executable API selection."
+  }
+}

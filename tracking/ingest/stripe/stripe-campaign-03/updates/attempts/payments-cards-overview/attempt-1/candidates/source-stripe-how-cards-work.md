@@ -1,0 +1,46 @@
+---
+title: "Stripe: How Cards Work"
+type: source
+date_ingested: 2026-05-01
+date_updated: 2026-11-15
+canonical_url: "https://docs.stripe.com/payments/cards/overview"
+original_format: webpage
+raw_files:
+  - "stripe-payments-cards-overview-2026-11-07.md"
+  - "stripe-how-cards-work-2025.md"
+tags: [stripe, cards, authorization, capture, card-account-updater, webhooks]
+---
+
+## Summary
+
+[[stripe]] explains an online card payment as **format check → possible customer authentication → bank authorization hold → capture**. Both the 2026-05-01 and 2026-11-07 captures describe the same state sequence and saved-card update boundaries. Formatting is not card validation, an authorization hold is not captured funds, and capture is described as issuer-to-**merchant/Stripe-user account** money movement, not a bank payout-arrival guarantee.
+
+## Card payment flow
+
+1. Stripe checks that supplied card details are correctly formatted, such as a non-expired expiration date. This does **not** guarantee that the card itself is valid.
+2. Some banks, especially in regulated regions such as Europe and India, **might** prompt the customer to authenticate. The overview does not state that every card payment uses a particular SCA or 3D Secure protocol.
+3. The bank checks for sufficient funds and, if successful, **holds** the amount on the customer's account for the merchant. That hold is the authorization state; it is not capture or settlement.
+4. On **capture**, the page describes money moving from the issuing bank to the merchant's account. The two captures do not establish any individual transaction's success, final bank settlement or payout arrival.
+
+## Saved-card updates and invoice default
+
+A saved-card update can change only name, billing address, expiration date or metadata. Other card changes require deleting the card and creating a new one. Customer-facing processes can let customers update or replace saved cards.
+
+For the default payment method used by invoices and subscriptions, update the **Customer** object's `invoice_settings.default_payment_method` with a **PaymentMethod ID**. The May capture illustrates a Node SDK `stripe.customers.update(...)` call with example Customer/PaymentMethod IDs; the November capture illustrates the same field with secret-key curl to `/v1/customers/{CUSTOMER_ID}`. These are dated client-language examples of the same Customer update, not an SDK deprecation or a different object identity. Checkout's handling of saved methods is linked for separate reading; other scenarios require integration-specific code.
+
+## Automatic saved-card updates
+
+Stripe attempts to update saved card details through participating card networks when an issuer replaces a physical card, including lost or expired cards. **Issuer participation is required**. The page says this is widely supported in the US for American Express, Visa, Mastercard and Discover, while international support varies. It is not possible to identify in advance which specific cards support automatic updates; no update is guaranteed for an individual card.
+
+An API-driven card update emits `payment_method.updated`; a network-driven automatic update emits `payment_method.automatically_updated`. These events carry the new expiration date and last four digits. If the new details include a new card number, the card fingerprint changes. The captures describe this issuer/network mechanism but do not name it “Card Account Updater”; that product label requires a separate source and should not be attributed to this overview.
+
+## Related
+
+- [[stripe]] — Stripe company page.
+- [[stripe-payment-methods]] — payment-method context.
+- [[stripe-authorization-boost]] — separately sourced Card Account Updater terminology.
+
+## Raw Sources
+
+- [[raw/stripe-payments-cards-overview-2026-11-07]] — full webpage capture fetched 2026-11-07 (64 lines); direct secret-key curl example.
+- [[raw/stripe-how-cards-work-2025]] — earlier full webpage capture fetched 2026-05-01 (72 lines); Node SDK example.

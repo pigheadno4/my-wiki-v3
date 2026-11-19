@@ -1,0 +1,174 @@
+{
+  "job_id": "payments-cards-surcharge",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-cards-surcharge-2026-11-07.md",
+  "raw_sha256": "00a889749414eb032df5e6d86d307be4cf8852ed30002057d7e1b1eedabec6ef",
+  "prior_raw_path": "raw/stripe-surcharge-2026.md",
+  "prior_raw_sha256": "50b104e264f388ec46301c5b5f60467ace08b11c357e34d29ddf49f536d932ea",
+  "source_targets": [
+    "wiki/sources/source-stripe-surcharge.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-surcharge.md": "c21576614723a9bd0c24d8092adf6590066a6a6d2387630260f8db4bbbe8f0e2"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-cards-surcharge-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 226
+      }
+    ],
+    "raw/stripe-surcharge-2026.md": [
+      {
+        "start": 1,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 272
+      }
+    ],
+    "wiki/sources/source-stripe-surcharge.md": [
+      {
+        "start": 1,
+        "end": 81
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/31e6c0c58e7a6e80faf6212f/content.diff": [
+      {
+        "start": 1,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 313
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 552,
+        "end": 559
+      }
+    ],
+    "wiki/concepts/stripe-surcharge.md": [
+      {
+        "start": 1,
+        "end": 59
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/proposed-queries.md": [
+      {
+        "start": 313,
+        "end": 320
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Notify your acquirer or card network of your intent to apply a surcharge, if required by your jurisdiction or the card network.",
+      "location": "raw/stripe-payments-cards-surcharge-2026-11-07.md:16"
+    },
+    {
+      "text": "Surcharging is available on Visa, Mastercard, Amex, Discover, Eftpos, Diners, Interac, JCB, Maestro, and Unionpay.",
+      "location": "raw/stripe-payments-cards-surcharge-2026-11-07.md:29"
+    },
+    {
+      "text": "| New Zealand | All cards | 4% |",
+      "location": "raw/stripe-payments-cards-surcharge-2026-11-07.md:37"
+    },
+    {
+      "text": "Passing in `enforce_validation: disabled` doesn\u2019t disable any other restrictions on availability, including restrictions on card funding type and other regional restrictions.",
+      "location": "raw/stripe-payments-cards-surcharge-2026-11-07.md:57"
+    },
+    {
+      "text": "Stripe charges only the amount in the top-level `amount` field and doesn\u2019t increment the amount with any additional values.",
+      "location": "raw/stripe-payments-cards-surcharge-2026-11-07.md:134"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "| Australia     | All cards                 | 4%                       |",
+      "location": "raw/stripe-surcharge-2026.md:34"
+    },
+    {
+      "text": "Notify your acquirer or the card network of your intent to surcharge.",
+      "location": "raw/stripe-surcharge-2026.md:15"
+    },
+    {
+      "text": "Your integration must be on API version [2026-03-25.preview]",
+      "location": "raw/stripe-surcharge-2026.md:39"
+    },
+    {
+      "text": "Stripe automatically increments `amount`",
+      "location": "raw/stripe-surcharge-2026.md:269"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The November page remains a PaymentIntent card-surcharge public-preview guide for offsetting acceptance costs, including connected accounts on fee-setting platforms (new raw lines 5-9, 39-50; old raw lines 4-8, 37-49). Access requires API version 2026-03-25.preview through a preview SDK or explicit Stripe-Version header; the examples show the header (new raw lines 39-42, 65-73, 136-144). This does not confer legal permission or account-specific eligibility.",
+    "The November availability table lists US credit cards 3%, Canada credit cards 2.4%, and New Zealand all cards 4%; Australia all cards 4% appeared in May but is absent from November (new raw lines 27-37; old raw lines 26-35). The new page also names ten card networks at line 29. Current source lines 13, 17-24, Stripe index line 556 and surcharge concept lines 10-21 still list AU unqualified. Update to show the dated disagreement; omission alone does not prove AU prohibition, removal or legal status.",
+    "November adds a conditional acquirer/card-network notification phrase, 'if required by your jurisdiction or the card network,' where May's bullet was unconditional (new raw lines 11-25; old raw lines 10-24). Source line 52 and concept line 40 currently turn the notice into an unconditional obligation; qualify both and retain compliance responsibility, disclosure, cancellation/alternative-method opportunity and card-network/legal limits as page guidance, not legal advice.",
+    "Surcharge availability/status and maximum_amount are PaymentIntent response attributes when amount or enforce_validation is sent with an attached payment method; status is available/unavailable, while maximum_amount is a technical cap, not a suggested or necessarily legally permitted amount (new raw lines 44-51; old raw lines 42-49). Disabling technical validation removes maximum_amount and that technical cap but does not remove funding-type, region, law or network restrictions; after explicitly enabling or disabling it, enforce_validation cannot be changed (new raw lines 53-59; old raw lines 51-57). Source lines 32-47 should keep these modal limits, rather than implying validation disabled means no surcharge cap at all.",
+    "The amount-inclusive rule is unchanged: PaymentIntent top-level amount contains subtotal plus surcharge, with surcharge amount separately in amount_details.surcharge.amount; Stripe does not auto-increment the charged amount (new raw lines 128-176; old raw lines 144-212). This is public-preview behavior, distinct from the private-preview migration row's old automatic increment (new raw lines 216-226). The response examples show requires_confirmation before confirmation and requires_capture with amount_capturable afterward, not settled payment or capture success (new raw lines 75-90, 146-162).",
+    "November examples change from Node public-preview SDK to curl with explicit Stripe-Version headers, including a return_url in the confirm example (new raw lines 65-120, 136-176, 186-193; old raw lines 63-136, 152-212, 221-239). This is a presentation/example change; neither omitted payment_method_types in curl nor the added return_url proves a changed path-wide API requirement. No SDK execution or payment operation was performed.",
+    "Surcharge can be applied at create, confirm or capture; after confirmation, capture can only decrease it, including incremental-authorization cases, and multicapture sums cannot exceed the confirmed surcharge (new raw lines 164-193, 207-214; old raw lines 190-239, 253-260). The older and newer public-preview migration tables both distinguish private-preview amount_surcharge, auto-increment, always-on validation, restricted endpoints and payment_method_options response from public-preview amount_details and /create-/update-/confirm-/capture support (new raw lines 216-226; old raw lines 262-272).",
+    "The refund and receipt rules remain substantively stable: required logic for full/proportional surcharge return under applicable network/law conditions, separate surcharge display in custom receipts, Stripe prebuilt receipt display, and Sigma payment_intents.amount_details_surcharge_amount (new raw lines 195-205; old raw lines 241-251). Source lines 57-60 state full/prorated refund without the raw's 'card network rules and certain laws and regulations require' scope; preserve the obligation as captured guidance with its conditional basis, not a universal independent legal determination."
+  ],
+  "substantive_changes": [
+    "Australia's all-card 4% row is absent from the November country table that retains US, Canada and New Zealand rows; document the dated availability-table difference without inferring legal prohibition or capability removal (old raw lines 26-35; new raw lines 27-37; diff lines 12-31).",
+    "November expressly lists ten card networks as supported in this preview context and conditions acquirer/card-network notification on jurisdiction/network requirements (new raw lines 11-29; old raw lines 10-28).",
+    "The remainder of the guide's API, validation, amount-inclusive, capture, refund, receipt, reporting and migration behavior is materially retained; the dominant diff is Node-to-curl samples, whitespace and table presentation (old raw lines 37-272; new raw lines 39-226; diff lines 34-313)."
+  ],
+  "historical_claims_to_preserve": [
+    "Preserve May 11, 2026 Australia 4% all-card table row as historical captured text; November does not list AU, so current availability must be expressed as a dated documentation difference rather than a live legal conclusion (old raw lines 26-35; new raw lines 27-37).",
+    "Preserve the 2026-03-25.preview version requirement, technical-versus-legal limit distinction, conditional card/country restrictions despite disabled validation, and one-way enable/disable setting lock (old raw lines 37-57; new raw lines 39-59).",
+    "Preserve top-level amount-inclusive calculation and separate surcharge.amount, refund proration, receipt separation and Sigma reporting as public-preview document behavior, while keeping private-preview migration rows historical and distinct (old raw lines 144-150, 241-272; new raw lines 128-134, 195-226).",
+    "Preserve the older Node SDK examples as May capture examples and newer curl examples as November examples; neither sample shape alone establishes universal return_url or payment_method_types requirements (old raw lines 63-80, 152-169; new raw lines 65-73, 136-144)."
+  ],
+  "conflicts": [
+    "Current source lines 13, 17-22 and surcharge concept lines 10, 14-19 and Stripe index line 556 say US/CA/AU/NZ availability, but November table lists only US/CA/NZ (old raw lines 26-35; new raw lines 27-37). Warn reciprocally and date AU rather than implying current permission or prohibition.",
+    "Current source line 52 and surcharge concept line 40 state acquirer/network notification without condition; November says notify if required by jurisdiction/network (new raw lines 13-18; old raw lines 12-18). Qualify the obligation while keeping merchant compliance responsibility.",
+    "Source line 37's 'No technical limit' for disabled validation could be mistaken for no cap at all; both raw captures say regional/funding restrictions and applicable law/network limits remain, and maximum_amount is only Stripe's technical cap (old raw lines 44-57; new raw lines 46-59).",
+    "Source lines 59-60 and surcharge concept lines 47-48 state full/proportional refund as unqualified rules; both raw captures frame this as the merchant's logic required by card network rules and certain laws/regulations, with concrete full and partial examples (old raw lines 241-243; new raw lines 195-197)."
+  ],
+  "unresolved_questions": [
+    "The captures alone do not determine whether the absent Australia row reflects country availability, a documentation omission, preview enrollment, or legal change; account-specific and legal status is not verified (old raw lines 26-35; new raw lines 27-37).",
+    "The named card-network list is a general November availability statement, while the three-country table separately limits card types and maximum percentages; the page does not establish that every named network is surchargeable for every merchant/country/card product (new raw lines 27-37).",
+    "The sample PaymentIntent responses stop at requires_confirmation/requires_capture and do not prove a successful capture, funds settlement or compliant surcharge amount for any live transaction (new raw lines 75-90, 146-162)."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-surcharge.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-surcharge.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add November raw provenance and record the US/CA/NZ table versus May AU-inclusive table with dates; name the new ten-network list only with country/card-type qualification (source lines 4-7, 13-24; old raw lines 26-35; new raw lines 27-37).",
+        "Qualify notification as if required by jurisdiction or network, and retain legal/network responsibility and technical-limit versus compliance-limit separation (source lines 49-55; new raw lines 11-25, 44-59).",
+        "Retain versioned public-preview amount-inclusive and capture rules; date Node versus curl examples and private-preview migration as different presentation/version contexts, not a new universal request contract (old raw lines 37-57, 63-80, 152-169, 262-272; new raw lines 39-59, 65-73, 136-144, 216-226)."
+      ],
+      "conflicts": [
+        "Current source availability table includes AU while November table omits it (source lines 13-22; old raw lines 26-35; new raw lines 27-37).",
+        "Current source line 52 omits November's if-required notification condition (new raw lines 13-18).",
+        "Current source line 37 and refund lines 59-60 need technical-limit and applicable-network/law qualifications (new raw lines 44-59, 195-197)."
+      ],
+      "reason": "The new capture changes the dated availability table and notification qualification while leaving core preview API behavior stable; the existing source needs provenance and narrower compliance phrasing."
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/cards/surcharge, the complete November guide describes a version-gated public-preview PaymentIntent feature for a merchant or fee-setting platform's connected accounts to identify surcharge availability, calculate/disclose a compliant amount and collect it within the charged top-level amount (new raw lines 5-25, 39-59, 122-176). API 2026-03-25.preview, selected card/funding/country eligibility, and any required legal or network notice are separate prerequisites; surcharge.status and maximum_amount are technical response data, not permission or a recommended charge. The sample moves from requires_confirmation to requires_capture after confirmation, not settled payment (new raw lines 75-90, 146-162). Compared with May, the November country table omits Australia, adds ten named card networks and conditions notification (old raw lines 10-35; new raw lines 11-37). source-stripe-surcharge.md retains the amount-inclusive, capture and refund model but its AU row and unconditional notice need dated/conditional correction (source lines 13-60).",
+    "Q2": "For https://docs.stripe.com/payments/cards/surcharge, substantive captured differences are the Australia row's absence from November's US/Canada/New Zealand availability table, the new ten-network list, and the if-required acquirer/network notice qualifier (old raw lines 10-35; new raw lines 11-37). Node SDK examples become curl with a preview-version header and an illustrative return_url, while amount-inclusive charging, enforce_validation behavior, capture reductions, multicapture sum, refund proration, receipts, Sigma and private-to-public preview migration stay materially aligned (old raw lines 37-272; new raw lines 39-226). source-stripe-surcharge.md and its concept should preserve May AU availability as dated history and warn that the new table omits it without deciding live legal or merchant eligibility (source lines 13-22). Disabling Stripe's maximum_amount technical validation does not remove card-funding, region, legal or network restrictions; a PaymentIntent response marked available or requires_capture is neither legal approval nor captured/settled funds. The private-preview migration row where Stripe once auto-incremented amount is version history, not a reason to omit the public-preview total-inclusive amount rule."
+  }
+}

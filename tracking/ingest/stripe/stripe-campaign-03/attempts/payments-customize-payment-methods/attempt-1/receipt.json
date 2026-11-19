@@ -1,0 +1,171 @@
+{
+  "job_id": "payments-customize-payment-methods",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-customize-payment-methods-2026-11-07.md",
+  "raw_sha256": "f7d542075a5f72e12b2f9809fd28f05a58438b879914ca01fb75ff238a5e7207",
+  "prior_raw_path": "raw/stripe-payment-element-customize-payment-methods-2025.md",
+  "prior_raw_sha256": "4baebef3a224fe63356f0679fceec772d7eb42fc339f229be1d3d6768d5bf844",
+  "source_targets": [
+    "wiki/sources/source-stripe-payment-element-customize-payment-methods.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-payment-element-customize-payment-methods.md": "efb530d156a545f98b70682b5cb1050dcd46208c3e3575bfba29872f60aafb50"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-customize-payment-methods-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 60
+      },
+      {
+        "start": 61,
+        "end": 119
+      }
+    ],
+    "raw/stripe-payment-element-customize-payment-methods-2025.md": [
+      {
+        "start": 1,
+        "end": 55
+      }
+    ],
+    "wiki/sources/source-stripe-payment-element-customize-payment-methods.md": [
+      {
+        "start": 1,
+        "end": 53
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/fde0f6abd78aafc922761d86/content.diff": [
+      {
+        "start": 1,
+        "end": 60
+      },
+      {
+        "start": 61,
+        "end": 121
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 12
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 72,
+        "end": 79
+      }
+    ],
+    "wiki/concepts/stripe-elements.md": [
+      {
+        "start": 75,
+        "end": 96
+      },
+      {
+        "start": 130,
+        "end": 145
+      }
+    ],
+    "wiki/concepts/stripe-payment-intents.md": [
+      {
+        "start": 117,
+        "end": 130
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "You can customize its behavior in these ways:",
+      "location": "raw/stripe-payments-customize-payment-methods-2026-11-07.md:11"
+    },
+    {
+      "text": "Alternatively, you can specify the allowed payment method types manually using [allowed_payment_method_types](https://docs.stripe.com/api/payment_intents/create.md#create_payment_intent-allowed_payment_method_types).",
+      "location": "raw/stripe-payments-customize-payment-methods-2026-11-07.md:22"
+    },
+    {
+      "text": "When your customers pay with a card through the Payment Element, you can block specific card brands and funding types. This applies to the card input field, Apple Pay, and Google Pay.",
+      "location": "raw/stripe-payments-customize-payment-methods-2026-11-07.md:44"
+    },
+    {
+      "text": "This client-side validation doesn\u2019t enforce your payment policy on the server.",
+      "location": "raw/stripe-payments-customize-payment-methods-2026-11-07.md:95"
+    },
+    {
+      "text": "Apple Pay doesn\u2019t support filtering prepaid cards, and Google Pay doesn\u2019t support filtering debit cards.",
+      "location": "raw/stripe-payments-customize-payment-methods-2026-11-07.md:102"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Alternatively, you can [list payment methods](https://docs.stripe.com/api/payment_intents/create.md#create_payment_intent-payment_method_types) manually using payment method types.",
+      "location": "raw/stripe-payment-element-customize-payment-methods-2025.md:20"
+    },
+    {
+      "text": "Payment methods that you specify in `paymentMethodOrder` are shown first, followed by any additional payment methods.",
+      "location": "raw/stripe-payment-element-customize-payment-methods-2025.md:28"
+    },
+    {
+      "text": "the Payment Element displays up to five payment methods by default",
+      "location": "raw/stripe-payment-element-customize-payment-methods-2025.md:42"
+    },
+    {
+      "text": "debit payment methods must be presented before credit payment methods at checkout in those countries.",
+      "location": "raw/stripe-payment-element-customize-payment-methods-2025.md:38"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The November full guide now names four areas: Dashboard-enabled or manually allowed methods, sorting, card brand/funding filtering, and accordion count (new raw lines 9-16, 18-119). Old April raw and mapped source list only three, omitting filtering entirely (old raw lines 10-14; source lines 11-13).",
+    "New filtering is set on the Elements group with disallowedCardBrands/disallowedCardFundingTypes; brand values include visa, mastercard, american_express and discover_global_network, the latter including Discover/Diners/JCB/UnionPay/Elo; funding values are credit/debit/prepaid; one cannot block all supported brands or all supported funding types (new raw lines 42-63). HTML/JS and React setup examples are illustrative (new raw lines 65-91).",
+    "Browser-side Payment Element blocked-card validation is not server policy enforcement (new raw lines 93-100). The guide offers Radar rules or server-side PaymentIntent confirmation with a ConfirmationToken created in Stripe.js, passed to the server, retrieved and inspected for payment_method_preview.card.brand/funding before confirmation; funding can be unknown/unavailable, requiring an explicit strict-policy choice (new raw lines 93-100). No example establishes an accepted payment or policy execution.",
+    "Wallet qualification is material: the guide says Apple Pay cannot filter prepaid and Google Pay cannot filter debit, while Elements with Checkout Sessions still enforces blocked funding types at confirmation (new raw line 102). This Checkout Sessions clause must not be generalized to every PaymentIntent path or to all brand restrictions.",
+    "The new guide uses allowed_payment_method_types on PaymentIntent create for manual allowed types; the old guide and current source use payment_method_types (new raw lines 18-24; old raw lines 16-22; source lines 17-19). Update the source with dated before/after wording rather than treating the names as universal aliases or implying a mandatory parameter. The separately read exact-version stripe@23.0.0 concept describes removal of request payment_method_types for specified server operations, not all APIs or SDKs (wiki/concepts/stripe-payment-intents.md:125-127).",
+    "Existing source line 18 claims 'ML-based ordering' whereas the paired old guide says dynamic ordering for conversion and the new guide says the same, without identifying an ML mechanism (old raw lines 24-28; new raw lines 26-30). Remove or qualify that unsupported mechanism; preserve the documented dynamic ordering behavior.",
+    "The old and new guides agree on eligibility auto-hiding, paymentMethodOrder priority plus dynamic remainder, Finland/Sweden debit-first statement, and accordion default five with visibleAccordionItemsCount including zero to show all (old raw lines 22-55; new raw lines 24-40, 104-119). These remain supported as captured guide claims; the legal statement is cited as Stripe's guide statement, not independent compliance advice."
+  ],
+  "substantive_changes": [
+    "New card brand/funding filtering and server enforcement guidance, indeterminate funding handling, and Apple Pay/Google Pay/Checkout Sessions exceptions are substantive additions (new raw lines 42-102; no matching old raw section in old raw lines 1-55).",
+    "Manual allowed-types wording changes from old payment_method_types to new allowed_payment_method_types for PaymentIntent create (old raw lines 16-22; new raw lines 18-24); record both dates and API scope.",
+    "Whitespace, quote style, code formatting, and heading spacing changes in sorting and accordion examples are presentational; the underlying order and count claims are retained (diff lines 20-38, 102-121)."
+  ],
+  "historical_claims_to_preserve": [
+    "April 21 guide listed three customization areas and manual PaymentIntent method selection using payment_method_types; retain as dated history, not a current universal parameter recommendation (old raw lines 10-22).",
+    "Both dated guides say Payment Element hides methods ineligible for current currency/payment type, and paymentMethodOrder takes first positions with dynamic ordering for other available methods (old raw lines 22-38; new raw lines 24-40).",
+    "Both dated guides say accordion layout shows up to five methods by default behind More and visibleAccordionItemsCount=0 displays all available methods (old raw lines 40-55; new raw lines 104-119).",
+    "Both captures state the Finland/Sweden debit-before-credit presentation rule as a Stripe guide claim (old raw line 38; new raw line 40)."
+  ],
+  "conflicts": [
+    "Source-stripe-payment-element-customize-payment-methods.md:13 says three axes and has no card-filtering/server-enforcement section, while new raw lines 11-16 and 42-102 add a fourth axis with material security and wallet qualifications. Update source and Stripe index line 76; add a concise reciprocal route/qualification in the Elements concept where appropriate.",
+    "Source line 19 gives payment_method_types as a manual override, while the November guide new raw line 22 explicitly points to PaymentIntent allowed_payment_method_types; preserve April wording as dated and mark the API/version boundary, consistent with wiki/concepts/stripe-payment-intents.md:125-127.",
+    "Source line 18's ML-based explanation is not stated in old raw lines 24-28 or new raw lines 26-30. The supported claim is dynamic ordering for conversion, without an asserted mechanism."
+  ],
+  "unresolved_questions": [
+    "No pinned evidence proves account-specific method eligibility, Radar configuration, ConfirmationToken execution, or that server confirmation produced a successful payment. The guide's 'latest version of the API' default is not an exact API date (new raw line 20)."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-elements.md",
+    "wiki/concepts/stripe-payment-intents.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-payment-element-customize-payment-methods.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add November raw provenance and the fourth filtering axis with allowed brand/funding values, non-total-block limit, Elements-group setup, browser-versus-server enforcement, ConfirmationToken/Radar options, indeterminate funding, and wallet/Checkout Sessions exceptions (source lines 4-13, 46-53; new raw lines 42-102).",
+        "Replace current manual PaymentIntent parameter guidance with dated old payment_method_types versus November allowed_payment_method_types, scoped to the API route; do not conflate with mode-based Elements fields or universal SDK aliases (source line 19; old raw line 20; new raw line 22; wiki/concepts/stripe-payment-intents.md:125-127).",
+        "Remove unsupported ML-based ordering explanation while retaining dynamic ordering (source line 18; old raw lines 24-28; new raw lines 26-30). Keep order, accordion, and debit-first guide claims with their dated provenance (source lines 21-44)."
+      ],
+      "conflicts": [
+        "Source says only three customization axes and omits material filter and policy caveats (source lines 11-13; new raw lines 42-102).",
+        "Source line 19's old payment_method_types contrasts with the November PaymentIntent allowed_payment_method_types pointer (new raw line 22).",
+        "Source line 18 asserts an ML mechanism absent from the pinned guides."
+      ],
+      "reason": "A substantive new filter/security section and a scoped parameter-name change make the mapped April summary materially incomplete and partly outdated; its ordering mechanism also lacks pinned support."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/customize-payment-methods, new raw lines 5-30 establish that the Payment Element shows enabled and transaction-eligible methods, can use Dashboard dynamic choices or a PaymentIntent create allowed_payment_method_types list, and lets paymentMethodOrder place available methods first. New raw lines 42-102 add Elements-group card brand/funding filters, browser-only validation, Radar or server PaymentIntent confirmation with a ConfirmationToken for policy enforcement, unknown funding, and wallet/Checkout Sessions exceptions. New raw lines 104-119 cover accordion count. The April guide, old raw lines 10-55, lacked filtering and used payment_method_types wording. The mapped source-stripe-payment-element-customize-payment-methods.md only describes three axes, repeats that older parameter and adds an unsupported ML mechanism; it needs a dated, scoped update.",
+    "Q2": "At https://docs.stripe.com/payments/customize-payment-methods, new raw lines 42-102 are substantive: filtering brands/funding and enforcing policy server-side require distinctions the old raw lines 16-55 never described. Old payment_method_types and new allowed_payment_method_types are dated PaymentIntent-create guide wording, not an automatic rename across APIs or SDK versions; source-stripe-payment-element-customize-payment-methods.md:19 needs that warning, and its line 18 should avoid unsupported ML claims. Existing paymentMethodOrder, transaction auto-hide, Finland/Sweden guide statement, and accordion defaults remain (new raw lines 24-40, 104-119); punctuation/spacing changes are presentational. Browser filters alone cannot enforce server policy; Apple Pay prepaid and Google Pay debit filtering limitations and Checkout Sessions confirmation exception must stay route-specific. ConfirmationToken creation or a UI error does not prove payment success, Radar deployment, account eligibility, or legal compliance."
+  }
+}

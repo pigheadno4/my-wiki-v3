@@ -1,0 +1,182 @@
+{
+  "job_id": "payments-fpx-accept-a-payment",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-fpx-accept-payment.md": {
+      "job_id": "payments-fpx-accept-a-payment",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Accept an FPX Payment\"\ntype: source\ndate_ingested: 2026-05-03\ndate_updated: 2026-11-15\ncanonical_url: https://docs.stripe.com/payments/fpx/accept-a-payment\noriginal_format: webpage\nraw_files:\n  - \"stripe-fpx-accept-payment-2025.md\"\ntags: [stripe, fpx, malaysia, myr, checkout, elements, mobile, payouts]\n---\n\n## Summary\n\nThe May 3, 2026 detailed guide describes FPX Checkout and a legacy Elements `fpxBank` integration, with a short Mobile Payment Element pointer. FPX is a single-use MYR bank redirect for customers in Malaysia. The May Checkout and legacy Elements paths require a six-field post-payment confirmation page; the May guide also provides an 18-bank reference, test states and errors, and separate `fpx` balance guidance. The November 7, 2026 capture of the canonical URL is a variant-navigation index only; it links Checkout, Elements, and Mobile pages but does not restate or update their behavior.\n\n## Key Details\n\n### Checkout path (May 3, 2026)\n\n- Checkout compatibility lists customer geography Malaysia, supported and presentment currency `myr`, payment mode yes, setup mode no, and subscription mode no. Sessions use one-time line items in one currency, with `fpx` in `payment_method_types`; the hosted example uses `success_url`, while the embedded example uses `return_url` and `ui_mode: \"embedded_page\"`.\n- **Required confirmation page for this path:** after payment, display transaction date/time (`Charge.created`), amount (`Charge.amount`), seller order no. (`Charge.statement_descriptor`), FPX transaction ID (`Charge.payment_method_details[fpx][transaction_id]`), buyer bank (`Charge.payment_method_details[fpx][bank]`), and transaction status (`Charge.status`). The May Checkout guide says to get the Charge using the PaymentIntent ID from the Checkout Session.\n- The May guide states a refund period up to 60 days and no dispute process. These are dated guide claims, not renewed by the November index.\n\n### Elements path (legacy, May 3, 2026)\n\n- Enable FPX in Dashboard Payment methods settings and accept FPX terms. This guide says the business must be based in Malaysia; it separately labels FPX support for Connect Custom accounts beta. These are merchant and account gates, distinct from the Checkout customer-geography condition.\n- Create a server-side MYR PaymentIntent with `payment_method_types: [\"fpx\"]`. The legacy client flow mounts an `fpxBank` Element and calls `stripe.confirmFpxPayment(clientSecret, {payment_method: {fpx: fpxBank}, return_url})`. The guide marks this `fpxBank` feature legacy and unavailable in the latest Stripe.js; that warning does not establish that all Elements or FPX support ended.\n- A bank redirect or return URL is not proof of payment. Test authentication success moves the PaymentIntent from `requires_action` to `succeeded`; failure moves it to `requires_payment_method`. Named offline-bank or processing confirmation errors leave it in `requires_confirmation`. Listen for server-side `payment_intent.succeeded` for fulfillment rather than depending on a client callback. A manual redirect path uses `requires_action` with `next_action.type: redirect_to_url`.\n- The return URL can carry `payment_intent` and `payment_intent_client_secret` query parameters for a status lookup. `fpxBank.on('change', ...)` reports the selected bank `value`, `complete`, and `empty`.\n- The May amount table says minimum RM2 and maximum RM30,000, but its `invalid_amount` row says greater than RM2 and less than RM30,000. The exact endpoint eligibility is unresolved in this capture. MYR is required.\n- Test error banks: `test_offline_bank` → `offline_bank`; `test_processing_error` → `payment_method_processing_error_transient`. Other listed errors are `invalid_amount`, `invalid_bank`, `invalid_currency`, `missing_parameter`, and `payment_method_not_available`.\n- The May legacy Elements guide calls FPX single-use, says it cannot be used for recurring or additional payments, and says it is not supported with Stripe Billing. This conflicts with the broader bank-redirects concept's `send_invoice` subscription statement; the November index does not resolve that difference.\n- The May legacy path requires the FPX logo, buyer-bank selection using the bank reference, and FPX terms wording on its checkout page. Its post-authentication confirmation page requires the same six Charge fields listed above. The guide says Charge details can be obtained from `payment_intent.succeeded`; direct `PaymentIntent.charges.data` access is described only for API version 2022-08-01 or older.\n\n### Mobile pointer (May 3, 2026)\n\n- The short May mobile section repeats Dashboard FPX enablement, terms acceptance, and Malaysia-based business eligibility, then points to the Mobile Payment Element for Android, iOS, or React Native. It contains no complete native implementation steps. The November index has a Mobile variant link, but its variant body was not captured here.\n\n### FPX balance and payouts (May 3, 2026)\n\n- The May guide says FPX funds settle in a separate `fpx` balance and may produce a separate automatic payout from other funds. Connect platforms can specify `source_type: \"fpx\"` when creating a payout or transfer from that balance; inspect available and pending amounts by source type. A successful PaymentIntent alone does not prove funds are available or a payout occurred.\n\n### 18-bank reference (May 3, 2026)\n\n`affin_bank`, `alliance_bank`, `ambank`, `bank_islam`, `bank_muamalat`, `bank_rakyat`, `bsn`, `cimb`, `hong_leong_bank`, `hsbc`, `kfh`, `maybank2e`, `maybank2u`, `ocbc`, `public_bank`, `rhb`, `standard_chartered`, `uob`.\n\n## Related\n\n- Company: [[stripe]]\n- Concepts: [[stripe-fpx]], [[stripe-bank-redirects]]\n- Raw API reference, navigation only: [[raw/stripe-payments-fpx-accept-a-payment-2026-11-07|November 7, 2026 FPX variant index]] — links Checkout, Elements, and Mobile variants; no variant behavior captured.\n\n## Raw Sources\n\n- [[raw/stripe-fpx-accept-payment-2025|May 3, 2026 detailed FPX guide]] — Checkout, legacy Elements, short Mobile pointer, bank reference, errors, and balance guidance.\n",
+      "quotes": [
+        {
+          "text": "Learn how to accept FPX, a common payment method in Malaysia.",
+          "location": "raw/stripe-payments-fpx-accept-a-payment-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-fpx-accept-a-payment-2026-11-07.md:11"
+        },
+        {
+          "text": "- [Checkout](https://docs.stripe.com/payments/fpx/accept-a-payment.md?payment-ui=checkout)",
+          "location": "raw/stripe-payments-fpx-accept-a-payment-2026-11-07.md:13"
+        },
+        {
+          "text": "- [Elements](https://docs.stripe.com/payments/fpx/accept-a-payment.md?payment-ui=elements)",
+          "location": "raw/stripe-payments-fpx-accept-a-payment-2026-11-07.md:14"
+        },
+        {
+          "text": "- [Mobile](https://docs.stripe.com/payments/fpx/accept-a-payment.md?payment-ui=mobile)",
+          "location": "raw/stripe-payments-fpx-accept-a-payment-2026-11-07.md:15"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "fpx_accept_a1_concept_integration",
+            "target_path": "wiki/concepts/stripe-fpx.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Checkout**: `payment_method_types: ['fpx']`, `myr`. **Mandatory confirmation page** required: must display transaction date/time, amount, seller order no., FPX transaction ID, buyer bank name, status — all from Charge object.",
+            "proposed_markdown": "**Checkout (May 3, 2026 guide)**: `payment_method_types: ['fpx']`, `myr`, payment mode with one-time line items; setup and subscription modes are unsupported in that Checkout path. After payment, its required confirmation page displays transaction date/time, amount, seller order no., FPX transaction ID, buyer bank name, and status from the Charge, reached through the Checkout Session's PaymentIntent. The May legacy Elements path requires those same fields after bank authentication and obtains Charge information via `payment_intent.succeeded`; direct `PaymentIntent.charges.data` is described only for API version 2022-08-01 or older. The short May Mobile pointer and the November variant index do not establish confirmation-page implementation requirements for Mobile.",
+            "quote_indexes": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "May guide raw/stripe-fpx-accept-payment-2025.md:28-37,109-122,438-462 is the behavioral authority. New raw/stripe-payments-fpx-accept-a-payment-2026-11-07.md:9-15 is navigation only."
+            ]
+          },
+          {
+            "update_id": "fpx_accept_a1_concept_amount",
+            "target_path": "wiki/concepts/stripe-fpx.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Amount limits** (Elements legacy): min RM2, max RM30,000.",
+            "proposed_markdown": "**Amount limits** (May 3, 2026 legacy Elements guide): its parameter table says minimum RM2 and maximum RM30,000, while its `invalid_amount` row says greater than RM2 and less than RM30,000. Exact eligibility at either endpoint is unresolved in this capture.",
+            "quote_indexes": [
+              1,
+              3
+            ],
+            "warnings": [
+              "Conflict within old raw/stripe-fpx-accept-payment-2025.md:178,493; the November index raw/stripe-payments-fpx-accept-a-payment-2026-11-07.md:9-15 does not resolve it."
+            ]
+          },
+          {
+            "update_id": "fpx_accept_a1_concept_route",
+            "target_path": "wiki/concepts/stripe-fpx.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-fpx-accept-payment]] — integration guide: Checkout + Elements legacy, confirmation page requirements, bank reference, FPX balance/payouts",
+            "proposed_markdown": "- [[source-stripe-fpx-accept-payment]] — May 3, 2026 detailed Checkout and legacy Elements guide, short Mobile pointer, confirmation requirements, banks and FPX balance; November 7, 2026 canonical capture supplies variant navigation only",
+            "quote_indexes": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "May guide raw/stripe-fpx-accept-payment-2025.md:8-529 retains factual authority; new raw/stripe-payments-fpx-accept-a-payment-2026-11-07.md:9-15 only lists variant links."
+            ]
+          },
+          {
+            "update_id": "fpx_accept_a1_bank_subscriptions",
+            "target_path": "wiki/concepts/stripe-bank-redirects.md",
+            "update_kind": "durable_fact",
+            "anchor": "- **Subscriptions**: only iDEAL|Wero, Bancontact, EPS, FPX, P24 — all via `send_invoice` only (not `charge_automatically`)",
+            "proposed_markdown": "- **Subscriptions**: the bank-redirects support summary lists iDEAL|Wero, Bancontact, EPS, FPX, and P24 via `send_invoice` only (not `charge_automatically`). FPX requires a dated scope warning: the May 3, 2026 FPX legacy Elements guide says FPX is single-use, cannot be used for recurring or additional payments, and is not supported with Stripe Billing; its Checkout compatibility table separately says subscription mode is unsupported. The November 7, 2026 FPX canonical capture is only a variant index and does not resolve this conflict. Verify the relevant current variant and Billing path before treating FPX `send_invoice` support as established.",
+            "quote_indexes": [
+              1,
+              2,
+              3
+            ],
+            "warnings": [
+              "The existing support statement conflicts with raw/stripe-fpx-accept-payment-2025.md:156; Checkout's narrower no-subscription-mode claim is at old raw:28-37. New raw/stripe-payments-fpx-accept-a-payment-2026-11-07.md:9-15 has no current subscription behavior."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-fpx-accept-a-payment-2026-11-07.md",
+      "raw_sha256": "90e34991257ae0dd3bd98fd3aad5d792cc3f1d270a244708850072983cbad7f8",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-fpx-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-fpx-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 529
+      }
+    ],
+    "wiki/sources/source-stripe-fpx-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 45
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/0558f79e20573e1d1499073a/content.diff": [
+      {
+        "start": 1,
+        "end": 532
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-fpx-accept-a-payment/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 233
+      }
+    ],
+    "wiki/concepts/stripe-fpx.md": [
+      {
+        "start": 1,
+        "end": 58
+      }
+    ],
+    "wiki/concepts/stripe-bank-redirects.md": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 45
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 273,
+        "end": 282
+      },
+      {
+        "start": 740,
+        "end": 755
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "FPX is only available to businesses based in Malaysia.",
+      "location": "raw/stripe-fpx-accept-payment-2025.md:154"
+    },
+    {
+      "text": "For compliance reasons, your FPX funds settle in a separate `fpx` balance on your account.",
+      "location": "raw/stripe-fpx-accept-payment-2025.md:503"
+    },
+    {
+      "text": "FPX transactions must be greater than RM2 and less than RM30,000.",
+      "location": "raw/stripe-fpx-accept-payment-2025.md:493"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/fpx/accept-a-payment, raw/stripe-payments-fpx-accept-a-payment-2026-11-07.md lines 5-15 establishes Malaysian FPX context and Checkout, Elements, and Mobile variant links only. The May raw/stripe-fpx-accept-payment-2025.md lines 18-37 describes single-use MYR Checkout, Malaysia customer geography, one-time payment mode, and no setup/subscription mode. Its lines 148-156 and 521-529 separately require Dashboard enablement, FPX terms, and a Malaysia-based business, with legacy Elements Custom-account support beta. Lines 171-311 describe server-created PaymentIntent, client fpxBank and confirmFpxPayment, and return_url; lines 313-334 distinguish requires_action, succeeded, requires_payment_method, requires_confirmation, and server-side payment_intent.succeeded fulfillment. Six Charge fields are required after payment in the May Checkout and legacy Elements paths, with direct PaymentIntent.charges.data limited to API version 2022-08-01 or older (old lines 109-122, 438-462). wiki/sources/source-stripe-fpx-accept-payment.md preserves some detail but omitted merchant gates, the Mobile pointer, API-version and amount-endpoint qualifications. No current variant body was captured.",
+    "Q2": "At https://docs.stripe.com/payments/fpx/accept-a-payment, the change is presentational variant navigation: raw/stripe-payments-fpx-accept-a-payment-2026-11-07.md lines 9-15 is an index, while raw/stripe-fpx-accept-payment-2025.md lines 8-529 carries dated May Checkout, legacy Elements, and short Mobile guidance. The full diff removes detail as capture shape, not evidence that payment behavior or eligibility changed. wiki/sources/source-stripe-fpx-accept-payment.md therefore retains its May factual raw and date, gains exact canonical_url, and links the November index only under Related raw API references. The May merchant and Custom-account gates, 18 banks, six-field confirmation, refund/no-dispute and separate fpx balance remain dated; neither PaymentIntent success nor a return URL proves available balance or payout. The old amount table at line 178 and invalid_amount row at line 493 conflict on endpoints. The bank-redirects concept's send_invoice subscription statement conflicts with old legacy Elements no-recurring/Billing text at line 156; Checkout's no-subscription-mode claim at lines 28-37 is narrower. The fpxBank warning at lines 144 and 248 applies to the legacy feature, and the old Mobile section at lines 519-529 supplies a pointer, not full native steps. New variant links prove none of those current outcomes."
+  }
+}

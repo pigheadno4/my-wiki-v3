@@ -1,0 +1,125 @@
+{
+  "job_id": "payments-checkout-update-customer",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-checkout-update-customer.md": {
+      "job_id": "payments-checkout-update-customer",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Update the Customer During Checkout\"\ntype: source\ndate_ingested: 2026-04-21\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/checkout/update-customer\"\nraw_files:\n  - \"stripe-payments-checkout-update-customer-2026-11-07.md\"\n  - \"stripe-checkout-update-customer-2025.md\"\ntags: [stripe, checkout-sessions, customer, guest-checkout, authentication, saved-payment-methods, preview]\n---\n\n## Overview\n\nThe April 21 and November 7, 2026 captures describe attaching a **Customer** to an **existing Checkout Session after Session creation** for a mid-checkout guest-to-login experience. The Customer's saved payment methods, email and billing information can then populate without losing information the buyer already entered (new raw lines 5-9; old raw lines 4-8). The identity boundary is the Customer being attached to an already-created Checkout Session. The page does not prescribe an initial `customer` value or a universal guest Session configuration.\n\n## Preview access qualification\n\nThe November capture adds an **\u201cInterested in updating the customer during checkout?\u201d** section. It explicitly calls this a **preview feature** and asks for an email to request access; a Stripe team member will contact the requester (new raw lines 11-13). Its example `POST https://docs.stripe.com/preview/register` uses a Referer for this page and `{\"email\":\"EMAIL\",\"preview\":\"custom_checkout_preview\"}` (new raw lines 15-20). That request is for preview access, not an example of updating a Checkout Session, proof of approval, or evidence that a merchant account has the feature enabled.\n\nThe older full page ended with the behavioral description and did not show this request-access section (old raw lines 4-8). The new wording of the guest-login example is editorial; the access qualification is the consequential addition. Treat the behavior and preview status as capture-dated documentation, not a verified current account entitlement or completed checkout.\n\n## Integration boundary\n\nNeither pinned capture gives a `checkout.sessions.update(...)` call, a `customer` parameter schema, an API version, SDK requirement, client/server division, or supported Checkout UI mode. The older summary named `checkout.sessions.update(sessionId, { customer: ... })` and asserted a guest Session begins without a Customer, but those details are not established by these two pages. A developer needs separately read API or implementation authority before treating that syntax or initial Session setup as supported. Attaching a Customer and populating fields does not itself confirm a payment, save a new method, or establish settlement.\n\n## Related\n\n- [[stripe]] \u2014 company context.\n- [[stripe-checkout]] \u2014 Checkout concept and reciprocal preview route.\n\n## Raw Sources\n\n- [[raw/stripe-payments-checkout-update-customer-2026-11-07|November 7, 2026 Customer update preview page]] \u2014 full 21-line capture with access-request example.\n- [[raw/stripe-checkout-update-customer-2025|April 21, 2026 Customer update page]] \u2014 earlier full eight-line behavior description.\n",
+      "quotes": [
+        {
+          "text": "Attach a customer to a Checkout Session after creation to support mid-checkout authentication.",
+          "location": "raw/stripe-payments-checkout-update-customer-2026-11-07.md:7"
+        },
+        {
+          "text": "enabling their saved payment methods, email, and billing information to automatically populate without losing any information the customer has already entered",
+          "location": "raw/stripe-payments-checkout-update-customer-2026-11-07.md:9"
+        },
+        {
+          "text": "Use this when you allow customers to begin checkout as a guest and then offer the option to log in during the checkout process.",
+          "location": "raw/stripe-payments-checkout-update-customer-2026-11-07.md:9"
+        },
+        {
+          "text": "To request access to this preview feature, enter your email below and a member of our team will contact you.",
+          "location": "raw/stripe-payments-checkout-update-customer-2026-11-07.md:13"
+        },
+        {
+          "text": "\"preview\": \"custom_checkout_preview\"",
+          "location": "raw/stripe-payments-checkout-update-customer-2026-11-07.md:20"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "s03-checkout-update-customer-preview-boundary",
+            "target_path": "wiki/concepts/stripe-checkout.md",
+            "update_kind": "durable_fact",
+            "anchor": "- **Mid-checkout customer attachment**: call `checkout.sessions.update(id, { customer: 'cus_...' })` to attach a Customer after session creation; saved PMs, email, and billing info auto-populate without losing previously entered data; enables guest \u2192 login flow during checkout",
+            "proposed_markdown": "- **Mid-checkout customer attachment (November 7, 2026 preview)**: [[source-stripe-checkout-update-customer]] describes attaching a Customer to an already-created Checkout Session when a guest logs in during checkout; saved payment methods, email and billing information can populate without losing entered data. The November page requests preview access by email. Neither its new capture nor the April 21, 2026 prior capture specifies `checkout.sessions.update(...)` syntax, a particular initial `customer` value, API version or Checkout UI mode; an access request does not prove entitlement or payment success.",
+            "quote_indexes": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Replace only the exact Mid-checkout customer attachment bullet at concept line 145. Both old raw lines 4-8 and new raw lines 5-20 describe attachment behavior but not checkout.sessions.update syntax or an initial customer=null prerequisite.",
+              "New raw lines 11-20 add a preview access request; submitting it is not access approval or account enablement."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-checkout-update-customer-2026-11-07.md",
+      "raw_sha256": "99557e67c9c0e98601f762ec418454ae0f63b74d453fbb486fa056724e7ea70a",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-checkout-update-customer-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 21
+      }
+    ],
+    "raw/stripe-checkout-update-customer-2025.md": [
+      {
+        "start": 1,
+        "end": 8
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-update-customer.md": [
+      {
+        "start": 1,
+        "end": 34
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/9b4bd5af47af63af29081464/content.diff": [
+      {
+        "start": 1,
+        "end": 19
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-checkout-update-customer/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 165
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 12
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 82,
+        "end": 92
+      }
+    ],
+    "wiki/concepts/stripe-checkout.md": [
+      {
+        "start": 1,
+        "end": 180
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "Attach a customer to a Checkout Session after creation to support mid-checkout authentication.",
+      "location": "raw/stripe-checkout-update-customer-2025.md:6"
+    },
+    {
+      "text": "This is useful when you allow customers to begin checkout as a guest and offer the option to log in during the checkout process.",
+      "location": "raw/stripe-checkout-update-customer-2025.md:8"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/checkout/update-customer, new raw lines 5-9 describe attaching a Customer to an existing Checkout Session after creation during a guest-to-login checkout. Saved payment methods, email and billing details populate without erasing entered information. New raw lines 11-20 then explicitly call it a preview and show an email-based access request; submitting that request does not establish approval. Old raw lines 4-8 already described the core Customer-to-Session behavior but lacked the access section. source-stripe-checkout-update-customer.md summarizes the behavior yet omits the preview gate and canonical URL, asserts a specific checkout.sessions.update method absent from both captures, and says the initial guest Session has no Customer although neither capture prescribes that setup. The revised source narrows those claims and retains both dated records.",
+    "Q2": "For https://docs.stripe.com/payments/checkout/update-customer, the material November addition is the preview access request in new raw lines 11-20. The old raw lines 4-8 versus new raw lines 5-9 retain the same Customer attachment, auto-population and preservation behavior with editorial guest-login wording. source-stripe-checkout-update-customer.md should keep its April 21 provenance, add the November full capture and exact canonical URL, and state the access qualification. Its prior checkout.sessions.update syntax, echoed in the stripe-checkout concept, and its assumption that an initial guest Session must have no Customer are not established by either pinned page. The preview/register curl is a request for access, not a Session update, client/server implementation instruction, or proof of enablement. The page supplies no API version, SDK or UI-mode boundary and no payment or settlement outcome."
+  }
+}

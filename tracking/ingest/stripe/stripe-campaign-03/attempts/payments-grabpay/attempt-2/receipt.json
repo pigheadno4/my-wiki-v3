@@ -1,0 +1,204 @@
+{
+  "job_id": "payments-grabpay",
+  "attempt": 2,
+  "raw_path": "raw/stripe-payments-grabpay-2026-11-07.md",
+  "raw_sha256": "528a21844c1f1b2191db7fa94d76a41f394030b3e9c256b99625170e45e6fdcc",
+  "prior_raw_path": "raw/stripe-grabpay-2025.md",
+  "prior_raw_sha256": "bc55156cac8e235a816b3eca74f434fd18bd1658217f6af47e4129bed15bb858",
+  "source_targets": [
+    "wiki/sources/source-stripe-grabpay.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-grabpay.md": "9c0033d8a0e84de91d72086cbfbd520b0f85bc2cbd228ae51f0122a96421f9c5"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-grabpay-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 70
+      },
+      {
+        "start": 71,
+        "end": 138
+      },
+      {
+        "start": 50,
+        "end": 79
+      }
+    ],
+    "raw/stripe-grabpay-2025.md": [
+      {
+        "start": 1,
+        "end": 55
+      },
+      {
+        "start": 56,
+        "end": 106
+      },
+      {
+        "start": 96,
+        "end": 102
+      }
+    ],
+    "wiki/sources/source-stripe-grabpay.md": [
+      {
+        "start": 1,
+        "end": 33
+      },
+      {
+        "start": 19,
+        "end": 27
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/9e34b8092aa3438fd5536064/content.diff": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 198
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 398,
+        "end": 404
+      }
+    ],
+    "wiki/concepts/stripe-wallets.md": [
+      {
+        "start": 1,
+        "end": 25
+      },
+      {
+        "start": 256,
+        "end": 276
+      },
+      {
+        "start": 405,
+        "end": 411
+      },
+      {
+        "start": 259,
+        "end": 268
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/proposed-queries.md": [
+      {
+        "start": 572,
+        "end": 579
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-grabpay/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 175
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-grabpay/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 89
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Usability: Single-use",
+      "location": "raw/stripe-payments-grabpay-2026-11-07.md:11"
+    },
+    {
+      "text": "Geographic coverage: \u2713 Domestic, \u2717 Crossborder",
+      "location": "raw/stripe-payments-grabpay-2026-11-07.md:33"
+    },
+    {
+      "text": "You can\u2019t cancel GrabPay refunds.",
+      "location": "raw/stripe-payments-grabpay-2026-11-07.md:63"
+    },
+    {
+      "text": "They must complete authentication within 15 minutes of inactivity; three incorrect one-time password attempts fail authentication.",
+      "location": "raw/stripe-payments-grabpay-2026-11-07.md:118"
+    },
+    {
+      "text": "latest_charge.payment_method_details.grabpay.transaction_id",
+      "location": "raw/stripe-payments-grabpay-2026-11-07.md:130"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "To pay with GrabPay, customers are redirected to GrabPay\u2019s website, where they have to authenticate the transaction using a one-time password.",
+      "location": "raw/stripe-grabpay-2025.md:10"
+    },
+    {
+      "text": "1Not supported when using Checkout in subscription mode or setup mode.2Express Checkout Element doesn\u2019t support GrabPay.",
+      "location": "raw/stripe-grabpay-2025.md:71"
+    },
+    {
+      "text": "GrabPay payments can be refunded up to 90 days after the original payment.",
+      "location": "raw/stripe-grabpay-2025.md:98"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The November capture identifies GrabPay as single-use wallet with provisional access, immediate confirmation label, standard payout schedule, MY/SG merchants and customers, MYR/SGD presentment and domestic-only coverage (new raw lines 9-35). The May capture had the country, currency, wallet, redirect, no-recurring and payout facts but lacked the domestic-only and access labels (old raw lines 8-59). Current source lines 13-21 captures the broad route but not the new coverage boundary.",
+    "New matrix explicitly supports full/partial refunds and Invoicing, but no recurring, Billing, setup_future_usage, SetupIntents or off-session payments; it supports in-app payments while Express Checkout Element is unsupported (new raw lines 34-58, 81-105). The old product list plus footnote excluded Checkout subscription/setup modes and Express Checkout Element (old raw lines 61-71). Current source line 23 incorrectly says no partial refund is noted despite old raw line 52's Yes/Yes and new raw lines 50-52's explicit support; line 25's 'Subscriptions not listed' should become the explicit no-recurring/Billing/setup boundary, not inference from absence.",
+    "New refund text adds a maximum 90-day submission window, no cancellation, never a reversal, return to original GrabPay balance or linked funding source, status via Refund object and refund.updated/refund.failed, and fallback credit obligation if failed (new raw lines 50-73). Old raw lines 96-98 already documented the 90 days, async up-to-five-minute processing and outcome webhooks; source lines 13, 23 omit lifecycle and failure/uncancellable qualifications.",
+    "New customer flow says browser/webview OTP authentication must complete within 15 minutes of inactivity, with three bad OTP attempts failing authentication; return via configured return URL, URL scheme or universal link displays the PaymentIntent result (new raw lines 110-122). Old raw lines 8-10 gives only web redirect; source line 19's site-only return is too narrow for documented app paths. Browser return and instant provisional access are not proof of PaymentIntent success.",
+    "New transaction identifier rules distinguish merchant/payment descriptor formatting and variable customer display, connected-account direct-charge versus platform-default destination-charge descriptor, and GrabPay transaction ID at latest_charge.payment_method_details.grabpay.transaction_id, distinct from Charge and PaymentIntent IDs (new raw lines 124-130). The current source lines 11-33 lacks this important identity/account boundary.",
+    "The raw new pricing URL has an undefined path segment (new raw line 15). It cannot support an amount or fee inference. Current source frontmatter lines 1-9 lacks canonical_url and only lists the old dated raw; a source correction should add https://docs.stripe.com/payments/grabpay and both provenance entries while retaining 2026-05-07 versus 2026-11-07 dates.",
+    "The linked wallets concept line 263 repeats the source line 21 causal shorthand 'OTP prevents chargebacks.' Both raw captures instead state authentication lowers fraud/unrecognized-payment risk and there is no standard GrabPay dispute/chargeback process (old raw lines 100-102; new raw lines 75-79). Give both source and concept a reciprocal warning: OTP is not evidence that fraud or complaints cannot occur."
+  ],
+  "substantive_changes": [
+    "Explicit domestic-only eligibility, single-use/provisional/immediate labels and detailed unsupported capabilities, including no SetupIntents/off-session, refine the older broad property and product lists (old raw lines 12-71; new raw lines 10-58, 81-105).",
+    "Refund cancellation, reversal, funding-source and failed-refund details and authentication timeout/OTP attempt limits are newly documented in the November capture (old raw lines 73-102; new raw lines 59-79, 110-122).",
+    "The descriptor ownership and true GrabPay transaction-ID path are new material identity facts (new raw lines 124-130; absent old raw lines 1-106)."
+  ],
+  "historical_claims_to_preserve": [
+    "May 7, 2026 old raw lines 61-71 explicitly excluded Checkout subscription/setup modes and Express Checkout Element; the new raw lines 87, 101-105 still make setup/recurring unsupported. Keep older wording dated rather than infer that its footnote was revoked by omission.",
+    "Old raw lines 96-106 retain refund, dispute and GrabPay-branding evidence; new raw lines 59-79, 106-108 restate and expand these. The old demo video at old raw lines 73-76 is navigation/presentation, not behavioral proof or a current asset guarantee."
+  ],
+  "conflicts": [
+    "Current source line 23 says partial refund was not noted even though old raw line 52 says Yes/Yes and new raw lines 50-52 explicitly support partial and full refunds; correct this baseline summary error, not a new raw reversal.",
+    "Current source line 19 says return to merchant site; new raw lines 118-122 include browser/webview and return to website or app through URL/scheme/universal link. This is a scope expansion, not proof that every platform path has been configured.",
+    "Current source line 25 describes subscriptions as merely not listed, while old raw lines 30-32, 71 and new raw lines 35, 93, 103-105 explicitly exclude recurring/Billing/setup/off-session paths; clarify the conditional product matrix.",
+    "Current source line 21 and linked concept line 263 say OTP prevents chargebacks; both captures say authentication reduces risk and no standard GrabPay dispute/chargeback process exists (old raw lines 100-102; new raw lines 75-79), not that OTP prevents all fraud, complaints or refunds. Both routes need corrected wording."
+  ],
+  "unresolved_questions": [
+    "Document capture does not verify a particular MY/SG merchant's activation, account permissions, Connect configuration or Stripe/GrabPay payment outcome (new raw lines 18-33, 118-130).",
+    "The undefined pricing link at new raw line 15 does not establish current GrabPay fees; no pricing claims should be drawn from it.",
+    "Quickstart, sample, manual configuration and branding assets are linked navigation (new raw lines 106-108, 132-138); their contents and current availability were not read in this job."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-wallets.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-grabpay.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add canonical_url https://docs.stripe.com/payments/grabpay and both dated raw file references to frontmatter lines 1-9/Raw Sources lines 31-33.",
+        "Correct line 23's partial-refund ambiguity: old raw line 52 and new raw lines 50-52 both support partial and full refunds; add the new cancellation, refund-source, failure and status caveats from new raw lines 59-73. Submission within 90 days is not a succeeded refund or customer receipt.",
+        "Expand line 19's return flow for browser/webview and app schemes, 15-minute inactivity and three-bad-OTP failure (new raw lines 110-122), and preserve that return/provisional access is not payment success.",
+        "Summarize domestic MY/SG, no setup_future_usage/SetupIntents/off-session/Billing and supported Invoicing/in-app distinctions (new raw lines 18-35, 81-105).",
+        "Add descriptor ownership and GrabPay transaction ID versus Stripe IDs (new raw lines 124-130). Correct source line 21 and reciprocal wallets concept line 263: authentication reduces risk and the method lacks standard chargebacks; OTP does not prove fraud or complaints impossible (old raw lines 100-102; new raw lines 75-79)."
+      ],
+      "conflicts": [
+        "Source line 23 contradicts both captures' partial-refund support; line 25 understates explicit no-recurring/setup matrix.",
+        "Source line 19 is website-only while new capture allows app return; source line 21 and linked concept line 263 overstate OTP as preventing chargebacks beyond the documented no-standard-dispute rule."
+      ],
+      "reason": "Material new eligibility, refund, auth, and transaction-identity facts plus baseline source and reciprocal concept inaccuracies require a dated update; review-only worker does not edit canonical pages."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/grabpay, GrabPay is a single-use MY/SG domestic wallet presented in MYR/SGD. The customer selects it, authenticates a browser or webview redirect with a one-time password, and returns through a website or app URL to see the PaymentIntent success or failure result; return and provisional access do not prove success. The new capture adds a 15-minute inactivity limit, three wrong-OTP failure condition, no setup/recurring/off-session support and a distinct GrabPay transaction ID under the latest Charge (new raw lines 9-35, 81-130). Full or partial refunds may be submitted within 90 days, process asynchronously up to five minutes, and cannot be cancelled. The Refund object's final status and refund.updated/refund.failed distinguish submission from success: a successful refund returns funds to the original GrabPay balance or linked source, while failure credits the merchant's Stripe balance and requires another customer-refund method (new raw lines 50-73). The old capture gave the basic redirect and refund status/failure route (old raw lines 8-71, 96-102). source-stripe-grabpay.md incorrectly doubts partial refunds, narrows return to a website and lacks descriptor-account and transaction-ID distinctions (source lines 13-29).",
+    "Q2": "At https://docs.stripe.com/payments/grabpay, substantive additions are domestic-only eligibility and explicit no-SetupIntent/off-session capability, uncancellable asynchronous refunds, OTP timeout and failure limits, app return options, and descriptor/account/GrabPay transaction-ID boundaries (old raw lines 12-106; new raw lines 16-130). Refund submission within 90 days is separate from Refund success and customer receipt: final status comes through the Refund object and refund.updated/refund.failed, with failed funds returned to the Stripe balance. The old video demo and changed quickstart/asset links are presentation or navigation, not live payment proof. Preserve the May 2026 Checkout subscription/setup exclusion and refund history while source-stripe-grabpay.md gains the dated November raw and canonical URL. Warn reciprocally that the source's partial-refund caveat contradicts both captures, its site-only return omits app paths, and both source line 21 and linked wallets concept line 263 overstate OTP as preventing chargebacks; the guides support reduced risk and no standard dispute/chargeback process, not impossible fraud or complaints (old raw lines 96-102; new raw lines 50-79). Dashboard enablement, browser return and provisional access are not account eligibility, PaymentIntent success or settled funds. The new pricing URL contains undefined and supports no fee inference."
+  }
+}

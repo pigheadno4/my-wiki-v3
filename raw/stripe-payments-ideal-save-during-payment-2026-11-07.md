@@ -1,0 +1,17 @@
+<!-- Source URL: https://docs.stripe.com/payments/ideal/save-during-payment -->
+<!-- Fetched: 2026-11-07 -->
+<!-- Discovery: reconciled llms.txt,sitemap.xml -->
+
+# Save bank details during an iDEAL | Wero payment
+
+Learn how to save your customer's IBAN bank details from an iDEAL | Wero payment.
+
+## Index
+
+This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:
+
+- [Elements](https://docs.stripe.com/payments/ideal/save-during-payment.md?payment-ui=elements)
+- Mobile:
+  - [iOS](https://docs.stripe.com/payments/ideal/save-during-payment.md?payment-ui=mobile&platform=ios)
+  - [Android](https://docs.stripe.com/payments/ideal/save-during-payment.md?payment-ui=mobile&platform=android)
+  - [React Native](https://docs.stripe.com/payments/ideal/save-during-payment.md?payment-ui=mobile&platform=react-native)

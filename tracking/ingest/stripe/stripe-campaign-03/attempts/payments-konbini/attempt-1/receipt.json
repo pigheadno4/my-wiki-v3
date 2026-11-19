@@ -1,0 +1,190 @@
+{
+  "job_id": "payments-konbini",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-konbini-2026-11-07.md",
+  "raw_sha256": "1d3448e016b1e7a3ee2169839d30f1c17ddd4a4d584f80327817a29352f1d18f",
+  "prior_raw_path": "raw/stripe-konbini-2025.md",
+  "prior_raw_sha256": "d8d970132420a1270dd269af42cacff11f803d09a0f6e60545cd45fbe28c65ec",
+  "source_targets": [
+    "wiki/sources/source-stripe-konbini.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-konbini.md": "e78a9670e8d546f070ee231c11bd30b071cf68f738e9aa453f37401871177d7b"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-konbini-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 115
+      },
+      {
+        "start": 116,
+        "end": 220
+      }
+    ],
+    "raw/stripe-konbini-2025.md": [
+      {
+        "start": 1,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 156
+      }
+    ],
+    "wiki/sources/source-stripe-konbini.md": [
+      {
+        "start": 1,
+        "end": 35
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/108c51f5f53497c03a953db5/content.diff": [
+      {
+        "start": 1,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 180
+      },
+      {
+        "start": 181,
+        "end": 265
+      },
+      {
+        "start": 266,
+        "end": 352
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 1,
+        "end": 12
+      },
+      {
+        "start": 365,
+        "end": 380
+      }
+    ],
+    "wiki/concepts/stripe-vouchers.md": [
+      {
+        "start": 1,
+        "end": 40
+      },
+      {
+        "start": 56,
+        "end": 74
+      },
+      {
+        "start": 111,
+        "end": 121
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/proposed-queries.md": [
+      {
+        "start": 698,
+        "end": 704
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "You receive payment confirmation immediately after the store payment, and funds are available for *payout*",
+      "location": "raw/stripe-payments-konbini-2026-11-07.md:11"
+    },
+    {
+      "text": "Payment confirmation timing: Delayed",
+      "location": "raw/stripe-payments-konbini-2026-11-07.md:17"
+    },
+    {
+      "text": "If you\u2019re a sole proprietor, your website must also include a photo of the exterior of your physical store or office at the registered address.",
+      "location": "raw/stripe-payments-konbini-2026-11-07.md:45"
+    },
+    {
+      "text": "A Japanese platform can settle destination charges or separate charges and transfers on its own account using its own Konbini activation. In this case, don\u2019t set `on_behalf_of`.",
+      "location": "raw/stripe-payments-konbini-2026-11-07.md:190"
+    },
+    {
+      "text": "The store provides a receipt. Stripe confirms the payment asynchronously, changes the PaymentIntent status to `succeeded`, and notifies you so you can fulfill the order.",
+      "location": "raw/stripe-payments-konbini-2026-11-07.md:208"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "You\u2019ll receive payment confirmation instantly",
+      "location": "raw/stripe-konbini-2025.md:10"
+    },
+    {
+      "text": "Partial: [request an invite](https://support.stripe.com/contact/email?topic=payment_apis) to create charges [on behalf of](https://docs.stripe.com/connect/charges.md#on_behalf_of) other accounts.",
+      "location": "raw/stripe-konbini-2025.md:26"
+    },
+    {
+      "text": "- Sole proprietors who have been doing business for less than 3 years",
+      "location": "raw/stripe-konbini-2025.md:137"
+    },
+    {
+      "text": "- Elements3",
+      "location": "raw/stripe-konbini-2025.md:77"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Konbini remains a single-use JPY cash voucher for JP accounts and JP customers, domestic only, payable at FamilyMart, Lawson, Ministop and Seicomart, 120\u2013300,000 JPY; instructions precede store payment and PI success. New raw/stripe-payments-konbini-2026-11-07.md:9-18,100-114,192-214; old raw/stripe-konbini-2025.md:8-12,56-68,85-98; current wiki/sources/source-stripe-konbini.md:13-23.",
+    "The new capture distinguishes instant provisional access and delayed payment confirmation; the store payment triggers immediate notification in the overview but Stripe confirms asynchronously and marks the PaymentIntent succeeded in the detailed flow. Funds become available for payout after four business days, while standard payout schedule applies. New raw/stripe-payments-konbini-2026-11-07.md:11,14-18,204-208; old raw/stripe-konbini-2025.md:10,48-50; current wiki/sources/source-stripe-konbini.md:13,21 overcompresses both boundaries.",
+    "New eligibility includes the sole-proprietor physical premises exterior photo, subscription invoice disclosures, public website/onboarding/contact/shipping/support/refund/payment/SCTA checklist, post-activation review, appeal, and prohibited MCC table. New raw/stripe-payments-konbini-2026-11-07.md:21-98; old raw/stripe-konbini-2025.md:133-156; current wiki/sources/source-stripe-konbini.md:31 lacks these. The table lists only Prohibited rows despite a generic Restricted definition (raw/stripe-payments-konbini-2026-11-07.md:65-98); do not invent an approval path for any listed MCC.",
+    "New refund flow requires customer email response with bank details before bank-transfer processing; status is Refund.status and final refund.updated/refund.failed webhooks, with failed amount returned to Stripe balance and another refund method needed. Cash cannot return to original source. Standard disputes/chargebacks unsupported, rare store irregularities remain. New raw/stripe-payments-konbini-2026-11-07.md:131-155; old raw/stripe-konbini-2025.md:117-123; current wiki/sources/source-stripe-konbini.md:25 overstates automatic completion.",
+    "New product matrix supports full/embedded Checkout, Payment Links, Payment Element, in-app, Billing/Invoicing/Radar/Connect, Checkout Sessions and Payment Intents; excludes ECE, PMME, Customer Portal, Terminal, Managed Payments, SetupIntents, setup_future_usage, off-session. Hosted subscription invoices are permitted only via send_invoice with a fresh cash payment per invoice, not automatic charge or Checkout subscription mode. New raw/stripe-payments-konbini-2026-11-07.md:157-186; old raw/stripe-konbini-2025.md:70-83,125-131; current wiki/sources/source-stripe-konbini.md:27,29.",
+    "Concept baseline accuracy issue separate from raw delta: raw/stripe-konbini-2025.md:77,83 already listed Elements with only Express Checkout Element excluded, whereas wiki/concepts/stripe-vouchers.md:71 says no Elements. New raw/stripe-payments-konbini-2026-11-07.md:161-163 clarifies Payment Element supported and Express Checkout Element excluded.",
+    "Instruction codes and confirmation number belong to PaymentIntent.next_action.konbini_display_details.stores.<store>, not post-payment transaction IDs; no card or bank statement descriptor appears for the customer cash payment. New raw/stripe-payments-konbini-2026-11-07.md:192-214; old raw/stripe-konbini-2025.md:89-98."
+  ],
+  "substantive_changes": [
+    "Eligibility and website/SCTA disclosures plus MCC restrictions materially expand captured prerequisites (raw/stripe-payments-konbini-2026-11-07.md:43-98 vs raw/stripe-konbini-2025.md:133-156).",
+    "Explicit delayed state timeline, PaymentIntent.succeeded after cash, and funds-available versus payout schedule are material precision (raw/stripe-payments-konbini-2026-11-07.md:11,17-18,200-208 vs raw/stripe-konbini-2025.md:10,48-50).",
+    "Own-account Japanese Connect platform destination/SCT flow without on_behalf_of is a newly documented conditional path (raw/stripe-payments-konbini-2026-11-07.md:188-190 vs raw/stripe-konbini-2025.md:24-26,83).",
+    "Refund customer action/status/failure handling and expanded support/API matrix are operational detail (raw/stripe-payments-konbini-2026-11-07.md:139-186 vs raw/stripe-konbini-2025.md:70-83,121-123).",
+    "Domestic-only coverage and named instruction data fields are new explicit boundaries (raw/stripe-payments-konbini-2026-11-07.md:100-114,210-214)."
+  ],
+  "historical_claims_to_preserve": [
+    "May 2026 capture's invite requirement specifically for creating on_behalf_of charges, raw/stripe-konbini-2025.md:24-26,83; November own-account no-on_behalf_of path raw/stripe-payments-konbini-2026-11-07.md:190 does not prove invite route was eliminated or universally accessible.",
+    "May capture's sole proprietors under three years and dating sites listed in prohibited prose, raw/stripe-konbini-2025.md:133-156, must remain dated; November prose omits them, but sole proprietor photo requirement and prohibited Dating and Escort Services MCC 7273 remain in raw/stripe-payments-konbini-2026-11-07.md:45,83. Do not claim all sole proprietors or dating businesses are now eligible.",
+    "May flow/Connect/Billing details remain historical where November overview omits implementation specifics (raw/stripe-konbini-2025.md:85-115,125-131); November navigation to child integration page raw/stripe-payments-konbini-2026-11-07.md:220 is no proof those older details were removed.",
+    "The prior 120\u2013300,000 JPY, four chains, send_invoice-only subscription invoice, no standard customer dispute, and refund bank-detail requirement remain corroborated (raw/stripe-konbini-2025.md:10-12,56-62,119-131; raw/stripe-payments-konbini-2026-11-07.md:11-13,112-114,145-155,184-186)."
+  ],
+  "conflicts": [
+    "Current wiki/sources/source-stripe-konbini.md:29 and wiki/concepts/stripe-vouchers.md:39,69 characterize all Konbini Connect as partial/invite. New raw/stripe-payments-konbini-2026-11-07.md:190 documents an own-account Japanese platform settlement path without on_behalf_of or connected-account activation. Preserve dated invite for on_behalf_of with reciprocal caveat rather than declaring it obsolete.",
+    "Current wiki/sources/source-stripe-konbini.md:13,21 and wiki/concepts/stripe-vouchers.md:61 say instant confirmation/T+4 payout; new raw/stripe-payments-konbini-2026-11-07.md:11,17-18,208 requires store-payment/state and funds-availability qualifications.",
+    "Current wiki/sources/source-stripe-konbini.md:31 and wiki/concepts/stripe-vouchers.md:73 repeat old sole-proprietor-under-three-years and dating-site prohibitions; new raw/stripe-payments-konbini-2026-11-07.md:26-45,70-98 changes presentation and eligibility, including MCC 7273. Dated capture-specific warnings needed in both directions.",
+    "Current concept wiki/concepts/stripe-vouchers.md:71 says no Elements though even old raw/stripe-konbini-2025.md:77,83 supports Elements except ECE and new raw/stripe-payments-konbini-2026-11-07.md:161-163 supports Payment Element. This is a baseline summary error, not solely a new raw change.",
+    "Generic voucher concept wiki/concepts/stripe-vouchers.md:34 says one-business-day confirmation lag and not suitable for immediate delivery; Konbini new raw/stripe-payments-konbini-2026-11-07.md:11,17,208 is delayed until cash but immediately/asynchronously confirmed after store payment. Scope the generic warning."
+  ],
+  "unresolved_questions": [
+    "November overview raw/stripe-payments-konbini-2026-11-07.md:190 describes own-account destination/SCT settlement but does not state whether or how the May invite-only on_behalf_of path raw/stripe-konbini-2025.md:26 is currently available; leave that path dated and avoid account-specific eligibility inference.",
+    "The November MCC rows raw/stripe-payments-konbini-2026-11-07.md:81-82,88 give numeric descriptions identical to their codes; record exact codes/status without guessing labels.",
+    "The linked detailed refund and integration pages at raw/stripe-payments-konbini-2026-11-07.md:141,220 were not part of this identity's pinned capture; their parameters and outcomes cannot be inferred here."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-vouchers.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-konbini.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Keep dated May capture provenance wiki/sources/source-stripe-konbini.md:4-7,35 while adding November source reference and qualifying cash/payment/PI/payout stages (raw/stripe-payments-konbini-2026-11-07.md:11,17-18,208).",
+        "Add November website/eligibility/MCC and JP domestic limits (raw/stripe-payments-konbini-2026-11-07.md:21-114), conditional Japanese platform own-account Connect path (raw/stripe-payments-konbini-2026-11-07.md:190), refund action/failure and product/API support detail (raw/stripe-payments-konbini-2026-11-07.md:139-186).",
+        "Retain send_invoice subscriptions as per-invoice cash and no automated charging (raw/stripe-payments-konbini-2026-11-07.md:116,183-186)."
+      ],
+      "conflicts": [
+        "Current blanket Connect invite wiki/sources/source-stripe-konbini.md:29 vs new own-account no-on_behalf_of path raw/stripe-payments-konbini-2026-11-07.md:190; date and scope both.",
+        "Current instant confirmation/T+4 payout wiki/sources/source-stripe-konbini.md:13,21 vs delayed before cash and funds available after four business days raw/stripe-payments-konbini-2026-11-07.md:11,17-18,208.",
+        "Current historic sole-proprietor and dating prohibitions wiki/sources/source-stripe-konbini.md:31 vs November new list/photo/MCC 7273 raw/stripe-payments-konbini-2026-11-07.md:26-98; do not silently delete history."
+      ],
+      "reason": "Material November eligibility, payment-state, Connect, refund and support details need a dated comparison; existing summary also compresses payout and confirmation outcome boundaries."
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/konbini, the November capture establishes a Japan-only, JPY, domestic, single-use cash voucher for JP merchant or Japanese Connect platform use, 120\u2013300,000 JPY, paid at four named store chains. The customer receives per-store codes and a confirmation number, then pays cash before expiry; Stripe asynchronously advances the PaymentIntent to succeeded only after store payment and makes funds available for payout after four business days. Website eligibility, MCC restrictions and activation review apply. Hosted subscription invoices require send_invoice and a separate cash payment; refunds require customer bank details. Old raw lines 8-12, 24-26, 56-83 and 117-131 already covered core cash, limits, Billing, refunds and the dated on_behalf_of invite. New raw lines 9-18, 21-114, 139-214 add state, eligibility, Connect and product boundaries. The sole mapped summary source-stripe-konbini.md lines 13-31 retains the old core but overstates instant success, payout timing, blanket Connect restriction and automatic refund completion.",
+    "Q2": "For https://docs.stripe.com/payments/konbini, new raw lines 21-98, 139-151, 157-190 and 200-214 substantively add website/SCTA and MCC conditions, refund action/status/failure handling, a broader UI/API support matrix, a Japanese platform own-account Connect route without on_behalf_of, and explicit PaymentIntent success after cash. New headings, family labels and child-page links are largely presentation/navigation; linked details are not authority here. Old raw lines 24-26, 70-83 and 133-156 keep May 2026 on_behalf_of invite and under-three-year sole proprietor/dating prohibitions as dated claims, with reciprocal qualifications because November omits some prose but still lists MCC 7273 and a sole-proprietor photo rule. source-stripe-konbini.md must separate these routes, customer instruction creation from payment success, funds availability from actual payout, Payment Element from unsupported Express Checkout Element, and refund request from successful bank transfer; no account activation or live payment outcome is proved."
+  }
+}

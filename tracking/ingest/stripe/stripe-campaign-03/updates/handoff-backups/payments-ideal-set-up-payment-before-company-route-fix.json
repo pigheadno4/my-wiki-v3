@@ -1,0 +1,133 @@
+{
+  "job_id": "payments-ideal-set-up-payment",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-ideal-set-up-payment.md": {
+      "job_id": "payments-ideal-set-up-payment",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Use iDEAL | Wero to Set Up Future SEPA Direct Debit Payments\"\ntype: source\ndate_ingested: 2026-05-03\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/ideal/set-up-payment\"\nraw_files:\n  - \"stripe-ideal-set-up-payment-2025.md\"\ntags: [stripe, ideal, wero, netherlands, eur, sepa-debit, iban, setup-intents, mandates, ios, android, react-native]\n---\n\n## Summary\n\nThe detailed 2026-05-03 guide uses an iDEAL | Wero SetupIntent to collect a mandate and bank details for later SEPA Direct Debit. It describes an actual 0.01 EUR iDEAL payment: the customer authenticates, Stripe refunds the payment, and the customer's IBAN is stored in a generated SEPA Direct Debit PaymentMethod. This is a setup payment, not the later SEPA charge or a purchase payment. The 2026-11-07 capture at the same canonical URL is only a purpose sentence and a chooser for Checkout, Elements, iOS, Android, and React Native variants; it does not restate or supersede implementation behavior.\n\n## Key Details\n\n### Preconditions and customer identity (2026-05-03 guide)\n\n- Activate SEPA Direct Debit in the Dashboard and comply with both iDEAL and SEPA Direct Debit terms (old raw lines 12-14).\n- Associate the payment method with a customer-configured Account v2 or Customer v1 and use the corresponding `customer_account` or `customer` field throughout setup and later charging (old raw lines 24-34, 142-189).\n- In this dated guide, Accounts v2 is generally available for Connect users but is public preview for other Stripe users, who need a preview version. Treat that as a May 2026 statement, not November-verified eligibility (old raw lines 26-34).\n\n### Setup paths and mandate (2026-05-03 guide)\n\n- Checkout creates a Session in `mode: \"setup\"` with `ideal` included in `payment_method_types` and the customer identity. Its examples include `[\"card\", \"ideal\"]`; Stripe-hosted and embedded pages use different success/return URL fields (old raw lines 68-140).\n- Elements creates a customer-associated SetupIntent and uses `stripe.confirmSetup` with a return URL (old raw lines 262-300, 433-531). The guide's Stripe.js dahlia example is dated, not a November-confirmed version (old raw lines 305-316).\n- Native iOS, Android, and React Native variants create a customer-associated SetupIntent with `ideal` and confirm it on the client with `STPPaymentHandler.confirmSetupIntent`, `PaymentLauncher.confirm`, or `confirmSetupIntent`, respectively. Bank redirects and app return/deep-link handling matter in these clients (old raw lines 788-889, 1147-1237, 1469-1600, 1713-1773).\n- The mobile variants explicitly tell the merchant to collect a SEPA mandate agreement, display standard authorization text shown in seven languages, and communicate the accepted terms in the form or by email. Do not extend that specific manual-display instruction to hosted Checkout or Payment Element solely from this guide (old raw lines 831-863, 1157-1189, 1531-1564).\n\n### Later charge, events, and tests (2026-05-03 guide)\n\n- After setup, retrieve the SetupIntent with `expand: [\"latest_attempt\"]` and obtain `latest_attempt.payment_method_details.generated_sepa_debit`. For a later charge, create a separate `sepa_debit` PaymentIntent with that PaymentMethod and the same Account v2 or Customer v1 identity (old raw lines 142-189, 538-586, 892-939).\n- The old guide recommends handling `setup_intent.succeeded` asynchronously rather than relying on a client callback. A browser/app return or successful setup is not evidence that a later SEPA charge succeeded or settled (old raw lines 623-627).\n- In test mode, authorization moves the SetupIntent from `requires_action` to `succeeded`; failed authentication moves it to `requires_payment_method`. The six example billing-email and six PaymentMethod-token patterns test a *later* SEPA PaymentIntent moving from `processing` to success or failure, including delayed outcomes, an immediate dispute after success, and insufficient funds. These are dated test cases, not live outcome guarantees (old raw lines 588-621, 942-975).\n\n## Capture and evidence boundary\n\nThe 2026-11-07 raw at this canonical URL lists five variant links, without the variant bodies. The collection diff replaces the older long body with this navigation index. It establishes no substantive change to prerequisites, API behavior, SDK versions, mandate presentation, or outcomes. The linked November variants were not captured here; use the 2026-05-03 guide only as dated implementation evidence.\n\n## Related\n\n- [[stripe-ideal]] — iDEAL | Wero concept and related Stripe source routes.\n- [[stripe-sepa-debit]] — SEPA Direct Debit payment method used for subsequent charges.\n\n## Raw Sources\n\n- [[raw/stripe-ideal-set-up-payment-2025|2026-05-03 full iDEAL | Wero setup guide]] — factual implementation and test evidence; 1,777 lines.\n\n## Related raw API references\n\n- [[raw/stripe-payments-ideal-set-up-payment-2026-11-07|2026-11-07 canonical iDEAL | Wero variant index]] — navigation-only capture of Checkout, Elements, iOS, Android, and React Native links; no variant behavior inferred.\n",
+      "quotes": [
+        {
+          "text": "Learn how to save bank details from an iDEAL | Wero payment and charge your customers later with SEPA Direct Debit.",
+          "location": "raw/stripe-payments-ideal-set-up-payment-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-ideal-set-up-payment-2026-11-07.md:11"
+        },
+        {
+          "text": "- [Checkout](https://docs.stripe.com/payments/ideal/set-up-payment.md?payment-ui=checkout)",
+          "location": "raw/stripe-payments-ideal-set-up-payment-2026-11-07.md:13"
+        },
+        {
+          "text": "- [Elements](https://docs.stripe.com/payments/ideal/set-up-payment.md?payment-ui=elements)",
+          "location": "raw/stripe-payments-ideal-set-up-payment-2026-11-07.md:14"
+        },
+        {
+          "text": "  - [React Native](https://docs.stripe.com/payments/ideal/set-up-payment.md?payment-ui=mobile&platform=react-native)",
+          "location": "raw/stripe-payments-ideal-set-up-payment-2026-11-07.md:18"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "payments-ideal-set-up-payment-a1-concept-1",
+            "target_path": "wiki/concepts/stripe-ideal.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-ideal-set-up-payment]] — SetupIntent (no payment): 0.01 EUR charged + refunded, confirmSetup, same mandate text and test patterns",
+            "proposed_markdown": "- [[source-stripe-ideal-set-up-payment]] — 2026-05-03 SetupIntent guide: an authenticated 0.01 EUR iDEAL setup payment is refunded, yielding a SEPA Direct Debit method for a separate later charge; explicit merchant mandate-text instructions are in its mobile variants. The 2026-11-07 canonical capture is a variant index only.",
+            "quote_indexes": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Existing concept line 46 says 'no payment' despite the charged-and-refunded 0.01 EUR setup payment in raw/stripe-ideal-set-up-payment-2025.md:12; the new navigation-only raw lines 7-18 do not establish a behavior change.",
+              "The exact merchant mandate text instruction occurs in mobile variant passages of the dated old raw at lines 831-863, 1157-1189, and 1531-1564; do not infer an identical manual-display duty for hosted Checkout or Elements."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-ideal-set-up-payment-2026-11-07.md",
+      "raw_sha256": "ee071934267c03f5ed28e87ce104c4389c9f94f34f96ba9d589ef66b6f73b200",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-ideal-set-up-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 18
+      }
+    ],
+    "raw/stripe-ideal-set-up-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 1777
+      }
+    ],
+    "wiki/sources/source-stripe-ideal-set-up-payment.md": [
+      {
+        "start": 1,
+        "end": 38
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/4f661f2312276c1906a963bc/content.diff": [
+      {
+        "start": 1,
+        "end": 1783
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-ideal-set-up-payment/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 143
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 65
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 270,
+        "end": 286
+      },
+      {
+        "start": 748,
+        "end": 759
+      }
+    ],
+    "wiki/concepts/stripe-ideal.md": [
+      {
+        "start": 1,
+        "end": 47
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "With this integration, Stripe charges your customer 0.01 EUR through iDEAL | Wero to collect their bank details. After your customer authenticates the payment, Stripe refunds the payment and stores your customer’s [IBAN](https://en.wikipedia.org/wiki/International_Bank_Account_Number) in a [SEPA Direct Debit](https://docs.stripe.com/payments/sepa-debit.md) payment method.",
+      "location": "raw/stripe-ideal-set-up-payment-2025.md:12"
+    },
+    {
+      "text": "To use iDEAL | Wero to set up SEPA Direct Debit payments, you must activate SEPA Direct Debit in the [Dashboard](https://dashboard.stripe.com/account/payments/settings).",
+      "location": "raw/stripe-ideal-set-up-payment-2025.md:14"
+    },
+    {
+      "text": "Listen for these events rather than waiting on a callback from the client.",
+      "location": "raw/stripe-ideal-set-up-payment-2025.md:627"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/ideal/set-up-payment, the complete November capture, new raw lines 5-18, establishes the purpose of saving bank details for later SEPA Direct Debit and names five UI variants, but contains no API, eligibility, or state recipe. The detailed May guide, old raw lines 12-14, 24-34, 142-189, 588-627, describes SEPA Dashboard activation and terms, Account v2 or Customer v1 identity, a customer-authenticated 0.01 EUR iDEAL charge refunded after authentication, a generated SEPA PaymentMethod, and a separate later PaymentIntent. SetupIntent test success and later PaymentIntent processing outcomes are distinct. source-stripe-ideal-set-up-payment.md covered the variants and retrieval path but incorrectly said there was no initial or real payment.",
+    "Q2": "At https://docs.stripe.com/payments/ideal/set-up-payment, the visible November change is navigation-only: new raw lines 9-18 provide links while the old detailed body, old raw lines 8-1777, supplies dated implementation evidence; linked November variant bodies were not captured. source-stripe-ideal-set-up-payment.md needs May-dated claims and a separate November navigation link, plus correction of its 'no payment' wording, echoed by the iDEAL concept and Stripe index. Preserve the May Account v2 Connect versus public-preview qualifier, UI-specific mandate presentation, dated Stripe.js and SDK examples, and asynchronous setup events; old raw lines 26-34, 305-316, 623-627, 831-863, 942-975 support those limits. Neither a return nor setup_intent.succeeded establishes later SEPA payment settlement."
+  }
+}

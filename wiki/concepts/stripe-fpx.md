@@ -15,21 +15,20 @@ FPX (Financial Process Exchange) is Malaysia's dominant online bank redirect pay
 
 ## Payment Flow
 
-1. Customer selects FPX at checkout
-2. Selects bank → redirected to bank's online portal
-3. Enters bank credentials
-4. Completes 2-step authorization (scanner or SMS)
-5. Immediate payment confirmation
-6. Optional return to merchant site
+1. Customer selects FPX and a bank on the merchant page.
+2. The browser redirects to bank authorization; on mobile, the bank app may open.
+3. The customer completes the bank's authentication process.
+4. The November 7, 2026 overview says the browser automatically returns to the merchant; the May 3 overview diagram called return optional.
+5. The November overview says B2C displays successful immediately, but B2B first displays pending until asynchronous confirmation. Return and pending display are not payment-success or settlement proof.
 
 ## Key Properties
 
-- **Confirmation**: Customer-authenticated, immediate notification
-- **Recurring**: No — single-use only
+- **Confirmation**: Customer authenticates at the bank. The November 7, 2026 overview says B2C displays successful immediately, but B2B first displays pending until asynchronous confirmation. Its immediate-confirmation property and up-to-T+5 settlement are separate; a return or pending display does not prove payment success.
+- **Recurring (dated guide conflict)**: The May 3, 2026 FPX method page lists recurring payments as No, and the May legacy Elements acceptance guide calls FPX single-use, says it cannot be used for recurring or additional payments, and says it is not supported with Stripe Billing. Checkout subscription mode is separately unsupported. Yet the May bank-redirects product matrix lists FPX Subscriptions via `send_invoice` only. These captures do not reconcile or establish a current FPX `send_invoice` integration. Verify the current product path before relying on subscription support; see [[source-stripe-fpx-accept-payment]] for the dated acceptance guide and [[stripe-bank-redirects]] for the matrix.
 - **Disputes**: No chargebacks (customer authenticates with bank)
-- **Refunds**: Up to 60 days; async ~1 week; `refund.updated`/`refund.failed` webhooks; refund can fail (returned to Stripe balance)
+- **Refunds**: The May 3, 2026 overview and accept-payment guide said 60-day submission and the overview said about one week to complete. The November 7 overview says full/partial refunds within 180 days, asynchronous and noncancelable, normally up to 14 days but possibly six weeks. Check final Refund `status` or verified `refund.updated`/`refund.failed`; failed refunds return to the merchant's Stripe balance and need another customer refund method. Submission is not completion.
 - **Payout timing**: 5 business days
-- **Checkout restrictions**: Not in subscription or setup mode; ECE: not supported
+- **Checkout restrictions**: The May 3, 2026 overview and accept-payment guide excluded Checkout setup and subscription modes. The November FPX overview lists Checkout, Billing and Invoicing but allows only `send_invoice` collection for the latter support and still excludes recurring, SetupIntents and off-session payments; a broad support cell does not establish a specific Checkout mode. Express Checkout Element remains unsupported.
 
 ## vs EPS
 
@@ -38,21 +37,21 @@ FPX (Financial Process Exchange) is Malaysia's dominant online bank redirect pay
 | Country | Malaysia only | Austria only |
 | Currency | MYR | EUR |
 | BRN required | Yes | No |
-| Refund window | 60 days | 180 days |
-| Refund processing | ~1 week (async) | Standard |
+| Refund window | 180 days in November 7, 2026 overview; May 3 overview/accept guide said 60 days | 180 days |
+| Refund processing | Async; normally up to 14 days, possibly six weeks in November overview; May 3 overview said about one week | Standard |
 | Payout | 5 business days | Standard |
 
 ## Integration
 
-**Checkout**: `payment_method_types: ['fpx']`, `myr`. **Mandatory confirmation page** required: must display transaction date/time, amount, seller order no., FPX transaction ID, buyer bank name, status — all from Charge object.
+**Checkout (May 3, 2026 guide)**: `payment_method_types: ['fpx']`, `myr`, payment mode with one-time line items; setup and subscription modes are unsupported in that Checkout path. After payment, its required confirmation page displays transaction date/time, amount, seller order no., FPX transaction ID, buyer bank name, and status from the Charge, reached through the Checkout Session's PaymentIntent. The May legacy Elements path requires those same fields after bank authentication and obtains Charge information via `payment_intent.succeeded`; direct `PaymentIntent.charges.data` is described only for API version 2022-08-01 or older. The short May Mobile pointer and the November variant index do not establish confirmation-page implementation requirements for Mobile.
 
 **FPX balance**: settles separately from other funds → may produce 2 payouts/day. Use `source_type: 'fpx'` for Connect payouts/transfers.
 
 **18 supported banks**: affin_bank, alliance_bank, ambank, bank_islam, bank_muamalat, bank_rakyat, bsn, cimb, hong_leong_bank, hsbc, kfh, maybank2e, maybank2u, ocbc, public_bank, rhb, standard_chartered, uob.
 
-**Amount limits** (Elements legacy): min RM2, max RM30,000.
+**Amount limits**: The May 3, 2026 *legacy Elements* accept-payment guide states RM2–RM30,000 for that path. The November 7 FPX overview gives B2C 1.00–30,000.00 MYR and B2B 2.00–1,000,000.00 MYR. Keep the guide's older UI scope; do not apply the broad B2B maximum to the legacy Elements path without path-specific authority. See [[source-stripe-fpx]] and [[source-stripe-fpx-accept-payment]]. The legacy guide's `invalid_amount` row instead says greater than RM2 and less than RM30,000, so eligibility at either endpoint remains unresolved in that capture. The November acceptance variant index does not resolve it.
 
 ## Sources
 
-- [[source-stripe-fpx]] — primary source: properties, flow, BRN requirement, disputes, refunds
-- [[source-stripe-fpx-accept-payment]] — integration guide: Checkout + Elements legacy, confirmation page requirements, bank reference, FPX balance/payouts
+- [[source-stripe-fpx]] — May 3 and November 7, 2026 FPX overview captures: BRN/eligibility, B2B and B2C flow, dated refund change, product scope and PayNet transaction ID
+- [[source-stripe-fpx-accept-payment]] — May 3, 2026 detailed Checkout and legacy Elements guide, short Mobile pointer, confirmation requirements, banks and FPX balance; November 7, 2026 canonical capture supplies variant navigation only

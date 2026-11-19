@@ -1,0 +1,279 @@
+<!-- Source URL: https://docs.stripe.com/payments/cash-app-pay -->
+<!-- Fetched: 2026-11-07 -->
+<!-- Discovery: reconciled llms.txt,sitemap.xml -->
+
+# Cash App Pay payments
+
+Accept payments with Cash App Pay, a popular mobile wallet in the US.
+
+Cash App is a popular consumer app in the US that allows customers to bank, invest, send, and receive money using their digital wallet. Cash App Pay uses the customer’s stored balance or linked debit card to fund the payment.
+Payment method family: Wallets
+Usability: Reusable
+Access type: Instant provisional access
+Payment confirmation timing: Immediate
+Settlement timing: Up to 2 business days (T+2)
+Pricing: https://stripe.com/en-us/pricing/local-payment-methods#cash-app-pay
+## Eligibility and availability 
+
+### Account eligibility
+Business location: US
+Account type: ✓ Merchant, ✓ Platform or marketplace (Connect)
+Business model: ✗ B2B, ✓ B2C
+Business category: View list of prohibited and restricted business categories
+Your account might be reviewed after activation to confirm eligibility. While Cash App Pay doesn’t enforce any additional website requirements, make sure that you provide a website that meets the [Stripe account activation requirements](https://support.stripe.com/questions/business-website-for-account-activation-faq). You can contact [Stripe support](https://support.stripe.com/) to appeal any Cash App Pay capability restrictions.
+
+Review the list of *merchant category codes* (A Merchant Category Code (MCC) is a four-digit number that classifies the type of goods or services a business offers) that are prohibited or restricted for Cash App Pay.
+
+- **Prohibited** MCCs are not supported by this payment method.
+- **Restricted** MCCs may be supported, but require additional information at account creation.
+
+| MCC | Description | Type |
+| --- | --- | --- |
+| 4214 | Motor Freight Carriers and Trucking | Restricted |
+| 4215 | Courier Services | Restricted |
+| 4511 | Airlines, Air Carriers | Restricted |
+| 4814 | Telecommunication Services | Restricted |
+| 5047 | Medical, Dental, Ophthalmic, and Hospital Equipment and Supplies | Restricted |
+| 5169 | Chemicals and Allied Products (Not Elsewhere Classified) | Restricted |
+| 5813 | Drinking Places | Restricted |
+| 5921 | Package Stores-Beer, Wine, and Liquor | Restricted |
+| 7011 | Hotels, Motels, and Resorts | Restricted |
+| 7012 | Timeshares | Restricted |
+| 7273 | Dating/Escort Services | Restricted |
+| 7298 | Health and Beauty Spas | Restricted |
+| 7339 | Secretarial Support Services | Restricted |
+| 7841 | Video Tape Rental Stores | Restricted |
+| 7994 | Video Game Arcades | Restricted |
+| 8099 | Medical Services | Restricted |
+| 8699 | Membership Organizations | Restricted |
+| 8734 | Testing Laboratories | Restricted |
+| 9211 | Court Costs | Restricted |
+| 9222 | Fines - Government Administrative Entities | Restricted |
+| 9311 | Tax Payments - Government Agencies | Restricted |
+| 9399 | Government Services (Not Elsewhere Classified) | Restricted |
+| 9402 | Postal Services - Government Only | Restricted |
+| 9405 | US Federal Govt Agencies or Departments | Restricted |
+| 4411 | Cruise Lines | Prohibited |
+| 4829 | Money Orders - Wire Transfers | Prohibited |
+| 5122 | Drugs, Drug Proprietaries, and Druggist Sundries | Prohibited |
+| 5912 | Drug Stores and Pharmacies | Prohibited |
+| 5960 | Direct Marketing - Insurance Services | Prohibited |
+| 5962 | Direct Marketing - Travel | Prohibited |
+| 5963 | Door-To-Door Sales | Prohibited |
+| 5964 | Direct Marketing - Catalog Merchant | Prohibited |
+| 5965 | Direct Marketing - Combination Catalog and Retail Merchant | Prohibited |
+| 5966 | Direct Marketing - Outbound Telemarketing | Prohibited |
+| 5967 | Adult Content and Services | Prohibited |
+| 5968 | Direct Marketing - Subscription | Prohibited |
+| 5969 | Direct Marketing - Other | Prohibited |
+| 5993 | Cigar Stores and Stands | Prohibited |
+| 6010 | Manual Cash Disburse | Prohibited |
+| 6011 | Financial Service | Prohibited |
+| 6012 | Financial Institutions | Prohibited |
+| 6051 | Cryptocurrency exchanges and wallets | Prohibited |
+| 6211 | Security Brokers/Dealers | Prohibited |
+| 6300 | Insurance Underwriting, Premiums | Prohibited |
+| 6399 | Software | Prohibited |
+| 6540 | Non-FI, Stored Value Card Purchase/Load | Prohibited |
+| 7277 | Counseling Services | Prohibited |
+| 7278 | Buying/Shopping Services | Prohibited |
+| 7800 | Government-Owned Lotteries (US Region only) | Prohibited |
+| 7801 | Government Licensed On-line Casinos (On-Line Gambling) | Prohibited |
+| 7802 | Government-Licensed Horse/Dog Racing | Prohibited |
+| 7995 | Betting/Casino Gambling | Prohibited |
+| 8111 | Legal Services, Attorneys | Prohibited |
+| 8398 | Charitable and Social Service Organizations - Fundraising | Prohibited |
+| 8641 | Civic, Social, Fraternal Associations | Prohibited |
+| 8651 | Political Organizations | Prohibited |
+| 8661 | Religious Organizations | Prohibited |
+| 9223 | Bail and Bond Payments | Prohibited |
+
+Stripe accounts in the following countries can accept Cash App Pay payments with local currency settlement.
+
+AMER: US
+
+Customers in the following countries can use Cash App Pay.
+
+AMER: US
+
+### Payment support
+Customer location: US
+Presentment currency: USD
+Geographic coverage: ✓ Domestic, ✗ Crossborder
+Transaction limits: Minimum amount: 0.50 USD
+> Stripe accounts in the US can accept Cash App Pay payments with USD settlement. However, you can’t use Cash App Pay if your account is in US territories.
+
+Cash App Pay uses either the customer’s Cash App balance or linked debit card to fund the transaction. By default, Cash App Pay uses the customer’s Cash App balance if the balance can cover the entirety of the order amount. Otherwise, it uses the customer’s linked debit card. A Cash App customer can’t combine payment options for a single order (for example, using the balance for part of the order amount and debit card for the remainder).
+
+While there are no business level minimum or maximum limits enforced, Cash App sets variable customer level limits for sending and receiving money. This limit is based on a number of factors such as verification status of the customer’s account and transaction history. Use Cash App Pay for lower value orders (for example, below 2000 USD) to reduce the likelihood of a decline.
+
+## Capabilities 
+Recurring payments: ✓ Supported
+
+Payment authorizations:
+  ✗ Extended authorizations
+  ✗ Flexible extended authorizations
+  ✗ Incremental authorizations
+  ✗ Decremental authorizations
+  ✗ Re-authorizations
+
+Payment captures:
+  ✓ Manual capture
+  ✓ Partial capture
+  ✗ Multi-capture
+  ✗ Over-capture
+
+Refunds:
+  ✓ Partial refunds
+  ✓ Full refunds
+  Submission window: 90 days
+  Processing time: 10 business days
+
+Disputes:
+  ✗ Partial disputes
+  ✓ Full disputes
+  Submission window: 120 days
+### Refunds 
+
+You have up to 90 days from the original payment to submit a refund using the [Dashboard](https://dashboard.stripe.com/payments) or [Refunds API.](https://docs.stripe.com/api/refunds/create.md) This is the maximum the payment method allows-your return policy determines what you offer customers.
+
+Refunds for Cash App Pay payments are asynchronous and take up to 10 business days to complete. Cash App Pay refunds can’t be canceled. 
+
+#### Refund process 
+
+
+
+Cash App Pay refunds are never processed as reversals. Cash App Pay handles the refund directly and returns the funds to the customer’s original payment source, which is either their Cash App Pay balance or linked payment method. The customer sees the refund reflected in their Cash App Pay account or funding source.
+
+#### Tracking refunds 
+
+You can view refund status in the [Dashboard](https://dashboard.stripe.com/payments). Open the payment and click **View Details** on the refund entry, or [retrieve the Refund object](https://docs.stripe.com/api/refunds/retrieve.md) and check its `status` field. Stripe also notifies you of the final refund status using the `refund.updated` or `refund.failed` *webhook* (A webhook is a real-time push notification sent to your application as a JSON payload through HTTPS requests) event. When a refund succeeds, the status of the [Refund](https://docs.stripe.com/api/refunds/object.md) object transitions to `succeeded`. If a refund fails, the status transitions to `failed`, Stripe returns the amount to your Stripe balance, and you must arrange an alternative way to provide your customer with a refund.
+
+### Disputes 
+
+Customers have up to 120 calendar days from the date of purchase to file Cash App Pay disputes.
+
+Cash App Pay payments can only be disputed once.
+
+#### Dispute process 
+
+If the Cash App Pay payment used the customer's linked debit card as the underlying source for payment, customers can initiate a dispute directly with their issuing financial institution or directly with Cash App. For payments that use the Cash App stored balance as the underlying source, contacting Cash App is the only option. When a dispute is opened, Stripe immediately withholds the disputed amount and the applicable dispute fee from your balance. You have 13 calendar days to submit evidence. Cash App Pay reviews your evidence and issues a final decision within 58 calendar days of dispute creation.
+
+#### Dispute notifications 
+
+When a Cash App Pay dispute is opened, Stripe notifies you through:
+
+- Email
+- The [Stripe Dashboard](https://dashboard.stripe.com/disputes)
+- A [charge.dispute.created](https://docs.stripe.com/api/events/types.md#event_types-charge.dispute.created) webhook event
+
+The dispute reason is available in the Dashboard and in the `reason` field of the [Dispute object](https://docs.stripe.com/api/disputes/object.md). The evidence submission deadline is available in the Dashboard and in the `evidence_due_by` field of the Dispute object.
+
+#### Responding to disputes 
+
+You have 13 calendar days from dispute creation to submit evidence.
+
+We request that you upload compelling evidence proving that you fulfilled the purchase order [using the Stripe Dashboard](https://docs.stripe.com/disputes/responding.md#respond). This evidence can include the:
+
+- Tracking ID
+- Shipping date
+- Record of purchase for intangible goods, such as IP address or email receipt
+- Record of purchase for services or physical goods, such as phone number or proof of receipt
+- Record of refund (for purchases you’ve already refunded)
+
+You can submit evidence and manage Cash App Pay disputes in the [Dashboard](https://dashboard.stripe.com/disputes) or programmatically using the [Disputes API](https://docs.stripe.com/api/disputes/update.md). In the Dashboard, go to the **Needs Response** tab, click the disputed payment, then click **Counter dispute** to submit your evidence, or **Accept dispute** to accept the loss. To submit evidence through the API, upload supporting files using the [Files API](https://docs.stripe.com/api/files/create.md) and include the returned file IDs when you update the [Dispute Evidence object](https://docs.stripe.com/api/disputes/update.md).
+
+#### Dispute outcomes 
+
+If Cash App Pay resolves the dispute in your favor, Stripe returns the disputed amount   to your Stripe balance.
+
+If they rule in favor of the customer, the balance charge becomes permanent. Dispute fees are non-refundable regardless of the outcome.
+
+#### Liability for consumer fraud 
+
+For on-session payments, customers must authenticate Cash App Pay payments by logging in to their Cash App account. This requirement helps reduce the risk of fraud or unrecognized payments. Cash App takes financial liability for any losses because of customer fraud.
+
+However, customers can also authorize the use of Cash App Pay for future, on-file payments. In this scenario, customers might not be present at the time of transactions, and the customer doesn’t authenticate by logging in to their Cash App account. Therefore, Cash App has less visibility to monitor and manage customer fraud on these types of transactions, and Cash App allocates liability to you for customer fraud as a result. Cash App notifies you of disputes for consumer fraud and expect you to help manage them by providing the types of evidence listed above.
+
+### Payment method cloning 
+
+You can save a customer’s Cash App Pay payment method for recurring purchases but the saved Cash App Pay payment method can only be used with the business of record that the customer authorized *off-session* (A payment is described as off-session if it occurs without the direct involvement of the customer, using previously-collected payment information) use for. This means that Connect users can’t [clone](https://docs.stripe.com/connect/direct-charges-multiple-accounts.md#clone-and-create-direct-charges) Cash App Pay payment methods across different connected accounts when the connected accounts act as the business of record.
+
+## Stripe product support 
+Checkout UIs:
+  ✓ Full page (Recommended)
+  ✓ Payment Links
+  ✓ Embedded form
+  ✓ Payment Element
+  ✗ Express Checkout Element
+  ✓ In-app payments
+
+Products:
+  ✓ Managed Payments
+  ✓ Billing
+  ✓ Invoicing
+  ✓ Customer Portal
+  ✗ Radar
+  ✗ Terminal
+  ✓ Connect
+
+APIs:
+  ✓ Checkout Sessions (Recommended)
+  ✓ Payment Intents
+  ✓ Payment Intents with setup_future_usage
+  ✓ Setup Intents
+## Branding 
+
+Boost conversion by letting your customers know you accept payments with Cash App Pay by including their approved [brand assets](https://developers.cash.app/docs/api/resources/Cash-App-Pay-assets) on your website.
+
+## Customer experience 
+
+#### 1. Select payment method
+
+The customer selects Cash App Pay at checkout.
+
+#### 2. Redirect
+
+On mobile, the customer is redirected to Cash App to complete the payment. On desktop, they scan the QR code displayed at checkout to open Cash App on their mobile device.
+
+#### 3. Authenticate
+
+The customer has 10 minutes to authenticate the payment on the app.
+
+#### 4. Payment Complete
+
+The customer gets notification that payment is complete and is redirected back to the checkout site.
+
+### Transaction identifiers 
+
+Every Cash App Pay payment appears on the customer’s bank statement with the `CashApp*` prefix attached to the merchant name. The merchant name is set to the [company.name](https://docs.stripe.com/api/accounts/object.md#account_object-company-name) field.
+
+To use a dynamic statement descriptor, set the field `statement_descriptor` when creating the PaymentIntent. If you’re using the [Payment Link](https://docs.stripe.com/payment-links.md) or [Checkout](https://docs.stripe.com/payments/checkout.md) interfaces, you can pass in `payment_intent_data.statement_descriptor` field to set the statement descriptor. The dynamic statement descriptor is shown in the Cash App application only and doesn’t appear on external card or bank statements.
+
+Learn more about [dynamic suffixes](https://docs.stripe.com/get-started/account/statement-descriptors.md#dynamic).
+
+The [charge type](https://docs.stripe.com/connect/charges.md) of Connect payments might change the default statement descriptor and the business name that appears on the customer’s bank statement. The charge type can also change the business of record shown on:
+
+- The Cash App customer interface
+- Customer confirmation emails from Cash App
+- The mandate when [saving payment details](https://docs.stripe.com/payments/cash-app-pay/set-up-payment.md)
+
+| Charge type | Descriptor taken from |
+| --- | --- |
+| Direct | Connected Account |
+| Destination | Platform |
+| Separate charge and transfer | Platform |
+| Destination (with `on_behalf_of` using a platform saved payment method) | Platform |
+| Separate charge and transfer (with `on_behalf_of` using a platform saved payment method) | Platform |
+| Destination (with `on_behalf_of` not using a platform saved payment method) | Connected Account |
+| Separate charge and transfer (with `on_behalf_of` not using a platform saved payment method) | Connected Account |
+
+A “platform saved payment method” is a payment method created through PaymentIntent or SetupIntent without using the `on_behalf_of` parameter. Thus, the saved payment method belongs to the platform account.
+
+To save a customer from repeated authentications for Destination `on_behalf_of` charges, platforms often save a payment method for the customer, then use it for off session Destination `on_behalf_of` charges.
+
+## Enable Cash App Pay 
+
+If you use our front-end products, you can enable Cash App Pay directly from your [payment method settings](https://dashboard.stripe.com/settings/payment_methods). Stripe then automatically determines the most relevant payment methods to display to your customers.
+
+If your integration requires manually listing payment methods, learn how to [manually configure Cash App Pay as a payment](https://docs.stripe.com/payments/cash-app-pay/accept-a-payment.md).

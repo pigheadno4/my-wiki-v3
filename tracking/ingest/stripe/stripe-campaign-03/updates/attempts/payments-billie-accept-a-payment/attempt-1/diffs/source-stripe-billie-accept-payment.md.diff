@@ -1,0 +1,56 @@
+--- wiki/sources/source-stripe-billie-accept-payment.md
++++ tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-billie-accept-a-payment/attempt-1/candidates/source-stripe-billie-accept-payment.md
+@@ -2,28 +2,43 @@
+ title: "Stripe: Accept a Payment with Billie"
+ type: source
+ date_ingested: 2026-05-06
++date_updated: 2026-11-15
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/payments/billie/accept-a-payment"
+ raw_files:
+   - "stripe-billie-accept-payment-2025.md"
+-tags: [stripe, bnpl, billie, buy-now-pay-later, b2b, checkout, payment-intents, elements]
++tags: [stripe, bnpl, billie, buy-now-pay-later, b2b, checkout, payment-intents, elements, mobile]
+ ---
+ 
+-## Summary
++## Overview
+ 
+-Integration guide for Billie payments across Checkout, Checkout Sessions API (Elements), PaymentIntents API, and Direct API paths. Covers Billie-specific constraints, manual capture, and error codes.
++The May 6, 2026 full guide describes integrating Billie's single-use, business Pay by Invoice method across hosted Checkout, Checkout Sessions with Elements, Payment Intents with Elements, Direct API, iOS, and Android. It gives 7–120 day payment terms and describes customer authorization through a redirect. The November 7 capture at the canonical URL is only a six-destination variant index; it supplies navigation, not refreshed payment behavior, availability, or eligibility. See [[stripe]] and [[stripe-bnpl]].
+ 
+-## Key Details
++## Key takeaways from the May 2026 guide
+ 
+-**Payment terms**: 7–120 days (not just "Pay in 30" — the full invoice terms range).
++- **Path-specific compatibility:** Hosted Checkout and Checkout Sessions with Elements each list EUR supported and presentment currency, payment mode yes, and setup/subscription modes no. Checkout Session line-item Prices must share one currency; the hosted Checkout section gives a 0.01 EUR minimum. The Payment Intents with Elements section uses EUR in examples, without an Elements-wide EUR-only compatibility statement. Direct API and both mobile sections list country-mapped EUR, SEK, NOK, DKK, GBP, and CHF. These historical path descriptions do not resolve current variant behavior.
++- **Different return destinations:** Hosted Checkout's Session example uses `success_url`. The Checkout Sessions with Elements examples use `return_url`. The Payment Intents with Elements and Direct API redirect-confirmation paths provide `return_url`; the latter also explains a `requires_action` / `redirect_to_url` manual redirect. The iOS section uses an app return URL and callback for webview dismissal. A blanket `return_url` requirement across every path is unsupported.
++- **Separate objects and outcomes:** The May guide creates Checkout Sessions or PaymentIntents on the server, passes a client secret to the client, and then confirms or redirects on the selected path. Creating a Session or Intent, returning to an app or page, or receiving a client callback does not itself establish payment success. For post-payment actions, the guide directs readers to the `payment_intent.succeeded` event rather than a client callback.
++- **Optional manual capture:** In the PaymentIntent section, `capture_method: manual` authorizes first. After successful authorization the Intent reaches `requires_capture`; a capture request must follow within seven days or Stripe cancels the Intent and emits `payment_intent.canceled`. The guide also describes optional cancellation.
++- **Advice and testing:** Unified `line_items` cart data is recommended to maximize approval rates and was marked early access, not a universal required field. The sandbox Billie flow offers an approve/decline test page; the described live path redirects to Billie. The guide's `dahlia` Stripe.js, React package floors, iOS compatibility, and Android 23.7.0 are May examples, not verified November requirements.
+ 
+-**EUR only** for Checkout/Elements integration. `return_url` required.
++## Detail locators
+ 
+-**Manual capture**: `capture_method: 'manual'`; 7-day window; Stripe auto-cancels if not captured.
++- Hosted Checkout compatibility, Session creation, and `success_url`: [[raw/stripe-billie-accept-payment-2025|May full guide]], lines 22–75.
++- Checkout Sessions with Elements compatibility, server-created Session/client secret, and `return_url` examples: same raw, lines 93–208; client confirmation and testing, lines 494–574.
++- Payment Intents with Elements server/client flow, redirect confirmation, events, optional capture, line-item advice, sandbox/live testing, and error codes: same raw, lines 576–1170. The error table includes `payment_intent_invalid_currency`, `payment_intent_authentication_failure`, and `payment_intent_redirect_confirmation_without_return_url` for PaymentIntent confirmation.
++- Direct API redirect, status check, country-currency list, and error codes: same raw, lines 1172–1407.
++- iOS and Android PaymentIntent/client-secret and SDK examples, callbacks, and country-currency lists: same raw, lines 1409–1914.
+ 
+-**`line_items` data improves approval rates** — include cart details for early access to Unified line items feature.
++## Related
+ 
+-**Error codes**: `payment_intent_invalid_currency`, `payment_intent_authentication_failure`, `payment_intent_redirect_confirmation_without_return_url`.
++- [[source-stripe-billie]] — Billie product, country, dispute, refund, and Connect details.
++- [[stripe-bnpl]] — provider BNPL index and reciprocal source route.
+ 
+ ## Raw Sources
+ 
+-- [[stripe-billie-accept-payment-2025]] — verbatim webpage content (1914 lines); fixed `_Prices_` (2×), `_sandbox_` (2×), `_PaymentIntent_` (2×), `_client secret_` (4×), `_webhook_` (4×); downloaded 1 CDN image to `raw/assets/`
++- [[raw/stripe-billie-accept-payment-2025|Billie accept-payment full guide, fetched 2026-05-06]] — factual evidence for the dated integration details above.
++
++## Related raw API references
++
++- [[raw/stripe-payments-billie-accept-a-payment-2026-11-07|Billie accept-payment variant index, fetched 2026-11-07]] — navigation-only capture listing Checkout; Elements via Checkout Sessions API or Payment Intents API; Direct API; iOS; and Android. The linked variants were not fetched in this packet, so this index does not revise the May guide's mechanics or prove current support.

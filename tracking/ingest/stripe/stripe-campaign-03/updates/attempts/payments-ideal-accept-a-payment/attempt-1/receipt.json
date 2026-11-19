@@ -1,0 +1,172 @@
+{
+  "job_id": "payments-ideal-accept-a-payment",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-ideal-accept-payment.md": {
+      "job_id": "payments-ideal-accept-a-payment",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Accept an iDEAL | Wero Payment\"\ntype: source\ndate_ingested: 2026-05-03\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/payments/ideal/accept-a-payment\nraw_files:\n  - \"stripe-ideal-accept-payment-2025.md\"\ntags: [stripe, ideal, wero, netherlands, eur, checkout, elements, ios, android, react-native]\n---\n\n## Summary\n\n[[stripe]]'s archived iDEAL | Wero acceptance guide covers Checkout, iOS, Android, React Native, and web Elements. It describes a single-use bank-redirect payment: the customer authenticates with a bank and returns to the website or app; the merchant checks the PaymentIntent outcome. The archived guide contains the detailed behavior below. The 2026-11-07 capture of https://docs.stripe.com/payments/ideal/accept-a-payment is a variant index only, so it does not independently confirm or revise those behavior claims. See [[stripe-ideal]].\n\n## Dated acceptance details from the archived guide\n\n### Checkout\n\n- The archived Checkout compatibility table marks payment, setup, and subscription modes \u201cYes\u201d; it lists `eur` for supported and presentment currency. A Checkout Session's line-item Prices must all use `eur`. This is the archived guide's compatibility statement, not a newly verified guarantee for every present-day merchant or flow.\n- In the manual Checkout configuration, add `ideal` to `payment_method_types`; the examples use `mode: \"payment\"` and EUR line items. The Stripe-hosted example uses `success_url`; the full embedded-page example uses `ui_mode: \"embedded_page\"` and `return_url`. The same guide points to dynamic payment methods as another Checkout route.\n- The guide says acceptance requires compliance with Stripe's iDEAL Terms of Service. It gives an up-to-180-day refund period and says there is no dispute process; treat these as dated guide statements.\n\n### Payment Intents and native clients\n\n- The archived iOS, Android, React Native, and Elements PaymentIntent examples create the intent on the server with `currency: \"eur\"` and `payment_method_types: [\"ideal\"]`, then pass a client secret to the client. The iOS/Android/React Native/Elements sections say iDEAL | Wero has no minimum charge amount and that a PaymentIntent `amount` can be as low as 1. That amount statement belongs to those archived PaymentIntent sections; it is not a newly verified Checkout minimum.\n- The iOS example collects the customer's full name in billing details and calls `STPPaymentHandler.shared().confirmPayment`, which presents a bank webview. The Android example collects the full name with `PaymentMethodCreateParams.create(ideal:, billingDetails:)` and confirms through `PaymentLauncher`. The archived Android Gradle sample names SDK version `23.5.0`; it is a sample version, not a current-version recommendation.\n- The React Native example collects a full name and calls `confirmPayment(clientSecret, { paymentMethodType: \"Ideal\", paymentMethodData: { billingDetails: { name } } })`. Its optional deep-link section explains registering a custom URL scheme and forwarding callback URLs to the Stripe SDK when authentication leaves the app.\n\n### Web Elements and outcomes\n\n- The archived web Elements path uses the Payment Element with a server-created PaymentIntent. It shows Dashboard-managed automatic payment methods or explicit `payment_method_types: [\"ideal\"]`, then `stripe.confirmPayment({ elements, confirmParams: { return_url } })`. The customer may visit the bank before returning to that URL.\n- A separate optional manual-redirect section creates an iDEAL PaymentMethod with `stripe.createPaymentMethod`, confirms the PaymentIntent on the server with the PaymentMethod ID and `return_url`, then redirects the browser to `next_action.redirect_to_url.url` when the intent has `requires_action`. It mentions `confirmIdealPayment` as a Stripe.js-managed redirect option. The captured guide does not show an `idealBank` Element or combine that Element with server-side manual confirmation; the earlier source summary's combined claim was unsupported.\n- The return page example retrieves the PaymentIntent and branches on `succeeded`, `processing`, and `requires_payment_method`. The guide recommends handling `payment_intent.succeeded` via an event receiver rather than relying on a client callback to fulfill an order.\n- In the test flow, **Authorize test payment** moves a PaymentIntent from `requires_action` to `succeeded`; **Fail test payment** moves it to `requires_payment_method`. These are test transitions, not evidence of a live payment. The archived bank reference lists 14 values: `abn_amro`, `asn_bank`, `bunq`, `ing`, `knab`, `n26`, `nn`, `rabobank`, `revolut`, `regiobank`, `sns_bank`, `triodos_bank`, `van_lanschot`, and `yoursafe`.\n\n## November 2026 variant navigation\n\nThe 2026-11-07 canonical capture lists Checkout, Elements with separate Checkout Sessions API and Payment Intents API variants, and mobile iOS, Android, and React Native variants. It contains no variant bodies, eligibility table, API examples, or outcome steps. The split is a navigation change visible in this capture; it supplies no evidence that the archived undivided Elements behavior or other dated details were removed or changed. Fetch and review a specific variant before making a current behavior claim.\n\n## Raw Sources\n\n- [[raw/stripe-ideal-accept-payment-2025|stripe-ideal-accept-payment-2025]] \u2014 archived detailed guide (1497 lines; Checkout, iOS, Android, React Native, and Elements), ingested 2026-05-03.\n\n## Related raw API references\n\n- [[raw/stripe-payments-ideal-accept-a-payment-2026-11-07|stripe-payments-ideal-accept-a-payment-2026-11-07]] \u2014 2026-11-07 canonical variant index only; navigation reference, not evidence for acceptance behavior.\n",
+      "quotes": [
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-ideal-accept-a-payment-2026-11-07.md:11"
+        },
+        {
+          "text": "- [Checkout](https://docs.stripe.com/payments/ideal/accept-a-payment.md?payment-ui=checkout)",
+          "location": "raw/stripe-payments-ideal-accept-a-payment-2026-11-07.md:13"
+        },
+        {
+          "text": "  - [Checkout Sessions API](https://docs.stripe.com/payments/ideal/accept-a-payment.md?payment-ui=elements&api-integration=checkout)",
+          "location": "raw/stripe-payments-ideal-accept-a-payment-2026-11-07.md:15"
+        },
+        {
+          "text": "  - [Payment Intents API](https://docs.stripe.com/payments/ideal/accept-a-payment.md?payment-ui=elements&api-integration=paymentintents)",
+          "location": "raw/stripe-payments-ideal-accept-a-payment-2026-11-07.md:16"
+        },
+        {
+          "text": "  - [React Native](https://docs.stripe.com/payments/ideal/accept-a-payment.md?payment-ui=mobile&platform=react-native)",
+          "location": "raw/stripe-payments-ideal-accept-a-payment-2026-11-07.md:20"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-ideal-accept-a-payment-2026-11-07.md",
+      "raw_sha256": "9bec21b237c879110bdccbee84bc5a87c1ed5c8e68a216b834c8b690f2793c72",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-ideal-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 20
+      }
+    ],
+    "raw/stripe-ideal-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 1000
+      },
+      {
+        "start": 1001,
+        "end": 1200
+      },
+      {
+        "start": 1201,
+        "end": 1400
+      },
+      {
+        "start": 1401,
+        "end": 1497
+      }
+    ],
+    "wiki/sources/source-stripe-ideal-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 45
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/58147b7a31766e1c60f6c1e2/content.diff": [
+      {
+        "start": 1,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 600
+      },
+      {
+        "start": 601,
+        "end": 800
+      },
+      {
+        "start": 801,
+        "end": 1000
+      },
+      {
+        "start": 1001,
+        "end": 1200
+      },
+      {
+        "start": 1201,
+        "end": 1400
+      },
+      {
+        "start": 1401,
+        "end": 1505
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-ideal-accept-a-payment/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 219
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 12
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 272,
+        "end": 283
+      },
+      {
+        "start": 750,
+        "end": 756
+      }
+    ],
+    "wiki/concepts/stripe-ideal.md": [
+      {
+        "start": 1,
+        "end": 47
+      }
+    ],
+    "wiki/concepts/stripe-bank-redirects.md": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "**Payment mode**: Yes\n\n**Setup mode**: Yes\n\n**Subscription mode**: Yes",
+      "location": "raw/stripe-ideal-accept-payment-2025.md:30-34"
+    },
+    {
+      "text": "iDEAL | Wero has no minimum charge amount, so the payment `amount` value can be as low as 1.",
+      "location": "raw/stripe-ideal-accept-payment-2025.md:885"
+    },
+    {
+      "text": "Use [stripe.confirmPayment](https://docs.stripe.com/js/payment_intents/confirm_payment) to complete the payment using details from the Payment Element.",
+      "location": "raw/stripe-ideal-accept-payment-2025.md:1148"
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/ideal/accept-a-payment, the complete new capture raw/stripe-payments-ideal-accept-a-payment-2026-11-07.md at new raw lines 1-20 establishes only the iDEAL | Wero title, Netherlands description, and links to six variants: Checkout, two Elements API routes, iOS, Android, and React Native. It states no payment prerequisite, merchant eligibility, API request, authorization result, or settlement behavior. The matched raw/stripe-ideal-accept-payment-2025.md at old raw lines 1-1497 supplies the detailed, dated acceptance guide: bank redirect and authentication, iDEAL Terms, EUR Checkout conditions, PaymentIntent server/client boundaries, native full-name collection, return handling, and test-state transitions. The mapped wiki/sources/source-stripe-ideal-accept-payment.md retained most of these but incorrectly combined an unsupported idealBank Element with confirmIdealPayment and server manual redirect; the revised source corrects that while preserving the dated claims.",
+    "Q2": "For https://docs.stripe.com/payments/ideal/accept-a-payment, new raw lines 9-20 in raw/stripe-payments-ideal-accept-a-payment-2026-11-07.md show a navigation-only change: Elements now points separately to Checkout Sessions API and Payment Intents API variants. The old raw lines 22-38, 225-245, 883-885, 1146-1163, and 1384-1478 in raw/stripe-ideal-accept-payment-2025.md remain dated authority for three Checkout modes, no-minimum PaymentIntent examples, Payment Element with stripe.confirmPayment, and a separate optional manual server redirect. None of those behaviors is disproved by their absence from the index, and the capture cannot prove current eligibility, SDK version, legal terms, successful execution, or deprecation. The revised wiki/sources/source-stripe-ideal-accept-payment.md links the new raw solely as variant navigation, keeps the old factual raw, qualifies hosted versus embedded Checkout, native versus web clients, and test versus live outcomes, and removes the unsupported idealBank combination. There is no evidenced current-behavior conflict requiring a reciprocal concept warning and no approved concept target for this job."
+  }
+}

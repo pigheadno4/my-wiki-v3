@@ -1,0 +1,190 @@
+{
+  "job_id": "payments-forwarding-token-vault",
+  "attempt": 2,
+  "raw_path": "raw/stripe-payments-forwarding-token-vault-2026-11-07.md",
+  "raw_sha256": "21fd92dbf5be606f26627d7c275fe2a1921680f6393ece74b8606614007ca992",
+  "prior_raw_path": "raw/stripe-forwarding-token-vault-2026.md",
+  "prior_raw_sha256": "f84aaaac6e8ec52368a17f4d34a9ed7b585b2645dd6b97059becacab48b53059",
+  "source_targets": [
+    "wiki/sources/source-stripe-forwarding-token-vault.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-forwarding-token-vault.md": "3b997192c8b4b7edcd007e8a6b00531fbb420a479c7e0421f9417ea5eb57b040"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-forwarding-token-vault-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 123
+      },
+      {
+        "start": 74,
+        "end": 123
+      }
+    ],
+    "raw/stripe-forwarding-token-vault-2026.md": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 120
+      },
+      {
+        "start": 72,
+        "end": 120
+      }
+    ],
+    "wiki/sources/source-stripe-forwarding-token-vault.md": [
+      {
+        "start": 1,
+        "end": 46
+      },
+      {
+        "start": 1,
+        "end": 46
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/69db31bb203e515317b98712/content.diff": [
+      {
+        "start": 1,
+        "end": 96
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 12
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 560,
+        "end": 566
+      },
+      {
+        "start": 711,
+        "end": 716
+      }
+    ],
+    "wiki/concepts/stripe-vault-and-forward.md": [
+      {
+        "start": 1,
+        "end": 58
+      },
+      {
+        "start": 1,
+        "end": 58
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/proposed-queries.md": [
+      {
+        "start": 551,
+        "end": 557
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "[Stripe] -- Stripe redacts identified PCI sensitive data and relays the response --> [Server]",
+      "location": "/Users/tengtao/Development/wiki-v2/raw/stripe-payments-forwarding-token-vault-2026-11-07.md:23"
+    },
+    {
+      "text": "Make sure that your vault is PCI compliant and provide a valid PCI Attestation of Compliance to Stripe support. You must refresh this Attestation annually.",
+      "location": "/Users/tengtao/Development/wiki-v2/raw/stripe-payments-forwarding-token-vault-2026-11-07.md:54"
+    },
+    {
+      "text": "Use the Vault and Forward API to authenticate with your vault using HTTP header based authentication schemes, including bearer tokens.",
+      "location": "/Users/tengtao/Development/wiki-v2/raw/stripe-payments-forwarding-token-vault-2026-11-07.md:64"
+    },
+    {
+      "text": "The Vault and Forward API treats any response as a \u201csuccess\u201d and returns the same response code sent by the token vault endpoint back to the caller through Stripe.",
+      "location": "/Users/tengtao/Development/wiki-v2/raw/stripe-payments-forwarding-token-vault-2026-11-07.md:113"
+    },
+    {
+      "text": "There is a 15-second timeout for this request.",
+      "location": "/Users/tengtao/Development/wiki-v2/raw/stripe-payments-forwarding-token-vault-2026-11-07.md:119"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Pass the PaymentMethod ID to the Request endpoint on your server.",
+      "location": "/Users/tengtao/Development/wiki-v2/raw/stripe-forwarding-token-vault-2026.md:21"
+    },
+    {
+      "text": "We don\u2019t support client certificate authentication.",
+      "location": "/Users/tengtao/Development/wiki-v2/raw/stripe-forwarding-token-vault-2026.md:65"
+    },
+    {
+      "text": "For example, when the upstream returns a status code of `400` to Stripe, the Vault and Forward API responds with a status code of `200`.",
+      "location": "/Users/tengtao/Development/wiki-v2/raw/stripe-forwarding-token-vault-2026.md:110"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Both captures describe a support-gated service to forward Stripe-vaulted card credentials from a PaymentMethod through a server-created ForwardingRequest to an in-house token vault; PaymentMethod creation is not a payment success or vault tokenization outcome. New raw/stripe-payments-forwarding-token-vault-2026-11-07.md:7-13,26-32; old raw/stripe-forwarding-token-vault-2026.md:6-21; current wiki/sources/source-stripe-forwarding-token-vault.md:13,31-33 omits support access and object/stage sequence.",
+    "November newly renders a diagram with Server\u2192Stripe PaymentMethod, server call, Stripe\u2192vault card-data request, vault response and Stripe redaction of identified PCI-sensitive response data before relay to server (raw/stripe-payments-forwarding-token-vault-2026-11-07.md:15-24; tracking/collections/stripe/recollection-2026-11-07-en/pages/69db31bb203e515317b98712/content.diff:10-21). Old raw/stripe-forwarding-token-vault-2026.md:10-17 only had a diagram link and prose. This is newly explicit documentation of the boundary, not proof that implementation behavior changed. Do not assume all conceivable sensitive data is redacted; vault response itself must omit sensitive fields (raw/stripe-payments-forwarding-token-vault-2026-11-07.md:107-109).",
+    "Payment Element can create a PaymentMethod; a custom frontend may create one directly. Server submits PaymentMethod ID, URL, header/body and replacements. The demo endpoint and pm_card_visa are test fixtures, not production vault or authorization proof (raw/stripe-payments-forwarding-token-vault-2026-11-07.md:26-46; raw/stripe-forwarding-token-vault-2026.md:15-43). The sample bearer token is embedded only in the demo example and must not be treated as an account secret or production credential.",
+    "Vault must have valid PCI Attestation of Compliance refreshed annually, HTTPS JSON request/response, a single static configured URL, header-based authentication with every request, additional headers preconfigured with Stripe support, no client certificates, and 15-second request timeout (raw/stripe-payments-forwarding-token-vault-2026-11-07.md:48-72,115-119; raw/stripe-forwarding-token-vault-2026.md:45-69,112-116). Current wiki/sources/source-stripe-forwarding-token-vault.md:17-19 is mostly correct but line 18 says 'bearer token auth only'; raw raw/stripe-payments-forwarding-token-vault-2026-11-07.md:62-68 and raw/stripe-forwarding-token-vault-2026.md:59-65 say HTTP header-based schemes including bearer tokens, so 'only' is a baseline summary overclaim.",
+    "The body example has card number/expiry/name/CVC and optional metadata; decrypted values are inserted only for fields present in request body; CVC is available only for the first API request to Stripe after tokenization and should not be stored (raw/stripe-payments-forwarding-token-vault-2026-11-07.md:74-105; raw/stripe-forwarding-token-vault-2026.md:71-102). Both examples use a JavaScript-style comment inside a JSON-looking object (raw/stripe-payments-forwarding-token-vault-2026-11-07.md:78-90; raw/stripe-forwarding-token-vault-2026.md:75-88), so the new json fence is presentation and does not make that illustrative object strict parseable JSON.",
+    "The vault need not return a body; if it does, Stripe relays it and forbids sensitive fields. The response-code prose says 'same response code' but its concrete example says upstream 400 yields Forwarding API HTTP 200 with upstream 400/error in body (raw/stripe-payments-forwarding-token-vault-2026-11-07.md:107-113; raw/stripe-forwarding-token-vault-2026.md:104-110). Treat 200 as ForwardingRequest/API acceptance, inspect contained upstream outcome, and retain the internal wording tension; do not treat API 200 as vault token success or card-network payment success. Current concept wiki/concepts/stripe-vault-and-forward.md:20-23 states 200/actual destination status in response body as a broad rule; scope to documented example.",
+    "To verify an actual vault integration, the page says replace demo endpoint with configured vault and initiate a request; card update webhooks can trigger a new forwarding call for updated PaymentMethod (raw/stripe-payments-forwarding-token-vault-2026-11-07.md:115-123; raw/stripe-forwarding-token-vault-2026.md:112-120; current wiki/sources/source-stripe-forwarding-token-vault.md:35-37). This is guidance, not a performed verification or automatic sync.",
+    "Current source line 29's 'first call only' is too broad: both new raw line 103 and old raw line 100 limit CVC availability to the first API request to Stripe after tokenization, then say Stripe removes it after a short time and it must not be stored. This is not the first vault call or every ForwardingRequest, and a later card-update webhook/call at new raw lines 121-123 does not renew CVC.",
+    "Source metadata issue separate from the raw semantic delta: wiki/sources/source-stripe-forwarding-token-vault.md frontmatter lines 1-9 lacks canonical_url. Add the trusted exact https://docs.stripe.com/payments/forwarding-token-vault value and both May/November raw entries as required by rules/ingest-roles.md source schema; retain the dated older source."
+  ],
+  "substantive_changes": [
+    "New diagram explicitly documents Stripe redacting identified PCI-sensitive content in the vault response before server relay and clarifies the object/action chain (raw/stripe-payments-forwarding-token-vault-2026-11-07.md:15-24 vs raw/stripe-forwarding-token-vault-2026.md:10-17); capture adds clarity, not established runtime change."
+  ],
+  "historical_claims_to_preserve": [
+    "May 11, 2026 capture's support-gated access, PaymentMethod-first/server ForwardingRequest flow, demo fixtures, PCI/HTTPS/JSON/static URL/annual attestation/header authentication/no client certificates, CVC one-time limit and 15-second timeout remain corroborated (raw/stripe-forwarding-token-vault-2026.md:8-21,45-69,92-120; raw/stripe-payments-forwarding-token-vault-2026-11-07.md:9-13,26-32,48-72,95-123).",
+    "Old Node sample raw/stripe-forwarding-token-vault-2026.md:23-43 and new curl sample raw/stripe-payments-forwarding-token-vault-2026-11-07.md:34-46 express the same request fields/replacements, with changed code presentation; do not infer SDK/API deprecation from the code language change.",
+    "Both captures' response-code sentence and 400\u2192200 example coexist unchanged (raw/stripe-forwarding-token-vault-2026.md:108-110; raw/stripe-payments-forwarding-token-vault-2026-11-07.md:111-113); retain the tension as dated evidence rather than silently choosing one universally.",
+    "The first-call CVC limit is tied to the first API request to Stripe after tokenization, not to every later card update or vault call (raw/stripe-forwarding-token-vault-2026.md:100; raw/stripe-payments-forwarding-token-vault-2026-11-07.md:103)."
+  ],
+  "conflicts": [
+    "Existing wiki/sources/source-stripe-forwarding-token-vault.md:18 says bearer-token auth only while both raw/stripe-forwarding-token-vault-2026.md:59-65 and raw/stripe-payments-forwarding-token-vault-2026-11-07.md:62-68 permit HTTP header-based schemes including bearer tokens and exclude client certificates; correct the summary without inventing unlisted schemes.",
+    "Current concept wiki/concepts/stripe-vault-and-forward.md:23 says Stripe returns 200 and destination status is in body, but both raw/stripe-forwarding-token-vault-2026.md:110 and raw/stripe-payments-forwarding-token-vault-2026-11-07.md:113 first say same response code then give upstream 400\u2192API 200 example. Preserve the exact example and warn against a universal transport-status mapping.",
+    "November raw/stripe-payments-forwarding-token-vault-2026-11-07.md:23 says Stripe redacts identified PCI-sensitive data on response relay; raw/stripe-payments-forwarding-token-vault-2026-11-07.md:109 also tells vault not to include sensitive fields. These controls are complementary, not permission to return sensitive fields or a guarantee of complete sanitization.",
+    "Current wiki/sources/source-stripe-forwarding-token-vault.md:13,35-37 omits support access and server object boundary of raw/stripe-payments-forwarding-token-vault-2026-11-07.md:9-13,17-24,30-32; a PaymentMethod or request submission does not prove destination token creation.",
+    "Current source line 29 says CVC 'first call only', while new raw line 103 and old raw line 100 specify the first API request to Stripe after tokenization. Correct this exact scope and do not imply CVC refresh on a later card update."
+  ],
+  "unresolved_questions": [
+    "The text does not reconcile its general 'same response code' phrase with the upstream 400\u2192API 200 example (raw/stripe-payments-forwarding-token-vault-2026-11-07.md:113; raw/stripe-forwarding-token-vault-2026.md:110); exact behavior for other upstream statuses remains unspecified in these captures.",
+    "The November diagram describes redaction of identified PCI-sensitive response data (raw/stripe-payments-forwarding-token-vault-2026-11-07.md:23) but does not enumerate detection rules; do not claim exhaustive sanitization.",
+    "Neither capture defines a complete production vault token response schema or proves that the demo fixture, PCI attestation, or forwarding access was used successfully in this review."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-vault-and-forward.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-forwarding-token-vault.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add November provenance and concise diagram-stage/redacted-response qualification while retaining old raw link (raw/stripe-payments-forwarding-token-vault-2026-11-07.md:15-24; wiki/sources/source-stripe-forwarding-token-vault.md:4-7,44-46).",
+        "Record support access, PaymentMethod then server ForwardingRequest, test fixture boundary, PCI attestation, static HTTPS/JSON endpoint, additional-header configuration, CVC only on the first API request to Stripe after tokenization, and 15-second timeout with exact locators (raw/stripe-payments-forwarding-token-vault-2026-11-07.md:9-13,26-72,95-119).",
+        "Correct wiki/sources/source-stripe-forwarding-token-vault.md:18 bearer-only overclaim to header-based schemes including bearer and no client certificates (raw/stripe-payments-forwarding-token-vault-2026-11-07.md:62-68; raw/stripe-forwarding-token-vault-2026.md:59-65).",
+        "Warn that Forwarding API 200 can enclose a vault 400/error in documented example, and request creation is not tokenization or payment success (raw/stripe-payments-forwarding-token-vault-2026-11-07.md:107-113).",
+        "Correct source line 29 'first call only' to the exact CVC boundary in new raw line 103 and old raw line 100: first API request to Stripe after tokenization, then removed after a short period and never stored. Do not tie it to first vault call or renew it on card-update forwarding.",
+        "Add canonical_url: \"https://docs.stripe.com/payments/forwarding-token-vault\" to source frontmatter (currently absent at source lines 1-9) under rules/ingest-roles.md source schema, while retaining May raw and adding November provenance."
+      ],
+      "conflicts": [
+        "Baseline summary wiki/sources/source-stripe-forwarding-token-vault.md:18 says bearer-only, contrary to both raw raw/stripe-forwarding-token-vault-2026.md:61 and raw/stripe-payments-forwarding-token-vault-2026-11-07.md:64.",
+        "Raw raw/stripe-payments-forwarding-token-vault-2026-11-07.md:113 and raw/stripe-forwarding-token-vault-2026.md:110 contain same-code prose and 400\u2192200 example; summary should preserve this tension and separate API transport from vault outcome.",
+        "New diagram redaction raw/stripe-payments-forwarding-token-vault-2026-11-07.md:23 does not relax vault instruction to omit sensitive response fields raw/stripe-payments-forwarding-token-vault-2026-11-07.md:109.",
+        "Source line 29 broad 'first call only' versus new raw line 103 and old raw line 100 exact first API request to Stripe after tokenization."
+      ],
+      "reason": "November adds an explicit redaction and actor-flow diagram; existing source needs corrected header authentication and precise CVC first-Stripe-API-request scope, a transport/outcome boundary, dual raw provenance, and required canonical URL metadata."
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/forwarding-token-vault, the page documents a support-gated Vault and Forward route from a Stripe PaymentMethod to an in-house PCI-compliant token vault through a server-created ForwardingRequest. The vault requires annually refreshed PCI attestation, a single static HTTPS JSON endpoint, configured header authentication, no client certificate, and a 15-second request timeout. The request can replace present card fields; CVC is available only for the first API request to Stripe after tokenization, then removed and never stored; a later card-update webhook can prompt forwarding but does not renew CVC. The new raw lines 9-32, 48-72 and 74-123 add an actor diagram explicitly saying Stripe redacts identified PCI-sensitive response data before server relay. The old raw lines 8-21 and 45-120 already established most constraints. source-stripe-forwarding-token-vault.md lines 13-37 captures PCI, fields and updates but omits support/actor boundaries and incorrectly narrows authentication to bearer tokens. A Forwarding API response is not proof the vault created a token or that any payment succeeded.",
+    "Q2": "For https://docs.stripe.com/payments/forwarding-token-vault, the substantive documentation gain is the explicit Server\u2192Stripe\u2192vault response path and stated redaction of identified PCI-sensitive response content (new raw lines 15-24); it does not establish a changed implementation. The Node-to-curl example, JSON fence, table formatting and prose spacing are presentation changes relative to old raw lines 10-43 and 71-100. Both dates preserve support access, annual PCI attestation, fixed HTTPS JSON endpoint, header-based authentication including bearer, CVC only for the first API request to Stripe after tokenization, and timeout; source-stripe-forwarding-token-vault.md must correct its bearer-only and broad 'first call' claims and add the missing trusted canonical URL to frontmatter while retaining both dated raw routes. New raw lines 107-113 and old raw lines 104-110 retain a response-code tension: general 'same response code' wording versus upstream 400 producing API 200 with the vault error in the body. The server must distinguish request acceptance from destination token outcome; Stripe redaction is not permission to return sensitive data. No demo request, vault configuration or real forwarding action was performed."
+  }
+}

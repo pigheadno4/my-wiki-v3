@@ -1,0 +1,153 @@
+{
+  "job_id": "payments-klarna-accept-a-payment",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-klarna-accept-a-payment-2026-11-07.md",
+  "raw_sha256": "b2df2c61983594b53be65fc16da6de5d4310f6e4c6ab1435e7b44bf56ce68a0a",
+  "prior_raw_path": "raw/stripe-klarna-accept-payment-2025.md",
+  "prior_raw_sha256": "8974e42c91b19c641746fe6a1b5cd313289b08656596ad84c9d16134ffafeff9",
+  "source_targets": [
+    "wiki/sources/source-stripe-klarna-accept-payment.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-klarna-accept-payment.md": "36295d4323e4ab276789f7de8a1a881a1afb352b0e9f63462a7c07e4d5f78164"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-klarna-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 19
+      }
+    ],
+    "raw/stripe-klarna-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 3657
+      }
+    ],
+    "wiki/sources/source-stripe-klarna-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 27
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/67c944b6633776d1c7083871/content.diff": [
+      {
+        "start": 1,
+        "end": 3664
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 65
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 315,
+        "end": 340
+      },
+      {
+        "start": 675,
+        "end": 692
+      }
+    ],
+    "wiki/concepts/stripe-klarna.md": [
+      {
+        "start": 1,
+        "end": 46
+      }
+    ],
+    "wiki/concepts/stripe-bnpl.md": [
+      {
+        "start": 195,
+        "end": 270
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Learn how to accept Klarna, a global buy now, pay later payment method.",
+      "location": "raw/stripe-payments-klarna-accept-a-payment-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-klarna-accept-a-payment-2026-11-07.md:11"
+    },
+    {
+      "text": "[Checkout](https://docs.stripe.com/payments/klarna/accept-a-payment.md?payment-ui=checkout)",
+      "location": "raw/stripe-payments-klarna-accept-a-payment-2026-11-07.md:13"
+    },
+    {
+      "text": "[Direct API](https://docs.stripe.com/payments/klarna/accept-a-payment.md?payment-ui=direct-api)",
+      "location": "raw/stripe-payments-klarna-accept-a-payment-2026-11-07.md:15"
+    },
+    {
+      "text": "[React Native](https://docs.stripe.com/payments/klarna/accept-a-payment.md?payment-ui=mobile&platform=react-native)",
+      "location": "raw/stripe-payments-klarna-accept-a-payment-2026-11-07.md:19"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Before you start the integration, make sure your account is eligible for Klarna",
+      "location": "raw/stripe-klarna-accept-payment-2025.md:12"
+    },
+    {
+      "text": "When the customer chooses to pay Klarna with a deferred payment option (pay later, installments, and financing), Klarna collects enough information for risk assessment and approval.",
+      "location": "raw/stripe-klarna-accept-payment-2025.md:3606"
+    },
+    {
+      "text": "An authorized Klarna payment must be captured within 28 days of the authorization",
+      "location": "raw/stripe-klarna-accept-payment-2025.md:3455"
+    },
+    {
+      "text": "We recommend that you [rely on webhooks](https://docs.stripe.com/payments/payment-intents/verifying-status.md#webhooks) to confirm the status of a payment.",
+      "location": "raw/stripe-klarna-accept-payment-2025.md:3582"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The complete 2026-11-07 raw is a 19-line variant index: Checkout, Elements, Direct API, and mobile iOS/Android/React Native routes only (new raw lines 9-19). It does not itself restate integration instructions, eligibility, SDK support, errors, manual capture, testing values, or payment outcomes. The diff replaces the older full text with this index (content.diff lines 1-18 and 3658-3664); no behavioral deprecation or new behavior is established.",
+    "The 2026-05-06 old capture (despite its 2025 filename) covers Checkout Session hosted/embedded modes and Elements Session mode (old raw lines 18-73 and 436-466), mobile PaymentIntent plus client-secret and webview confirmation (old raw lines 830-989, 1500-1657, 2167-2317), and a separate Direct API PaymentIntent/Stripe.js path (old raw lines 2827-3014). The current source summary lines 11-23 is broadly on-topic but omits the React Native variant and these object and state boundaries; line 13 incorrectly places PaymentIntents inside the Elements variant rather than Direct API/mobile scope.",
+    "A pre-existing summary error is material: source line 17 says billing prefill is via payment_method_options.klarna, but the old guide's Klarna form prefill example uses payment_method_data.billing_details and payment_method_data.klarna.dob (old raw lines 3602-3645); its Direct API advice likewise names payment_method_data.billing_details (old raw lines 2835-2843). The same unsupported field path appears in wiki/concepts/stripe-bnpl.md line 227. This is a baseline accuracy issue, not a change proved by the new index.",
+    "Current source line 19 states manual capture support without the old guide's consequential 28-day capture deadline, automatic cancellation after expiry, requires_capture state after authorization, and explicit capture request (old raw lines 3453-3476). Source line 21's 23-country data and 3500 tip must remain May-capture and context qualified; old raw lines 75-81, 414-418, 3063-3067 and 3400-3404 distinguish sandbox data from the separate production-testing amount sentence.",
+    "Old Direct API describes a client-secret handoff, Stripe.js confirmKlarnaPayment and return_url (old raw lines 2888-2988), with return parameters used to query a PaymentIntent (old raw lines 3003-3014). Manual redirect can leave requires_action/redirect_to_url and recommends webhook verification (old raw lines 3508-3588); return or client callback alone is not authoritative success. Old failed-payment states include PaymentMethod detachment and requires_payment_method after decline or 48-hour inaction (old raw lines 3422-3447)."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "Preserve the May 6, 2026 guide's account-eligibility precheck and Checkout recommendation as dated, path-specific guidance (old raw lines 8-12); the November index only points to variants (new raw lines 9-19).",
+    "Preserve the May-capture per-country test tables and sandbox/email/2FA/repayment context as historical, not a current eligibility matrix or live success guarantee (old raw lines 75-81, 83-412, 416-434, 2319-2323).",
+    "Preserve the May-capture optional manual capture terms, including 28-day cancellation and requires_capture, with date and PaymentIntent scope (old raw lines 3453-3476).",
+    "Preserve Direct API's old API-version-qualified failure-code warning: before 2023-08-16, Klarna errors were reported as payment_intent_authentication_failure (old raw lines 3436-3447).",
+    "Preserve older SDK examples as dated: Android sample pins 23.7.0 (old raw lines 1521-1546), iOS guide says iOS 13+ for its then-described SDK (old raw lines 851-853), and Direct API sample loads dahlia Stripe.js (old raw lines 2963-2986). The new index does not revalidate any of these versions."
+  ],
+  "conflicts": [
+    "Current source line 17 and wiki/concepts/stripe-bnpl.md line 227 use payment_method_options.klarna for prefill; old raw lines 3602-3645 and 2835-2843 support payment_method_data.billing_details instead. A correction should identify the Direct API/example scope and avoid claiming all UI paths accept the same fields.",
+    "Current source line 13 places PaymentIntents under Elements, whereas that old variant creates an Elements Checkout Session (old raw lines 436-466) and the separate Direct API/mobile variants use PaymentIntents (old raw lines 925-947, 2243-2265, 2827-2843)."
+  ],
+  "unresolved_questions": [
+    "Detailed November variant contents were not captured in the pinned new raw. Their linked URLs are navigation only; current behavior, eligibility, SDK versions, and updated testing or capture rules remain unverified."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-klarna.md",
+    "wiki/concepts/stripe-bnpl.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-klarna-accept-payment.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Source lines 11-23 need a dated November variant-index provenance route while retaining the May detailed raw route; line 13 should include React Native and distinguish Elements Checkout Sessions from Direct API/mobile PaymentIntents (old raw lines 436-466, 925-947, 2827-2843). Source line 17's prefill field path is unsupported by old raw lines 2835-2843 and 3602-3645. Source line 19 omits the 28-day manual-capture limit and requires_capture state from old raw lines 3453-3476. Source line 23 should bound client handler result versus webhook-confirmed completion (old raw lines 964-989 and 3580-3588)."
+      ],
+      "conflicts": [
+        "Existing prefill field attribution and Elements/PaymentIntent grouping conflict with the old guide; new raw lines 9-19 are only variant navigation and cannot resolve or renew detailed May claims."
+      ],
+      "reason": "The new capture is navigation-only, but a reviewable source correction is needed for accurate provenance and material pre-existing summary claims."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/klarna/accept-a-payment, the complete November capture identifies a Klarna acceptance guide and routes readers to Checkout, Elements, Direct API, iOS, Android and React Native variants; it establishes no detailed payment behavior or prerequisites (new raw lines 5-19). The May 6, 2026 capture instead checks Klarna account eligibility, shows Checkout Sessions for hosted/embedded and Elements paths, and uses server-created PaymentIntents with client secrets for native and Direct API confirmation (old raw lines 8-73, 925-966, 2243-2265, 2827-2988). Its redirects, requires_action/requires_payment_method/requires_capture and succeeded event are distinct states, so a return is not proof of payment (old raw lines 3422-3428, 3453-3476, 3531-3588). source-stripe-klarna-accept-payment.md summarizes several paths but omits React Native and misattributes prefill at lines 13-23; its historical details remain dated rather than refreshed by the index.",
+    "Q2": "At https://docs.stripe.com/payments/klarna/accept-a-payment, the observed raw delta is presentation and navigation: the November file is a variant index with six routes and no substantive instructions (new raw lines 9-19), while the diff removes the detailed May text from this unparameterized capture (old raw lines 8-12, 2827-2843, 3453-3588). Nothing here proves that Klarna behavior, eligibility, manual capture, errors or SDK versions changed. source-stripe-klarna-accept-payment.md should keep the older raw with May dating, add November index provenance, correct its unsupported payment_method_options.klarna prefill attribution using the older Direct API and example evidence, and qualify the 28-day capture rule and client result versus webhook status. Its iOS, Android, React Native, Checkout, Elements and Direct API guidance has separate client/server and UI scope; old API-version and sandbox testing qualifications must not become current guarantees."
+  }
+}

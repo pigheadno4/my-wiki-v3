@@ -1,0 +1,179 @@
+{
+  "job_id": "payments-kakao-pay-accept-a-payment",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-kakao-pay-accept-payment.md": {
+      "job_id": "payments-kakao-pay-accept-a-payment",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe Docs \u2014 Accept a payment using Kakao Pay in South Korea\"\ntype: source\ndate_ingested: 2026-05-08\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/kakao-pay/accept-a-payment\"\nraw_files:\n  - \"stripe-kakao-pay-accept-payment-2025.md\"\ntags: [stripe, south-korea, krw, kakao-pay, local-payment-methods, nicepay, payment-intents, checkout]\n---\n\n## Summary\n\nThe full 2026-05-08 guide describes one-time Kakao Pay (`kakao_pay`) acceptance through Checkout or a Direct API PaymentIntent, with a redirect to Stripe's local processor partner for authentication and authorization. The 2026-11-07 capture at the canonical URL is a navigation index for Checkout and Direct API variants only. It does not reverify the May requirements, availability, or payment outcomes (old raw lines 8-20, 110-120; new raw lines 5-14).\n\n## Dated compatibility and prerequisites\n\n- The May guide lists 27 supported business locations and says Kakao Pay is unavailable in Singapore. Its supported and presentment currency is KRW; it lists payment, setup, and subscription modes (old raw lines 22-41). The latter two are compatibility listings, not procedures supplied by this acceptance guide.\n- For the May Checkout route, every line item must be in KRW, the minimum accepted amount is 100 KRW, and the buyer's email must be provided. The 2,000,000 KRW cap is on customer stored-value top-ups; the guide states no maximum for card passthrough transactions (old raw lines 38-51). The sample Sessions omit an explicit email field, so the exact way each Checkout integration supplies it is not shown by those samples (old raw lines 47-103).\n- In the May Direct API route, the server creates a KRW PaymentIntent with `payment_method_types: [\"kakao_pay\"]` and the buyer's `payment_method_data.billing_details.email`. The client receives its client secret for confirmation (old raw lines 135-161). The secret key stays on the server; the client uses a publishable key and client secret (old raw lines 141-161, 247-265).\n\n## Checkout path in the May guide\n\nStripe says eligible methods may be surfaced automatically by dynamic payment methods. The explicit `kakao_pay` entry in `payment_method_types` belongs to the alternative manual-configuration path (old raw lines 12-16, 43-51). Its hosted Session example uses `mode: \"payment\"`, KRW line items and `success_url`; the full embedded-page example adds `ui_mode: \"embedded_page\"` and uses `return_url` (old raw lines 53-103). Neither Session creation nor browser return establishes a paid outcome.\n\nThe May Checkout sandbox test selects Kakao Pay and Pay, then permits authorization or failure on a Stripe-hosted redirect page. It describes PaymentIntent transitions from `requires_action` to `succeeded` on test authorization or `requires_payment_method` on test failure (old raw lines 106-108). These are test states, not guaranteed live outcomes.\n\n## Direct API path in the May guide\n\nThe server-created PaymentIntent includes the amount, KRW currency, Kakao Pay type, and buyer email. The client calls `stripe.confirmPayment` with the PaymentIntent client secret, `payment_method_data.type: \"kakao_pay\"`, and a `return_url`; the customer is redirected to the local processor for issuer selection and authorization (old raw lines 135-156, 236-273).\n\nOnly the May Direct API client-side section explicitly instructs the merchant to show the processor identity and NICEPAY terms language/link on its checkout page (old raw lines 230-235). The May Checkout section does not give a parallel merchant-page instruction (old raw lines 8-108); these captures do not establish how hosted or embedded Checkout supplies that disclosure. Do not generalize the Direct API page instruction to every UI route.\n\nThe redirect return URL carries `payment_intent` and `payment_intent_client_secret` query parameters; verify the PaymentIntent status to decide what result to display (old raw lines 283-288). In May test mode, authentication changes a PaymentIntent from `requires_action` to `succeeded`, while a failed test changes it to `requires_payment_method` (old raw lines 290-292). The guide says Stripe sends `payment_intent.succeeded` when payment completes and recommends asynchronous events over a client callback for fulfillment (old raw lines 294-299). A redirect or callback alone is not payment success.\n\n## Historical example warning\n\nThe May Direct API error branch destructures `error` from `confirmPayment` but then reads `result.error.message`, a mismatched variable in the illustrative snippet (old raw lines 263-279). Do not copy that line as a working error handler. The November index provides no replacement code.\n\n## Related Pages\n\n- [[stripe-korea-payment-methods]] \u2014 South Korean payment methods concept and dated Kakao Pay route qualifications\n- [[source-stripe-korea-payment-methods]] \u2014 South Korea overview\n- [[source-stripe-kakao-pay-set-up-future-payments]] \u2014 separate future-payment setup guide\n- [[source-stripe-kr-card-accept-payment]] \u2014 KR card acceptance comparison\n- [[stripe]] \u2014 Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-kakao-pay-accept-payment-2025|Kakao Pay acceptance guide, captured 2026-05-08]] \u2014 full historical Checkout and Direct API variants\n\n## Related raw API references\n\n- [[raw/stripe-payments-kakao-pay-accept-a-payment-2026-11-07|Kakao Pay acceptance variant index, captured 2026-11-07]] \u2014 navigation only; Checkout and Direct API links\n",
+      "quotes": [
+        {
+          "text": "# Accept a payment using Kakao Pay in South Korea",
+          "location": "raw/stripe-payments-kakao-pay-accept-a-payment-2026-11-07.md:5"
+        },
+        {
+          "text": "Learn how to accept payments from Kakao Pay users.",
+          "location": "raw/stripe-payments-kakao-pay-accept-a-payment-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-kakao-pay-accept-a-payment-2026-11-07.md:11"
+        },
+        {
+          "text": "[Checkout](https://docs.stripe.com/payments/kakao-pay/accept-a-payment.md?payment-ui=checkout)",
+          "location": "raw/stripe-payments-kakao-pay-accept-a-payment-2026-11-07.md:13"
+        },
+        {
+          "text": "[Direct API](https://docs.stripe.com/payments/kakao-pay/accept-a-payment.md?payment-ui=direct-api)",
+          "location": "raw/stripe-payments-kakao-pay-accept-a-payment-2026-11-07.md:14"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "kakao-accept-disclosure-and-route-scope",
+            "target_path": "wiki/concepts/stripe-korea-payment-methods.md",
+            "update_kind": "durable_fact",
+            "anchor": "- **Buyer email required**: must pass `billing_details.email` in `payment_method_data` for Direct API\n- **NICEPAY disclosure required** \u2014 same as kr_card\n- **Checkout**: add `kakao_pay` to `payment_method_types`; provide buyer email; all line items in `krw`\n- **Direct API**: `stripe.confirmPayment()` with `payment_method_data.type: 'kakao_pay'` + `return_url`\n- **Post-payment**: `payment_intent.succeeded` webhook",
+            "proposed_markdown": "- **Buyer email (May 2026 guide)**: Direct API PaymentIntent creation supplies `payment_method_data.billing_details.email`; Checkout prose also requires buyer email, though its Session examples do not show a field for it.\n- **NICEPAY merchant-page disclosure (May Direct API client path)**: the Direct API section requires processor identity and NICEPAY terms text/link on the merchant checkout page. The May Checkout section does not state how hosted or embedded Checkout supplies this disclosure; the November variant index gives no answer.\n- **Checkout (May)**: dynamic payment methods may surface Kakao Pay automatically; manual configuration adds `kakao_pay` to `payment_method_types`. All line items use `krw`.\n- **Direct API (May)**: server-created KRW PaymentIntent, client `stripe.confirmPayment()` with `payment_method_data.type: 'kakao_pay'` and `return_url`; verify PaymentIntent status after redirect.\n- **Post-payment (May)**: `payment_intent.succeeded` event indicates completion; sandbox authorize/fail states do not guarantee a live outcome. See [[source-stripe-kakao-pay-accept-payment]].",
+            "quote_indexes": [
+              0,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Old authority: raw/stripe-kakao-pay-accept-payment-2025.md:12-16,38-51,53-108,135-161,230-235,255-299. New raw/stripe-payments-kakao-pay-accept-a-payment-2026-11-07.md:9-14 is navigation only."
+            ]
+          },
+          {
+            "update_id": "kakao-accept-reciprocal-source-route",
+            "target_path": "wiki/concepts/stripe-korea-payment-methods.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-kakao-pay-accept-payment]] \u2014 Kakao Pay integration: kakao_pay, buyer email required, 100 KRW min/2M KRW stored value max, not in SG, NICEPAY disclosure",
+            "proposed_markdown": "- [[source-stripe-kakao-pay-accept-payment]] \u2014 May 2026 full Kakao Pay Checkout and Direct API acceptance guide: dated KRW, buyer email, location and amount conditions; explicit NICEPAY merchant-page text/link belongs to its Direct API client section. November 2026 capture is a two-route variant index only; redirect and browser return are not payment-success evidence.",
+            "quote_indexes": [
+              0,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Old authority: raw/stripe-kakao-pay-accept-payment-2025.md:18-51,106-108,135-161,230-235,283-299. New navigation: raw/stripe-payments-kakao-pay-accept-a-payment-2026-11-07.md:9-14."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-kakao-pay-accept-a-payment-2026-11-07.md",
+      "raw_sha256": "13bd3e89b5fe0b45b21b770def86ae4d7d370ca3700eb6e6d007c61132ec8f1a",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-kakao-pay-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-kakao-pay-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 110
+      },
+      {
+        "start": 111,
+        "end": 220
+      },
+      {
+        "start": 221,
+        "end": 310
+      }
+    ],
+    "wiki/sources/source-stripe-kakao-pay-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 48
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/ecfa98a91d8ef80817e2bad7/content.diff": [
+      {
+        "start": 1,
+        "end": 110
+      },
+      {
+        "start": 111,
+        "end": 220
+      },
+      {
+        "start": 221,
+        "end": 312
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-kakao-pay-accept-a-payment/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 175
+      },
+      {
+        "start": 176,
+        "end": 191
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 420,
+        "end": 431
+      },
+      {
+        "start": 780,
+        "end": 793
+      }
+    ],
+    "wiki/concepts/stripe-korea-payment-methods.md": [
+      {
+        "start": 1,
+        "end": 35
+      },
+      {
+        "start": 75,
+        "end": 125
+      },
+      {
+        "start": 135,
+        "end": 151
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "Kakao Pay isn\u2019t available in Singapore.",
+      "location": "raw/stripe-kakao-pay-accept-payment-2025.md:22"
+    },
+    {
+      "text": "Additionally, you must provide the buyer\u2019s [email address]",
+      "location": "raw/stripe-kakao-pay-accept-payment-2025.md:139"
+    },
+    {
+      "text": "You must include the following language and link in your checkout page:",
+      "location": "raw/stripe-kakao-pay-accept-payment-2025.md:232"
+    },
+    {
+      "text": "Stripe sends a [payment_intent.succeeded](https://docs.stripe.com/api/events/types.md#event_types-payment_intent.succeeded) event when the payment completes.",
+      "location": "raw/stripe-kakao-pay-accept-payment-2025.md:296"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/kakao-pay/accept-a-payment, the complete November capture establishes an acceptance purpose and Checkout and Direct API routes only (new raw lines 5-14). The May guide describes a local-processor redirect, 27 business locations excluding Singapore, KRW, a 100 KRW minimum, and a stored-value top-up maximum distinct from card passthrough (old raw lines 18-41). Its Checkout path may use dynamic methods or explicit manual `kakao_pay`, with KRW line items and buyer email; hosted and embedded Session examples use different return parameters (old raw lines 12-16, 43-103). Its Direct API path creates a server PaymentIntent with buyer email, then client `confirmPayment` with a return URL; only that client section explicitly requires merchant-page NICEPAY text/link (old raw lines 135-161, 230-273). source-stripe-kakao-pay-accept-payment.md previously lacked these route qualifications. Sandbox states and a succeeded webhook define outcomes; a browser redirect does not (old raw lines 290-299).",
+    "Q2": "For https://docs.stripe.com/payments/kakao-pay/accept-a-payment, the May combined guide becoming a November two-link index is navigation-only in the pinned evidence (old raw lines 8-310; new raw lines 9-14). source-stripe-kakao-pay-accept-payment.md must keep May country, KRW, amount, buyer-email, mode, UI, client/server and test-state claims dated. Explicit NICEPAY merchant-page disclosure occurs in the old Direct API client section (old raw lines 230-235); old Checkout lines 8-108 do not specify how hosted or embedded Checkout supplies it, so the concept needs a reciprocal path warning. The Checkout samples omit an email field despite the prose requirement (old raw lines 47-103). The old Direct API error snippet reads `result.error.message` after destructuring `error` (old raw lines 263-279). The November index neither fixes that sample nor proves current eligibility or successful payment. Verify returned PaymentIntent status, and treat `payment_intent.succeeded` as a post-payment event rather than treating a return URL or client callback as final (old raw lines 283-299)."
+  }
+}

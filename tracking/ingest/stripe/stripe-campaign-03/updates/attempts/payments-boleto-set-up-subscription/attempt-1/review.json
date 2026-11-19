@@ -1,0 +1,121 @@
+{
+  "review": {
+    "job_id": "payments-boleto-set-up-subscription",
+    "attempt": 1,
+    "verdict": "changes_requested",
+    "reason": "Full independent review verified the pinned new and old subscription captures, collection diff, comparison findings, current source, candidate, related Boleto method and invoice authorities, exact quotes, candidate links, and concept anchor. The candidate correctly handles Accounts v2 versus Customers v1, preview/version scope, both collection methods, delayed voucher payment, no-refund scope, and the dated payment_method_types omission. One material price-example conflict remains: the November guide's generic price creation code uses USD and lacks a recurring interval even though its subscription requests require a recurring price ID, while the retained Boleto method authority says presentment currency is BRL. The source currently points readers to the price-creation passage without warning, which can lead to selecting an unusable Boleto subscription price.",
+    "required_changes": [
+      "In wiki/sources/source-stripe-boleto-subscription.md, add a concise dated warning beside the product/price subscription guidance: the November raw price-creation sample at lines 262-276 uses currency=usd and does not specify a recurring interval, and its schedule example at lines 420-435 also uses generic USD amounts. These examples do not establish a valid Boleto subscription price; the fully read Boleto method capture raw/stripe-boleto-2025.md:26-32 specifies BRL presentment, and the subscription examples at new raw lines 336-416 require a RECURRING_PRICE_ID. Preserve the example dates and avoid asserting current account eligibility or tested runtime behavior. Update Q2 to identify this retained generic-example versus method-specific conflict."
+    ],
+    "review_scope": "full",
+    "retry_review_scope": "targeted",
+    "shared_update_decisions": [
+      "s03-boleto-subscription-voucher-billing"
+    ]
+  },
+  "read_ranges": {
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-boleto-set-up-subscription/attempt-1/input.json": [
+      {
+        "start": 1,
+        "end": 81
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-boleto-set-up-subscription/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 175
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-boleto-set-up-subscription/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 210
+      }
+    ],
+    "raw/stripe-payments-boleto-set-up-subscription-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 441
+      }
+    ],
+    "raw/stripe-boleto-subscription-2025.md": [
+      {
+        "start": 1,
+        "end": 417
+      }
+    ],
+    "wiki/sources/source-stripe-boleto-subscription.md": [
+      {
+        "start": 1,
+        "end": 40
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/dc4c839e81bdf4417e1415ac/content.diff": [
+      {
+        "start": 1,
+        "end": 715
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-boleto-set-up-subscription/attempt-1/candidates/source-stripe-boleto-subscription.md": [
+      {
+        "start": 1,
+        "end": 46
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-boleto-set-up-subscription/attempt-1/diffs/source-stripe-boleto-subscription.md.diff": [
+      {
+        "start": 1,
+        "end": 67
+      }
+    ],
+    "wiki/concepts/stripe-vouchers.md": [
+      {
+        "start": 1,
+        "end": 123
+      }
+    ],
+    "wiki/sources/source-stripe-boleto.md": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ],
+    "wiki/sources/source-stripe-boleto-invoices.md": [
+      {
+        "start": 1,
+        "end": 33
+      }
+    ],
+    "raw/stripe-boleto-2025.md": [
+      {
+        "start": 1,
+        "end": 116
+      }
+    ],
+    "raw/stripe-boleto-invoices-2025.md": [
+      {
+        "start": 1,
+        "end": 396
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 12
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 365,
+        "end": 383
+      }
+    ]
+  },
+  "source_decisions": [
+    {
+      "source_target": "wiki/sources/source-stripe-boleto-subscription.md",
+      "verdict": "changes_requested",
+      "reason": "The dated collection, identity, voucher-outcome, and refund claims are supported, but the source should flag the generic USD nonrecurring price sample before readers apply it to the BRL-only Boleto subscription route."
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "job_id": "payments-existing-customers",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-payments-existing-customers.md": {
+      "job_id": "payments-existing-customers",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe \u2014 Payments for Existing Customers\"\ntype: source\ndate_ingested: 2026-05-11\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/existing-customers\"\nraw_files:\n  - \"stripe-payments-existing-customers-2026.md\"\ntags: [stripe, checkout, saved-payment-methods, existing-customers, allow-redisplay, customer-session, elements, payment-intent]\n---\n\n## Overview\n\nStripe's 2026-11-07 canonical capture identifies charging an existing payment method while the customer is on-session and lists five web variants. It is a variant index, not a full guide. The implementation details below come from the retained 2026-05-11 combined guide and remain dated; the November index does not establish current field behavior, account eligibility, method availability, or a payment result.\n\n## Five dated integration routes\n\n| May 2026 route | Identity and UI boundary | Old raw locator |\n| --- | --- | --- |\n| Stripe-hosted page | Checkout Session with `customer` or `customer_account`; redirects to hosted Checkout | lines 8-83 |\n| Full embedded page | Checkout Session with `ui_mode: 'embedded_page'` and an eligible customer identity; mounts embedded Checkout from its client secret | lines 205-274, 355-450 |\n| Elements | Checkout Session with `ui_mode: 'elements'`; Checkout Elements SDK displays the Payment Element and confirms the Session | lines 502-561, 642-699, 796-875 |\n| Custom flow | Direct PaymentIntent plus CustomerSession for the same Customer or customer-configured Account, with `payment_method_redisplay: 'enabled'`; uses Payment Element and `stripe.confirmPayment` | lines 896-999, 1119-1138, 1219-1223 |\n| Direct API | Lists reusable PaymentMethods for a Customer or customer-configured Account, renders the merchant's own selection UI, then creates and confirms a PaymentIntent for the selected method | lines 1448-1486, 1545-1581 |\n\nThe Direct API is the fifth route already present in the May guide, not a new November feature. The May Accounts v2 guidance calls customer-configured Account support generally available for Connect users and public preview for other Stripe users, with a preview API version for preview participants. The Customer route is an alternative. This is dated access guidance, not proof of present account eligibility (old raw lines 32-40, 919-927).\n\n## Redisplay, consent, and Checkout prefill\n\nThe May guide says merchants are responsible for applicable consent and must collect consent to save details for the specific future use before rendering past methods to the customer. The payment method's `allow_redisplay` value governs whether it is shown by default. Keep API parameter identities distinct: Checkout Sessions use `saved_payment_method_options.allow_redisplay_filters`; a custom PaymentIntent flow uses CustomerSession `payment_method_allow_redisplay_filters` after enabling `payment_method_redisplay`; Direct API listing uses its `allow_redisplay` query. The allowed values discussed in the guide are `always`, `limited`, and `unspecified`. For Checkout, explicitly specifying filters overrides its default, so include `always` if those methods should remain visible (old raw lines 84-98, 1001-1063, 1454-1527).\n\nThe dated **Checkout Session** variants display up to 50 saved cards. Apple Pay and Google Pay are not reused as saved Checkout options; show their UI afresh while that Session is active. Checkout card prefill requires `payment` or `subscription` mode, a saved card with eligible redisplay, and billing details sufficient for the Session's address settings; `setup` mode does not prefill. In payment mode the newest saved card takes priority; in subscription mode the default method takes priority if it is a card, otherwise the newest card. The prefilled method displays for 30 minutes after Checkout Session creation. The guide describes a Checkout saved-card removal option with `payment_method_remove: 'enabled'`. These conditions do not describe CustomerSession or Direct API behavior (old raw lines 12, 90-98, 161-183, 458-480, 506, 772-794).\n\nThe May custom Payment Element branch lists `card`, `link`, `us_bank_account`, `acss_debit`, `sepa_debit`, `bacs_debit`, `au_becs_debit`, `nz_bank_account`, `ideal`, `sofort`, and `bancontact` as saved types it can display. This list is scoped to that branch and date (old raw lines 900-915).\n\n## State and outcome boundaries\n\nFor the three Checkout Session routes, the May guide names `checkout.session.completed`, `checkout.session.async_payment_succeeded`, and `checkout.session.async_payment_failed`; it directs fulfillment from events instead of the browser return (old raw lines 185-203, 482-500, 876-894). For the custom PaymentIntent route, the return page retrieves the PaymentIntent and distinguishes `succeeded`, `processing`, and `requires_payment_method`; server events include `payment_intent.succeeded`, `payment_intent.processing`, and `payment_intent.payment_failed` (old raw lines 1317-1369, 1434-1446).\n\nThe Direct API route lists and displays methods before a server `PaymentIntent` create with the selected method and `confirm: true`. A 402 response means the attempted payment was declined. If the created Intent is `requires_action`, the client calls `handleNextAction`; an actions-handled sample message alone does not establish a succeeded payment. The guide directs post-payment work from PaymentIntent events rather than a client callback (old raw lines 1454-1486, 1545-1616). Neither listing a method nor creating a Checkout Session or Intent proves payment completion.\n\n## Related\n\n- [[stripe]] \u2014 provider context\n- [[stripe-saved-payment-methods]] \u2014 saved-method concept and related source routes\n- [[stripe-checkout]] \u2014 Checkout Sessions context\n\n## Related raw API references\n\n- [[raw/stripe-payments-existing-customers-2026-11-07|Stripe 2026-11-07 existing-customers variant index]] \u2014 navigation only for Stripe-hosted page, Full embedded page, Elements, Custom flow, and Direct API; detailed November variant bodies were not pinned here.\n\n## Raw Sources\n\n- [[raw/stripe-payments-existing-customers-2026|Stripe 2026-05-11 combined five-route guide]]\n",
+      "quotes": [
+        {
+          "text": "Learn how to charge an existing payment method while a customer is on-session.",
+          "location": "raw/stripe-payments-existing-customers-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-existing-customers-2026-11-07.md:11"
+        },
+        {
+          "text": "[Stripe-hosted page](https://docs.stripe.com/payments/existing-customers.md?platform=web&ui=stripe-hosted)",
+          "location": "raw/stripe-payments-existing-customers-2026-11-07.md:13"
+        },
+        {
+          "text": "[Custom flow](https://docs.stripe.com/payments/existing-customers.md?platform=web&ui=elements)",
+          "location": "raw/stripe-payments-existing-customers-2026-11-07.md:16"
+        },
+        {
+          "text": "[Direct API](https://docs.stripe.com/payments/existing-customers.md?platform=web&ui=direct-api)",
+          "location": "raw/stripe-payments-existing-customers-2026-11-07.md:17"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "existing-customers-five-route-concept-link",
+            "target_path": "wiki/concepts/stripe-saved-payment-methods.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-payments-existing-customers]] \u2014 Existing customer flows: 4 paths (hosted/embedded/Elements/custom), allow_redisplay rules, prefill conditions, 30-min timeout",
+            "proposed_markdown": "- [[source-stripe-payments-existing-customers]] \u2014 The retained 2026-05-11 guide covers five on-session routes: hosted, full embedded, and Elements Checkout Sessions; a PaymentIntent with CustomerSession; and Direct API PaymentMethod listing plus PaymentIntent confirmation. Redisplay filters, card prefill and events vary by route. The 2026-11-07 canonical capture is variant navigation only, not refreshed behavior.",
+            "quote_indexes": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Existing concept line 158 says four routes and applies Checkout-specific prefill broadly. Old raw lines 8-12, 205-209, 502-506, 896-919, 1448-1486 and 1545-1616 support five dated routes and their object boundaries; new raw lines 7-17 support identity and five navigation links only."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-existing-customers-2026-11-07.md",
+      "raw_sha256": "c93ff7d2ef6364478c2765f6b9a507bd97365f4b8a1aebf766af5dcf965bc241",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-existing-customers-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "raw/stripe-payments-existing-customers-2026.md": [
+      {
+        "start": 1,
+        "end": 1616
+      }
+    ],
+    "wiki/sources/source-stripe-payments-existing-customers.md": [
+      {
+        "start": 1,
+        "end": 53
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/cbd346fa7110522cdbf3982c/content.diff": [
+      {
+        "start": 1,
+        "end": 1621
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-existing-customers/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 226
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 25
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 548,
+        "end": 558
+      },
+      {
+        "start": 772,
+        "end": 780
+      }
+    ],
+    "wiki/concepts/stripe-saved-payment-methods.md": [
+      {
+        "start": 1,
+        "end": 160
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "# Direct API",
+      "location": "raw/stripe-payments-existing-customers-2026.md:1448"
+    },
+    {
+      "text": "When rendering past payment methods to a customer for future purchases, make sure you\u2019ve collected consent to save the payment method details for this specific future use.",
+      "location": "raw/stripe-payments-existing-customers-2026.md:88"
+    },
+    {
+      "text": "Create a [PaymentIntent](https://docs.stripe.com/api/payment_intents/create.md) to try to charge the customer with the payment method they selected.",
+      "location": "raw/stripe-payments-existing-customers-2026.md:1547"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/existing-customers, the complete 2026-11-07 capture establishes on-session use of an existing payment method and five web navigation routes, including Direct API (new raw lines 5-17, raw/stripe-payments-existing-customers-2026-11-07.md). The 2026-05-11 combined guide already contains all five: hosted, full embedded, and Elements Checkout Sessions using an existing Customer or customer-configured Account; custom PaymentIntent with CustomerSession and payment_method_redisplay enabled; and Direct API listing followed by a server-created, confirmed PaymentIntent (old raw lines 8-12, 205-209, 502-506, 896-999, 1448-1581, raw/stripe-payments-existing-customers-2026.md). Its Accounts v2 path was generally available for Connect and preview for others with a preview API version for participants (old raw lines 32-40). Consent for the specific future use precedes showing saved methods (old raw lines 84-98). The only mapped source-stripe-payments-existing-customers.md has a four-path error, omits Direct API and canonical_url, and conflates Checkout-specific prefill/events with the custom and Direct API routes (source lines 1-44). The new index establishes no current eligibility, field behavior, or payment success.",
+    "Q2": "At https://docs.stripe.com/payments/existing-customers, the observed November delta is navigation and presentation: the detailed 2026-05-11 combined body was replaced at this capture URL by links for five variants (new raw lines 9-17, raw/stripe-payments-existing-customers-2026-11-07.md; old raw lines 8-1616, raw/stripe-payments-existing-customers-2026.md; diff lines 1-13 and 1617-1621). The mapped source-stripe-payments-existing-customers.md must retain May implementation authority, add a November navigation-only raw route, correct its pre-existing four-path count, and add the canonical URL (source lines 1-53). Checkout Session allow_redisplay_filters, card-only conditional prefill, 50-card display and 30-minute timeout remain dated and scoped to Checkout; the custom flow uses CustomerSession payment_method_allow_redisplay_filters, while Direct API list calls use allow_redisplay (old raw lines 84-98, 161-183, 917-1063, 1454-1527). The May Accounts v2 preview condition and specific-use consent warning remain dated (old raw lines 32-40 and 84-98). Checkout Session events differ from PaymentIntent states/events; listing a method, creating an Intent, redirecting, or handling next action does not prove payment completion (old raw lines 185-203, 1317-1446, 1583-1616). The new capture does not verify current method availability, API version, payment outcome or eligibility."
+  }
+}

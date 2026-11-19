@@ -1,0 +1,29 @@
+--- wiki/concepts/stripe-eps.md
++++ tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-eps.md
+@@ -25,9 +25,9 @@
+ - **Confirmation**: Customer-authenticated, immediate notification
+ - **Recurring**: No — single-use only
+ - **Disputes**: No chargebacks (customer authenticates with bank)
+-- **Refunds**: Up to 180 days
+-- **Checkout restrictions**: Not in subscription or setup mode
+-- **Invoicing**: Invite-only; ECE: not supported
++- **Refunds**: Submit full or multiple partial refunds within 180 days; total partial refunds cannot exceed the payment. Submission cannot be canceled. EPS refunds are separate bank credits, typically received in 1–3 days but without a guaranteed maximum. Track `Refund.status` and `refund.updated`/`refund.failed`; after failure, Stripe returns funds to the Stripe balance and the business must refund by another method. See [[source-stripe-eps]] (November 2026).
++- **Checkout restrictions**: The May 2026 EPS page excluded Checkout subscription/setup modes; the November 2026 page marks recurring, SetupIntents and off-session payment support unavailable. A `send_invoice` route is not automatic recurring EPS charging.
++- **Invoicing**: May 2026 called it invite-only; November marks it supported and adds a `send_invoice`-only footnote whose row attachment is unclear in the text capture. Neither capture proves current account entitlement. Express Checkout Element is unsupported. See [[source-stripe-eps]] for the dated comparison.
+ 
+ ## Integration
+ 
+@@ -37,11 +37,11 @@
+ 
+ **Android**: `PaymentMethodCreateParams.createEps(billingDetails)` + `PaymentLauncher.confirm()`.
+ 
+-**React Native**: `confirmPayment(clientSecret, { paymentMethodType: 'Eps' })` + deep linking required.
++**React Native (dated 2026-05-03 guide)**: The example uses `confirmPayment(clientSecret, { paymentMethodType: 'Eps', paymentMethodData: { billingDetails } })` after collecting a name. Its StripeProvider sample marks `urlScheme` required for 3D Secure and bank redirects, including this EPS bank-redirect path (old raw lines 623-627). A separate section headed “Optional: Handle deep linking” describes a custom URL scheme, forwarding with `handleURLCallback`, and unsupported universal links for that return setup (old raw lines 768-828). This does not establish the same React Native scheme setup for Checkout, iOS, Android, or every payment path. See [[source-stripe-eps-accept-payment]].
+ 
+ **Note**: EPS PaymentMethods are single-use — cannot be saved or reused.
+ 
+ ## Sources
+ 
+ - [[source-stripe-eps]] — primary source: properties, payment flow, disputes, refunds
+-- [[source-stripe-eps-accept-payment]] — integration guide: Checkout + iOS + Android + React Native + Elements (legacy)
++- [[source-stripe-eps-accept-payment]] — 2026-05-03 detailed EPS acceptance guide for Checkout, native SDKs, and legacy Elements, with scoped name collection and outcome checks; the 2026-11-07 base capture is a five-variant navigation index.

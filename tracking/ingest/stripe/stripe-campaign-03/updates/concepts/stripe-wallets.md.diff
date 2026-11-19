@@ -1,0 +1,143 @@
+--- wiki/concepts/stripe-wallets.md
++++ tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-wallets.md
+@@ -13,7 +13,7 @@
+ 
+ | Wallet | API enum | Redirect | SetupIntents | Terminal |
+ | --- | --- | --- | --- | --- |
+-| Alipay | `alipay` | No | No | No |
++| Alipay | `alipay` | Yes (2026-05-07 acceptance guide) | No | No |
+ | Amazon Pay | `amazon_pay` | Yes | Yes | No |
+ | Apple Pay | (no enum) | No | Yes | Yes |
+ | Cash App Pay | `cashapp` | Yes | Yes | No |
+@@ -82,19 +82,19 @@
+ 
+ ## Amazon Pay Details
+ 
+-**Worldwide customers**. 12 currencies (USD, AUD, GBP, DKK, EUR, HKD, JPY, NZD, NOK, ZAR, SEK, CHF). 17 merchant countries (US + 16 European).
+-
+-**Disputes**: **240-day** customer window — longest of any payment method reviewed. 10-day evidence submission, 90-day Amazon decision. A-to-z Guarantee claims (`dispute_type = claim`) don't incur dispute fees.
++**Worldwide customers**. The November 2026 overview lists 17 Stripe-account locations (US and 16 European) and 12 presentment currencies; its account table limits **US accounts to USD**, while the sixteen European locations have all twelve listed currencies. MCC 6051 (cryptocurrency exchanges and wallets) is prohibited. The May overview's US-exception prose conflicts with its all-currency table; November gives an explicit USD-only US row. Listed scope does not prove an individual account's enablement.
++
++**Disputes**: The November 2026 overview gives customers 240 days from purchase for general Amazon Pay disputes, but 90 days for A-to-z Guarantee claims. Chargeback evidence is typically due within 10 calendar days; claim evidence within 6. Use the Dashboard or Dispute `evidence_details.due_by` for the actual deadline. Amazon Pay decides within 90 days after evidence submission; a claim has `payment_method_details.amazon_pay.dispute_type = claim` and no dispute fee. The May overview gave a generic 10-day evidence window.
+ 
+ **Manual capture**: Yes — unique among reviewed wallets.
+ 
+ **Refunds**: 90-day, async. Non-card method refunds can take up to 14 calendar days.
+ 
+-**Recurring**: Yes — full subscriptions, no invite required.
++**Recurring**: November 2026 overview marks recurring, Billing, Invoicing, PaymentIntents with `setup_future_usage`, SetupIntents and off-session payments supported. It does not establish invite-free access for every account, an identical flow on every UI or a successful future charge.
+ 
+ **Alternative payment methods in Amazon Pay**: US (Amazon Store Card, Affirm, Citi Flex Pay, installments, Shop with Points); EU (SEPA Direct Debit).
+ 
+-**Integration**: Checkout, Elements, Direct API, iOS, Android. **10-minute authorization window** (Elements/Direct API). **Separate auth + capture**: `capture_method: 'manual'`, 7-day window. Direct API: `confirmPayment` with `payment_method_data: { type: 'amazon_pay' }` + `return_url`.
++**Integration**: Checkout, Elements, Direct API, iOS, Android. **Authorization timing**: the November overview says Amazon controls its hosted checkout step and Stripe sets no authorization-session timeout there; consult the separately dated accept-payment guide for path-specific PaymentIntent timing. **Separate auth + capture**: `capture_method: 'manual'`, 7-day window. Direct API: `confirmPayment` with `payment_method_data: { type: 'amazon_pay' }` + `return_url`.
+ 
+ **Save/recurring**: Checkout (setup mode) or Direct API via `stripe.confirmAmazonPaySetup()` (SetupIntent) or PaymentIntent + `setup_future_usage: off_session`. Authorization text required before first save. `next_action.type: 'redirect_to_url'`. iOS: `STPPaymentHandler.confirmSetupIntent()`. Android: `PaymentLauncher.confirm()`.
+ 
+@@ -134,29 +134,29 @@
+ 
+ **US only** (excluding territories), USD only. US merchants only.
+ 
+-**Two flows**: mobile redirect (auto-authenticated in Cash App app) or desktop QR code scan.
++**Two flows**: mobile redirect to Cash App or desktop QR code scan for authentication. The 2026-11-07 overview gives customers 10 minutes to authenticate in the app; the 2026-05-07 acceptance guide separately describes a 60-minute authentication session and a 10-minute no-action-after-redirect `requires_action` deadline. A redirect or QR scan alone does not prove payment success.
+ 
+ **Payment limits**: customer-level variable limits; recommend below $2,000. No split balance+debit for same order.
+ 
+ **Manual capture**: Yes (one of few wallets supporting this).
+ 
+-**Refunds**: 90-day, async. To original form of payment (balance or debit).
++**Refunds**: 90-day submission window; asynchronous, up to 10 business days in the 2026-11-07 overview, noncancelable and never reversals. Cash App returns funds to the original balance or linked source; verify Refund `status` or final refund events, since submission is not success.
+ 
+ **Dispute liability (critical)**:
+ 
+ - **On-session**: Cash App bears fraud liability
+ - **Off-session (saved PM)**: **merchant bears fraud liability**
+-- 120-day window, 13-day evidence, 58-day decision
++- 120-day dispute window, 13-day evidence, 58-day decision; November says full and once-only disputes and nonrefundable fees. The May overview started the 120 days at expected receipt for nondelivery, whereas November says purchase date; use the case's `evidence_due_by` and verify the applicable filing deadline.
+ 
+ **Statement descriptor**: `CashApp*` prefix + company name. Dynamic descriptor: Cash App app only (not external statements).
+ 
+-**Prohibited**: B2B, financial services, gift cards, fundraising/donations/alcohol.
++**Eligibility**: The 2026-11-07 overview lists US B2C domestic USD payments, a USD 0.50 minimum, post-activation review, and Prohibited versus conditionally Restricted MCCs. The 2026-05-07 overview explicitly prohibited B2B businesses, financial services, gift-card purchases, and fundraising/donation/alcohol-focused platforms; November also marks specified financial-services MCCs Prohibited. November's restricted alcohol-related MCC rows do not alone authorize those platform models. May's US-traveler exception versus November's domestic-US matrix remains unresolved. See [[source-stripe-cash-app-pay]].
+ 
+ **Connect**: `cashapp_payments` capability. PaymentMethod **cannot be cloned** across connected accounts when connected account is business of record.
+ 
+-**Integration**: 4 web paths + iOS/Android. Checkout supports setup + subscription modes. **60-minute authorization window** (desktop QR refreshable 20×). **Separate auth+capture**: `capture_method: 'manual'`, 7-day window. **Live mode auto-approves** after redirect — no in-app approval option (sandbox shows approve/decline test page).
+-
+-**Save/recurring**: Checkout (setup mode) or Direct API via `stripe.confirmCashappSetup()` (SetupIntent). **`mobile_auth_url` expires 30 seconds** — must redirect immediately. SetupIntent: 10-min session; desktop QR refreshable 20×. Authorization text required (first save of customer's $Cashtag). Revocation: `mandate.updated` → `detachPaymentMethod`. iOS: `STPPaymentHandler.confirmSetupIntent()`. Android: `PaymentLauncher.confirm()`.
++**Integration (dated 2026-05-07 guide):** Checkout, Elements with Checkout Sessions or Payment Intents, Direct API, iOS, Android, and React Native. Checkout compatibility text lists setup and subscription modes. The 60-minute period describes an authentication session with up to 20 desktop QR refreshes; a separate requires_action failure section says 10 minutes after redirect, an unresolved historical timing distinction. The web PaymentIntent/Direct API manual-capture sections describe a seven-day window, while the React Native test section says uncaptured test manual-capture PaymentIntents auto-expire after 60 minutes; do not treat seven days as universal. Live-mode wording says there is no in-app approve/decline control after redirect, but the guide also documents declines, timeouts, and status/event checks, so redirect does not prove payment success. The 2026-11-07 base capture is a variant index only. See [[source-stripe-cash-app-pay-accept-payment]].
++
++**Save for later (2026-05-07 guide)**: The Checkout sample creates a Customer-linked `mode: 'setup'` Session with `payment_method_types: ['card', 'cashapp']`; the browser Direct API path uses `stripe.confirmCashappSetup()` for a SetupIntent. These are separate routes. The same guide describes a 10-minute SetupIntent authentication session, up to 20 desktop QR refreshes, and a `mobile_auth_url` that expires after 30 seconds (retrieve the SetupIntent for a new URL if missed). A custom form shows future-use authorization terms on the first save of a customer's $Cashtag. Cash App revocation sends `mandate.updated`, after which the merchant detaches the PaymentMethod; merchant-initiated detach is another route, and detach sends `payment_method.detached`. iOS uses `STPPaymentHandler.confirmSetupIntent()` and Android uses `PaymentLauncher.confirm()`. The 2026-11-07 canonical capture lists four variants but no current behavior; see [[source-stripe-cash-app-pay-set-up-payment]] for the dated setup and outcome boundaries.
+ 
+ ## PayPal (via Stripe) Details
+ 
+@@ -260,7 +260,7 @@
+ 
+ **Singapore and Malaysia only** (SG/MY merchants and customers). SGD and MYR. Digital wallet with stored balance. OTP redirect authentication.
+ 
+-**No recurring. No manual capture. No disputes** (OTP prevents chargebacks).
++**No recurring. No manual capture. No standard disputes or chargebacks.** GrabPay OTP authentication reduces fraud and unrecognized-payment risk, while a customer contacting GrabPay may still be directed to the merchant for a refund; OTP does not rule out fraud or complaints. The November 2026 overview also marks Billing, SetupIntents, `setup_future_usage` and off-session payments unsupported. See [[source-stripe-grabpay]] for dated eligibility and payment-state detail.
+ 
+ **Refunds**: 90-day, async (up to 5 min).
+ 
+@@ -268,7 +268,7 @@
+ 
+ **2 merchant countries** (narrowest wallet coverage reviewed).
+ 
+-**Integration**: Checkout, iOS, Android, React Native, Direct API. **No minimum charge amount** (can be as low as 1 SGD/MYR). Subscriptions explicitly not supported. Android: `name` required in billing details. Direct API: `stripe.confirmGrabPayPayment()`. Custom URL scheme required for iOS/React Native.
++**Integration (2026-05-07 guide)**: Checkout, Direct API, iOS, Android, and React Native are five documented variants. The guide says GrabPay has no minimum charge and a PaymentIntent API `amount` may be as low as `1` with SGD or MYR; it does not state a one-whole-SGD/MYR minimum. Subscriptions and future payments were unsupported in that guide. Android collects a billing full name; Direct API uses `stripe.confirmGrabPayPayment()`. Native iOS permits a custom URL scheme **or universal link** for app return and forwards the URL to Stripe; React Native separately requires a custom URL scheme and says universal links are unsupported. The 2026-11-07 canonical root capture is a variant index only; it does not reverify those behavior rules. See [[source-stripe-grabpay-accept-payment]].
+ 
+ ## Revolut Pay Details
+ 
+@@ -306,13 +306,13 @@
+ 
+ ## Alipay Details
+ 
+-**CNY default** (always shown to customer) + 10 settlement currencies by merchant country (AUD, CAD, EUR, GBP, HKD, JPY, MYR, NZD, SGD, USD). 39 merchant countries.
+-
+-**Refunds**: 90-day, async, up to 5 minutes. No disputes.
+-
+-**Recurring**: invite-only (subscriptions and invoicing).
+-
+-**Connect**: Destination + Separate charges supported; Direct charges and `on_behalf_of` private preview. Capability: `alipay_payments`.
++**Currencies and eligibility (2026-11-07)**: CNY is the Alipay default and also shown to customers. An account must have a bank account in a mapped currency. Presentment currencies are AUD, CAD, CHF, CNY, EUR, GBP, HKD, JPY, MYR, NZD, SGD and USD across 39 listed merchant countries; CHF maps to Switzerland and EUR/GBP/USD cover broader country lists than the May 2026 table (which listed CNY plus ten others and USD only for US). The new customer-location field says CN; the May page described Chinese consumers, overseas Chinese and travelers, so do not infer traveler eligibility solely from either field.
++
++**Refunds and disputes**: full/partial refunds must be submitted within 90 days, are asynchronous (up to five minutes), cannot be canceled and are never reversals. Check Refund `status` or `refund.updated`/`refund.failed`; failure restores the Stripe balance and requires another customer refund method. Alipay has no standard customer chargeback/dispute process; a customer may instead be referred to the merchant for a refund.
++
++**Recurring**: the 2026-11-07 standard matrix marks recurring, off-session, SetupIntents and `setup_future_usage` unsupported; recurring Invoicing, Checkout subscription/setup and saving details are available only through an invite-only recurring-payments private preview requiring individual Alipay approval. The May page also said recurring subscriptions/Invoicing required invitation. Do not treat preview documentation as merchant access.
++
++**Connect**: destination charges and separate charges/transfers are supported. Connected accounts with standard Dashboard access can enable Alipay; otherwise the platform must request `alipay_payments`, with API capability requests in private preview. Contact Stripe Support before direct charges or `on_behalf_of`; the general Connect support checkmark does not grant these paths.
+ 
+ **Dual prohibited list**: Stripe's standard + Alipay's own list (stripe.com/legal/alipay).
+ 
+@@ -401,12 +401,12 @@
+ - [[source-stripe-apple-pay-recurring]] — May 2026 recurring guide, with November presentation-only capture: conditional DPAN continuity, expiring cryptogram and prompt first CIT via SetupIntent validation or charge, likely MIT failure after a failed CIT, saved `usage=on_session` restriction, and Tokens/Charges migration advice without formal deprecation
+ - [[source-stripe-apple-pay-merchant-tokens]] — May and November 2026 merchant-token guide: request types, dated platform support, Payment Intents versus Checkout Sessions configuration, MPAN/DPAN fallback, PaymentMethod reuse and update notifications
+ - [[source-stripe-apple-pay-disputes-refunds]] — dated Apple Pay disputes/refunds guide: Visa iOS 16.2+/Europe liability condition and card dispute process; saved off-session liability exception is documented separately above
+-- [[source-stripe-cash-app-pay]] — Cash App Pay: US-only, off-session merchant bears liability, no PM cloning across Connect, 90-day refunds
+-- [[source-stripe-cash-app-pay-accept-payment]] — Cash App Pay integration: 4 paths + mobile, 60-min auth, 20× QR refresh, manual capture, live auto-approves
++- [[source-stripe-cash-app-pay]] — Cash App Pay overview (2026-05-07 and 2026-11-07): US/USD eligibility, provisional method access, payment settlement, refund and dispute boundaries, and Connect business-of-record limits
++- [[source-stripe-cash-app-pay-accept-payment]] — May 2026 detailed Cash App Pay acceptance guide with seven paths, scoped authentication/capture timing and outcome checks; November 2026 base capture supplies variant navigation only.
+ - [[source-stripe-cash-app-pay-set-up-payment]] — Cash App Pay save/recurring: confirmCashappSetup(), mobile_auth_url 30-sec expiry, authorization text, revocation
+ - [[source-stripe-google-pay]] — May 2026 combined Google Pay Android/RN/Web guide: dated DPAN/FPAN/e-commerce token liability scope, domain registration and Sigma card_token_type; November base URL is a navigation index
+ - [[source-stripe-grabpay]] — GrabPay: SG/MY only, OTP redirect, no disputes/recurring/manual capture, mandatory branding guidelines
+-- [[source-stripe-grabpay-accept-payment]] — GrabPay integration: 4 paths + mobile, no minimum charge, confirmGrabPayPayment(), Android needs billing name
++- [[source-stripe-grabpay-accept-payment]] — 2026-05-07 detailed GrabPay acceptance guide for five variants (Checkout, Direct API, iOS, Android, React Native), with dated no-minimum PaymentIntent wording, platform-specific return links and payment outcome bounds; 2026-11-07 root capture is navigation only
+ - [[source-stripe-link]] — Link: two PM type paths (link vs card+wallet), Instant Bank Payments exclusive, Thailand/Brazil Payment Element caveat
+ - [[source-stripe-link-payment-methods]] — Link payment methods (US-only): Instant Bank Payments/Klarna/Pix/UPI/Stablecoins, zero integration, 5 eligibility criteria, customer flow, disabling rules
+ - [[source-stripe-mb-way]] — MB WAY: Portugal phone-number wallet, 365-day refunds, 7-day dispute evidence, €1k daily limit, Stripe Inc descriptor
+@@ -422,11 +422,11 @@
+ - [[source-stripe-paypal-disputes]] — PayPal disputes: 180-day window, 2–19 day evidence, 30-day decision, no Stripe appeals, multiple disputes per payment, 7 test patterns
+ - [[source-stripe-paypal-reconciliation]] — PayPal reconciliation: reference field (Invoice ID) vs transaction_id (Transaction ID), PayPal settlement report access
+ - [[source-stripe-paypal-import]] — PayPal billing agreement import: billing_agreement_id on SetupIntent, offline mandate, no cancellation webhooks for imported BAIDs
+-- [[source-stripe-amazon-pay]] — Amazon Pay: worldwide, 12 currencies, 240-day disputes, manual capture, SEPA+installments via Amazon
++- [[source-stripe-amazon-pay]] — May and November 2026 Amazon Pay overviews: worldwide customers, US USD-only currency row, claim-specific dispute deadlines, refund status and optional Charge transaction ID; account and path qualifications apply
+ - [[source-stripe-amazon-pay-accept-payment]] — Amazon Pay integration: 5 paths, 10-min auth window, 7-day manual capture, confirmPayment()
+ - [[source-stripe-amazon-pay-set-up-future-payments]] — Amazon Pay save/recurring: confirmAmazonPaySetup(), redirect_to_url, authorization text required, iOS/Android
+-- [[source-stripe-alipay]] — Alipay: CNY+10 currencies, 39 countries, 90-day refunds, recurring invite-only, Connect partial
+-- [[source-stripe-alipay-accept-payment]] — Alipay integration: 5 paths, safepay/ URL scheme, Android SDK live-mode only, confirmAlipayPayment()
++- [[source-stripe-alipay]] — Alipay overview: 39 merchant countries, November 2026 expanded currency map/eligibility, standard one-time versus recurring preview, refund and Connect state boundaries; dated May currency and traveler context
++- [[source-stripe-alipay-accept-payment]] — 2026-05-07 Alipay acceptance guide: Checkout, Direct API and three mobile paths; iOS/React Native safepay return handling, Android app-to-app live-mode test limit versus WebView, and web Direct API `confirmAlipayPayment`. The 2026-11-07 canonical capture is a variant index only.
+ - [[source-stripe-revolut-pay]] — Revolut Pay: UK/EU, 6 currencies, full feature set (recurring/Connect/disputes/manual capture), 120-day disputes, 35-day Revolut decision
+ - [[source-stripe-revolut-pay-accept-payment]] — Revolut Pay integration: 6 platforms, mobile redirect + desktop QR (20× refresh), 7-day manual capture, live mode auto-approves
+ - [[source-stripe-revolut-pay-set-up-future-payments]] — Revolut Pay save/recurring: on-session always redirects, confirmRevolutPaySetup(), authorization text required, detach triggers mandate.updated

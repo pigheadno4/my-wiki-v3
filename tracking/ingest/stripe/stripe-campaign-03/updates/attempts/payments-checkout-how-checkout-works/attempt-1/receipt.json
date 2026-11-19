@@ -1,0 +1,160 @@
+{
+  "job_id": "payments-checkout-how-checkout-works",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-how-checkout-works.md": {
+      "job_id": "payments-checkout-how-checkout-works",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: How Checkout Works\"\ntype: source\ndate_ingested: 2026-04-20\ndate_updated: 2026-11-15\ncanonical_url: https://docs.stripe.com/payments/checkout/how-checkout-works\noriginal_format: webpage\nraw_files:\n  - \"stripe-how-checkout-works-2025.md\"\n  - \"stripe-checkout-customization-2025.md\"\n  - \"stripe-checkout-collect-addresses-2025.md\"\n  - \"stripe-checkout-phone-numbers-2025.md\"\n  - \"stripe-checkout-name-collection-2025.md\"\n  - \"stripe-checkout-promotional-emails-2025.md\"\n  - \"stripe-checkout-compliant-promotional-emails-2025.md\"\n  - \"stripe-checkout-limited-inventory-2025.md\"\n  - \"stripe-checkout-adjustable-quantity-2025.md\"\n  - \"stripe-checkout-pay-what-you-want-2025.md\"\n  - \"stripe-checkout-payment-methods-2025.md\"\n  - \"stripe-checkout-guest-customers-2025.md\"\ntags: [stripe, checkout, checkout-sessions, hosted, embedded, elements, features, mixed-cart, adaptive-pricing, billing-address, shipping-address, phone-number, name-collection, promotional-emails, consent, compliance, gdpr, inventory, session-expiry, adjustable-quantity, pay-what-you-want, donations, tips]\n---\n\n## Summary\n\nThe April 20, 2026 full guide captured hosted page, embedded page, and Checkout Elements bodies: their Checkout Session lifecycles, 26-row Hosted feature table, mixed carts, saving, expiration, webhooks, and agentic checkout. The November 7, 2026 canonical capture is only a four-link variant index. It does not establish the behavior of the linked bodies or remove the earlier guidance.\n\n## Key Takeaways\n\n- **11 built-in Hosted-table rows (April 2026)**: digital wallets + Link, responsive mobile, SCA, CAPTCHA, PCI, card validation, error messaging, adjustable quantities, auto tax, international language, Adaptive Pricing\n- **15 customizable Hosted-table rows (April 2026)**: taxes, branding, optional items, payment methods, upsells, custom domains (hosted only, **paid**), receipts, discounts, success page, abandoned carts, Link autofill, Tax IDs, shipping, phone, billing cycle date\n- **Custom domains**: paid feature; hosted page only\n- **Session expiry (April 2026)**: 24h default; configurable 30min\u201324h via `expires_at`; can also be manually expired via `stripe.checkout.sessions.expire(id)`. The application can process `checkout.session.expired` to return reserved items to inventory or send an abandonment message; the event does not itself release stock.\n- **Mixed cart**: `mode: 'subscription'` + mix of recurring + one-time Price IDs in `line_items`\n- **Checkout for agents**: structured controls + programmatic guidance for AI agents navigating checkout pages\n- **Save payment methods**: `payment_intent_data.setup_future_usage` (payment mode) or automatic (subscription mode)\n- **Guest customers**: Sessions without an existing/new Customer use guest customers\n\n## Feature Table (Built-in vs Customizable)\n\n| Feature | Type |\n| --- | --- |\n| Digital wallets + Link | Built-in |\n| Responsive mobile design | Built-in |\n| SCA-ready | Built-in |\n| CAPTCHAs | Built-in |\n| PCI compliance | Built-in |\n| Card validation | Built-in |\n| Error messaging | Built-in |\n| Adjustable quantities | Built-in |\n| Automatic tax collection | Built-in |\n| International language support | Built-in |\n| Adaptive Pricing | Built-in |\n| Collect taxes | Customizable |\n| Custom branding (colors/buttons/font) | Customizable |\n| Optional items | Customizable |\n| Global payment methods | Customizable |\n| Subscription upsells | Customizable |\n| Custom domains (hosted only, paid) | Customizable |\n| Email receipts | Customizable |\n| Apply discounts | Customizable |\n| Custom success page | Customizable |\n| Recover abandoned carts | Customizable |\n| Autofill with Link | Customizable |\n| Collect Tax IDs | Customizable |\n| Collect shipping information | Customizable |\n| Collect phone numbers | Customizable |\n| Set subscription billing cycle date | Customizable |\n\n## Lifecycle per Mode (April 2026 full bodies)\n\n| Captured body | Lifecycle and state boundary |\n| --- | --- |\n| Hosted page | Server creates Checkout Session with trusted line items and mode; customer follows `session.url` to the hosted page; `success_url` is a return route. Handle Session events on the server and verify payment status before paid-order fulfillment. |\n| Embedded page | Server creates Checkout Session with `ui_mode: 'embedded_page'` and `return_url`; client mounts the embedded form. A return URL and `checkout.session.completed` are not alone proof of paid funds. |\n| Checkout Elements | Server creates Checkout Session; client renders Elements on site. Handle completion through a server event destination and the payment-status boundary. |\n\nThe April body calls its embedded variant `payment-ui=embedded-form` while its Session example uses `ui_mode: 'embedded_page'`. The November index separately links `payment-ui=embedded-page` and `payment-ui=checkout-form`. Their linked bodies were not captured; the labels do not establish behavioral equivalence or Checkout Form SDK availability.\n\n## Key Webhooks\n\n| Event | Use |\n| --- | --- |\n| `checkout.session.completed` | Session completed. For paid orders, check `payment_status === 'paid'`; delayed methods may require later `checkout.session.async_payment_succeeded` or failed-event handling. |\n| `checkout.session.expired` | Merchant handler can return reserved items to inventory or send an abandonment email. |\n\n## Address Collection\n\n- **Billing address**: `billing_address_collection: 'required'` \u2014 forces collection on every session (default: only when needed, e.g. for tax calculation)\n- **Shipping address**: `shipping_address_collection.allowed_countries` \u2014 array of ISO two-letter country codes (e.g. `[\"US\", \"CA\"]`)\n- Shipping details saved to `shipping_details` property on the Checkout Session object, included in `checkout.session.completed` webhook payload\n- Works for both **hosted** (`success_url`) and **embedded** (`ui_mode: 'embedded_page'` + `return_url`) modes \u2014 same params, same behavior\n\n## Phone Number Collection\n\n- `phone_number_collection: { enabled: true }` \u2014 adds a **required** phone number field\n- Supported in `payment` and `subscription` modes only \u2014 **not** `setup` mode\n- Field placement: under shipping address fields (if collecting address), otherwise below email input\n- One phone number per session\n- **E.164 format guaranteed** except for wallet payments (Apple Pay/Google Pay) \u2014 wallets provide their own format\n- **3 retrieval locations**: `Account.contact_phone`, `Customer.phone`, `CheckoutSession.customer_details.phone`\n- Existing customer phone prefills the field; customer-updated phone overwrites the saved value\n- Customer portal supports self-service phone number updates\n\n## Name Collection\n\n- **`name_collection` param**: collect `business` and/or `individual` names as **first-class** top-level fields (separate from billing/shipping names)\n- Each field: `enabled: true`, optionally `optional: true` (default is required)\n- **Express checkout impact**: when business name is required, Apple Pay and one-click buttons move to bottom of form or are disabled\n- **Retrieval**: `Customer.business_name` / `Customer.individual_name`; `CheckoutSession.collected_information.business_name` / `.individual_name`; also in `customer_details` hash\n- `Customer.name` auto-set to `business_name` or `individual_name` (business takes priority)\n\n## Pay-What-You-Want / Tips / Donations\n\n- **Mechanism**: `custom_unit_amount: { enabled: true }` on Price object \u2014 customer sets amount at checkout\n- **Optional bounds**: `preset` (suggested initial amount), `minimum`, `maximum` on the price\n- **Limitations**: single line item only (quantity = 1); no promo codes/discounts; no recurring payments; no optional items\n- **Use cases**: tips, donations, pay-what-you-want products/services\n- **Inline pricing alternative**: `price_data` on Checkout Session also supports one-off donations but isn't reusable (API only)\n- Works for both hosted and embedded modes \u2014 same Price ID, same session create pattern\n\n## Adjustable Quantities\n\n- `adjustable_quantity: { enabled: true }` on `line_items` \u2014 customers can change quantities during checkout\n- **Defaults**: min `0`, max `99`; absolute max `999,999`\n- If initial `line_items[].quantity > 99`, set `adjustable_quantity.maximum \u2265 quantity`\n- **Inventory reservation pattern**: reserve `adjustable_quantity.maximum` units (not `line_items.quantity`) at session create to avoid overselling\n- Checkout prevents removing the last remaining item\n- **Post-payment**: `stripe.checkout.sessions.listLineItems(session.id, { limit: 100 })` \u2192 finalized quantities; removed items absent from response\n\n## Promotional Email Consent\n\n- `consent_collection: { promotions: 'auto' }` \u2014 adds a **dynamic checkbox** to Checkout for collecting customer consent to promotional emails\n- Checkbox display is jurisdiction-aware: automatically hidden or disabled where local data privacy laws prohibit it; default checked state also varies by country pair (merchant + customer)\n- Consent stored in `CheckoutSession.consent.promotions`; retrieve via `checkout.session.completed` webhook\n- Works for both **hosted** (`success_url`) and **embedded** (`ui_mode: 'embedded_page'` + `return_url`) modes \u2014 same param\n- Common pattern: store consenting customers' emails for cart abandonment recovery or newsletter campaigns\n\n## Promotional Email Compliance\n\n- **Checkbox label**: \"Keep me updated with news and personalized offers\"\n- **US**: opt-out model \u2014 can send unless customer opts out; **ROW**: affirmative consent required (unchecked default)\n- **Checkbox default logic**: Stripe considers both merchant account jurisdiction + customer IP address; unchecked default when either is in an affirmative-consent jurisdiction\n- **Recovery emails**: only for customers who entered email + checkbox was checked at session expiry; recommend limiting broader campaigns to completed-purchase + consented customers\n- **Unsubscribe**: every promotional email must include sender info + unsubscribe mechanism; honor promptly; withdrawal must be as easy as consent; Stripe redirects data subject requests back to merchant\n- **Limited use**: consent data may only be used for promotional emails \u2014 no other purposes without separately obtained rights\n- **Privacy policy**: must disclose collection/use of data for promotional emails; also covers prospective customers (non-completers)\n\n## Related Pages\n\n- [[stripe]] \u2014 Stripe company route.\n- [[stripe-checkout]] \u2014 Stripe Checkout concept page\n- [[source-stripe-checkout-sessions]] \u2014 Checkout Sessions API deep dive\n- [[source-stripe-checkout-quickstart]] \u2014 Hosted + embedded quickstart code\n\n## Raw Sources\n\n- [[raw/stripe-how-checkout-works-2025|stripe-how-checkout-works-2025]] \u2014 Full How Checkout Works: 3 modes, 24-feature table, mixed cart, session expiry, save payment details, guest customers, Checkout for agents (371 lines, 2 MP4 + 1 PNG)\n- [[raw/stripe-checkout-customization-2025|stripe-checkout-customization-2025]] \u2014 Customize Checkout: 4 sub-pages (Appearance, Card brands, Custom domain, Product images); custom domain applies to Checkout + Payment Links + customer portal\n- [[raw/stripe-checkout-collect-addresses-2025|stripe-checkout-collect-addresses-2025]] \u2014 Collect physical addresses: billing_address_collection, shipping_address_collection with allowed_countries, shipping_details in webhook\n- [[raw/stripe-checkout-phone-numbers-2025|stripe-checkout-phone-numbers-2025]] \u2014 Collect phone numbers: phone_number_collection, E.164 format, 3 retrieval locations, wallet limitations, customer portal updates\n- [[raw/stripe-checkout-name-collection-2025|stripe-checkout-name-collection-2025]] \u2014 Collect customer names: name_collection (business/individual), first-class fields, express checkout impact, retrieval from Customer + Checkout Session (1 CDN image)\n- [[raw/stripe-checkout-promotional-emails-2025|stripe-checkout-promotional-emails-2025]] \u2014 Collect promotional email consent: consent_collection.promotions='auto', jurisdiction-aware checkbox, consent.promotions on Checkout Session, webhook pattern (1 CDN image)\n- [[raw/stripe-checkout-compliant-promotional-emails-2025|stripe-checkout-compliant-promotional-emails-2025]] \u2014 Compliance best practices: US opt-out vs ROW affirmative consent, checkbox default logic, unsubscribe requirements, limited use restriction, privacy policy disclosure\n- [[raw/stripe-checkout-limited-inventory-2025|stripe-checkout-limited-inventory-2025]] \u2014 Limited inventory: manual expire endpoint (sessions.expire), expires_at param (30min\u201324h), checkout.session.expired webhook for inventory release\n- [[raw/stripe-checkout-adjustable-quantity-2025|stripe-checkout-adjustable-quantity-2025]] \u2014 Adjustable quantities: adjustable_quantity param (min/max/enabled), defaults (0\u201399), max up to 999999, inventory reservation pattern, listLineItems post-payment fulfillment\n- [[raw/stripe-checkout-pay-what-you-want-2025|stripe-checkout-pay-what-you-want-2025]] \u2014 Pay-what-you-want: custom_unit_amount on Price, preset/min/max bounds, limitations (1 item, no discounts/recurring), tips/donations use cases (1 CDN image)\n- [[raw/stripe-checkout-payment-methods-2025|stripe-checkout-payment-methods-2025]] \u2014 Payment methods: dynamic (Dashboard settings + eligibility) by default; override with payment_method_types; multiple PMs still reordered by location\n- [[raw/stripe-checkout-guest-customers-2025|stripe-checkout-guest-customers-2025]] \u2014 Guest customers: sessions without Customer object; grouped by card/email/phone; read-only, no new charges; customer_creation param; Customers tab export only\n\n## Related raw API references\n\n- [[raw/stripe-payments-checkout-how-checkout-works-2026-11-07|2026-11-07 Checkout variant index]] \u2014 navigation-only capture linking Full hosted page (`payment-ui=stripe-hosted`), Full embedded page (`embedded-page`), Embedded form (`checkout-form`), and Elements (`checkout-elements`); no linked body or runtime behavior was captured.\n",
+      "quotes": [
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-checkout-how-checkout-works-2026-11-07.md:11-11"
+        },
+        {
+          "text": "[Full hosted page](https://docs.stripe.com/payments/checkout/how-checkout-works.md?payment-ui=stripe-hosted)",
+          "location": "raw/stripe-payments-checkout-how-checkout-works-2026-11-07.md:13-13"
+        },
+        {
+          "text": "[Full embedded page](https://docs.stripe.com/payments/checkout/how-checkout-works.md?payment-ui=embedded-page)",
+          "location": "raw/stripe-payments-checkout-how-checkout-works-2026-11-07.md:14-14"
+        },
+        {
+          "text": "[Embedded form](https://docs.stripe.com/payments/checkout/how-checkout-works.md?payment-ui=checkout-form)",
+          "location": "raw/stripe-payments-checkout-how-checkout-works-2026-11-07.md:15-15"
+        },
+        {
+          "text": "[Elements](https://docs.stripe.com/payments/checkout/how-checkout-works.md?payment-ui=checkout-elements)",
+          "location": "raw/stripe-payments-checkout-how-checkout-works-2026-11-07.md:16-16"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "payments-checkout-how-checkout-works-source-route",
+            "target_path": "wiki/concepts/stripe-checkout.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-how-checkout-works]] \u2014 How Checkout works: 24-feature table (built-in vs customizable), mixed cart, session expiry, save payment details, guest customers, Checkout for agents",
+            "proposed_markdown": "- [[source-stripe-how-checkout-works]] \u2014 April 20, 2026 full How Checkout Works guide: 26-row Hosted feature table (11 built-in and 15 customizable), mixed cart, Session expiry, saved methods, guest customers, and Checkout for agents; the November 7 capture is a four-target variant index only. Its `embedded-page` and `checkout-form` links do not establish linked-body behavior or Checkout Form SDK rollout.",
+            "quote_indexes": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Old raw lines 36-63 supply 11 built-in and 15 customizable Hosted rows, contradicting the old 24-feature route label. Old raw lines 14-16, 190-192, and 350-363 contain three full bodies; new raw lines 9-16 supply only four links."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-checkout-how-checkout-works-2026-11-07.md",
+      "raw_sha256": "212ccddb3d8b4ddcb17380c86a9a2b9514e83e33fe7597bdd08f05adecbfc4dc",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-checkout-how-checkout-works-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 16
+      }
+    ],
+    "raw/stripe-how-checkout-works-2025.md": [
+      {
+        "start": 1,
+        "end": 125
+      },
+      {
+        "start": 126,
+        "end": 250
+      },
+      {
+        "start": 251,
+        "end": 371
+      }
+    ],
+    "wiki/sources/source-stripe-how-checkout-works.md": [
+      {
+        "start": 1,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 163
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/06b0c3d067e34ccd98e430c4/content.diff": [
+      {
+        "start": 1,
+        "end": 130
+      },
+      {
+        "start": 131,
+        "end": 250
+      },
+      {
+        "start": 251,
+        "end": 375
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-checkout-how-checkout-works/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 130
+      },
+      {
+        "start": 131,
+        "end": 240
+      }
+    ],
+    "wiki/concepts/stripe-checkout.md": [
+      {
+        "start": 1,
+        "end": 130
+      },
+      {
+        "start": 131,
+        "end": 284
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 22
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 28,
+        "end": 38
+      },
+      {
+        "start": 766,
+        "end": 774
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "Checkout is a low-code payment integration that creates a customizable form for collecting payments.",
+      "location": "raw/stripe-how-checkout-works-2025.md:8-8"
+    },
+    {
+      "text": "By default, a `Checkout Session` expires after 24 hours.",
+      "location": "raw/stripe-how-checkout-works-2025.md:165-165"
+    },
+    {
+      "text": "When customers are ready to complete their purchase, your application creates a new `Checkout Session`.",
+      "location": "raw/stripe-how-checkout-works-2025.md:22-22"
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/checkout/how-checkout-works, raw/stripe-payments-checkout-how-checkout-works-2026-11-07.md (new raw lines 5-16) establishes the Checkout website-payment topic and four variant links only; it contains no hosted, embedded, form, or Elements instructions. raw/stripe-how-checkout-works-2025.md (old raw lines 8-25, 73-108, 135-176, 190-202, 243-279, 350-363) supplies the dated full bodies: a server-created Checkout Session, hosted session.url and success_url, embedded ui_mode embedded_page and return_url, on-site Elements, payment versus subscription and mixed-cart mode, Customer or customer-configured Account versus guest identity, method saving, expiry, and server event handling. source-stripe-how-checkout-works.md previously framed the three bodies as a current all-mode summary and included separate historical captures for other topics. The candidate preserves those sources, marks the four new routes as navigation only, and qualifies Session completion and expiry outcomes.",
+    "Q2": "For https://docs.stripe.com/payments/checkout/how-checkout-works, raw/stripe-payments-checkout-how-checkout-works-2026-11-07.md (new raw lines 9-16) makes a navigation and taxonomy change: Full hosted page, Full embedded page, Embedded form, and Elements links. raw/stripe-how-checkout-works-2025.md (old raw lines 14-16, 36-63, 163-176, 190-192, 350-363) contains three full April bodies and 26 Hosted feature rows, 11 built-in and 15 customizable. The 24-row label in source-stripe-how-checkout-works.md and the reciprocal Checkout concept route is a preexisting count error, not evidence of a November behavior change; the coordinator also owns a Stripe-index correction. Keep April claims about mixed carts, saving, Accounts v2 preview/version, guest customers, customization, and expiry dated. Do not equate old embedded-form with the two distinct new embedded links, infer Checkout Form SDK general availability, or treat a browser return, completed Session, or expired Session as paid funds or automatic inventory release. Paid-order fulfillment needs verified paid or asynchronous-success state, and the merchant handles expiry events."
+  }
+}

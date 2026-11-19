@@ -1,0 +1,390 @@
+{
+  "audit_id": "concept-audit-02-retry",
+  "targets": [
+    {
+      "target": "wiki/concepts/stripe-bank-transfers.md",
+      "before_sha256": "394a295ae57ddbda78f6a0c6286e856e5ef9289ab3ed4419c35c6187483f41f1",
+      "candidate": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-bank-transfers.md",
+      "candidate_sha256": "afb0f4c617b873f859c7a202ef1d6d5b23bca2a81089029305bfa39db1d13432",
+      "diff": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-bank-transfers.md.diff",
+      "updates": [
+        {
+          "update_id": "payments-bank-transfers-gbp-eligibility",
+          "target_path": "wiki/concepts/stripe-bank-transfers.md",
+          "update_kind": "durable_fact",
+          "anchor": "- **GBP**: GB only",
+          "proposed_markdown": "- **GBP**: November 7, 2026 overview lists AT, AU, BE, BG, CA, CH, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GR, HK, HR, HU, IE, IT, LI, LT, LU, LV, MC, MT, NL, NO, PL, PT, RO, SE, SG, SI, SK, SM, US; the May 5 capture listed GB only. This is merchant-account eligibility for GBP, not a statement that cross-border payments are supported.",
+          "quote_indexes": [
+            1
+          ],
+          "warnings": [
+            "Old raw lines 99-101 contain the GB-only row. New raw lines 64-103 contain the expanded GBP account-location row and separate JPY/MXN rows; new raw lines 105-112 say cross-border payments are unsupported."
+          ],
+          "job_id": "payments-bank-transfers",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-transfers/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "payments-bank-transfers-unreconciled",
+          "target_path": "wiki/concepts/stripe-bank-transfers.md",
+          "update_kind": "durable_fact",
+          "anchor": "- Unreconciled funds auto-returned at **75 days**",
+          "proposed_markdown": "- Stripe **attempts** to return unreconciled funds held for **more than 75 days**; it may contact the customer for missing bank details. A return attempt is not a completed refund.",
+          "quote_indexes": [
+            1
+          ],
+          "warnings": [
+            "Old raw lines 140-144 and new raw lines 140-144 both state more than 75 days and an attempted return; the conditional day-90 sweep is on the same lines."
+          ],
+          "job_id": "payments-bank-transfers",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-transfers/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "payments-bank-transfers-dispute-conflict",
+          "target_path": "wiki/concepts/stripe-bank-transfers.md",
+          "update_kind": "durable_fact",
+          "anchor": "| Disputes | USD and CAD only |",
+          "proposed_markdown": "| Disputes | Conflict in November 7 overview: capability row says USD only; detailed reversal section discusses USD and CAD. CAD applicability is unresolved here. |",
+          "quote_indexes": [
+            2,
+            3
+          ],
+          "warnings": [
+            "New raw lines 166-171 restrict the capability row to USD transactions, while new raw lines 184-194 describe USD and CAD reversals. Old raw lines 44-46 said US only, while old raw lines 356-366 discussed USD/CAD."
+          ],
+          "job_id": "payments-bank-transfers",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-transfers/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "payments-bank-transfers-wire-conflict",
+          "target_path": "wiki/concepts/stripe-bank-transfers.md",
+          "update_kind": "durable_fact",
+          "anchor": "Available for US accounts only. SWIFT transfers settle in 3\u20135 business days. No refunds for international wires. US accounts accept SWIFT in USD only.",
+          "proposed_markdown": "The November 7 overview's US wire section says US bank-transfer users can accept domestic and international SWIFT wires; international wires can take 3\u20135 business days to settle into the cash balance, Stripe does not refund them, and US accounts accept SWIFT in USD only. The same capture also labels cross-border payments unsupported and says International transfers are unsupported. Treat exact account, currency, and rail eligibility as unresolved by this overview.",
+          "quote_indexes": [
+            1
+          ],
+          "warnings": [
+            "New raw lines 105-112 and 427-429 conflict with its US wire section at new raw lines 146-162. Old raw lines 146-162 and 406-408 preserve the same conflict."
+          ],
+          "job_id": "payments-bank-transfers",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-transfers/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "payments-bank-transfers-product-matrix",
+          "target_path": "wiki/concepts/stripe-bank-transfers.md",
+          "update_kind": "durable_fact",
+          "anchor": "PaymentIntents only \u2014 no SetupIntents, no manual capture, no `setup_future_usage`.",
+          "proposed_markdown": "The November 7 overview lists Checkout Sessions and PaymentIntents as supported APIs; its PaymentIntent payment-method enum is `customer_balance`. SetupIntents, manual capture, and `setup_future_usage` are unsupported. Checkout excludes subscription and setup mode; Invoices and Subscriptions require `send_invoice` collection.",
+          "quote_indexes": [
+            4
+          ],
+          "warnings": [
+            "Old raw lines 390-396 showed PaymentIntents in the older API matrix. New raw lines 402-417 add Checkout Sessions to the product/API display and retain the SetupIntent/manual-capture/setup_future_usage limits."
+          ],
+          "job_id": "payments-bank-transfers",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-transfers/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "payments-bank-transfers-source-route",
+          "target_path": "wiki/concepts/stripe-bank-transfers.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-bank-transfers]] \u2014 overview: virtual account model, customer balance, international wires, disputes, sender info API, Connect, product/API support tables",
+          "proposed_markdown": "- [[source-stripe-bank-transfers]] \u2014 May 5 and November 7, 2026 full overviews: virtual-account and customer-cash-balance model, expanded GBP account eligibility, Checkout Sessions and PaymentIntents support, sender-info examples, Connect, and unresolved cross-border/SWIFT and USD/CAD dispute contradictions.",
+          "quote_indexes": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "warnings": [
+            "New raw lines 14-20, 64-112, 146-194, 204-227, and 384-429 support the route; old raw lines 99-101, 146-162, 201-213, 356-366, and 390-408 retain dated contrasts."
+          ],
+          "job_id": "payments-bank-transfers",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-transfers/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "payments-bank-transfers-delayed-confirmation",
+          "target_path": "wiki/concepts/stripe-bank-transfers.md",
+          "update_kind": "durable_fact",
+          "anchor": "| Payment confirmation | No (push payment \u2014 not instant) |",
+          "proposed_markdown": "| Payment confirmation | November 7, 2026 overview: **delayed**; access is labeled **instant provisional**. Customer funding and reconciliation precede the documented completed-payment step, and standard payout timing applies. May 5, 2026 properties panel said **No**. |",
+          "quote_indexes": [
+            0
+          ],
+          "warnings": [
+            "Replace the exact existing property row. New raw lines 14-20 label access instant provisional, confirmation delayed and settlement standard; new raw lines 431-447 place payment complete after Stripe reconciles and notifies. Old raw lines 24-38 had Payment confirmation No and standard payout timing. Provisional access, funding, reconciliation and payout are distinct from demonstrated payment success."
+          ],
+          "job_id": "payments-bank-transfers",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-transfers/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "payments-bank-transfers-international-support-qualifier",
+          "target_path": "wiki/concepts/stripe-bank-transfers.md",
+          "update_kind": "durable_fact",
+          "anchor": "Unsupported: Payment Links, Express Checkout Element, Mobile Payment Element, Customer Portal, International transfers.",
+          "proposed_markdown": "Unsupported in the overview's product rows: Payment Links, Express Checkout Element, Mobile Payment Element and Customer Portal. The November 7, 2026 cross-border row and unsupported-features paragraph also label International transfers unsupported; its US wire section nevertheless discusses domestic and international SWIFT receipt for US bank-transfer users. See the unresolved [[source-stripe-bank-transfers]] wire conflict before deciding account, currency or rail eligibility.",
+          "quote_indexes": [
+            1
+          ],
+          "warnings": [
+            "The exact Product Support line currently gives an absolute answer beside the concept's qualified wire paragraph. New raw lines 105-112 and 427-429 state the exclusion, but new raw lines 146-162 describe US domestic/international SWIFT and USD-only US account currency. Old raw lines 146-162 and 406-408 retain the same contradiction. This patch records both without declaring US international transfers generally supported."
+          ],
+          "job_id": "payments-bank-transfers",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-transfers/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "payments-bank-transfers-dispute-detail-qualifier",
+          "target_path": "wiki/concepts/stripe-bank-transfers.md",
+          "update_kind": "durable_fact",
+          "anchor": "- **USD (ACH)**: reversible within 5 days of payment; merchant must provide evidence to remitting bank.\n- **CAD (ACH)**: reversals always initiated by remitting bank; beneficiary bank must honor.\n- All other currencies: **irreversible**.",
+          "proposed_markdown": "- **USD (ACH)**: the November 7, 2026 detailed section says a remitting-bank reversal must be sent no later than five days after payment, with evidence supplied to the bank. The capability row separately limits dispute support to USD transactions.\n- **CAD (ACH)**: the same detailed section says reversals are initiated by the remitting bank and honored by the beneficiary bank. Its USD-only capability row and presentment-currency list do not establish CAD payment or dispute availability; applicability remains unresolved.\n- **Other currencies**: the detailed section says bank transfers cannot be reversed except USD and CAD. Read that dated statement with the capability-row conflict; do not infer a universal or current irreversibility rule from this page.",
+          "quote_indexes": [
+            2,
+            3
+          ],
+          "warnings": [
+            "Replace the exact three-bullet Disputes block. New raw lines 166-171 say USD-only dispute support, while new raw lines 184-194 describe USD/CAD reversals; new raw lines 105-112 omit CAD from presentment currencies. Old raw lines 44-46 say US only, while old raw lines 356-366 give USD/CAD reversal details. The concept must retain that contradiction in the detailed answer, not only in the property table."
+          ],
+          "job_id": "payments-bank-transfers",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-transfers/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "bt-accept-manual-region-correction",
+          "target_path": "wiki/concepts/stripe-bank-transfers.md",
+          "update_kind": "durable_fact",
+          "anchor": "| EU | `eu_bank_transfer` + `country` | IBAN localized to customer's country; ES unavailable |\n| JP | `jp_bank_transfer` | requires `return_url` |\n| MX | `mx_bank_transfer` | requires `return_url` |",
+          "proposed_markdown": "| EU | `eu_bank_transfer` + `country` | In the May 5, 2026 manual examples, the request's country selects IBAN localization; Dashboard-managed selection uses Customer or Stripe-account country. The guide says new localized VBANs are unavailable for ES. |\n| JP | `jp_bank_transfer` | May 5 automatic-method examples include `return_url`; manual examples omit it. |\n| MX | `mx_bank_transfer` | May 5 automatic-method examples include `return_url`; manual examples omit it. |",
+          "quote_indexes": [
+            0,
+            1
+          ],
+          "warnings": [
+            "The baseline correction relies on old raw/stripe-bank-transfers-accept-payment-2025.md:153-187,260-341,1469-1511,1623-1685,1853-1858. New raw lines 7-17 are a variant index only."
+          ],
+          "job_id": "payments-bank-transfers-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-transfers-accept-a-payment/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "bt-accept-lifecycle-correction",
+          "target_path": "wiki/concepts/stripe-bank-transfers.md",
+          "update_kind": "durable_fact",
+          "anchor": "**Status lifecycle**: `requires_action` (balance insufficient) \u2192 `payment_intent.partially_funded` (partial received) \u2192 `payment_intent.succeeded`.",
+          "proposed_markdown": "**May 5, 2026 PaymentIntent funding events**: First confirmation with insufficient balance emits `payment_intent.requires_action`, including when pre-existing cash balance partially applies. Later incoming funds that still leave the Intent incomplete emit `payment_intent.partially_funded`; `payment_intent.succeeded` marks completion. Changing a partially funded Intent amount returns applied funds to customer balance; other open Intents may receive them automatically, while manual reconciliation requires reapplication.",
+          "quote_indexes": [
+            0,
+            1
+          ],
+          "warnings": [
+            "Dated factual authority is old raw/stripe-bank-transfers-accept-payment-2025.md:722-744,1954-1976; November raw 7-17 has no funding details."
+          ],
+          "job_id": "payments-bank-transfers-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-transfers-accept-a-payment/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "bt-accept-source-route",
+          "target_path": "wiki/concepts/stripe-bank-transfers.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-bank-transfers-accept-payment]] \u2014 full integration guide: PI creation per region, status lifecycle, reconciliation modes, Checkout constraints, testing",
+          "proposed_markdown": "- [[source-stripe-bank-transfers-accept-payment]] \u2014 May 5, 2026 full PaymentIntent, Checkout and Direct API guide, plus November 7 variant-index navigation (including an unread Elements Checkout Sessions route); consult the source's dated qualifications.",
+          "quote_indexes": [
+            0,
+            1,
+            2
+          ],
+          "warnings": [
+            "November raw/stripe-payments-bank-transfers-accept-a-payment-2026-11-07.md:7-17 is navigation only; detailed facts remain May 5 evidence."
+          ],
+          "job_id": "payments-bank-transfers-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-transfers-accept-a-payment/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "bt-accept-checkout-sessions-route",
+          "target_path": "wiki/concepts/stripe-bank-transfers.md",
+          "update_kind": "durable_fact",
+          "anchor": "PaymentIntents only \u2014 no SetupIntents, no manual capture, no `setup_future_usage`.",
+          "proposed_markdown": "Bank-transfer acceptance has Payment Intents and Checkout Sessions routes: the November 7, 2026 index names both APIs and links an Elements Checkout Sessions variant, whose detailed behavior was not captured. The May 5, 2026 guide documents a separate hosted Checkout Session flow backed by a PaymentIntent. No SetupIntents, no manual capture, no `setup_future_usage`.",
+          "quote_indexes": [
+            0,
+            1,
+            3
+          ],
+          "warnings": [
+            "New raw/stripe-payments-bank-transfers-accept-a-payment-2026-11-07.md:7,13-17 establishes the Checkout Sessions API route as navigation only; do not infer its prerequisites or states.",
+            "Old raw/stripe-bank-transfers-accept-payment-2025.md:940-1000,1182-1205 documents the dated hosted Checkout route and underlying PaymentIntent. The original line's SetupIntent, manual-capture and future-use assertions are retained without claiming November reconfirmation."
+          ],
+          "job_id": "payments-bank-transfers-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-transfers-accept-a-payment/attempt-2/receipt.json"
+        },
+        {
+          "update_id": "s03-refunding-bank-transfers-refunds",
+          "target_path": "wiki/concepts/stripe-bank-transfers.md",
+          "update_kind": "durable_fact",
+          "anchor": "## Refunds\n\nFour refund flows:\n\n1. **Payment \u2192 customer bank**: Stripe emails customer for bank details; 45-day window; may incur fee; 180-day refund window from payment creation.\n2. **Cancel pending refund**: `stripe.refunds.cancel({ refund: id })` \u2014 only while `requires_action`.\n3. **Payment \u2192 customer cash balance**: immediate and free.\n4. **Cash balance \u2192 customer bank**: `stripe.refunds.create({ origin: 'customer_balance', customer, amount, currency })`.\n\nRefund status: `requires_action` \u2192 `pending` \u2192 `succeeded` / back to `requires_action` (bank rejection) \u2192 `failed` at 45 days (`refund.failed` event). Customer email required.\n\nInternational (SWIFT) refunds: **not supported** \u2014 manual process required.",
+          "proposed_markdown": "## Refunds\n\nThree distinct paths are documented in [[source-stripe-bank-transfers-refunds]]:\n\n1. **Bank-transfer payment \u2192 customer bank**: Stripe needs destination bank details and may request them by Customer email (or `instructions_email`); missing Customer email can make refund creation fail. A payment can be refunded within 180 days of creation, and each bank-directed refund, including a partial refund, might incur a fee. Its Refund can move `requires_action` \u2192 `pending` \u2192 `succeeded`; a bank return can move it back to `requires_action`. `pending` is processing, while `succeeded` marks successful payout.\n2. **Bank-transfer payment \u2192 customer cash balance**: choose **Customer cash balance** as the Dashboard refund destination. This succeeds immediately and is free. The pinned guide does not document a `destination: 'customer_balance'` API argument for this path.\n3. **Available cash balance \u2192 customer bank**: use the Customer's cash-balance Dashboard refund flow or create a Refund with `origin: 'customer_balance'`, `customer`, `amount`, and `currency`, optionally `instructions_email`. This is a return of available cash balance, distinct from refunding a PaymentIntent.\n\nThe bank-directed **payment refund** can be canceled while it is still `requires_action` and before bank details arrive, using the payment Dashboard or `POST /v1/refunds/{id}/cancel` (older Node example: `stripe.refunds.cancel({ refund: id })`). An **available cash-balance return** can be canceled only before bank details arrive, through the Dashboard; cancellation credits the amount back to available cash balance.\n\n**45-day warning:** The pinned guide says 45 days from the customer's receipt of the bank-detail request and a return to customer cash balance, but its status table says `failed` at 45 days after Refund creation and nearby prose says `refund.failed` with a return outside Stripe. Those clock and funds-destination statements are unresolved in the capture. Confirm the Refund and balance state rather than treating creation or `pending` as customer receipt.\n\nInternational (SWIFT) refunds and automated refund emails are **not supported**; the guide describes a separate manual return path.",
+          "quote_indexes": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "warnings": [
+            "Replace only the exact ## Refunds section. New raw lines 19,49,54 and old raw lines 18,52,57 conflict on the 45-day clock and post-failure funds destination.",
+            "The older Node cancel example is preserved as dated; the new capture shows the API endpoint at new raw lines 72-82."
+          ],
+          "job_id": "payments-customer-balance-refunding",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-customer-balance-refunding/attempt-2/receipt.json"
+        }
+      ],
+      "contributions": [
+        {
+          "job_id": "payments-bank-transfers",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-transfers/attempt-2/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-transfers/attempt-2/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-transfers/attempt-2/input.json"
+        },
+        {
+          "job_id": "payments-bank-transfers-accept-a-payment",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-transfers-accept-a-payment/attempt-2/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-transfers-accept-a-payment/attempt-2/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-bank-transfers-accept-a-payment/attempt-2/input.json"
+        },
+        {
+          "job_id": "payments-customer-balance-refunding",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-customer-balance-refunding/attempt-2/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-customer-balance-refunding/attempt-2/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-customer-balance-refunding/attempt-2/input.json"
+        }
+      ]
+    },
+    {
+      "target": "wiki/concepts/stripe-fx-quotes-api.md",
+      "before_sha256": "b8b6d36b056a580b9c14dcd2c925a016a617cae14244ef37c3e524eb37f769e2",
+      "candidate": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-fx-quotes-api.md",
+      "candidate_sha256": "317b669b4ee40c67fe8b8e44b8a69af3bf25bc4a2031f26e91fa8b48aebf62e9",
+      "diff": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-fx-quotes-api.md.diff",
+      "updates": [
+        {
+          "update_id": "fx-merchant-fee-a1",
+          "target_path": "wiki/concepts/stripe-fx-quotes-api.md",
+          "update_kind": "durable_fact",
+          "anchor": "| Merchant fee | 0% (pay duration premium only) | 0% |",
+          "proposed_markdown": "| Merchant fee | FX fee can be absorbed by merchant using `base_rate` or passed to customer using `exchange_rate`; extended locks add duration premium | 0% |",
+          "quote_indexes": [
+            3
+          ],
+          "warnings": [
+            "Both old raw lines 66-68, 83-87, 181-184 and new raw lines 67-69, 84-88, 182-185 contradict universal 0% merchant FX cost."
+          ],
+          "job_id": "payments-custom-localize-prices-fx-quotes-api",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-fx-quotes-api/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "fx-inr-a1",
+          "target_path": "wiki/concepts/stripe-fx-quotes-api.md",
+          "update_kind": "durable_fact",
+          "anchor": "- **Group 2**: Emerging market currencies (BRL, CNY, INR, KRW, MXN, PLN, etc.)",
+          "proposed_markdown": "- **Group 2**: Currencies including BRL, CNY, KRW, MXN and PLN (INR belongs to Group 1).",
+          "quote_indexes": [
+            3
+          ],
+          "warnings": [
+            "Both old raw line 190 and new raw line 191 put INR in Group 1; this fixes an existing concept error."
+          ],
+          "job_id": "payments-custom-localize-prices-fx-quotes-api",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-fx-quotes-api/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "fx-example-a1",
+          "target_path": "wiki/concepts/stripe-fx-quotes-api.md",
+          "update_kind": "durable_fact",
+          "anchor": "# 3. Attach to PaymentIntent\nPOST /v1/payment_intents\n  amount=125\n  currency=usd\n  fx_quote=fxq_...\n```",
+          "proposed_markdown": "# 3. Attach to PaymentIntent (illustrative fields only)\nPOST /v1/payment_intents\n  amount=<integer minor units for the USD price>\n  currency=usd\n  fx_quote=fxq_...\n```\n\n**Example caveat:** both captured guides say 125 USD in prose but send `amount=125`, which is 125 cents for USD. Their quote prose says `hour` while curl sends `lock_duration=day`. Compute minor units and use the intended lock duration before implementing.",
+          "quote_indexes": [
+            0
+          ],
+          "warnings": [
+            "Old raw lines 136-166 and new raw lines 137-167 show both sample inconsistencies. Do not treat the excerpt as an executed transaction."
+          ],
+          "job_id": "payments-custom-localize-prices-fx-quotes-api",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-fx-quotes-api/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "fx-expiry-a1",
+          "target_path": "wiki/concepts/stripe-fx-quotes-api.md",
+          "update_kind": "durable_fact",
+          "anchor": "When a quote expires due to market drift, `lock_status` becomes `expired`. Using an expired quote on a PaymentIntent returns `payment_intent_fx_quote_invalid`. Subscribe to `fx_quote.expired` webhook to create a new quote and update prices.",
+          "proposed_markdown": "A quote can expire at `lock_expires_at` or be invalidated early by significant rate drift; `lock_status` becomes `expired` and `fx_quote.expired` can notify either case. Attaching an expired quote to a PaymentIntent or Transfer returns HTTP 400 with `payment_intent_fx_quote_invalid` or `transfers_fx_quote_invalid`, respectively. Create a new quote and update prices; a mid-market fallback is limited to some non-card methods that take more than 24 hours.",
+          "quote_indexes": [
+            4
+          ],
+          "warnings": [
+            "Old raw lines 130-132, 172-178 and new raw lines 131-133, 173-179 distinguish expiry causes, resources and fallback scope."
+          ],
+          "job_id": "payments-custom-localize-prices-fx-quotes-api",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-fx-quotes-api/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "fx-availability-a1",
+          "target_path": "wiki/concepts/stripe-fx-quotes-api.md",
+          "update_kind": "durable_fact",
+          "anchor": "- Available in 33 countries: all EU + CH, GB, CA, NO, US",
+          "proposed_markdown": "- Preview availability: the 2026-04-21 capture gave a flat list of 33 countries; the 2026-11-07 capture replaces it with an 18-region matrix by payment versus transfer usage and duration. BR, IN, JP, MY and TH have payment locks but no transfer support; day appears for payment in CA, EU, GI, NO, CH, GB and US, and nowhere for transfer. `none` informational quotes follow supported usage types. The EU aggregate row does not establish withdrawal of earlier individually listed EU countries or any merchant's access.",
+          "quote_indexes": [
+            0,
+            1,
+            2
+          ],
+          "warnings": [
+            "Old raw lines 193-229; new raw lines 194-217. Region/usage/duration matrix must not be flattened into universal availability."
+          ],
+          "job_id": "payments-custom-localize-prices-fx-quotes-api",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-fx-quotes-api/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "fx-versions-a1",
+          "target_path": "wiki/concepts/stripe-fx-quotes-api.md",
+          "update_kind": "durable_fact",
+          "anchor": "- Preview: requires API version `2025-03-31.preview` or `2025-07-30.preview`",
+          "proposed_markdown": "- Preview access and versioned examples: Ruby beta SDK shows `2025-07-30.preview`; direct secret-key curl sends `Stripe-Version: 2025-03-31.preview`. These are distinct integration examples, not proof of cross-surface version interchangeability or beta SDK requirement for direct curl.",
+          "quote_indexes": [
+            0
+          ],
+          "warnings": [
+            "Old raw lines 35-59 and new raw lines 36-60; secret key should remain server-side."
+          ],
+          "job_id": "payments-custom-localize-prices-fx-quotes-api",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-fx-quotes-api/attempt-1/receipt.json"
+        },
+        {
+          "update_id": "fx-source-route-a1",
+          "target_path": "wiki/concepts/stripe-fx-quotes-api.md",
+          "update_kind": "reciprocal_source_link",
+          "anchor": "- [[source-stripe-fx-quotes-api]] \u2014 primary reference: rate fields, lock durations, pricing tiers, integration, webhooks, restrictions",
+          "proposed_markdown": "- [[source-stripe-fx-quotes-api]] \u2014 primary reference: preview FX rates, payment/transfer duration matrix, fee groups, versioned examples, minor-unit and expiry caveats",
+          "quote_indexes": [
+            0,
+            4
+          ],
+          "warnings": [
+            "New raw lines 194-217 and 131-179; old raw lines 193-229 preserve dated flat availability."
+          ],
+          "job_id": "payments-custom-localize-prices-fx-quotes-api",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-fx-quotes-api/attempt-1/receipt.json"
+        }
+      ],
+      "contributions": [
+        {
+          "job_id": "payments-custom-localize-prices-fx-quotes-api",
+          "receipt_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-fx-quotes-api/attempt-1/receipt.json",
+          "review_path": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-fx-quotes-api/attempt-1/review.json",
+          "input": "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-custom-localize-prices-fx-quotes-api/attempt-1/input.json"
+        }
+      ]
+    }
+  ],
+  "prior_audit": "tracking/ingest/stripe/stripe-campaign-03/updates/audits/concepts/cohort-02-submitted-review.json",
+  "root_correction_provenance": "tracking/ingest/stripe/stripe-campaign-03/updates/concepts/manual-resolutions.json",
+  "reason": "Two finalaudit corrections; seven othercandidatepinsunchanged."
+}

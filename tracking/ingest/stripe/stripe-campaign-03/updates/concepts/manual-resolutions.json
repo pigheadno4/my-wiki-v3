@@ -1,0 +1,254 @@
+[
+  {
+    "target": "wiki/concepts/stripe-blik.md",
+    "anchor": "**Checkout**: `payment_method_types: ['blik']`, `pln`, payment mode only. Refund/dispute window: 13 months.",
+    "update_ids": [
+      "blik-accept-checkout-elements-conflict",
+      "blik_setup_concept_checkout_scope",
+      "blik-concept-integration-mode"
+    ],
+    "proposed_markdown": "**Checkout and timing (dated guides)**: The May 3, 2026 acceptance guide illustrates `payment_method_types: ['blik']`, PLN payment mode and an Elements Checkout Session example. The separate May recurring setup guide shows a Checkout Session in `setup` mode with BLIK and a Customer to save a PaymentMethod without an initial payment. The same-date bank-redirects table marks BLIK setup/subscription modes and Elements with Checkout Sessions unsupported; these captures leave the path-specific conflicts unresolved. November BLIK and bank-redirects overview tables mark broader recurring, Billing, Invoicing and subscription support, but those broad tables alone do not establish a specific Checkout mode or invoice collection method, and the November acceptance/setup captures are only variant indexes. See [[source-stripe-blik-set-up-payment]]. The May acceptance guide gives a 13-month refund/dispute window; the November BLIK overview separately gives 730 days for refund submission, 12 calendar days for merchant dispute evidence, and a generally 13-month customer notification maximum for unauthorized transactions, subject to statutory exceptions. Keep those clocks distinct.",
+    "reason": "Combines three approved source contributions, preserving May cross-guide mode conflicts and distinct November refund/evidence/customer-notification clocks."
+  },
+  {
+    "target": "wiki/concepts/stripe-blik.md",
+    "anchor": "6. Immediate payment confirmation\n\n**No redirect** \u2014 BLIK is unique among bank redirects in that it doesn't require leaving the checkout page.",
+    "update_ids": [
+      "blik-accept-flow-boundary",
+      "blik_setup_concept_redirect_scope"
+    ],
+    "proposed_markdown": "6. After bank-app approval, verify the PaymentIntent reaches `succeeded` before treating the payment as complete.\n\n**Browser and setup flows (May 2026 guides)**: The one-time method prose describes code entry on the payment form and approval in the banking app, while generic Direct API React sample comments mention leaving the page. The recurring setup guide calls `stripe.confirmSetup` with a `return_url` and says BLIK may use an intermediate authorization site before returning; see [[source-stripe-blik-set-up-payment]]. These captures do not establish one universal browser-navigation outcome. The November setup and acceptance captures are variant indexes only and do not revalidate current variant behavior.",
+    "reason": "Combines overlapping approved payment-state and setup-redirect qualifications; no new behavior inferred."
+  },
+  {
+    "target": "wiki/concepts/stripe-extended-authorization.md",
+    "anchor": "- [[source-stripe-extended-authorization]] \u2014 full guide with network tables, 2023 changes, test cards, 3 integration paths",
+    "update_ids": [
+      "payments-extended-authorization-source-route",
+      "flex-migration-extended-authorization-route"
+    ],
+    "proposed_markdown": "- [[source-stripe-extended-authorization]] \u2014 May 11, 2026 full guide for hosted Checkout, embedded Checkout, and advanced PaymentIntent online extended holds, network tables and September 2023 changes; the November 7 capture is a three-variant navigation index only.\n- [[source-stripe-flexible-features-migration]] \u2014 2026-05-11 full beta-to-GA migration guide for the pre-confirmation request and capture_before; the guide's status prose and JSON example conflict, and November capture is variant navigation only",
+    "reason": "Preserves the reviewed dated primary-source description and adds the separately approved migration route."
+  },
+  {
+    "target": "wiki/concepts/stripe-incremental-authorization.md",
+    "anchor": "- [[source-stripe-incremental-authorization]] \u2014 full guide with availability tables, SCA rules, API limits, test cards",
+    "update_ids": [
+      "flex-migration-incremental-authorization-route",
+      "incremental-auth-concept-route"
+    ],
+    "proposed_markdown": "- [[source-stripe-incremental-authorization]] \u2014 2026-05-11 three-variant guide for Checkout and advanced PaymentIntent prerequisites, dated eligibility, SCA and increment/capture limits; 2026-11-07 base-URL capture is only a variant index\n- [[source-stripe-flexible-features-migration]] \u2014 2026-05-11 full beta-to-GA migration guide for the pre-confirmation request rename and post-confirmation status; November capture is variant navigation only",
+    "reason": "Preserves the reviewed dated primary-source description and adds the separately approved migration route."
+  },
+  {
+    "target": "wiki/concepts/stripe-bank-transfers.md",
+    "anchor": "PaymentIntents only \u2014 no SetupIntents, no manual capture, no `setup_future_usage`.",
+    "update_ids": [
+      "payments-bank-transfers-product-matrix",
+      "bt-accept-checkout-sessions-route"
+    ],
+    "proposed_markdown": "The November 7 overview lists Checkout Sessions and PaymentIntents as supported APIs; its PaymentIntent payment-method enum is `customer_balance`. SetupIntents, manual capture, and `setup_future_usage` are unsupported. Checkout excludes subscription and setup mode; Invoices and Subscriptions require `send_invoice` collection. The May 5, 2026 acceptance guide separately documents a hosted Checkout Session flow backed by a PaymentIntent. Its November variant index links an Elements Checkout Sessions route, whose detailed prerequisites and behavior were not captured. See [[source-stripe-bank-transfers-accept-payment]].",
+    "reason": "Combines dated overview API matrix with acceptance-guide route boundaries without inferring uncaptured variant behavior."
+  },
+  {
+    "target": "wiki/concepts/stripe-vouchers.md",
+    "anchor": "**Subscriptions and invoices**: both `send_invoice` and `charge_automatically` supported (unique among vouchers). `charge_automatically` requires name, Brazilian address, and tax ID as default payment method on Customer; Boleto emailed automatically each cycle. `send_invoice` has customer re-enter details each cycle; invoice must have due date. **Important**: even with `charge_automatically`, Boleto is never a true auto-debit \u2014 customer must still actively pay the voucher (Stripe emails a payment link).",
+    "update_ids": [
+      "payments-boleto-set-up-invoices-vouchers-billing",
+      "s03-boleto-subscription-voucher-billing"
+    ],
+    "proposed_markdown": "**Subscriptions and invoices**: both `send_invoice` and `charge_automatically` are documented. For automatic collection, the Boleto PaymentMethod must be attached and set as the default on a Customers v1 Customer or a customer-configured Accounts v2 Account; the customer name, Brazilian address and tax ID must be available. Accounts v2 uses `customer_account` and `configuration.customer.billing.default_payment_method`, while Customers v1 uses `customer` and `invoice_settings.default_payment_method` (2026-11-07 guide; Accounts v2 preview/version access remains conditional). In `send_invoice`, customers re-enter details and the invoice has a due date; voucher expiration is separate and defaults to three days. Even with `charge_automatically`, Boleto is not an auto-debit: the customer must pay the voucher for success. See [[source-stripe-boleto-invoices]] and [[source-stripe-boleto-subscription]]. The recurring guide requires fresh full name, address and tax ID for each send-invoice period. Its generic Dashboard option to refund a last subscription payment does not establish Boleto refund support; [[source-stripe-boleto]] documents no Boleto refunds.",
+    "reason": "Combines both approved invoice/subscription qualifications, keeping identity fields, invoice due date versus voucher expiry, customer payment, and no-refund boundary."
+  },
+  {
+    "target": "wiki/concepts/stripe-customer-balance.md",
+    "anchor": "- [[source-stripe-customer-balance-funding-instructions]] \u2014 createFundingInstructions API, per-region financial_addresses schemas, EU VBAN limit, account ownership letter",
+    "update_ids": [
+      "funding_instructions_concept_source_route",
+      "s03-refunding-customer-source-route"
+    ],
+    "proposed_markdown": "- [[source-stripe-customer-balance-funding-instructions]] \u2014 May/November 2026 funding-instructions guide: Customer/API address shapes, UK CHAPS table addition, Accounts v2 customer-configured Account route, SEPA VBAN limit, and dated ownership-letter route\n- [[source-stripe-bank-transfers-refunds]] \u2014 bank-transfer payment refunds, available cash-balance returns, cancellation boundaries, and captured 45-day wording conflict",
+    "reason": "Preserves revised dated funding route and adds separately approved refund route."
+  },
+  {
+    "target": "wiki/concepts/stripe-customer-balance.md",
+    "anchor": "**Manual reconciliation API**: `stripe.paymentIntents.applyCustomerBalance(id, { amount?, currency })`. Also applicable to open Invoices via Dashboard.\n\n**Webhook**: `cash_balance.funds_available` \u2014 always contains full current balance (not just new funds).\n\n**Unreconciled funds**: auto-return attempt at **75 days**; swept to Stripe balance at **90 days**.",
+    "update_ids": [
+      "payments-bank-transfers-cash-balance-age",
+      "customer-balance-reconciliation-manual-aging-2026"
+    ],
+    "proposed_markdown": "**Manual reconciliation**: A manual-mode customer receives no automatic application. An incomplete or partially funded PI or an open invoice (including overdue) can be funded in the Dashboard; an invoice can be partially funded there. The PI API is `POST /v1/payment_intents/{id}/apply_customer_balance` with `currency` and optional `amount` (defaults to the PI's remaining requested amount).\n\n**Webhook examples**: The November 7, 2026 source uses `customer_cash_balance_transaction.created`, a single transaction object; filter for `type: funded` before considering eligible same-currency PIs and recheck balance after each application. The May 5, 2026 source used `cash_balance.funds_available` with an aggregate CashBalance snapshot, including earlier funds. The newer example does not establish deprecation of the older event. Neither event alone proves an invoice or PI is paid.\n\n**Unreconciled funds**: The bank-transfer overview says Stripe attempts return after funds have been held for **more than 75 days**; the reconciliation guide describes returning the aged portion at **75 days**, with newer funds aging separately. A return attempt can fail. If customer bank account information still cannot be determined by **day 90**, remaining aged funds are swept to the merchant's Stripe balance. This is not another return attempt, and the merchant remains responsible for reconciliation. See [[source-stripe-customer-balance-reconciliation]] and [[source-stripe-bank-transfers]].",
+    "reason": "Preserves reviewed manual/event detail while combining aged-portion timing and conditional day90 bank-information limitation."
+  },
+  {
+    "target": "wiki/concepts/stripe-customer-balance.md",
+    "anchor": "**Retrieve**: `stripe.customers.retrieve(id, { expand: ['cash_balance'] })`. Also works for Accounts v2 objects: `GET /v1/customers/acct_xxxxx`.",
+    "update_ids": [
+      "customer-balance-v2-availability-scope",
+      "funding_instructions_concept_accounts_v2_scope"
+    ],
+    "proposed_markdown": "**Retrieve**: expand `cash_balance` on the Customers API. A Customers v1 customer uses its `cus_` ID; a customer-configured Accounts v2 Account uses its `acct_` ID as the path parameter at `GET /v1/customers/acct_xxxxx`. The November 2026 guide says Accounts v2 was generally available for Connect users, in public preview for other Stripe users, and required a preview API version for preview participants. The May Node.js example uses `stripe.customers.retrieve(id, { expand: ['cash_balance'] })`. See [[source-stripe-customer-balance]] for the dated route. Separately, the November funding-instructions guide uses a customer-configured Account ID at `/v1/customers/acct_xxxxx/funding_instructions`; this is a funding-instructions route, not cash-balance retrieval, and does not establish account-specific access. See [[source-stripe-customer-balance-funding-instructions]].",
+    "reason": "Combines separate retrieve and funding-instructions APIs while preserving Customer/Account identity and dated GA/preview/version conditions."
+  },
+  {
+    "target": "wiki/concepts/stripe-fpx.md",
+    "anchor": "**Amount limits** (Elements legacy): min RM2, max RM30,000.",
+    "update_ids": [
+      "fpx-concept-amount-scope-2026",
+      "fpx_accept_a1_concept_amount"
+    ],
+    "proposed_markdown": "**Amount limits**: The May 3, 2026 *legacy Elements* accept-payment guide states RM2\u2013RM30,000 for that path. The November 7 FPX overview gives B2C 1.00\u201330,000.00 MYR and B2B 2.00\u20131,000,000.00 MYR. Keep the guide's older UI scope; do not apply the broad B2B maximum to the legacy Elements path without path-specific authority. See [[source-stripe-fpx]] and [[source-stripe-fpx-accept-payment]]. The legacy guide's `invalid_amount` row instead says greater than RM2 and less than RM30,000, so eligibility at either endpoint remains unresolved in that capture. The November acceptance variant index does not resolve it.",
+    "reason": "Combines dated UI-specific amount bounds with November B2C/B2B scopes and preserves same-guide endpoint contradiction."
+  },
+  {
+    "target": "wiki/concepts/stripe-bank-transfers.md",
+    "anchor": "- [[source-stripe-bank-transfers-refunds]] \u2014 4 refund flows, refund status lifecycle, 45-day/180-day constraints, international wire limitation, test helpers",
+    "update_ids": [],
+    "proposed_markdown": "- [[source-stripe-bank-transfers-refunds]] \u2014 three payment-refund/cash-balance return paths, distinct cancellation routes, captured 45-day wording conflict, dated 180-day and SWIFT limits, and test helpers",
+    "reason": "Final independent merged-concept audit02: stale source-route label contradicts approved three-path/cancellation distinctions."
+  },
+  {
+    "target": "wiki/concepts/stripe-fx-quotes-api.md",
+    "anchor": "Mid-market rate fallback: applies to non-card PMs taking >24h to process when extended quote expires.",
+    "update_ids": [],
+    "proposed_markdown": "Mid-market rate fallback: the captures limit it to some non-card payment methods taking more than 24 hours when an extended quote expires or can no longer be applied.",
+    "reason": "Final independent merged-concept audit02: preserve both raw captures' some qualifier and expired/unusable quote condition."
+  },
+  {
+    "target": "wiki/concepts/stripe-adaptive-pricing.md",
+    "anchor": "- [[source-stripe-adaptive-pricing-elements]] \u2014 Elements integration guide: adaptivePricing.allowed flag, CurrencySelectorElement React component, currencyOptions guard, +location_XX testing",
+    "update_ids": [
+      "adaptive_pricing_elements_reciprocal_route",
+      "manual_currency_a1_source_link"
+    ],
+    "proposed_markdown": "- [[source-stripe-adaptive-pricing-elements]] \u2014 April and November 2026 Checkout Sessions/Elements guide: separate client `adaptivePricing.allowed` and Session/Dashboard enablement, 26 named local methods, conditional India support, selector troubleshooting, unresolved API Checkout Session currency wording, and dated April-only custom-amount restriction.\n- [[source-stripe-manual-currency-prices]] \u2014 manually fixed Price currency_options on Checkout Sessions override Adaptive Pricing for those currencies; November 2026 adds a customer-configured Account testing option",
+    "reason": "Preserves reviewed dated Adaptive Pricing route and adds manual-currency override source."
+  },
+  {
+    "target": "wiki/concepts/stripe-adaptive-pricing.md",
+    "anchor": "Not supported for:\n- Elements + Payment Intents API integrations\n- Indian businesses\n- `capture_method: 'manual'`\n- `custom_unit_amount` (pay-what-you-want)\n- When local currency already in price `currency_options` (that currency skipped, others still converted)\n- Price currency must be a settlement currency",
+    "update_ids": [
+      "adaptive_pricing_eligibility_restrictions",
+      "manual_currency_a1_override_route"
+    ],
+    "proposed_markdown": "The 2026-11-07 Checkout Sessions/Elements guide excludes Elements + Payment Intents API and Checkout Sessions with `capture_method: 'manual'`. A manually fixed local amount in Price `currency_options` overrides Adaptive Pricing for that currency; other currencies may still convert where the feature and Checkout configuration support it. See [[source-stripe-manual-currency-prices]] for the Checkout Session path and localization prerequisites. The integration or price currency must be a settlement currency of the merchant of record, and Indian businesses are supported only if they accept international payments. The 2026-04-21 guide instead said Indian businesses were unsupported and excluded custom amounts; the November restriction list omits custom amounts, so their current applicability is unresolved. These guide conditions do not establish account-specific eligibility. See [[source-stripe-adaptive-pricing-elements]].",
+    "reason": "Combines manual per-currency override with dated India, custom-amount, capture, API and settlement-currency eligibility qualifications."
+  },
+  {
+    "target": "wiki/concepts/stripe-vault-and-forward.md",
+    "anchor": "4. Stripe returns 200; actual destination status is in response body",
+    "update_ids": [
+      "forwarding_processors_concept_response_scope",
+      "forwarding-vault-response-status-boundary"
+    ],
+    "proposed_markdown": "4. Inspect both the Forwarding API response and destination result. The general [[source-stripe-vault-and-forward]] guide says a response received from the destination yields forwarding HTTP 200 even when the destination returns 400, with its response/error in the body. The own-vault guide instead says the API returns the same status, while its concrete example also shows vault 400 yielding API 200; preserve that wording tension. The third-party processor example separately checks `response_details.status` and catches request errors. Neither API 200 nor a forwarded response proves vault token creation, processor authorization, capture or settlement. See [[source-stripe-forwarding-third-party]] and [[source-stripe-forwarding-token-vault]].",
+    "reason": "Combines both approved forwarding response scopes and retains same-status prose versus400/200 example contradiction without payment-success inference."
+  },
+  {
+    "target": "wiki/concepts/stripe-bnpl.md",
+    "anchor": "| Affirm | `affirm` | US, CA | $50\u2013$30k | Subscriptions, Terminal |",
+    "update_ids": [
+      "affirm-bnpl-method-row",
+      "bnpl-overview-affirm-row-2026"
+    ],
+    "proposed_markdown": "| Affirm | `affirm` | US, CA; GB private preview | US USD 35\u201330k across eligible options; CA CAD 50\u201330k; GB preview GBP 50\u201330k | Single-use; no recurring payments, SetupIntents, or off-session use; Terminal listed; November overview marks Customer Portal Supported and Subscriptions Unsupported, versus May overview Subscriptions via `send_invoice` and Portal Unsupported |",
+    "reason": "Combines method-specific geography/limits/private preview with dated overview subscription and Customer Portal changes; no recurring entitlement."
+  },
+  {
+    "target": "wiki/concepts/stripe-bnpl.md",
+    "anchor": "Stripe supports 11 buy now, pay later (BNPL) payment methods. Merchants are paid immediately and in full; customers pay nothing or a portion at purchase time and repay in installments. All BNPL methods require a redirect.",
+    "update_ids": [
+      "bnpl-overview-definition-2026",
+      "klarna-overview-bnpl-definition-payout"
+    ],
+    "proposed_markdown": "Stripe's November 7, 2026 overview lists 11 buy now, pay later (BNPL) methods: customers pay nothing or a portion at purchase time and repay a provider in installments. Its ten-row API table marks the listed methods as requiring redirect but omits Scalapay, so it does not establish Scalapay API or redirect behavior. For Klarna specifically, payment acceptance credits the order amount minus fees to the merchant's Stripe account and standard payout timing applies; this does not promise an immediate external payout. Buyer selection and return do not establish approval or completed payment. See [[source-stripe-bnpl-overview]] and [[source-stripe-klarna]].",
+    "reason": "Keeps dated eleven-method overview, ten-row API coverage limit, and method-specific net-funds versus payout qualification."
+  },
+  {
+    "target": "wiki/concepts/stripe-bnpl.md",
+    "anchor": "All BNPL methods support:\n\n- PaymentIntents \u2713\n- Redirect required \u2713\n\n**Manual capture**: Affirm, Afterpay, Alma, Billie, Klarna, Kriya, Mondu, SeQura \u2713 (Sunbit, Zip \u2717)\n\n**SetupIntents**: Klarna only\n\n**setup_future_usage**: Billie, Klarna, Kriya, Mondu, SeQura\n\n**Express Checkout Element**: Klarna only (no `setup_future_usage` when using ECE)",
+    "update_ids": [
+      "billie-overview-bnpl-api-conflict",
+      "bnpl-overview-api-2026"
+    ],
+    "proposed_markdown": "The November 2026 overview's API matrix has ten rows, omitting Scalapay. Its listed methods show PaymentIntents support and redirect required; this is not an all-eleven claim. Manual capture is supported for Affirm, Afterpay/Clearpay, Alma, Billie, Klarna, Kriya, Mondu, and SeQura, and unsupported for Sunbit and Zip. Klarna alone shows SetupIntents support. `setup_future_usage` is supported for Billie, Klarna, Kriya, Mondu, and Sunbit; SeQura changed from May Supported to November Unsupported. The API footnote says non-card/bank-debit methods either do not support the parameter or support only `off_session`; it does not promise every session mode. The Billie support cell conflicts with the November method-specific Billie matrix, which marks PaymentIntents with `setup_future_usage` unsupported; both Billie overviews mark recurring payments unsupported. Preserve this dated conflict and verify the integration route rather than inferring recurring support. Klarna alone shows Express Checkout Element support in the product matrix, where saving during payment via `setup_future_usage` is excluded. See [[source-stripe-bnpl-overview]].\n\n**Connect conflict**: Both overview product matrices mark all eleven methods Supported on Connect, while the May method-specific captures for Kriya, Mondu, SeQura, and Scalapay say Connect No. This is an unresolved dated source conflict, not an established account entitlement; see [[source-stripe-bnpl-overview]] and the individual method sources.",
+    "reason": "Combines updated ten-row API matrix with Billie method-specific exclusion and existing Connect conflict, preserving method/session qualifications."
+  },
+  {
+    "target": "wiki/concepts/stripe-bank-redirects.md",
+    "anchor": "- [[source-stripe-bank-redirects]] \u2014 primary source: product support matrix, API support matrix, payment flow",
+    "update_ids": [
+      "payments-bancontact-bank-redirect-source-route",
+      "bank-redirects-source-route-2026",
+      "bank-redirects-blik-source-route",
+      "bank-redirects-fpx-source-route"
+    ],
+    "proposed_markdown": "- [[source-stripe-bank-redirects]] \u2014 May 3 and November 7, 2026 product/API matrices: method-specific footnotes, BLIK and Bancontact changes, and TWINT's November row omission\n- [[source-stripe-bancontact]] \u2014 Bancontact overviews (2026-05-03 and 2026-11-07): updated refund and eligibility boundaries and dated setup conflict\n- [[source-stripe-blik]] \u2014 May 3 and November 7, 2026 BLIK overviews: reusable mandate path, operational limits, and route-specific support qualifications\n- [[source-stripe-fpx]] \u2014 May 3 and November 7, 2026 FPX overviews: MY/MYR, dated refund change, B2C/B2B bounds, send_invoice-only Billing scope",
+    "reason": "Combines dated hub source description with Bancontact, BLIK and FPX reciprocal routes."
+  },
+  {
+    "target": "wiki/concepts/stripe-bank-redirects.md",
+    "anchor": "| Bancontact | `bancontact` | Yes | Yes (`off_session` only) | Yes |\n| BLIK | `blik` | No | No | No |\n| EPS | `eps` | No | No | Yes |\n| FPX | `fpx` | No | No | Yes |\n| iDEAL\\|Wero | `ideal` | Yes | Yes (`off_session` only) | Yes |\n| P24 | `p24` | No | No | Yes |\n| Pay by Bank | `pay_by_bank` | No | No | Yes |\n| TWINT | `twint` | Yes | Yes (`off_session` only) | Yes |",
+    "update_ids": [
+      "payments-bancontact-bank-redirect-matrix",
+      "bank-redirects-api-rows-2026",
+      "bank-redirects-blik-api-row"
+    ],
+    "proposed_markdown": "| Bancontact | `bancontact` | No in November matrix (May: Yes) | Yes in November matrix, with generated SEPA Direct Debit footnote; same-date Bancontact page says no | Yes |\n| BLIK | `blik` | Yes in November matrix (May: No; May setup guide: Yes) | Yes in November matrix (May: No); off-session recurring path in BLIK guide | No |\n| EPS | `eps` | No | No | Yes |\n| FPX | `fpx` | No | No | Yes |\n| iDEAL\\|Wero | `ideal` | Yes | Yes | Yes |\n| P24 | `p24` | No | No | Yes |\n| Pay by Bank | `pay_by_bank` | No | No | Yes |\n| TWINT | `twint` | May 3 matrix: Yes; no November row | May 3 matrix: Yes; no November row | May 3 matrix: Yes; no November row |\n\nThe May Bancontact setup/save guides separately document generated SEPA Direct Debit paths. November's hub future-use checkmark with a generated-SEPA footnote conflicts with the same-date method overview's unsupported future-use cell; it does not establish current account eligibility or completed mandate setup. The API footnote does not impose an exclusive `off_session` value on every listed method.",
+    "reason": "Preserves complete dated API matrix and both Bancontact/BLIK method-specific row qualifications."
+  },
+  {
+    "target": "wiki/concepts/stripe-bank-redirects.md",
+    "anchor": "- **Express Checkout Element**: unsupported for all bank redirects\n- **Checkout setup/subscription mode**: unsupported for BLIK, EPS, FPX, P24, TWINT\n- **Subscriptions**: only iDEAL|Wero, Bancontact, EPS, FPX, P24 \u2014 all via `send_invoice` only (not `charge_automatically`)\n- **Invoicing**: FPX full support; iDEAL|Wero full support; Bancontact/EPS/P24 invite-only; BLIK/TWINT unsupported\n- **BLIK**: does not support deferred intent creation path",
+    "update_ids": [
+      "payments-bancontact-bank-redirect-invoicing",
+      "bank-redirects-product-rows-2026",
+      "bank-redirects-blik-product-boundary",
+      "s03-eps-shared-bank-redirect-scope",
+      "bank-redirects-fpx-billing-boundary",
+      "fpx_accept_a1_bank_subscriptions"
+    ],
+    "proposed_markdown": "- **Express Checkout Element**: unsupported for every method listed in both captured product tables; Pay by Bank has no product row and TWINT has no November row.\n- **Checkout modes**: November EPS/FPX/P24 retain footnotes excluding setup and subscription modes. The May BLIK row also had those footnotes, but November BLIK does not. Its separate May accept-payment guide covered a one-time payment-mode path while its same-date setup guide documented Checkout setup mode; no single row resolves all guide routes. TWINT has only a May row with those exclusions.\n- **Subscriptions**: November BLIK supported, with mandate/capability conditions in its method page; Bancontact/EPS/FPX/P24 `send_invoice` only; iDEAL|Wero Checkout subscription mode only plus `send_invoice`, excluding `charge_automatically`. TWINT's May row was unsupported and is absent in November.\n- **Invoicing and portal**: November BLIK Invoicing and Customer Portal supported; May row marked both unsupported. November Bancontact/EPS/P24 Invoicing invite-only, FPX supported, iDEAL|Wero supported without `charge_automatically`; TWINT's May row said unsupported and November omits it.\n- **BLIK Payment Element**: November footnotes still exclude collecting details before PI creation and Elements with the Checkout Sessions API. The bank-redirects table says Mobile Payment Element supported, while the same-date BLIK method overview says its in-app category unsupported; keep this apparent terminology/scope conflict visible. BLIK's deferred-intent creation path remains excluded in the November API footnote.\n\n**Method-page conflicts**: November's hub marks Bancontact/EPS/P24 Invoicing invite-only. The November Bancontact method overview instead lists `send_invoice` collection without resolving account-specific gating. The EPS method overview lists Invoicing supported with a `send_invoice` footnote whose attachment is unclear; it still marks recurring and off-session payments unsupported. Preserve those same-date scope conflicts; per-invoice collection is not automatic recurring charging. See [[source-stripe-bancontact]] and [[source-stripe-eps]].\n\nThe May FPX legacy Elements guide said Billing and recurring/additional payments were unsupported, despite the May hub's `send_invoice` subscription cell. The November FPX overview marks Billing/Invoicing supported with a `send_invoice` footnote while recurring, off-session, SetupIntents and future usage remain unsupported. Its November acceptance capture is only variant navigation. Keep the route-specific conflict; the broad Billing cell does not authorize automatic recurring charges. See [[source-stripe-fpx]] and [[source-stripe-fpx-accept-payment]].",
+    "reason": "Combines method-specific current/historical product cells with Bancontact/EPS gating and FPX legacy-Billing conflicts, preserving all excluded BLIK paths."
+  },
+  {
+    "target": "wiki/concepts/stripe-bancontact.md",
+    "anchor": "- **Recurring**: Not native \u2014 requires saving as [[stripe-sepa-debit]] mandate. Bancontact payment can be converted to a SEPA Direct Debit for future recurring charges.",
+    "update_ids": [
+      "payments-bancontact-recurring-boundary",
+      "bancontact-bank-redirects-setup-conflict"
+    ],
+    "proposed_markdown": "- **Recurring and setup boundary**: Native Bancontact is single-use; future recurring use can involve a generated [[stripe-sepa-debit]] payment method. The May 3 bank-redirects API matrix marked Bancontact SetupIntents and future usage supported. Its November 7 matrix marks SetupIntents unsupported but future usage supported through a generated SEPA Direct Debit footnote, while the same-date Bancontact method overview marks both SetupIntents and PaymentIntents with setup_future_usage unsupported. Preserve the unresolved route-specific conflict; none of these cells proves a particular account can complete a mandate. The separate May [[source-stripe-bancontact-set-up-payment|setup]] and [[source-stripe-bancontact-save-during-payment|save-during-payment]] guides document those generated-SEPA paths; the captures do not resolve their current support.",
+    "reason": "Combines dated SEPA setup/save evidence with same-date November hub versus method API conflict."
+  },
+  {
+    "target": "wiki/concepts/stripe-bancontact.md",
+    "anchor": "- [[source-stripe-bancontact]] \u2014 primary source: properties, payment flows, disputes, refunds",
+    "update_ids": [
+      "payments-bancontact-primary-source-route",
+      "bancontact-bank-redirects-source-route"
+    ],
+    "proposed_markdown": "- [[source-stripe-bancontact]] \u2014 Bancontact overviews (2026-05-03 and 2026-11-07): single-use Belgian EUR redirect, eligibility, payment/refund boundaries, product support and dated setup conflict\n- [[source-stripe-bank-redirects]] \u2014 May 3 and November 7, 2026 matrices; Bancontact SetupIntent and generated-SEPA future-use conflict with same-date method page",
+    "reason": "Preserves dated primary description and adds conflicting hub authority route."
+  },
+  {
+    "target": "wiki/concepts/stripe-blik.md",
+    "anchor": "- [[source-stripe-blik]] \u2014 primary source: payment flow, disputes, refunds, Connect",
+    "update_ids": [
+      "blik-bank-redirects-source-route",
+      "blik-concept-source-route"
+    ],
+    "proposed_markdown": "- [[source-stripe-blik]] \u2014 May 3 and November 7, 2026 BLIK overview captures: code payment, reusable mandate setup, refunds, disputes, Connect prerequisites and dated support conflicts\n- [[source-stripe-bank-redirects]] \u2014 May 3 and November 7, 2026 matrix changes and conflicting BLIK setup/mobile rows; read with method-specific guides",
+    "reason": "Combines dated BLIK source description with hub conflict authority route."
+  },
+  {
+    "target": "wiki/concepts/stripe-blik.md",
+    "anchor": "- **Confirmation**: Customer-initiated, immediate notification\n- **Recurring**: Private preview\n- **Deferred intent**: Client-side confirmation only (private preview)\n- **ECE + Mobile Payment Element**: Not supported\n- **Refunds**: Full and partial; immediate or within hours depending on bank",
+    "update_ids": [
+      "blik-bank-redirects-reciprocal-conflict",
+      "blik-concept-recurring-boundary"
+    ],
+    "proposed_markdown": "- **Confirmation**: Customer approves in the bank app within 60 seconds; the November overview calls confirmation immediate but says Stripe normally receives an asynchronous result within 60 seconds. This does not prove payment success or settlement.\n- **Recurring**: The May 3, 2026 BLIK capture said private preview and single use. The November 7 overview marks BLIK reusable and recurring supported: an initial bank-app-authorized mandate attaches to a reusable PaymentMethod. Save during payment with PI `setup_future_usage=off_session` or without an initial payment with SetupIntent `usage=off_session`; a future charge needs valid authorization. The off-session recurring cap is 2,000 PLN per charge. The May bank-redirects matrix marked SetupIntents, future usage, subscriptions and Checkout setup unsupported, although the separate May BLIK setup guide documented no-charge Checkout setup and SetupIntents. The November hub and method page mark recurring/setup support, conditional on bank-app mandate authorization and relevant active Connect capabilities; a support cell or completed setup does not prove a future successful charge.\n- **Deferred intent**: The May 3 BLIK page described client-side confirmation only in private preview. The November BLIK overview excludes collecting details before PI creation in Payment Element, and its same-day bank-redirects guide excludes BLIK's deferred-intent creation path. Keep these route-specific.\n- **UI support**: Express Checkout Element unsupported. The November BLIK overview says \"in-app payments\" unsupported, while the same-day bank-redirects table says Mobile Payment Element supported; do not equate the labels without an integration-specific guide. That matrix explicitly excludes BLIK when using Elements with the Checkout Sessions API, despite its separate broad Checkout and Payment Element support cells.\n- **Refunds**: Full and partial; submit within 730 days; asynchronous, noncancelable, up to 120 minutes. Check final Refund status or verified webhook. The May 3 page used shorter bank-dependent timing wording.",
+    "reason": "Combines recurring state/timing/refund boundaries with dated May setup contradiction and November capability qualifications."
+  }
+]

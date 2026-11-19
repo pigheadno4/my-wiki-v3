@@ -1,0 +1,184 @@
+{
+  "job_id": "payments-bacs-debit-accept-a-payment",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-bacs-debit-accept-a-payment-2026-11-07.md",
+  "raw_sha256": "1d3e3ecaebcbc4ff8556f5e399061c4e489bc0426d8785b172f1d3d68fe64565",
+  "prior_raw_path": "raw/stripe-bacs-accept-payment-2025.md",
+  "prior_raw_sha256": "dbea1a7b93e50083864439e8cb07807899c65843f669f1834211fc944b2eca9b",
+  "source_targets": [
+    "wiki/sources/source-stripe-bacs-accept-payment.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-bacs-accept-payment.md": "66280d9938519870f67bed9d6cee2dbb43331a73813a76ce7d3498240668d406"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-bacs-debit-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-bacs-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 220
+      },
+      {
+        "start": 221,
+        "end": 440
+      },
+      {
+        "start": 441,
+        "end": 660
+      },
+      {
+        "start": 661,
+        "end": 880
+      },
+      {
+        "start": 881,
+        "end": 1060
+      }
+    ],
+    "wiki/sources/source-stripe-bacs-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 65
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/98727a8c608a668c40545843/content.diff": [
+      {
+        "start": 1,
+        "end": 220
+      },
+      {
+        "start": 221,
+        "end": 440
+      },
+      {
+        "start": 441,
+        "end": 660
+      },
+      {
+        "start": 661,
+        "end": 880
+      },
+      {
+        "start": 881,
+        "end": 1062
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 24
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 234,
+        "end": 255
+      },
+      {
+        "start": 732,
+        "end": 742
+      }
+    ],
+    "wiki/concepts/stripe-bacs-direct-debit.md": [
+      {
+        "start": 1,
+        "end": 119
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/proposed-queries.md": [
+      {
+        "start": 152,
+        "end": 157
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Accept Bacs Direct Debit payments from customers with a UK bank account.",
+      "location": "raw/stripe-payments-bacs-debit-accept-a-payment-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-bacs-debit-accept-a-payment-2026-11-07.md:11"
+    },
+    {
+      "text": "[Checkout](https://docs.stripe.com/payments/bacs-debit/accept-a-payment.md?payment-ui=checkout)",
+      "location": "raw/stripe-payments-bacs-debit-accept-a-payment-2026-11-07.md:13"
+    },
+    {
+      "text": "[Elements](https://docs.stripe.com/payments/bacs-debit/accept-a-payment.md?payment-ui=elements)",
+      "location": "raw/stripe-payments-bacs-debit-accept-a-payment-2026-11-07.md:14"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Bacs Direct Debit payments must be in GBP.",
+      "location": "raw/stripe-bacs-accept-payment-2025.md:79"
+    },
+    {
+      "text": "However, Bacs Direct Debit is a delayed notification payment method, which means that funds aren\u2019t immediately available.",
+      "location": "raw/stripe-bacs-accept-payment-2025.md:158"
+    },
+    {
+      "text": "The Bacs Direct Debit scheme rules require that your customer accept a mandate in order for Stripe to debit their account.",
+      "location": "raw/stripe-bacs-accept-payment-2025.md:365"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Semantic raw delta: November capture lines 5-14 retain Bacs UK-bank purpose but replace the May 2, 2026 combined Checkout and Elements guide with a two-link variant index; diff lines 1-29 and 1060-1062 show replacement by navigation, not Bacs behavior deprecation or renewed detailed guidance. No substantive payment or mandate flow change is established by the 14-line index.",
+    "Existing-summary accuracy: mapped source lines 13-30 mostly tracks May guide's distinct Checkout Session and Elements/PaymentIntent paths (old raw lines 16-28, 93-168, 326-365, 575-709, 852-877), but source line 20 presents example setup_future_usage=off_session without labeling it as a save-for-later example (old raw lines 116-139), and source lines 17-30 omit the critical success_url/checkout.session.completed authorization-versus-success and delayed funds boundary (old raw lines 112-116, 144-174).",
+    "Source test table lines 32-46 is sandbox-only (old raw lines 270-290, 887-905). Its 'succeeds immediately' wording at line 36 is stronger than old raw line 278, which says PaymentIntent transitions processing to succeeded but gives no immediate duration; the delayed row explicitly says three minutes at old raw line 279. Test success, mandate state and dispute examples are not live settlement guarantees.",
+    "Source line 61's mandate reference prefix constraints omit the requirement that the first character be a number or uppercase letter, and omit trailing-space normalization and delimiter requirement (old raw lines 941-956); the source should not imply all listed characters may start a prefix. New raw lines 9-14 contain no prefix detail.",
+    "May guide's Accounts v2 note limits customer-configured Accounts to GA for Connect and public preview for other Stripe users with a preview version (old raw lines 8-14). Current source lines 26-30 lists customer_account as an equal option without the access qualification; the November index lines 9-14 does not renew it.",
+    "Main route: wiki/index.md line 7 -> wiki/stripe-index.md lines 250-251 and 739 -> wiki/concepts/stripe-bacs-direct-debit.md lines 80-88 and 115-119 -> mapped source. Current source frontmatter lines 1-9 lacks canonical_url and raw_files line 7/Raw Sources lines 63-65 link only the dated May raw, missing November navigation provenance."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "Retain May 2, 2026 detailed Checkout instructions as dated: UK merchant/UK account and GBP path, Product/Price or qualified ad-hoc Price, server-created payment-mode Checkout Session, optional save-for-later configuration, and Bacs debit notification emails (old raw lines 16-28, 43-49, 79-90, 93-146). The November index lines 7-14 establishes neither current parameters nor eligibility.",
+    "Retain May Checkout event distinction: checkout.session.completed records debit authorization, async_payment_succeeded permits fulfillment, async_payment_failed requires follow-up; success_url is not reliable payment evidence, and funds are delayed (old raw lines 112-116, 144-176).",
+    "Retain May Elements flow separately: customer/possible customer-configured Account, mandate collection by Payment Element, server-owned GBP PaymentIntent, client elements.submit and confirmPayment, then payment_intent.succeeded/processing/payment_failed handling (old raw lines 326-371, 575-709, 703-769, 852-877). Creating a PaymentIntent or browser return does not mean settled funds.",
+    "Retain sandbox-only test-account outcomes and failure-code retryability as dated, including mandate inactive after debit_not_authorized versus active after insufficient_funds and a success followed by dispute; do not treat the sample token names as live guarantees (old raw lines 270-311, 887-926; current source lines 32-57).",
+    "Retain optional target_date as a best-effort 3-15 day setting, with weekend/holiday/lead-time movement; distinguish Checkout target-date example from Elements PaymentIntent target-date and cancellation note (old raw lines 313-324, 928-939). Preserve mandate prefix on PaymentIntent, SetupIntent and Checkout modes with its first-character, 12-character, reserved-prefix and generated-reference constraints (old raw lines 941-1055).",
+    "Retain May Accounts v2 access condition: customer-configured Accounts GA for Connect, public preview for other Stripe users, preview-version requirement; Customer is an alternative (old raw lines 8-14, 587-639)."
+  ],
+  "conflicts": [
+    "Old guide's Checkout passage says funds typically become available in 3 business days (old raw line 158), while the Elements timeline says payment success confirmation takes 4 business days with an existing mandate or 7 with a new mandate and standard funds available T+4 from submission (old raw lines 858-870). Do not collapse these route-specific dated statements into one guaranteed settlement time; new raw lines 7-14 has no resolution.",
+    "Old guide's Checkout introductory line loosely says redirected when purchase completes (old raw line 28), while its event table defines checkout.session.completed as debit authorization and async_payment_succeeded as later success (old raw lines 154-168). The summary should use the event/state distinction rather than equating redirect with paid.",
+    "Current source line 36 says sandbox account 00012345 'succeeds immediately' but old raw line 278 does not specify immediate duration; line 61 omits the required prefix starting character from old raw lines 945-954. These are baseline accuracy issues, not November raw changes."
+  ],
+  "unresolved_questions": [
+    "The November index gives Checkout and Elements variant URLs only (new raw lines 9-14). Their November detailed content, current SDK/UI behavior, availability and exact payment-method or webhook rules were not pinned in this task; separately authorized capture is needed to refresh them.",
+    "The May guide has route-specific or internally varying settlement statements (old raw lines 158, 858-870); this packet does not establish a current universal timeline or account-specific funds availability."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-bacs-direct-debit.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-bacs-accept-payment.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add exact canonical_url https://docs.stripe.com/payments/bacs-debit/accept-a-payment, November index raw route and dated May detail route (source lines 1-9, 63-65; new raw lines 1-14; old raw lines 1-18, 326-330).",
+        "Mark Checkout setup_future_usage off_session as a save-for-later example and distinguish Session completion/redirect authorization from async success, PI processing from succeeded and funds availability (source lines 17-30; old raw lines 112-174, 852-877).",
+        "Qualify Account/customer_account with May Accounts v2 Connect GA versus other-user preview and preview-version requirement (source lines 26-30; old raw lines 8-14).",
+        "Correct sandbox test row 00012345's unsupported 'immediately' timing and complete prefix rules: starts with number/uppercase letter, max 12, reserved prefixes, trailing-space/delimiter conditions (source lines 32-46, 59-61; old raw lines 276-279, 941-956)."
+      ],
+      "conflicts": [
+        "Checkout 3-business-day typical funds statement versus Elements T+4 funds/4-or-7-day confirmation are dated route-specific passages (old raw lines 158, 858-870); avoid a universal settlement claim.",
+        "Checkout success_url wording and checkout.session.completed may sound like success, but May event table says authorization precedes async_payment_succeeded (old raw lines 112-116, 154-168)."
+      ],
+      "reason": "The raw delta is navigation-only, but the current summary needs dual-raw provenance and baseline corrections to avoid wrong fulfillment timing, account-access, test timing and mandate-prefix inferences. No repository edit is requested here."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/bacs-debit/accept-a-payment, the complete November capture establishes only that Bacs Direct Debit accepts payments from customers with UK bank accounts and routes readers to Checkout and Elements variants (new raw lines 5-14). The May 2 guide supplies the dated details: Checkout uses a GBP Product/Price and server-created payment-mode Session with Bacs selection; checkout.session.completed means debit authorization, while async_payment_succeeded means later success and async_payment_failed means failure (old raw lines 16-28, 79-90, 93-168). The Elements path collects mandate acknowledgement, creates a GBP PaymentIntent server-side for Customer or qualified customer-configured Account, submits Elements and confirms client-side; payment_intent.succeeded, processing and payment_failed are distinct (old raw lines 326-371, 575-709, 703-769, 852-877). Accounts v2 was GA for Connect and preview for others with preview-version requirement (old raw lines 8-14). source-stripe-bacs-accept-payment.md summarizes both paths and sandbox tests but omits dated provenance and several outcome/eligibility qualifications (current source lines 1-30, 32-65). Session creation, mandate authorization and browser return are not payment success or funds availability.",
+    "Q2": "At https://docs.stripe.com/payments/bacs-debit/accept-a-payment, the November change is presentation and variant navigation: the combined guide was replaced by Checkout and Elements links, with no demonstrated substantive change to payment rules (new raw lines 7-14; old raw lines 16-28, 326-332; diff lines 1-29, 1060-1062). source-stripe-bacs-accept-payment.md must retain the May 2, 2026 Checkout/Elements, sandbox test, optional target_date and mandate-prefix claims as dated, add canonical_url and both raw routes, and narrow its unsupported 'succeeds immediately' sandbox timing and incomplete prefix rule (current source lines 1-9, 17-22, 32-65; old raw lines 276-324, 887-956). The old Checkout prose says funds typically available in three business days, but Elements describes T+4 availability and 4/7-day confirmation; this needs route-specific dated wording, not one universal promise (old raw lines 158, 858-870). Checkout Session completion/redirect means authorization or details collected, while async success and PaymentIntent succeeded are later payment states; neither equates to available funds (old raw lines 112-174, 852-877). Customer versus Accounts v2 access, GBP/UK scope, Checkout versus web Elements, and sandbox-only results all remain qualified; the index does not renew current detailed behavior (new raw lines 9-14)."
+  }
+}

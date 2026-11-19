@@ -1,0 +1,86 @@
+{
+  "job_id": "payments-jp-installments",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "All four pinned SHA-256 values match and I independently read the complete numbered November and May raws, mapped source and diff. The receipt accurately distinguishes no additional installment merchant fee from ordinary card fees, typically absent rather than guaranteed interest, full transaction principal from standard card funds availability, and the largely presentational raw delta. One material eligibility boundary remains conflated. Both captures' properties say recurring payments 'No' (old raw lines 32-34; new raw lines 33-35), while their requirements separately say not to use installments for recurring payments or other off-session payments where the customer does not select a plan at payment (old raw line 81; new raw line 82). The finding and Q1 call these collectively 'customer-unselected recurring/off-session payments,' which could imply recurring is restricted only when a plan was not selected. The linked direct and umbrella concepts at lines 14 and 40 instead state a blanket off-session ban, dropping the raw's condition. The receipt lists those concepts as affected but flags only their upfront-funds wording.",
+  "required_changes": [
+    "Separate the two captured restrictions in findings, source assessment and Q1/Q2: recurring installment payments are unsupported (old raw lines 32-34, 81; new raw lines 33-35, 82); the additional off-session warning is phrased for payments where the customer does not select the plan when paying. Do not imply recurring becomes supported if a customer selected a plan, or infer that any off-session scenario is affirmatively supported. Identify the reciprocal overbroad wording in wiki/concepts/stripe-jp-installments.md:14 and wiki/concepts/stripe-installments.md:40, alongside the already identified funds-timing warnings, and keep this as baseline accuracy rather than a November product change."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "read_ranges": {
+    "raw/stripe-payments-jp-installments-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 117
+      }
+    ],
+    "raw/stripe-jp-installments-2025.md": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 116
+      }
+    ],
+    "wiki/sources/source-stripe-jp-installments.md": [
+      {
+        "start": 1,
+        "end": 29
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/b0cbd48c7035bff3816d7a69/content.diff": [
+      {
+        "start": 1,
+        "end": 63
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 225,
+        "end": 235
+      },
+      {
+        "start": 755,
+        "end": 770
+      }
+    ],
+    "wiki/concepts/stripe-jp-installments.md": [
+      {
+        "start": 1,
+        "end": 53
+      }
+    ],
+    "wiki/concepts/stripe-installments.md": [
+      {
+        "start": 1,
+        "end": 49
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/proposed-queries.md": [
+      {
+        "start": 621,
+        "end": 627
+      }
+    ]
+  },
+  "source_assessment_decisions": [
+    {
+      "source_target": "wiki/sources/source-stripe-jp-installments.md",
+      "verdict": "changes_requested",
+      "reason": "The fee, interest and funds-timing corrections are sound. The assessment should additionally preserve the raw's distinct recurring versus conditional other off-session restrictions and identify reciprocal overbroad wording in both linked concepts, without claiming any off-session use case is supported."
+    }
+  ]
+}

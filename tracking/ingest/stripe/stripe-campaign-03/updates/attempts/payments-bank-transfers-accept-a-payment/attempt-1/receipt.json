@@ -1,0 +1,154 @@
+{
+  "job_id": "payments-bank-transfers-accept-a-payment",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-bank-transfers-accept-payment.md": {
+      "job_id": "payments-bank-transfers-accept-a-payment",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Stripe: Accept a Bank Transfer\"\ntype: source\ndate_ingested: 2026-05-05\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/bank-transfers/accept-a-payment\"\nraw_files:\n  - \"stripe-bank-transfers-accept-payment-2025.md\"\ntags: [stripe, bank-transfers, payment-intents, customer-balance, webhooks, checkout, reconciliation]\n---\n\n## Overview\n\nStripe's November 7, 2026 capture of this URL is a variant index. Its headline names **Checkout Sessions or Payment Intents** for accepting bank transfers and links Elements with each API, hosted Checkout, and Direct API variants. The capture contains no steps or prerequisites for the newly linked Elements Checkout Sessions variant. The detailed integration facts below come from the May 5, 2026 full capture; the index does not confirm their current availability or retire them. See [[stripe]], [[stripe-bank-transfers]], and [[stripe-checkout]].\n\n## Key takeaways from the May 5 guide\n\n- A bank transfer is a push payment to a customer-linked virtual account. Stripe describes reconciliation through customer cash balance; underpayment can partially fund an open PaymentIntent, while an invoice remains open until fully funded. Excess after reconciliation remains in customer balance. With several open payments or invoices, automatic reconciliation uses details such as the reference and amount; a Customer can instead use manual reconciliation. See raw lines 16, 28\u201350.\n- The captured PaymentIntent and hosted Checkout examples require an associated **Customer**; the PaymentIntent request populates `customer`, and the Checkout Session passes an existing Customer. The guide separately recommends customer-configured Accounts v2 objects for most uses but marks Accounts v2 public preview for non-Connect users and requires a preview version for preview participants. Do not treat that note as proof that all May 5 Customer parameter examples work unchanged with Accounts v2. See raw lines 8\u201314, 71\u201385, 950\u20131000.\n- The May 5 Checkout bank-transfer route is a single-use, delayed-notification payment method in `payment` mode with one-time line items in one currency; `setup` and `subscription` modes are not supported in that route. Submission can lead to a hosted instruction page while funding remains pending. `checkout.session.completed` denotes form submission there; `checkout.session.async_payment_succeeded` and a `succeeded` PaymentIntent denote successful transfer and fulfillment. See raw lines 940\u2013975, 1182\u20131205.\n- In the PaymentIntent route, first confirmation with insufficient cash balance emits `payment_intent.requires_action` even if some pre-existing balance was applied. Later insufficient incoming funds applied to the Intent emit `payment_intent.partially_funded`; `payment_intent.succeeded` marks payment success. Updating a partially funded Intent's amount returns its applied funds to customer balance; Stripe may then fund other open Intents, and manual reconciliation requires reapplying funds. See raw lines 722\u2013744, 1954\u20131976.\n\n## May 5 integration detail\n\n**PaymentIntent creation.** The Elements route creates the Intent server-side, then collects details with the client Payment Element and confirms with `stripe.confirmPayment`. The Direct API route creates and confirms server-side with `payment_method_data.type: 'customer_balance'`; when balance is insufficient, its `next_action.type` is `display_bank_transfer_instructions` for client display. The client must use the exact supplied bank details. A browser return to `return_url` alone does not prove payment: retrieve and inspect PaymentIntent status. See raw lines 83\u201385, 345\u2013394, 494\u2013603, 1384\u20131413, 1700\u20131715.\n\nThe manual PaymentIntent examples specify `payment_method_types: ['customer_balance']`, `funding_type: 'bank_transfer'`, and a regional `bank_transfer.type`:\n\n| Region | Manual `bank_transfer.type` | May 5 qualification |\n| --- | --- | --- |\n| US | `us_bank_transfer` | USD example |\n| UK | `gb_bank_transfer` | GBP example |\n| EU | `eu_bank_transfer` | The manual FR `country` option selects the displayed IBAN country; Dashboard-managed selection instead uses Customer country or Stripe account fallback. The guide says new localized VBANs are unavailable for ES. |\n| JP | `jp_bank_transfer` | JPY example; automatic-method examples include `return_url`, while manual examples omit it. |\n| MX | `mx_bank_transfer` | MXN example; automatic-method examples include `return_url`, while manual examples omit it. |\n\nThe `return_url` in those JP/MX examples is not a stated region-wide requirement. In the May 5 guide, Dashboard-managed dynamic methods are an alternative to manual selection; it says the `automatic_payment_methods` parameter is optional in the latest API version of that capture because the feature is enabled by default. These are dated examples, not a present-day API-version guarantee. See raw lines 87\u201391, 153\u2013189, 193\u2013343, 1388\u20131392, 1469\u20131513, 1517\u20131687, 1853\u20131858.\n\n**Funding and reconciliation.** If customer balance fully covers the Intent at creation/confirmation, the guide describes immediate `succeeded`. Otherwise instructions include `amount_remaining`; a partial payment is not reflected in the merchant's account balance until complete. Receive both `payment_intent.requires_action` and `payment_intent.partially_funded` for the two underfunding moments, and verify `payment_intent.succeeded` before fulfillment. The guide recommends webhooks for completion. See raw lines 191, 722\u2013744, 1700\u20131715, 1954\u20131976.\n\n**Checkout.** In the May 5 hosted Checkout example, create a Session with `customer`, `mode: 'payment'`, `customer_balance`, bank-transfer funding options, and same-currency one-time line items. A sufficient pre-existing balance can redirect to `success_url` after immediate success; otherwise the customer sees `hosted_instructions_url` and must still transfer funds. Monitor delayed status via webhooks. These hosted-flow facts do not establish how the November index's Elements Checkout Sessions variant works. See raw lines 950\u20131000, 1002\u20131189, 1196\u20131205.\n\n**Environment and limits.** Dashboard instruction emails are optional; in a sandbox, they go only to addresses linked to the Stripe account. The `fund_cash_balance` API/Dashboard/CLI examples simulate funds for testing, not a live payment. The older Direct API section distinguishes unique live customer bank details from invalid test details that may not be unique. The May 5 guide also documents a method-specific temporary `payment_method_rate_limit_exceeded` error. See raw lines 711\u2013720, 798\u2013806, 930\u2013938, 1207\u20131224, 1700\u20131704, 2030\u20132036, 2118\u20132126.\n\n## Related\n\n- [[stripe-bank-transfers]] \u2014 provider concept and bank-transfer source routes.\n- [[stripe-checkout]] \u2014 Checkout Session context; the hosted bank-transfer flow above is dated May 5.\n\n## Related raw API references\n\n- [[raw/stripe-payments-bank-transfers-accept-a-payment-2026-11-07|November 7, 2026 variant index]] \u2014 navigation only: Elements Payment Intents API, Elements Checkout Sessions API, Checkout, and Direct API links. Linked variant content was not captured here.\n\n## Raw Sources\n\n- [[raw/stripe-bank-transfers-accept-payment-2025|May 5, 2026 full guide]] \u2014 detailed Elements PaymentIntent, hosted Checkout, and Direct API variants; 2,180 lines.\n",
+      "quotes": [
+        {
+          "text": "Use the Checkout Sessions or Payment Intents API to accept bank transfer payments.",
+          "location": "raw/stripe-payments-bank-transfers-accept-a-payment-2026-11-07.md:7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-bank-transfers-accept-a-payment-2026-11-07.md:11"
+        },
+        {
+          "text": "[Payment Intents API](https://docs.stripe.com/payments/bank-transfers/accept-a-payment.md?payment-ui=elements&api-integration=paymentintents)",
+          "location": "raw/stripe-payments-bank-transfers-accept-a-payment-2026-11-07.md:14"
+        },
+        {
+          "text": "[Checkout Sessions API](https://docs.stripe.com/payments/bank-transfers/accept-a-payment.md?payment-ui=elements&api-integration=checkout)",
+          "location": "raw/stripe-payments-bank-transfers-accept-a-payment-2026-11-07.md:15"
+        },
+        {
+          "text": "- [Direct API](https://docs.stripe.com/payments/bank-transfers/accept-a-payment.md?payment-ui=direct-api)",
+          "location": "raw/stripe-payments-bank-transfers-accept-a-payment-2026-11-07.md:17"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "bt-accept-manual-region-correction",
+            "target_path": "wiki/concepts/stripe-bank-transfers.md",
+            "update_kind": "durable_fact",
+            "anchor": "| EU | `eu_bank_transfer` + `country` | IBAN localized to customer's country; ES unavailable |\n| JP | `jp_bank_transfer` | requires `return_url` |\n| MX | `mx_bank_transfer` | requires `return_url` |",
+            "proposed_markdown": "| EU | `eu_bank_transfer` + `country` | In the May 5, 2026 manual examples, the request's country selects IBAN localization; Dashboard-managed selection uses Customer or Stripe-account country. The guide says new localized VBANs are unavailable for ES. |\n| JP | `jp_bank_transfer` | May 5 automatic-method examples include `return_url`; manual examples omit it. |\n| MX | `mx_bank_transfer` | May 5 automatic-method examples include `return_url`; manual examples omit it. |",
+            "quote_indexes": [
+              0,
+              1
+            ],
+            "warnings": [
+              "The baseline correction relies on old raw/stripe-bank-transfers-accept-payment-2025.md:153-187,260-341,1469-1511,1623-1685,1853-1858. New raw lines 7-17 are a variant index only."
+            ]
+          },
+          {
+            "update_id": "bt-accept-lifecycle-correction",
+            "target_path": "wiki/concepts/stripe-bank-transfers.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Status lifecycle**: `requires_action` (balance insufficient) \u2192 `payment_intent.partially_funded` (partial received) \u2192 `payment_intent.succeeded`.",
+            "proposed_markdown": "**May 5, 2026 PaymentIntent funding events**: First confirmation with insufficient balance emits `payment_intent.requires_action`, including when pre-existing cash balance partially applies. Later incoming funds that still leave the Intent incomplete emit `payment_intent.partially_funded`; `payment_intent.succeeded` marks completion. Changing a partially funded Intent amount returns applied funds to customer balance; other open Intents may receive them automatically, while manual reconciliation requires reapplication.",
+            "quote_indexes": [
+              0,
+              1
+            ],
+            "warnings": [
+              "Dated factual authority is old raw/stripe-bank-transfers-accept-payment-2025.md:722-744,1954-1976; November raw 7-17 has no funding details."
+            ]
+          },
+          {
+            "update_id": "bt-accept-source-route",
+            "target_path": "wiki/concepts/stripe-bank-transfers.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-bank-transfers-accept-payment]] \u2014 full integration guide: PI creation per region, status lifecycle, reconciliation modes, Checkout constraints, testing",
+            "proposed_markdown": "- [[source-stripe-bank-transfers-accept-payment]] \u2014 May 5, 2026 full PaymentIntent, Checkout and Direct API guide, plus November 7 variant-index navigation (including an unread Elements Checkout Sessions route); consult the source's dated qualifications.",
+            "quote_indexes": [
+              0,
+              1,
+              2
+            ],
+            "warnings": [
+              "November raw/stripe-payments-bank-transfers-accept-a-payment-2026-11-07.md:7-17 is navigation only; detailed facts remain May 5 evidence."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-bank-transfers-accept-a-payment-2026-11-07.md",
+      "raw_sha256": "2734591339f14d6f114f214142441815c755fa53031d1f2e2087f8b906c6b9b2",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-bank-transfers-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "raw/stripe-bank-transfers-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 2180
+      }
+    ],
+    "wiki/sources/source-stripe-bank-transfers-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 68
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/5f0312fcfb507c863cd48178/content.diff": [
+      {
+        "start": 1,
+        "end": 2187
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 25
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 295,
+        "end": 315
+      }
+    ],
+    "wiki/concepts/stripe-bank-transfers.md": [
+      {
+        "start": 1,
+        "end": 142
+      }
+    ],
+    "wiki/concepts/stripe-checkout.md": [
+      {
+        "start": 120,
+        "end": 155
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "Use the Payment Intents API to accept bank transfer payments.",
+      "location": "raw/stripe-bank-transfers-accept-payment-2025.md:6"
+    },
+    {
+      "text": "Bank transfers aren\u2019t available on PaymentIntents without a customer.",
+      "location": "raw/stripe-bank-transfers-accept-payment-2025.md:85"
+    },
+    {
+      "text": "Stripe sends this event if funds are applied to a PaymentIntent but the payment remains incomplete.",
+      "location": "raw/stripe-bank-transfers-accept-payment-2025.md:726"
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/bank-transfers/accept-a-payment, the complete November capture establishes an article headline for Checkout Sessions or Payment Intents and four variant routes, including a new Elements Checkout Sessions link (new raw lines 5\u201317). It establishes no linked variant's prerequisites, states, or success outcome. The May 5 capture describes Customer-associated PaymentIntent and hosted Checkout paths, cash balance reconciliation, first-confirmation requires_action versus later partially_funded, and asynchronous Checkout success (old raw lines 8\u201316, 71\u201385, 722\u2013744, 950\u20131000, 1182\u20131205). The mapped source-stripe-bank-transfers-accept-payment.md had summarized only that old guide and made overbroad regional return_url and EU localization claims (source lines 11\u201364).",
+    "Q2": "For https://docs.stripe.com/payments/bank-transfers/accept-a-payment, the substantive November delta is article-level wording that names Checkout Sessions beside Payment Intents (new raw line 7 versus old raw line 6); the four links at new raw lines 13\u201317 are navigation, with Elements Checkout Sessions behavior unread. The diff's mass deletion reflects the index capture format and does not retire May 5 details. In source-stripe-bank-transfers-accept-payment.md, retain the older Customer, hosted Checkout, funding-event, sandbox, and client/server claims as dated May 5 statements (old raw lines 71\u201385, 722\u2013744, 950\u2013975, 1182\u20131205, 1700\u20131704). Correct unconditional JP/MX return_url and EU country wording against the old automatic and manual examples (old raw lines 153\u2013187, 260\u2013341, 1469\u20131511, 1623\u20131685, 1853\u20131858). A browser return or Checkout form submission is not paid status; only status inspection and succeeded events support fulfillment in the old flows (old raw lines 594\u2013603, 1196\u20131205)."
+  }
+}

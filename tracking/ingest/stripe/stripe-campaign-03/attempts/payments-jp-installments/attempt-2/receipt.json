@@ -1,0 +1,221 @@
+{
+  "job_id": "payments-jp-installments",
+  "attempt": 2,
+  "raw_path": "raw/stripe-payments-jp-installments-2026-11-07.md",
+  "raw_sha256": "97a3c4196393abdf27199fca0d1181a68fb85848b1799eea1928ce3204422ad5",
+  "prior_raw_path": "raw/stripe-jp-installments-2025.md",
+  "prior_raw_sha256": "f8373d4e5bc9d00e82362e6160751ae2223477db640b16b52de83d22db0d3b09",
+  "source_targets": [
+    "wiki/sources/source-stripe-jp-installments.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-jp-installments.md": "42ac696b82aaa53714a0e57b84e70e663c4dbfeaa547f5a7288690350b8e5896"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-jp-installments-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 117
+      },
+      {
+        "start": 29,
+        "end": 40
+      },
+      {
+        "start": 73,
+        "end": 84
+      }
+    ],
+    "raw/stripe-jp-installments-2025.md": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 116
+      },
+      {
+        "start": 28,
+        "end": 39
+      },
+      {
+        "start": 72,
+        "end": 83
+      }
+    ],
+    "wiki/sources/source-stripe-jp-installments.md": [
+      {
+        "start": 1,
+        "end": 29
+      },
+      {
+        "start": 11,
+        "end": 25
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/b0cbd48c7035bff3816d7a69/content.diff": [
+      {
+        "start": 1,
+        "end": 63
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 225,
+        "end": 235
+      },
+      {
+        "start": 755,
+        "end": 770
+      }
+    ],
+    "wiki/concepts/stripe-jp-installments.md": [
+      {
+        "start": 1,
+        "end": 53
+      },
+      {
+        "start": 9,
+        "end": 17
+      }
+    ],
+    "wiki/concepts/stripe-installments.md": [
+      {
+        "start": 1,
+        "end": 49
+      },
+      {
+        "start": 21,
+        "end": 42
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/proposed-queries.md": [
+      {
+        "start": 621,
+        "end": 627
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-jp-installments/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 176
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-jp-installments/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 86
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "You receive the full amount as with standard card payments, and the customer\u2019s card company provides credit and collects the funds over time.",
+      "location": "raw/stripe-payments-jp-installments-2026-11-07.md:9"
+    },
+    {
+      "text": "Accepting installments doesn\u2019t result in any additional fees for you.",
+      "location": "raw/stripe-payments-jp-installments-2026-11-07.md:65"
+    },
+    {
+      "text": "Interest typically doesn\u2019t apply when paying in two installments or with bonus installment plans, but does for others.",
+      "location": "raw/stripe-payments-jp-installments-2026-11-07.md:65"
+    },
+    {
+      "text": "Payments using installments become available on the same schedule as other card payments.",
+      "location": "raw/stripe-payments-jp-installments-2026-11-07.md:69"
+    },
+    {
+      "text": "the Payment Intent confirmation fails with a `payment_intent_invalid_parameter` error.",
+      "location": "raw/stripe-payments-jp-installments-2026-11-07.md:113"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Accepting installments doesn\u2019t result in any additional fees for you.",
+      "location": "raw/stripe-jp-installments-2025.md:64"
+    },
+    {
+      "text": "Interest typically doesn\u2019t apply when paying in two installments or with bonus installment plans, but does for others.",
+      "location": "raw/stripe-jp-installments-2025.md:64"
+    },
+    {
+      "text": "Payments using installments become available on the same schedule as other card payments.",
+      "location": "raw/stripe-jp-installments-2025.md:68"
+    },
+    {
+      "text": "The payment method must be a credit card issued in Japan.",
+      "location": "raw/stripe-jp-installments-2025.md:79"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The November and May pages describe the same Japan card installment product: a Japan-based Stripe account uses Payment Intents/Payment Methods for JPY payments on Japanese-issued credit cards, while the card issuer provides credit and collects the customer's installments; debit/prepaid cards are excluded (old raw lines 8-12, 56-60, 74-83; new raw lines 9-13, 57-61, 75-84). Both property lists independently mark recurring payments 'No' (old raw lines 32-34; new raw lines 33-35). Both requirements separately warn not to use installments for recurring payments or other off-session payments where the customer does not select the plan when making the payment (old raw line 81; new raw line 82). The latter condition does not create affirmative support for any other off-session scenario, and customer plan choice does not make recurring installments supported. The November property label changes 'Customer locations' to 'Card issuing country,' clarifying the already explicit issuer restriction rather than adding new availability (old raw lines 16-18, 78-81; new raw lines 17-19, 79-82; diff lines 3-10).",
+    "The fee and funds semantics are unchanged in both raw captures: accepting installments adds no extra merchant fee, but ordinary card-processing fees are not waived by that sentence; the cardholder might pay issuer interest, which typically does not apply to two-installment or bonus plans but may apply to other plans (old raw line 64; new raw line 65). The merchant receives the full transaction principal as with standard cards, while funds become available on the same schedule as other card payments, not instant cash or guaranteed immediate settlement (old raw lines 8, 36-38, 66-68; new raw lines 9, 37-39, 67-69). Source line 23's 'No merchant fees' and parenthetical 'not on' lose the additional-fee and typically qualifiers. This is a baseline source-summary accuracy defect, not a November fee-policy change. Direct concept line 38 retains both qualifiers; direct concept line 12 and umbrella concept line 24 say 'upfront' and need the normal availability-timing qualification.",
+    "The eligibility and UI behavior is stable: Stripe determines plan eligibility after payment-method setup; hosted UI shows installment choices after a supported card number, while custom direct-API UI is advised to collect the card number first and show available plans (old raw lines 70-83; new raw lines 71-84). The hosted display rule is an observed product behavior, whereas the custom UI ordering is a recommendation, not a universal API requirement. Card-number entry, displayed options and PaymentIntent creation are not proof of issuer approval, successful confirmation, funds availability or payout.",
+    "The unchanged brand matrix lists Visa/Mastercard up to 60 fixed installments plus revolving/bonus, JCB up to 24 plus revolving/bonus, Diners revolving/bonus but no fixed installments, and neither installment family for Amex or Discover (old raw lines 83-93; new raw lines 84-94). The Amex self-issued card stoppage is stated as December 2022 history, with post-checkout \u3042\u3068\u5206\u5272 as a separate issuer option; it is not support in this Stripe installment flow (old raw line 93; new raw line 94). Source lines 17-19 and direct concept lines 16-34 reflect the matrix; brand support still does not establish eligibility of a specific card/account or plan at a specific time.",
+    "The bonus-plan calendar and outcome distinctions remain unchanged: live availability runs Dec 16\u2013Jun 15 and Jul 16\u2013Nov 15, with intervening gaps; a test environment/sandbox may show bonus plans while live mode will not (old raw lines 95-108; new raw lines 96-109). In a gap Stripe omits the available plan, and attempting to create/confirm a bonus payment fails with payment_intent_invalid_parameter; crossing the cutoff while in checkout also fails (old raw lines 109-114; new raw lines 110-115). Separate authorization then later capture outside the window may display as an ordinary card payment or shift to a later bonus cycle, not an assured bonus result (old raw lines 115-116; new raw lines 116-117). Source line 21 and direct concept lines 40-48 retain the calendar and cutoff but should keep test-versus-live and later capture outcome qualifications.",
+    "The diff contains a changed property label, spacing/table alignment and a linkified 'sandboxes' word replacing 'test environments' with the same live-mode caveat; it does not introduce a new fee, interest, payout, brand, seasonal or confirmation contract (diff lines 3-63; old raw lines 8-116; new raw lines 9-117). November provenance still belongs on the mapped source, alongside May raw history, because the captured page was revisited and the terminology is more precise (source lines 4-7, 25-29; old raw lines 1-2; new raw lines 1-3). Root index line 7 and Stripe index lines 232, 758 and 761 route the source and relevant concepts.",
+    "Direct concept stripe-jp-installments.md line 14 and umbrella stripe-installments.md line 40 flatten the restrictions to blanket 'no recurring/off-session.' Recurring is independently unsupported in both property lists (old raw lines 32-34; new raw lines 33-35); the additional warning about other off-session payments is scoped to absence of customer plan selection at payment (old raw line 81; new raw line 82). Correct the reciprocal concept wording without claiming a permitted off-session case. This is a baseline summary precision issue, not a November change."
+  ],
+  "substantive_changes": [
+    "No material installment fee, interest, funds-availability, product, card-brand, bonus-window or failure-state change is evidenced: old raw lines 8, 64, 68, 74-116 align with new raw lines 9, 65, 69, 75-117. The 'Card issuing country' label clarifies the explicit JP-issued-card prerequisite already present in the old requirements (old raw lines 16-18, 78-81; new raw lines 17-19, 79-82).",
+    "The existing source's fee/interest summary is materially overbroad independent of the new raw: source line 23 says 'No merchant fees' and removes 'typically' from the interest exception, while both captures say no additional installment fee and only typical absence of interest for two-installment or bonus plans (old raw line 64; new raw line 65). Correct this as baseline accuracy, not as a new Stripe rule.",
+    "Whitespace, brand-table alignment and linking 'sandboxes' are presentation/navigation changes, with the test-versus-live bonus warning intact (diff lines 12-63; old raw lines 85-116; new raw lines 86-117)."
+  ],
+  "historical_claims_to_preserve": [
+    "Preserve May 1, 2026 provenance and its 'Customer locations: Japan' property label as dated old-capture wording, while noting that both old and new requirements demand a Japanese-issued credit card and Japan Stripe account in JPY (old raw lines 1-2, 16-22, 56-60, 74-81; new raw lines 1-3, 17-23, 57-61, 75-82).",
+    "Preserve old and new no-additional-fee, possibly-interest-bearing, issuer-credit and standard-card funds-availability wording precisely; the source's 'No merchant fees' and concept 'upfront' should not be inherited as a zero-processing-fee or immediate-funds claim (old raw lines 8, 64, 66-68; new raw lines 9, 65, 67-69; source lines 13, 23; direct concept lines 12, 38; umbrella concept line 24).",
+    "Preserve the December 2022 Amex self-issued stoppage, the dated brand matrix, annual live bonus cycles and the sandbox/live difference as captured historical guidance; do not infer that a listed plan must be available to a particular customer at checkout (old raw lines 83-116; new raw lines 84-117).",
+    "Preserve separate unchanged restrictions: recurring installment payments are unsupported regardless of plan selection (old raw lines 32-34, 81; new raw lines 33-35, 82), and the warning for other off-session payments expressly concerns absence of customer-selected plan at payment. Neither capture affirms an alternative off-session use case."
+  ],
+  "conflicts": [
+    "Source-stripe-jp-installments.md line 23 says 'No merchant fees,' but both raws say only that installments add no merchant fee; ordinary card fees remain outside this claim (old raw line 64; new raw line 65). Correct the baseline summary without reporting a raw fee change.",
+    "Source line 23 says customer interest does not apply on two-installment or bonus plans, dropping the raws' 'typically' and issuer-dependent qualification (old raw line 64; new raw line 65). Direct concept line 38 preserves the modifier; the source should match it.",
+    "Source line 13 says the merchant receives the full amount, consistent with the raw's principal-versus-issuer-credit statement, but direct concept line 12 and umbrella concept line 24 add 'upfront.' Qualify both concept routes with the normal card funds-availability schedule and avoid an immediate-settlement inference (old raw lines 8, 66-68; new raw lines 9, 67-69).",
+    "Direct concept line 14 and umbrella concept line 40 state a blanket no-off-session rule. Both raw captures separately mark recurring 'No' and phrase their further warning for other off-session payments where the customer does not select the installment plan at payment (old raw lines 32-34, 81; new raw lines 33-35, 82). Retain the recurring prohibition, scope the other warning, and do not infer affirmative support outside the stated condition."
+  ],
+  "unresolved_questions": [
+    "Neither capture states the amount of ordinary card-processing fees, a cardholder's exact issuer interest rate or guaranteed exemption, the calendar day funds become available for an individual merchant, or a specific cardholder's plan approval (old raw lines 8, 64, 68, 72-83; new raw lines 9, 65, 69, 73-84).",
+    "The guide does not establish a live result from the hosted Checkout Demo/test card or resolve issuer-specific eligibility and final capture display for an out-of-season bonus plan; sandbox presentation can differ from live outcomes (old raw lines 95-116; new raw lines 96-117)."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-jp-installments.md",
+    "wiki/concepts/stripe-installments.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-jp-installments.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add November raw/canonical provenance while retaining May capture and describe 'Card issuing country' as clarified terminology, because the Japanese-issued credit-card/Japan-account/JPY requirements were already in May (source lines 4-8, 13; old raw lines 16-22, 56-60, 78-81; new raw lines 17-23, 57-61, 79-82).",
+        "Correct source line 23 to no additional installment merchant fee and issuer-dependent customer interest that typically does not apply to two-installment or bonus plans; both old and new raw state the same limitation (old raw line 64; new raw line 65). The summary must not imply waived ordinary card fees or guaranteed interest-free plans.",
+        "Retain full transaction principal versus card-issuer credit/collection separately from the normal card funds-availability and standard payout schedule; do not turn source line 13 or concept 'upfront' into immediate funds (old raw lines 8, 36-38, 66-68; new raw lines 9, 37-39, 67-69; direct concept line 12; umbrella concept line 24).",
+        "Keep the brand and seasonal tables, hosted-versus-custom UI advice, live-versus-sandbox bonus qualification and confirmation failure boundary dated and scoped; May and November are materially aligned (source lines 17-21; old raw lines 70-116; new raw lines 71-117).",
+        "Preserve two distinct restrictions in any source/concept correction: recurring payments are 'No' independent of customer choice (old raw lines 32-34; new raw lines 33-35), while the additional warning concerns other off-session payments without a customer-selected plan when paying (old raw line 81; new raw line 82). Direct concept line 14 and umbrella concept line 40 overstate that warning as a blanket off-session ban; do not invent a positively supported off-session case."
+      ],
+      "conflicts": [
+        "Baseline source line 23 overstates no additional installment merchant fees as no merchant fees and converts 'typically' no customer interest into an absolute exception (old raw line 64; new raw line 65).",
+        "Concept stripe-jp-installments.md line 12 and umbrella stripe-installments.md line 24 say full amount 'upfront' without the raw's normal card transaction-availability timing at old raw line 68/new raw line 69; add reciprocal timing qualification.",
+        "Direct concept line 14 and umbrella concept line 40 flatten the conditional other-off-session warning into an unconditional ban, while recurring remains independently unsupported (old raw lines 32-34, 81; new raw lines 33-35, 82)."
+      ],
+      "reason": "The raw delta is chiefly terminology and presentation, but the mapped source needs November provenance and correction of a materially overbroad pre-existing fee/interest summary, with reciprocal concept timing qualification."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/jp-installments, the November page describes Japan-account, Japanese-issued credit-card and JPY installments through Payment Intents/Payment Methods; debit and prepaid cards are excluded. Recurring installment payments are independently unsupported, while the separate warning for other off-session payments specifically concerns cases without customer plan selection when paying; neither capture affirms any other off-session scenario (old raw lines 32-34, 78-81; new raw lines 33-35, 79-82). The issuer extends credit and collects installments, while the merchant receives full transaction principal on the ordinary card funds-availability and payout schedule, not instant cash (new raw lines 9, 37-39, 63-69). Hosted UI shows plans after a supported card number; custom UI is advised to do likewise, without proving issuer approval or payment success (new raw lines 71-84). May described the same prerequisites, brands, fees, bonus windows and failure states (old raw lines 8-12, 56-116). source-stripe-jp-installments.md preserves the outline but says 'No merchant fees' and omits 'typically' for interest, overstating both captures (source lines 13-23; old raw line 64; new raw line 65).",
+    "Q2": "For https://docs.stripe.com/payments/jp-installments, the only semantic raw clarification is the property label 'Card issuing country: Japan' replacing 'Customer locations: Japan'; the Japanese-issued credit-card rule was already explicit in May (old raw lines 16-18, 78-81; new raw lines 17-19, 79-82). Table alignment, whitespace and linking 'sandboxes' are presentation/navigation changes; brand plans, live bonus cycles, cutoff error and test/live distinction remain aligned (old raw lines 83-116; new raw lines 84-117). A baseline conflict requires source-stripe-jp-installments.md line 23 to say no additional installment merchant fee and only typically absent issuer interest for two-installment/bonus plans, not zero card fees or guaranteed interest-free terms (old raw line 64; new raw line 65). The direct and umbrella concepts' 'full amount upfront' wording needs ordinary card availability qualification (old raw lines 8, 66-68; new raw lines 9, 67-69). Their lines 14 and 40 also overstate a blanket off-session ban: recurring is separately unsupported, but the further warning concerns other off-session payments without plan selection at payment; this wording does not establish any supported off-session case (old raw lines 32-34, 81; new raw lines 33-35, 82). Preserve May as dated evidence. Hosted UI/card display and sandbox plans do not prove live eligibility, payment confirmation, payout or bonus outcome."
+  }
+}

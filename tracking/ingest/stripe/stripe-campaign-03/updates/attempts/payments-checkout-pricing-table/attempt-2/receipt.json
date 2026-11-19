@@ -1,0 +1,176 @@
+{
+  "job_id": "payments-checkout-pricing-table",
+  "attempt": 2,
+  "source_results": {
+    "wiki/sources/source-stripe-pricing-table.md": {
+      "job_id": "payments-checkout-pricing-table",
+      "attempt": 2,
+      "source_page": "---\ntitle: \"Stripe \u2014 Embeddable Pricing Table for Subscriptions\"\ntype: source\ndate_ingested: 2026-05-12\ndate_updated: 2026-11-15\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/checkout/pricing-table\"\nraw_files:\n  - \"stripe-payments-checkout-pricing-table-2026-11-07.md\"\n  - \"stripe-pricing-table-2026.md\"\ntags: [stripe, subscriptions, pricing-table, checkout, no-code, customer-session, embed]\n---\n\n## Summary\n\nThe May 12 and November 7, 2026 captures describe a Dashboard-created embeddable subscription pricing table. It displays Products and Prices on the merchant site through Stripe's `<stripe-pricing-table>` web component, then sends the customer to a prebuilt Stripe Checkout flow. The table supports flat-rate, per-seat, tiered pricing, and free trials. The Dashboard generates a script tag and component code; the table uses the account's publishable key, which must be updated in the embed if revoked.\n\n## Create, embed, and customize\n\nCreate the table under Dashboard **Product catalog \u2192 Pricing tables**, add products and prices, configure display and payment settings, review the customer portal, and copy the generated embed code. Include `https://js.stripe.com/v3/pricing-table.js`, `pricing-table-id`, and `publishable-key`. For React, the guide says to put the script in `index.html` and mount the component. May includes React/TypeScript samples; November selects HTML samples. This change in example language does not establish React removal.\n\nThe table can show Product marketing features (also settable through the Product API). One product can have a custom call-to-action instead of the normal Checkout route, with an absolute, relative, `mailto`, or `tel` URL, or a URL using `{PRODUCT_ID}` and `{CUSTOMER_EMAIL}`; the email variable needs the customer email supplied. Custom fields can collect text (255 characters), numbers (255 digits), or a dropdown (10 choices); the guide says not to collect sensitive, protected, legally restricted, or personal data in them. Their values appear in payment details and in the `checkout.session.completed` event after payment completion.\n\nSet `customer-email` to prefill Checkout Session `customer_email`; multi-currency Prices can present local currency, and `test+location_FR@email.com` illustrates location testing. A confirmation page can show a localized message or redirect to a merchant URL containing `{CHECKOUT_SESSION_ID}`; the browser redirect remains separate from event delivery. A free-trial option can collect a payment method only when required; the guide calls for email reminders before a no-method trial ends, otherwise Stripe pauses the trial. The `client-reference-id` attribute passes up to 200 alphanumeric, dash, or underscore characters to the Session for reconciliation; invalid values are silently dropped. Do not place secrets or sensitive data in this public embed attribute.\n\n## Pass an existing customer\n\nFor a user already authenticated on the merchant server, create a Customer Session with `components.pricing_table.enabled: true` for either `customer_account` (customer-configured Account, Accounts v2) or `customer` (Customer v1). Return its `client_secret` to the browser and pass it as `customer-session-client-secret` on the pricing table component. These are distinct object identities; the merchant server creates the Customer Session, while the browser receives only its client secret.\n\nBoth dated captures give **30 minutes to include the client secret in the pricing table**, followed by **an additional 30 minutes after rendering the pricing table to complete payment**. If the customer session is expired when a Checkout Session is created, Stripe discards the secret and creates a Checkout Session without that associated customer. If it expires after Checkout Session creation but before confirmation, payment confirmation fails. The second window is anchored to pricing-table rendering, not Checkout Session creation.\n\nThe captured Accounts v2 guidance says the API is generally available for Connect users and in public preview for other Stripe users; preview users must specify a preview API version. November adds an enrollment route in Dashboard **Account previews and features \u2192 Reusable payment methods for Global Payouts**. May's access-request sentence was incomplete. This is dated access guidance, not verification that a specific account is eligible or enrolled. Both captures separately say the pricing table is **not designed to work with Connect**; platform fee collection is one example of an unsupported Connect feature. This product limitation is broader than platform fees. The Accounts v2 statement about GA access for Connect users concerns customer-configured Account identity and does not establish Connect compatibility for the pricing-table product.\n\n## Fulfillment and limits\n\nThe Checkout flow sends `checkout.session.completed` for completed payment in the guide's example. Set up an event destination to receive it for fulfillment and reconciliation; November links the event setup route at `/events/set-up-events`, where May linked `/event-destinations`. The guide's new summary diagram merges an event label and website return in one arrow, but its detailed instructions treat server event destination and browser confirmation/redirect separately. An embed display, Session creation, or browser return is not payment or settlement proof; evaluate the completed Checkout/payment state for fulfillment.\n\nThe table displays at most **four products**, **three Prices per product**, and **three unique pricing intervals**; a Dashboard step says up to four products per interval. Tiered quantity above the default 99 must be allowed by increasing the table's adjustable-quantity Max. It does not support usage-based pricing or an intermediate account-signup step before Checkout. Both guides say it is **not designed to work with Connect**, including features such as a platform collecting fees. The guide describes a shared limit of 50 pricing-table reads per second. An iframe sandbox needs `allow-top-navigation` for Checkout redirect. Local testing needs an HTTP server on `localhost`; with CSP, allow `https://js.stripe.com` in both `script-src` and `frame-src`. Dashboard edits to Products, Prices, and payment settings update the table UI.\n\n## Related Pages\n\n- [[stripe]] \u2014 company overview\n- [[stripe-pricing-table]] \u2014 concept route\n- [[stripe-subscriptions]] \u2014 subscription context\n- [[stripe-checkout]] \u2014 Checkout Sessions and fulfillment context\n\n## Raw Sources\n\n- [[raw/stripe-payments-checkout-pricing-table-2026-11-07|Full pricing-table guide captured 2026-11-07]]\n- [[raw/stripe-pricing-table-2026|Full pricing-table guide captured 2026-05-12]]\n",
+      "quotes": [
+        {
+          "text": "Display a subscription pricing table on your website and take customers directly to Stripe Checkout.",
+          "location": "raw/stripe-payments-checkout-pricing-table-2026-11-07.md:7"
+        },
+        {
+          "text": "To join the Accounts v2 preview, go to [Account previews and features](https://dashboard.stripe.com/settings/previews) in your Dashboard and enable **Reusable payment methods for Global Payouts**.",
+          "location": "raw/stripe-payments-checkout-pricing-table-2026-11-07.md:197"
+        },
+        {
+          "text": "You have 30 minutes to include the client secret in the pricing table. After rendering the pricing table, you have an additional 30 minutes to complete a payment before the customer session expires.",
+          "location": "raw/stripe-payments-checkout-pricing-table-2026-11-07.md:241"
+        },
+        {
+          "text": "If the customer session expires after Checkout Session creation, but before confirmation, payment confirmation fails.",
+          "location": "raw/stripe-payments-checkout-pricing-table-2026-11-07.md:243"
+        },
+        {
+          "text": "Set up an [event destination](https://docs.stripe.com/events/set-up-events.md) to receive the event at your endpoint to process fulfillment and reconciliation.",
+          "location": "raw/stripe-payments-checkout-pricing-table-2026-11-07.md:257"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "payments-checkout-pricing-table-concept-session-timing",
+            "target_path": "wiki/concepts/stripe-pricing-table.md",
+            "update_kind": "durable_fact",
+            "anchor": "Create a `CustomerSession` server-side \u2192 pass `client_secret` as `customer-session-client-secret`. Session expires 30min after creation; additional 30min to complete payment after Checkout Session created.",
+            "proposed_markdown": "For an already authenticated customer, create a `CustomerSession` server-side for a customer-configured Account (`customer_account`) or Customer (`customer`), with the `pricing_table` component enabled; pass its `client_secret` as `customer-session-client-secret`. Both the 2026-05-12 and 2026-11-07 guides allow 30 minutes to include the secret in the table, then an additional 30 minutes **after rendering the pricing table** to complete payment. If the customer session has expired before Checkout Session creation, the new Session has no associated customer; if it expires after Session creation but before confirmation, confirmation fails. The November guide adds a Dashboard route for other-user Accounts v2 public-preview enrollment, while retaining Connect GA and preview-version qualifications. See [[source-stripe-pricing-table]].",
+            "quote_indexes": [
+              1,
+              2,
+              3
+            ],
+            "warnings": [
+              "Existing concept line 33 incorrectly anchors the second 30-minute window to Checkout Session creation; both old raw line 278 and new raw line 241 say after pricing-table rendering. Old raw line 280 and new raw line 243 separately state that expiry after Session creation but before confirmation fails. The source should not collapse these states.",
+              "New raw lines 191-199 provide Accounts v2 availability and a Dashboard preview enrollment route, whereas old raw lines 212-220 retain an incomplete request-access sentence. This is dated access guidance, not current account eligibility.",
+              "The concept's existing line 15 already says Connect is not supported for pricing tables. Retain that broad scope: both old raw line 342 and new raw line 305 state the table is not designed to work with Connect, with platform fee collection only an example; the Accounts v2 GA-for-Connect statement at new raw line 195 is a different access/identity claim."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-checkout-pricing-table-2026-11-07.md",
+      "raw_sha256": "77097129e3a10a6da4d56a682d3506e0eef13b061dd13525df8a0ebe5e144d7a",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-checkout-pricing-table-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 155
+      },
+      {
+        "start": 156,
+        "end": 305
+      }
+    ],
+    "raw/stripe-pricing-table-2026.md": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 342
+      }
+    ],
+    "wiki/sources/source-stripe-pricing-table.md": [
+      {
+        "start": 1,
+        "end": 61
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/8d36670ac1ed23033d860f13/content.diff": [
+      {
+        "start": 1,
+        "end": 125
+      },
+      {
+        "start": 126,
+        "end": 250
+      },
+      {
+        "start": 251,
+        "end": 375
+      },
+      {
+        "start": 376,
+        "end": 499
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-checkout-pricing-table/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 168
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 8
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 615,
+        "end": 616
+      }
+    ],
+    "wiki/concepts/stripe-pricing-table.md": [
+      {
+        "start": 1,
+        "end": 49
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-pricing-table/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 119
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-pricing-table/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 147
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-pricing-table/attempt-1/candidates/source-stripe-pricing-table.md": [
+      {
+        "start": 1,
+        "end": 50
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-checkout-pricing-table/attempt-1/diffs/source-stripe-pricing-table.md.diff": [
+      {
+        "start": 1,
+        "end": 84
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "To request access to the Accounts v2 preview,",
+      "location": "raw/stripe-pricing-table-2026.md:218"
+    },
+    {
+      "text": "You have 30 minutes to include the client secret in the pricing table. After rendering the pricing table, you have an additional 30 minutes to complete a payment before the customer session expires.",
+      "location": "raw/stripe-pricing-table-2026.md:278"
+    },
+    {
+      "text": "The pricing table isn\u2019t designed to work with",
+      "location": "raw/stripe-pricing-table-2026.md:342"
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/checkout/pricing-table, the November full capture documents a Dashboard-created subscription pricing table embedded through a Stripe script and web component that sends visitors to hosted Checkout (new raw lines 5-14, 30-67). It supports flat-rate, per-seat, tiered and trial models within four-product, three-Price-per-product and three-interval limits, while excluding usage-based billing and stating that the pricing table is not designed for Connect, with platform fees as an example (new raw lines 297-305; old raw lines 334-342). For an already authenticated user, the server creates a Customer Session for either a customer-configured Account or a Customer, enables its pricing_table component and gives the secret to the browser embed (new raw lines 189-219). Both captures provide 30 minutes to include that secret, then 30 more after pricing-table rendering to complete payment; expiry before Checkout Session creation drops customer association, whereas expiry after creation but before confirmation fails (old raw lines 276-280; new raw lines 239-243). source-stripe-pricing-table.md summarized core features but lacked November provenance and compressed this timing. A table display, Session creation or browser return is not payment success.",
+    "Q2": "For https://docs.stripe.com/payments/checkout/pricing-table, source-stripe-pricing-table.md should preserve the May guide, add the November full capture and distinguish its substantive Accounts v2 preview enrollment instruction from eligibility proof (old raw lines 212-220; new raw lines 189-200). The May examples used React/TypeScript and Node.js; November selects HTML and curl, while the event-destination link target and diagram presentation also change. These capture differences do not establish React or Node.js removal or a changed Checkout event contract (old raw lines 39-106, 222-274, 292-317; new raw lines 23-28, 43-85, 201-237, 255-280). The adjacent pricing-table concept wrongly says the second 30-minute window begins after Checkout Session creation; both raw captures anchor it after rendering (old raw lines 276-280; new raw lines 239-243). Keep Account versus Customer, Customer Session versus Checkout Session, expiry before versus after Session creation, server event destination versus browser redirect, and payment success distinct. Both guides broadly say the pricing table is not designed for Connect, with platform fees only an example; Accounts v2 GA access for Connect users does not override that product limitation (old raw lines 334-342; new raw lines 189-200, 297-305). The November diagram's event-and-return arrow should not override the detailed instructions."
+  }
+}

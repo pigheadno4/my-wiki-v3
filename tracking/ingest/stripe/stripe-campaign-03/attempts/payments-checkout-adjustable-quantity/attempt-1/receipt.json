@@ -1,0 +1,171 @@
+{
+  "job_id": "payments-checkout-adjustable-quantity",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-checkout-adjustable-quantity-2026-11-07.md",
+  "raw_sha256": "f1ba1a42d6219376d8bb5f286391e212db53b2fae5d767312e3cff8547ebbe7e",
+  "prior_raw_path": "raw/stripe-checkout-adjustable-quantities-2025.md",
+  "prior_raw_sha256": "d8b9482e729918622ba3573369b54dd907d639122b74cbab01f155a15e796ab6",
+  "source_targets": [
+    "wiki/sources/source-stripe-checkout-adjustable-quantities.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-checkout-adjustable-quantities.md": "54352544b53ee69f9b711bb5728da98062cecc3549a815d4a03bee386f36147c"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-checkout-adjustable-quantity-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-checkout-adjustable-quantities-2025.md": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 125
+      },
+      {
+        "start": 126,
+        "end": 181
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-adjustable-quantities.md": [
+      {
+        "start": 1,
+        "end": 72
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/30b86d1c7bb1ee35864977d8/content.diff": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 125
+      },
+      {
+        "start": 126,
+        "end": 185
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 12
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 82,
+        "end": 91
+      }
+    ],
+    "wiki/concepts/stripe-checkout.md": [
+      {
+        "start": 135,
+        "end": 155
+      },
+      {
+        "start": 252,
+        "end": 269
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "# Make line item quantities adjustable",
+      "location": "raw/stripe-payments-checkout-adjustable-quantity-2026-11-07.md:5"
+    },
+    {
+      "text": "Enable your customers to adjust the quantity of items during checkout.",
+      "location": "raw/stripe-payments-checkout-adjustable-quantity-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-checkout-adjustable-quantity-2026-11-07.md:11"
+    },
+    {
+      "text": "[Full page](https://docs.stripe.com/payments/checkout/adjustable-quantity.md?ui=full-page)",
+      "location": "raw/stripe-payments-checkout-adjustable-quantity-2026-11-07.md:13"
+    },
+    {
+      "text": "[Embedded form](https://docs.stripe.com/payments/checkout/adjustable-quantity.md?ui=checkout-form)",
+      "location": "raw/stripe-payments-checkout-adjustable-quantity-2026-11-07.md:14"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "If you use the Payment Intents API, you must manually track line item updates and modify the payment amount, or by creating a new PaymentIntent with adjusted amounts.",
+      "location": "raw/stripe-checkout-adjustable-quantities-2025.md:12"
+    },
+    {
+      "text": "Other line item updates, such as adding new line items, aren\u2019t supported for this integration.",
+      "location": "raw/stripe-checkout-adjustable-quantities-2025.md:16"
+    },
+    {
+      "text": "By default, an item\u2019s minimum adjustable quantity is 0 and the maximum adjustable quantity is 99.",
+      "location": "raw/stripe-checkout-adjustable-quantities-2025.md:47"
+    },
+    {
+      "text": "Checkout prevents the customer from removing an item if it\u2019s the only item remaining.",
+      "location": "raw/stripe-checkout-adjustable-quantities-2025.md:49"
+    },
+    {
+      "text": "After the payment completes, you can make a request for the finalized",
+      "location": "raw/stripe-checkout-adjustable-quantities-2025.md:115"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The November 7 root capture contains only a short purpose sentence and links to Full page (?ui=full-page) and Embedded form (?ui=checkout-form) variants; neither body is present (new raw lines 5-14). It cannot establish their setup, API, allowed quantities, client calls, or payment state behavior.",
+    "The April 21 full capture documents Checkout Session line-item adjustable_quantity configured on the server at Session creation with mode payment and ui_mode elements in its example (old raw lines 8-18, 23-47). The client-side updateLineItemQuantity example uses a line-item ID and new quantity, with HTML/JS and React forms (old raw lines 51-110). These are April, not November verified, integration details.",
+    "Old raw separately says Payment Intents API users must track line-item updates and adjust amount or create a new PaymentIntent (old raw lines 10-12). That is distinct from Checkout Session client updateLineItemQuantity; the current summary preserves the distinction in source lines 59-62.",
+    "The April guide bounds quantity adjustment: default minimum 0 and maximum 99, configurable maximum up to 999999, last remaining item cannot be removed, and other line-item changes such as adding items are outside this integration (old raw lines 14-18, 47-49). Current source lines 22-33 and 59-62 accurately retain these as historical claims, but its frontmatter and Raw Sources cite only the April raw (source lines 4-8, 70-72). Add the November navigational raw separately without renewing old behavior.",
+    "The current source summary calls this client-side quantity adjustment in Checkout Sessions without stating that the captured implementation sample is the Elements/custom Checkout route (source lines 11-13, 17-30, 35-45; old raw lines 23-44, 51-110). The new Full page/Embedded form labels do not prove those variants have the same client API. Qualify the historical UI scope in source and reciprocal Checkout concept line 146, which currently presents the client API without a route/date.",
+    "The old guide describes final-line-item retrieval after payment completes and shows checkout.session.completed handling with listLineItems limit 100; removed items are absent and internal IDs can be kept in metadata for reconciliation (old raw lines 113-115, 134-176). The fulfillOrder function is a throwing TODO (old raw lines 134-139), so source lines 47-57 should remain a dated pattern, not fulfillment-success proof."
+  ],
+  "substantive_changes": [
+    "No substantive API or payment behavior delta can be confirmed from the new root capture. The diff removes the April detailed guide and adds only Full page/Embedded form navigation and a shorter purpose sentence (diff lines 3-21, 183-185; new raw lines 5-14).",
+    "Source update is needed for November provenance and UI scope, independently of any verified product behavior change (source lines 4-13, 22-45, 70-72; old raw lines 23-44; new raw lines 9-14)."
+  ],
+  "historical_claims_to_preserve": [
+    "April 21, 2026 Checkout Session setup: server-side adjustable_quantity on line_items at Session creation; example uses payment mode and ui_mode elements (old raw lines 14-47).",
+    "April 21, 2026 quantity bounds and removal rules: defaults 0 and 99, configurable maximum up to 999999, last item cannot be removed, and adding new line items is outside this integration (old raw lines 16-18, 47-49).",
+    "April 21, 2026 custom Checkout/Elements client examples: updateLineItemQuantity with line-item ID/new quantity, plus distinct PaymentIntents manual amount tracking (old raw lines 10-12, 51-110).",
+    "April 21, 2026 server-side post-payment reconciliation pattern: finalized line items via listLineItems after completion, removed items absent, metadata for internal IDs, illustrative unfinished fulfillment handler (old raw lines 113-181)."
+  ],
+  "conflicts": [
+    "Source lines 11-13 and Checkout concept line 146 present the April client update API broadly, while the pinned old example specifies ui_mode elements (old raw lines 23-44) and November only gives variant links (new raw lines 9-14). Reciprocal warnings should limit the client API claim to the historical captured route and avoid implying parity across Full page and Embedded form variants.",
+    "Source line 50 labels a checkout.session.completed example under Post-Payment Reconciliation; old raw lines 113-115 describe finalized items after payment completes, but the example's TODO fulfillOrder throws (old raw lines 134-139). It is an illustrative reconciliation handler, not evidence that payment/fulfillment succeeded for any transaction."
+  ],
+  "unresolved_questions": [
+    "The November Full page and Embedded form variant bodies are not in the pinned capture, so their current setup, client controls, lifecycle, and UI-specific limits are unresolved."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-checkout.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-checkout-adjustable-quantities.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add a separately dated November variant-index raw reference, retaining April behavior under April provenance (source lines 4-13, 70-72; new raw lines 9-14).",
+        "Scope updateLineItemQuantity to the captured Elements/custom Checkout path instead of suggesting that November Full page and Embedded form variants have been read (source lines 11-13, 17-45; old raw lines 23-44, 51-110).",
+        "Clarify that source lines 47-57 describe finalized line-item retrieval and illustrative reconciliation, not proved fulfillment; old raw lines 113-139, 156-176 contain a TODO/throwing handler. Record the corresponding scope qualifier in wiki/concepts/stripe-checkout.md:146."
+      ],
+      "conflicts": [
+        "The linked Checkout concept at line 146 repeats the client API without the old example's Elements UI/date qualification; the November index cannot validate it for both linked UI variants (old raw lines 23-44; new raw lines 9-14)."
+      ],
+      "reason": "The new capture changes navigation and provenance, not verified quantity behavior. The current source needs that boundary and a clearer historical UI scope, with a reciprocal concept qualification."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/checkout/adjustable-quantity, new raw lines 5-14 establish only the purpose of customer quantity adjustment and navigation to Full page and Embedded form variants. No variant body is captured, so this does not establish a current API, prerequisites, or state boundary. The April guide, old raw lines 8-49 and 51-115, documents server-side adjustable_quantity on Checkout Session line_items, an example in payment mode with ui_mode elements, default minimum 0/maximum 99, configurable maximum 999999, last-item protection, and client updateLineItemQuantity by line-item ID; PaymentIntents require separate manual amount tracking. The mapped source-stripe-checkout-adjustable-quantities.md summarizes this older path and post-payment finalized-line-item retrieval, but should date its UI scope rather than imply the new variants were examined.",
+    "Q2": "At https://docs.stripe.com/payments/checkout/adjustable-quantity, new raw lines 5-14 are a shorter purpose statement and two variant links, not evidence of substantive quantity API changes. Preserve April 21, 2026 claims from old raw lines 10-18, 23-49 and 51-181 as dated Checkout Session Elements/custom Checkout examples: server setup, client quantity update, bounds, last-item protection, and post-payment reconciliation; the Payment Intents path remains a separate manual amount flow. In source-stripe-checkout-adjustable-quantities.md, source lines 11-13 and 35-62 need a UI-scope warning reciprocal to wiki/concepts/stripe-checkout.md:146; neither the Full page nor Embedded form body has been read. The source's webhook snippet includes an unfinished fulfillment function, so checkout.session.completed handling and listLineItems retrieval do not prove payment success or fulfilled orders."
+  }
+}

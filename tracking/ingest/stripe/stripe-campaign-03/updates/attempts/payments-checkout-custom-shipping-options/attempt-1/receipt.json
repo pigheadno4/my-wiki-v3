@@ -1,0 +1,160 @@
+{
+  "job_id": "payments-checkout-custom-shipping-options",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-checkout-dynamic-shipping.md": {
+      "job_id": "payments-checkout-custom-shipping-options",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Dynamically Customize Shipping Options\"\ntype: source\ndate_ingested: 2026-04-21\ndate_updated: 2026-11-15\ncanonical_url: https://docs.stripe.com/payments/checkout/custom-shipping-options\noriginal_format: webpage\nraw_files:\n  - \"stripe-checkout-dynamic-shipping-2025.md\"\ntags: [stripe, checkout-sessions, shipping, dynamic-shipping, server-side, runServerUpdate, beta, payment-intents]\n---\n\n## Summary\n\nThe April 21, 2026 full guide documents a beta Checkout Sessions `ui_mode: 'elements'` path for address-based server updates to shipping details and options. Its merchant-owned validation and calculation can produce region-specific or order-total-based rates. The November 7 capture at this canonical URL is a 14-line variant index linking Full page and Embedded form; it provides no current implementation contract for either linked body.\n\n## Key Constraints\n\n- **April 21 Elements example: payment mode only** \u2014 its guide says this dynamic shipping path is unavailable in subscription mode; November's linked variant bodies are uncaptured.\n- **April 21 beta example**: initializes Stripe.js with `betas: ['custom_checkout_server_updates_1']`; the November index does not establish whether either linked variant needs that header.\n- **April 21 React sample**: suggests `@stripe/react-stripe-js@^5.0.0` and `@stripe/stripe-js@^8.0.0`; these are dated sample versions, not a verified November requirement.\n- **Payment Intents alternative in the April guide**: manually update shipping options and modify the existing PaymentIntent amount after selection, or create a new PaymentIntent with adjusted amounts. The guide does not provide a Checkout Session shipping update for that API path.\n\n## April 21 Elements setup\n\nThe following Session and client examples are dated to the full April capture. The server owns shipping validation, rate calculation, and the Session update; the client submits completed address details and refreshes local Session state after a successful server update. That update does not complete an order or prove payment success.\n\n### Session Creation\n\n```js\nstripe.checkout.sessions.create({\n  ui_mode: 'elements',\n  permissions: { update_shipping_details: 'server_only' }, // disables client-side updateShippingAddress\n  shipping_address_collection: { allowed_countries: ['US'] },\n  mode: 'payment',\n  // ...\n});\n```\n\n`server_only` disables the client-side `updateShippingAddress` method and enables server-side updates.\n\n### Client Beta Flag\n\n```js\n// HTML+JS\nconst stripe = Stripe('PK', { betas: ['custom_checkout_server_updates_1'] });\n\n// React\nconst stripe = loadStripe('PK', { betas: ['custom_checkout_server_updates_1'] });\n```\n\n## Server Endpoint Pattern\n\n```\nPOST /calculate-shipping-options\nBody: { checkout_session_id, shipping_details }\n\n1. Retrieve session: stripe.checkout.sessions.retrieve(id)\n2. Validate shipping_details (custom business logic)\n3. Calculate shipping_options (custom business logic)\n4. Update session:\n   stripe.checkout.sessions.update(id, {\n     collected_information: { shipping_details },\n     shipping_options: [...],\n   })\n\nResponse: { type: 'object', value: { succeeded: true } }\n       or: { type: 'error', message: '...' }\n```\n\n## Client `runServerUpdate` Pattern\n\n```js\n// HTML+JS\nawait checkout.runServerUpdate(() => updateShippingOptions(addressValue));\n\n// React\nconst { runServerUpdate } = checkoutState.checkout;\nawait runServerUpdate(() => updateShippingOptions(aeValue.value));\n```\n\n`runServerUpdate` wraps the server call and refreshes the local Session shipping state after a successful server update. The April Ruby endpoint leaves validation and calculation as `NotImplementedError` placeholders. Its React example checks `response.type` without parsing the response and returns an undefined `result`; the vanilla JS example interpolates address fields into `innerHTML`. Repair and review the sample before implementation rather than copying those fragments as verified production code.\n\n## Use Cases\n\n| Use case | Description |\n| --- | --- |\n| Address validation | Block shipping to unsupported addresses; show custom error |\n| Region-based options | Show overnight only for domestic, exclude international options |\n| Dynamic rate calculation | Calculate fee based on address (distance, zone, weight) |\n| Order-total-based rates | Free shipping over $100; read `session.lineItems` on server |\n\n## Related Pages\n\n- [[stripe]] \u2014 Stripe company route.\n- [[source-stripe-checkout-custom-shipping-options]] \u2014 separate April 20, 2026 Embedded Checkout `onShippingDetailsChange` path; that callback is deprecated in Stripe.js 9.14.0 and is distinct from this April 21 Elements `runServerUpdate` example.\n- [[source-stripe-charge-shipping]] \u2014 basic static shipping rates\n- [[stripe-checkout]] \u2014 Checkout concept page\n\n## Raw Sources\n\n- [[raw/stripe-checkout-dynamic-shipping-2025|2026-04-21 full dynamic shipping guide]] \u2014 dated Elements beta, payment-mode, server_only and runServerUpdate example\n\n## Related raw API references\n\n- [[raw/stripe-payments-checkout-custom-shipping-options-2026-11-07|2026-11-07 shipping-options variant index]] \u2014 navigation-only capture linking Full page (`ui=full-page`) and Embedded form (`ui=checkout-form`); no linked body was captured and neither path's API behavior is inferred.\n",
+      "quotes": [
+        {
+          "text": "# Dynamically customize shipping options",
+          "location": "raw/stripe-payments-checkout-custom-shipping-options-2026-11-07.md:5-5"
+        },
+        {
+          "text": "Update shipping options based on a customer's shipping address.",
+          "location": "raw/stripe-payments-checkout-custom-shipping-options-2026-11-07.md:7-7"
+        },
+        {
+          "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+          "location": "raw/stripe-payments-checkout-custom-shipping-options-2026-11-07.md:11-11"
+        },
+        {
+          "text": "[Full page](https://docs.stripe.com/payments/checkout/custom-shipping-options.md?ui=full-page)",
+          "location": "raw/stripe-payments-checkout-custom-shipping-options-2026-11-07.md:13-13"
+        },
+        {
+          "text": "[Embedded form](https://docs.stripe.com/payments/checkout/custom-shipping-options.md?ui=checkout-form)",
+          "location": "raw/stripe-payments-checkout-custom-shipping-options-2026-11-07.md:14-14"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "payments-checkout-custom-shipping-options-reciprocal",
+            "target_path": "wiki/concepts/stripe-checkout.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-checkout-custom-shipping-options]] \u2014 Historical 2026-04-20 Embedded Checkout payment-mode guide: server endpoint, `permissions.update_shipping_details`, and `onShippingDetailsChange`; the callback is deprecated in Stripe.js 9.14.0 (see version boundary above).",
+            "proposed_markdown": "- [[source-stripe-checkout-custom-shipping-options]] \u2014 Historical 2026-04-20 Embedded Checkout payment-mode guide: server endpoint, `permissions.update_shipping_details`, and `onShippingDetailsChange`; the callback is deprecated in Stripe.js 9.14.0 (see version boundary above).\n- [[source-stripe-checkout-dynamic-shipping]] \u2014 Separate April 21, 2026 Checkout Sessions `ui_mode: 'elements'` beta example: server_only permission, merchant validation/calculation endpoint, and client `runServerUpdate`; Payment Intents require a manual amount change or new Intent. The November 7 capture at that URL is only a Full page/Embedded form variant index and does not verify either linked implementation or renew the beta versions.",
+            "quote_indexes": [
+              2,
+              3,
+              4
+            ],
+            "warnings": [
+              "Old raw lines 17-62, 126-159, and 246-341 establish the dated Elements path. New raw lines 9-14 are navigation only. The separate historical Embedded Checkout callback and its versioned deprecation appear in wiki/sources/source-stripe-checkout-custom-shipping-options.md lines 14-22 and this concept line 141."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-checkout-custom-shipping-options-2026-11-07.md",
+      "raw_sha256": "f3e2f63126cc83ca32f3d4b37650bc3acab9f3d66b75408c9c938ad79e2298a2",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-checkout-custom-shipping-options-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-checkout-dynamic-shipping-2025.md": [
+      {
+        "start": 1,
+        "end": 125
+      },
+      {
+        "start": 126,
+        "end": 245
+      },
+      {
+        "start": 246,
+        "end": 362
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-dynamic-shipping.md": [
+      {
+        "start": 1,
+        "end": 96
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/11e4a5fa64e2bcf48babc55a/content.diff": [
+      {
+        "start": 1,
+        "end": 125
+      },
+      {
+        "start": 126,
+        "end": 245
+      },
+      {
+        "start": 246,
+        "end": 366
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-checkout-custom-shipping-options/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 105
+      },
+      {
+        "start": 106,
+        "end": 179
+      }
+    ],
+    "wiki/concepts/stripe-checkout.md": [
+      {
+        "start": 132,
+        "end": 152
+      },
+      {
+        "start": 255,
+        "end": 265
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-custom-shipping-options.md": [
+      {
+        "start": 1,
+        "end": 79
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 22
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 35,
+        "end": 46
+      },
+      {
+        "start": 76,
+        "end": 88
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "Only supported in [payment mode]",
+      "location": "raw/stripe-checkout-dynamic-shipping-2025.md:19-19"
+    },
+    {
+      "text": "If you use the Payment Intents API, you must manually update shipping options and modify the payment amount based on a selected shipping option, or by creating a new PaymentIntent with adjusted amounts.",
+      "location": "raw/stripe-checkout-dynamic-shipping-2025.md:23-23"
+    },
+    {
+      "text": "betas: [\"custom_checkout_server_updates_1\"]",
+      "location": "raw/stripe-checkout-dynamic-shipping-2025.md:134-134"
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/checkout/custom-shipping-options, raw/stripe-payments-checkout-custom-shipping-options-2026-11-07.md (new raw lines 5-14) establishes the purpose of address-based shipping-option updates and two navigation targets, Full page and Embedded form, but contains no variant instructions or payment outcomes. raw/stripe-checkout-dynamic-shipping-2025.md (old raw lines 17-62, 76-123, 126-159, 246-341) separately documents a dated payment-mode Checkout Sessions `ui_mode: elements` beta: configure allowed countries and server_only permission, retrieve the Session, validate address, calculate options from address and line items, and update shipping details/options on the server. The client wraps the endpoint in runServerUpdate after a complete shipping address. source-stripe-checkout-dynamic-shipping.md summarized this path but omitted the old Payment Intents option to modify an existing Intent amount, and its beta/version scope needed dating. A successful shipping update changes Session data; it does not establish checkout completion or paid funds.",
+    "Q2": "For https://docs.stripe.com/payments/checkout/custom-shipping-options, the new raw/stripe-payments-checkout-custom-shipping-options-2026-11-07.md (new raw lines 9-14) is a navigation-only variant index, so the two labels do not prove removal or general availability of the April beta and do not disclose either linked body's API contract. The old raw/stripe-checkout-dynamic-shipping-2025.md (old raw lines 17-52, 126-159, 187-193, 271-291) retains dated Elements `runServerUpdate`, client beta header, package versions and payment-mode limits. source-stripe-checkout-dynamic-shipping.md now distinguishes that path from the separate historical Embedded Checkout onShippingDetailsChange callback, whose Stripe.js 9.14.0 deprecation is recorded in the Checkout concept. The old Payment Intents text permits manual amount modification of an existing Intent or creating a new adjusted Intent; neither happens automatically. Merchant validation/calculation placeholders and the React sample's unparsed response/undefined result prevent copy-ready inference, while a server-update success and displayed address do not prove order or payment success."
+  }
+}

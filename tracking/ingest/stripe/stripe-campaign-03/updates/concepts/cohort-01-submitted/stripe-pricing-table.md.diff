@@ -1,0 +1,11 @@
+--- wiki/concepts/stripe-pricing-table.md
++++ tracking/ingest/stripe/stripe-campaign-03/updates/concepts/stripe-pricing-table.md
+@@ -30,7 +30,7 @@
+ 
+ ## Pass Existing Customer
+ 
+-Create a `CustomerSession` server-side → pass `client_secret` as `customer-session-client-secret`. Session expires 30min after creation; additional 30min to complete payment after Checkout Session created.
++For an already authenticated customer, create a `CustomerSession` server-side for a customer-configured Account (`customer_account`) or Customer (`customer`), with the `pricing_table` component enabled; pass its `client_secret` as `customer-session-client-secret`. Both the 2026-05-12 and 2026-11-07 guides allow 30 minutes to include the secret in the table, then an additional 30 minutes **after rendering the pricing table** to complete payment. If the customer session has expired before Checkout Session creation, the new Session has no associated customer; if it expires after Session creation but before confirmation, confirmation fails. The November guide adds a Dashboard route for other-user Accounts v2 public-preview enrollment, while retaining Connect GA and preview-version qualifications. See [[source-stripe-pricing-table]].
+ 
+ ## Custom CTA
+ 

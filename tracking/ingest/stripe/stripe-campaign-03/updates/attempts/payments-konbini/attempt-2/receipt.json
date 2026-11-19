@@ -1,0 +1,274 @@
+{
+  "job_id": "payments-konbini",
+  "attempt": 2,
+  "source_results": {
+    "wiki/sources/source-stripe-konbini.md": {
+      "job_id": "payments-konbini",
+      "attempt": 2,
+      "source_page": "---\ntitle: \"Stripe: Konbini Payments\"\ntype: source\ndate_ingested: 2026-05-07\ndate_updated: 2026-11-15\ncanonical_url: https://docs.stripe.com/payments/konbini\noriginal_format: webpage\nraw_files:\n  - \"stripe-payments-konbini-2026-11-07.md\"\n  - \"stripe-konbini-2025.md\"\ntags: [stripe, vouchers, konbini, japan, jpy, cash, convenience-store, connect, billing, prohibited-categories]\n---\n\n## Summary\n\nKonbini is a single-use, Japan-domestic JPY cash voucher method for Japan-based businesses and customers. Customers receive store-specific payment codes and a confirmation number, then pay cash at FamilyMart, Lawson, Ministop, or Seicomart. Instructions give provisional access, not a completed payment. The November 7, 2026 guide labels payment confirmation delayed until cash is paid; after store payment Stripe confirms asynchronously, advances the PaymentIntent to `succeeded`, and notifies the merchant. It says funds become available for payout after four business days, while actual settlement follows the standard payout schedule. Amount range: 120\u2013300,000 JPY.\n\n## Eligibility and account prerequisites (November 7, 2026)\n\n- Business and customer location: JP; domestic transactions only. The account matrix lists merchant and platform/marketplace (Connect) accounts and B2B/B2C models. Enable Konbini in Dashboard payment-method settings for Stripe front-end products. Availability still depends on account eligibility and the financial partner and store chains' discretion; activation can be reviewed later.\n- The business website must be public and show the business address, contact email and phone, products/services, shipping fees, support hours, returns/refunds, payment flow, and complete Specified Commercial Transactions Act disclosure; its details must match onboarding. A sole proprietor must also show a photo of the physical store or office exterior at the registered address. Subscription-invoice sellers must disclose recurring charges, cancellation terms, fee assessment at start and cancellation, how to cancel, and the treatment of fees already paid.\n- The November page prohibits RMT, information selling, MLM/pyramid schemes, gore, superstition or unscientific offerings, prohibited medical products, public-order offenses, import forwarding, foreign money transfer, loans, e-cigarettes/shisha, and fortune-telling. Its MCC table labels service stations 5541, fuel dispensers 5542, travel direct marketing 5962, door-to-door 5963, outbound telemarketing 5966, cigar stores 5993, cash disbursement 6010, financial services/institutions 6011/6012, 6050, 6537, dating/escort 7273, buying/shopping 7278, credit reporting 7321, financial service 7322, parking 7523/7524, lottery/gambling 7800\u20137802 and 7994\u20137995, fines/bail 9222\u20139223, federal agencies 9405, lodging 9754, and intra-company purchases 9950 as **Prohibited**. The generic definition of Restricted MCCs does not turn any listed prohibited row into an approval path.\n- The May 7, 2026 capture separately listed sole proprietors operating for less than three years and dating sites among prohibited categories. The November prose omits those broad formulations but adds the sole-proprietor photo condition and still lists dating/escort MCC 7273 as prohibited. Treat May restrictions as dated and do not infer that all sole proprietors or dating businesses became eligible. Stripe says a rejected applicant may receive reasons and reapply or appeal a Konbini capability restriction.\n\n## Product and Billing scope\n\n- The November matrix lists full-page and embedded Checkout, Payment Links, Payment Element, in-app payments, Billing, Invoicing, Radar, Connect, Checkout Sessions and PaymentIntents. It excludes Express Checkout Element, Payment Method Messaging Element, Customer Portal, Terminal, Managed Payments, PaymentIntents with `setup_future_usage`, SetupIntents, and off-session payments. The May capture already listed Elements while excluding Express Checkout Element.\n- Hosted invoices, including subscription invoices, use `collection_method=send_invoice`; the customer makes a new cash payment for each invoice. Automatic charging and Checkout subscription mode are unsupported. Thus the November capability row \u201cRecurring payments: Not supported\u201d describes automatic/reusable payment behavior, while Billing supports manually paid subscription invoices.\n\n## Connect paths and dated limitation\n\nThe November guide describes a Japanese platform settling destination charges or separate charges and transfers on its **own account** using its own Konbini activation. For this path, do not set `on_behalf_of`; the connected account need not activate Konbini. The May guide described partial Connect support with an invite to create charges **on behalf of** other accounts. These are different charge/account configurations. The November own-account path does not prove that the dated invite requirement disappeared or that any specific platform is eligible.\n\n## Customer, payment, and refund states\n\nThe customer supplies name and email and may use a phone number as confirmation number. Stripe shows a payment code, confirmation number, and expiration for each supported chain; the customer presents the appropriate details and pays cash before expiry. The codes are instruction data at `PaymentIntent.next_action.konbini_display_details.stores.<store>.payment_code` and `.confirmation_number`, not transaction IDs or proof of payment. No card or bank statement descriptor appears for the cash payment. Fulfill only after the asynchronous payment confirmation and `PaymentIntent.status=succeeded`; code creation, provisional access, or store visit alone is not success.\n\nFull and partial refunds are supported through Dashboard or Refunds API, but cash cannot return to the original payment source. Stripe emails the customer to collect bank details, and the customer must respond before Stripe can process a bank-transfer refund. Check `Refund.status`; `refund.updated` or `refund.failed` conveys the final outcome. A failed refund returns funds to the Stripe balance and requires another refund method. A refund request is not a completed bank transfer. Standard customer chargebacks/disputes are unsupported; rare store-reported irregularities can still prompt Stripe follow-up.\n\n## Related\n\n- Company: [[stripe]]\n- Concept: [[stripe-vouchers]]\n- Integration: [[source-stripe-konbini-accept-payment]]\n\n## Raw Sources\n\n- [[raw/stripe-payments-konbini-2026-11-07|November 7, 2026 Konbini guide]] \u2014 eligibility, states, product matrix, Connect path, refunds and instruction fields.\n- [[raw/stripe-konbini-2025|May 7, 2026 Konbini guide]] \u2014 prior properties, invite-scoped Connect note, Billing, and dated prohibited categories.\n",
+      "quotes": [
+        {
+          "text": "Payment confirmation timing: Delayed",
+          "location": "raw/stripe-payments-konbini-2026-11-07.md:17"
+        },
+        {
+          "text": "If you\u2019re a sole proprietor, your website must also include a photo of the exterior of your physical store or office at the registered address.",
+          "location": "raw/stripe-payments-konbini-2026-11-07.md:45"
+        },
+        {
+          "text": "A Japanese platform can settle destination charges or separate charges and transfers on its own account using its own Konbini activation. In this case, don\u2019t set `on_behalf_of`.",
+          "location": "raw/stripe-payments-konbini-2026-11-07.md:190"
+        },
+        {
+          "text": "The store provides a receipt. Stripe confirms the payment asynchronously, changes the PaymentIntent status to `succeeded`, and notifies you so you can fulfill the order.",
+          "location": "raw/stripe-payments-konbini-2026-11-07.md:208"
+        },
+        {
+          "text": "  \u2713 Payment Element",
+          "location": "raw/stripe-payments-konbini-2026-11-07.md:162"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "konbini_a1_generic_lag",
+            "target_path": "wiki/concepts/stripe-vouchers.md",
+            "update_kind": "durable_fact",
+            "anchor": "4. Merchant receives payment notification (up to 1 business day)",
+            "proposed_markdown": "4. Merchant receives payment notification after the customer pays; timing differs by method. For Konbini, voucher issuance is provisional, while Stripe confirms asynchronously and marks the PaymentIntent succeeded after store cash payment (November 7, 2026 guide).",
+            "quote_indexes": [
+              0,
+              3
+            ],
+            "warnings": [
+              "New raw/stripe-payments-konbini-2026-11-07.md:11,16-18,204-208 scopes Konbini timing. Do not change other voucher methods from this single-method capture."
+            ]
+          },
+          {
+            "update_id": "konbini_a1_generic_use",
+            "target_path": "wiki/concepts/stripe-vouchers.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Not suitable for**: immediate delivery businesses (1 business day confirmation lag); businesses requiring refunds (not all methods support them).",
+            "proposed_markdown": "**Not suitable for**: delivery before payment confirmation, since voucher issuance is not payment. Confirmation timing varies by method; Konbini confirms asynchronously after store cash payment, not after a universal one-business-day delay. Refund support also varies: Konbini supports full and partial bank-transfer refunds with customer action.",
+            "quote_indexes": [
+              0,
+              3
+            ],
+            "warnings": [
+              "New raw/stripe-payments-konbini-2026-11-07.md:11,17,131-151,204-208; preserve generic caution without applying a single lag to Konbini."
+            ]
+          },
+          {
+            "update_id": "konbini_a1_connect_note",
+            "target_path": "wiki/concepts/stripe-vouchers.md",
+            "update_kind": "durable_fact",
+            "anchor": "- Konbini Connect: requires invite to create charges on behalf of other accounts",
+            "proposed_markdown": "- Konbini Connect: the May 7, 2026 guide described an invite for charges made `on_behalf_of` other accounts. The November 7, 2026 guide separately describes a Japanese platform settling destination charges or separate charges and transfers on its own account with its own activation and no `on_behalf_of`; the connected account need not activate Konbini. The own-account route does not establish the current status of the earlier on-behalf-of invite.",
+            "quote_indexes": [
+              2
+            ],
+            "warnings": [
+              "Old raw/stripe-konbini-2025.md:24-26,83 limits the invite claim; new raw/stripe-payments-konbini-2026-11-07.md:188-190 describes a different account/charge configuration."
+            ]
+          },
+          {
+            "update_id": "konbini_a1_konbini_state",
+            "target_path": "wiki/concepts/stripe-vouchers.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Instant payment confirmation**. **Payout**: T+4 business days.",
+            "proposed_markdown": "**Payment state**: instructions give instant provisional access; payment confirmation is delayed until cash is paid at the store. Stripe then confirms asynchronously and marks the PaymentIntent `succeeded`. The November guide says funds are available for payout after four business days, with settlement on the standard payout schedule; it does not promise an actual payout on day four.",
+            "quote_indexes": [
+              0,
+              3
+            ],
+            "warnings": [
+              "Old raw/stripe-konbini-2025.md:10 says instant confirmation and four-business-day availability; new raw/stripe-payments-konbini-2026-11-07.md:11,16-18,206-208 separates provisional, success and payout stages."
+            ]
+          },
+          {
+            "update_id": "konbini_a1_konbini_refund",
+            "target_path": "wiki/concepts/stripe-vouchers.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Refunds**: Yes \u2014 customer provides bank account info; Stripe emails to request, then auto-processes.",
+            "proposed_markdown": "**Refunds**: full and partial bank-transfer refunds are supported, but cash cannot return to the original source. Stripe emails the customer for bank details; processing waits for the customer's response. Track `Refund.status` and final `refund.updated` or `refund.failed` events; on failure the amount returns to Stripe balance and another refund method is required.",
+            "quote_indexes": [
+              0
+            ],
+            "warnings": [
+              "New raw/stripe-payments-konbini-2026-11-07.md:131-151 supports customer-action and outcome boundaries; old raw/stripe-konbini-2025.md:121-123 described the email collection."
+            ]
+          },
+          {
+            "update_id": "konbini_a1_konbini_connect",
+            "target_path": "wiki/concepts/stripe-vouchers.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Connect**: partial \u2014 requires invite for `on_behalf_of`. No Customer Portal.",
+            "proposed_markdown": "**Connect**: the May guide's invite was scoped to `on_behalf_of` charges for other accounts. The November guide adds a Japanese platform own-account destination-charge or separate-charge-and-transfer route using its own Konbini activation without `on_behalf_of`; the connected account need not activate Konbini. Customer Portal remains unsupported in the November product matrix.",
+            "quote_indexes": [
+              2
+            ],
+            "warnings": [
+              "Old raw/stripe-konbini-2025.md:24-26,83 and new raw/stripe-payments-konbini-2026-11-07.md:167-190; do not infer universal Connect eligibility."
+            ]
+          },
+          {
+            "update_id": "konbini_a1_konbini_elements",
+            "target_path": "wiki/concepts/stripe-vouchers.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Integration**: Checkout and Direct API (no Elements). Checkout: `hosted_voucher_url` redirect (not `success_url`), same 3 async webhook events as Boleto. `expires_after_days`: 1\u201360 days, default 3, expiry at 23:59:59 JST. `expires_at` (Unix timestamp) mutually exclusive with `expires_after_days`. `product_description`: up to 22 Shift JIS chars shown at kiosk. `confirmation_number`: 10\u201311 digits (commonly customer phone); all-zeros blocked; if too common \u2192 rejected. Direct API: `stripe.confirmKonbiniPayment()`; `next_action.konbini_display_details` has per-store `payment_code` + `confirmation_number`. Expiration buffer prevents premature failures. Refund: customer provides bank account \u2192 45-day timeout \u2192 failed.",
+            "proposed_markdown": "**Integration (May detailed path; November product support)**: Checkout, Payment Element, and Direct API are listed; Express Checkout Element is unsupported. The following Checkout and Direct API details remain attributed to the May 7, 2026 integration guide. Checkout: `hosted_voucher_url` redirect (not `success_url`), same 3 async webhook events as Boleto. `expires_after_days`: 1\u201360 days, default 3, expiry at 23:59:59 JST. `expires_at` (Unix timestamp) mutually exclusive with `expires_after_days`. `product_description`: up to 22 Shift JIS chars shown at kiosk. `confirmation_number`: 10\u201311 digits (commonly customer phone); all-zeros blocked; if too common \u2192 rejected. Direct API: `stripe.confirmKonbiniPayment()`; `next_action.konbini_display_details` has per-store `payment_code` + `confirmation_number`. Expiration buffer prevents premature failures. Refund: customer provides bank account \u2192 45-day timeout \u2192 failed.",
+            "quote_indexes": [
+              4
+            ],
+            "warnings": [
+              "Replace the whole integration line to avoid a mixed UI list. The May overview raw/stripe-konbini-2025.md:70-83 already lists Elements except Express Checkout Element; November raw/stripe-payments-konbini-2026-11-07.md:157-165 explicitly lists Payment Element and excludes Express Checkout Element. The remaining detailed Checkout and Direct API mechanics are retained as May-dated concept text, not proven by this overview alone."
+            ]
+          },
+          {
+            "update_id": "konbini_a1_konbini_categories",
+            "target_path": "wiki/concepts/stripe-vouchers.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Prohibited categories** (19+): sole proprietors under 3 years, RMT, gambling, money-making/investment info, gambling strategies, MLM/pyramid schemes, gore, unscientific content, prohibited medical products, public order offenses, import facilitation, foreign money transfer, loans, dating sites, e-cigarettes/vaping, fortune-telling. Financial partner and convenience stores may also reject at discretion.",
+            "proposed_markdown": "**Prohibited categories (dated scope)**: the May 7, 2026 guide listed sole proprietors in business under three years and dating sites, plus RMT, gambling, information selling, MLM, gore, unscientific offerings, prohibited medical products, public-order offenses, import forwarding, transfers, loans, vaping and fortune-telling. The November 7, 2026 guide does not repeat the broad under-three-year or dating-site prose; it instead requires a sole proprietor's website to show a physical-premises exterior photo and lists Dating and Escort Services MCC 7273 as prohibited, alongside a table of other prohibited MCCs. Do not infer that omitted categories became eligible. Financial partner and store chains may still reject an application.",
+            "quote_indexes": [
+              1
+            ],
+            "warnings": [
+              "Old raw/stripe-konbini-2025.md:133-156 is historical authority; new raw/stripe-payments-konbini-2026-11-07.md:26-98 sets current captured list and website conditions. No live account approval inferred."
+            ]
+          },
+          {
+            "update_id": "konbini_a1_konbini_route",
+            "target_path": "wiki/concepts/stripe-vouchers.md",
+            "update_kind": "durable_fact",
+            "anchor": "- [[source-stripe-konbini]] \u2014 Konbini: Japan cash voucher, instant confirmation, T+4 payout, 120\u2013300k JPY, 19+ prohibited categories",
+            "proposed_markdown": "- [[source-stripe-konbini]] \u2014 Konbini: Japan JPY cash voucher, delayed payment until store cash, asynchronous PaymentIntent success, funds available for payout after four business days; dated eligibility and Connect route differences between May and November 2026",
+            "quote_indexes": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "warnings": [
+              "New raw/stripe-payments-konbini-2026-11-07.md:11-18,21-98,188-208; old raw/stripe-konbini-2025.md:10,24-26,133-156 remains dated."
+            ]
+          },
+          {
+            "update_id": "konbini_a2_multibanco_comparison_timing",
+            "target_path": "wiki/concepts/stripe-vouchers.md",
+            "update_kind": "durable_fact",
+            "anchor": "**Confirmation delay**: several days, especially over weekends (bank transfer-based; unlike Konbini's instant confirmation).",
+            "proposed_markdown": "**Confirmation delay**: several days, especially over weekends (bank transfer-based). Konbini also waits for customer action: its voucher instructions give provisional access, and Stripe confirms asynchronously after the customer pays cash at a store; the November guide says notification follows that store payment, not voucher issuance.",
+            "quote_indexes": [
+              0,
+              3
+            ],
+            "warnings": [
+              "New raw/stripe-payments-konbini-2026-11-07.md:11,16-18,202-208 separates voucher issuance from store payment and PaymentIntent success. This replacement only qualifies the Konbini comparison; it does not revise Multibanco timing."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-konbini-2026-11-07.md",
+      "raw_sha256": "1d3448e016b1e7a3ee2169839d30f1c17ddd4a4d584f80327817a29352f1d18f",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-konbini-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 220
+      }
+    ],
+    "raw/stripe-konbini-2025.md": [
+      {
+        "start": 1,
+        "end": 156
+      }
+    ],
+    "wiki/sources/source-stripe-konbini.md": [
+      {
+        "start": 1,
+        "end": 35
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/108c51f5f53497c03a953db5/content.diff": [
+      {
+        "start": 1,
+        "end": 352
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-konbini/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 190
+      }
+    ],
+    "wiki/concepts/stripe-vouchers.md": [
+      {
+        "start": 1,
+        "end": 123
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 365,
+        "end": 380
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-konbini/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 230
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-konbini/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 118
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-konbini/attempt-1/candidates/source-stripe-konbini.md": [
+      {
+        "start": 1,
+        "end": 49
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-konbini/attempt-1/diffs/source-stripe-konbini.md.diff": [
+      {
+        "start": 1,
+        "end": 62
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/updates/attempts/payments-konbini/attempt-2/input.json": [
+      {
+        "start": 1,
+        "end": 74
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "Partial: [request an invite](https://support.stripe.com/contact/email?topic=payment_apis) to create charges [on behalf of](https://docs.stripe.com/connect/charges.md#on_behalf_of) other accounts.",
+      "location": "raw/stripe-konbini-2025.md:26"
+    },
+    {
+      "text": "- Sole proprietors who have been doing business for less than 3 years",
+      "location": "raw/stripe-konbini-2025.md:137"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/konbini, the full November capture establishes a Japan-domestic, JPY, single-use cash voucher for JP merchants and platforms, with 120\u2013300,000 JPY limits and four store chains (new raw lines 9-18, 100-114). Instruction codes and confirmation number precede payment; Stripe confirms asynchronously and marks the PaymentIntent succeeded only after store cash payment, while funds become available for payout after four business days and settlement follows the standard schedule (new raw lines 11-18, 192-214). It adds website/SCTA and MCC eligibility, customer-action bank-transfer refunds, a support matrix, and a Japanese platform own-account Connect route (new raw lines 21-98, 139-190). The May guide already had cash, limits, send_invoice Billing and an invite for on_behalf_of charges (old raw lines 8-12, 24-26, 56-83, 121-131). wiki/sources/source-stripe-konbini.md compresses confirmation and payout states and overgeneralizes Connect and refund completion.",
+    "Q2": "At https://docs.stripe.com/payments/konbini, substantive November additions include the website exterior-photo/SCTA checklist, prohibited MCC table, delayed confirmation versus provisional instructions, refund customer response/status/failure, expanded UI/API matrix, and Japanese platform own-account Connect charges without on_behalf_of (new raw lines 21-98, 139-214). The old guide's invite was specifically for on_behalf_of charges, and its under-three-year sole-proprietor and dating-site prose remain May-dated claims (old raw lines 24-26, 133-156); November omission does not prove broad eligibility, especially with MCC 7273 and a sole-proprietor photo condition. The new send_invoice hosted subscription invoices still require separate cash payment, not automatic charging or Checkout subscription mode. wiki/sources/source-stripe-konbini.md must distinguish instruction creation from PaymentIntent succeeded, four-day funds availability from payout, Payment Element from unsupported Express Checkout Element, and refund request from completed transfer. The generic vouchers concept's one-business-day lag and no-Elements Konbini claim need bounded correction; linked integration details and account approval were not verified by this capture."
+  }
+}

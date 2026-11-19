@@ -1,0 +1,143 @@
+{
+  "job_id": "payments-ideal-set-up-payment",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-ideal-set-up-payment-2026-11-07.md",
+  "raw_sha256": "ee071934267c03f5ed28e87ce104c4389c9f94f34f96ba9d589ef66b6f73b200",
+  "prior_raw_path": "raw/stripe-ideal-set-up-payment-2025.md",
+  "prior_raw_sha256": "0aca140f1d5edea0113ae7aba7a31d7cfba9c233d51ead0ede338866b294db3c",
+  "source_targets": [
+    "wiki/sources/source-stripe-ideal-set-up-payment.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-ideal-set-up-payment.md": "da9c96321a737310ec5e0c4a90c93c7bd6097b45af7d7e35ff7da873e0a744ab"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-ideal-set-up-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 18
+      }
+    ],
+    "raw/stripe-ideal-set-up-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 1777
+      }
+    ],
+    "wiki/sources/source-stripe-ideal-set-up-payment.md": [
+      {
+        "start": 1,
+        "end": 38
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/4f661f2312276c1906a963bc/content.diff": [
+      {
+        "start": 1,
+        "end": 1783
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 65
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 270,
+        "end": 286
+      },
+      {
+        "start": 748,
+        "end": 759
+      }
+    ],
+    "wiki/concepts/stripe-ideal.md": [
+      {
+        "start": 1,
+        "end": 47
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Learn how to save bank details from an iDEAL | Wero payment and charge your customers later with SEPA Direct Debit.",
+      "location": "raw/stripe-payments-ideal-set-up-payment-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-ideal-set-up-payment-2026-11-07.md:11"
+    },
+    {
+      "text": "- [Checkout](https://docs.stripe.com/payments/ideal/set-up-payment.md?payment-ui=checkout)",
+      "location": "raw/stripe-payments-ideal-set-up-payment-2026-11-07.md:13"
+    },
+    {
+      "text": "- [Elements](https://docs.stripe.com/payments/ideal/set-up-payment.md?payment-ui=elements)",
+      "location": "raw/stripe-payments-ideal-set-up-payment-2026-11-07.md:14"
+    },
+    {
+      "text": "  - [React Native](https://docs.stripe.com/payments/ideal/set-up-payment.md?payment-ui=mobile&platform=react-native)",
+      "location": "raw/stripe-payments-ideal-set-up-payment-2026-11-07.md:18"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "With this integration, Stripe charges your customer 0.01 EUR through iDEAL | Wero to collect their bank details. After your customer authenticates the payment, Stripe refunds the payment and stores your customer\u2019s [IBAN](https://en.wikipedia.org/wiki/International_Bank_Account_Number) in a [SEPA Direct Debit](https://docs.stripe.com/payments/sepa-debit.md) payment method.",
+      "location": "raw/stripe-ideal-set-up-payment-2025.md:12"
+    },
+    {
+      "text": "To use iDEAL | Wero to set up SEPA Direct Debit payments, you must activate SEPA Direct Debit in the [Dashboard](https://dashboard.stripe.com/account/payments/settings).",
+      "location": "raw/stripe-ideal-set-up-payment-2025.md:14"
+    },
+    {
+      "text": "Listen for these events rather than waiting on a callback from the client.",
+      "location": "raw/stripe-ideal-set-up-payment-2025.md:627"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The November capture is a purpose sentence and variant chooser only (new raw lines 5-18). The diff removes the older long body and adds five links (diff lines 1-1783); this is a capture/navigation delta, not evidence of removed product support or changed setup behavior. Keep the May 3, 2026 guide dated and add the November index as separate provenance (source lines 4-7, 36-38).",
+    "The current summary's 'without an initial payment', 'customer only authorizes', and 'no real payment' wording (source lines 13, 19) conflicts with the May guide's explicit 0.01 EUR iDEAL charge, authentication and subsequent refund (old raw line 12). The setup does not take a substantive purchase charge, but it does use a charged-and-refunded bank payment. The concept and Stripe index repeat 'no payment' at wiki/concepts/stripe-ideal.md line 46 and wiki/stripe-index.md line 282 and need reciprocal correction if summary is corrected.",
+    "The May guide requires activating SEPA Direct Debit in Dashboard and complying with both iDEAL and SEPA terms (old raw line 14), which the source summary omits. It also distinguishes the customer-configured Account v2 and Customer v1 identities, with Account v2 GA only for Connect and preview/version requirement for others at old raw lines 24-34; source lines 24 and 29 list both fields but omit this dated scope.",
+    "A SetupIntent with ideal collects/validates a SEPA mandate, while later charge requires retrieving latest_attempt.payment_method_details.generated_sepa_debit and creating a separate sepa_debit PaymentIntent for the same customer identity (old raw lines 788-814, 892-939). The mandate text obligation and seven language examples belong to mobile client variants (old raw lines 831-863, 1157-1189, 1531-1563); source line 31 groups Elements and mobile, risking an unsupported blanket claim that the merchant manually renders those exact words in hosted Checkout or Payment Element.",
+    "Old tests distinguish SetupIntent requires_action to succeeded or requires_payment_method from a later SEPA PaymentIntent processing to succeeded, failure, delayed result, dispute or insufficient funds (old raw lines 944-975). The source's six test email and six token patterns at line 34 are supported as old, test-only material. Old raw lines 623-627 recommend setup_intent.succeeded events rather than client callbacks; browser return or setup completion does not prove a subsequent SEPA charge settled."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "Retain the May 3, 2026 0.01 EUR charged-and-refunded iDEAL authorization, SEPA activation and terms prerequisites (old raw lines 12-14); the November index supplies no replacement detail (new raw lines 9-18).",
+    "Retain dated Checkout mode setup, Elements confirmSetup and native iOS/Android/React Native setup routes, with respective server/client and return/deep-link requirements (old raw lines 68-140, 262-290, 433-531, 865-889, 1191-1237, 1565-1600, 1712-1772).",
+    "Retain May-dated Accounts v2 preview/Connect scope, Stripe.js dahlia and SDK samples, mandate-language examples, SetupIntent and later PaymentIntent test status patterns (old raw lines 26-34, 305-316, 831-863, 942-975); do not present these versions or status examples as November-verified live guarantees."
+  ],
+  "conflicts": [
+    "Source lines 13 and 19 and the reciprocal concept/index labels (wiki/concepts/stripe-ideal.md line 46; wiki/stripe-index.md line 282) assert no initial/real payment although old raw line 12 expressly describes a 0.01 EUR iDEAL payment followed by refund. Preserve the setup-versus-purchase distinction without erasing the charge.",
+    "Source line 31 may imply the exact mandate display is required in Checkout/Elements; old raw lines 831-863, 1157-1189 and 1531-1563 place explicit merchant display instructions in native variants. Qualify by UI; the new index says nothing about mandate rendering."
+  ],
+  "unresolved_questions": [
+    "The five November variant links at new raw lines 13-18 were not among the pinned captured contents; their November implementation details, SDK versions, exact UI mandate presentation and possible behavioral changes are unverified."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-ideal.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-ideal-set-up-payment.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add November index provenance while retaining the May 2026 detailed raw and its date (source lines 4-7, 36-38; new raw lines 9-18).",
+        "Correct 'without an initial payment', 'customer only authorizes' and 'no real payment' at source lines 13, 19 against old raw line 12: the flow charges 0.01 EUR and refunds after authentication, distinct from a normal purchase charge.",
+        "Include the May prerequisite of SEPA Dashboard activation and iDEAL/SEPA terms (old raw line 14), distinguish Account v2/Customer v1 and separate SetupIntent from later SEPA PaymentIntent (old raw lines 24-34, 892-939), and scope mandate display and test results to the documented UI/test paths (old raw lines 831-863, 942-975)."
+      ],
+      "conflicts": [
+        "Source lines 13, 19 contradict explicit charged-and-refunded old raw line 12.",
+        "Source line 31 collapses mobile client mandate display instructions into all listed UI paths without path-specific proof."
+      ],
+      "reason": "The semantic raw delta is navigation-only, but the mapped source needs provenance and a material baseline correction to avoid misstating the real 0.01 EUR setup payment and its flow conditions."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/ideal/set-up-payment, the complete November capture (new raw lines 5-18) establishes only the purpose of saving bank details for later SEPA Direct Debit and links to Checkout, Elements, iOS, Android and React Native variants; it provides no prerequisite, API recipe, identity rule or outcome state. The May guide (old raw lines 12-14, 24-34, 788-814, 892-939, 942-975) explains a 0.01 EUR iDEAL charge and refund after authentication, SEPA Dashboard activation and terms, an Account v2 or Customer v1 associated SetupIntent and mandate, a generated SEPA PaymentMethod, and a separate later PaymentIntent whose processing may succeed or fail. source-stripe-ideal-set-up-payment.md preserves some routes at lines 13-34 but inaccurately calls setup 'without an initial payment' and 'no real payment' despite the charged-and-refunded authorization.",
+    "Q2": "At https://docs.stripe.com/payments/ideal/set-up-payment, the visible change is presentational navigation only: the long May guide (old raw lines 8-1777) became a five-route index in the November capture (new raw lines 9-18), without documented behavioral deprecation. source-stripe-ideal-set-up-payment.md should retain May-dated implementation and test claims while adding the November raw link, and it should correct its baseline no-payment wording at source lines 13 and 19 against old raw line 12; the concept and Stripe index repeat that conflict. The Account v2 Connect/preview condition, Checkout versus Elements versus native client mandate presentation, dated Stripe.js/SDK examples, and setup_intent.succeeded versus later SEPA PaymentIntent outcome must remain qualified (old raw lines 26-34, 623-627, 831-863, 942-975). No linked November variant was captured, and neither return nor setup success proves later funds settlement."
+  }
+}

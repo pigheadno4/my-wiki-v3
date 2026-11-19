@@ -1,0 +1,142 @@
+{
+  "job_id": "payments-custom-localize-prices-manual-currency-prices",
+  "attempt": 1,
+  "source_results": {
+    "wiki/sources/source-stripe-manual-currency-prices.md": {
+      "job_id": "payments-custom-localize-prices-manual-currency-prices",
+      "attempt": 1,
+      "source_page": "---\ntitle: \"Manual Currency Prices\"\ntype: source\ndate_ingested: 2026-04-21\ndate_updated: 2026-11-15\ncanonical_url: https://docs.stripe.com/payments/custom/localize-prices/manual-currency-prices\noriginal_format: webpage\nraw_files:\n  - \"stripe-payments-custom-localize-prices-manual-currency-prices-2026-11-07.md\"\n  - \"stripe-manual-currency-prices-2025.md\"\ntags: [stripe, checkout-sessions, currency, manual-currency, currency-options, localization, local-payment-methods]\n---\n\n## Summary\n\nManual multi-currency pricing lets merchants set exact amounts for additional currencies with `Price.currency_options` and pass that Price to a Checkout Session. It is not supported on the Payment Intents API. Manually defined options override Adaptive Pricing for those currencies, even if Adaptive Pricing is enabled; other currencies remain subject to that feature's availability and configuration. The November 7, 2026 guide adds a customer-configured Account as a test-email identity alternative to Customer, without establishing general Accounts v2 access or a live payment outcome.\n\n## Key Facts\n\n- **Checkout Sessions path** — manually defined multi-currency Prices are used in Checkout Sessions; the guide says manual currency prices are not supported on the Payment Intents API.\n- **Manual override** — a configured Price currency option takes precedence over Adaptive Pricing for that currency; no automatic conversion of that manually fixed amount is established.\n- **Default currency** — must match across all relevant prices, shipping rates, and discounts.\n- **Testing** — use an ISO-country `+location_XX` suffix such as `test+location_FR@example.com` in Checkout Session `customer_email`, or in a Customer or a **new customer-configured Account** email as described in November. A location-formatted test email or test card demonstrates presentment, not payment success.\n\n## Price Setup\n\nThe April 21, 2026 capture used this Node illustration. Dashboard setup selects a product, adds a Price and then adds currency-specific amounts; its first currency is the default. The November capture shows the same Price identity and USD/EUR/JPY amounts in curl, with `currency_options[eur][unit_amount]` and `[jpy][unit_amount]`.\n\n```js\n// API (April 21, 2026 Node example)\nconst price = await stripe.prices.create({\n  currency: 'usd',\n  unit_amount: 1000,\n  currency_options: {\n    eur: { unit_amount: 950 },\n    jpy: { unit_amount: 1500 },\n  },\n  product_data: { name: 'My Product' },\n});\n\n// Dashboard: Product → Add price → +Add a price by currency\n```\n\n## Session Behavior\n\n- Use the multi-currency Price ID in Checkout Session `line_items`. The May Node and November curl creation examples both use `mode=payment`, `ui_mode=elements`, and a `return_url`; those are example parameters, not evidence of a changed UI contract.\n- When the local currency can be presented, the Checkout Session `currency`, `payment_method_types`, and `amount_total` reflect the localized price and compatible methods. Its availability depends on customer location and configured options; a Netherlands/EUR example shows iDEAL.\n- An explicit Session `currency`, such as EUR in the guide's example, **forces that selected currency** regardless of customer location. It does not trigger the default-currency fallback branch.\n- The April testing snippet uses `ui_mode=elements`; the November testing snippet uses `ui_mode=embedded_page`. Other November examples still use `elements`, so the snippet switch does not establish a support change.\n\n## Requirements for Auto-Localization\n\nAll of the following must be true:\n1. All prices, shipping rates, and discounts have `currency_options` for the relevant currency\n2. If using Stripe Tax: `tax_behavior` specified for that currency on all items\n3. `currency` param NOT set on session creation\n\nIf a relevant `currency_options` value or Stripe Tax `tax_behavior` is missing, Checkout presents the common default currency. If the Session instead sets an explicit `currency`, that requested currency overrides automatic localization; it is a separate branch.\n\n## Restrictions\n\n- Automatic price localization is unavailable for Sessions using manual tax rates.\n- Automatic price localization is unavailable when `payment_intent_data.application_fee_amount` or `payment_intent_data.transfer_data.amount` is set.\n\n## Fees\n\nThe guide lists standard payment-method fees, international-card/payment-method fees where applicable, and a currency-conversion fee **for automatically converted transactions**. It does not establish that every manually fixed Price incurs a conversion fee.\n\n## Related Pages\n\n- Company: [[stripe]]\n- [[source-stripe-checkout-local-currency]] — hub page (all 3 approaches)\n- [[stripe-adaptive-pricing]] — recommended alternative (handles 150+ currencies automatically)\n- [[stripe-fx-quotes-api]] — alternative with rate control\n\n## Raw Sources\n\n- [[raw/stripe-payments-custom-localize-prices-manual-currency-prices-2026-11-07|November 7, 2026 manual currency prices guide]] — full capture with curl examples and customer-configured Account test alternative.\n- [[raw/stripe-manual-currency-prices-2025|April 21, 2026 manual currency prices guide]] — full capture with Node examples and Customer test alternative.\n",
+      "quotes": [
+        {
+          "text": "Manual currency prices isn’t supported on the [Payment Intents API](https://docs.stripe.com/api/payment_intents.md).",
+          "location": "raw/stripe-payments-custom-localize-prices-manual-currency-prices-2026-11-07.md:9"
+        },
+        {
+          "text": "Multi-currency prices that you manually define override Adaptive Pricing for those currencies, even if it’s enabled.",
+          "location": "raw/stripe-payments-custom-localize-prices-manual-currency-prices-2026-11-07.md:16"
+        },
+        {
+          "text": "You can also create a new customer-configured [Account](https://docs.stripe.com/api/v2/core/accounts/object.md#v2_account_object-configuration-customer) or [Customer](https://docs.stripe.com/api/customers/create.md) and specify an email address that contains the `+location_XX` suffix. Stripe test cards work as usual.",
+          "location": "raw/stripe-payments-custom-localize-prices-manual-currency-prices-2026-11-07.md:79"
+        },
+        {
+          "text": "The `currency`, `payment_method_types`, and `amount_total` fields reflect the local currency and price.",
+          "location": "raw/stripe-payments-custom-localize-prices-manual-currency-prices-2026-11-07.md:81"
+        },
+        {
+          "text": "If the relevant currency option or `tax_behavior` is missing, the Checkout Session presents the default currency to the customer.",
+          "location": "raw/stripe-payments-custom-localize-prices-manual-currency-prices-2026-11-07.md:114"
+        }
+      ],
+      "suggestions": {
+        "company": [],
+        "concepts": [
+          {
+            "update_id": "manual_currency_a1_override_route",
+            "target_path": "wiki/concepts/stripe-adaptive-pricing.md",
+            "update_kind": "durable_fact",
+            "anchor": "- When local currency already in price `currency_options` (that currency skipped, others still converted)",
+            "proposed_markdown": "- When a local currency is manually defined in Price `currency_options`, that fixed currency amount overrides Adaptive Pricing for that currency. Other currencies can still be handled by Adaptive Pricing where the feature and Checkout configuration support it; see [[source-stripe-manual-currency-prices]] for the Checkout Session path and its localization prerequisites.",
+            "quote_indexes": [
+              0,
+              1,
+              4
+            ],
+            "warnings": [
+              "The manual-price guide new raw/stripe-payments-custom-localize-prices-manual-currency-prices-2026-11-07.md:9-18,106-114 and old raw/stripe-manual-currency-prices-2025.md:8-17,141-149 support this scoped relationship. Neither capture proves merchant-specific Adaptive Pricing eligibility."
+            ]
+          },
+          {
+            "update_id": "manual_currency_a1_source_link",
+            "target_path": "wiki/concepts/stripe-adaptive-pricing.md",
+            "update_kind": "reciprocal_source_link",
+            "anchor": "- [[source-stripe-adaptive-pricing-elements]] — Elements integration guide: adaptivePricing.allowed flag, CurrencySelectorElement React component, currencyOptions guard, +location_XX testing",
+            "proposed_markdown": "- [[source-stripe-adaptive-pricing-elements]] — Elements integration guide: adaptivePricing.allowed flag, CurrencySelectorElement React component, currencyOptions guard, +location_XX testing\n- [[source-stripe-manual-currency-prices]] — manually fixed Price currency_options on Checkout Sessions override Adaptive Pricing for those currencies; November 2026 adds a customer-configured Account testing option",
+            "quote_indexes": [
+              1,
+              2
+            ],
+            "warnings": [
+              "New raw/stripe-payments-custom-localize-prices-manual-currency-prices-2026-11-07.md:9-18,60-81 is authority for the added route; old raw/stripe-manual-currency-prices-2025.md:8-17,79-108 remains dated."
+            ]
+          }
+        ],
+        "index": [],
+        "log": []
+      },
+      "raw_path": "raw/stripe-payments-custom-localize-prices-manual-currency-prices-2026-11-07.md",
+      "raw_sha256": "6db67b70a5a4d37652d39bfedc423c6b711ba915f75f21c3e7e7b3cce4433db1",
+      "status": "candidate_ready"
+    }
+  },
+  "read_ranges": {
+    "raw/stripe-payments-custom-localize-prices-manual-currency-prices-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 131
+      }
+    ],
+    "raw/stripe-manual-currency-prices-2025.md": [
+      {
+        "start": 1,
+        "end": 166
+      }
+    ],
+    "wiki/sources/source-stripe-manual-currency-prices.md": [
+      {
+        "start": 1,
+        "end": 72
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/4b86b6c097c41ec0e7ee7ea7/content.diff": [
+      {
+        "start": 1,
+        "end": 179
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/attempts/payments-custom-localize-prices-manual-currency-prices/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 160
+      }
+    ],
+    "wiki/concepts/stripe-adaptive-pricing.md": [
+      {
+        "start": 1,
+        "end": 79
+      }
+    ],
+    "wiki/concepts/stripe-checkout.md": [
+      {
+        "start": 1,
+        "end": 80
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 25
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 85,
+        "end": 100
+      }
+    ]
+  },
+  "old_evidence": [
+    {
+      "text": "You can also create a [Customer](https://docs.stripe.com/api/customers/create.md) and specify their email that contains the `+location_XX` suffix. Stripe test cards work as usual.",
+      "location": "raw/stripe-manual-currency-prices-2025.md:106"
+    },
+    {
+      "text": "Stripe’s standard transaction fees apply to automatically converted transactions:",
+      "location": "raw/stripe-manual-currency-prices-2025.md:160"
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/custom/localize-prices/manual-currency-prices, the November guide retains manually defined Price currency_options used through Checkout Sessions, excludes the Payment Intents API, and says configured currency amounts override Adaptive Pricing only for those currencies (new raw lines 9-18, 20-58; old raw lines 8-17, 19-77). Local presentment requires relevant options across prices, shipping rates and discounts, Stripe Tax tax_behavior where applicable, and no explicit Session currency; the Session currency, payment_method_types and amount_total then reflect the local option (new raw lines 81,106-114). An explicit Session currency instead forces that currency. The new test guidance permits a new customer-configured Account as well as a Customer with a +location_XX email, without establishing general Accounts v2 access (new raw lines 60-81; old raw lines 79-108). wiki/sources/source-stripe-manual-currency-prices.md retains core setup but conflates explicit override with default fallback and overstates conversion fees.",
+    "Q2": "At https://docs.stripe.com/payments/custom/localize-prices/manual-currency-prices, the substantive documentation addition is the new customer-configured Account alternative for +location_XX presentment testing (new raw lines 60-81 versus old raw lines 79-108). Node examples become curl, and the test snippet changes from ui_mode=elements to embedded_page while other November snippets still use elements; those example differences do not establish a UI support change (old raw lines 19-104; new raw lines 20-98). wiki/sources/source-stripe-manual-currency-prices.md should preserve April Node examples as dated, add November provenance, separate missing-option/default-currency fallback from an explicit forced currency, and scope the fee list to automatically converted transactions (old raw lines 110-166; new raw lines 83-131). The fixed manual Price amount, Session fields, location test, return_url, and preview recommendation do not prove an account's eligibility, an FX rate or fee for a particular transaction, or payment success."
+  }
+}

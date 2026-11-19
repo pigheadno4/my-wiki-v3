@@ -1,0 +1,163 @@
+{
+  "job_id": "payments-analytics-recommendations",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-analytics-recommendations-2026-11-07.md",
+  "raw_sha256": "207bca26f992380d686a13ad474f1b68f72ef9e1f335173af3e1a4e6bedd5858",
+  "prior_raw_path": "raw/stripe-payments-recommendations-2025.md",
+  "prior_raw_sha256": "1088b36907e5a98534ce00f0e17fe402eb381b6e0855b581b637417417489ca9",
+  "source_targets": [
+    "wiki/sources/source-stripe-payments-recommendations.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-payments-recommendations.md": "b43d2cc80653fba21f992025ffc38094a60a11693456277381b8c9652f8c5964"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-analytics-recommendations-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 50
+      },
+      {
+        "start": 51,
+        "end": 89
+      }
+    ],
+    "raw/stripe-payments-recommendations-2025.md": [
+      {
+        "start": 1,
+        "end": 50
+      },
+      {
+        "start": 51,
+        "end": 90
+      }
+    ],
+    "wiki/sources/source-stripe-payments-recommendations.md": [
+      {
+        "start": 1,
+        "end": 45
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/323302eaf44c9d24ed4f58e8/content.diff": [
+      {
+        "start": 1,
+        "end": 67
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 453,
+        "end": 465
+      }
+    ],
+    "wiki/concepts/stripe-authorization-boost.md": [
+      {
+        "start": 1,
+        "end": 16
+      },
+      {
+        "start": 68,
+        "end": 95
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 660,
+        "end": 670
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-03/proposed-queries.md": [
+      {
+        "start": 117,
+        "end": 122
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Depending on availability, you might have no recommendations or up to three at any given time.",
+      "location": "raw/stripe-payments-analytics-recommendations-2026-11-07.md:11"
+    },
+    {
+      "text": "Any estimated impacts, such as increases in revenue, are estimates and aren\u2019t guaranteed.",
+      "location": "raw/stripe-payments-analytics-recommendations-2026-11-07.md:15"
+    },
+    {
+      "text": "Each recommendation includes an estimated impact, such as a revenue (otherwise known as payment volume) increase or fraud model improvement.",
+      "location": "raw/stripe-payments-analytics-recommendations-2026-11-07.md:25"
+    },
+    {
+      "text": "If you process all payments through Stripe, we handle this automatically.",
+      "location": "raw/stripe-payments-analytics-recommendations-2026-11-07.md:42"
+    },
+    {
+      "text": "Disabling 3DS won\u2019t affect payments that require 3DS by regulation",
+      "location": "raw/stripe-payments-analytics-recommendations-2026-11-07.md:77"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Each recommendation includes an estimated impact, such as a revenue (otherwise known as payment volume) increase or fraud model improvement.",
+      "location": "raw/stripe-payments-recommendations-2025.md:24"
+    },
+    {
+      "text": "Depending on availability, you might have no recommendations or up to three at any given time.",
+      "location": "raw/stripe-payments-recommendations-2025.md:10"
+    },
+    {
+      "text": "If you process all payments through Stripe, we handle this automatically.",
+      "location": "raw/stripe-payments-recommendations-2025.md:43"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The complete November guide and May guide describe Dashboard Acceptance-page suggestions, not automatic optimization actions: an account may show zero to three, based on settings, integration and thresholds; Stripe refreshes them daily and the merchant can dismiss or send feedback (old raw lines 8-20; new raw lines 9-21). Estimated impacts and recommendation outcomes are not guaranteed, may have cost/fraud/legal tradeoffs, and require business decision (old raw line 14; new raw line 15).",
+    "Both captures allow estimated revenue/payment-volume increase OR fraud-model improvement, with revenue increases displayed in settlement currency (old raw lines 22-26; new raw lines 23-27). Annualized revenue estimates use recent-month all or relevant volume multiplied by an average uplift and 12, assuming stable volume; the average comes from other businesses and relevant-volume estimates exclude inapplicable payments (old raw lines 28-34; new raw lines 29-33). Current source line 13 and related concept line 77 incorrectly imply each recommendation has an annual revenue estimate, so correct this baseline overstatement separately from the navigation/format delta.",
+    "The NTID recommendation applies to an off-session merchant-initiated transaction using a previous on-session transaction or validation from the same customer, especially when Stripe did not authorize the underlying card previously or card numbers are used without a Stripe Customer object. Stripe says it handles NTIDs automatically if all payments pass through Stripe; for other processors it might lack the ID unless supplied at PaymentIntent creation (old raw lines 36-45; new raw lines 35-44). Source line 26 should retain the same-customer, mixed-processor and automatic-handling conditions rather than implying every MIT requires a manual NTID.",
+    "Other recommendations remain: share postal codes for Visa credit AVS and potentially favorable US interchange; disable the two blunt AVS/CVC Radar blocks, optionally use risk-score variants while highest-risk automatic blocking remains; reduce manual 3DS requests on low-risk transactions outside regions with authentication requirements; investigate high 3DS abandonment (old raw lines 47-84; new raw lines 46-83). The source's five-row table broadly covers these at lines 22-35, but its 'SCA regions' shorthand must not imply all payments in a region require 3DS or that all fraud checks should be disabled (new raw lines 52-79).",
+    "Neither captured page specifies a recommendation acceptance API, observed authorization gain, processor settlement, actual fraud-model result or merchant-specific compliance decision. API versus Dashboard 3DS request controls are separate, and stopping optional requests does not affect payments that require 3DS by regulation (old raw lines 69-80; new raw lines 68-79). The linked guides and dashboard routes are navigation, not evidence of executed account changes."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "Keep the May 8, 2026 raw provenance and the five types, zero-to-three account-dependent daily availability, estimation formulas and warnings as May evidence; the November capture repeats them without a substantive rule change (source lines 4-7, 13-35, 43-45; old raw lines 8-84; new raw lines 9-83).",
+    "Preserve the off-session MIT versus prior on-session same-customer NTID identity boundary, Stripe-only automatic handling versus mixed-processor possible missing ID, and PaymentIntent-creation condition with dated attribution (old raw lines 38-45; new raw lines 37-44).",
+    "Preserve the regulation-required 3DS exception and distinction between API manual request, Radar rule and Radar Authentication control; a recommendation to reduce optional 3DS is not proof that a particular payment needs no authentication (old raw lines 69-80; new raw lines 68-79)."
+  ],
+  "conflicts": [
+    "Current source line 13 and the existing concept at wiki/concepts/stripe-authorization-boost.md:77 state that each recommendation includes annual revenue impact; both old and new raw instead say estimated impact can be a revenue/payment-volume increase OR fraud-model improvement (old raw lines 22-26; new raw lines 23-27). Reciprocally qualify source and concept; annualization applies to applicable revenue estimates, not every recommendation."
+  ],
+  "unresolved_questions": [
+    "The page does not say which recommendation types receive fraud-model estimates rather than annualized revenue estimates, or disclose the business-specific uplift values; account-specific recommendation presence and effect remain unobserved (new raw lines 11-33).",
+    "The page does not prove that changing Radar or 3DS settings improves a particular merchant's net revenue or fraud outcomes; its disclaimer explicitly leaves costs, risk and legal terms for the business to evaluate (new raw lines 15, 52-79)."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-authorization-boost.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-payments-recommendations.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add November raw provenance while retaining May ingestion and raw source history; the diff is heading whitespace and malformed-table layout cleanup, not a recommendation-policy change (source lines 4-7, 43-45; diff lines 1-67).",
+        "Narrow source line 13: each recommendation has an estimated impact, but that may be revenue/payment volume or fraud-model improvement; annualized month \u00d7 uplift \u00d7 12 applies to applicable revenue estimates with all-volume versus relevant-volume bases and stable-volume assumption (old raw lines 22-34; new raw lines 23-33). The related concept line 77 repeats the overstatement.",
+        "Qualify source line 26 NTID row with same-customer prior on-session ID, Stripe-only automatic handling and mixed-processor possible missing ID (old raw lines 38-45; new raw lines 37-44).",
+        "Make source lines 29 and 35 conditional: low-risk optional 3DS outside authentication-required regions may be reduced, while payments actually requiring 3DS by regulation remain subject to it (old raw lines 69-80; new raw lines 68-79)."
+      ],
+      "conflicts": [
+        "Source line 13 and concept line 77 promise annual revenue impact for every recommendation, conflicting with both captures' alternative fraud-model impact (old raw line 24; new raw line 25)."
+      ],
+      "reason": "No substantive new raw behavior is established, but the current source and concept materially overstate the impact type for every recommendation; raw-reference provenance plus this baseline correction is needed."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/analytics/recommendations, the complete November guide describes account-dependent Dashboard Acceptance recommendations: zero to three can appear, they refresh daily, and the merchant decides whether to act after considering uncertain estimates, costs, fraud and legal terms (new raw lines 9-21). Impacts can be revenue/payment-volume increases or fraud-model improvement; applicable revenue estimates annualize recent all or relevant monthly volume using an average uplift and a stable-volume assumption (new raw lines 23-33). The five topics are same-customer NTID for off-session MIT, Visa postal AVS, Radar rule changes, lower optional 3DS and 3DS integration diagnosis (new raw lines 35-83). The May capture documents the same boundaries (old raw lines 8-84). source-stripe-payments-recommendations.md captures the five recommendations but line 13 overstates that each has annual revenue impact; line 26 compresses same-customer and processor conditions. A recommendation is a suggestion, not an executed account change or guaranteed authorization outcome.",
+    "Q2": "For https://docs.stripe.com/payments/analytics/recommendations, the diff shows presentation cleanup of whitespace and an awkward impact table, with no substantive recommendation or eligibility rule change (old raw lines 16-34, 36-84; new raw lines 17-33, 35-83). source-stripe-payments-recommendations.md should retain May-dated claims and add November provenance, while correcting its baseline annual-revenue-for-every-item overstatement at line 13; the related concept line 77 needs the reciprocal qualifier because fraud-model impacts are also possible. The NTID advice is off-session MIT tied to an earlier on-session transaction or validation from the same customer, with Stripe-only automatic handling and mixed-processor caveats (old raw lines 38-45; new raw lines 37-44). Radar rules, Dashboard controls and API-requested 3DS are distinct surfaces. Disabling optional 3DS does not override a payment's regulatory requirement, and a forecast, feedback action or recommendation display cannot establish real revenue, fraud improvement, authorization or settlement."
+  }
+}
