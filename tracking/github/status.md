@@ -4593,6 +4593,32 @@
   Release: [manifest](../../raw/github/stripe/stripe-cli/releases/stripe-cli/1.50.4/2026-10-06/manifest.json)
   Comparison: [manifest](repos/stripe/stripe-cli/comparisons/stripe-cli/1.50.3--1.50.4/comparison.json)
 
+## `github-a24ad729631b9a2aa48d`
+
+- Repository: `paypal/paypal-ios`
+- SHA: `7eb8f7b7f9162e8f8114abae7f5dba9b525eae64`
+- Collection date: `2026-11-15`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-ios/snapshots/2026-11-15-7eb8f7b/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-ios/ingest-packets/github-a24ad729631b9a2aa48d/packet.md)
+- Evidence attachment: [manifest](repos/paypal/paypal-ios/evidence-attachments/github-a24ad729631b9a2aa48d/attachment.json)
+- Review priority: `high`
+- Required reading: `39` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `paypal-ios@3.2.0` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-ios/releases/paypal-ios/3.2.0/2026-11-15/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-ios/comparisons/paypal-ios/3.1.1--3.2.0/comparison.json)
+
 ## `github-a27781ae2df9a769c19b`
 
 - Repository: `stripe/stripe-android`

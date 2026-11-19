@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-11-15] ingest | PayPal iOS `3.2.0`
+
+Approved full additive ingest with focused reading and ten-file exact-SHA supplement: native Venmo client, return-dependent callback/async lifecycle, server finalization, unused request options and shared analytics/concurrency changes. All older history/warnings preserved and source_count unchanged. Details [[paypal-log]], [[source-github-paypal-ios]] and [[changelog-github-paypal-ios]]. No SDK/device/browser/payment execution, commit or push.
+
 ## [2026-11-15] ingest | PayPal Android `3.2.0`
 
 Approved full additive ingest with focused reading and ten-file supplement: new separate Venmo client, browser-mediated launch, return/capture safeguards and documentation mismatch, plus PayPal URL telemetry. All older version history/warnings retained; source_count unchanged. Details [[paypal-log]], [[source-github-paypal-android]] and [[changelog-github-paypal-android]]. No SDK/device/browser/payment execution, commit or push.

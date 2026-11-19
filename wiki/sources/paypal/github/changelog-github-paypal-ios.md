@@ -2,9 +2,11 @@
 title: "GitHub changelog: paypal/paypal-ios"
 type: source
 date_ingested: 2026-07-31
-date_updated: 2026-10-16
+date_updated: 2026-11-15
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-ios/snapshots/2026-11-15-7eb8f7b/manifest.json"
+  - "github/paypal/paypal-ios/supplements/2026-11-15-7eb8f7b-763917b6/manifest.json"
   - "github/paypal/paypal-ios/snapshots/2026-10-16-de98414/manifest.json"
   - "github/paypal/paypal-ios/snapshots/2026-10-16-67e4a96/manifest.json"
   - "github/paypal/paypal-ios/snapshots/2026-10-16-fc69f40/manifest.json"
@@ -16,6 +18,24 @@ tags: [paypal, ios, swift, mobile, sdk, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `paypal/paypal-ios`. Durable architecture and integration guidance belongs in [[source-github-paypal-ios]].
+
+## `paypal-ios@3.2.0` - Change Set `7eb8f7b` (2026-11-02)
+
+Comparison manifest: [3.1.1 to 3.2.0](tracking/github/repos/paypal/paypal-ios/comparisons/paypal-ios/3.1.1--3.2.0/comparison.json).
+
+**Boundary:** `paypal-ios@3.1.1` (`de98414f5cf74dc3db2239a4828b4760ef391d20`) -> `paypal-ios@3.2.0` (`7eb8f7b7f9162e8f8114abae7f5dba9b525eae64`); user-approved full additive override on 2026-11-15, item `github-a24ad729631b9a2aa48d`, including the ten-file immutable supplement. New payment behavior warrants full mode despite the script's delta recommendation.
+
+**New payment flow:** separate SPM/CocoaPods VenmoPayments module exposes retained `VenmoClient`, callback/async start and return handling. Creates an HTTPS order-token launch with OS app/browser handling; no PayPal session-prewarm requirement in this client. UpdateClientConfig errors are logged and ignored. Callback/async approval waits for a return, unlike Android's launch-success phase. `canceled=true` wins; approved returns need token/PayerID. Server authorization/capture remains separate. No Venmo vault API or account-eligibility guarantee is established.
+
+**Demo and cautions:** SwiftUI retains the client and forwards open URLs; server creates a USD Venmo order with return/cancel URLs and NATIVE_APP source. Sample completion uses the created order ID and nil client metadata, with no explicit returned-token correlation/status validation. SDK parsing lacks origin/order binding; a malformed forwarded URL consumes the pending callback. No return means no automatic callback/timeout; state Reset does not cancel checkout and one callback slot is not concurrent-flow management. Unused VenmoCheckoutRequest options conflict with its web-session comment; no routing/currency control is inferred.
+
+**Other changes:** shared telemetry renames app_switch_url to url, adds venmo_installed and copies analytics state at event scheduling; PayPal checkout/vault record launch/return URLs. Venmo itself does not populate that URL field. MainActor/Sendable annotations and preconcurrency import affect UI/error/authentication surfaces. iOS 16, Swift 5.9 and risk 5.6.0 metadata remain. No build/device/payment, telemetry delivery or compliance proof.
+
+**Reading/preservation:** changed retained implementation, new changelog entries, all ten supplemental files, affected prior code, release notes/comparison and complete cumulative wiki source/changelog read. Under the explicit focused-reading approval, 144 unchanged retained files, inventories and unchanged upstream changelog history were checked mechanically; shared wiki pages by relevant section. All 334 prior/current/supplement files pass size/SHA-256/Git blob checks. Full mode and all v1/v2/3.0/3.1 history, raw entries and warnings remain. Later main guides were not collected or used.
+
+**Updated sections:** SDK, Checkout and Vault concepts first; full additive source section, separate changelog, company/catalog and logs. No new source/concept or cross-company comparison; source_count remains unchanged. Commit/push requires separate approval.
+
+**Evidence:** [snapshot](raw/github/paypal/paypal-ios/snapshots/2026-11-15-7eb8f7b/manifest.json), [release record](raw/github/paypal/paypal-ios/releases/paypal-ios/3.2.0/2026-11-15/manifest.json), [notes](raw/github/paypal/paypal-ios/releases/paypal-ios/3.2.0/2026-11-15/release-notes.md), [comparison](tracking/github/repos/paypal/paypal-ios/comparisons/paypal-ios/3.1.1--3.2.0/comparison.md), [supplement](raw/github/paypal/paypal-ios/supplements/2026-11-15-7eb8f7b-763917b6/manifest.json), [client](raw/github/paypal/paypal-ios/supplements/2026-11-15-7eb8f7b-763917b6/files/Sources/VenmoPayments/VenmoClient.swift), [attachment](tracking/github/repos/paypal/paypal-ios/evidence-attachments/github-a24ad729631b9a2aa48d/attachment.json).
 
 ## `paypal-ios@3.1.1` - Change Set `de98414` (2026-10-08)
 

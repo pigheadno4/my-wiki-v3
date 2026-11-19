@@ -1,0 +1,535 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 52cdbd6..303230a 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -1,6 +1,15 @@
+ 
+ # PayPal iOS SDK Release Notes
+ 
++## 3.2.0 (2026-11-02)
++
++* VenmoPayments (New Module)
++  * Add `VenmoClient` with `start(orderID:completion:)` and `start(orderID:) async throws` for Venmo checkout; opens the Venmo app when installed, otherwise Safari
++  * Add `handleReturnURL(_:)` for processing the return URL from Venmo
++  * Add `VenmoCheckoutResult` with `orderID` and `payerID` properties
++  * Add `VenmoError` with error codes for URL errors, malformed results, and cancellation
++  * Add `VenmoError.isCheckoutCanceled(_:)` helper to distinguish user cancellation
++
+ ## 3.1.1 (2026-10-08)
+ 
+ * PayPal
+diff --git a/Demo/Demo/Models/CreateOrderParams.swift b/Demo/Demo/Models/CreateOrderParams.swift
+index 4c639f9..bc3f37f 100644
+--- a/Demo/Demo/Models/CreateOrderParams.swift
++++ b/Demo/Demo/Models/CreateOrderParams.swift
+@@ -11,12 +11,14 @@ enum OrderPaymentSource: Encodable {
+ 
+     case paypal(OrderPayPalPaymentSource)
+     case card(OrderCardPaymentSource)
++    case venmo(OrderVenmoPaymentSource)
+ 
+     func encode(to encoder: Encoder) throws {
+         var container = encoder.singleValueContainer()
+         switch self {
+         case .paypal(let source): try container.encode(source)
+         case .card(let source):   try container.encode(source)
++        case .venmo(let source):  try container.encode(source)
+         }
+     }
+ }
+@@ -31,6 +33,35 @@ struct OrderCardPaymentSource: Encodable {
+     let card: CardSource
+ }
+ 
++struct OrderVenmoPaymentSource: Encodable {
++
++    let venmo: VenmoSource
++}
++
++struct VenmoSource: Encodable {
++
++    var experienceContext: VenmoExperienceContext?
++}
++
++// MARK: - Venmo experience context
++
++// Note: Venmo's app switch context differs from PayPal's. It uses `{ source: "NATIVE_APP" }`,
++// not PayPal's `nativeApp` (osType/appUrl) block — sending PayPal's shape returns a 500.
++struct VenmoExperienceContext: Encodable {
++
++    let returnUrl: String
++    let cancelUrl: String
++    var appSwitchContext: VenmoAppSwitchContext?
++}
++
++struct VenmoAppSwitchContext: Encodable {
++
++    let source: String
++    init(source: String = "NATIVE_APP") {
++        self.source = source
++    }
++}
++
+ // Attributes are only for vault now
+ struct PayPalSource: Encodable {
+ 
+diff --git a/Demo/Demo/SwiftUIComponents/FeatureSelectionView.swift b/Demo/Demo/SwiftUIComponents/FeatureSelectionView.swift
+index f365524..83dba41 100644
+--- a/Demo/Demo/SwiftUIComponents/FeatureSelectionView.swift
++++ b/Demo/Demo/SwiftUIComponents/FeatureSelectionView.swift
+@@ -55,6 +55,12 @@ struct FeatureSelectionView: View {
+                     } label: {
+                         Text("PayPal Web")
+                     }
++                    NavigationLink {
++                        VenmoPaymentsView()
++                            .navigationTitle("Venmo")
++                    } label: {
++                        Text("Venmo")
++                    }
+                     NavigationLink {
+                         PayPalVaultView()
+                             .navigationTitle("PayPal Vaulting")
+diff --git a/Package.swift b/Package.swift
+index 9788130..1bc61d0 100644
+--- a/Package.swift
++++ b/Package.swift
+@@ -24,6 +24,10 @@ let package = Package(
+             name: "CardPayments",
+             targets: ["CardPayments"]
+         ),
++        .library(
++            name: "VenmoPayments",
++            targets: ["VenmoPayments"]
++        ),
+         .library(
+             name: "FraudProtection",
+             targets: ["FraudProtection"]
+@@ -55,6 +59,11 @@ let package = Package(
+             dependencies: ["CorePayments"],
+             resources: [.copy("PrivacyInfo.xcprivacy")]
+         ),
++        .target(
++            name: "VenmoPayments",
++            dependencies: ["CorePayments"],
++            resources: [.copy("PrivacyInfo.xcprivacy")]
++        ),
+         .target(
+             name: "FraudProtection",
+             dependencies: [
+diff --git a/PayPal.podspec b/PayPal.podspec
+index 00199f7..bb246eb 100644
+--- a/PayPal.podspec
++++ b/PayPal.podspec
+@@ -1,6 +1,6 @@
+ Pod::Spec.new do |s|
+   s.name             = "PayPal"
+-  s.version          = "3.1.1"
++  s.version          = "3.2.0"
+   s.summary          = "The PayPal iOS SDK: Helps you accept card, PayPal, and alternative payment methods in your iOS app."
+   s.homepage         = "https://developer.paypal.com/home"
+   s.license          = "MIT"
+@@ -32,6 +32,12 @@ Pod::Spec.new do |s|
+     s.resource_bundle = { "PayPalPayments_PrivacyInfo" => "Sources/PayPalPayments/PrivacyInfo.xcprivacy" }
+   end
+ 
++  s.subspec "VenmoPayments" do |s|
++    s.source_files  = "Sources/VenmoPayments/*.swift"
++    s.dependency "PayPal/CorePayments"
++    s.resource_bundle = { "VenmoPayments_PrivacyInfo" => "Sources/VenmoPayments/PrivacyInfo.xcprivacy" }
++  end
++
+   s.subspec "FraudProtection" do |s|
+     s.source_files = "Sources/FraudProtection/*.swift"
+     s.dependency "PayPal/CorePayments"
+diff --git a/Sources/CardPayments/CardClient.swift b/Sources/CardPayments/CardClient.swift
+index 0ab4573..2159b31 100644
+--- a/Sources/CardPayments/CardClient.swift
++++ b/Sources/CardPayments/CardClient.swift
+@@ -295,6 +295,7 @@ public class CardClient: NSObject {
+ 
+ extension CardClient: ASWebAuthenticationPresentationContextProviding {
+ 
++    @MainActor
+     public func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+         if #available(iOS 15, *) {
+             let firstScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
+diff --git a/Sources/CardPayments/CardError.swift b/Sources/CardPayments/CardError.swift
+index 80bd2ce..8f42ea9 100644
+--- a/Sources/CardPayments/CardError.swift
++++ b/Sources/CardPayments/CardError.swift
+@@ -54,7 +54,7 @@ public enum CardError {
+         errorDescription: "An error occured encoding HTTP request body data. Contact developer.paypal.com/support."
+     )
+ 
+-    public static let threeDSecureError: (Error) -> CoreSDKError = { error in
++    public static let threeDSecureError: @Sendable (Error) -> CoreSDKError = { error in
+         CoreSDKError(
+             code: Code.threeDSecureError.rawValue,
+             domain: domain,
+diff --git a/Sources/CorePayments/AnalyticsEventData.swift b/Sources/CorePayments/AnalyticsEventData.swift
+index 179ddbe..00892cb 100644
+--- a/Sources/CorePayments/AnalyticsEventData.swift
++++ b/Sources/CorePayments/AnalyticsEventData.swift
+@@ -14,7 +14,6 @@ struct AnalyticsEventData: Encodable {
+         case appID = "app_id"
+         case appName = "app_name"
+         case appSwitchEligible = "app_switch_eligible"
+-        case appSwitchURL = "app_switch_url"
+         case bnCode = "bn_code"
+         case buttonType = "button_type"
+         case cancelAppURL = "cancel_app_url"
+@@ -52,7 +51,9 @@ struct AnalyticsEventData: Encodable {
+         case startTime = "start_time"
+         case tenantName = "tenant_name"
+         case timestamp = "t"
++        case url = "url"
+         case userAction = "user_action"
++        case venmoInstalled = "venmo_installed"
+     }
+     
+     let appID: String = Bundle.main.infoDictionary?[kCFBundleIdentifierKey as String] as? String ?? "N/A"
+@@ -124,7 +125,7 @@ struct AnalyticsEventData: Encodable {
+ 
+     let bnCode: String?
+ 
+-    let appSwitchURL: URL?
++    let url: URL?
+ 
+     let appSwitchEligible: Bool?
+ 
+@@ -142,6 +143,8 @@ struct AnalyticsEventData: Encodable {
+ 
+     let paypalNativeAppInstalled: Bool?
+ 
++    let venmoInstalled: Bool?
++
+     let errorDescription: String?
+ 
+     let isCachedSession: Bool?
+@@ -199,7 +202,7 @@ struct AnalyticsEventData: Encodable {
+         self.endpoint = endpoint
+         self.presentationType = presentationType
+         self.flow = flow
+-        self.appSwitchURL = checkoutAnalyticsData?.appSwitchURL
++        self.url = checkoutAnalyticsData?.url
+         self.appSwitchEligible = checkoutAnalyticsData?.appSwitchEligible
+         self.ineligibleReason = checkoutAnalyticsData?.ineligibleReason
+         self.fallbackUrl = checkoutAnalyticsData?.fallbackUrl
+@@ -208,6 +211,7 @@ struct AnalyticsEventData: Encodable {
+         self.cancelAppURL = checkoutAnalyticsData?.cancelAppURL
+         self.userAction = checkoutAnalyticsData?.userAction
+         self.paypalNativeAppInstalled = checkoutAnalyticsData?.paypalNativeAppInstalled
++        self.venmoInstalled = checkoutAnalyticsData?.venmoInstalled
+         self.errorDescription = errorDescription
+         self.isCachedSession = checkoutAnalyticsData?.isCachedSession
+         self.isVaultRequest = checkoutAnalyticsData?.isVaultRequest
+@@ -243,7 +247,7 @@ struct AnalyticsEventData: Encodable {
+         try eventParameters.encode(buttonType, forKey: .buttonType)
+         try eventParameters.encode(merchantID, forKey: .merchantID)
+         try eventParameters.encode(bnCode, forKey: .bnCode)
+-        try eventParameters.encode(appSwitchURL, forKey: .appSwitchURL)
++        try eventParameters.encode(url, forKey: .url)
+         try eventParameters.encode(appSwitchEligible, forKey: .appSwitchEligible)
+         try eventParameters.encode(ineligibleReason, forKey: .ineligibleReason)
+         try eventParameters.encode(fallbackUrl, forKey: .fallbackUrl)
+@@ -252,6 +256,7 @@ struct AnalyticsEventData: Encodable {
+         try eventParameters.encode(cancelAppURL, forKey: .cancelAppURL)
+         try eventParameters.encode(userAction, forKey: .userAction)
+         try eventParameters.encode(paypalNativeAppInstalled, forKey: .paypalNativeAppInstalled)
++        try eventParameters.encode(venmoInstalled, forKey: .venmoInstalled)
+         try eventParameters.encode(errorDescription, forKey: .errorDescription)
+         try eventParameters.encode(isCachedSession, forKey: .isCachedSession)
+         try eventParameters.encode(isVaultRequest, forKey: .isVaultRequest)
+diff --git a/Sources/CorePayments/Networking/AnalyticsService.swift b/Sources/CorePayments/Networking/AnalyticsService.swift
+index be35e4b..8f61f66 100644
+--- a/Sources/CorePayments/Networking/AnalyticsService.swift
++++ b/Sources/CorePayments/Networking/AnalyticsService.swift
+@@ -77,6 +77,11 @@ public struct AnalyticsService {
+         checkoutAnalyticsData: PayPalCheckoutAnalyticsData? = nil,
+         withBackgroundProtection: Bool = false
+     ) {
++        // Snapshot now: `checkoutAnalyticsData` is mutated in place as the flow progresses (e.g. `url` is
++        // overwritten with the return URL), but the event must reflect the state at the time it occurred,
++        // not when the async task below happens to run.
++        let checkoutAnalyticsData = checkoutAnalyticsData?.snapshot()
++
+         if withBackgroundProtection {
+             sendEventWithBackgroundProtection(
+                 name,
+@@ -166,7 +171,8 @@ public struct AnalyticsService {
+     ///   - name: Event name string used to identify this unique event in FPTI
+     ///   - correlationID: correlation ID associated with the request
+     ///   - buttonType: The type of button
+-    ///   - appSwitchURL: The URL used to attempt an app switch, when applicable
++    ///   - url: The URL used to launch checkout/vault, when applicable, or the URL from the intent/callback
++    ///     that redirects back to the merchant app after an app-switch or browser round-trip
+     ///   - errorDescription: A human-readable description of the error, when the event represents a failure
+     ///   - isCachedSession: Whether the Shopper Session used for this event was served from cache
+     ///   - isVaultRequest: Whether this event is part of a vault (save payment method) request
+diff --git a/Sources/CorePayments/Networking/NetworkingError.swift b/Sources/CorePayments/Networking/NetworkingError.swift
+index 5ad5e47..6572f17 100644
+--- a/Sources/CorePayments/Networking/NetworkingError.swift
++++ b/Sources/CorePayments/Networking/NetworkingError.swift
+@@ -43,7 +43,7 @@ public enum NetworkingError {
+         errorDescription: "An error occured during network call. Contact developer.paypal.com/support."
+     )
+ 
+-    public static let jsonDecodingError: (String) -> CoreSDKError = { description in
++    public static let jsonDecodingError: @Sendable (String) -> CoreSDKError = { description in
+         CoreSDKError(
+             code: Code.jsonDecodingError.rawValue,
+             domain: domain,
+@@ -69,7 +69,7 @@ public enum NetworkingError {
+         errorDescription: "An error occured constructing an HTTP request. Contact developer.paypal.com/support."
+     )
+ 
+-    public static let serverResponseError: (String) -> CoreSDKError = { description in
++    public static let serverResponseError: @Sendable (String) -> CoreSDKError = { description in
+         CoreSDKError(
+             code: Code.serverResponseError.rawValue,
+             domain: domain,
+diff --git a/Sources/CorePayments/PayPalCheckoutAnalyticsData.swift b/Sources/CorePayments/PayPalCheckoutAnalyticsData.swift
+index 8bcb157..4cbe58d 100644
+--- a/Sources/CorePayments/PayPalCheckoutAnalyticsData.swift
++++ b/Sources/CorePayments/PayPalCheckoutAnalyticsData.swift
+@@ -14,7 +14,7 @@ public final class PayPalCheckoutAnalyticsData {
+     public var shopperSessionID: String?
+     public var shopperSessionExpiration: String?
+     
+-    public var appSwitchURL: URL?
++    public var url: URL?
+     public var appSwitchEligible: Bool?
+     public var ineligibleReason: String?
+ 
+@@ -25,9 +25,33 @@ public final class PayPalCheckoutAnalyticsData {
+     public var userAction: String?
+ 
+     public var paypalNativeAppInstalled: Bool?
++    public var venmoInstalled: Bool?
+     public var returnAppURL: URL?
+     public var cancelAppURL: URL?
+     public var fallbackSchemeURL: URL?
+ 
+     public init() {}
++
++    /// Returns an independent copy of the current field values.
++    ///
++    /// This class is mutated in place over the lifetime of a checkout/vault attempt, so callers that
++    /// build the wire payload asynchronously should capture a snapshot at the time the event occurs.
++    func snapshot() -> PayPalCheckoutAnalyticsData {
++        let copy = PayPalCheckoutAnalyticsData()
++        copy.isCachedSession = isCachedSession
++        copy.shopperSessionID = shopperSessionID
++        copy.shopperSessionExpiration = shopperSessionExpiration
++        copy.url = url
++        copy.appSwitchEligible = appSwitchEligible
++        copy.ineligibleReason = ineligibleReason
++        copy.fallbackUrl = fallbackUrl
++        copy.isVaultRequest = isVaultRequest
++        copy.userAction = userAction
++        copy.paypalNativeAppInstalled = paypalNativeAppInstalled
++        copy.venmoInstalled = venmoInstalled
++        copy.returnAppURL = returnAppURL
++        copy.cancelAppURL = cancelAppURL
++        copy.fallbackSchemeURL = fallbackSchemeURL
++        return copy
++    }
+ }
+diff --git a/Sources/CorePayments/PayPalCoreConstants.swift b/Sources/CorePayments/PayPalCoreConstants.swift
+index 0f96769..d897609 100644
+--- a/Sources/CorePayments/PayPalCoreConstants.swift
++++ b/Sources/CorePayments/PayPalCoreConstants.swift
+@@ -6,7 +6,7 @@ public enum PayPalCoreConstants {
+     // TODO: - Update release script to update this version #
+     /// This property is exposed for internal PayPal use only. Do not use.
+     /// It is not covered by Semantic Versioning and may change or be removed at any time.
+-    public static let payPalSDKVersion: String = "3.1.1"
++    public static let payPalSDKVersion: String = "3.2.0"
+     
+     public static let callbackURLScheme: String = "sdk.ios.paypal"
+     
+diff --git a/Sources/CorePayments/UIApplication+URLOpener.swift b/Sources/CorePayments/UIApplication+URLOpener.swift
+index a57572f..7d08c47 100644
+--- a/Sources/CorePayments/UIApplication+URLOpener.swift
++++ b/Sources/CorePayments/UIApplication+URLOpener.swift
+@@ -1,27 +1,37 @@
+ import UIKit
+ 
+ @_documentation(visibility: private)
++@MainActor
+ public protocol URLOpener {
+     func open(
+         _ url: URL,
+         universalLinksOnly: Bool,
+-        completionHandler completion: ((Bool) -> Void)?
++        completionHandler completion: (@Sendable (Bool) -> Void)?
+     )
++
++    func isVenmoAppInstalled() -> Bool
+ }
+ 
+ public extension URLOpener {
+ 
+-    func open(_ url: URL, completionHandler: ((Bool) -> Void)? = nil) {
++    func open(_ url: URL, completionHandler: (@Sendable (Bool) -> Void)? = nil) {
+         open(url, universalLinksOnly: true, completionHandler: completionHandler)
+     }
+ }
+ 
+ extension UIApplication: URLOpener {
+ 
++    public func isVenmoAppInstalled() -> Bool {
++        guard let venmoURL = URL(string: "com.venmo.touch.v2://") else {
++            return false
++        }
++        return canOpenURL(venmoURL)
++    }
++
+     public func open(
+         _ url: URL,
+         universalLinksOnly: Bool = true,
+-        completionHandler completion: ((Bool) -> Void)?
++        completionHandler completion: (@Sendable (Bool) -> Void)?
+     ) {
+         let options: [UIApplication.OpenExternalURLOptionsKey: Any] = universalLinksOnly ? [.universalLinksOnly: true] : [:]
+         open(url, options: options, completionHandler: completion)
+diff --git a/Sources/CorePayments/WebAuthenticationSession.swift b/Sources/CorePayments/WebAuthenticationSession.swift
+index 5a1dfd3..f4540ce 100644
+--- a/Sources/CorePayments/WebAuthenticationSession.swift
++++ b/Sources/CorePayments/WebAuthenticationSession.swift
+@@ -1,5 +1,5 @@
+ import Foundation
+-import AuthenticationServices
++@preconcurrency import AuthenticationServices
+ 
+ @_documentation(visibility: private)
+ public class WebAuthenticationSession: NSObject {
+@@ -7,9 +7,9 @@ public class WebAuthenticationSession: NSObject {
+     public func start(
+         url: URL,
+         context: ASWebAuthenticationPresentationContextProviding,
+-        sessionDidDisplay: @escaping (Bool) -> Void,
+-        sessionDidCancel: (() -> Void)? = nil,
+-        sessionDidComplete: @escaping (URL?, Error?) -> Void
++        sessionDidDisplay: @escaping @Sendable (Bool) -> Void,
++        sessionDidCancel: (@Sendable () -> Void)? = nil,
++        sessionDidComplete: @escaping @Sendable (URL?, Error?) -> Void
+     ) {
+         let authenticationSession = ASWebAuthenticationSession(
+             url: url,
+diff --git a/Sources/PayPalPayments/Models/PayPalCheckoutAnalyticsData+Analytics.swift b/Sources/PayPalPayments/Models/PayPalCheckoutAnalyticsData+Analytics.swift
+index 8838ee2..1c9e8cd 100644
+--- a/Sources/PayPalPayments/Models/PayPalCheckoutAnalyticsData+Analytics.swift
++++ b/Sources/PayPalPayments/Models/PayPalCheckoutAnalyticsData+Analytics.swift
+@@ -30,9 +30,6 @@ extension PayPalCheckoutAnalyticsData {
+         shopperSessionExpiration = shopperSession.shopperSessionConfig?.expiresAt
+         appSwitchEligible = shopperSession.appSwitchEligible
+         ineligibleReason = shopperSession.ineligibleReason
+-        if let redirectURL = shopperSession.redirectURL {
+-            appSwitchURL = URL(string: redirectURL)
+-        }
+         fallbackUrl = shopperSession.checkoutFallbackURL
+     }
+ }
+diff --git a/Sources/PayPalPayments/PayPalClient.swift b/Sources/PayPalPayments/PayPalClient.swift
+index 45d31a4..2c15128 100644
+--- a/Sources/PayPalPayments/PayPalClient.swift
++++ b/Sources/PayPalPayments/PayPalClient.swift
+@@ -282,6 +282,8 @@ public class PayPalClient: NSObject {
+             sessionTask = nil
+         }
+ 
++        analyticsData?.url = url
++
+         analyticsService?.sendEvent(
+             "paypal-payments:checkout:handle-return:started",
+             checkoutAnalyticsData: analyticsData
+@@ -466,6 +468,7 @@ public class PayPalClient: NSObject {
+                 analyticsService?.sendEvent("paypal-payments:checkout:fallback-to-web:\(reason)")
+             }
+         }
++        analyticsData?.url = nil
+         fallback()
+     }
+ 
+@@ -477,7 +480,7 @@ public class PayPalClient: NSObject {
+         url: URL,
+         handlers: SessionAppSwitchHandlers<T>
+     ) async -> AppSwitchAttempt {
+-        analyticsData?.appSwitchURL = url
++        analyticsData?.url = url
+         analyticsService?.sendEvent(
+             "paypal-payments:checkout:app-switch:started",
+             checkoutAnalyticsData: analyticsData
+@@ -564,6 +567,7 @@ public class PayPalClient: NSObject {
+                 return
+             }
+ 
++            analyticsData?.url = payPalCheckoutURLComponents
+             didApplicationBecomeActive = false
+             endSystemLatencyTracking(presentationType: .browser)
+             webAuthenticationSession.start(
+@@ -629,6 +633,7 @@ public class PayPalClient: NSObject {
+             }
+             didApplicationBecomeActive = false
+             endSystemLatencyTracking(presentationType: .browser)
++            analyticsData?.url = vaultCheckoutURLComponents
+             webAuthenticationSession.start(
+                 url: vaultCheckoutURLComponents,
+                 context: self,
+@@ -675,6 +680,9 @@ public class PayPalClient: NSObject {
+         completion: @escaping (Result<PayPalCheckoutResult, CoreSDKError>) -> Void
+     ) {
+         defer { analyticsData = nil }
++        if let url {
++            analyticsData?.url = url
++        }
+         analyticsService?.sendEvent(
+             "paypal-payments:checkout:handle-return:started",
+             checkoutAnalyticsData: analyticsData
+@@ -747,6 +755,9 @@ public class PayPalClient: NSObject {
+         completion: @escaping (Result<PayPalVaultResult, CoreSDKError>) -> Void
+     ) {
+         defer { analyticsData = nil }
++        if let url {
++            analyticsData?.url = url
++        }
+         analyticsService?.sendEvent(
+             "paypal-payments:checkout:handle-return:started",
+             checkoutAnalyticsData: analyticsData
+@@ -981,7 +992,8 @@ public class PayPalClient: NSObject {
+ // MARK: - ASWebAuthenticationPresentationContextProviding conformance
+ 
+ extension PayPalClient: ASWebAuthenticationPresentationContextProviding {
+-    
++
++    @MainActor
+     public func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+         if #available(iOS 15, *) {
+             let firstScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
+diff --git a/Sources/PayPalPayments/PayPalError.swift b/Sources/PayPalPayments/PayPalError.swift
+index dd23929..b851700 100644
+--- a/Sources/PayPalPayments/PayPalError.swift
++++ b/Sources/PayPalPayments/PayPalError.swift
+@@ -36,7 +36,7 @@ public enum PayPalError {
+         case sessionCreationFailed
+     }
+ 
+-    public static let webSessionError: (Error) -> CoreSDKError = { error in
++    public static let webSessionError: @Sendable (Error) -> CoreSDKError = { error in
+         CoreSDKError(
+             code: Code.webSessionError.rawValue,
+             domain: domain,
+diff --git a/Sources/PaymentButtons/PaymentButtonEdges.swift b/Sources/PaymentButtons/PaymentButtonEdges.swift
+index aa3e028..36d37fe 100644
+--- a/Sources/PaymentButtons/PaymentButtonEdges.swift
++++ b/Sources/PaymentButtons/PaymentButtonEdges.swift
+@@ -15,6 +15,7 @@ public enum PaymentButtonEdges: Equatable {
+     /// Custom corner radius.
+     case custom(CGFloat)
+ 
++    @MainActor
+     func cornerRadius(for view: UIView) -> CGFloat {
+         switch self {
+         case .hardEdges:

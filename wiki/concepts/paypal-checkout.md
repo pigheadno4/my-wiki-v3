@@ -172,6 +172,10 @@ The independent `paypal-examples/paypal-android-sdk-demo-app` baseline uses PayP
 
 The app also offers a pre-created hosted Payment Link through a Custom Tab. That return flow is not equivalent to SDK order completion: it updates the UI from the return URI without server-side settlement verification. See [[source-github-paypal-android-sdk-demo-app]].
 
+### Native iOS SDK `3.2.0` Venmo checkout
+
+The independent `paypal-ios@3.2.0` full additive ingest includes the exact-release Venmo module and embedded demo. The app creates a Venmo order through its server, retains `VenmoClient`, starts by order ID and forwards validated return URLs to that same client. Unlike Android's separate launch result, iOS callback/async success waits for a parsed approval return; dismissing the app/browser without a return gives no automatic completion. Return-origin/order correlation and server authorization/capture remain merchant responsibilities. Request-struct routing options are not consumed by this client, and no vault/merchant-eligibility guarantee follows. This does not update the independent older demo repository below. See [[paypal-ios-sdk]], [[source-github-paypal-ios]] and [[changelog-github-paypal-ios]].
+
 ### iOS reference sample at `047a50e`
 
 The independent `paypal-examples/paypal-ios-sdk-demo-app` baseline uses SwiftUI and accepts PayPal iOS SDK `>=2.0.0,<3.0.0`; its exact resolved patch is unavailable. Direct PayPal checkout uses `.paypal`, distinguishes cancellation, collects device data, and completes the order through a merchant server. Direct card checkout requests SCA when required, awaits SDK approval, and then completes through the server.

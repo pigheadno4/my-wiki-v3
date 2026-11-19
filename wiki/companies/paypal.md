@@ -69,6 +69,8 @@ The approved `paypal-android@3.0.0` GitHub baseline adds `paypal-payments` / `Pa
 
 The independent `paypal-examples/paypal-android-sdk-demo-app` baseline at `d1137d5` provides a Jetpack Compose reference using PayPal Android SDK `2.3.0`. It separates direct PayPal and card checkout from a hosted Payment Link path. The sample restores PayPal SDK browser state and captures through a merchant server, but its card path omits 3DS completion and its Payment Link path trusts the return URI without verifying settlement; neither the sample nor its explicit `PAYPAL` funding source demonstrates native Venmo.
 
+The full additive `paypal-ios@3.2.0` ingest (2026-11-15, including ten exact-SHA supplemental files) adds a separate VenmoPayments module with callback/async start and return-URL handling. Unlike Android's launch result, iOS approval awaits a return; dismissal without returning has no automatic callback/timeout. Merchant URL/order validation and separate server capture remain required. Unused request routing options conflict with their comments; no Venmo vault API, account eligibility or tested payment outcome is established. iOS 16 remains, and all earlier histories are preserved in [[source-github-paypal-ios]] and [[changelog-github-paypal-ios]].
+
 The full `paypal-ios@3.0.0` baseline adds `PayPalPayments` / `PayPalClient`, required merchant ID, session prewarming and ID-based checkout/vault. It preserves iOS 14+ at this version and uses app-switch with browser fallback; server finalization remains separate. The selected user action is not forwarded to the session request at `3.0.0`; return routing, funding-selector removal and source/runtime boundaries are recorded in [[source-github-paypal-ios]] and [[changelog-github-paypal-ios]]. No native Venmo API is added, and older v1/v2 knowledge remains.
 
 Full `3.1.0` raises the iOS minimum to 16 and moves FraudProtection to external `PayPalRisk 5.6.0`. It fixes action forwarding and removes local installed-app detection, sending an optimistic installed flag while preserving server eligibility and OS-open/browser-fallback routing. The documented invalid-action error remains absent; external dependency internals and payment execution remain unverified.
@@ -351,8 +353,8 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[source-github-paypal-android]] — cumulative Android through `3.2.0`: separate VenmoClient, return/capture and telemetry limits; all v1/v2/3.0/3.1 history retained
 - [[changelog-github-paypal-android]] — full additive `3.2.0` with supplement, prior full `3.0.0`, delta `3.1.0` and v1/v2 history, updated 2026-11-15
 - [[source-paypal-ios-card-payments]] — iOS SDK: CardClient/CardDelegate, WebPayments, PaymentButtons (UIKit+SwiftUI), FraudProtection
-- [[source-github-paypal-ios]] — cumulative iOS through `3.1.1`: BN session attribution, iOS 16+, dependency/action/routing migration and retained history
-- [[changelog-github-paypal-ios]] — full `3.0.0`, full `3.1.0`, delta `3.1.1`, later support notice and preserved v1/v2, 2026-10-16
+- [[source-github-paypal-ios]] — cumulative iOS through full additive `3.2.0`: native Venmo supplement, return/server boundaries and all earlier history
+- [[changelog-github-paypal-ios]] — full additive `3.2.0`, full `3.0.0`/`3.1.0`, delta `3.1.1`, support notice and preserved v1/v2, 2026-11-15
 - [[source-paypal-ios-in-app-purchases]] — iOS in-app purchases: Apple external payment entitlement, 3 options (Payment Link, Buttons, Custom Checkout)
 - [[source-paypal-expanded-checkout-customize-overview]] — Expanded Checkout customization catalog: 14 features, expanded vs standard comparison
 - [[source-paypal-expanded-checkout-3d-secure]] — 3D Secure: liability shift, 36-country eligibility table, card brand/currency restrictions

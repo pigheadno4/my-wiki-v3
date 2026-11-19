@@ -49,7 +49,7 @@ Generated: `2026-11-15`
 | paypal | `paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration` | tier1 | commit / commit-tree-v1 | monthly | 2026-11-05 | ingested | 2026-12-05 | `wait` |
 | paypal | `paypal/paypal-android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-11-15 | ingested | 2026-11-22 | `wait` |
 | paypal | `paypal/paypal-checkout-components` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-11-09 | ingested | 2026-11-16 | `wait` |
-| paypal | `paypal/paypal-ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-25 | ingested | 2026-11-01 | `collect-baseline` |
+| paypal | `paypal/paypal-ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-11-15 | ingested | 2026-11-22 | `wait` |
 | paypal | `paypal/paypal-js` | tier1 | monorepo-packages / npm-tracked-source-v1 | weekly | 2026-11-09 | ingested | 2026-11-16 | `wait` |
 | paypal | `paypal/paypal-messaging-components` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-11-03 | ingested | 2026-11-10 | `collect-baseline` |
 | paypal | `paypal/paypal-rest-api-specifications` | tier1 | commit / commit-tree-v1 | monthly | 2026-10-04 | ingested | 2026-11-04 | `collect-baseline` |

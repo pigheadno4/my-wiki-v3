@@ -101,8 +101,8 @@ Operations history: [[paypal-log]]
 - [[source-github-paypal-android]] — through full additive `3.2.0`: separate VenmoClient, browser-mediated launch, return/capture and telemetry cautions; all earlier history preserved (github-repo, updated 2026-11-15)
 - [[changelog-github-paypal-android]] — full additive `3.2.0` with supplement; earlier full `3.0.0`, delta `3.1.0` and v1/v2 history retained (github-repo, updated 2026-11-15)
 - [[source-paypal-ios-card-payments]] — iOS SDK: CardClient/CardDelegate, WebPayments, SwiftUI buttons, iOS vs Android differences (webpage, 2026-04-13)
-- [[source-github-paypal-ios]] — cumulative iOS through `3.1.1`: BN session forwarding, iOS 16+, action/routing migration and preserved history (github-repo, updated 2026-10-16)
-- [[changelog-github-paypal-ios]] — full `3.0.0`, full `3.1.0`, delta `3.1.1`, later support notice and retained v1/v2 (github-repo, 2026-10-16)
+- [[source-github-paypal-ios]] — cumulative iOS through full additive `3.2.0`: native Venmo supplement, return/capture boundaries and all earlier history (github-repo, updated 2026-11-15)
+- [[changelog-github-paypal-ios]] — full additive `3.2.0`, full `3.0.0`/`3.1.0`, delta `3.1.1`, support notice and retained v1/v2 (github-repo, 2026-11-15)
 - [[source-paypal-ios-in-app-purchases]] — iOS in-app purchases: Apple external payment entitlement, Payment Link / Buttons / Custom Checkout (webpage, 2026-04-13)
 - [[source-paypal-expanded-checkout-customize-overview]] — Expanded Checkout customization catalog: 14 features, security/card UX/payment optimization themes (webpage, 2026-04-13)
 - [[source-paypal-expanded-checkout-3d-secure]] — 3D Secure: liability shift, 36-country eligibility, MX/CA/JP/HK/SG card brand restrictions (webpage, 2026-04-13)
@@ -217,7 +217,7 @@ Operations history: [[paypal-log]]
 - [[paypal-fastlane]] — PayPal Fastlane: guest checkout acceleration, email + one-time code, separate from PayPal account, cross-merchant
 - [[paypal-fxaas]] — PayPal FXaaS: contract-based currency conversion, rate locking, 100+ display currencies, 25 holding currencies
 - [[paypal-pay-later]] — PayPal Pay Later: country products, eligibility, web messaging, and React Braintree Messages behavior
-- [[paypal-ios-sdk]] — iOS v3 session-first checkout/vault, retained v1/v2 APIs, cards/3DS/buttons/fraud and native Venmo boundary
+- [[paypal-ios-sdk]] — iOS 3.2.0 native Venmo checkout, separate PayPal session-first checkout/vault and all earlier API history
 - [[paypal-vault]] — PayPal Vault / Payment Method Tokens: setup tokens, payment tokens, stored credentials, APPROVED vs VAULTED status
 - [[paypal-apm]] — PayPal APMs: 11 methods (Apple/Google Pay, 7 bank redirects, Multibanco, Pay upon Invoice); Trustly 365-day refunds; giropay/Sofort sunset
 - [[paypal-apple-pay]] — Apple Pay via PayPal: Basic SDK-managed and recommended merchant-driven v6 flows, native Apple Pay typing, domain validation, and recurring-vault boundaries

@@ -6,6 +6,14 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-11-15] ingest | PayPal iOS `3.2.0`
+
+- User-approved full additive item `github-a24ad729631b9a2aa48d`, SHA `7eb8f7b7f9162e8f8114abae7f5dba9b525eae64`, including ten-file exact-SHA supplement. Explicit focused-reading approval covers changed retained implementation, new changelog entries, all ten supplements, affected prior code, release notes/comparison and cumulative source/changelog; 144 unchanged files and generated inventories/history checked mechanically, shared pages by relevant section. Full mode retained.
+- Adds native VenmoPayments callback/async APIs, OS HTTPS app/browser handling, return parsing and embedded SwiftUI server-create/approve/server-complete demo. iOS successful launch is not completion; no return gives no automatic callback/timeout. URL/order validation, single-pending-flow, unused-request-contract and separate server-finalization cautions recorded. Shared event-state snapshots, URL telemetry and concurrency annotations are source evidence, not tested runtime outcomes.
+- SDK, Checkout and Vault concepts updated first, then source/changelog, company/catalog and logs. All prior v1/v2/3.0/3.1 histories, raw entries and warnings retained. No new source/concept/comparison; company source_count unchanged at 177. Original raw snapshots, packets, registry and later main guides unchanged. Review: `tracking/github/repos/paypal/paypal-ios/ingest-review-a24ad729-2026-11-15.md`.
+- No upstream build/test, device/browser/payment execution, commit or push. Validate this item before lifecycle completion; publication requires separate approval.
+- Scoped close: seven typed pages, catalog uniqueness, evidence links, five quote locators, all 334 file hashes/sizes/blob IDs, attachment identity and historical section/raw preservation pass. Global validation retains the same 13 unrelated errors, none for PayPal iOS. Item completed ingested in full mode; accepted 3.2.0, zero pending, next action wait. Next: share findings and await scoped commit/push approval.
+
 ## [2026-11-15] ingest | PayPal Android `3.2.0`
 
 - Approved full additive item `github-71f2e4bd6e83f068dc81`, SHA `c5a36f034b0429b5c833b9e98ff24ef0ce52bd55`, after `3.1.0`, including ten-file immutable supplement. User approved focused reading: all 28 changed/new retained files, ten supplements, affected prior code, complete release notes/changelog, comparison and cumulative wiki source/changelog read; 254 unchanged files/inventories checked mechanically and shared pages read by relevant section. Full mode is not changed to delta; effective list has 303 paths, not a whole-repository semantic read.

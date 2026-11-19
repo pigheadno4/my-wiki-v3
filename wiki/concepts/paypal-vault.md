@@ -167,6 +167,8 @@ Uses `PayPalWebCheckoutClient` (browser-based web checkout) - not `CardClient`. 
 
 ## iOS Version 3 Vault Lifecycle
 
+The full additive `paypal-ios@3.2.0` review adds a separate Venmo checkout client, not a Venmo vault API. Its order approval result is not a setup token, permanent saved credential or capture confirmation. Existing PayPal `vault(setupTokenID:completion:)`, session prewarm and server token exchange remain separate; no new Venmo save/returning-buyer capability is inferred from the module. Source/history: [[source-github-paypal-ios]], [[changelog-github-paypal-ios]].
+
 The `3.1.1` delta forwards optional BN code into shopper-session context without changing vault API signatures or server token-exchange requirements. Its cumulative changelog marks `3.0.0` unsupported and points to `3.1.0`; earlier snapshots below remain historical evidence, not recommended integration targets. Source/history: [[source-github-paypal-ios]], [[changelog-github-paypal-ios]].
 
 The full `3.1.0` baseline raises the deployment minimum to iOS 16 and correctly forwards the selected action (`.setupNow` -> `COMMIT`, `.continue` -> `CONTINUE`, `.payNow` -> `PAY`). It removes local installed-app gating and sends an optimistic installed flag for eligibility; the server decision and successful OS Universal Link open still govern app switching, otherwise browser fallback applies. The earlier hardcoded-PAY finding below is specific to `3.0.0`; the documented invalid-action error is still absent. Server token exchange, validated returns and re-prewarming remain necessary. See [[source-github-paypal-ios]].

@@ -7,9 +7,24 @@ tags: [paypal, ios, mobile, swift, card-payments, web-payments, fraud-protection
 
 ## PayPal iOS SDK
 
-The PayPal iOS SDK provides native Swift modules for cards, PayPal checkout, PayPal-branded buttons, vault approval, and device data collection. The latest ingested package is `paypal-ios@3.1.1`; this is wiki ingest status, not a claim about the latest upstream release. Version 1/2 guidance below remains historical.
+The PayPal iOS SDK provides native Swift modules for cards, PayPal checkout, Venmo checkout, PayPal-branded buttons, vault approval, and device data collection. The latest ingested package is `paypal-ios@3.2.0`; this is wiki ingest status, not a claim about the latest upstream release. Version 1/2 and earlier v3 guidance below remains historical.
 
 Repository: <https://github.com/paypal/paypal-ios>
+
+## Version 3.2.0 Native Venmo Checkout
+
+`VenmoPayments` is a separate SPM product/target and CocoaPods `PayPal/VenmoPayments` subspec, depending on CorePayments. iOS 16 and Swift 5.9 package requirements remain. Initialize and retain `VenmoClient(config:)`, create a Venmo order on the merchant server, then call `start(orderID:completion:)` or `start(orderID:) async throws`. Unlike the separate PayPal session-first flow, this client has no shopper-session prewarm entry point.
+
+The client opens HTTPS `/go/web/paypal` with `channel=in-app` and the order `token`, allowing OS app handling or browser fallback. It uses live `account.venmo.com` or sandbox `account.ext.live.venmo.com`; the installed-app check feeds analytics rather than route selection. This is not an ASWebAuthenticationSession implementation or proof of account/environment availability.
+
+Opening the URL does not complete approval. Forward only validated expected return URLs to the same client's `handleReturnURL`. Approved returns require `approved=true`, nonempty `token` and exact-key `PayerID`; `canceled=true` takes precedence. Completion is delivered once per start on the main queue. Dismissal without a return yields no callback or automatic timeout; cancelling an async Task is not shown to cancel the checkout. Only one pending callback is stored, so avoid concurrent attempts. Validate return origin and order correlation in merchant integration and verify authorization/capture server-side: parsed approval is not settlement.
+
+> [!warning] Contradiction - unused Venmo request contract
+> `VenmoCheckoutRequest` documents `appSwitchIfEligible` and currency options, including a default web-authentication-session description, but the collected 3.2.0 client accepts only an order ID and never consumes the struct. Do not present these fields as working routing/currency controls. The unused `webSessionError` helper does not establish a web-session flow. See [[source-github-paypal-ios]].
+
+The embedded SwiftUI demo creates a USD order with Venmo return/cancel URLs and `appSwitchContext.source = NATIVE_APP`, retains the client, forwards `.onOpenURL`, and separately completes the created order through its server. Reset clears view state, not the pending SDK operation; there is no explicit order-token correlation or transaction-in-flight lock. The SDK catches UpdateClientConfig failure and continues. No Venmo vault API is established by this module. Later main-branch guides and production merchant eligibility remain outside this release evidence.
+
+Shared telemetry replaces `app_switch_url` with `url`, adds `venmo_installed`, and copies event-time analytics state before asynchronous dispatch. PayPal checkout/vault now record launch and return URLs; that does not guarantee telemetry delivery or payment completion. Source/history: [[source-github-paypal-ios]], [[changelog-github-paypal-ios]].
 
 ## Version 3 Session-First Integration
 
@@ -105,7 +120,7 @@ Release `2.0.1` corrects cancellation recognition in deep-link returns for both 
 
 At `2.0.1`, `PayPalWebCheckoutFundingSource` exposes only `.paypal`, `.paylater`, and `.paypalCredit`. The lowercase `.paylater` case and its future-rename comment remain; `.payLater` is not the current source case.
 
-The native funding-source and button enums contain no Venmo case. A stale comment mentioning `.venmo` is not an implementation. Therefore the native SDK source does not establish native Venmo support; use separately supported web/JavaScript SDK evidence and verify merchant eligibility when proposing Venmo for a native app.
+The version 2 native funding-source and button enums contain no Venmo case. A stale comment mentioning `.venmo` is not an implementation. Therefore that historical SDK source does not establish native Venmo support; use separately supported web/JavaScript SDK evidence and verify merchant eligibility when proposing Venmo for a native app. The separately added `3.2.0` VenmoPayments module above supersedes this absence only for that newer version; it does not change the old enums or establish merchant eligibility.
 
 ## Vault Without Purchase
 
@@ -169,7 +184,7 @@ See [[source-github-paypal-messages-ios]] for its versioned API evidence.
 
 ## Sources
 
-- [[source-github-paypal-ios]] - cumulative package-qualified source through `3.1.1` delta, retaining full `3.0.0`/`3.1.0` and v1/v2 history
+- [[source-github-paypal-ios]] - cumulative package-qualified source through full additive `3.2.0` with Venmo supplement, retaining all earlier history
 - [[changelog-github-paypal-ios]] - major-version and patch release ledger
 - [[source-paypal-ios-card-payments]] - older official iOS integration guide
 - [[source-paypal-save-paypal-purchase-later-ios-sdk]] - older PayPal vault-without-purchase delegate guidance
