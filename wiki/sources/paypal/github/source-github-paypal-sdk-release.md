@@ -2,9 +2,12 @@
 title: "GitHub: paypal/paypal-sdk-release"
 type: source
 date_ingested: 2026-08-21
-date_updated: 2026-11-03
+date_updated: 2026-11-19
 original_format: github-repo
 raw_files:
+  - "github/paypal/paypal-sdk-release/snapshots/2026-11-19-831ecb3/manifest.json"
+  - "github/paypal/paypal-sdk-release/snapshots/2026-11-19-71b3985/manifest.json"
+  - "github/paypal/paypal-sdk-release/snapshots/2026-11-19-d34cc9c/manifest.json"
   - "github/paypal/paypal-sdk-release/snapshots/2026-11-03-84f436c/manifest.json"
   - "github/paypal/paypal-sdk-release/snapshots/2026-11-03-3d4fd1a/manifest.json"
   - "github/paypal/paypal-sdk-release/snapshots/2026-10-24-b544787/manifest.json"
@@ -31,7 +34,33 @@ tags: [paypal, javascript-sdk, release-automation, dependency-manifest, github-r
 
 Repository: <https://github.com/paypal/paypal-sdk-release>
 
-Latest locally ingested assembly: `@paypal/sdk-release@5.0.585`, delta ingested November 3, 2026 after separately completed `5.0.584`. The `5.0.584` Messaging advance to `1.101.0` is preserved; `5.0.585` changes only the retained package version, leaving all twelve direct component pins unchanged. These pins are composition evidence, not inclusion of unreleased Checkout code or proof of hosted traffic.
+Current locally ingested assembly: `@paypal/sdk-release@5.0.588`, accepted November 19, 2026 after serial deltas for `5.0.586` and `5.0.587`. Its exact Checkout Components pin is `5.0.440`; this does not establish hosted rollout.
+
+## `@paypal/sdk-release@5.0.588` (tag timestamp 2026-11-16T20:15:32Z)
+
+- **Transition:** `5.0.587` -> `5.0.588`; exact SHA `831ecb39961da23b3cfd6a74855af0920ba6712a`; serial focused delta ingest 2026-11-19, item `github-3df39f7681b2f5f0a360`.
+- **Findings:** Checkout Components advances from `5.0.439` to exactly `5.0.440`; the other 11 direct pins are unchanged. The independently ingested component tag reverts the temporary buyer-IP masking signal and retains the protected Hosted Buttons fix. Only `package.json` changed in the retained capsule; the other ten retained files are byte-identical. No GitHub release notes were available.
+- **Boundary:** Direct package pins do not establish excluded lockfile/CDN contents, deployed SDK traffic, a merchant migration, or PayPal JS/React changes.
+- **Evidence:** [snapshot](../../../../raw/github/paypal/paypal-sdk-release/snapshots/2026-11-19-831ecb3/manifest.json), [package](../../../../raw/github/paypal/paypal-sdk-release/snapshots/2026-11-19-831ecb3/files/package.json), [release record](../../../../raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.588/2026-11-19/manifest.json), [comparison manifest](../../../../tracking/github/repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.587--5.0.588/comparison.json).
+
+
+## `@paypal/sdk-release@5.0.587` (tag timestamp 2026-11-09T21:41:52Z)
+
+- **Transition:** `5.0.586` -> `5.0.587`; exact SHA `71b3985508e813a387c275254680a3c4603f6d41`; serial focused delta ingest 2026-11-19, item `github-e0310775fc5d24f239da`.
+- **Findings:** Checkout Components advances from `5.0.438` to `5.0.439`; the other 11 direct pins are unchanged. The independently ingested component tag contains the protected Hosted Buttons helper fix and the temporary buyer-IP masking signal. Only `package.json` changed in the retained capsule; the other ten retained files are byte-identical. No GitHub release notes were available.
+- **Boundary:** Direct package pins do not establish excluded lockfile/CDN contents, deployed SDK traffic, a merchant migration, or PayPal JS/React changes.
+- **Evidence:** [snapshot](../../../../raw/github/paypal/paypal-sdk-release/snapshots/2026-11-19-71b3985/manifest.json), [package](../../../../raw/github/paypal/paypal-sdk-release/snapshots/2026-11-19-71b3985/files/package.json), [release record](../../../../raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.587/2026-11-19/manifest.json), [comparison manifest](../../../../tracking/github/repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.586--5.0.587/comparison.json).
+
+
+## `@paypal/sdk-release@5.0.586` (tag timestamp 2026-11-09T20:15:07Z)
+
+- **Transition:** `5.0.585` -> `5.0.586`; exact SHA `d34cc9c0c92eb4e3bb8d079bad01aa03482c7626`; serial focused delta ingest 2026-11-19, item `github-223cdb72faeb178e640f`.
+- **Findings:** Version-only retained change; all 12 direct dependency pins are unchanged, including Checkout Components `5.0.438`. Only `package.json` changed in the retained capsule; the other ten retained files are byte-identical. No GitHub release notes were available.
+- **Boundary:** Direct package pins do not establish excluded lockfile/CDN contents, deployed SDK traffic, a merchant migration, or PayPal JS/React changes.
+- **Evidence:** [snapshot](../../../../raw/github/paypal/paypal-sdk-release/snapshots/2026-11-19-d34cc9c/manifest.json), [package](../../../../raw/github/paypal/paypal-sdk-release/snapshots/2026-11-19-d34cc9c/files/package.json), [release record](../../../../raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.586/2026-11-19/manifest.json), [comparison manifest](../../../../tracking/github/repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.585--5.0.586/comparison.json).
+
+
+Historical November 3 checkpoint: `@paypal/sdk-release@5.0.585`, delta ingested November 3, 2026 after separately completed `5.0.584`. The `5.0.584` Messaging advance to `1.101.0` is preserved; `5.0.585` changes only the retained package version, leaving all twelve direct component pins unchanged. These pins are composition evidence, not inclusion of unreleased Checkout code or proof of hosted traffic.
 
 Historical October 25 checkpoint: `@paypal/sdk-release@5.0.583` (released 2026-10-19, ingested 2026-10-25). It pins Checkout `5.0.438`, Messaging `1.99.1`, Common `1.0.63` and SDK Client `4.0.205`; the other eight direct pins match baseline `5.0.569`. Each intermediate version remains below and in [[changelog-github-paypal-sdk-release]]. This is not a live upstream-latest or deployed-traffic assertion.
 

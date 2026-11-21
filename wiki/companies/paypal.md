@@ -11,6 +11,12 @@ PayPal is one of the world's largest online payment platforms, offering consumer
 
 ## Key Products
 
+Assembly `@paypal/sdk-release@5.0.588` (November 19, 2026 delta ingest): Checkout Components advances from `5.0.439` to exactly `5.0.440`; the other 11 direct pins are unchanged. The independently ingested component tag reverts the temporary buyer-IP masking signal and retains the protected Hosted Buttons fix. Sources: [[source-github-paypal-sdk-release]], [[changelog-github-paypal-sdk-release]].
+
+Assembly `@paypal/sdk-release@5.0.587` (November 19, 2026 delta ingest): Checkout Components advances from `5.0.438` to `5.0.439`; the other 11 direct pins are unchanged. The independently ingested component tag contains the protected Hosted Buttons helper fix and the temporary buyer-IP masking signal. Sources: [[source-github-paypal-sdk-release]], [[changelog-github-paypal-sdk-release]].
+
+Assembly `@paypal/sdk-release@5.0.586` (November 19, 2026 delta ingest): Version-only retained change; all 12 direct dependency pins are unchanged, including Checkout Components `5.0.438`. Sources: [[source-github-paypal-sdk-release]], [[changelog-github-paypal-sdk-release]].
+
 Checkout Components `5.0.440` (ingested November 19, 2026): Reverts the 5.0.439 masking signal and interaction relay while retaining the protected Hosted Buttons export. See [[source-github-paypal-checkout-components]] and [[changelog-github-paypal-checkout-components]]; earlier entries below are historical.
 
 Checkout Components `5.0.439` (ingested November 19, 2026): Tagged release carries the protected Hosted Buttons helper and pre-interaction masking metadata across checkout components. See [[source-github-paypal-checkout-components]] and [[changelog-github-paypal-checkout-components]]; earlier entries below are historical.
@@ -347,7 +353,7 @@ Via `PaymentsController.refundCapturedPayment({ captureId })` — server-side on
 - [[changelog-github-paypal-js]] — package-qualified paypal/paypal-js ledger through core `11.3.0` and React `10.6.1`, with dependency, migration, contradictions and immutable evidence
 - [[source-github-paypal-checkout-components]] — cumulative runtime through unreleased `f2c422a`: Hosted Buttons protected iframe-helper export; earlier `dcd6abf`, accepted release `5.0.438` and all earlier history preserved
 - [[changelog-github-paypal-checkout-components]] — package-qualified release ledger through `5.0.438`, plus independently qualified unreleased `dcd6abf` and `f2c422a` checkpoints
-- [[source-github-paypal-sdk-release]] — `@paypal/sdk-release@5.0.569` baseline through `5.0.585`: Messaging pin `1.101.0`, version-only latest delta and preserved assembly history
+- [[source-github-paypal-sdk-release]] — `@paypal/sdk-release@5.0.569` baseline through `5.0.588`: Checkout pin `5.0.440`, Messaging pin `1.101.0` and preserved assembly history
 - [[changelog-github-paypal-sdk-release]] — package-qualified SDK release-assembly ledger
 - [[source-github-paypal-messaging-components]] — released `1.101.0` plus unreleased `b0a201e`: prequalification context and modal presentment; earlier releases preserved
 - [[changelog-github-paypal-messaging-components]] — package-qualified `1.95.1` through `1.101.0` ledger plus separate unreleased `b0a201e` checkpoint

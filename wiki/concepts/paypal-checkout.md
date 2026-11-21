@@ -295,6 +295,12 @@ This manifest does not establish that the unreleased Checkout Components `defaul
 
 At SHA `84f436cecece9367c3e87a3c172e4b37c6920ffc` (delta ingested November 3, 2026, after `5.0.584`), only the retained package version changes. All twelve direct component pins and ten other retained files are unchanged; Messaging remains `1.101.0` and Checkout remains `5.0.438`. This is not proof that excluded lockfile/CDN contents, deployed traffic or component behavior are unchanged, and does not establish inclusion of untagged Checkout `dcd6abf`. No PayPal JS/React API or merchant migration follows from this version-only retained change. Earlier assembly knowledge stays above. Sources: [[source-github-paypal-sdk-release]], [[changelog-github-paypal-sdk-release]].
 
+Assembly `@paypal/sdk-release@5.0.586`: Version-only retained change; all 12 direct dependency pins are unchanged, including Checkout Components `5.0.438`. This is composition evidence, not proof of hosted rollout or merchant availability. Sources: [[source-github-paypal-sdk-release]], [[changelog-github-paypal-sdk-release]].
+
+Assembly `@paypal/sdk-release@5.0.587`: Checkout Components advances from `5.0.438` to `5.0.439`; the other 11 direct pins are unchanged. The independently ingested component tag contains the protected Hosted Buttons helper fix and the temporary buyer-IP masking signal. This is composition evidence, not proof of hosted rollout or merchant availability. Sources: [[source-github-paypal-sdk-release]], [[changelog-github-paypal-sdk-release]].
+
+Assembly `@paypal/sdk-release@5.0.588`: Checkout Components advances from `5.0.439` to exactly `5.0.440`; the other 11 direct pins are unchanged. The independently ingested component tag reverts the temporary buyer-IP masking signal and retains the protected Hosted Buttons fix. This is composition evidence, not proof of hosted rollout or merchant availability. Sources: [[source-github-paypal-sdk-release]], [[changelog-github-paypal-sdk-release]].
+
 ### Historical package evidence: `@paypal/paypal-js@8.4.2`
 
 

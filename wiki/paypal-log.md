@@ -6,6 +6,18 @@ tags: [paypal, github-repository, operations]
 
 > PayPal-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-11-19] ingest | PayPal SDK Release `5.0.588`
+
+Checkout Components advances from `5.0.439` to exactly `5.0.440`; the other 11 direct pins are unchanged. The independently ingested component tag reverts the temporary buyer-IP masking signal and retains the protected Hosted Buttons fix. Serial focused delta; older assembly history preserved. Sources: [[source-github-paypal-sdk-release]], [[changelog-github-paypal-sdk-release]]. No deployment test or publication.
+
+## [2026-11-19] ingest | PayPal SDK Release `5.0.587`
+
+Checkout Components advances from `5.0.438` to `5.0.439`; the other 11 direct pins are unchanged. The independently ingested component tag contains the protected Hosted Buttons helper fix and the temporary buyer-IP masking signal. Serial focused delta; older assembly history preserved. Sources: [[source-github-paypal-sdk-release]], [[changelog-github-paypal-sdk-release]]. No deployment test or publication.
+
+## [2026-11-19] ingest | PayPal SDK Release `5.0.586`
+
+Version-only retained change; all 12 direct dependency pins are unchanged, including Checkout Components `5.0.438`. Serial focused delta; older assembly history preserved. Sources: [[source-github-paypal-sdk-release]], [[changelog-github-paypal-sdk-release]]. No deployment test or publication.
+
 ## [2026-11-19] ingest | Checkout Components `5.0.440`
 
 Reverts the 5.0.439 masking signal and interaction relay while retaining the protected Hosted Buttons export. Delta ingest with focused reading; prior history retained. See [[source-github-paypal-checkout-components]] and [[changelog-github-paypal-checkout-components]]. No build, runtime test or publication.

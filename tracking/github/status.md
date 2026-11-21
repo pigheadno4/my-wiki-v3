@@ -683,6 +683,31 @@
   Release: [manifest](../../raw/github/stripe/react-stripe-js/releases/react-stripe-js/6.10.0/2026-09-15/manifest.json)
   Comparison: [manifest](repos/stripe/react-stripe-js/comparisons/react-stripe-js/6.9.0--6.10.0/comparison.json)
 
+## `github-223cdb72faeb178e640f`
+
+- Repository: `paypal/paypal-sdk-release`
+- SHA: `d34cc9c0c92eb4e3bb8d079bad01aa03482c7626`
+- Collection date: `2026-11-19`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-sdk-release/snapshots/2026-11-19-d34cc9c/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-sdk-release/ingest-packets/github-223cdb72faeb178e640f/packet.md)
+- Review priority: `normal`
+- Required reading: `10` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/sdk-release@5.0.586` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.586/2026-11-19/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.585--5.0.586/comparison.json)
+
 ## `github-23561d27ca73a6844368`
 
 - Repository: `paypal/paypal-sdk-release`
@@ -1618,6 +1643,31 @@
 - `AdyenWeChatPayInternal@2.2.0` (recommended `full`)
   Release: [manifest](../../raw/github/adyen/adyen-wechatpay-ios/releases/adyenwechatpayinternal/2.2.0/2026-08-26/manifest.json)
   Comparison: Not applicable
+
+## `github-3df39f7681b2f5f0a360`
+
+- Repository: `paypal/paypal-sdk-release`
+- SHA: `831ecb39961da23b3cfd6a74855af0920ba6712a`
+- Collection date: `2026-11-19`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-sdk-release/snapshots/2026-11-19-831ecb3/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-sdk-release/ingest-packets/github-3df39f7681b2f5f0a360/packet.md)
+- Review priority: `normal`
+- Required reading: `10` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/sdk-release@5.0.588` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.588/2026-11-19/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.587--5.0.588/comparison.json)
 
 ## `github-4108c3990b081a22a6e2`
 
@@ -6502,6 +6552,31 @@
 - `braintree-web@3.147.0` (recommended `delta`)
   Release: [manifest](../../raw/github/braintree/braintree-web/releases/braintree-web/3.147.0/2026-10-19/manifest.json)
   Comparison: [manifest](repos/braintree/braintree-web/comparisons/braintree-web/3.146.0--3.147.0/comparison.json)
+
+## `github-e0310775fc5d24f239da`
+
+- Repository: `paypal/paypal-sdk-release`
+- SHA: `71b3985508e813a387c275254680a3c4603f6d41`
+- Collection date: `2026-11-19`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/paypal/paypal-sdk-release/snapshots/2026-11-19-71b3985/manifest.json)
+- Packet: [review packet](repos/paypal/paypal-sdk-release/ingest-packets/github-e0310775fc5d24f239da/packet.md)
+- Review priority: `normal`
+- Required reading: `10` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `@paypal/sdk-release@5.0.587` (recommended `delta`)
+  Release: [manifest](../../raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.587/2026-11-19/manifest.json)
+  Comparison: [manifest](repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.586--5.0.587/comparison.json)
 
 ## `github-e27c0e62a2e8e19ebd7c`
 
