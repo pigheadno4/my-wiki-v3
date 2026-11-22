@@ -1,6 +1,6 @@
 # GitHub repository collection index
 
-Generated: `2026-11-21`
+Generated: `2026-11-22`
 
 | Company | Repository | Priority | Strategy | Frequency | Last checked | Queue | Next due | Next action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -23,7 +23,7 @@ Generated: `2026-11-21`
 | braintree | `braintree/braintree-android-drop-in` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-29 | ingested | 2026-11-05 | `collect-baseline` |
 | braintree | `braintree/braintree-ios-drop-in` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-26 | ingested | 2026-11-02 | `collect-baseline` |
 | braintree | `braintree/braintree-web` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-11-05 | ingested | 2026-11-12 | `collect-baseline` |
-| braintree | `braintree/braintree-web-drop-in` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-11-15 | ingested | 2026-11-22 | `wait` |
+| braintree | `braintree/braintree-web-drop-in` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-11-15 | ingested | 2026-11-22 | `collect-baseline` |
 | braintree | `braintree/braintree_android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-25 | ingested | 2026-11-01 | `collect-baseline` |
 | braintree | `braintree/braintree_ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-30 | ingested | 2026-11-06 | `collect-baseline` |
 | braintree | `braintree/graphql-api` | tier1 | commit / commit-tree-v1 | monthly | 2026-10-23 | ingested | 2026-11-23 | `wait` |
@@ -47,10 +47,10 @@ Generated: `2026-11-21`
 | paypal | `paypal-examples/paypal-sdk-server-side-integration` | tier1 | commit / commit-tree-v1 | monthly | 2026-11-01 | ingested | 2026-12-01 | `wait` |
 | paypal | `paypal-examples/v6-web-sdk-sample-integration` | tier1 | commit / commit-tree-v1 | monthly | 2026-11-03 | ingested | 2026-12-03 | `wait` |
 | paypal | `paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration` | tier1 | commit / commit-tree-v1 | monthly | 2026-11-05 | ingested | 2026-12-05 | `wait` |
-| paypal | `paypal/paypal-android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-11-15 | ingested | 2026-11-22 | `wait` |
+| paypal | `paypal/paypal-android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-11-22 | ingested | 2026-11-29 | `wait` |
 | paypal | `paypal/paypal-checkout-components` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-11-19 | ingested | 2026-11-26 | `wait` |
-| paypal | `paypal/paypal-ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-11-15 | ingested | 2026-11-22 | `wait` |
-| paypal | `paypal/paypal-js` | tier1 | monorepo-packages / npm-tracked-source-v1 | weekly | 2026-11-19 | ingested | 2026-11-26 | `wait` |
+| paypal | `paypal/paypal-ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-11-15 | ingested | 2026-11-22 | `collect-baseline` |
+| paypal | `paypal/paypal-js` | tier1 | monorepo-packages / npm-tracked-source-v1 | weekly | 2026-11-22 | ingested | 2026-11-29 | `wait` |
 | paypal | `paypal/paypal-messaging-components` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-11-21 | ingested | 2026-11-28 | `wait` |
 | paypal | `paypal/paypal-rest-api-specifications` | tier1 | commit / commit-tree-v1 | monthly | 2026-10-04 | ingested | 2026-11-04 | `collect-baseline` |
 | paypal | `paypal/paypal-messages-android` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-07 | ingested | 2026-11-07 | `collect-baseline` |
