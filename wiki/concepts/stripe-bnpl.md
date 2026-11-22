@@ -19,7 +19,7 @@ Stripe's November 7, 2026 overview lists 11 buy now, pay later (BNPL) methods: c
 | Billie | `billie` | 11 business/customer countries in November 2026 Billie overview | Minimum 0.01 EUR; maximum varies by country/currency | May 2026 cross-BNPL matrix marks setup_future_usage supported; November Billie-specific matrix marks PaymentIntents with it unsupported. See dated conflict below. |
 | Klarna | `klarna` | 23 customer countries (May/November 2026 overview) | See dated country/currency tables | SetupIntents, Express Checkout, setup_future_usage, Subscriptions |
 | Kriya | `kriya` | — | — | setup_future_usage |
-| Mondu | `mondu` | — | — | setup_future_usage |
+| Mondu | `mondu` | EU and UK customers; 14 Stripe-account business locations | 19,999.99 EUR or equivalent in November method overview | Method lists no recurring payments; BNPL matrices list `setup_future_usage` with the `off_session` footnote and mark SetupIntents, Stripe Invoicing, and Stripe Subscriptions Unsupported. |
 | Scalapay | `scalapay` | — | — | — |
 | SeQura | `sequra` | — | — | November overview marks `setup_future_usage` Unsupported (May overview marked Supported); Invoicing `send_invoice` only |
 | Sunbit | `sunbit` | — | — | `setup_future_usage` Supported; no manual capture (both May and November API tables) |
@@ -31,7 +31,7 @@ Stripe's November 7, 2026 overview lists 11 buy now, pay later (BNPL) methods: c
 
 The November 2026 overview's API matrix has ten rows, omitting Scalapay. Its listed methods show PaymentIntents support and redirect required; this is not an all-eleven claim. Manual capture is supported for Affirm, Afterpay/Clearpay, Alma, Billie, Klarna, Kriya, Mondu, and SeQura, and unsupported for Sunbit and Zip. Klarna alone shows SetupIntents support. `setup_future_usage` is supported for Billie, Klarna, Kriya, Mondu, and Sunbit; SeQura changed from May Supported to November Unsupported. The API footnote says non-card/bank-debit methods either do not support the parameter or support only `off_session`; it does not promise every session mode. The Billie support cell conflicts with the November method-specific Billie matrix, which marks PaymentIntents with `setup_future_usage` unsupported; both Billie overviews mark recurring payments unsupported. Preserve this dated conflict and verify the integration route rather than inferring recurring support. Klarna alone shows Express Checkout Element support in the product matrix, where saving during payment via `setup_future_usage` is excluded. See [[source-stripe-bnpl-overview]].
 
-**Connect conflict**: Both overview product matrices mark all eleven methods Supported on Connect, while the May method-specific captures for Kriya, Mondu, SeQura, and Scalapay say Connect No. This is an unresolved dated source conflict, not an established account entitlement; see [[source-stripe-bnpl-overview]] and the individual method sources.
+**Dated Connect evidence.** Both BNPL overview product matrices mark all eleven methods Supported. The May 2026 Kriya, Mondu, SeQura and Scalapay method captures say No, conflicting with the May overview. The November Kriya and Mondu method captures say Yes and match their November matrix cells. November separately describes a Kriya early-access request and Mondu eligibility screening with a conditional early-access waitlist. These are dated documentation labels. Individual account eligibility and activation timing remain undetermined. See [[source-stripe-bnpl-overview]], [[source-stripe-kriya]] and [[source-stripe-mondu]].
 
 ## Affirm Details
 
@@ -99,15 +99,15 @@ The November 2026 overview's API matrix has ten rows, omitting Scalapay. Its lis
 
 ## Kriya Details
 
-**B2B only** — UK only, GBP only. Its May method-specific capture says **Connect No**, as do May Mondu, SeQura, and Scalapay captures. Both overview product tables mark Connect Supported for all eleven methods; the scope conflict remains unresolved. See [[source-stripe-bnpl-overview]].
+**Business BNPL.** The May and November Kriya method captures list UK customers, GB Stripe accounts, and GBP presentment and settlement for GB. Both list Standard payout timing. The headline does not establish when a particular external payout arrives. The May Kriya Connect No conflicts with the May BNPL overview. November Kriya Connect Yes aligns with the November overview. The November email request is for early access. See [[source-stripe-kriya]].
 
-**Disputes**: 12-day evidence window.
+**Disputes**: Both Kriya captures give a 12-calendar-day evidence window.
 
-**Refunds**: 180-day window; async (up to 5 min).
+**Refunds**: 180-day window, processed asynchronously in up to five minutes.
 
-**Prohibited** (~36 categories, most extensive of any BNPL): travel agencies, hotels, airlines, insurance, gambling, crypto, advertising, drugs, financial institutions, political/religious organizations, charities, and many more.
+**Prohibited categories**: The dated Kriya lists include travel agencies, hotels, airlines, insurance, gambling, cryptocurrency exchanges and wallets, and other categories. November adds a separate Remote Stored Value Load — Merchant entry. See [[source-stripe-kriya]] for the dated lists.
 
-**Integration notes**: `return_url` required. Manual capture: 7-day window.
+**Integration notes (May 2026 guide)**: Hosted Checkout's example uses `success_url`. Checkout Sessions with Elements examples use `return_url`, and PaymentIntent redirect confirmation uses `return_url`. The optional PaymentIntent manual-capture window is seven days. See [[source-stripe-kriya-accept-payment]] for the detailed guide and November 2026 variant index.
 
 ## Zip Details
 
@@ -179,17 +179,17 @@ The November 2026 overview's API matrix has ten rows, omitting Scalapay. Its lis
 
 ## Mondu Details
 
-**B2B only** — Pay in 30 days. EU/UK, 14 merchant countries. Multi-currency: EUR, CHF, GBP. **No Connect support**.
+**B2B terms and coverage.** The buyer receives Mondu invoice payment on 30-day net terms and redirects to Mondu for a credit check. Both method captures label payout Standard and describe upfront merchant payment without specifying a bank payout schedule. Customer coverage is EU and UK. The 14 Stripe-account business locations and method presentment currencies (EUR, CHF and GBP) are separate from individual integration compatibility.
 
-**Maximum**: ~€20,000 EUR. No stated minimum.
+**Product scope.** The November method capture marks Connect Yes and describes early-access eligibility screening and a conditional waitlist. The May method capture says No. Both cross-method product matrices mark Stripe Invoicing and Subscriptions Unsupported. The Mobile Payment Element cell changes from Unsupported in May to Supported in November in that matrix, which gives no mobile implementation details. The method lists no recurring payments, while the separate API matrices show `setup_future_usage` with the `off_session` footnote and no SetupIntents.
 
-**Disputes**: 12-day evidence window.
+**Charge limit and eligibility.** November lists 19,999.99 EUR or equivalent, with no minimum given in either capture. Consult the capture’s prohibited and restricted categories. Mondu can exclude other categories at its discretion.
 
-**Refunds**: 180-day window; async (up to 5 min).
+**Disputes.** November gives customers 120 calendar days from the transaction to file and merchants 15 calendar days to submit evidence. It supplies no merchant clock start. May gives merchants 12 calendar days and supplies no customer filing window. Stripe holds disputed funds until Mondu resolves the case. A merchant win returns the amount to the Stripe balance. A customer win leaves it with the customer.
 
-**Prohibited** (~90 categories, most extensive of any payment method): transportation, cleaning/repair services, gambling, healthcare, government services, chemicals, fuel, utilities, crypto, pawn shops, timeshares, and many more.
+**Refunds.** Full and partial refunds are available up to 180 days after purchase and can take up to five minutes asynchronously. Check final `Refund.status` and `refund.updated` or `refund.failed`. On failure Stripe returns the amount to the Stripe balance and the merchant arranges an alternative refund. See [[source-stripe-mondu]] and [[source-stripe-bnpl-overview]].
 
-**Integration notes**: `return_url` required. Manual capture: 7-day window. EUR only for Checkout integration path.
+The May 6, 2026 guide shows `success_url` for hosted-style Checkout, `return_url` on the server-created Session for Elements with Checkout Sessions, and `return_url` at confirmation for the PaymentIntent routes. Its two Checkout compatibility sections list EUR. The seven-day cancellation window applies to optional manual PaymentIntent capture. See [[source-stripe-mondu-accept-payment]].
 
 ## Klarna Details
 
@@ -251,16 +251,17 @@ PaymentSheet release notes announce SeQura and Scalapay support. The retained pa
 - [[source-stripe-billie]] — May and November 2026 full B2B Billie overviews: dated refund/dispute windows, country/currency/MCC limits, Connect, and conflicts with the older BNPL matrix on setup_future_usage and Invoicing; November Billing/Invoicing entry has a send_invoice footnote with route-specific ambiguity
 - [[source-stripe-billie-accept-payment]] — May 2026 Billie integration guide: 7–120 day terms, path-specific return destinations, optional 7-day PaymentIntent capture; November 2026 variant index is navigation only
 - [[source-stripe-klarna]] — Klarna: 4 payment options, 23 countries, cross-border rules, loss liability, refund mechanics, Connect
+- [[source-stripe-klarna-on-link]] — distinct US Link customer route in Payment Links, Hosted Checkout and Payment Element, with issuer-authorized net credit to the merchant’s Stripe account as documented in May and November 2026.
 - [[source-stripe-klarna-accept-payment]] — Klarna integration: billing prefill, manual capture, per-country test data (23 countries), iOS webview
 - [[source-stripe-klarna-set-up-future-payments]] — 2026-05-06 full Klarna save/recurring guide: Customer attachment, authorization status, reference matching, optional on-demand details and revocation; 2026-11-07 capture is a variant index only
 - [[source-stripe-klarna-best-practices]] — Klarna conversion: Express Checkout placement, PMME on product pages, line items, shipping/billing for fraud
 - [[source-stripe-klarna-compliance]] — Klarna rules: expanded November 2026 prohibitions, dated UK and prospective EU consumer-credit marketing guidance, termination/merchant duties, conditional AU DDO distributor status
 - [[source-stripe-klarna-disputes]] — Klarna disputes: capture-based 180-day filing window with exceptions; inquiry resolution, direct-chargeback exceptions, chargeback evidence and fee handling, API states, and capture-dated sandbox triggers
 - [[source-stripe-klarna-supplementary-data]] — Klarna-only supplementary purchase data preview: eight verticals, possible acceptance and fraud-assessment benefits, PaymentIntent update semantics, and May/November 2026 example provenance
-- [[source-stripe-kriya]] — Kriya: B2B UK-only, no Connect, most extensive prohibited list (~36 categories), 12-day dispute window
-- [[source-stripe-kriya-accept-payment]] — Kriya integration: return_url required, 7-day manual capture
-- [[source-stripe-mondu]] — Mondu: B2B Pay-in-30, 14 EU/UK countries, multi-currency, no Connect, ~90 prohibited categories
-- [[source-stripe-mondu-accept-payment]] — Mondu integration: return_url required, 7-day manual capture, EUR-only Checkout path
+- [[source-stripe-kriya]] — May and November 2026 payment method captures for UK businesses paying in GBP. Dated Connect labels, November early-access request and prohibited-category addition, disputes, and refunds.
+- [[source-stripe-kriya-accept-payment]] — May 2026 Kriya integration guide with path-specific return fields and optional seven-day PaymentIntent capture. The November 2026 variant index provides navigation.
+- [[source-stripe-mondu]] — Mondu B2B buyer invoice terms, method-level currencies, November Connect label and early access, dispute filing and evidence deadlines, and asynchronous refunds
+- [[source-stripe-mondu-accept-payment]] — May 2026 Mondu acceptance guide with route-specific return fields and optional PaymentIntent manual capture; November 2026 variant selector
 - [[source-stripe-payment-on-invoice]] — Payment on invoice: consumer BNPL DE/AT, 14-day terms, risk-based, branded invoice, T+2 payout
 - [[source-stripe-scalapay]] — Scalapay: consumer BNPL, EUR-only (all 28 countries), 90-day refund window, approval-based categories
 - [[source-stripe-scalapay-accept-payment]] — Scalapay integration: return_url required, 7-day capture, Checkout limited to 8 EU countries

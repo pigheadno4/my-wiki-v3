@@ -1,0 +1,236 @@
+{
+  "job_id": "payments-payment-element-custom-payment-methods",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Add Custom Payment Methods to the Payment Element\"\ntype: source\ndate_ingested: 2026-04-21\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/payment-element/custom-payment-methods\"\nraw_files:\n  - \"stripe-payment-element-custom-payment-methods-2025.md\"\ntags: [stripe, payment-element, custom-payment-methods, cpmt, third-party, payment-records, reporting, xss]\n---\n\n## Summary\n\nStripe Elements can display custom payment methods (CPMs) that the merchant processes through a third-party payment service provider (PSP). The November 7, 2026 capture is a navigation page with routes for Checkout Sessions (`payment-ui=embedded-components`) and Payment Intents (`payment-ui=elements`). It links the variants without including their implementation bodies. The April 21, 2026 capture briefly describes merchant-instructed payments with the Payment Element under Checkout Sessions and contains the detailed Payment Intents implementation below.\n\nThe separate May 8, 2026 product overview marked Checkout and Express Checkout Element unsupported. Its November 7, 2026 matrix lists Checkout as supported and Express Checkout Element as supported in private preview, and links to an Express Checkout section. The captured November base implementation page still lists two variants and contains no Express Checkout implementation section. Individual Checkout UI support, merchant eligibility and parity with the Payment Intents flow require separate evidence. See [[source-stripe-custom-payment-methods]] and the dated matrices in Related Raw API References.\n\n## Payment Intents Elements Setup (April 21, 2026)\n\nThe detailed April integration calls for a Stripe account and a completed deferred payments integration.\n\n1. In Dashboard, go to Settings > Payments > Custom Payment Methods, set the display name and logo, and obtain the `cpmt_` method type ID.\n2. Add the type ID to the `customPaymentMethods` array when initializing `stripe.elements({...})`. CPMs appear last by default. Set `paymentMethodOrder` to change the order.\n3. Submit and validate the Elements form, then route the selected method. The merchant processes and finalizes the custom payment through its PSP under the applicable agreement and laws.\n4. Optionally report the actual PSP result to Stripe for consolidated reporting.\n\n## Display Types\n\n### Static\n\n```js\ncustomPaymentMethods: [{\n  id: 'cpmt_....',\n  options: { type: 'static', subtitle: 'Optional subtitle' }\n}]\n```\n\n![Static CPM in Payment Element](../raw/assets/stripe-payment-element-custom-pm-static.png)\n\nA customer selection can route to the merchant’s payment flow or an external payment page.\n\n### Embedded (Preview)\n\n```js\ncustomPaymentMethods: [{\n  id: 'cpmt_....',\n  options: {\n    type: 'embedded',\n    embedded: {\n      handleRender: (container) => { /* render into container */ },\n      handleDestroy: () => { /* cleanup */ }\n    }\n  }\n}]\n```\n\n![Embedded CPM with custom content](../raw/assets/stripe-payment-element-custom-pm-embedded.png)\n\nThe April examples use `handleRender` to render in the supplied DOM container and `handleDestroy` for cleanup. The React example uses a portal. Render only trusted content in the supplied container to prevent cross-site scripting. The April warning calls the callback `handleEmbed`. The callback list and examples use `handleRender`. The tag-specific Stripe.js 9.14.0 declarations list `handleRender(HTMLDivElement)` and optional `handleDestroy`. Those declarations also include a private-access beta Express Checkout configuration, with its own scope. See [[source-github-stripe-js]].\n\n## Submit Handler Pattern\n\nIn the April deferred Payment Intents flow, await `elements.submit()` and handle submission errors before routing. Use the returned `selectedPaymentMethod` to route the matching `cpmt_` to the merchant server or an external payment page. Other selections follow the Stripe payment flow. The November Stripe.js Submit reference specifically scopes the call to Elements created without an Intent and requires awaiting completion before continuing.\n\nApril’s illustrative request uses POST on the client and GET in the server example for the same route, with abbreviated validation and PSP result handling. The merchant’s implementation needs a consistent request contract and must use the external processor’s actual result. Display, selection and redirect establish only progress in the checkout flow.\n\n## Recording to Stripe (Optional)\n\nIn April’s Payment Intents server example, create a `PaymentMethod` with `type: 'custom'` and set `custom.type` to the Dashboard’s `cpmt_` type ID. Put the resulting `pm_` instance ID in `payment_method_details.payment_method` on the `paymentRecords.reportPayment(...)` request. The external processor’s payment reference belongs separately in `processor_details.custom.payment_reference`. Include the amount, currency, timing and actual PSP outcome. The sample uses `guaranteed` after successful PSP processing and sends `2026-03-25.dahlia` with `invoice_partial_payments_beta=v3` in its Stripe-Version header.\n\nThe separate November Report a payment reference shows `POST /v1/payment_records/report_payment` with `2026-10-28.endive` and inline custom payment method details. Its initialized-record example returns `payment_method: null` and zero guaranteed amount. The reference also allows reporting terminal outcomes directly. The April `pm_` pattern and its beta suffix belong to that example; version compatibility and merchant access require separate confirmation. A Payment Record describes the reported external activity. External payment completion depends on the PSP result and settlement follows the external PSP’s process.\n\n## Logo Guidelines\n\n- For transparent background logos, ensure contrast with the Payment Element background.\n- For background fill logos, include rounded corners in the file if needed.\n- Use a variant that scales to 16×16px, typically the standalone mark.\n\n## Related Pages\n\n- [[stripe-custom-payment-methods]] — concept page\n- [[source-stripe-custom-payment-methods]] — product overview and integration matrix\n- [[source-github-stripe-js]] — versioned web SDK declarations\n- [[stripe-payment-element]] — parent element\n- [[stripe-payment-intents]] — API in the detailed April implementation\n- [[stripe]] — company page\n\n## Related raw API references\n\n- [[raw/stripe-payments-payment-element-custom-payment-methods-2026-11-07|November variant index]] — November 7 navigation index for Checkout Sessions and Payment Intents\n- [[raw/stripe-custom-payment-methods-2025|May product overview]] — May 8 product overview and integration matrix\n- [[raw/stripe-payments-payment-methods-custom-payment-methods-2026-11-07|November product overview]] — November 7 product overview and integration matrix\n- [[raw/stripe-js-elements-submit-2026-11-07|Stripe.js Submit reference]] — Stripe.js submit API for Elements initialized without an Intent\n- [[raw/stripe-api-payment-record-report-2026-11-07|Report a payment API]] — versioned Endive Report a payment example and available outcomes\n\n## Raw Sources\n\n- [[raw/stripe-payment-element-custom-payment-methods-2025|April detailed implementation]] — April 21, 2026 full capture, including brief Checkout Sessions and detailed Payment Intents guidance\n",
+  "quotes": {
+    "payments-payment-element-custom-payment-methods": [
+      {
+        "text": "Learn how to add custom payment methods to Elements.",
+        "location": "raw/stripe-payments-payment-element-custom-payment-methods-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-payment-element-custom-payment-methods-2026-11-07.md:11"
+      },
+      {
+        "text": "[Checkout Sessions API](https://docs.stripe.com/payments/payment-element/custom-payment-methods.md?payment-ui=embedded-components)",
+        "location": "raw/stripe-payments-payment-element-custom-payment-methods-2026-11-07.md:13"
+      },
+      {
+        "text": "[Payment Intents API](https://docs.stripe.com/payments/payment-element/custom-payment-methods.md?payment-ui=elements)",
+        "location": "raw/stripe-payments-payment-element-custom-payment-methods-2026-11-07.md:14"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-payment-element-custom-payment-methods": [
+      {
+        "text": "to enable merchant-instructed payments.",
+        "location": "raw/stripe-payment-element-custom-payment-methods-2025.md:12"
+      },
+      {
+        "text": "Only render trusted content within the `container` that’s provided by `handleEmbed`.",
+        "location": "raw/stripe-payment-element-custom-payment-methods-2025.md:71"
+      },
+      {
+        "text": "While you handle custom payment method transactions outside of Stripe",
+        "location": "raw/stripe-payment-element-custom-payment-methods-2025.md:177"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-payment-element-custom-payment-methods-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-payment-element-custom-payment-methods-2025.md": [
+      {
+        "start": 1,
+        "end": 226
+      }
+    ],
+    "wiki/sources/source-stripe-payment-element-custom-payment-methods.md": [
+      {
+        "start": 1,
+        "end": 111
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/117b583cbdda6a24d5d9e266/content.diff": [
+      {
+        "start": 1,
+        "end": 230
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-payment-element-custom-payment-methods/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 192
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-payment-element-custom-payment-methods/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 108
+      }
+    ],
+    "wiki/concepts/stripe-custom-payment-methods.md": [
+      {
+        "start": 15,
+        "end": 106
+      },
+      {
+        "start": 138,
+        "end": 148
+      }
+    ],
+    "wiki/sources/source-stripe-custom-payment-methods.md": [
+      {
+        "start": 11,
+        "end": 36
+      }
+    ],
+    "raw/stripe-custom-payment-methods-2025.md": [
+      {
+        "start": 1,
+        "end": 4
+      },
+      {
+        "start": 65,
+        "end": 78
+      }
+    ],
+    "raw/stripe-payments-payment-methods-custom-payment-methods-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 4
+      },
+      {
+        "start": 55,
+        "end": 76
+      }
+    ],
+    "raw/stripe-js-elements-submit-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "raw/stripe-api-payment-record-report-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 24
+      },
+      {
+        "start": 36,
+        "end": 47
+      },
+      {
+        "start": 59,
+        "end": 72
+      },
+      {
+        "start": 116,
+        "end": 129
+      }
+    ],
+    "wiki/sources/stripe/github/source-github-stripe-js.md": [
+      {
+        "start": 270,
+        "end": 284
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 4,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 73,
+        "end": 77
+      },
+      {
+        "start": 788,
+        "end": 793
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 342,
+        "end": 346
+      }
+    ]
+  },
+  "answers": {
+    "payments-payment-element-custom-payment-methods": {
+      "Q1": "The November 7 snapshot of https://docs.stripe.com/payments/payment-element/custom-payment-methods explains that custom payment methods can be added to Elements and links separate Checkout Sessions and Payment Intents variants (new raw lines 5-14). April already named both routes and gave a concise Checkout Sessions merchant-instructed payment note. Its detailed Payment Intents route called for a Stripe account and deferred integration, followed by a Dashboard-created cpmt_ type, client static or embedded Preview configuration and selection through elements.submit (old raw lines 8-58, 61-96 and 140-174). The merchant processes and finalizes payment outside Stripe under its PSP and legal obligations. It can then optionally create a Stripe custom PaymentMethod instance identified separately from the cpmt_ type and report the actual processor reference and outcome as a Payment Record (old raw lines 175-225). The existing source-stripe-payment-element-custom-payment-methods.md preserves much of that route but overgeneralizes Checkout exclusion and the April recording sample's API version. Display, selected method, external processing and optional Stripe recording are separate states.",
+      "Q2": "For https://docs.stripe.com/payments/payment-element/custom-payment-methods, new raw lines 5-14 change the wording to Elements and replace the April inline material with variant navigation. Keep the April 21 prerequisites, Preview and trusted-content warning, handleRender and handleDestroy examples, default ordering, separate PSP and Payment Record roles, and the example-level Dahlia beta header dated (old raw lines 18-41, 61-96, 140-174 and 175-225). In source-stripe-payment-element-custom-payment-methods.md qualify the Payment Intents-only and mandatory beta statements. Carry the reciprocal warning to the CPM overview and concept. The May overview marks Checkout and Express Checkout unsupported. The separate November overview lists Checkout supported and Express Checkout supported in private preview and links an Express Checkout section absent from the 14-line implementation index. Stripe.js 9.14.0 typed beta is separate versioned evidence. April's own short Checkout Sessions statement names merchant-instructed payments (old raw lines 8-18). These sources do not establish a third captured variant, general access or UI parity. The CPM concept should scope elements.submit, the completed deferred integration prerequisite, and the separate PaymentMethod creation and recording pattern to the April Payment Intents Elements implementation. Its 2026-03-25.dahlia; invoice_partial_payments_beta=v3 header belongs to the historical sample (old raw lines 140-159 and 175-225). The separate 2026-10-28.endive Report API example uses inline custom payment details, omits a separate pm_ reference and returns zero guaranteed amount. The same endpoint also accepts terminal outcomes (raw/stripe-api-payment-record-report-2026-11-07.md:7-24,36-47,59-72,116-129). Guaranteed reporting must reflect the PSP result. Creation of a record alone leaves external completion unverified. Preserve the April handleEmbed naming inconsistency and client POST/server GET sample mismatch. A callback, selected method or reported guaranteed outcome does not establish that Stripe processed or settled an external payment."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-payment-element-custom-payment-methods-dated-product-matrix",
+      "target_path": "wiki/concepts/stripe-custom-payment-methods.md",
+      "update_kind": "durable_fact",
+      "anchor": "| Checkout | ✗ |\n| Payment Links | ✗ |\n| Express Checkout Element | Beta typed surface in `@stripe/stripe-js@9.14.0`; availability must be verified |",
+      "proposed_markdown": "| Checkout | November 7, 2026 product matrix lists supported |\n| Payment Links | ✗ |\n| Express Checkout Element | November 7, 2026 product matrix lists private preview |\n\nThe May 8, 2026 product matrix marked both Checkout and Express Checkout Element unsupported. The November product overview links an Express Checkout section, while the separate captured base implementation page lists Checkout Sessions and Payment Intents variants only. The product matrix leaves individual Checkout UI support, account enablement and API parity open. See [[source-stripe-custom-payment-methods]] and [[source-stripe-payment-element-custom-payment-methods]].",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": [
+        "May overview raw lines 68-76 and November overview raw lines 57-71 establish matrix dates and scope. November base implementation raw lines 9-14 establish only its two variant links."
+      ]
+    },
+    {
+      "update_id": "payments-payment-element-custom-payment-methods-deferred-setup",
+      "target_path": "wiki/concepts/stripe-custom-payment-methods.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Setup Flow\n\n1. **Dashboard**: Settings > Payments > Custom Payment Methods → create CPM, get `cpmt_` ID + upload logo\n2. **Client**: add to `customPaymentMethods` array in `stripe.elements({...})` init options\n3. **Submit handler**: call `elements.submit()`, branch on `selectedPaymentMethod` to route CPM vs Stripe flow\n4. **Server (optional)**: record transaction via `paymentRecords.reportPayment(...)`",
+      "proposed_markdown": "## Setup Flow\n\nThe April 21, 2026 Payment Intents Elements guide starts with a Stripe account and a completed deferred payments integration. See [[source-stripe-payment-element-custom-payment-methods#Payment Intents Elements Setup (April 21, 2026)]].\n\n1. In Dashboard, create the CPM, upload its logo and obtain its `cpmt_` ID.\n2. Add it to the `customPaymentMethods` option when initializing Elements.\n3. In the deferred form, await `elements.submit()` and handle any submission error before routing by `selectedPaymentMethod`.\n4. After external processing, optionally record the actual PSP activity using `paymentRecords.reportPayment(...)`.",
+      "quote_indexes": [],
+      "warnings": [
+        "April implementation raw lines 18-41, 140-159 and 175-225. Separate November submit API raw lines 5-11 scopes that API to Elements created without an Intent."
+      ]
+    },
+    {
+      "update_id": "payments-payment-element-custom-payment-methods-express-versioned-scope",
+      "target_path": "wiki/concepts/stripe-custom-payment-methods.md",
+      "update_kind": "durable_fact",
+      "anchor": "> Earlier Custom Payment Method product documentation marks Express Checkout Element unsupported. The v9.14 repository proves only a beta TypeScript contract and explicitly requires beta access; it does not prove general availability or merchant enablement.",
+      "proposed_markdown": "> The May 8 product matrix marked Express Checkout Element unsupported. The November 7 product matrix lists private preview and links an Express Checkout section outside the captured base page. The Stripe.js 9.14.0 beta declarations describe the typed configuration and require beta access. Hosted availability and merchant enablement need separate confirmation. See [[source-stripe-custom-payment-methods]] and [[source-github-stripe-js]].",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": [
+        "May overview raw lines 68-72, November overview raw lines 59-71, November implementation index raw lines 9-14, and Stripe.js source summary lines 274-281 support distinct scopes."
+      ]
+    },
+    {
+      "update_id": "payments-payment-element-custom-payment-methods-submit-scope",
+      "target_path": "wiki/concepts/stripe-custom-payment-methods.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Routing in the Submit Handler\n\n```js\nconst { submitError, selectedPaymentMethod } = await elements.submit();\nif (selectedPaymentMethod === 'cpmt_....') {\n  // Route to third-party payment processor\n} else {\n  // Standard Stripe confirmPayment flow\n}\n```",
+      "proposed_markdown": "## Routing in the Submit Handler\n\nIn the April 21, 2026 deferred Payment Intents Elements implementation, await `elements.submit()` and handle errors before branching on `selectedPaymentMethod`. A matching `cpmt_` routes to the merchant's PSP flow. Other selections follow the Stripe flow. The separate November Stripe.js reference scopes submission to Elements created without an Intent and requires awaiting the result before proceeding. Payment status comes from the PSP. See [[source-stripe-payment-element-custom-payment-methods#Submit Handler Pattern]] and [[raw/stripe-js-elements-submit-2026-11-07|Stripe.js Submit reference]].",
+      "quote_indexes": [],
+      "warnings": [
+        "April raw lines 140-159 and November Stripe.js submit raw lines 5-11. Historical sample client POST and server GET mismatch at April raw lines 148-155 and 186-187."
+      ]
+    },
+    {
+      "update_id": "payments-payment-element-custom-payment-methods-reporting-versioned",
+      "target_path": "wiki/concepts/stripe-custom-payment-methods.md",
+      "update_kind": "durable_fact",
+      "anchor": "Requires beta API version. Creates a `PaymentMethod` object of type `custom`, then calls `paymentRecords.reportPayment(...)` with amount, currency, processor reference, outcome, and timing.",
+      "proposed_markdown": "The April 2026 Payment Intents Elements and mobile server examples use `2026-03-25.dahlia` with `invoice_partial_payments_beta=v3`. They create a PaymentMethod of type `custom` with the Dashboard’s `cpmt_` type ID and report the actual PSP outcome, timing and external processor reference using the new `pm_` instance ID. Use `guaranteed` only when supported by the PSP result. See [[source-stripe-payment-element-custom-payment-methods#Recording to Stripe (Optional)]] and [[source-stripe-inapp-custom-payment-methods#Optional Server-Side Reporting]].\n\nThe separate November Report a payment reference illustrates `POST /v1/payment_records/report_payment` with `2026-10-28.endive` and inline custom payment method details. Its initialized record has `payment_method: null` and zero guaranteed amount. The endpoint also supports direct reporting of terminal outcomes. A record reports external activity, while payment completion depends on the PSP result. The two versioned examples leave merchant access and cross-version compatibility open. See [[raw/stripe-api-payment-record-report-2026-11-07|Report a payment API]].",
+      "quote_indexes": [],
+      "warnings": [
+        "April web raw lines 175-225 and April mobile raw lines 153-199, 363-409 and 586-632 supply the older separate-PaymentMethod patterns. Generic November Report API raw lines 7-24, 36-47, 59-72, 116-129 supplies the Endive example and terminal outcomes. This combined suggestion supersedes the overlap with Mobile CPM's reporting-versions suggestion."
+      ]
+    }
+  ]
+}

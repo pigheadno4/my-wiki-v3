@@ -1,0 +1,148 @@
+{
+  "job_id": "payments-konbini-accept-a-payment",
+  "source_target": "wiki/sources/source-stripe-konbini-accept-payment.md",
+  "source_before_sha256": "b34e67bc8d5a41f2bcdc7c4d5c2462f248c1fa6a27424236ac23099835eb22b2",
+  "contributions": [
+    {
+      "job_id": "payments-konbini-accept-a-payment",
+      "canonical_url": "https://docs.stripe.com/payments/konbini/accept-a-payment",
+      "attempt": 1,
+      "raw_path": "raw/stripe-payments-konbini-accept-a-payment-2026-11-07.md",
+      "raw_sha256": "f53a04b7ae7a7f2e07687eb3364a6ba70bfb3bcc1d49f00d3519316fd6420d36",
+      "prior_raw_path": "raw/stripe-konbini-accept-payment-2025.md",
+      "prior_raw_sha256": "e46ef94adcf0b01c52841682dcde194af8f7e5287c0fe592a67f5bac4ddd8b82",
+      "new_capture_role": "navigation_only_variant_index",
+      "proposed_disposition": "raw_reference",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-konbini-accept-a-payment/attempt-1/receipt.json",
+      "receipt_sha256": "f846b04f276e769a4e4788189a029c97311b8c90aee37ebf9397c8d1f9ca2c9e",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-konbini-accept-a-payment/attempt-1/review.json",
+      "review_sha256": "d5ff3f2a7bf2caf46c1e26277a1e6d91c5ef0149f97031a6b636ee6293521167",
+      "source_assessments": [
+        {
+          "source_target": "wiki/sources/source-stripe-konbini-accept-payment.md",
+          "proposed_disposition": "source_required_update",
+          "update_needed": true,
+          "findings": [
+            "Retain the May full guide and date its Checkout/Direct API mechanics. Add the November selector as navigation provenance (new raw lines 5–14). Preserve the separate November product overview's explicit Payment Element scope and link it from the acceptance guide.",
+            "Make the exact webhook outcomes, documented Direct API billing fields and optional server/merchant instruction modes, timestamp bounds, pending-voucher cancellation warning and refund failure condition discoverable with targeted old raw locators (old lines 186–212, 247–286, 434–465, 493–516, 575–731 and 754–766)."
+          ],
+          "conflicts": [
+            "Unqualified ‘no Elements path’ (source line 17) conflates the guide's variant list with separate Payment Element availability. Source lines 19–21 can mislead on fulfillment or timestamp limits, line 25 makes a possible confirmation rejection sound guaranteed, and line 33 omits the condition on the 45-day refund deadline."
+          ],
+          "reason": "A reader asking whether Konbini works with Payment Element could treat a documentation-route omission as a product prohibition. A reader implementing fulfillment, payment expiry, or a replacement method could infer payment from `checkout.session.completed`, set the wrong expiry option, or invalidate live instructions. The current short entry is the direct routing answer, and its unqualified wording and missing state cues are insufficient; the newer acceptance base has no implementation text to recover those distinctions."
+        }
+      ],
+      "affected_concepts": [
+        "wiki/concepts/stripe-vouchers.md"
+      ],
+      "unresolved_questions": [
+        "The November linked acceptance bodies and any dedicated Payment Element implementation were not supplied or read. The base selector and the separate product matrix give no current SDK/version instructions, exact API/UI pairing for Payment Element, or account-specific activation and payment outcome."
+      ],
+      "mapped_source_assessment": {
+        "source_target": "wiki/sources/source-stripe-konbini-accept-payment.md",
+        "proposed_disposition": "source_required_update",
+        "update_needed": true,
+        "findings": [
+          "Retain the May full guide and date its Checkout/Direct API mechanics. Add the November selector as navigation provenance (new raw lines 5–14). Preserve the separate November product overview's explicit Payment Element scope and link it from the acceptance guide.",
+          "Make the exact webhook outcomes, documented Direct API billing fields and optional server/merchant instruction modes, timestamp bounds, pending-voucher cancellation warning and refund failure condition discoverable with targeted old raw locators (old lines 186–212, 247–286, 434–465, 493–516, 575–731 and 754–766)."
+        ],
+        "conflicts": [
+          "Unqualified ‘no Elements path’ (source line 17) conflates the guide's variant list with separate Payment Element availability. Source lines 19–21 can mislead on fulfillment or timestamp limits, line 25 makes a possible confirmation rejection sound guaranteed, and line 33 omits the condition on the 45-day refund deadline."
+        ],
+        "reason": "A reader asking whether Konbini works with Payment Element could treat a documentation-route omission as a product prohibition. A reader implementing fulfillment, payment expiry, or a replacement method could infer payment from `checkout.session.completed`, set the wrong expiry option, or invalidate live instructions. The current short entry is the direct routing answer, and its unqualified wording and missing state cues are insufficient; the newer acceptance base has no implementation text to recover those distinctions."
+      },
+      "findings": [
+        "New raw lines 5–14 retain the title and statement about Japanese convenience-store payments through Payment Intents and Payment Methods APIs (old raw lines 4–6), then link Checkout and Direct API. Both were detailed variants in the May 7, 2026 guide (old raw lines 8–10 and 320–324). Diff lines 1–13 and 892–894 show the body becoming a selector. No new behavioral claim appears in this acceptance capture.",
+        "The current summary captures the voucher URL, expiry, confirmation number, manual presentation, store detail fields and refund mechanism (source lines 13–35). Its phrase “no Elements path” (line 17) answers a product-support question too broadly. The May method overview lists Elements but excludes Express Checkout Element (related raw/stripe-konbini-2025.md lines 70–83). The November method overview explicitly lists Payment Element, excludes Express Checkout Element, and lists Checkout Sessions and Payment Intents separately (related raw/stripe-payments-konbini-2026-11-07.md lines 157–181). Neither acceptance parent supplies a dedicated Elements variant. The old Direct API sample's payment-element DOM ID is no implementation evidence for Payment Element (old raw lines 397–413).",
+        "The source omits the outcome and action mapping (source lines 13 and 19). In Checkout, voucher creation and form submission lead to pending status (`payment_intent.requires_action`, `checkout.session.completed`), with `checkout.session.async_payment_succeeded` for successful store payment and `checkout.session.async_payment_failed` for expiry or other failure (old raw lines 186–212). Direct API describes `payment_intent.succeeded` only after the store payment and `payment_intent.payment_failed` when nonpayment is clear, typically about an hour after expiry (old raw lines 754–768). The separate November overview lines 9–17 and 192–214 reinforce asynchronous confirmation after cash payment. Funds availability after four business days is a separate statement in that overview, not voucher creation, payment success, or bank deposit timing.",
+        "Old raw lines 12–50 and 52–103 document Stripe-hosted and embedded Checkout examples, JP businesses, JPY only, payment mode with one-time JPY items, and choosing dynamic methods or manually listing `konbini`. Old raw lines 320–365, 458–516 and 642–731 describe Japan domestic and JPY Direct API, server-side PaymentIntent creation, required name and email, default client Stripe.js confirmation modal, manual instructions via `handleActions: false` (575–633), and optional server confirmation with `payment_method_data` creating and immediately using a PaymentMethod, which yields a pending `requires_action` action and a voucher URL. Distinguish a PaymentMethod, PaymentIntent, Checkout Session and voucher instruction fields.",
+        "The main retrieval route is wiki/index.md line 7 → wiki/stripe-index.md lines 372–379 → wiki/concepts/stripe-vouchers.md lines 57–73 and 118–119. The concept already notes November product support and delayed success but its line 71 blends the two-source UI list, shares the loose Boleto async-event shorthand, and does not explicitly scope timestamp support to Direct API or clarify the 45-day pending-customer condition. The separate method overview summary already routes to the acceptance source (wiki/sources/source-stripe-konbini.md lines 25–28, 34–44)."
+      ],
+      "substantive_changes": [],
+      "historical_claims_to_preserve": [
+        "May 7, 2026 Checkout only documents `expires_after_days` (1–60 calendar days, default three; cutoff 23:59:59 JST). Direct API documents that day-count setting or mutually exclusive Unix-second `expires_at` with lead-time checks at setting and confirmation and an upper bound of less than 60 days after it is set. If neither is set, Direct API states three days after PaymentIntent creation at 23:59 JST (old raw lines 105–115 and 434–450). Checkout testing references to an `expires_at` override in output are not Checkout request-schema evidence (old raw lines 214–245).",
+        "Keep May Checkout optional phone-as-confirmation-number and random fallback (old raw lines 180–184), distinct from Direct API optional 10–11 digit `confirmation_number`, random fallback when absent, all-zero blocking at creation/update/confirmation, and possible rejection for a number too common among ongoing transactions at confirmation (old raw lines 555–569). The optional up-to-22-character Shift JIS `product_description` is documented for Direct API (old raw lines 434–442). Preserve the May Dahlia Stripe.js example as dated (old raw lines 493–516).",
+        "Keep the expiry buffer and state-changing actions dated. New kiosk initiation stops at `expires_at`; a valid slip issued before the deadline may still be payable at the register. After an unpaid buffer, the PaymentIntent returns to `requires_payment_method`. Updating the Intent or confirming with another payment method implicitly cancels a pending Konbini payment; cancellation fails if the shopper is currently paying, invalidates old instructions when successful, and successful reconfirmation in `requires_action` creates new instructions and a new URL. Availability issues also affect cancellations (old raw lines 247–261 and 815–840).",
+        "Keep bank-transfer refund states dated to the full May guide (old raw lines 263–286 and 842–865): `requires_action` waiting for bank details, `pending` after customer submission, `succeeded` when expected to arrive, and `requires_action` again if the bank returns funds. The 45-day failure is for a refund still in `requires_action` 45 days after creation; `refund.failed` requires returning the funds outside Stripe. Optional instruction/reminder emails and special confirmation-number/email timing overrides have Dashboard or test-only qualifications (old raw lines 744–752 and 784–813)."
+      ],
+      "conflicts": [
+        "Reciprocal product-versus-document boundary: source line 17 states “no Elements path,” the new acceptance index lines 9–14 lists only Checkout and Direct API, and the separately dated product overview explicitly lists Payment Element (November overview lines 157–165; May overview lines 70–83 lists Elements). Keep the acceptance guide variants separate from product availability in both the acceptance summary and voucher concept route. A missing index link is not evidence of lack of support, removal, or a Checkout Sessions-versus-PaymentIntents implementation for Payment Element.",
+        "Source line 19 gives event shorthand and calls all three async. The actual `checkout.session.completed` indicates voucher issuance/form submission, while `checkout.session.async_payment_succeeded` and `.async_payment_failed` are the follow-up outcomes. Separate Direct API PaymentIntent events and give readers a scoped fulfillment distinction (old raw lines 186–212 and 754–768).",
+        "Source line 21 omits the less-than-60-day ceiling on Direct API `expires_at` and does not identify it as a distinct request option documented there. The old option table says more than 30 minutes from the current time and the prose describes rejection when less than 30 minutes remains at setting or confirmation; do not promise exact 30-minute acceptance. Source line 33's unqualified 45-day deadline refers specifically to a refund still in `requires_action` after creation (old raw lines 434–450 and 263–286).",
+        "Old Direct API event table lines 765–766 uses shorthand ‘before expiration’, while both detailed cancellation sections allow completion of a timely-issued valid slip at the register after the deadline (old raw lines 247–255 and 815–823). Preserve the qualified exception reciprocally where payment timing is summarized; no fixed completion or cancellation guarantee follows."
+      ],
+      "expected_read_files": [
+        {
+          "path": "raw/stripe-payments-konbini-accept-a-payment-2026-11-07.md",
+          "sha256": "f53a04b7ae7a7f2e07687eb3364a6ba70bfb3bcc1d49f00d3519316fd6420d36",
+          "lines": 14
+        },
+        {
+          "path": "raw/stripe-konbini-accept-payment-2025.md",
+          "sha256": "e46ef94adcf0b01c52841682dcde194af8f7e5287c0fe592a67f5bac4ddd8b82",
+          "lines": 892
+        },
+        {
+          "path": "wiki/sources/source-stripe-konbini-accept-payment.md",
+          "sha256": "b34e67bc8d5a41f2bcdc7c4d5c2462f248c1fa6a27424236ac23099835eb22b2",
+          "lines": 39
+        },
+        {
+          "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/1e830b04c01a41e68e358a3d/content.diff",
+          "sha256": "64cd0bb38b8eb8408662e25aa0816b4683734eb8732ccc6aff8384de8a7b247c",
+          "lines": 894
+        }
+      ],
+      "original_query_prompts_path": "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md",
+      "original_prompts": "New raw: `raw/stripe-payments-konbini-accept-a-payment-2026-11-07.md`. Prior raw: `raw/stripe-konbini-accept-payment-2025.md`. Current summaries: `wiki/sources/source-stripe-konbini-accept-payment.md`.\n\n- Q1: For `https://docs.stripe.com/payments/konbini/accept-a-payment`, what central documented behavior, prerequisites, identities and state boundaries does the complete new capture establish, and how does it compare with the matched old capture and every mapped current summary?\n\n- Q2: Which changes are substantive versus presentational or navigation-only? Which historical claims must remain dated, which conflicts need reciprocal warnings, and which API, UI, version, client/server or outcome qualifications prevent unsupported inferences?",
+      "reviewed_answers": {
+        "Q1": "The November 7, 2026 capture of https://docs.stripe.com/payments/konbini/accept-a-payment repeats the use of Payment Intents and Payment Methods APIs for Japanese convenience-store payments and links Checkout and Direct API (new raw lines 5-14). The May 7 guide describes a single-use voucher: the customer brings a payment code and confirmation number and pays cash at a convenience store. For Checkout, the May guide lists JP businesses, JPY presentment, payment mode and one-time JPY line items, with Stripe-hosted or embedded Checkout and dynamic or manual method configuration (old raw lines 12-50 and old raw lines 52-103). Form submission routes to `hosted_voucher_url` and `checkout.session.completed` indicates voucher creation. The subsequent `checkout.session.async_payment_succeeded` or `checkout.session.async_payment_failed` conveys the outcome (old raw lines 186-212). In the Japan-domestic, JPY Direct API flow, the server creates a PaymentIntent and the client supplies required name and email using the client secret and `stripe.confirmKonbiniPayment()` to show the voucher modal. Manual client rendering and optional server confirmation are separate paths; server confirmation with `payment_method_data` creates and uses a PaymentMethod with the PaymentIntent, whose `requires_action` status exposes `konbini_display_details`. The instructions are pending until the customer pays cash at the store and Stripe confirms asynchronously by emitting `payment_intent.succeeded` (old raw lines 320-365, old raw lines 458-516, old raw lines 575-731 and old raw lines 754-766). `source-stripe-konbini-accept-payment.md` lines 13-35 summarizes voucher options but needs explicit state/event and UI scope. The separate November method overview explicitly lists Payment Element support and excludes Express Checkout Element; it does not supply an Elements acceptance implementation in this selector.",
+        "Q2": "For https://docs.stripe.com/payments/konbini/accept-a-payment, new raw lines 5-14 replace the combined body with Checkout and Direct API navigation while retaining the opening description. There is no substantive change to implementation behavior established by this capture. Keep the May 7, 2026 authority for Checkout voucher redirection and delayed fulfillment, and Direct API server/client responsibilities, billing fields, SDK method, and `requires_action` voucher display (old raw lines 186-212 and old raw lines 458-516 and old raw lines 575-731). The detailed May guide documents Checkout's day-based expiry and Direct API's mutually exclusive day count or bounded timestamp. A previously issued valid slip might be usable after the kiosk deadline; cancellation can fail during in-store payment, and when it succeeds the original instructions become invalid (old raw lines 105-115, old raw lines 434-450 and old raw lines 815-829). Only refunds still in `requires_action` 45 days after creation fail on that deadline (old raw lines 842-865). Correct ‘no Elements path’ in `source-stripe-konbini-accept-payment.md` line 17 and qualify its reciprocal Stripe Vouchers route: the acceptance variants are Checkout and Direct API, while the separate November product matrix lines 157-181 lists Payment Element as supported and Express Checkout Element as unsupported, consistent with the broader May Elements listing. Neither the captured index nor the Direct API sample's DOM ID establishes an Elements implementation, SDK refresh, account access or successful execution."
+      }
+    }
+  ],
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payments-konbini-accept-a-payment-2026-11-07.md",
+      "sha256": "f53a04b7ae7a7f2e07687eb3364a6ba70bfb3bcc1d49f00d3519316fd6420d36",
+      "lines": 14
+    },
+    {
+      "path": "raw/stripe-konbini-accept-payment-2025.md",
+      "sha256": "e46ef94adcf0b01c52841682dcde194af8f7e5287c0fe592a67f5bac4ddd8b82",
+      "lines": 892
+    },
+    {
+      "path": "wiki/sources/source-stripe-konbini-accept-payment.md",
+      "sha256": "b34e67bc8d5a41f2bcdc7c4d5c2462f248c1fa6a27424236ac23099835eb22b2",
+      "lines": 39
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/1e830b04c01a41e68e358a3d/content.diff",
+      "sha256": "64cd0bb38b8eb8408662e25aa0816b4683734eb8732ccc6aff8384de8a7b247c",
+      "lines": 894
+    }
+  ],
+  "concept_targets": [
+    {
+      "path": "wiki/concepts/stripe-vouchers.md",
+      "before_sha256": "f10916a9ada09cac9bfb0a01ebb20f72050ec443d7bcccf328f2850a8b125628",
+      "contributing_jobs": [
+        "payments-konbini-accept-a-payment",
+        "payments-multibanco",
+        "payments-multibanco-accept-a-payment",
+        "payments-oxxo",
+        "payments-oxxo-accept-a-payment"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    }
+  ],
+  "state": "worker_running",
+  "attempt": 1,
+  "review_scope": "full",
+  "worker_agent": "/root/s04iw06",
+  "reviewer_agent": "/root/s04ir01",
+  "role_notes": "tracking/ingest/stripe/stripe-campaign-04/updates/role-notes.md",
+  "worker_output": "/tmp/stripe-s04-ingest/payments-konbini-accept-a-payment-worker.json",
+  "reviewer_output": "/tmp/stripe-s04-ingest/payments-konbini-accept-a-payment-reviewer.json"
+}

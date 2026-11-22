@@ -1,0 +1,182 @@
+{
+  "job_id": "payments-orchestration-rules",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-orchestration-rules-2026-11-07.md",
+  "raw_sha256": "cfba8a9dfe71062ecd591c3c0547907897596eac9623893fc6248a931be1b557",
+  "prior_raw_path": "raw/stripe-orchestration-rules-2026.md",
+  "prior_raw_sha256": "dd0d2d04abc8348f2f086483939c8a71d869c7dfd35e908d09f514157a041b91",
+  "source_targets": [
+    "wiki/sources/source-stripe-orchestration-rules.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-orchestration-rules.md": "320390b3f8ea6df0ddc1b86b5b2ff686b33235af0d47545226fe722076978335"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-orchestration-rules-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 87
+      }
+    ],
+    "raw/stripe-orchestration-rules-2026.md": [
+      {
+        "start": 1,
+        "end": 58
+      }
+    ],
+    "wiki/sources/source-stripe-orchestration-rules.md": [
+      {
+        "start": 1,
+        "end": 48
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/bdf9f07000f4b9f9b5f43985/content.diff": [
+      {
+        "start": 1,
+        "end": 109
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 12
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 574,
+        "end": 583
+      },
+      {
+        "start": 704,
+        "end": 708
+      }
+    ],
+    "wiki/concepts/stripe-orchestration.md": [
+      {
+        "start": 1,
+        "end": 82
+      },
+      {
+        "start": 114,
+        "end": 124
+      }
+    ],
+    "wiki/sources/source-stripe-orchestration-route-payments.md": [
+      {
+        "start": 11,
+        "end": 39
+      }
+    ],
+    "wiki/sources/source-stripe-orchestration-feature-support.md": [
+      {
+        "start": 13,
+        "end": 39
+      }
+    ],
+    "raw/stripe-payments-orchestration-feature-support-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 57
+      }
+    ],
+    "raw/stripe-payments-orchestration-route-payments-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 113
+      },
+      {
+        "start": 208,
+        "end": 221
+      }
+    ],
+    "raw/stripe-orchestration-route-payments-2026.md": [
+      {
+        "start": 20,
+        "end": 33
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Orchestration is in private preview.",
+      "location": "raw/stripe-payments-orchestration-rules-2026-11-07.md:11"
+    },
+    {
+      "text": "For supported processors, you can override that logic by selecting a specific processor account for the main or retry processor in a rule action.",
+      "location": "raw/stripe-payments-orchestration-rules-2026-11-07.md:47"
+    },
+    {
+      "text": "The selector only displays accounts configured for the selected processor.",
+      "location": "raw/stripe-payments-orchestration-rules-2026-11-07.md:55"
+    },
+    {
+      "text": "You can only have one active set of rules in each sandbox and in live mode.",
+      "location": "raw/stripe-payments-orchestration-rules-2026-11-07.md:75"
+    },
+    {
+      "text": "If you don\u2019t have active rules, payments route to Stripe.",
+      "location": "raw/stripe-payments-orchestration-rules-2026-11-07.md:77"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Before activating rules in live mode, we recommend activating and testing your rules in a [sandbox]",
+      "location": "raw/stripe-orchestration-rules-2026.md:40"
+    },
+    {
+      "text": "You can only have one set of active rules.",
+      "location": "raw/stripe-orchestration-rules-2026.md:46"
+    },
+    {
+      "text": "If you don\u2019t have active rules, payments route to Stripe.",
+      "location": "raw/stripe-orchestration-rules-2026.md:48"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Both captures describe private-preview Dashboard Payments > Orchestration rules, ordered left to right with the first matching action and reorder via overflow. The seven conditions are amount with currency, 6/8-digit BIN, issuing card country, issuer, credit/debit/prepaid card type, supported presentment currency and metadata such as PaymentIntent order metadata. Actions can specify main and retry processors for both matched and no-match cases, with retry optional in the separate routing guide (old raw 8\u201332; new raw 9\u201343 and 59\u201361; raw/stripe-payments-orchestration-route-payments-2026-11-07.md:39\u201348). Distinguish the configured no-match action from no active set, which routes to Stripe (old 46\u201348; new 73\u201377).",
+    "November documents processor account selection within a rule action. The selected main or retry processor must support overrides. In Processor account logic choose Override processor account, then choose a configured account for that processor. Main and retry choices are independent and an unset choice falls back to the processor account logic from onboarding. An absent needed account is referred to Stripe, not created by this UI. Account means a configured account of the selected processor, not a new processor, Stripe customer, or Connect routing account. See new raw 45\u201357 and adjacent feature matrix raw/stripe-payments-orchestration-feature-support-2026-11-07.md:31\u201347: Adyen and Worldpay WPG supported, Braintree unsupported.",
+    "Save changes leaves a draft inactive. Open or create a sandbox, create and activate test rules, verify, then switch to live and recreate and activate. Active sets are read-only and limited to one in each sandbox and one in live mode. Activation replaces the set in its own environment and a deactivated set can be reactivated. Duplicate and deactivate use the environment-specific overflow actions and require confirming the dialog. Old raw 34\u201358 and new raw 63\u201387. Related May routing capture already described Activate test rules (raw/stripe-orchestration-route-payments-2026.md:22\u201330), so the expanded wording on this route dates the documentation, not the introduction of sandbox functionality.",
+    "Private preview survives and November supplies an email-request link/form and illustrative POST to docs.stripe.com/preview/register at 9\u201323. This is a docs request for access. Account onboarding, supported destination processors and integration eligibility are distinct prerequisites described separately at raw/stripe-payments-orchestration-route-payments-2026-11-07.md:25\u201333. The registration example is not a merchant payment, rules-management endpoint, or proof that preview access is granted."
+  ],
+  "substantive_changes": [
+    "New raw 45\u201357 adds the documented processor-account override and its support, account identity and independent main/retry qualifications. Old raw 28 only describes processor-level actions and is silent about account overrides.",
+    "Old raw 34\u201358 has a recommendation to sandbox-test, generic activate/duplicate/deactivate labels, and a broadly worded active-set limit. New raw 25 and 63\u201387 explicitly scopes the workflow by sandbox and live, specifies sandbox activation and verification before recreating/activating configuration live, separates labels and dialog steps, and scopes one active set and replacement to the same environment.",
+    "Old raw 8\u201312 already marks Orchestration private preview. New raw 9\u201323 adds a concrete email access-request mechanism and example, leaving the status private preview. Whitespace, table reformatting and routine wording edits are presentational. Cross-links point to separate compatibility and test evidence, with no additional capability established by the links alone."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain 2026-05-11 provenance for the original private-preview notice, routing conditions/actions and ordered matching (old raw 8\u201332), and the original recommendation and generic lifecycle/UI wording (old raw 34\u201358). Preserve its Stripe fallback, replacement/reactivation and active read-only semantics as continued in November, dating the old scope as historical while making the per-environment boundary explicit.",
+    "Keep the 2026-05-11 raw reference linked at source 6\u20137 and 46\u201348. Add the distinct 2026-11-07 authority for the preview request, override and environment detail, without dating an implementation launch from the capture."
+  ],
+  "conflicts": [
+    "Current summary 34\u201339 and wiki/concepts/stripe-orchestration.md:53\u201355 say activation goes live or refer to one active set without environment scope. Add reciprocal qualification so sandbox activation applies only in that sandbox, live activation uses a separately recreated set and replacing a set leaves other environments unaffected (new raw 65\u201387).",
+    "Qualify the rules source and companion feature matrix reciprocally. New raw 45\u201357 allows account overrides for supported processors only and retains onboarding account logic otherwise. The November matrix at raw/stripe-payments-orchestration-feature-support-2026-11-07.md:33\u201347 supports Adyen and Worldpay WPG but not Braintree. wiki/sources/source-stripe-orchestration-feature-support.md:13\u201339 lacks the new row. Keep opt-in error-protection fallback for unsupported payment features separate from rule no-match, unset account override and no active rules.",
+    "The rules and routing guides should cross-link the Dashboard rules state to the separately documented server-side PaymentIntent opt-in, optional retry and verification in raw/stripe-payments-orchestration-route-payments-2026-11-07.md:39\u201395, rather than treating Dashboard activation or preview request as payment enablement for every integration. The same route explicitly excludes Link transactions from routing rules at lines 35\u201337 and always processes them on Stripe. Apply that exception to the apparent all-processor generalization."
+  ],
+  "unresolved_questions": [
+    "The captures give no API contract for editing Dashboard rules, API or SDK version gate for account overriding, account-specific eligibility or guarantee of approval, retries, processing success, settlement or a production rollout date. Separate provider capability, onboarded account availability and test results remain scoped to their documented sources."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-orchestration.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-orchestration-rules.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Source 13\u201332 preserves seven conditions, first match, optional retry, the no-match default and Stripe with no active set. Clarify main and optional retry in the no-match action explicitly and distinguish using a processor from overriding its configured account (old 16\u201332; new 31\u201357; related routing raw 39\u201348).",
+        "Source 34\u201339 collapses activation into going live and does not explain sandbox-only draft, test verification, independent active sets, environment-specific UI or reactivation, or private-preview access flow beyond its tag at 8. Document new raw 9\u201325 and 63\u201387 precisely. Its provenance is May only at 4\u20137 and 46\u201348."
+      ],
+      "conflicts": [
+        "Scope source 37 and concept 55 to a single sandbox or live environment, and link the rule-action account override section to the separate dated compatibility row and verification path. The supported override and unset-onboarding fallback are distinct from payment retry and Stripe's no-active-rule fallback."
+      ],
+      "reason": "The current summary is usable for May routing basics but needs the newly documented supported processor-account override, private-preview request context and separate sandbox/live lifecycle. The unactioned scope and reactivation issues are independently relevant to summary accuracy."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/orchestration/rules, the November capture describes a private-preview Dashboard routing feature with an email request for access. In Payments > Orchestration, conditions are checked left to right and the first match wins. Both old raw lines 8-32 and new raw lines 9-43 retain amount with currency, 6- or 8-digit BIN, issuing country, issuer, credit/debit/prepaid type, presentment currency and metadata, with main and optional retry selections for matches and the no-match action. New raw lines 45-57 add a separate decision for supported processors: use the account logic set during onboarding by default, or select an already configured processor account independently for the main or retry side under Processor account logic > Override processor account. Contact the Stripe representative if the needed account is unavailable. Old raw lines 34-58 and new raw lines 63-87 distinguish drafts from active rules, and November explicitly describes separate sandbox test activation and verification, then live recreation and activation, one active set per sandbox and one in live, replacement in the same environment, later reactivation, and confirmed duplication to an editable draft or deactivation via environment-specific actions. Stripe is the fallback when there is no active set, distinct from the action configured for an unmatched condition. source-stripe-orchestration-rules.md lines 13-39 preserve the routing core but omit the account selector and preview request, conflate activation with going live and understate the environment and reactivation boundaries.",
+    "Q2": "For https://docs.stripe.com/payments/orchestration/rules, old raw lines 8-12 and new raw lines 9-25 show that the new email form and example POST request access to a preview that was already private. They establish neither provisioning nor a merchant rules API. The new supported processor-account override in new raw lines 45-57 expands the documented choices beyond the processor actions in old raw lines 16-28. Cross-link it reciprocally with the November feature-support matrix, which lists Adyen and Worldpay WPG as supported for overrides and Braintree as unsupported. A configured processor account and the onboarding fallback are distinct from automatic retry, no-match action and no-active-rules fallback. Old raw lines 34-58 recommended sandbox testing and used generic UI labels. New raw lines 63-87 specify creating and activating test rules, verifying them, recreating them in live mode, and the environment-specific Activate test rules/Activate rules, Duplicate test rules/Duplicate rules, and Deactivate test rules/Deactivate rules controls. The active-set limit and replacement apply per environment. Keep the May wording and provenance dated, and qualify source-stripe-orchestration-rules.md lines 34-39 and the Orchestration concept reciprocally so a sandbox activation cannot be read as going live. Most header, whitespace and table changes are presentation. Links to the companion feature and test guides are navigation, while the referenced guides separately bound eligibility and distinguish private-preview onboarding, Dashboard rule state and server-side PaymentIntent configuration or assisted enablement for auto-created PaymentIntents. Their test verification looks at the selected processor in the Dashboard or Payment Record, and Link transactions are excluded from those routing rules. The rules capture specifies no SDK or API revision for overrides and proves no actual payment, retry, settlement or funds availability."
+  }
+}

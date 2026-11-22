@@ -1,0 +1,146 @@
+{
+  "job_id": "payments-payment-element-design-an-integration",
+  "source_target": "wiki/sources/source-stripe-payment-element-design-integration.md",
+  "source_before_sha256": "9255b39f021eb37c0ab98b6d960bee01b90dcb4b0d8fd2ad2d13d52a7ca92f37",
+  "contributions": [
+    {
+      "job_id": "payments-payment-element-design-an-integration",
+      "canonical_url": "https://docs.stripe.com/payments/payment-element/design-an-integration",
+      "attempt": 1,
+      "raw_path": "raw/stripe-payments-payment-element-design-an-integration-2026-11-07.md",
+      "raw_sha256": "6f49e7faff5d30b1aea998e9c1652a7bf627a7bac86aea2373e3b8f5de408435",
+      "prior_raw_path": "raw/stripe-payment-element-design-integration-2025.md",
+      "prior_raw_sha256": "26c762644f8c286214c0046a562dedf6a01d71bbc0a1a97a6d7a07a9aeda7dea",
+      "new_capture_role": "navigation_only_variant_index",
+      "proposed_disposition": "raw_reference",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-payment-element-design-an-integration/attempt-1/receipt.json",
+      "receipt_sha256": "1fb32b9fbd6b039c5bf5fb0b66b680a30eb05fb220f348dae585c8ea2bf83f09",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-payment-element-design-an-integration/attempt-1/review.json",
+      "review_sha256": "180b59a4a8705e1c2e0710d41c07243f6de99c7da1c42c89c01a6de5f329654b",
+      "source_assessments": [
+        {
+          "source_target": "wiki/sources/source-stripe-payment-element-design-integration.md",
+          "proposed_disposition": "source_required_update",
+          "update_needed": true,
+          "findings": [
+            "Retain April's detailed routes and both choices, add November as selector provenance, state eager creation before checkout load and Intent client-secret linkage, and distinguish the Checkout Sessions path from PaymentIntent/SetupIntent."
+          ],
+          "conflicts": [
+            "Restore the server-confirmation next-action requirement at lines 31-33, and scope the client option at line 30 to absence of need for server control at confirmation. Correct the matching reciprocal Payment Intents concept summary."
+          ],
+          "reason": "The raw delta is navigation. Independently, the baseline summary could lead to a server-confirm integration omitting customer authentication or using the wrong initialization path."
+        }
+      ],
+      "affected_concepts": [
+        "wiki/concepts/stripe-payment-intents.md"
+      ],
+      "unresolved_questions": [
+        "The November selector does not establish current variant content, SDK names or versions, account eligibility, confirmation success, capture or payout."
+      ],
+      "mapped_source_assessment": {
+        "source_target": "wiki/sources/source-stripe-payment-element-design-integration.md",
+        "proposed_disposition": "source_required_update",
+        "update_needed": true,
+        "findings": [
+          "Retain April's detailed routes and both choices, add November as selector provenance, state eager creation before checkout load and Intent client-secret linkage, and distinguish the Checkout Sessions path from PaymentIntent/SetupIntent."
+        ],
+        "conflicts": [
+          "Restore the server-confirmation next-action requirement at lines 31-33, and scope the client option at line 30 to absence of need for server control at confirmation. Correct the matching reciprocal Payment Intents concept summary."
+        ],
+        "reason": "The raw delta is navigation. Independently, the baseline summary could lead to a server-confirm integration omitting customer authentication or using the wrong initialization path."
+      },
+      "findings": [
+        "November is a two-link selector preserving the page purpose and old route identifiers (new lines 5-14; old lines 4-18; diff lines 7-19 and 49-50). It routes Checkout Sessions using `payment-ui=embedded-components` and Payment Intents using `payment-ui=elements`; these documentation selectors do not establish a `ui_mode` API value or any current route behavior.",
+        "Old April overview recommends Checkout Sessions for most integrations and limits the deferred/eager and client/server choices to the Payment Intents variant (old lines 8-26). Source lines 13-15 correctly identify the detailed scope but risk presenting the full guide as exclusively Payment Intents; retain both dated routes and label the two choices variant-specific.",
+        "April deferred creates the Payment Element first and Intent after submission, suitable for multi-page or changing amounts affecting method eligibility. Eager creates the PaymentIntent or SetupIntent before page load and passes its `client_secret` into Elements. Current source line 22's 'together' compresses this order and client association (old lines 28-38). The Intent identities differ: PaymentIntent collects payment; SetupIntent sets up a method for next use.",
+        "April server confirmation does not eliminate pending customer actions: the merchant must handle required next actions manually or via an SDK, for example `stripe.handleNextAction` in the cited PaymentIntent route (old lines 40-48). Source lines 30-33 and concept lines 43-48 omit this consequence. Client confirmation uses the SDK for supported next actions and localization. 'No server-side business logic required' should mean no need for server control at confirmation, not no backend.",
+        "Root index line 7 leads via Stripe index lines 73-74 and 729 to Payment Intents concept lines 30-55 and 139. Companion May server-confirmation source lines 15-23 and raw lines 689-703 verify that a server result may still require client handling. Reuse the existing route, date the detailed guidance, and link the related server guide."
+      ],
+      "substantive_changes": [],
+      "historical_claims_to_preserve": [
+        "April Checkout Sessions recommendation and Checkout's own client initialization, SDK/provider and confirmation, qualified to its dated route and captured `ui_mode: elements` example. Keep Checkout Session secret and Intent secret distinct. April early recommendation and its Adaptive Pricing wording are not re-attested by a selector (old lines 8-20).",
+        "April multi-page/dynamic deferred path, static eager path, and action handling identities remain dated (old 28-48). Preserve immediate server confirmation after pre-confirmation business decisions (payment method restrictions or application fees), together with required next actions if returned.",
+        "Payment data associated at confirmation does not establish successful payment or setup. The no-charge SetupIntent purpose is different from PaymentIntent payment collection; required action may follow confirmation (old 30, 40-48)."
+      ],
+      "conflicts": [
+        "Mapped source line 30 broadly says no server-side business logic, while old lines 44-45 only say additional control at confirmation is unnecessary for that path. Current source lines 31-33 and concept lines 47-48 omit pending next-action responsibilities described at old line 47. A server-response/confirmation route cannot be treated as eliminating authentication or proving payment.",
+        "Current source line 22 and concept line 39 say create both together without the before-load/Intent secret association condition (old lines 37-38). Checkout Sessions initializing its own SDK (old line 8) and PaymentIntent/SetupIntent initializing Elements (old 37) are separate paths; do not substitute one secret or confirmation function for the other."
+      ],
+      "expected_read_files": [
+        {
+          "path": "raw/stripe-payments-payment-element-design-an-integration-2026-11-07.md",
+          "sha256": "6f49e7faff5d30b1aea998e9c1652a7bf627a7bac86aea2373e3b8f5de408435",
+          "lines": 14
+        },
+        {
+          "path": "raw/stripe-payment-element-design-integration-2025.md",
+          "sha256": "26c762644f8c286214c0046a562dedf6a01d71bbc0a1a97a6d7a07a9aeda7dea",
+          "lines": 48
+        },
+        {
+          "path": "wiki/sources/source-stripe-payment-element-design-integration.md",
+          "sha256": "9255b39f021eb37c0ab98b6d960bee01b90dcb4b0d8fd2ad2d13d52a7ca92f37",
+          "lines": 43
+        },
+        {
+          "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/316f7933245fb93644fb35e9/content.diff",
+          "sha256": "ee324f49a0612335c0ddd45a5b1036f69c110fadad4d61f93f3b0fb0c4f3c18e",
+          "lines": 50
+        }
+      ],
+      "original_query_prompts_path": "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md",
+      "original_prompts": "New raw: `raw/stripe-payments-payment-element-design-an-integration-2026-11-07.md`. Prior raw: `raw/stripe-payment-element-design-integration-2025.md`. Current summaries: `wiki/sources/source-stripe-payment-element-design-integration.md`.\n\n- Q1: For `https://docs.stripe.com/payments/payment-element/design-an-integration`, what central documented behavior, prerequisites, identities and state boundaries does the complete new capture establish, and how does it compare with the matched old capture and every mapped current summary?\n\n- Q2: Which changes are substantive versus presentational or navigation-only? Which historical claims must remain dated, which conflicts need reciprocal warnings, and which API, UI, version, client/server or outcome qualifications prevent unsupported inferences?",
+      "reviewed_answers": {
+        "Q1": "The November 7, 2026 capture of https://docs.stripe.com/payments/payment-element/design-an-integration establishes the Payment Element design guide’s purpose and two documentation routes: Checkout Sessions at `payment-ui=embedded-components` and Payment Intents at `payment-ui=elements` (new raw lines 5-14). The April 21 guide recommends Checkout Sessions for most integrations and describes initializing Checkout with the Checkout Session client secret, using `stripe.initCheckoutElementsSdk` and loaded `actions.confirm()` for HTML or `CheckoutElementsProvider` and `checkout.confirm` in React. Its lower-level Payment Intents variant leaves checkout features such as tax and shipping to the integration (old raw lines 8-22). For a multi-page or dynamic checkout, the April guide renders the Payment Element before creating and confirming the relevant Intent on submission, avoiding separate sync as amount and method eligibility change. For a static eager path, create the Intent before loading checkout and pass its client secret into Elements. PaymentIntent collects payment; SetupIntent prepares a future method (old raw lines 28-38). The client SDK handles supported next actions and localization. For server-side business logic, confirm immediately after it runs and handle required next actions manually or through an SDK, such as `stripe.handleNextAction` for the linked PaymentIntent route (old raw lines 40-48). source-stripe-payment-element-design-integration.md captures the two choices but omits the order and required-action qualifications.",
+        "Q2": "For https://docs.stripe.com/payments/payment-element/design-an-integration the November change is variant navigation (new raw lines 9-14 compared with old raw lines 10-18). It does not substantively refresh the April recommendation, lower-level checkout ownership, deferred/eager guidance or client/server handling. Preserve those dated details and their PaymentIntent-versus-SetupIntent purpose (old raw lines 20-48). In source-stripe-payment-element-design-integration.md and its reciprocal Payment Intents concept, clarify that the client confirmation choice concerns control at confirmation and does not mean an integration has no backend. Server confirmation still requires handling any returned next actions, such as customer 3DS or a redirect. Confirming the Intent and associating the submitted payment data do not independently prove payment or setup success. Keep Checkout Sessions-specific client initialization and confirmation separate from the eager Intent client-secret association and the Payment Intent SDK/server paths (old raw lines 8-14, old raw lines 37-38 and old raw lines 40-48). A documentation query parameter is not an API mode, and the selector gives no fresh SDK or API version evidence."
+      }
+    }
+  ],
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payments-payment-element-design-an-integration-2026-11-07.md",
+      "sha256": "6f49e7faff5d30b1aea998e9c1652a7bf627a7bac86aea2373e3b8f5de408435",
+      "lines": 14
+    },
+    {
+      "path": "raw/stripe-payment-element-design-integration-2025.md",
+      "sha256": "26c762644f8c286214c0046a562dedf6a01d71bbc0a1a97a6d7a07a9aeda7dea",
+      "lines": 48
+    },
+    {
+      "path": "wiki/sources/source-stripe-payment-element-design-integration.md",
+      "sha256": "9255b39f021eb37c0ab98b6d960bee01b90dcb4b0d8fd2ad2d13d52a7ca92f37",
+      "lines": 43
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/316f7933245fb93644fb35e9/content.diff",
+      "sha256": "ee324f49a0612335c0ddd45a5b1036f69c110fadad4d61f93f3b0fb0c4f3c18e",
+      "lines": 50
+    }
+  ],
+  "concept_targets": [
+    {
+      "path": "wiki/concepts/stripe-payment-intents.md",
+      "before_sha256": "67658eae2f24e929907ade9a7c64392c33beb51493865cdab5838d47ffb2747c",
+      "contributing_jobs": [
+        "payments-mobile-upgrade-to-handle-actions",
+        "payments-older-apis",
+        "payments-online-payments",
+        "payments-payment-element-design-an-integration",
+        "payments-payment-intents",
+        "payments-payment-intents-asynchronous-capture",
+        "payments-payment-intents-migration",
+        "payments-payment-intents-migration-charges"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    }
+  ],
+  "state": "worker_running",
+  "attempt": 1,
+  "review_scope": "full",
+  "worker_agent": "/root/s04iw02",
+  "reviewer_agent": "/root/s04ir02",
+  "role_notes": "tracking/ingest/stripe/stripe-campaign-04/updates/role-notes.md",
+  "worker_output": "/tmp/stripe-s04-ingest/payments-payment-element-design-an-integration-worker.json",
+  "reviewer_output": "/tmp/stripe-s04-ingest/payments-payment-element-design-an-integration-reviewer.json"
+}

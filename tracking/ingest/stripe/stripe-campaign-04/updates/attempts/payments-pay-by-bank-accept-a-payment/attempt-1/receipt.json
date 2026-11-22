@@ -1,0 +1,221 @@
+{
+  "job_id": "payments-pay-by-bank-accept-a-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Accept a Pay by Bank Payment\"\ntype: source\ndate_ingested: 2026-05-06\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/pay-by-bank/accept-a-payment\"\nraw_files:\n  - \"stripe-pay-by-bank-accept-payment-2025.md\"\ntags: [stripe, real-time-payments, pay-by-bank, open-banking, uk, europe, checkout, payment-intents, elements]\n---\n\n## Summary\n\nThe 2026-05-06 guide documents two detailed routes for the single-use `pay_by_bank` payment method, Checkout and web Elements with the Payment Intents API. The customer authenticates in a bank app or web portal and returns to the merchant. The 2026-11-07 capture of the same URL indexes five variants: Checkout, Elements with Checkout Sessions API, Elements with Payment Intents API, iOS and Android. The capture gives navigation only.\n\n## May 2026 Checkout and Elements\n\n- **Checkout.** Use payment mode with one-time line items in the same currency. The guide describes dynamic payment methods and a manual route. The manual instructions list `pay_by_bank` in `payment_method_types` and set `payment_method_options.pay_by_bank.statement_descriptor` to identify the payment on the customer's bank statement. The hosted example uses `success_url` and the full embedded example uses `return_url` and `ui_mode: embedded_page`. The Checkout compatibility table names DE and GB business locations and EUR and GBP currencies. The manual instructions and both examples specify GBP. The acceptance text separately mentions a France/Germany/Ireland private preview, which the May [[source-stripe-pay-by-bank|method overview]] identifies as customer availability. The November method overview lists customer bank accounts in Finland, Ireland and the UK as generally available and Belgium, France and Germany as private preview. It specifies GBP for UK bank accounts and EUR for the listed European countries. The overview describes customer bank location separately from Stripe account business location and does not settle the Checkout example conflict or current merchant eligibility.\n- **Web Elements with Payment Intents.** Price and create the PaymentIntent on the server and pass the customer-scoped client secret to the payment UI. The guide says to avoid logging the secret or embedding it in URLs and to expose it only to the customer. In the example, Stripe appends return parameters that can be used to retrieve the PaymentIntent. The client uses `stripe.confirmPayment` with a `return_url`. The return-page examples use retrieved `succeeded`, `processing` and `requires_payment_method` states to message the customer across payment methods. They establish no Pay by Bank-specific transition or timing. May uses Stripe.js Dahlia in its example, calls for HTTPS in live use, and cautions against nesting the Payment Element in another iframe because some methods redirect. The Dashboard-managed example mentions enabling Swish and creates a USD PaymentIntent. The manual example instead uses `pay_by_bank` and GBP, with no descriptor shown. The Swish/USD example cannot establish a supported Pay by Bank setup.\n- **Testing and refunds.** May Checkout's Authorize and Fail controls are sandbox examples for successful payment and failed authentication. The May guide gives up to 730 days to refund after the original payment, says the refund generally arrives by the next business day and can take up to seven days to appear successful, and states that there is no dispute process.\n\n## Payment outcome and related evidence\n\n- **Notification timing differs across captures.** The May acceptance guide describes immediate success/failure notification. The 2026-04-20 [[source-stripe-checkout-dashboard-payment-methods|Dashboard-managed Checkout migration guide]] lists Pay by Bank under delayed notification and advises waiting for verified success or failure if `checkout.session.completed` records authorization. In that guidance, wait until funds are available in the Stripe account to fulfill. Its general 2–14 day illustration is not a method-specific timing promise. Keep bank authorization, browser return, verified payment success, available funds and merchant payout distinct.\n- **Late funds.** The separate 2026-11-07 [[source-stripe-pay-by-bank|method overview]] says an authorized payment fails with `payment_method_provider_timeout` when bank funds miss the expected settlement window. If funds arrive after failure, Stripe automatically returns them to the customer.\n- **Mobile and recurring scope.** The separate [[source-stripe-real-time-payments|real-time product matrix]] marks Mobile Payment Element unsupported in May and supported in November. This is a dated capability listing, while the acceptance selector supplies links and no SDK requirements or account eligibility. The November method overview separately describes a private-preview Elements and Payment Intents flow combining an initial Pay by Bank payment with a Bacs Direct Debit mandate for recurring payments. The mandate is distinct from the May single-use payment and the May Checkout payment-mode restriction.\n\n## Detail locators\n\n- May acceptance raw lines 12–112 cover authentication, Checkout configuration, geography, currencies and redirect fields. Lines 118–127 and 632–634 cover testing and refunds.\n- May acceptance raw lines 156–200 and 269–318 cover Elements PaymentIntent creation, currency and method examples, the client secret and setup. Lines 419–450, 515–569 and 587–624 cover client confirmation, browser return and status handling.\n- April Dashboard-managed Checkout raw lines 66–84 cover delayed-notification methods and events. November method overview raw lines 15–27 and 111–117 cover bank-account geography, and lines 260–277 cover the late-funds and recurring preview guidance.\n\n## Related\n\n- [[stripe]] — Stripe company and source routes.\n- [[stripe-real-time-payments]] — Pay by Bank product and integration context.\n- [[source-stripe-pay-by-bank]] — Pay by Bank method overview.\n\n## Raw Sources\n\n- [[raw/stripe-pay-by-bank-accept-payment-2025|Pay by Bank acceptance guide captured 2026-05-06]] — verbatim webpage content (640 lines); fixed `*Prices*` ×1, `*subscription*` ×1, `*client secret*` ×1\n\n## Related raw API references\n\n- [[raw/stripe-payments-pay-by-bank-accept-a-payment-2026-11-07|Pay by Bank acceptance variant index]] — 2026-11-07 navigation for Checkout, the two Elements API routes, iOS and Android.\n",
+  "quotes": {
+    "payments-pay-by-bank-accept-a-payment": [
+      {
+        "text": "[Checkout](https://docs.stripe.com/payments/pay-by-bank/accept-a-payment.md?payment-ui=checkout)",
+        "location": "raw/stripe-payments-pay-by-bank-accept-a-payment-2026-11-07.md:13"
+      },
+      {
+        "text": "[Checkout Sessions API](https://docs.stripe.com/payments/pay-by-bank/accept-a-payment.md?payment-ui=elements&api-integration=checkout)",
+        "location": "raw/stripe-payments-pay-by-bank-accept-a-payment-2026-11-07.md:15"
+      },
+      {
+        "text": "[Payment Intents API](https://docs.stripe.com/payments/pay-by-bank/accept-a-payment.md?payment-ui=elements&api-integration=paymentintents)",
+        "location": "raw/stripe-payments-pay-by-bank-accept-a-payment-2026-11-07.md:16"
+      },
+      {
+        "text": "[iOS](https://docs.stripe.com/payments/pay-by-bank/accept-a-payment.md?payment-ui=mobile&platform=ios)",
+        "location": "raw/stripe-payments-pay-by-bank-accept-a-payment-2026-11-07.md:18"
+      },
+      {
+        "text": "[Android](https://docs.stripe.com/payments/pay-by-bank/accept-a-payment.md?payment-ui=mobile&platform=android)",
+        "location": "raw/stripe-payments-pay-by-bank-accept-a-payment-2026-11-07.md:19"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-pay-by-bank-accept-a-payment": [
+      {
+        "text": "**Supported business locations**: DE, GB",
+        "location": "raw/stripe-pay-by-bank-accept-payment-2025.md:22"
+      },
+      {
+        "text": "**Supported currencies**: `eur, gbp`",
+        "location": "raw/stripe-pay-by-bank-accept-payment-2025.md:24"
+      },
+      {
+        "text": "Make sure all your `line_items` use the `gbp` currency.",
+        "location": "raw/stripe-pay-by-bank-accept-payment-2025.md:48"
+      },
+      {
+        "text": "payment_method_types: [\"pay_by_bank\"],",
+        "location": "raw/stripe-pay-by-bank-accept-payment-2025.md:194"
+      },
+      {
+        "text": "Your customer’s bank statement includes this message.",
+        "location": "raw/stripe-pay-by-bank-accept-payment-2025.md:49"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-pay-by-bank-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 19
+      }
+    ],
+    "raw/stripe-pay-by-bank-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 640
+      }
+    ],
+    "wiki/sources/source-stripe-pay-by-bank-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 37
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/574d50859a70f80edc6209a7/content.diff": [
+      {
+        "start": 1,
+        "end": 647
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-pay-by-bank-accept-a-payment/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 250
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-pay-by-bank-accept-a-payment/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 90
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 347,
+        "end": 357
+      },
+      {
+        "start": 746,
+        "end": 750
+      }
+    ],
+    "wiki/concepts/stripe-real-time-payments.md": [
+      {
+        "start": 8,
+        "end": 39
+      },
+      {
+        "start": 85,
+        "end": 104
+      },
+      {
+        "start": 213,
+        "end": 221
+      }
+    ],
+    "wiki/sources/source-stripe-pay-by-bank.md": [
+      {
+        "start": 11,
+        "end": 39
+      }
+    ],
+    "raw/stripe-pay-by-bank-2025.md": [
+      {
+        "start": 14,
+        "end": 28
+      },
+      {
+        "start": 54,
+        "end": 65
+      }
+    ],
+    "raw/stripe-payments-pay-by-bank-2026-11-07.md": [
+      {
+        "start": 15,
+        "end": 27
+      },
+      {
+        "start": 111,
+        "end": 117
+      },
+      {
+        "start": 260,
+        "end": 277
+      }
+    ],
+    "raw/stripe-real-time-payments-2025.md": [
+      {
+        "start": 22,
+        "end": 32
+      }
+    ],
+    "raw/stripe-payments-real-time-2026-11-07.md": [
+      {
+        "start": 23,
+        "end": 40
+      }
+    ],
+    "raw/stripe-checkout-dashboard-payment-methods-2025.md": [
+      {
+        "start": 1,
+        "end": 11
+      },
+      {
+        "start": 66,
+        "end": 84
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-dashboard-payment-methods.md": [
+      {
+        "start": 12,
+        "end": 30
+      }
+    ]
+  },
+  "answers": {
+    "payments-pay-by-bank-accept-a-payment": {
+      "Q1": "The November 7, 2026 capture of https://docs.stripe.com/payments/pay-by-bank/accept-a-payment lists Checkout, Elements with Checkout Sessions or Payment Intents API, plus iOS and Android (new raw lines 5-19). Those links establish documentation routes. The May 6, 2026 guide covers single-use, bank-authenticated redirect payments through Checkout and web Elements PaymentIntents. Checkout lists payment mode, same-currency single-purchase line items, DE/GB business locations and EUR/GBP, with a GBP-specific manual instruction. Manual Checkout sets `pay_by_bank` and a statement descriptor, with `success_url` in hosted and `return_url` in full embedded examples (old raw lines 12-112). Web Elements uses a server-priced PaymentIntent, client-secret handoff, client `confirmPayment` with `return_url`, and PaymentIntent status retrieval (old raw lines 156-200 and old raw lines 419-450). The May guide describes immediate success/failure notification specifically for Pay by Bank (old raw lines 12-18 and old raw lines 135-141). Its generic Elements examples handle `succeeded`, `processing` and `requires_payment_method` without establishing a Pay by Bank-specific transition or timing (old raw lines 515-569 and old raw lines 587-624). Bank authorization and browser return do not establish verified success, available funds, or payout. The prior source-stripe-pay-by-bank-accept-payment.md generalized the descriptor and geography and omitted November navigation. The revised entry scopes the original instructions and names all five routes.",
+      "Q2": "For https://docs.stripe.com/payments/pay-by-bank/accept-a-payment, the November replacement is a navigation change, including an explicit Elements API split and two mobile links (new raw lines 9-19 versus old raw lines 8-10, old raw lines 135-141 and old raw lines 156-196). The index establishes no SDK contract, current eligibility, or substantive API change. Keep May's one-time Checkout eligibility, manual Checkout statement descriptor, UI-specific return fields, server/client and status boundaries, test steps, and qualified refund timing dated in source-stripe-pay-by-bank-accept-payment.md (old raw lines 20-127, old raw lines 156-200, old raw lines 269-318, old raw lines 515-569 and old raw lines 632-634). Maintain reciprocal warnings for the May compatibility table versus GBP-only instruction, DE/GB business versus France/Germany/Ireland preview wording, and the inconsistent Swish and USD Dashboard example (old raw lines 20-49 and old raw lines 160-196). The May immediate-notification statement (old raw lines 12-18 and old raw lines 135-141) disagrees with the April 20, 2026 Dashboard-managed Checkout migration guide, which includes Pay by Bank in its delayed-notification list (raw/stripe-checkout-dashboard-payment-methods-2025.md:66-84). Link the dated disagreement reciprocally and preserve the April advice to wait for verified success or failure when Checkout completion represents bank authorization. The general 2–14 day figure is not a method-specific promise. Keep customer return, verified success, funds availability and payout distinct. The separate November method overview describes `payment_method_provider_timeout` when funds fail to arrive in time after authorization and automatic return of late funds after failure (raw/stripe-payments-pay-by-bank-2026-11-07.md:260-264). The separate real-time product matrix's dated mobile-support change and method overview's Bacs-backed recurring private preview have their own evidence. Neither is established by the index, and the distinct preview does not change May Checkout subscription mode."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "pay-by-bank-acceptance-dated-integration",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Integration**: Checkout and Elements (PaymentIntents) paths only — no Direct API. Checkout requires `payment_method_options.pay_by_bank.statement_descriptor` (business name shown on customer's bank statement). Checkout business locations: DE and GB only (EU private preview). Test: \"Authorize test payment\" → success; \"Fail test payment\" → failure.",
+      "proposed_markdown": "**Integration**. The 2026-05-06 [[source-stripe-pay-by-bank-accept-payment|acceptance guide]] details Checkout and web Elements with Payment Intents. Its manual Checkout flow specifies a statement descriptor. Its Checkout business location table and manual currency examples have dated qualifications. The 2026-11-07 acceptance capture indexes Checkout, both Elements API routes, iOS and Android. May describes immediate success/failure notification, while the April [[source-stripe-checkout-dashboard-payment-methods|Dashboard-managed Checkout guide]] lists Pay by Bank under delayed notification. Bank authorization and browser return are separate from verified payment success, available funds and payout. See the acceptance source for the scope of each statement.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "May acceptance raw lines 12-127, 135-196 and 515-569. April Dashboard-managed Checkout raw/stripe-checkout-dashboard-payment-methods-2025.md:66-84. The November acceptance index contains no implementation details."
+      ]
+    },
+    {
+      "update_id": "pay-by-bank-acceptance-source-route",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-pay-by-bank-accept-payment]] — Pay by Bank integration: Checkout + Elements paths, statement_descriptor required, DE/GB only for Checkout",
+      "proposed_markdown": "- [[source-stripe-pay-by-bank-accept-payment]] — May 2026 Checkout and web Elements/Payment Intents guide with dated configuration and outcome qualifications. November 2026 selector indexes Checkout, both Elements API paths, iOS and Android.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "May acceptance raw lines 8-10 and 135-141 identify the two full bodies. November acceptance raw lines 9-19 show five navigation links."
+      ]
+    }
+  ]
+}

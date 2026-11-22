@@ -216,45 +216,35 @@ See [[stripe-link]] for full coverage (two integration paths, eligibility criter
 
 ## MobilePay Details
 
-**Denmark and Finland** card wallet. DKK, EUR, NOK, SEK. 30 European merchant countries. Underlying Visa/Mastercard transaction processed invisibly. Mobile redirect or desktop phone+push flows.
+**Denmark and Finland** card wallet with DKK, EUR, NOK and SEK presentment and 29 listed business locations in both 2026 captures. Stripe processes the underlying Visa/Mastercard transaction. Customers approve via mobile redirect or desktop phone and push. The November minimum depends on payout settlement currency after conversion.
 
-**Manual capture**: Yes. **Disputes**: Yes (same as cards). Full and partial refunds.
+**Manual capture**: Yes. The 2026-11-07 [[source-stripe-mobilepay|overview]] also documents partial capture as final, with the remainder released and no second capture. The 2026-05-07 [[source-stripe-mobilepay-accept-payment|acceptance guide]] specifies full-amount manual capture for Checkout, Elements and Direct API. The captures leave the effective change date and individual variant and account support unverified. **Disputes**: Yes (same as cards). Full and partial refunds.
 
 **Card retries**: customer can retry with different card in-app.
 
-**3D Secure**: 1–7% of transactions (Finland Mastercard highest at ~7%). Handled invisibly — **liability shift only if 3DS occurred; merchant cannot enforce 3DS**.
+**3D Secure**. The May capture estimated step-up at 1–7%, varying by country and card network. The November overview describes app-based 3DS with no extra integration step, no merchant enforcement option and liability shift only where authentication occurred.
 
-**Dankort not supported** — processed on Visa/Mastercard instead.
+**Dankort**. The November overview says Stripe uses Visa for co-branded Visa/Dankort cards.
 
-**Fees**: Stripe fees + MobilePay per-transaction fee (billed daily) + **35 DKK/month** membership fee (Denmark-only). Listed as separate entry on monthly tax invoice.
+**Fees**. November documents a daily surcharge and a monthly membership fee for applicable active Danish merchants of record, with inactivity, platform and contract qualifications. The 35 DKK amount is dated to May. Fees appear separately on the monthly tax invoice.
 
-**Prohibited categories** (8): cryptocurrencies, stock trade, gambling, betting, bonds, money transfers, debt collection, MLM/pyramid schemes.
+**Business categories**. May lists eight plain-language categories. November uses a named list and prohibited MCC table. The [[source-stripe-mobilepay|overview]] preserves the dates and directs readers to the eligibility details.
 
-**Branding**: merchant icon in MobilePay app from Branding settings (250×250px).
+**Branding**. The app uses the configured merchant icon or a default. The 250×250 recommendation comes from May.
 
-**Integration**: Checkout, Elements, Direct API, iOS, Android. **5-minute authorization window** across all paths. Manual capture (full amount only). Direct API: `next_action.redirect_to_url`. Cancellation supported. iOS: `STPPaymentMethodMobilePayParams` + custom URL scheme. Refunds/disputes subject to Visa/Mastercard rules.
+**Integration (2026-05-07 guide)**: Checkout, Elements, Direct API, iOS, Android and React Native. The customer has five minutes to authenticate while the PaymentIntent is in `requires_action`. Timeout detaches the PaymentMethod and returns the PaymentIntent to `requires_payment_method`. Direct API sends the customer to `next_action.redirect_to_url.url`. The guide documents cancelling the associated PaymentIntent before expiry, iOS `STPPaymentMethodMobilePayParams` with a custom return scheme, and Visa/Mastercard rules for refunds and disputes. See [[source-stripe-mobilepay-accept-payment]] for the dated capture and SDK qualifications.
 
 ## MB WAY Details
 
-**Portugal customers only**, EUR only. Phone number-based (push notification → app authorization). Immediate confirmation.
+MB WAY serves **customers in Portugal** with EUR presentment and can use international phone numbers. The November 2026 capture lists 40 business locations subject to supported settlement currency and marks B2C supported. Both captures document EUR 0.50–5,000 per payment and a EUR 1,000 default daily cumulative user limit adjustable up to EUR 10,000. In November, the customer has four minutes to approve in the app, while the merchant page polls without a browser redirect or method-level return URL. Stripe documents immediate notification when it confirms success or failure. App approval and return from the app precede that separate payment confirmation. The standard payout schedule applies. See [[source-stripe-mb-way-accept-payment]] for Checkout Session return settings, payment states and May sandbox simulations.
 
-**Transaction limits**: €0.50 – €5,000. Daily default: €1,000 (customer can adjust to €10,000).
+- Full disputes are supported. Partial disputes are excluded in November. Stripe holds the balance during resolution and the evidence window is seven calendar days.
+- Full or partial refunds can be issued up to 365 days from completion, typically processing in minutes. Cumulative partials cannot exceed the payment. November documents checking the Refund status and arranging another refund method if it fails and Stripe returns the amount to the balance.
+- May specifies `Stripe Inc` on statements and excludes Mobile Payment Element. November says Stripe's name cannot be overridden and separately marks in-app payments supported. See [[stripe-ios-sdk]] for iOS 26.6.0 PaymentSheet evidence.
+- Checkout remains one-time, with no setup or subscription mode, future usage or off-session payments. November Billing and Invoicing describe `send_invoice` with separately authorized hosted invoices, including subscription invoices. Manual capture remains unsupported.
+- Connect platforms can use all charge types. Enable it through the applicable Dashboard or Capabilities API path and verify the connected account's `mb_way_payments` capability in the account API or webhooks. See [[source-stripe-mb-way]] for the dated overview and version-specific notes.
 
-**40 merchant countries** — broad for Portugal-only wallet (includes MX, HK, JP, NZ, US).
-
-**Disputes**: Yes — 7-day evidence submission. Stripe holds amount until resolution.
-
-**Refunds**: 365-day. Minutes. Full and partial. Multiple partials allowed.
-
-**Statement descriptor**: ignored — `Stripe Inc` shown on bank statements.
-
-**No recurring, no manual capture, no Mobile Payment Element.**
-
-**Checkout restrictions**: no subscription mode, no setup mode, no `setup_future_usage`.
-
-**Connect**: all charge types. Capability: `mb_way_payments`.
-
-**Integration**: Checkout, Elements (**beta** — requires `betas: 'mb_way_pm_beta_1'`), Direct API. Direct API: `stripe.confirmMbWayPayment()` with phone number in billing details. Stripe.js auto-polls; `handleActions: false` to poll manually. Test phones: `+351911111112` (30-sec succeed), `+351911111113–116` (various errors), any other (immediate succeed).
+**Integration (May 2026 guide)**: Checkout, web Elements using PaymentIntents, and Direct API. The May HTML/JS and React Payment Element examples use `mb_way_pm_beta_1`. The Direct API new-PaymentMethod example supplies its linked phone to `stripe.confirmMbWayPayment`. Stripe.js polls by default, and `handleActions: false` allows manual status retrieval. See [[source-stripe-mb-way-accept-payment]] for sandbox simulations and the separate November Stripe.js reference's existing and attached PaymentMethod paths.
 
 ## GrabPay Details
 
@@ -409,10 +399,10 @@ See [[stripe-link]] for full coverage (two integration paths, eligibility criter
 - [[source-stripe-grabpay-accept-payment]] — 2026-05-07 detailed GrabPay acceptance guide for five variants (Checkout, Direct API, iOS, Android, React Native), with dated no-minimum PaymentIntent wording, platform-specific return links and payment outcome bounds; 2026-11-07 root capture is navigation only
 - [[source-stripe-link]] — Link: two PM type paths (link vs card+wallet), Instant Bank Payments exclusive, Thailand/Brazil Payment Element caveat
 - [[source-stripe-link-payment-methods]] — Link payment methods (US-only): Instant Bank Payments/Klarna/Pix/UPI/Stablecoins, zero integration, 5 eligibility criteria, customer flow, disabling rules
-- [[source-stripe-mb-way]] — MB WAY: Portugal phone-number wallet, 365-day refunds, 7-day dispute evidence, €1k daily limit, Stripe Inc descriptor
-- [[source-stripe-mb-way-accept-payment]] — MB WAY integration: Checkout + Elements (beta betas flag) + Direct API (confirmMbWayPayment), 5 test phone numbers
-- [[source-stripe-mobilepay]] — MobilePay: DK/FI card wallet, 3DS 1–7% invisible, Dankort→Visa/MC, 35 DKK/month Denmark fee, liability shift only with 3DS
-- [[source-stripe-mobilepay-accept-payment]] — MobilePay integration: 4 paths + mobile, 5-min auth window, manual capture full only, redirect_to_url
+- [[source-stripe-mb-way]] — May 7 and November 7, 2026 wallet overviews covering eligibility, app authorization, hosted invoice support, disputes and refunds.
+- [[source-stripe-mb-way-accept-payment]] — May 2026 Checkout, web Payment Element and Direct API guide with app authorization, payment outcome and sandbox boundaries. The November variant index is navigation only. The linked Endive changelogs document HTTP 400 for writable `payment_method_types` on `2026-09-30.endive` Checkout Session and PaymentIntent create. The acceptance source distinguishes MB WAY polling from the May Checkout Session return settings.
+- [[source-stripe-mobilepay]] — May and November 2026 product overviews for the DK/FI wallet, eligibility, activation, final partial capture, refunds, disputes and dated restrictions.
+- [[source-stripe-mobilepay-accept-payment]] — 2026-05-07 MobilePay acceptance guide covering Checkout, Elements, Direct API, iOS, Android and React Native, with dated customer authentication and capture guidance. The 2026-11-07 capture indexes the same six variants.
 - [[source-stripe-paypal]] — PayPal via Stripe: EU merchants, 14 currencies, marketplace Connect only, 180-day refunds, fees not in Stripe tax invoice
 - [[source-stripe-paypal-button]] — PayPal button: Stripe decides button vs redirect, blockers list for ECE + Checkout, maximize by disabling billing/tax collection
 - [[source-stripe-paypal-activate]] — PayPal activation: EU (except Hungary), settlement preference, Connect manual onboarding, account switch disables recurring

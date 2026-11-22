@@ -1,0 +1,30 @@
+--- wiki/concepts/stripe-installments.md
++++ wiki/concepts/stripe-installments.md
+@@ -13,11 +13,13 @@
+ 
+ ### Mastercard Installments
+ 
+-Customers with a Mastercard Installments virtual card pay in **4 interest-free installments** at checkout. Auto-enrolled when accepting Mastercard — no setup needed. 7 countries (AE/AU/CA/DE/GB/MY/US). Surcharging prohibited. Recurring/subscription purchases declined despite "Yes" in properties. Prohibited MCCs include money transfer, quasi cash, MoneySend. Opt-out: contact support (1-3 days). See [[source-stripe-mastercard-installments]] for details.
++A customer with a Mastercard Installments virtual card can pay in four interest-free installments at checkout. Businesses enroll automatically when they start accepting Mastercard. Regular Mastercard fees apply and surcharging is prohibited. Customer locations and eligible Stripe business-account jurisdictions are separate lists that name the same seven places (AE, AU, CA, DE, GB, MY and US). The May and November 2026 properties mark recurring payments Yes, and both dedicated sections say recurring or subscription purchases with this virtual card are declined. Stripe lists additional prohibited business categories by name. To request opt-out, use the Stripe Support form with subject `MC Installments Opt Out`. Stripe says it can take 1–3 days. See [[source-stripe-mastercard-installments]].
+ 
+ ### Mexico — Meses Sin Intereses
+ 
+-Mexico-only consumer credit card installment feature. MX Stripe accounts only; MXN only; consumer cards only (no corporate). 6 plan options (3–24 months); merchant receives full amount **minus additional fees** (5%–22.5%); bank handles collection. 33 supported issuers including BBVA, Banorte, Santander, Amex, Nubank, Didi. Custom min/max amounts configurable. Connect supported. See [[source-stripe-mx-installments]] for fees table and full issuer list.
++Mexico installments require a Stripe Mexico account, payment in MXN above the plan minimum, and a Mexico-issued consumer credit card from a supported issuer. There are six plan lengths from 3 to 24 months, with 5%–22.5% added to the standard card fee. The customer repays the issuer over time, while the merchant receives proceeds net of fees on standard payout timing. Custom minimums and maximums are configurable in the Dashboard. Connect platforms set defaults, and Standard connected accounts can override them.
++
++The May 2026 overview lists 32 issuers. The November overview lists 35 distinct names grouped by plan length, with Inbursa in both the 12- and 18-month groups. Its 18-month availability is unresolved. November adds Terminal at product level. The overview’s hosted and Direct API links lead to Japan. Use the separate [[source-stripe-mx-installments-accept-payment|Mexico guide]], which documents hosted Checkout in `payment` mode and Invoicing for individual invoices. Those May integration limits apply to their paths alongside the overview’s broad recurring-payments property. See [[source-stripe-mx-installments]] for dated issuer and fee details.
+ 
+ ### Japan — 分割払い
+ 
+@@ -42,8 +44,8 @@
+ ## Sources
+ 
+ - [[source-stripe-installments]] — installments overview: 3 products (Mastercard, Mexico, Japan)
+-- [[source-stripe-mastercard-installments]] — Mastercard Installments: auto-enrolled, 4× interest-free, 7 countries, prohibited MCCs, recurring caveat
+-- [[source-stripe-mx-installments]] — Mexico meses sin intereses: fees table (3–24mo), 33 supported issuers, requirements, Connect
+-- [[source-stripe-mx-installments-accept-payment]] — Mexico meses sin intereses integration: Checkout/Elements/Direct API/Invoices/Payment Links, custom settings, test cards
++- [[source-stripe-mastercard-installments]] — four interest-free virtual-card installments, separate customer and account locations, additional prohibited business categories, dated recurring-payment conflict and support-form opt-out
++- [[source-stripe-mx-installments]] — Mexico meses sin intereses: 3–24-month plan fees, eligibility, Connect, dated issuer groups and the November Terminal listing
++- [[source-stripe-mx-installments-accept-payment]] — May 2026 Mexico integration for Checkout, Elements, Direct API, Invoices and Payment Links, with a November variant index. Both Mexico product overviews list recurring payments as **Yes**. The May guide scopes Checkout to `payment` mode and Invoicing to individual `send_invoice` invoices. The overview property does not specify an eligible recurring integration or support for the excluded subscription and automatic collection routes.
+ - [[source-stripe-jp-installments]] — Japan installments detail: brand support table, bonus windows, requirements
+ - [[source-stripe-jp-installments-accept-payment]] — 2026-05-01 Japan installment integration guide for Checkout, Elements, Direct API, Invoices and Payment Links; the 2026-11-07 capture at its canonical URL supplies variant navigation only.

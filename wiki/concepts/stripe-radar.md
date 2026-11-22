@@ -46,6 +46,8 @@ Use `:payment_method_type:` attribute to target specific PMs in rules. See [[sou
 
 **Rule syntax**: `{action} if {attribute} {operator} {value}`. Metadata: `::field::`. List membership: `:attr: in @list`. Max 200 transaction + 100 account rules. Backtests against last 6 months.
 
+The April 2026 [[source-stripe-payment-intents#Descriptor and metadata boundaries|Payment Intents guide]] names Radar for Fraud Teams for custom metadata rules. Its November capture calls the product Radar Plus in equivalent guidance. The dated labels leave plan equivalence, eligibility, and any rename date unresolved.
+
 **3DS attributes**: `is_3d_secure` (recommended for block), `is_3d_secure_authenticated` (stricter), `has_liability_shift`. Exclude wallets: `not(:digital_wallet: = 'android_pay' and :has_cryptogram:)`.
 
 **Radar Assistant**: LLM writes rules from natural language (training consent required). EU note: geo-blocking regulation prohibits blocking EU customers by location. See [[source-stripe-radar-rules]].

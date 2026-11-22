@@ -1,0 +1,190 @@
+{
+  "job_id": "payments-konbini-accept-a-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Accept a Konbini Payment\"\ntype: source\ndate_ingested: 2026-05-07\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/konbini/accept-a-payment\"\nraw_files:\n  - \"stripe-konbini-accept-payment-2025.md\"\ntags: [stripe, vouchers, konbini, japan, jpy, checkout, direct-api, confirmation-number, product-description, expires-after-days]\n---\n\n## Summary\n\nThe full 2026-05-07 Stripe guide documents two ways to accept single-use Konbini cash vouchers in Japan using JPY. The customer receives a payment code and confirmation number, pays at a convenience store, and Stripe reports the payment asynchronously. The 2026-11-07 capture of the acceptance page retains the opening description and links to Checkout and Direct API variants.\n\nThe separate 2026-11-07 [[source-stripe-konbini|Konbini payment method overview]] lists Payment Element as supported and Express Checkout Element as unsupported. It lists Checkout Sessions and Payment Intents independently of its UI list. The acceptance selector covers Checkout and Direct API routes, leaving the Payment Element implementation and specific UI/API pairing outside its coverage.\n\n## Checkout in the May 2026 guide\n\nJapan-based businesses can use Stripe-hosted or embedded Checkout in payment mode with one-time JPY line items. The guide covers dynamic payment methods and manual configuration of `konbini`. The customer can supply a phone number as their confirmation number. Stripe generates a random confirmation number when the customer leaves it blank and blocks all-zero phone numbers.\n\nCheckout sends the customer to the `hosted_voucher_url` after form submission and bypasses the configured `success_url` for that redirect. Stripe emits `payment_intent.requires_action` when it creates the voucher. `checkout.session.completed` records completed form submission and a generated voucher. Wait for `checkout.session.async_payment_succeeded` to fulfill after store payment. `checkout.session.async_payment_failed` reports expiry or another failure and the PaymentIntent returns to `requires_payment_method`.\n\nThe Checkout request option documented in May is `expires_after_days`, from 1 to 60 calendar days and defaulting to 3, with a cutoff at 23:59:59 JST. The testing section's `expires_at` examples describe test-mode voucher output.\n\n## Direct API in the May 2026 guide\n\n- The server creates a JPY PaymentIntent with `konbini` for the Japan-domestic flow. The client collects the customer's billing name and email and uses the PaymentIntent client secret with `stripe.confirmKonbiniPayment()`. Stripe.js shows a voucher modal by default. The captured HTML example loads the Dahlia Stripe.js script.\n- The merchant can use `handleActions: false` and render the instructions from `next_action.konbini_display_details`, including `expires_at`, the hosted voucher URL and per-store `payment_code` and `confirmation_number` in `stores`. Optional server-side confirmation with `payment_method_data` requires billing name and email and creates and uses a PaymentMethod with the PaymentIntent. The documented result is `requires_action` with voucher instructions and a `hosted_voucher_url` for redirecting the customer.\n- `payment_intent.succeeded` follows successful store payment. `payment_intent.payment_failed` follows once Stripe determines the voucher went unpaid, typically about an hour after expiry according to the guide. Treat instruction creation as the pending state.\n- The Direct API documents `expires_after_days` or the mutually exclusive Unix-second `expires_at`. The timestamp table specifies more than 30 minutes of lead time and less than 60 days from when the option is set. The prose describes an error when less than 30 minutes remains at setting or at confirmation. If neither option is provided, the guide says expiry defaults to three days after PaymentIntent creation at 23:59 JST.\n- The optional `product_description` takes up to 22 Shift JIS characters and appears at the convenience store, with a generic fallback. The optional `confirmation_number` is a 10–11 digit string with a random fallback. Stripe blocks all-zero numbers at creation, update and confirmation. A number that is too common among ongoing store transactions may be rejected on confirmation as `payment_intent_konbini_rejected_confirmation_number`.\n\n## Expiry, Cancellation and Refunds in the May 2026 guide\n\n- New kiosk payment initiation stops at `expires_at`. A customer who obtained a valid slip before the cutoff might still be able to pay at the register afterward. If the voucher remains unpaid after the buffer, the PaymentIntent returns to `requires_payment_method`.\n- Updating the PaymentIntent or confirming it with a different method implicitly requests cancellation of the pending Konbini voucher. Cancellation fails while the customer is actively paying, and temporary availability problems can affect cancellation requests. A successful cancellation invalidates the original instructions. Successful reconfirmation while in `requires_action` generates new instructions and a new voucher URL that the customer needs.\n- Stripe emails the customer for bank details. The refund is `requires_action` while waiting, `pending` once the customer submits details and processing begins, and `succeeded` when it is expected to reach the bank. Bank-returned funds move the refund back to `requires_action`. A refund still in `requires_action` 45 days after creation becomes `failed`, triggering `refund.failed` and requiring the merchant to return funds outside Stripe. Each refund, including each partial refund, may incur a fee.\n- Instruction and reminder emails are optional Dashboard settings. In testing they only go to emails linked to the Stripe account. Special confirmation-number and email-pattern timing overrides are test-only.\n\n## Detail Locators\n\n- May lines 12–115 cover Checkout eligibility, configuration and expiry. Lines 180–212 cover confirmation numbers, voucher issuance and fulfillment events. Lines 247–286 cover cancellation and refunds.\n- May lines 320–365 and 434–516 cover the Direct API server/client split, expiry options and customer billing fields. Lines 555–731 cover confirmation numbers, manual display and server confirmation. Lines 744–768 and 784–865 cover emails, payment events, test timing, the expiry buffer, cancellation and refunds.\n- The separate November Konbini overview's lines 157–181 cover UI and API support. Lines 9–17 and 192–214 cover store payment and asynchronous confirmation. The overview's four-business-day funds availability statement concerns payout availability.\n\n## Related\n\n- [[stripe]]\n- [[stripe-vouchers]] — Konbini voucher lifecycle and product scope\n- [[source-stripe-konbini]] — Konbini payment method overview\n\n## Raw Sources\n\n- [[raw/stripe-konbini-accept-payment-2025|2026-05-07 full Checkout and Direct API guide]] — 892 lines\n\n## Related raw API references\n\n- [[raw/stripe-payments-konbini-accept-a-payment-2026-11-07|Checkout and Direct API variant selector]] — 2026-11-07 navigation\n",
+  "quotes": {
+    "payments-konbini-accept-a-payment": [
+      {
+        "text": "Use the Payment Intents and Payment Methods APIs to accept payments through Konbini, a common way to make payments through convenience stores in Japan.",
+        "location": "raw/stripe-payments-konbini-accept-a-payment-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-konbini-accept-a-payment-2026-11-07.md:11"
+      },
+      {
+        "text": "[Checkout](https://docs.stripe.com/payments/konbini/accept-a-payment.md?payment-ui=checkout)",
+        "location": "raw/stripe-payments-konbini-accept-a-payment-2026-11-07.md:13"
+      },
+      {
+        "text": "[Direct API](https://docs.stripe.com/payments/konbini/accept-a-payment.md?payment-ui=direct-api)",
+        "location": "raw/stripe-payments-konbini-accept-a-payment-2026-11-07.md:14"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-konbini-accept-a-payment": [
+      {
+        "text": "After submitting the Checkout form successfully, the customer is redirected to the `hosted_voucher_url`.",
+        "location": "raw/stripe-konbini-accept-payment-2025.md:190"
+      },
+      {
+        "text": "The customer has successfully submitted the Checkout form. Stripe has generated the Konbini voucher.",
+        "location": "raw/stripe-konbini-accept-payment-2025.md:208"
+      },
+      {
+        "text": "The `PaymentIntent` transitions to `succeeded`.",
+        "location": "raw/stripe-konbini-accept-payment-2025.md:211"
+      },
+      {
+        "text": "The `expires_at` setting is a Unix timestamp in seconds.",
+        "location": "raw/stripe-konbini-accept-payment-2025.md:448"
+      },
+      {
+        "text": "If a specified `confirmation_number` is too common among all ongoing convenience store transactions it may be rejected at the time of PaymentIntent confirmation.",
+        "location": "raw/stripe-konbini-accept-payment-2025.md:567"
+      },
+      {
+        "text": "To manually handle the next action of displaying the Konbini details to your customer, use `handleActions: false`",
+        "location": "raw/stripe-konbini-accept-payment-2025.md:579"
+      },
+      {
+        "text": "The created `PaymentIntent` has a status of `requires_action` and the type for `next_action` is `konbini_display_details`.",
+        "location": "raw/stripe-konbini-accept-payment-2025.md:668"
+      },
+      {
+        "text": "if they issued a valid payment slip before the deadline they might be able to *complete* the payment at the cash register after the `expires_at` time.",
+        "location": "raw/stripe-konbini-accept-payment-2025.md:817"
+      },
+      {
+        "text": "When you cancel a pending payment the original payment instructions become invalid.",
+        "location": "raw/stripe-konbini-accept-payment-2025.md:827"
+      },
+      {
+        "text": "Refund is in `requires_action` 45 days after creation",
+        "location": "raw/stripe-konbini-accept-payment-2025.md:856"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-konbini-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-konbini-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 892
+      }
+    ],
+    "wiki/sources/source-stripe-konbini-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/1e830b04c01a41e68e358a3d/content.diff": [
+      {
+        "start": 1,
+        "end": 894
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-konbini-accept-a-payment/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 218
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-konbini-accept-a-payment/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 110
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 12
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 372,
+        "end": 379
+      }
+    ],
+    "wiki/concepts/stripe-vouchers.md": [
+      {
+        "start": 57,
+        "end": 123
+      }
+    ],
+    "wiki/sources/source-stripe-konbini.md": [
+      {
+        "start": 25,
+        "end": 44
+      }
+    ],
+    "raw/stripe-konbini-2025.md": [
+      {
+        "start": 70,
+        "end": 83
+      }
+    ],
+    "raw/stripe-payments-konbini-2026-11-07.md": [
+      {
+        "start": 9,
+        "end": 17
+      },
+      {
+        "start": 157,
+        "end": 181
+      },
+      {
+        "start": 192,
+        "end": 214
+      }
+    ]
+  },
+  "answers": {
+    "payments-konbini-accept-a-payment": {
+      "Q1": "The November 7, 2026 capture of https://docs.stripe.com/payments/konbini/accept-a-payment describes Payment Intents and Payment Methods APIs for Japanese convenience-store payments and links Checkout and Direct API (new raw lines 5-14). The May 7 guide covers a single-use voucher paid with a code, confirmation number and cash. For Japan-based businesses it documents hosted or embedded Checkout with JPY, payment mode, one-time JPY items, and dynamic or manual payment method configuration (old raw lines 12-50 and 52-103). Form submission leads to `hosted_voucher_url` and `checkout.session.completed` indicates voucher issuance. The asynchronous Checkout success or failure events convey the payment outcome (old raw lines 186-212). In the Japan-domestic JPY Direct API flow the server creates a PaymentIntent. The client supplies required billing name and email using the client secret and `stripe.confirmKonbiniPayment()` for the modal. Manual client rendering and optional server confirmation with `payment_method_data` are separate paths. Server confirmation creates and uses a PaymentMethod with the PaymentIntent and returns pending `requires_action` voucher details. The Direct API `payment_intent.succeeded` event follows cash payment, while `payment_intent.payment_failed` indicates nonpayment once determined (old raw lines 320-365, old raw lines 458-516, old raw lines 575-731 and old raw lines 754-766). source-stripe-konbini-accept-payment.md distinguishes these states and links the separate November payment-method overview for Payment Element support and Express Checkout Element exclusion. That matrix does not document a specific Payment Element implementation.",
+      "Q2": "For https://docs.stripe.com/payments/konbini/accept-a-payment, new raw lines 5-14 preserve the opening and route to Checkout and Direct API. The captured selector establishes no changed mechanics. source-stripe-konbini-accept-payment.md retains May evidence for Checkout and Direct API and separates the November Payment Element product listing from the acceptance guide's variants. Neither the capture nor the DOM placeholder identifies a Payment Element API pairing, SDK refresh, account eligibility, or observed payment. May Checkout documents day-based expiry; Direct API additionally documents a mutually exclusive Unix-second timestamp with a lead-time check at setting and confirmation and a ceiling below 60 days from setting. A timely slip can sometimes be paid after the kiosk initiation cutoff. Cancellation can fail during in-store payment, and successful cancellation invalidates old instructions. The 45-day deadline applies to refunds still in `requires_action` after creation. May's Stripe.js Dahlia example, confirmation-number limits and test timing overrides remain dated. See old raw lines 105-115, old raw lines 186-212, old raw lines 434-450, old raw lines 493-516, old raw lines 555-569, old raw lines 784-829, old raw lines 842-865 and new raw lines 5-14."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-konbini-accept-a-payment-vouchers-integration",
+      "target_path": "wiki/concepts/stripe-vouchers.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Integration (May detailed path; November product support)**: Checkout, Payment Element, and Direct API are listed; Express Checkout Element is unsupported. The following Checkout and Direct API details remain attributed to the May 7, 2026 integration guide. Checkout: `hosted_voucher_url` redirect (not `success_url`), same 3 async webhook events as Boleto. `expires_after_days`: 1–60 days, default 3, expiry at 23:59:59 JST. `expires_at` (Unix timestamp) mutually exclusive with `expires_after_days`. `product_description`: up to 22 Shift JIS chars shown at kiosk. `confirmation_number`: 10–11 digits (commonly customer phone); all-zeros blocked; if too common → rejected. Direct API: `stripe.confirmKonbiniPayment()`; `next_action.konbini_display_details` has per-store `payment_code` + `confirmation_number`. Expiration buffer prevents premature failures. Refund: customer provides bank account → 45-day timeout → failed.",
+      "proposed_markdown": "**Integration and product scope (May and November 2026)**. The May [[source-stripe-konbini-accept-payment|acceptance guide]] details Checkout and Direct API. The November capture routes to those two variants. The separate November [[source-stripe-konbini|method overview]] lists Payment Element support and excludes Express Checkout Element.\n\nCheckout sends customers to `hosted_voucher_url`. `checkout.session.completed` means the voucher was generated. `checkout.session.async_payment_succeeded` means it was paid, and `checkout.session.async_payment_failed` reports expiry or another failure. The May Checkout guide documents `expires_after_days` (1–60 days, default 3, 23:59:59 JST cutoff). Direct API also documents a mutually exclusive bounded `expires_at`, `stripe.confirmKonbiniPayment()` and store-specific `next_action.konbini_display_details`. A valid slip issued before the kiosk deadline may still be paid at the register afterward. The 45-day bank-refund deadline applies if the refund still has `requires_action` status 45 days after creation.",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "November acceptance selector: raw/stripe-payments-konbini-accept-a-payment-2026-11-07.md:9-14. Separate product matrix: raw/stripe-payments-konbini-2026-11-07.md:157-181. The product listing does not identify an implementation or match Payment Element to a specific API.",
+        "Dated Fulfillment, expiration and refund evidence: raw/stripe-konbini-accept-payment-2025.md:105-115, :186-212, :434-450, :493-516, :668-684, :815-829 and :842-865."
+      ]
+    },
+    {
+      "update_id": "payments-konbini-accept-a-payment-vouchers-source-route",
+      "target_path": "wiki/concepts/stripe-vouchers.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-konbini-accept-payment]] — Konbini integration: Checkout + Direct API, confirmKonbiniPayment(), confirmation_number, product_description, expires_after_days",
+      "proposed_markdown": "- [[source-stripe-konbini-accept-payment]] — May 2026 Checkout and Direct API guide for voucher issuance, paid state, expiry and refunds. November 2026 acceptance selector links both variants.",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "November acceptance selector: raw/stripe-payments-konbini-accept-a-payment-2026-11-07.md:9-14. Separate product matrix: raw/stripe-payments-konbini-2026-11-07.md:157-181. The product listing does not identify an implementation or match Payment Element to a specific API."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,224 @@
+{
+  "job_id": "payments-p24",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Przelewy24 Payments\"\ntype: source\ndate_ingested: 2026-05-03\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/p24\"\nraw_files:\n  - \"stripe-payments-p24-2026-11-07.md\"\n  - \"stripe-p24-2025.md\"\ntags: [stripe, p24, przelewy24, poland, eur, pln, bank-redirect, authenticated, prohibited-categories]\n---\n\n## Summary\n\n[[stripe|Stripe]] describes [[stripe-p24|Przelewy24 (P24)]] as a Poland-based aggregator of bank transfers and other payment methods. Both captures limit customer location to Poland, list EUR and PLN as presentment currencies and list 40 business locations. The November 7, 2026 capture separately lists local-currency settlement geographies in AMER, EMEA and APAC, domestic and cross-border coverage and a EUR 0.50 minimum. It supplies no PLN minimum.\n\n## Eligibility and website requirements\n\nThe May 3, 2026 capture requires a publicly accessible website or app with priced products or services, business address, tax and registration numbers, and links to refund and privacy policies. It warns that P24 can suspend or terminate access for breaching prohibited categories or the site/app requirements.\n\nThe November 7, 2026 capture lists merchant and Connect platform or marketplace account types and B2B and B2C models. It requires a website with address, tax ID, registration number, return and refund policy, privacy policy and terms of service, in addition to Stripe's activation requirements. Stripe may review eligibility after activation and accepts appeals of P24 capability restrictions through support. The November page omits May's public-access and priced-list wording without expressly withdrawing it.\n\nBoth captures list ten broadly prohibited categories in addition to Stripe's general restrictions. These cover dropshipping, automotive sales/services/rentals, specialty food retail, pawn shops, higher education/vocational training, healthcare providers/medical services, entertainment/event promotion, IT/telecom, advertising/marketing, and real estate management/brokerage.\n\nNovember also lists prohibited merchant category codes (MCCs) as unsupported and restricted MCCs as potentially supported with additional information at account creation. Pawn shops (MCC 5933) and new/used car and truck dealers (MCC 5511) illustrate overlaps with the broad prohibition list. The page leaves precedence unresolved. Connect marketplace is a listed account type while marketplaces (MCC 5262) are prohibited at the business-code level. Those labels leave individual eligibility unresolved. The full MCC table and location lists are under **Eligibility and availability** in the November capture.\n\n## Authorization, confirmation and settlement\n\nMay labels the family authenticated bank debit and says standard payout timing applies. November labels it a single-use bank redirect and lists immediate payment confirmation, instant provisional access and settlement up to T+2 business days. These describe distinct stages and leave the external merchant payout schedule unspecified. Both captures describe customer bank authorization, a payment notification and no disputes that become chargebacks.\n\nIn November's flow the customer is redirected to P24, chooses a bank and completes authorization within one hour of checkout. May explicitly calls the customer's return to the merchant site optional. November lists browser return after the customer is notified of payment completion and leaves optionality unstated. The wording leaves the return requirement unresolved. Verify payment outcome separately from browser return before fulfillment.\n\n## Refunds and payment references\n\nBoth captures support full or partial refunds submitted within 180 days of the original payment. The submission window is the payment method maximum, and the merchant return policy determines what it offers. November describes asynchronous, noncancelable processing of up to three business days as a separate bank credit referencing the original statement descriptor. Check the Dashboard or the Refund object's `status` and use refund status events (`refund.updated` or `refund.failed`) for final status. If a refund fails, Stripe returns the amount to the merchant's Stripe balance and the merchant must arrange an alternative refund. Once the Refund succeeds, the merchant can share its `destination_details.p24.reference` when available.\n\nFor the original payment, the November **Transaction Identifiers** section says to set a custom statement descriptor on the PaymentIntent before confirmation or use the account-level default. The bank statement shows a unique P24 payment reference followed by the descriptor. After payment completion, expand the PaymentIntent's `latest_charge` and retrieve `latest_charge.payment_method_details.p24.reference`. The separate May 3, 2026 [[source-stripe-p24-accept-payment|acceptance guide]] specifies a 14-character descriptor limit. The November overview gives no length.\n\n## Product support and enablement\n\nThe November matrix marks full-page and embedded checkout, Payment Links, Payment Element and in-app payments supported. Express Checkout Element is unsupported. It lists Checkout Sessions and PaymentIntents for payments and excludes SetupIntents, `setup_future_usage`, recurring payments and manual capture.\n\nMay excludes Checkout subscription and setup modes and lists Invoicing as invite-only. The November method overview marks Billing and Invoicing supported with a `send_invoice`-only collection note after the matrix whose attachment is unclear. The same-date [[source-stripe-bank-redirects|Bank Redirects matrix]] retains invite-only Invoicing and excludes Checkout subscription and setup modes. It scopes invoice/subscription collection to `send_invoice` and excludes SetupIntents, future usage and manual capture. These captures leave account-level Invoicing access unresolved and document no automatic recurring P24 path.\n\nUse Dashboard payment method settings for Stripe front-end products, where Stripe determines which relevant methods to display. The separate [[source-stripe-p24-accept-payment|acceptance guide]] covers manual configuration. For connected accounts using the Express Dashboard or no Stripe-hosted Dashboard, November directs platforms to request `p24_payments` and verify it is `active` before accepting P24. Enablement and matrix support do not establish an account's or transaction's eligibility.\n\n## Raw Sources\n\n- [[raw/stripe-payments-p24-2026-11-07|Przelewy24 payments, November 7, 2026 full capture]]\n- [[raw/stripe-p24-2025|Przelewy24 payments, May 3, 2026 capture]] — includes six reused flow diagrams from `raw/assets/`.\n",
+  "quotes": {
+    "payments-p24": [
+      {
+        "text": "Access type: Instant provisional access",
+        "location": "raw/stripe-payments-p24-2026-11-07.md:12"
+      },
+      {
+        "text": "Restricted** MCCs may be supported, but require additional information at account creation.",
+        "location": "raw/stripe-payments-p24-2026-11-07.md:37"
+      },
+      {
+        "text": "Refunds for P24 payments are asynchronous and take up to 3 business days to complete. P24 refunds can’t be canceled.",
+        "location": "raw/stripe-payments-p24-2026-11-07.md:221"
+      },
+      {
+        "text": "Only supports send_invoice collection method.",
+        "location": "raw/stripe-payments-p24-2026-11-07.md:265"
+      },
+      {
+        "text": "Request the `p24_payments` capability and check that its status is `active` before accepting P24 payments.",
+        "location": "raw/stripe-payments-p24-2026-11-07.md:310"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-p24": [
+      {
+        "text": "Przelewy24 is a Poland-based payment method aggregator that allows customers to complete transactions online using bank transfers and other methods.",
+        "location": "raw/stripe-p24-2025.md:8"
+      },
+      {
+        "text": "Authenticated bank debit",
+        "location": "raw/stripe-p24-2025.md:30"
+      },
+      {
+        "text": "1Not supported when using Checkout in subscription mode or setup mode.2Available by invite only.",
+        "location": "raw/stripe-p24-2025.md:111"
+      },
+      {
+        "text": "Payments made with Przelewy24 can only be submitted for refund within 180 days from the date of the original charge.",
+        "location": "raw/stripe-p24-2025.md:183"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-p24-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 310
+      }
+    ],
+    "raw/stripe-p24-2025.md": [
+      {
+        "start": 1,
+        "end": 183
+      }
+    ],
+    "wiki/sources/source-stripe-p24.md": [
+      {
+        "start": 1,
+        "end": 33
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/9bb454c8c1a0fa2346a3028f/content.diff": [
+      {
+        "start": 1,
+        "end": 464
+      }
+    ],
+    "wiki/concepts/stripe-bank-redirects.md": [
+      {
+        "start": 1,
+        "end": 48
+      }
+    ],
+    "wiki/concepts/stripe-p24.md": [
+      {
+        "start": 1,
+        "end": 73
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-p24/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 209
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-p24/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 58
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 7,
+        "end": 7
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 266,
+        "end": 266
+      },
+      {
+        "start": 283,
+        "end": 284
+      },
+      {
+        "start": 744,
+        "end": 744
+      },
+      {
+        "start": 755,
+        "end": 755
+      }
+    ],
+    "wiki/sources/source-stripe-bank-redirects.md": [
+      {
+        "start": 20,
+        "end": 48
+      }
+    ],
+    "wiki/sources/source-stripe-p24-accept-payment.md": [
+      {
+        "start": 11,
+        "end": 35
+      }
+    ],
+    "raw/stripe-payments-bank-redirects-2026-11-07.md": [
+      {
+        "start": 25,
+        "end": 50
+      }
+    ],
+    "raw/stripe-p24-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 4
+      },
+      {
+        "start": 259,
+        "end": 261
+      }
+    ]
+  },
+  "answers": {
+    "payments-p24": {
+      "Q1": "The November 7 capture of https://docs.stripe.com/payments/p24 describes Przelewy24, a single-use bank-redirect aggregator. It serves Polish customers in EUR or PLN and lists eligible business locations and local settlement geography separately. It specifies a 0.50 EUR minimum, account and business categories, site disclosures, possible review, and additional information for restricted MCCs. The customer selects a bank and authorizes within one hour. Immediate confirmation and provisional access are separate from up-to-T+2 settlement, and a browser return alone does not verify payment or payout (new raw lines 7-39, new raw lines 162-216 and new raw lines 266-310). The page lists Checkout Sessions and PaymentIntents for one-time payments, excludes SetupIntents and setup_future_usage, and excludes recurring and manual capture. Express or no-Stripe-dashboard connected accounts need active p24_payments. The full or partial refund must be submitted within 180 days of the original payment. This is the payment method's maximum submission window, and the merchant return policy determines what it offers. The asynchronous, noncancelable refund is a separate bank credit and can take up to three business days. Check the Refund object's status. If the refund fails, the amount returns to the merchant's Stripe balance and the merchant must arrange an alternative refund. After a successful refund, share the Refund's optional `destination_details.p24.reference` if available. An original-payment P24 reference instead belongs to the PaymentIntent's latest Charge (new raw lines 217-235, new raw lines 241-265 and new raw lines 292-310). The May guide and source-stripe-p24.md preserve Polish buyers, EUR/PLN, merchant geography, no recurring or chargebacks, refund window, prohibited categories and website rules. The November guide expands these and the revised source labels 180 days as a submission window (old raw lines 8-54, old raw lines 56-111 and old raw lines 150-183).",
+      "Q2": "For https://docs.stripe.com/payments/p24, the November capture adds substantive documented eligibility and MCC rules, website terms, account review and appeal, local settlement geography and a 0.50 EUR minimum, the authorization window, fuller UI/API boundaries, a connected-account capability condition, refund status and payment/refund reference handling (new raw lines 18-190, new raw lines 208-265 and new raw lines 266-310). The unchanged ten broad categories coexist with a prohibited/restricted MCC list and some overlapping labels. The revised source and P24 concept warning retain the overlapping categories and distinguish Connect marketplace account type from the prohibited marketplace MCC. May's authenticated-bank-debit label, standard payout wording, publicly accessible site/app, product prices, suspension, Checkout mode exclusions and invite-only Invoicing remain dated in source-stripe-p24.md (old raw lines 12-54, old raw lines 101-111 and old raw lines 150-183). November's bank-redirect label and T+2 settlement do not establish a different payment mechanism or external payout schedule. The method page lists Billing/Invoicing with a send_invoice collection note, while the same-date Bank Redirects matrix retains invite-only Invoicing and checkout-mode exclusions and scopes Subscriptions to send_invoice. The P24 source and proposed Bank Redirects concept warning distinguish per-invoice collection, automatic recurrence and account-level access. Replacing flow artwork with headings and changing the navigation links are presentational. The November one-hour authorization condition is substantive. May explicitly calls browser return to the merchant optional (old raw lines 113-132). November lists browser return as step six without that qualifier (new raw lines 266-290). This wording difference leaves the requirement unresolved and does not establish a prerequisite for payment completion or a fulfillment signal. November describes both the aggregator and its bank-redirect family (new raw lines 7-15). The descriptors are compatible. The revised source describes the aggregator and the dated payment-method family separately. The separate May 3, 2026 acceptance guide gives a 14-character statement descriptor limit (raw/stripe-p24-accept-payment-2025.md:1-4,259-261). Keep that limit dated to that implementation authority. The November overview describes the pre-confirmation descriptor, its account-level fallback, and the original-payment reference without specifying a length (new raw lines 292-302). Keep bank authorization, browser return, payment confirmation, settlement, and final Refund status distinct."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-p24-definition",
+      "target_path": "wiki/concepts/stripe-p24.md",
+      "update_kind": "durable_fact",
+      "anchor": "Przelewy24 (P24) is Poland's dominant online payment **aggregator** — it aggregates multiple bank transfer methods and other payment types, not just a single bank redirect. API enum: `p24`. Customer-authenticated redirect, immediate notification.",
+      "proposed_markdown": "Przelewy24 (P24) is a Poland-based **aggregator** of bank transfers and other payment methods. Stripe's May 3, 2026 snapshot labels its family authenticated bank debit. The November 7, 2026 snapshot calls P24 a single-use bank redirect with immediate confirmation, instant provisional access and settlement up to T+2 business days. API enum: `p24`. See [[source-stripe-p24]] for the dated scopes and timing.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Dated family and timing in old raw lines 12-38 and new raw lines 7-15; T+2 describes settlement."
+      ]
+    },
+    {
+      "update_id": "payments-p24-refund-and-access",
+      "target_path": "wiki/concepts/stripe-p24.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Refunds**: 180 days\n- **Checkout**: Not in subscription/setup mode; Invoicing: invite-only",
+      "proposed_markdown": "- **Refunds**: Submit full or partial refunds within 180 days of the original payment. November documents asynchronous refund completion, up to three business days. See [[source-stripe-p24#Refunds and payment references]].\n- **Checkout and Invoicing**: May and the November [[source-stripe-bank-redirects|Bank Redirects matrix]] exclude Checkout setup and subscription modes and list Invoicing as invite-only. The November [[source-stripe-p24|P24 overview]] marks Billing and Invoicing supported and prints a `send_invoice` collection note after its matrix. The captures leave individual Invoicing access unresolved.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "Old raw lines 101-111 and 181-183, new raw lines 208-235 and 241-265; same-date hub raw lines 25-34."
+      ]
+    },
+    {
+      "update_id": "payments-p24-category-overlap",
+      "target_path": "wiki/concepts/stripe-p24.md",
+      "update_kind": "durable_fact",
+      "anchor": "P24 can **suspend or terminate** access for violations.",
+      "proposed_markdown": "The May 3, 2026 overview says P24 can **suspend or terminate** access for category or site/app violations. The November 7, 2026 overview retains the broad categories and adds a separate MCC table. Some restricted codes overlap with broad prohibitions, for example pawn shops (5933) and car and truck dealers (5511). The capture leaves precedence and individual approval unresolved. Connect marketplace account-type support is separate from the prohibited marketplace MCC (5262). See [[source-stripe-p24#Eligibility and website requirements]].",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "Old raw lines 150-175; new raw lines 18-39,55,126,138 and 174-190. Restricted MCCs need additional information at account creation."
+      ]
+    },
+    {
+      "update_id": "payments-p24-website-history",
+      "target_path": "wiki/concepts/stripe-p24.md",
+      "update_kind": "durable_fact",
+      "anchor": "P24 requires your website to publicly display:",
+      "proposed_markdown": "The May 3, 2026 overview requires a publicly accessible website or app displaying the items below. The November 7, 2026 overview adds terms of service and return-policy wording and omits the public-access and priced-list wording without expressly withdrawing it. See [[source-stripe-p24#Eligibility and website requirements]].",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "Old raw lines 167-175; new raw lines 23-32."
+      ]
+    },
+    {
+      "update_id": "payments-p24-bank-redirects-invoicing",
+      "target_path": "wiki/concepts/stripe-bank-redirects.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Method-page conflicts**: November's hub marks Bancontact/EPS/P24 Invoicing invite-only. The November Bancontact method overview instead lists `send_invoice` collection without resolving account-specific gating. The EPS method overview lists Invoicing supported with a `send_invoice` footnote whose attachment is unclear; it still marks recurring and off-session payments unsupported. Preserve those same-date scope conflicts; per-invoice collection is not automatic recurring charging. See [[source-stripe-bancontact]] and [[source-stripe-eps]].",
+      "proposed_markdown": "**Method-page conflicts**: November's hub marks Bancontact/EPS/P24 Invoicing invite-only. The November Bancontact method overview lists `send_invoice` collection without resolving account-specific gating. The EPS method overview lists Invoicing supported with a `send_invoice` footnote whose attachment is unclear and marks recurring and off-session payments unsupported. The same-date P24 method overview marks Billing and Invoicing supported and prints a `send_invoice`-only note after its matrix. The P24 hub row preserves invite-only Invoicing and Checkout setup/subscription-mode exclusions. Per-invoice collection does not establish automatic recurring charging or an invitation waiver. See [[source-stripe-bancontact]], [[source-stripe-eps]] and [[source-stripe-p24]].",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "New P24 raw lines 192-193 and 241-265; same-date hub raw lines 25-34. The method matrix note's precise attachment is unclear."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,235 @@
+{
+  "job_id": "payments-mobile-upgrade-to-handle-actions",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "I independently read the four pinned files in full, verified their hashes and line counts, and verified all ten quotations. The raw_reference disposition, manual confirmation and payment outcome boundaries, and sandbox documentation mismatch are supported. Two concrete version conflicts still affect a reader using the historical implementation: the React Native hook has a documented removal and both native examples need scoped interface qualifications, while the retained Endive API rejects the old PaymentIntent create field.",
+  "required_changes": [
+    "Add the retained SDK conflicts to the findings, mapped-source assessment and Q2. The April 23, 2026 React Native example and current mapped source explicitly use handleCardAction from useStripe (old raw lines 473-508, source lines 77-82). The retained @stripe/stripe-react-native 0.84.0 CHANGELOG at lines 1138-1146 records removal in 0.7.0 in favor of handleNextAction. Its package.json lines 1-9, src/hooks/useStripe.tsx lines 114-122 and 330-367, and src/functions.ts lines 173-201 verify the 0.84.0 surface at snapshot 2026-10-29-33ef1ee. Add the narrow compatibility warning beside the historical example and reciprocal in-app route. Independently scope the iOS and Android samples against the retained native signatures: stripe-ios 26.11.0 marks the exact old Objective-C selector deprecated and forwards to the newer handler (snapshot 2026-09-30-7037819, STPPaymentHandler.swift lines 398-411 and 2770-2779; old raw lines 99-137 and source lines 58-68); stripe-android 23.25.1 retains the Android method and result callback, but the activity overload is ComponentActivity in that version, so the enclosing Activity example is dated (snapshot 2026-10-27-bb0d8d0, Stripe.kt lines 280-329 and 344-368; old raw lines 285-309 and source lines 70-75). Keep the React Native removal separate from iOS deprecation and the Android host signature. These retained SDK findings establish neither variant-body content nor a tested migration or payment.",
+    "Add a scoped server API warning to the assessment and Q2. The April create-and-confirm samples pass payment_method_types: [card] in the raw (old raw lines 32-40, 155-164, 218-226 and 414-422). The separately retained Intent changelog documents that PaymentIntent create on 2026-09-30.endive rejects writable payment_method_types with HTTP 400 and payment_method_types_no_longer_supported, while its response property remains readable and the request has separate dynamic/allowed/excluded alternatives (raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07.md:5-24,28,34-36). Link this version boundary beside the historical raw route, which otherwise sends readers to incompatible samples. Use the linked Endive endpoints and REST table rather than extrapolating from the conflicting preview label in the Impact section. Preserve the November upgrade capture as navigation and the separate confirmation_method and use_stripe_sdk behavior described by the guide."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "read_ranges": {
+    "raw/stripe-payments-mobile-upgrade-to-handle-actions-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-inapp-upgrade-to-handle-actions-2025.md": [
+      {
+        "start": 1,
+        "end": 563
+      }
+    ],
+    "wiki/sources/source-stripe-inapp-upgrade-to-handle-actions.md": [
+      {
+        "start": 1,
+        "end": 91
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/41854f69537288b21d1f875f/content.diff": [
+      {
+        "start": 1,
+        "end": 566
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 11
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 125,
+        "end": 132
+      },
+      {
+        "start": 727,
+        "end": 730
+      },
+      {
+        "start": 775,
+        "end": 779
+      }
+    ],
+    "wiki/concepts/stripe-inapp-payments.md": [
+      {
+        "start": 8,
+        "end": 32
+      },
+      {
+        "start": 90,
+        "end": 116
+      }
+    ],
+    "wiki/concepts/stripe-payment-intents.md": [
+      {
+        "start": 71,
+        "end": 99
+      },
+      {
+        "start": 145,
+        "end": 152
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 395,
+        "end": 400
+      }
+    ],
+    "wiki/sources/source-stripe-inapp-without-card-auth.md": [
+      {
+        "start": 11,
+        "end": 35
+      }
+    ],
+    "raw/stripe-api-payment-intents-confirm-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 20
+      },
+      {
+        "start": 655,
+        "end": 664
+      }
+    ],
+    "raw/stripe-inapp-without-card-auth-2025.md": [
+      {
+        "start": 1,
+        "end": 26
+      },
+      {
+        "start": 285,
+        "end": 327
+      }
+    ],
+    "raw/stripe-testing-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 13
+      },
+      {
+        "start": 805,
+        "end": 827
+      }
+    ],
+    "raw/stripe-decline-codes-2026.md": [
+      {
+        "start": 1,
+        "end": 21
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 459,
+        "end": 465
+      }
+    ],
+    "raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 36
+      }
+    ],
+    "wiki/sources/stripe/github/source-github-stripe-react-native.md": [
+      {
+        "start": 123,
+        "end": 136
+      }
+    ],
+    "raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/src/hooks/useStripe.tsx": [
+      {
+        "start": 108,
+        "end": 131
+      },
+      {
+        "start": 315,
+        "end": 367
+      }
+    ],
+    "raw/github/stripe/stripe-react-native/snapshots/2026-10-04-fa56337/files/src/functions.ts": [
+      {
+        "start": 169,
+        "end": 208
+      }
+    ],
+    "raw/github/stripe/stripe-react-native/snapshots/2026-10-29-33ef1ee/files/package.json": [
+      {
+        "start": 1,
+        "end": 12
+      }
+    ],
+    "raw/github/stripe/stripe-react-native/snapshots/2026-10-29-33ef1ee/files/CHANGELOG.md": [
+      {
+        "start": 1110,
+        "end": 1150
+      }
+    ],
+    "raw/github/stripe/stripe-react-native/snapshots/2026-10-29-33ef1ee/files/src/index.tsx": [
+      {
+        "start": 1,
+        "end": 35
+      }
+    ],
+    "raw/github/stripe/stripe-react-native/snapshots/2026-10-29-33ef1ee/files/src/hooks/useStripe.tsx": [
+      {
+        "start": 112,
+        "end": 130
+      },
+      {
+        "start": 330,
+        "end": 367
+      }
+    ],
+    "raw/github/stripe/stripe-react-native/snapshots/2026-10-29-33ef1ee/files/src/functions.ts": [
+      {
+        "start": 173,
+        "end": 201
+      }
+    ],
+    "wiki/sources/stripe/github/source-github-stripe-ios.md": [
+      {
+        "start": 1003,
+        "end": 1008
+      }
+    ],
+    "raw/github/stripe/stripe-ios/snapshots/2026-09-30-7037819/files/StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift": [
+      {
+        "start": 390,
+        "end": 427
+      },
+      {
+        "start": 2750,
+        "end": 2791
+      }
+    ],
+    "wiki/sources/stripe/github/source-github-stripe-android.md": [
+      {
+        "start": 76,
+        "end": 85
+      }
+    ],
+    "raw/github/stripe/stripe-android/snapshots/2026-10-27-bb0d8d0/files/gradle.properties": [
+      {
+        "start": 24,
+        "end": 27
+      }
+    ],
+    "raw/github/stripe/stripe-android/snapshots/2026-10-27-bb0d8d0/files/payments-core/src/main/java/com/stripe/android/Stripe.kt": [
+      {
+        "start": 272,
+        "end": 376
+      }
+    ]
+  },
+  "source_assessment_decisions": [
+    {
+      "source_target": "wiki/sources/source-stripe-inapp-upgrade-to-handle-actions.md",
+      "verdict": "changes_requested",
+      "reason": "The baseline needs the state and test warnings identified in the receipt. Its retained React Native and Objective-C examples also need concrete package-qualified compatibility warnings, and the Android host signature and raw server create parameters should remain dated and version-qualified."
+    }
+  ]
+}

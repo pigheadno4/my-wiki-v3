@@ -1,0 +1,250 @@
+{
+  "job_id": "payments-managed-payments-update-checkout",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Update a Checkout Integration to Use Managed Payments\"\ntype: source\ndate_ingested: 2026-04-23\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/managed-payments/update-checkout\"\nraw_files:\n  - \"stripe-payments-managed-payments-update-checkout-2026-11-07.md\"\n  - \"stripe-managed-payments-update-checkout-2025.md\"\ntags: [stripe, managed-payments, checkout, migration, unsupported-parameters, subscriptions, one-time-payments]\n---\n\n## Summary\n\nStripe’s November 7, 2026 migration guide covers enabling [[stripe-managed-payments]] on an existing hosted or embedded [[stripe-checkout]] integration. [[stripe]] describes its merchant-of-record solution as handling indirect tax compliance in more than 80 countries, fraud prevention, dispute management, and transaction-level customer support. [[stripe-link|Link]] acts as merchant of record at checkout and provides subscription management and transaction support on the Link website. The tax coverage and the April 22, 2026 general-availability milestone for businesses in 39 countries measure different things. See November guide lines 9-15 and 194-200 and the [[source-stripe-managed-payments-changelog|Managed Payments changelog]].\n\n## Steps to Migrate\n\n1. Enable Managed Payments in the Stripe Dashboard. The existing hosted or embedded integration must create Checkout Sessions in `payment` or `subscription` mode and use API version `2025-03-31.basil` or later. Only new subscriptions purchased through a Managed Payments Checkout Session are eligible. For a new integration, see [[source-stripe-managed-payments-setup]].\n2. Verify [[source-stripe-managed-payments-eligibility|product eligibility]] and set an eligible tax code on each digital product in the Dashboard or via API. For inline products, set `line_items[].price_data.product_data.tax_code`; see the November guide’s “Configure your products for Managed Payments” at lines 20-72.\n3. Set `managed_payments[enabled]=true` in the server’s Checkout Session creation request and remove the fields listed for the applicable mode. The November guide gives separate subscription and one-time examples and removal tables at lines 74-148.\n\n## November 7, 2026 — Fields, Identities and Payment Outcomes\n\nThe November subscription and one-time tables still document removals for Adaptive Pricing, tax, payment-method selection, customer update, shipping, Connect, and post-sale actions. Managed Payments covers digital products, so it does not collect shipping information, and it does not support Connect. Follow the exact subscription table (lines 106-124) or one-time table (lines 126-148). Stripe controls available methods using dynamic payment methods.\n\nManaged Payments requires the customer’s name and a valid billing address to calculate sales tax. Remove `customer_update[name]` and `customer_update[address]`. If you supply an existing `customer_account` or `customer` ID at Session creation, Managed Payments updates the referenced Account or Customer with any changes to those details (lines 116-117 and 136-137). After successful payment, the guide says the Session references the Customer and either a successful PaymentIntent or an active Subscription (line 15). Session creation or a checkout redirect alone gives no evidence of either outcome. See the setup guide for post-payment webhooks and delayed-payment outcomes.\n\nA subscription purchased through Managed Payments authorizes Managed Payments to charge that payment method. Obtain appropriate customer consent before using it for transactions outside Managed Payments (November lines 173-175 and April lines 244-246).\n\nThe November one-time table omits `payment_intent_data.setup_future_usage` and `payment_method_options.{payment_method}.setup_future_usage`. The September 3, 2026 [[source-stripe-managed-payments-changelog|Managed Payments changelog]] explicitly documents the two named parameters for Managed Payments Checkout Session creation, with payment-method scope on the nested parameter. November also omits top-level `payment_method_options` from the subscription removal table. That omission leaves general subscription options unresolved, and the September entry supplies technical support only for the fields it names. The consent requirement still applies.\n\n## Checkout UI and Returns\n\nThe migration guide covers hosted and embedded Checkout pages. The Managed Payments overview separately excludes payment flows using Elements-style embeddable components and advanced integrations. April’s `ui=embedded-form` and November’s `ui=embedded-page` are documentation query parameters. The API transition comes from the separate `2026-03-25.dahlia` changelog, which replaces Checkout Session `ui_mode` values `hosted`, `embedded`, and `custom` with `hosted_page`, `embedded_page`, and `elements`, and adds the distinct `form` value.\n\nThe November Checkout Session create reference defaults to `hosted_page`. For `embedded_page` or `elements`, it disallows `success_url` and requires `return_url` when redirect-based payment methods are enabled. The migration samples omit `ui_mode` and set `success_url` (November lines 49-100). Use the mode-specific create contract for an embedded migration. The API changelog identifies an API version boundary. It leaves the version of the migration examples and Managed Payments eligibility for other UI modes unstated.\n\n## April 23, 2026 — Historical Migration Guide\n\nThe April capture included a standalone Dashboard Terms-of-Service acceptance step, explicitly said every product in the purchase needed to be eligible, and used “during this preview” for the new-subscriptions-only rule. November still requires enablement, eligible products and eligible tax codes, and retains the restriction to new subscriptions without the preview wording. Its omissions leave the status of the standalone Terms step and mixed-cart eligibility unconfirmed.\n\n- April subscriptions table (lines 168-189) included `payment_method_options` among the fields to remove.\n- April one-time table (lines 191-217) included `payment_intent_data.setup_future_usage` and `payment_method_options.{payment_method}.setup_future_usage` among the fields to remove. The November guide and scoped September changelog above document the later status of these two fields.\n- April uses Node.js examples and November uses cURL, both with the same minimum API version. The updated sample language, step numbering and clearer test headings are presentation changes.\n\n## Testing and Price Tax Behavior\n\nThe guides describe varying billing addresses to test tax calculations and reviewing transaction details in the Dashboard. Sandbox purchases have no automatic receipt email. The Dashboard can send a receipt manually for preview. Sandbox purchases do not appear in the Link app. The guide uses a repeat Checkout Session to test Link account checkout and a live-mode Session for testing the app’s order-management tools. See April lines 219-271 and November lines 150-200.\n\nPrices can set inclusive or exclusive `tax_behavior`. Without a price override, the documented default adds tax on top. Change the default through **Include tax in prices** in Dashboard Tax settings. See April lines 273-279 and November lines 202-208.\n\n## Related Pages\n\n- [[stripe-managed-payments]] — product concept, integration paths and limitations.\n- [[stripe-checkout]] — Checkout UI and Session outcome context.\n- [[source-stripe-managed-payments-setup]] — new Checkout integration guide and post-payment event handling.\n- [[source-stripe-managed-payments-overview]] — Merchant of Record responsibilities and unsupported integrations.\n- [[source-stripe-managed-payments-eligibility]] — product criteria and eligible tax codes.\n- [[source-stripe-managed-payments-changelog]] — dated feature and API changes.\n\n## Raw Sources\n\n- [[raw/stripe-payments-managed-payments-update-checkout-2026-11-07|Stripe’s November 7, 2026 Managed Payments Checkout migration guide]]\n- [[raw/stripe-managed-payments-update-checkout-2025|Stripe’s April 23, 2026 Managed Payments Checkout migration guide]]\n\n## Related raw API references\n\n- [[raw/stripe-changelog-dahlia-2026-03-25-updates-available-checkout-session-ui-modes-2026-11-07|March 25, 2026 Dahlia Checkout Session UI mode changelog]] — November 7, 2026 capture, lines 5-28.\n- [[raw/stripe-api-checkout-sessions-create-2026-11-07|Checkout Session create reference]] — November 7, 2026 capture, lines 476-477, 512-513 and 518-531.\n",
+  "quotes": {
+    "payments-managed-payments-update-checkout": [
+      {
+        "text": "You can only enable Managed Payments for new subscriptions purchased through a Managed Payments Checkout Session. Existing subscriptions aren’t eligible.",
+        "location": "raw/stripe-payments-managed-payments-update-checkout-2026-11-07.md:9"
+      },
+      {
+        "text": "Use an API version of `2025-03-31.basil` or [later](https://docs.stripe.com/changelog.md).",
+        "location": "raw/stripe-payments-managed-payments-update-checkout-2026-11-07.md:18"
+      },
+      {
+        "text": "Set the `managed_payments[enabled]` parameter by updating your server’s call to the [Checkout Session API](https://docs.stripe.com/api/checkout/sessions/create.md).",
+        "location": "raw/stripe-payments-managed-payments-update-checkout-2026-11-07.md:76"
+      },
+      {
+        "text": "When a customer purchases a subscription through Managed Payments, it only authorizes Managed Payments to charge their payment method.",
+        "location": "raw/stripe-payments-managed-payments-update-checkout-2026-11-07.md:175"
+      },
+      {
+        "text": "After a successful payment, the Checkout Session contains a reference to the Customer, and either the successful PaymentIntent or an active Subscription",
+        "location": "raw/stripe-payments-managed-payments-update-checkout-2026-11-07.md:15"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-managed-payments-update-checkout": [
+      {
+        "text": "You must accept the [Managed Payments terms of service](https://stripe.com/legal/managed-payments) in the [Dashboard](https://dashboard.stripe.com/settings/managed-payments) before you can use Managed Payments.",
+        "location": "raw/stripe-managed-payments-update-checkout-2025.md:10"
+      },
+      {
+        "text": "During this preview, you can only enable Managed Payments for new subscriptions purchased through a Managed Payments Checkout Session.",
+        "location": "raw/stripe-managed-payments-update-checkout-2025.md:22"
+      },
+      {
+        "text": "To process a payment through Managed Payments, all the products the customer purchases must meet eligibility.",
+        "location": "raw/stripe-managed-payments-update-checkout-2025.md:28"
+      },
+      {
+        "text": "`payment_method_options`",
+        "location": "raw/stripe-managed-payments-update-checkout-2025.md:179"
+      },
+      {
+        "text": "`payment_intent_data.setup_future_usage`",
+        "location": "raw/stripe-managed-payments-update-checkout-2025.md:201"
+      },
+      {
+        "text": "`payment_method_options.{payment_method}.setup_future_usage`",
+        "location": "raw/stripe-managed-payments-update-checkout-2025.md:203"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-managed-payments-update-checkout-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 208
+      }
+    ],
+    "raw/stripe-managed-payments-update-checkout-2025.md": [
+      {
+        "start": 1,
+        "end": 279
+      }
+    ],
+    "wiki/sources/source-stripe-managed-payments-update-checkout.md": [
+      {
+        "start": 1,
+        "end": 70
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/0bd6af42283162dc0c92452e/content.diff": [
+      {
+        "start": 1,
+        "end": 408
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 7,
+        "end": 7
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 130,
+        "end": 139
+      },
+      {
+        "start": 770,
+        "end": 770
+      },
+      {
+        "start": 788,
+        "end": 788
+      }
+    ],
+    "wiki/concepts/stripe-checkout.md": [
+      {
+        "start": 8,
+        "end": 33
+      },
+      {
+        "start": 275,
+        "end": 286
+      }
+    ],
+    "wiki/concepts/stripe-managed-payments.md": [
+      {
+        "start": 70,
+        "end": 123
+      }
+    ],
+    "wiki/sources/source-stripe-managed-payments-changelog.md": [
+      {
+        "start": 50,
+        "end": 53
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-sessions.md": [
+      {
+        "start": 1,
+        "end": 25
+      }
+    ],
+    "raw/stripe-payments-managed-payments-changelog-2026-11-07.md": [
+      {
+        "start": 15,
+        "end": 36
+      }
+    ],
+    "raw/stripe-changelog-dahlia-2026-03-25-updates-available-checkout-session-ui-modes-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 28
+      }
+    ],
+    "raw/stripe-api-checkout-sessions-create-2026-11-07.md": [
+      {
+        "start": 476,
+        "end": 477
+      },
+      {
+        "start": 512,
+        "end": 513
+      },
+      {
+        "start": 518,
+        "end": 531
+      }
+    ],
+    "raw/stripe-payments-managed-payments-2026-11-07.md": [
+      {
+        "start": 31,
+        "end": 49
+      }
+    ],
+    "raw/stripe-payments-managed-payments-set-up-2026-11-07.md": [
+      {
+        "start": 398,
+        "end": 410
+      }
+    ],
+    "raw/stripe-managed-payments-changelog-2026.md": [
+      {
+        "start": 8,
+        "end": 12
+      }
+    ],
+    "raw/stripe-payments-managed-payments-eligibility-2026-11-07.md": [
+      {
+        "start": 92,
+        "end": 102
+      }
+    ],
+    "raw/stripe-payments-managed-payments-set-up-mobile-2026-11-07.md": [
+      {
+        "start": 43,
+        "end": 50
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-managed-payments-update-checkout/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 270
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-managed-payments-update-checkout/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 118
+      }
+    ]
+  },
+  "answers": {
+    "payments-managed-payments-update-checkout": {
+      "Q1": "For https://docs.stripe.com/payments/managed-payments/update-checkout, the November 7, 2026 guide requires an existing hosted or embedded Checkout integration creating Checkout Sessions in `payment` or `subscription` mode, Dashboard enablement, eligible digital products with eligible tax codes, and API `2025-03-31.basil` or later. The server sets `managed_payments[enabled]=true` on session creation and removes the mode-specific unsupported tax, payment, customer update, shipping, Connect, and post-sale fields. Managed Payments requires a customer name and valid billing address for sales tax. Changed details update an existing Account or Customer when its `customer_account` or `customer` ID is supplied at Session creation (new raw lines 116-117 and new raw lines 136-137). Stripe’s merchant-of-record solution handles indirect tax compliance in more than 80 countries, fraud prevention, dispute management, and transaction-level customer support (new raw lines 9-15). The tax coverage is a separate measure from the April 22 general-availability milestone for businesses in 39 countries (November Managed Payments changelog lines 32-36). Link acts as merchant of record at checkout. New subscriptions must be purchased through a Managed Payments Checkout Session. Existing subscriptions are ineligible. Both guides describe a successfully paid Checkout Session as referencing a Customer and either a successful PaymentIntent or an active Subscription (old raw lines 12-14 and new raw lines 13-18). Session creation or a redirect alone does not establish either outcome. A Managed Payments subscription authorizes charges within Managed Payments, so charges outside it need appropriate consent (new raw lines 9-47, new raw lines 74-148, new raw lines 163-175 and new raw lines 194-208). The April guide shares the migration, tax identity and consent model, and explicitly included Dashboard terms acceptance and all-products eligibility (old raw lines 16-29, old raw lines 181-182 and old raw lines 205-206). `source-stripe-managed-payments-update-checkout.md` lines 13-25 and 40-61 reflects April’s preview wording and older removal tables, and omits the consent and API requirements. Its line 47 shorthand about collection and the changelog summary’s line 52 shorthand about updates are clarified by the revised migration source’s explicit condition on updating a supplied existing object (old raw lines 8-35, old raw lines 116-217 and old raw lines 234-246). The revised migration source dates the April restrictions and links the exact November tables, both product and integration guides, the changelog, and the Checkout mode contract.",
+      "Q2": "For https://docs.stripe.com/payments/managed-payments/update-checkout, the documented removal lists substantively change: November omits top-level subscription `payment_method_options`, and the one-time list omits `payment_intent_data.setup_future_usage` and `payment_method_options.{payment_method}.setup_future_usage` (old raw lines 168-204 and new raw lines 102-148). The separate September 3, 2026 Managed Payments changelog entry, lines 15-19 of its November capture, explicitly permits the two named setup-future-usage parameters for Managed Payments Checkout Session creation. It does not establish blanket support for subscription `payment_method_options` or consent for charges outside Managed Payments. The revised migration source dates the old removal tables in `source-stripe-managed-payments-update-checkout.md` and links the Managed Payments and changelog routes. November keeps the new-only subscription rule without April’s preview phrase and no longer repeats standalone Terms acceptance and the all-products sentence. Preserve the April prerequisites as dated, since omission does not waive terms or allow ineligible items (old raw lines 8-29 and new raw lines 9-22). Node.js-to-cURL examples, test headings and formatting are presentation changes. The change from `ui=embedded-form` to `ui=embedded-page` is in a documentation link (old raw lines 24-29 and new raw lines 13-18). Separately, the 2026-03-25.dahlia Checkout changelog, lines 5-28, replaces the API `ui_mode` values `hosted`, `embedded`, and `custom` with `hosted_page`, `embedded_page`, and `elements` and adds `form`. The November Checkout Session create reference, lines 476-477, 512-513 and 518-531, defaults to `hosted_page`, prohibits `success_url` in `embedded_page` or `elements`, and requires `return_url` in those modes when redirect-based methods are enabled. The migration examples omit `ui_mode` and use `success_url` (new raw lines 49-100). The embedded integration needs the embedded return contract, and the Checkout and Managed Payments routes carry that warning in the proposed reciprocal updates. The separate API references do not establish the version used by those examples or support for other Managed Payments UIs. Embedded Checkout is covered by the migration guide, while the separate Managed Payments overview, lines 31-49, excludes Elements-style embeddable payment components. API `2025-03-31.basil` or later, Checkout UI and server-side scope, sandbox-only testing behavior, and the price tax-behavior fallback remain documented, while successful payment, active subscription and consent remain separate (old raw lines 47-164, old raw lines 219-279, new raw lines 13-18, new raw lines 35-100 and new raw lines 150-208)."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "s04-managed-payments-migration-elements-return",
+      "target_path": "wiki/concepts/stripe-managed-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "- Elements / embeddable web components / advanced integrations",
+      "proposed_markdown": "- Elements-style embeddable payment components and advanced integrations. Hosted and embedded Checkout pages are migration routes. For an embedded page, follow the applicable Checkout Session return contract before using the migration examples, which set `success_url` and omit `ui_mode`. See [[source-stripe-managed-payments-update-checkout|the dated Managed Payments Checkout migration guide]].",
+      "quote_indexes": [
+        2,
+        4
+      ],
+      "warnings": [
+        "November migration raw lines 13-18 and 49-100, Managed Payments overview raw lines 31-49, and November Checkout Session create reference lines 476-477, 512-513 and 518-531."
+      ]
+    },
+    {
+      "update_id": "s04-managed-payments-migration-route",
+      "target_path": "wiki/concepts/stripe-managed-payments.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-managed-payments-update-checkout]] — Migration guide: existing subscriptions NOT eligible (new only); unsupported params tables for subscriptions + one-time payments",
+      "proposed_markdown": "- [[source-stripe-managed-payments-update-checkout]] — April and November 2026 migration guides for hosted or embedded Checkout, with dated mode-specific removal lists and September setup-future-usage scope.",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "Old raw lines 168-217 and November raw lines 102-148 give mode-specific changes. Managed Payments changelog November capture lines 15-19 supports the two named fields, and migration raw lines 173-175 separately require consent for external charges."
+      ]
+    },
+    {
+      "update_id": "s04-checkout-managed-payments-embedded-return",
+      "target_path": "wiki/concepts/stripe-checkout.md",
+      "update_kind": "durable_fact",
+      "anchor": "2. **Embedded form** (`ui_mode: 'embedded_page'`) — Checkout renders in iframe on your site; server returns `clientSecret`; `return_url` with `{CHECKOUT_SESSION_ID}` template; return page checks `session.status` via `/session-status` endpoint; `open` → remount, `complete` → success",
+      "proposed_markdown": "2. **Embedded Checkout page** (`ui_mode: 'embedded_page'` in the November create reference) — Checkout renders in an iframe and the server returns a client secret. The create reference requires `return_url` when redirect-based payment methods are enabled and disallows `success_url` in `embedded_page` and `elements`. The example return page checks `session.status` via `/session-status` and remounts when `open`. Session completion alone does not establish a paid outcome. The [[source-stripe-managed-payments-update-checkout|April and November 2026 Managed Payments migration guide]] covers embedded Checkout, with versioned return-parameter notes for the samples that set `success_url` and omit `ui_mode`.",
+      "quote_indexes": [
+        2,
+        4
+      ],
+      "warnings": [
+        "November migration raw lines 13-18 and 49-100, Dahlia UI enum changelog raw lines 5-28, November Checkout Session create reference lines 476-477, 512-513 and 518-531, and separate November Managed Payments setup guide raw lines 398-410 for delayed payment events."
+      ]
+    }
+  ]
+}

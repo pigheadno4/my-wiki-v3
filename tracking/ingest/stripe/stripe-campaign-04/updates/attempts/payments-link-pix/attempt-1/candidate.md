@@ -1,0 +1,63 @@
+---
+title: "Stripe Docs — Pix on Link"
+type: source
+date_ingested: 2026-05-08
+date_updated: 2026-11-22
+original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/link/pix"
+raw_files:
+  - "stripe-payments-link-pix-2026-11-07.md"
+  - "stripe-pix-on-link-2025.md"
+tags: [stripe, link, pix, brazil, brl, ebanx, iof, real-time-payments]
+---
+
+## Summary
+
+The November 7, 2026 guide describes Pix on Link for eligible US businesses accepting on-session payments presented in Brazilian reais (BRL) through Payment Links, hosted Stripe Checkout, or Payment Element. Direct Pix can coexist with Pix on Link. The checkout uses the Link payment method for the Link route and standard Pix for a customer's direct Pix choice.
+
+## Eligibility and dated limits
+
+- **November 7, 2026.** The BRL amount must be equivalent to 0.50–3,000 USD. Eligible US businesses must meet onboarding requirements and industry restrictions. The capture additionally excludes crypto businesses, insurance companies, telehealth or medicine vendors, and nonprofits or charities.
+- **May 8, 2026.** The older capture gives a minimum of 5 BRL and the same 3,000 USD-equivalent maximum, presented in BRL. It specifies one-time and on-session use, eligibility-qualified automatic enablement when turning on Link, and only the three named UI routes. November explicitly retains on-session use and names the same routes. It gives no evidence of off-session or recurring support or UI expansion.
+- **Private preview.** The November guide says businesses in Australia, Canada, the European Economic Area, Singapore, and the United Kingdom can request private-preview access. A request does not confer access or general availability.
+
+The separate November [[source-stripe-link-payment-methods]] guide puts Pix and UPI in standard funding group `lfsg_002`. It says turning on Link enables standard groups and that each session is evaluated for the eligible business, presentment currency, amount, customer location, and payment mode. Enablement and eligibility do not guarantee display in an individual session.
+
+### Seller location and buyer location
+
+The general [[source-stripe-link]] guides place the Brazil and Thailand Payment Element caveat under business locations or country availability. That is a Stripe account-location restriction. The Pix on Link guide separately documents eligible US sellers using Payment Element for Brazilian customers with BRL presentment. A Brazilian buyer or BRL alone does not trigger the seller-location restriction. The captures do not establish Payment Element Link availability for Brazil-based Stripe accounts.
+
+## Checkout and payment state
+
+A first-time Link buyer selects Pix, enters their name, address, and tax identifier, and clicks **Pay** to sign up for Link and see a QR code. A returning buyer can autofill stored details, then sees a QR code. Both review and authorize the payment in their banking app. The November guide shows an on-page confirmation after payment succeeds.
+
+May describes QR and copyable Pix-code options and a return to checkout after payment. November emphasizes QR and on-page confirmation. The newer wording does not establish removal of the copy option or guarantee a redirect. QR display, bank authorization, and the checkout confirmation are separate stages. The guide gives no route-specific settlement currency or payout timing.
+
+## Ebanx, IOF, and receipts
+
+The customer's bank statement lists Stripe's service provider Ebanx as payment recipient and the seller's name in `Message to payor`. Ebanx separately sends receipts on the seller's behalf. The guide describes itemized IOF receipts as common in Brazil.
+
+The November guide quotes the Brazilian financial operations tax, IOF, at 3.5% of the transaction amount, subject to change. For Pix on Link, the customer pays IOF and sees it included in the banking app's total. Stripe calculates the tax via its payment partner and provides disclosures.
+
+## Disputes and refunds
+
+The May capture says Pix disputes were handled similarly to other Link payment methods. The November capture describes a more specific process. In limited cases such as fraud or account takeover, customers file a dispute with their bank and provide evidence. The seller cannot challenge it. Stripe removes the funds from the seller's account if Stripe is notified that its payment partner accepted the return request.
+
+The November guide allows refunds within 90 days of the original payment date. It says the refund typically appears in “your account” within a few minutes, without specifying a maximum, an exact account display, or when the customer's bank credits the funds. The generic Link refund estimate and direct Pix refund details do not establish these timings for Pix on Link.
+
+## Direct Pix comparison
+
+The separate November [[source-stripe-pix]] route gives a 0.50 BRL minimum, supports a direct-Pix option for the seller to absorb IOF, and describes country-specific settlement, direct refund mechanics, and bank mandates for eligible Pix Automático recurring payments. Those are direct-route provisions. Use the dated Pix on Link limits and customer-paid IOF above for the Link route.
+
+## Related Pages
+
+- [[stripe-link]] — Link concept and dated Pix qualifications
+- [[source-stripe-link-payment-methods]] — funding groups and per-session selection
+- [[source-stripe-link-payment-integrations]] — Link payment identities by integration
+- [[source-stripe-pix]] — separate direct Pix route
+- [[stripe]] — Stripe company page
+
+## Raw Sources
+
+- [[raw/stripe-payments-link-pix-2026-11-07]] — complete November 7, 2026 Pix on Link capture
+- [[raw/stripe-pix-on-link-2025]] — verbatim May 8, 2026 capture (67 lines)

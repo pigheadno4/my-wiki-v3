@@ -1,0 +1,196 @@
+{
+  "job_id": "payments-machine-mpp",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-machine-mpp-2026-11-07.md",
+  "raw_sha256": "eb6dcdb7ffd727fa9d1f25ab3c2020d56f6b2276c0592cebcec0a4ded876e8ad",
+  "prior_raw_path": "raw/stripe-machine-payments-mpp-quickstart-2026.md",
+  "prior_raw_sha256": "780c141acd9ff19b2d5ffcaf132be9366c43aba013ce33f6c5f49822625b89a8",
+  "source_targets": [
+    "wiki/sources/source-stripe-machine-payments-mpp-quickstart.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-machine-payments-mpp-quickstart.md": "7af37d9a87fdb1014afd0a291d0210572b754f104050cf4926b974d047ad25c4"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-machine-mpp-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 237
+      }
+    ],
+    "raw/stripe-machine-payments-mpp-quickstart-2026.md": [
+      {
+        "start": 1,
+        "end": 205
+      }
+    ],
+    "wiki/sources/source-stripe-machine-payments-mpp-quickstart.md": [
+      {
+        "start": 1,
+        "end": 31
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/8dc967e82fa7cd42c9e09e9b/content.diff": [
+      {
+        "start": 1,
+        "end": 432
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 22
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 591,
+        "end": 601
+      },
+      {
+        "start": 697,
+        "end": 707
+      }
+    ],
+    "wiki/concepts/stripe-machine-payments.md": [
+      {
+        "start": 1,
+        "end": 69
+      }
+    ],
+    "wiki/sources/source-stripe-machine-payments-mpp.md": [
+      {
+        "start": 1,
+        "end": 72
+      }
+    ],
+    "wiki/sources/source-stripe-machine-payments.md": [
+      {
+        "start": 11,
+        "end": 48
+      }
+    ],
+    "raw/stripe-machine-payments-mpp-2026.md": [
+      {
+        "start": 1,
+        "end": 49
+      },
+      {
+        "start": 95,
+        "end": 118
+      },
+      {
+        "start": 261,
+        "end": 280
+      },
+      {
+        "start": 296,
+        "end": 328
+      },
+      {
+        "start": 364,
+        "end": 431
+      }
+    ],
+    "raw/stripe-payments-machine-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 57
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "The agent authorizes the payment, retries the request, and gets access to the paid resource along with a receipt.",
+      "location": "raw/stripe-payments-machine-mpp-2026-11-07.md:11"
+    },
+    {
+      "text": "Store your profile\u2019s `profile_` ID.",
+      "location": "raw/stripe-payments-machine-mpp-2026-11-07.md:26"
+    },
+    {
+      "text": "By default, the endpoint you create supports SPTs.",
+      "location": "raw/stripe-payments-machine-mpp-2026-11-07.md:105"
+    },
+    {
+      "text": "You can create deposit addresses as often as you want, but we recommend that you keep these calls off your core request path.",
+      "location": "raw/stripe-payments-machine-mpp-2026-11-07.md:133"
+    },
+    {
+      "text": "The deposit address and Stripe API key must belong to the same account. You can\u2019t use `hostedFeePayer` with Connect integrations.",
+      "location": "raw/stripe-payments-machine-mpp-2026-11-07.md:172"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Set up the Stripe client with your secret key, and set the API version to `2026-03-04.preview`.",
+      "location": "raw/stripe-machine-payments-mpp-quickstart-2026.md:20"
+    },
+    {
+      "text": "const paymentCache = new NodeCache({ stdTTL: 300, checkperiod: 60 });",
+      "location": "raw/stripe-machine-payments-mpp-quickstart-2026.md:68"
+    },
+    {
+      "text": "networkId: 'internal',",
+      "location": "raw/stripe-machine-payments-mpp-quickstart-2026.md:134"
+    },
+    {
+      "text": "const response = await mppxCrypto.charge({ amount: '1' })(request)",
+      "location": "raw/stripe-machine-payments-mpp-quickstart-2026.md:162"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Both captures document a server-side HTTP 402 challenge and a receipt-bearing resource response on verified payment. November spells out an agent authorizing payment and retrying with a credential, and illustrates the server recording a PaymentIntent with Stripe before returning the resource. The challenge, authorization and retry are separate from verified payment and on-chain/offramp settlement. No checkout UI is involved (old raw lines 130-195, new raw lines 5-21 and 62-97).",
+    "The November Node handler uses mppx and Stripe, a server secret key, a Stripe profile ID as networkId and defaultMethods(). It derives the example challenge key from the Stripe secret via HMAC instead of the older random 32-byte secret. It derives livemode from the key marker in the shown handler, with separate sandbox profile and address requirements. Business Profiles retrieval and standalone Crypto Deposit Address REST examples pin 2026-07-29.preview. The November SDK constructor shown does not pin that version for every request (old raw lines 18-22, 47-68, 130-163 and new raw lines 23-36, 54-97, 107-152 and 222-237).",
+    "The shared November endpoint starts with SPTs. Configuring a created or fetched Tempo address enables Tempo in defaultMethods(). The combined handler example uses 0.50 USD for both methods, while compose() allows different prices per method. Separate floors are 0.50 USD for SPT card payments and 0.01 USDC for stablecoins, and the guide distinguishes Tempo transfers in USDC.e. Stripe says it offramps supported stablecoin payments and settles to Stripe balance (new raw lines 36 and 99-152). Earlier samples use two $1 Hono GET routes (old raw lines 130-195).",
+    "Stripe-hosted Tempo fee sponsorship is optional with mppx 0.9.2 or later, hostedFeePayer=true, live mode, a Tempo deposit address from the same account as the API key, and no Connect integration. Customers still sign and authorize (new raw lines 154-172).",
+    "The November guide adds discovery/challenge/error/full-flow checks with mppx validate, manual Link CLI test SPT and Tempo CLI routes and a sandbox using test key, profile_test_ and sandbox Tempo address. Its example testing URL uses POST /paid while the code is an exported handler, so do not infer a router declaration or carry over May's separate GET paths. It explicitly says live validation can use real funds and a live Tempo address in manual testing moves real funds (old raw lines 144-204, new raw lines 90-97 and 174-237).",
+    "Current summary line 18 conflates detection and lookup. The old sample's Credential.extractPaymentScheme checks the header scheme, Credential.fromRequest extracts the challenge recipient, and NodeCache membership gates reuse. An uncached recipient or unexpected missing deposit details throws. The 5-minute NodeCache TTL and distributed cache recommendation are May implementation advice, while the chain-specific PATH_USD constant belongs to the old testnet example (old raw lines 62-128 and 142-173)."
+  ],
+  "substantive_changes": [
+    "November presents one Stripe-configured handler using a profile as networkId, defaultMethods and an HMAC-derived challenge secret, replacing the matched May sample's two Hono handlers, direct Stripe and Tempo methods, initial internal SPT value, random secret and explicit NodeCache recipient-reuse flow. The HTTP 402/credential/retry/verified resource and receipt sequence remains (old raw lines 34-68, 73-128 and 130-205, new raw lines 23-36 and 62-97).",
+    "The example deposit workflow changes from creating a deposit-mode PaymentIntent per initial crypto flow to creating/fetching a Tempo deposit address off the request path on the Crypto Deposit Addresses API and supplying the stored address. November previews cover profile/address REST calls rather than the May direct Stripe client pin (old raw lines 18-30 and 53-128, new raw lines 28-34 and 107-152).",
+    "November documents two method-specific floors and adds optional hosted fee sponsorship and sandbox/live CLI validation with explicit live-funds boundaries. Its common example charges 0.50 USD for either enabled method with compose available for differing prices. May's old sample amounts are examples, not competing minimums (old raw lines 142-195 and new raw lines 36, 99-105 and 152-237)."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain May 12 structured quickstart provenance, Hono/Node sample paths, $1 examples, standalone card/Link and Tempo methods, 'internal' SPT sample identity, Crypto PaymentIntent deposit mode and cache, testnet PATH_USD, random challenge secret and 2026-03-04.preview client pin (old raw lines 1-8, 18-30 and 34-205).",
+    "Keep May detailed-guide sandbox simulation, distinct sandbox/live profile and mainnet token instructions dated to that other capture and its APIs (raw/stripe-machine-payments-mpp-2026.md:296-328 and 371-419). New sample and CLI instructions supply only their documented workflow and no payment or account-level availability proof."
+  ],
+  "conflicts": [
+    "The concept's per-payment deposit-address claim and MPP snippet (wiki/concepts/stripe-machine-payments.md:39-53) and the related May MPP source (wiki/sources/source-stripe-machine-payments-mpp.md:35-52) describe the older PaymentIntent-derived and cached address pattern. The new guide provisions or fetches a Tempo deposit address through a separate account-level API, keeps those API calls off the core request path, and supplies the stored address to stripe.create (new raw lines 107-152). Keep a reciprocal dated warning across the Machine Payments concept and both MPP source routes. A reusable configured recipient address does not imply one address per payment, and this example does not establish removal of the older deposit-mode API.",
+    "The older detailed guide separately uses profile_test_ or profile_ in its sandbox and live SPT examples even though the simple starter uses 'internal' (raw/stripe-machine-payments-mpp-2026.md:95-118, 312-328 and 403-419). November makes profile_ the primary networkId prerequisite and profile_test_ the sandbox value (new raw lines 23-34, 79-88 and 222-237). Treat the old starter value as example-specific and avoid reading 'internal' as the newly documented merchant network identity.",
+    "The related May guide says sandbox PaymentIntents in its deposit-mode example do not monitor testnets and points to simulate_crypto_deposit (raw/stripe-machine-payments-mpp-2026.md:296-314). November documents mppx validate round trips and automatic Tempo testnet configuration with stripe.create and a sandbox deposit address (new raw lines 174-184 and 222-237). Date the concept's simulator instructions at wiki/concepts/stripe-machine-payments.md:55 and the prior integration source at lines 54-63. This is a testing workflow difference and does not prove a general change in monitoring or a simulator deprecation.",
+    "The concept's single 0.01 USDC minimum, Tempo token label and US-only/geographic statement at wiki/concepts/stripe-machine-payments.md:18-45 need dated scope. November MPP distinguishes 0.50 USD for SPT card payments from 0.01 USDC for stablecoins with Tempo USDC.e and routes availability to the parent guide (new raw lines 36 and 99-105). The separate November overview distinguishes those rails and notes SPT supported-country routing and a stablecoin access-request route outside the US with New York excluded in the US (raw/stripe-payments-machine-2026-11-07.md:23-56). The older detailed MPP guide says US legal entity and NY/TX excluded for crypto (raw/stripe-machine-payments-mpp-2026.md:10-28). Keep dated applicability across the concept and related source routes, without inferring approval or expanded eligibility for any merchant.",
+    "The November product overview's general Machine Payments Connect support (raw/stripe-payments-machine-2026-11-07.md:23-29) coexists with the dedicated MPP `hostedFeePayer` exclusion for Connect (new raw lines 154-172). Carry the narrow exclusion in the concept and source route so product support is not reproduced as fee-sponsorship support."
+  ],
+  "unresolved_questions": [
+    "The inspected captures do not establish the current runtime status of the older deposit-mode API, actual access for a particular account, whether a particular challenge/retry or CLI execution succeeds, fee sponsorship for a concrete payment, or actual capture, Stripe-balance availability or payout."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-machine-payments.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-machine-payments-mpp-quickstart.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Mapped lines 13-22 still describe only the May 12 structured UI Hono sample. Retain that dated content and separately summarize November's required profile, mppx handler and SPT default, configured Tempo deposit address, method-specific minima, fee-sponsorship restrictions and sandbox/live test boundaries.",
+        "Narrow the May summary's line 18 credential helper wording. Its code uses the helper to recognize the scheme, parses the recipient with Credential.fromRequest and separately checks the cache. Preserve the full old raw route at line 31 and distinguish the separate May integration source at line 27 from the assigned matched quickstart."
+      ],
+      "conflicts": [
+        "The concept's per-payment deposit-address claim and MPP snippet (wiki/concepts/stripe-machine-payments.md:39-53) and the related May MPP source (wiki/sources/source-stripe-machine-payments-mpp.md:35-52) describe the older PaymentIntent-derived and cached address pattern. The new guide provisions or fetches a Tempo deposit address through a separate account-level API, keeps those API calls off the core request path, and supplies the stored address to stripe.create (new raw lines 107-152). Keep a reciprocal dated warning across the Machine Payments concept and both MPP source routes. A reusable configured recipient address does not imply one address per payment, and this example does not establish removal of the older deposit-mode API.",
+        "The older detailed guide separately uses profile_test_ or profile_ in its sandbox and live SPT examples even though the simple starter uses 'internal' (raw/stripe-machine-payments-mpp-2026.md:95-118, 312-328 and 403-419). November makes profile_ the primary networkId prerequisite and profile_test_ the sandbox value (new raw lines 23-34, 79-88 and 222-237). Treat the old starter value as example-specific and avoid reading 'internal' as the newly documented merchant network identity.",
+        "The related May guide says sandbox PaymentIntents in its deposit-mode example do not monitor testnets and points to simulate_crypto_deposit (raw/stripe-machine-payments-mpp-2026.md:296-314). November documents mppx validate round trips and automatic Tempo testnet configuration with stripe.create and a sandbox deposit address (new raw lines 174-184 and 222-237). Date the concept's simulator instructions at wiki/concepts/stripe-machine-payments.md:55 and the prior integration source at lines 54-63. This is a testing workflow difference and does not prove a general change in monitoring or a simulator deprecation.",
+        "The concept's single 0.01 USDC minimum, Tempo token label and US-only/geographic statement at wiki/concepts/stripe-machine-payments.md:18-45 need dated scope. November MPP distinguishes 0.50 USD for SPT card payments from 0.01 USDC for stablecoins with Tempo USDC.e and routes availability to the parent guide (new raw lines 36 and 99-105). The separate November overview distinguishes those rails and notes SPT supported-country routing and a stablecoin access-request route outside the US with New York excluded in the US (raw/stripe-payments-machine-2026-11-07.md:23-56). The older detailed MPP guide says US legal entity and NY/TX excluded for crypto (raw/stripe-machine-payments-mpp-2026.md:10-28). Keep dated applicability across the concept and related source routes, without inferring approval or expanded eligibility for any merchant.",
+        "The November product overview's general Machine Payments Connect support (raw/stripe-payments-machine-2026-11-07.md:23-29) coexists with the dedicated MPP `hostedFeePayer` exclusion for Connect (new raw lines 154-172). Carry the narrow exclusion in the concept and source route so product support is not reproduced as fee-sponsorship support."
+      ],
+      "reason": "The November capture supplies materially different integration and testing guidance while the mapped source only describes the May quickstart. Preserve both provenances and date conflicting implementation and availability statements across reciprocal routes."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/machine/mpp, the November capture documents API agents paying without a checkout UI. The server returns an HTTP 402 challenge, the agent authorizes payment and retries with a payment credential, and the verified flow returns the resource and receipt. The diagram shows the server recording the payment as a Stripe PaymentIntent (new raw lines 5-21 and new raw lines 62-97). The server uses mppx and Stripe and supplies its Stripe profile ID as networkId. By default the shown handler supports card SPTs. Configuring a separately created or fetched Tempo deposit address adds stablecoin payments to the same handler. The card SPT minimum is 0.50 USD and the stablecoin minimum is 0.01 USDC, with Tempo transferring USDC.e and Stripe describing off-ramp to its balance. The handler example charges 0.50 USD for either enabled method (new raw lines 23-36 and new raw lines 99-152). Sandbox setup requires the test key, sandbox profile and sandbox Tempo address. Live-mode Tempo fee sponsorship needs mppx 0.9.2 or later and a deposit address and API key from the same account, excludes Connect, and preserves customer authorization (new raw lines 154-184 and new raw lines 222-237). The mapped source-stripe-machine-payments-mpp-quickstart.md describes the May two-route Hono example with $1 card/Link and Tempo flows, PaymentIntent-derived crypto addresses, five-minute NodeCache recipient reuse, and a 2026-03-04.preview client pin. Those details remain dated May evidence (old raw lines 18-30, old raw lines 47-128 and old raw lines 130-205).",
+    "Q2": "At https://docs.stripe.com/payments/machine/mpp, the November operational changes missing from source-stripe-machine-payments-mpp-quickstart.md are the profile-backed stripe.create/defaultMethods wrapper, a server HMAC-derived challenge secret, a configured Tempo address provisioned or retrieved off the request path, method-specific minima and optional mppx 0.9.2-plus live Tempo fee sponsorship. The REST profile/address examples use 2026-07-29.preview, while the new SDK constructor shown has no explicit version pin (new raw lines 23-36, new raw lines 68-97 and new raw lines 107-172). Retain May's separate Hono GET handlers, its historical 'internal' SPT sample, random challenge secret, testnet token, direct deposit-mode PaymentIntent and cache, and 2026-03-04.preview client pin (old raw lines 18-30, old raw lines 47-128 and old raw lines 130-205). The title, new explanatory diagram and links primarily change presentation. Keep reciprocal source and concept warnings for the configured deposit address versus per-payment generation, the dated May sandbox PaymentIntent simulation versus November validate/testnet setup, and the product-level Connect support versus the hosted fee-payer exclusion. Separate older geographic descriptions from the related November availability guidance, and retain test-key/profile matching and the possibility of real funds in live validation or manual Tempo use (new raw lines 99-105 and new raw lines 154-237). Challenge and receipt handling, documented settlement, and observed live payment are separate status and evidence boundaries."
+  }
+}

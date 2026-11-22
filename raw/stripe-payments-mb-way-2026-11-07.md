@@ -1,0 +1,183 @@
+<!-- Source URL: https://docs.stripe.com/payments/mb-way -->
+<!-- Fetched: 2026-11-07 -->
+<!-- Discovery: reconciled llms.txt,sitemap.xml -->
+
+# MB WAY payments
+
+Learn about MB WAY, a digital wallet payment method in Portugal.
+
+MB WAY is a digital wallet payment method in Portugal. When paying with MB WAY, customers initiate payments using their phone number, and [authenticate and approve](https://docs.stripe.com/payments/payment-methods.md#customer-actions) them using their MB WAY app.
+Payment method family: Wallets
+Usability: Single-use
+Access type: Instant access
+Payment confirmation timing: Immediate
+Settlement timing: Standard payout schedule
+Pricing: https://stripe.com/en-pt/pricing/local-payment-methods#mb-way
+> MB WAY supports international phone numbers, but most customers use a Portuguese phone number starting with +351. For test phone numbers, see the [MB WAY acceptance guide](https://docs.stripe.com/payments/mb-way/accept-a-payment.md#web-test-integration).
+
+## Eligibility and availability 
+
+### Account eligibility
+Business location: AT, AU, BE, BG, CA, CH, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GI, GR, HK, HR, HU, IE, IT, JP, LI, LT, LU, LV, MT, MX, NL, NO, NZ, PL, PT, RO, SE, SG, SI, SK, US
+Account type: ✓ Merchant, ✓ Platform or marketplace (Connect)
+Business model: ✗ B2B, ✓ B2C
+Stripe accounts in the following countries can accept MB WAY payments that settle in a supported currency.
+
+AMER: CA, MX, US
+
+EMEA: AT, BE, BG, CH, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GI, GR, HR, HU, IE, IT, LI, LT, LU, LV, MT, NL, NO, PL, PT, RO, SE, SI, SK
+
+APAC: AU, HK, JP, NZ, SG
+
+Customers in the following countries can use MB WAY.
+
+EMEA: PT
+
+### Payment support
+Customer location: PT
+Presentment currency: EUR
+Geographic coverage: ✓ Domestic, ✓ Crossborder
+Transaction limits: Minimum amount: 0.50 EUR
+
+Maximum amount: 5,000.00 EUR
+### Customer transaction limits 
+
+MB WAY users have a default daily cumulative limit of 1,000 EUR, which they can adjust up to 10,000 EUR in the MB WAY app.
+
+## Capabilities 
+Recurring payments: ✗ Not supported
+
+Payment authorizations:
+  ✗ Extended authorizations
+  ✗ Flexible extended authorizations
+  ✗ Incremental authorizations
+  ✗ Decremental authorizations
+  ✗ Re-authorizations
+
+Payment captures:
+  ✗ Manual capture
+  ✗ Partial capture
+  ✗ Multi-capture
+  ✗ Over-capture
+
+Refunds:
+  ✓ Partial refunds
+  ✓ Full refunds
+  Submission window: 1 year
+  Processing time: 
+
+Disputes:
+  ✗ Partial disputes
+  ✓ Full disputes
+### Refunds 
+
+You can refund MB WAY charges up to 365 days after the payment completes. Refunds usually take a few minutes to complete.
+
+#### Refund process 
+
+Refunds return to the customer’s original payment method. MB WAY supports full and partial refunds. You can also issue multiple partial refunds up to the amount of the original payment.
+
+#### Tracking refunds 
+
+To check a refund’s status, open the payment in the [Dashboard](https://dashboard.stripe.com/payments) and click **View details** on the refund entry. You can also [retrieve the Refund object](https://docs.stripe.com/api/refunds/retrieve.md) and check its `status` field.
+
+Stripe notifies you of the final status through a `refund.updated` or `refund.failed` *webhook* (A webhook is a real-time push notification sent to your application as a JSON payload through HTTPS requests) event. When a refund succeeds, the [Refund object](https://docs.stripe.com/api/refunds/object.md) status changes to `succeeded`. If the refund fails, the status changes to `failed` and Stripe returns the amount to your Stripe balance. You must refund the customer using another method.
+
+### Disputes 
+
+#### Dispute process 
+
+Customers can dispute MB WAY payments for suspected fraud, duplicate payments, or differences between the order amount and transaction amount. Stripe holds the disputed amount until MB WAY resolves the dispute.
+
+#### Dispute notifications 
+
+Stripe notifies you of a dispute by email and in the Dashboard. Stripe also sends the `charge.dispute.created` webhook event.
+
+#### Responding to disputes 
+
+You have 7 calendar days to submit evidence. Evidence can include a tracking ID, shipping date, purchase records, an IP address or email receipt for intangible goods, the customer’s phone number or proof of receipt, and refund records.
+
+#### Dispute outcomes 
+
+If you win the dispute, Stripe returns the held amount to your balance. If the customer wins, the charge to your balance becomes permanent.
+
+## Stripe product support 
+Checkout UIs:
+  ✓ Full page (Recommended)
+  ✓ Payment Links
+  ✓ Embedded form
+  ✓ Payment Element
+  ✗ Express Checkout Element
+  ✗ Payment Method Messaging Element
+  ✓ In-app payments
+
+Products:
+  ✗ Managed Payments
+  ✓ Billing
+  ✓ Invoicing
+  ✗ Customer Portal
+  ✗ Radar
+  ✗ Terminal
+  ✓ Connect
+
+APIs:
+  ✓ Checkout Sessions (Recommended)
+  ✓ Payment Intents
+  ✗ Payment Intents with setup_future_usage
+  ✗ Setup Intents
+  ✗ Off-session payments
+
+1. Only supports send_invoice collection method.
+### Connect 
+
+A Connect platform can use [Stripe Connect](https://docs.stripe.com/connect/how-connect-works.md) with MB WAY to process connected account payments of all [charge types](https://docs.stripe.com/connect/charges.md).
+
+### Connected accounts with full Stripe Dashboard access
+
+Connected accounts with access to the full Stripe Dashboard, including Standard accounts, can enable MB WAY through their Dashboard. To check which accounts have enabled MB WAY, use the `capabilities` hash in the [accounts webhooks or APIs](https://docs.stripe.com/api/accounts/object.md#account_object-capabilities-mb_way_payments) to see if the `mb_way_payments` capability is set to `active`.
+
+### Connected accounts without full Stripe Dashboard access 
+
+To onboard connected accounts that use the Express Dashboard or a dashboard that isn’t hosted by Stripe, request the `mb_way_payments` capability using the [Capabilities API](https://docs.stripe.com/api/capabilities.md). For more details, follow the instructions to [enable payment methods for your connected accounts](https://docs.stripe.com/connect/account-capabilities.md).
+
+### Product limitations 
+
+Checkout supports MB WAY only for one-time payments and doesn’t support setup mode.
+
+MB WAY invoices and subscriptions only support the `send_invoice` collection method. Customers pay each invoice on the hosted invoice page, so MB WAY doesn’t support automatic recurring payments.
+
+## Customer experience 
+
+#### 1. Enter your phone number
+
+Enter the phone number linked to your MB WAY account on the payment page.
+
+#### 2. Open the MB WAY app
+
+MB WAY sends a push notification to your phone. Open the MB WAY app to review the payment.
+
+#### 3. Approve the payment
+
+Authorize the payment in the MB WAY app within 4 minutes. The merchant page remains open and waits for confirmation.
+
+#### 4. Return to the payment page
+
+After approving the payment, return to the payment page to check its status. Stripe updates the page when MB WAY confirms the payment.
+
+### Payment flow details 
+
+MB WAY doesn’t redirect the browser and doesn’t use a return URL. The merchant page remains open and polls the payment state while the customer authorizes in the MB WAY app.
+
+On both desktop and mobile, the customer enters their phone number on the payment page. On desktop, they approve the payment in the MB WAY app on their phone while the merchant page remains open on their computer. On mobile, they switch to the MB WAY app to approve the payment, then return to the merchant page.
+
+### Statement descriptors 
+
+Customized statement descriptors aren’t supported by MB WAY. Stripe’s name appears on the customer’s statement. A configured PaymentIntent, account, or Connect statement descriptor doesn’t replace the MB WAY descriptor.
+
+Learn more about [statement descriptors](https://docs.stripe.com/get-started/account/statement-descriptors.md) and [statement descriptors with Connect](https://docs.stripe.com/connect/statement-descriptors.md).
+
+## Enable MB WAY 
+
+If you use Stripe front-end products, enable MB WAY in your [payment method settings](https://dashboard.stripe.com/settings/payment_methods). Stripe automatically determines which payment methods are most relevant to each customer.
+
+If your integration requires manually listing payment methods, you can [configure MB WAY as an accepted payment method](https://docs.stripe.com/payments/mb-way/accept-a-payment.md).

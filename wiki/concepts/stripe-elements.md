@@ -164,6 +164,7 @@ const error = await actions.confirm();
 - `useElements()` → Elements object; `elements.getElement(PaymentElement)` for imperative focus
 - `ElementsConsumer` → for class components; render props pattern `({ stripe, elements }) => ...`
 - Root exports include Address, Express Checkout, Link Authentication, Payment, Payment Method Messaging, Tax ID, five Issuing display/copy components, and beta-gated Terms components
+- The retained `@stripe/react-stripe-js@7.0.0` root exports separately bind `ContactDetailsElement` to `contactDetails` and `LinkAuthenticationElement` to `linkAuthentication`. See [[source-github-react-stripe-js]].
 
 ### Retained React package baseline
 

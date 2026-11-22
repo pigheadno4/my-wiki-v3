@@ -1,0 +1,281 @@
+{
+  "job_id": "payments-meal-vouchers-fr-meal-vouchers",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: France Titres-Restaurant (Meal Vouchers)\"\ntype: source\ndate_ingested: 2026-05-05\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers\"\nraw_files:\n  - \"stripe-payments-meal-vouchers-fr-meal-vouchers-2026-11-07.md\"\n  - \"stripe-fr-meal-vouchers-2025.md\"\ntags: [stripe, meal-vouchers, france, titres-restaurant, benefits, siret, split-tender]\n---\n\n## Summary\n\nStripe's May 5 and November 7, 2026 overviews describe France titres-restaurant as a private preview for nonrecurring card payments in EUR. It covers French customers, approved French Stripe accounts, Elements and partial Connect support. The November capture adds an email waitlist and a documentation-generated registration request. The [preview waitlist](https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers.md#fr_meal_voucher_preview) requests access, with onboarding subject to Stripe follow-up. For partial Connect support, both captures direct platforms to fr-meal-voucher-beta@stripe.com.\n\n## Issuers and Readiness\n\n- **Issuers.** Bimpli (formerly Apetiz), Pluxee (formerly Sodexo) and Up Déjeuner are covered by the voucher-specific integration. Stripe routes eligible Swile vouchers through Mastercard without extra integration work. Swile determines eligibility and generally excludes businesses that accept vouchers through food-service platforms.\n- **Eligibility.** Obtain approval from the Commission Nationale des Titres-Restaurant (CNTR) for each accepting branch and a commercial acceptance agreement with at least one supported issuer. Restaurants, grocers, canteens and other businesses serving prepared food are the generally eligible business types.\n- **Branch provisioning.** Provide the approved branch's SIRET to Stripe before acceptance. Both dated overviews estimate 1–3 business days to bind it to the merchant identifier. The November Dashboard guide describes 1–2 business days for validation and treats the name and SIRET as immutable after creation in that UI. The separate Payment Locations API guide describes 1–2 business days in its pending onboarding path. Certain acknowledged API updates, such as SIRET or address changes, return the capability to pending and pause voucher acceptance until reactivation. See [[source-stripe-fr-meal-vouchers-setup-restaurant]].\n\n## Settlement, Capture and Disputes\n\nThe voucher issuer pays the acceptor directly. Set up settlement bank details with the contracted issuer and direct settlement questions to that issuer. Stripe deducts its processing fee from the Stripe balance and records it as a negative `BalanceTransaction`. Issuer fees are separate. The issuer determines the statement descriptor from the SIRET on the PaymentIntent or SetupIntent. Stripe sends no statement descriptor to the network for this voucher route.\n\nBimpli, Pluxee and Up Déjeuner have no dispute-resolution system for these vouchers. A captured voucher payment supports neither full nor partial refunds. Where fulfillment is uncertain, use separate authorization and capture so the voucher authorization can be released while it remains uncaptured.\n\n## Payment, Setup and PaymentMethod Identification\n\nBoth overview captures document opt-in on each PaymentIntent using the literal `payment_details.benefit.fr_meal_voucher.siret` for the physical branch. PaymentIntent creation fails if that supplied SIRET was not provisioned. The overviews also say Stripe does not retry failed voucher payments as ordinary card payments or vice versa.\n\nThe separate November purchase and Connect guides require Stripe version `2026-05-27.preview` or later. The purchase guide requires an active `fr_meal_vouchers_conecs_payments` location capability. In that flow, pass the Payment Location ID in `payment_details[location]` and set `payment_details[benefit][fr_meal_voucher][enabled]` to `if_payment_method_is_eligible`. Stripe resolves the location's stored SIRET at confirmation. A change after Intent creation can affect the SIRET used for that confirmation. Previously confirmed payments retain their original SIRET. Connect has separate direct and platform charge instructions and requests the location capability on behalf of the merchant of record. See [[source-stripe-fr-meal-vouchers-accept-payment]] and [[source-stripe-fr-meal-vouchers-connect]].\n\nThe November save guide uses the same preview version floor and active-location prerequisite for SetupIntent. It uses `setup_details[location]` and `setup_details[benefit][fr_meal_voucher][enabled]` for setup. Later reuse is on-session and uses PaymentIntent's `payment_details` with the Customer and saved PaymentMethod IDs. The dated sources leave compatibility between the literal SIRET and location-based forms open. Conditional opt-in expresses method eligibility at payment time. An Intent or an eligible-card example leaves authorization, capture and issuer settlement to be established separately. See [[source-stripe-fr-meal-vouchers-save-payment]].\n\nBoth overviews illustrate a scalar `PaymentMethod.card.benefits.programs` containing `fr_meal_voucher`, with the issuer in `PaymentMethod.card.benefits.issuer`. The November Connect guide illustrates an array at that PaymentMethod path and a scalar under the separate `ConfirmationToken.payment_method_preview.card.benefits.programs` path. These examples establish the shapes shown in their respective captures. They leave a universal response shape and actual transaction eligibility unresolved. See [[source-stripe-fr-meal-vouchers-connect]].\n\n## Balance and Split Tender\n\nBoth overviews document a €25 daily cap and a balance refresh at midnight French local time. The optional balance lookup applies to a saved voucher PaymentMethod. The separate May and November balance guides show `POST /v1/payment_methods/:id/check_balance`. Its `as_of` timestamp describes a snapshot. It reserves no funds, and a concurrent purchase can still cause a later authorization to decline.\n\nStripe does not orchestrate split tender natively. Use separate payments for eligible food and for ancillary fees or an amount exceeding the voucher balance. The November balance guide's prose recommends processing the secondary payment first or using manual voucher capture after the secondary payment succeeds. Its diagram places the voucher PaymentIntent first and calls for reversion if the secondary payment fails. In the voucher leg, release is available only while authorization remains uncaptured. See [[source-stripe-fr-meal-vouchers-check-balance]].\n\n## Related Pages\n\n- [[stripe-fr-meal-vouchers]] — product concept and dated integration routes\n- [[source-stripe-fr-meal-vouchers-accept-payment]] — PaymentIntent acceptance and confirmation\n- [[source-stripe-fr-meal-vouchers-connect]] — direct and platform charges, fee routing and object-specific benefit examples\n- [[source-stripe-fr-meal-vouchers-check-balance]] — saved-card balance and split tender\n- [[source-stripe-fr-meal-vouchers-save-payment]] — setup, on-session reuse and temporary authorization\n- [[source-stripe-fr-meal-vouchers-setup-restaurant]] — Dashboard and API onboarding\n- [[stripe]] — company page\n\n## Raw Sources\n\n- [[raw/stripe-payments-meal-vouchers-fr-meal-vouchers-2026-11-07|November 7, 2026 product overview]] — full capture with the preview waitlist\n- [[raw/stripe-fr-meal-vouchers-2025|May 5, 2026 product overview]] — full historical capture; Markdown emphasis on “split tender” was normalized\n",
+  "quotes": {
+    "payments-meal-vouchers-fr-meal-vouchers": [
+      {
+        "text": "France titres-restaurant is in private preview.",
+        "location": "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-2026-11-07.md:11"
+      },
+      {
+        "text": "Each branch of your business must be individually approved by the CNTR to accept French meal vouchers at that branch.",
+        "location": "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-2026-11-07.md:97"
+      },
+      {
+        "text": "French meal vouchers don’t support refunds after the payment is captured.",
+        "location": "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-2026-11-07.md:111"
+      },
+      {
+        "text": "The available balance refreshes every day at midnight French local time.",
+        "location": "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-2026-11-07.md:152"
+      },
+      {
+        "text": "Stripe doesn’t directly support split tender.",
+        "location": "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-2026-11-07.md:160"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-meal-vouchers-fr-meal-vouchers": [
+      {
+        "text": "France titres-restaurant is in private preview.",
+        "location": "raw/stripe-fr-meal-vouchers-2025.md:10"
+      },
+      {
+        "text": "The behaviors and integration changes described in this document don’t apply to Swile cards.",
+        "location": "raw/stripe-fr-meal-vouchers-2025.md:78"
+      },
+      {
+        "text": "This process can take 1–3 business days.",
+        "location": "raw/stripe-fr-meal-vouchers-2025.md:88"
+      },
+      {
+        "text": "Stripe never retries a French meal vouchers payment as a normal card payment nor the other way around.",
+        "location": "raw/stripe-fr-meal-vouchers-2025.md:116"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 160
+      }
+    ],
+    "raw/stripe-fr-meal-vouchers-2025.md": [
+      {
+        "start": 1,
+        "end": 146
+      }
+    ],
+    "wiki/sources/source-stripe-fr-meal-vouchers.md": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/84c0bd4d7317eb0db28734b6/content.diff": [
+      {
+        "start": 1,
+        "end": 115
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-meal-vouchers-fr-meal-vouchers/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 228
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-meal-vouchers-fr-meal-vouchers/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 122
+      }
+    ],
+    "wiki/concepts/stripe-fr-meal-vouchers.md": [
+      {
+        "start": 8,
+        "end": 90
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 315,
+        "end": 320
+      },
+      {
+        "start": 746,
+        "end": 746
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 4,
+        "end": 9
+      }
+    ],
+    "wiki/sources/source-stripe-fr-meal-vouchers-check-balance.md": [
+      {
+        "start": 11,
+        "end": 37
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 283,
+        "end": 289
+      }
+    ],
+    "raw/stripe-fr-meal-vouchers-check-balance-2025.md": [
+      {
+        "start": 19,
+        "end": 48
+      }
+    ],
+    "raw/stripe-fr-meal-vouchers-save-payment-2025.md": [
+      {
+        "start": 15,
+        "end": 92
+      }
+    ],
+    "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 25,
+        "end": 39
+      },
+      {
+        "start": 58,
+        "end": 74
+      }
+    ],
+    "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-accept-with-connect-2026-11-07.md": [
+      {
+        "start": 25,
+        "end": 68
+      },
+      {
+        "start": 74,
+        "end": 109
+      }
+    ],
+    "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-saving-payment-details-2026-11-07.md": [
+      {
+        "start": 25,
+        "end": 85
+      }
+    ],
+    "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-checking-a-card-balance-2026-11-07.md": [
+      {
+        "start": 25,
+        "end": 60
+      },
+      {
+        "start": 89,
+        "end": 114
+      }
+    ],
+    "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant-2026-11-07.md": [
+      {
+        "start": 31,
+        "end": 51
+      }
+    ],
+    "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant-api-2026-11-07.md": [
+      {
+        "start": 96,
+        "end": 112
+      },
+      {
+        "start": 192,
+        "end": 198
+      },
+      {
+        "start": 285,
+        "end": 310
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 516,
+        "end": 521
+      }
+    ],
+    "raw/stripe-fr-meal-vouchers-accept-payment-2025.md": [
+      {
+        "start": 48,
+        "end": 56
+      }
+    ],
+    "raw/stripe-fr-meal-vouchers-setup-restaurant-2025.md": [
+      {
+        "start": 22,
+        "end": 36
+      },
+      {
+        "start": 57,
+        "end": 78
+      }
+    ]
+  },
+  "answers": {
+    "payments-meal-vouchers-fr-meal-vouchers": {
+      "Q1": "The November capture of https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers documents private-preview, nonrecurring French meal-voucher cards in EUR, with Elements and partial Connect. A French Stripe account, CNTR approval for each accepting branch, a commercial agreement with at least one supported issuer, and prior provisioning of that branch's SIRET are separate prerequisites (new raw lines 9-23, new raw lines 25-76 and new raw lines 78-101). Bimpli, Pluxee and Up Déjeuner follow the documented benefit integration and have no dispute resolution system. Swile is a separate Mastercard route with eligibility determined by Swile (old raw lines 69-78 and old raw lines 96-100, new raw lines 80-91 and new raw lines 109-113). The daily balance cap is €25, and the available balance refreshes at midnight French local time (old raw lines 136-140 and new raw lines 150-154). The overview describes per-PaymentIntent opt-in with the provisioned SIRET and saved-card identification from `PaymentMethod.card.benefits`; neither the optional balance check nor creation of an Intent establishes payment (new raw lines 119-154). Issuers settle directly with the acceptor outside Stripe. The negative BalanceTransaction is Stripe's processing fee, separate from issuer fees. Captured payments lack refunds, while a separate manual authorization can be released before capture (new raw lines 103-117). The merchant orchestrates separate payments for ineligible fees or overage (new raw lines 156-160). The May capture establishes the same product flow (old raw lines 65-116 and old raw lines 136-146). source-stripe-fr-meal-vouchers.md broadly preserves it but omits the issuer agreement and newly shown waitlist route, and its GET balance verb conflicts with the detailed guides' POST.",
+      "Q2": "For https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers, the November addition is the documented email waitlist request, an access route for the existing private preview (old raw lines 8-10 and new raw lines 9-23). Other edits are presentational and the product semantics, settlement and capture limits remain dated to both captures (old raw lines 80-116 and new raw lines 93-129). source-stripe-fr-meal-vouchers.md and the voucher concept need reciprocal scope for the overviews' dated literal SIRET and scalar PaymentMethod example. The separate November purchase, save and Connect routes require preview Stripe version `2026-05-27.preview` or later (`raw/stripe-payments-meal-vouchers-fr-meal-vouchers-accept-a-payment-2026-11-07.md:25-29`, `raw/stripe-payments-meal-vouchers-fr-meal-vouchers-saving-payment-details-2026-11-07.md:25-29`, `raw/stripe-payments-meal-vouchers-fr-meal-vouchers-accept-with-connect-2026-11-07.md:38-42`). The preview workflow requires an active location and passes `payment_details[location]` plus the conditional voucher benefit on PaymentIntent, with distinct `setup_details` for SetupIntent and on-session reuse. The separate payment guide resolves the location's stored SIRET at confirmation, without changing already-confirmed payments. The overview estimates 1–3 business days for branch provisioning (old raw lines 86-88 and new raw lines 99-101), while the detailed Dashboard and API guides describe 1–2 business days for their respective onboarding workflows. Dashboard immutability and API acknowledged changes with paused acceptance during re-onboarding apply to their respective routes (`raw/stripe-payments-meal-vouchers-fr-meal-vouchers-accept-a-payment-2026-11-07.md:25-39,58-74`, `raw/stripe-payments-meal-vouchers-fr-meal-vouchers-saving-payment-details-2026-11-07.md:25-71`, `raw/stripe-payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant-2026-11-07.md:31-51`, `raw/stripe-payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant-api-2026-11-07.md:96-112,192-198,285-310`). Connect's PaymentMethod example is an array while its ConfirmationToken preview remains scalar (new raw lines 131-148; `raw/stripe-payments-meal-vouchers-fr-meal-vouchers-accept-with-connect-2026-11-07.md:74-109`). The balance guide documents POST on a saved PaymentMethod, with an as-of balance that does not reserve funds. The split-tender prose puts the secondary payment first or uses manual capture for the voucher after the secondary payment succeeds. The diagram starts with the voucher PaymentIntent and calls for reversion if the secondary payment fails. The voucher can be released while its authorization remains uncaptured. A captured voucher payment cannot be refunded (old raw lines 96-100 and old raw lines 136-146, new raw lines 109-113 and new raw lines 150-160; `raw/stripe-payments-meal-vouchers-fr-meal-vouchers-checking-a-card-balance-2026-11-07.md:25-60,89-114`). A waitlist request, optional balance check and payment-creation example establish neither preview admission nor actual capture or issuer payout."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-meal-vouchers-fr-meal-vouchers-requirements-timing",
+      "target_path": "wiki/concepts/stripe-fr-meal-vouchers.md",
+      "update_kind": "durable_fact",
+      "anchor": "3. **SIRET provisioning**: Dashboard → French meal vouchers SIRETs → Add SIRET (SIRET + postal code + store name — all must match CNTR record). Takes **1–2 business days**. SIRET and name are **immutable** after creation. Postal code mismatch → `Requires Action`; fix via Update Details (another 1–2 days). Connect: go to connected account → Configure SIRETs.",
+      "proposed_markdown": "3. **SIRET provisioning.** Provision the approved branch's SIRET. The May and November overviews give a 1–3 business day estimate. The November Dashboard guide gives 1–2 business days for validation. In Dashboard, add the SIRET, matching postal code and store name. Name and SIRET are immutable after creation in this UI. The existing Dashboard route handles a postal-code mismatch via Update Details and allows configuration from the connected account. The separate November Payment Locations API guide gives 1–2 business days for pending onboarding. An acknowledged SIRET or address update can return the location's capability to pending and pause voucher acceptance until reactivation. See [[source-stripe-fr-meal-vouchers-setup-restaurant]].",
+      "warnings": [
+        "May overview raw lines 86-88 and November overview raw lines 99-101 describe branch provisioning. November Dashboard raw lines 31-51 and API raw lines 96-112, 192-198 and 285-310 scope timing and edits. The original Dashboard correction instructions remain in the UI route.",
+        "May Dashboard raw lines 22-36 and 57-78 preserve UI-specific correction and Connect routing."
+      ],
+      "quote_indexes": [
+        1
+      ]
+    },
+    {
+      "update_id": "payments-meal-vouchers-fr-meal-vouchers-payment-request-and-shape",
+      "target_path": "wiki/concepts/stripe-fr-meal-vouchers.md",
+      "update_kind": "durable_fact",
+      "anchor": "Opt in per PaymentIntent by passing a pre-provisioned `siret`:\n\n```text\npayment_details.benefit.fr_meal_voucher.siret = SIRET_VALUE\n```\n\n**Identify via** `paymentMethod.card.benefits` hash:\n\n- `benefits.programs = 'fr_meal_voucher'`\n- `benefits.issuer` = issuer name (e.g., `pluxee`)",
+      "proposed_markdown": "**PaymentIntent.** The May and November overviews use a pre-provisioned literal `payment_details.benefit.fr_meal_voucher.siret` on each PaymentIntent. The separate November acceptance guide uses Stripe version `2026-05-27.preview` or later, an active voucher capability on a Payment Location, `payment_details[location]` and conditional `payment_details[benefit][fr_meal_voucher][enabled]=if_payment_method_is_eligible`. Stripe resolves the location’s stored SIRET at confirmation, which leaves previously confirmed payments unchanged. Both overview captures say payment failures are not retried between the voucher and ordinary card routes. See [[source-stripe-fr-meal-vouchers-accept-payment]].\n\n**Identification.** Both overviews show a scalar `PaymentMethod.card.benefits.programs` and identify the issuer in `PaymentMethod.card.benefits.issuer`. The November Connect guide shows an array at the same PaymentMethod path and a scalar under `ConfirmationToken.payment_method_preview.card.benefits.programs`. These are dated object-specific examples. Actual payment eligibility and a universal response type remain separate questions. See [[source-stripe-fr-meal-vouchers-connect]].",
+      "warnings": [
+        "May raw lines 106-134 and November overview raw lines 119-148. November purchase raw lines 25-39, 58-74 and Connect raw lines 74-109 supply the distinct location and shape scopes."
+      ],
+      "quote_indexes": []
+    },
+    {
+      "update_id": "payments-meal-vouchers-fr-meal-vouchers-split-tender-order",
+      "target_path": "wiki/concepts/stripe-fr-meal-vouchers.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Split tender order**: charge secondary payment method first (no refunds on meal vouchers); or use auth+capture for the meal voucher after secondary succeeds.",
+      "proposed_markdown": "**Split-tender order.** The November balance guide's prose recommends processing the secondary payment first or using manual voucher capture after the secondary payment succeeds. Its diagram puts the voucher Intent first and shows a reversion when the secondary payment fails. Voucher release applies only to an uncaptured authorization. Captured vouchers cannot be refunded. The optional balance check leaves later authorization exposed to concurrent spending. See [[source-stripe-fr-meal-vouchers-check-balance]].",
+      "warnings": [
+        "November balance raw lines 25-60 and 89-114 and overviews May raw lines 96-100, 142-146 and November raw lines 109-113, 156-160."
+      ],
+      "quote_indexes": [
+        2,
+        4
+      ]
+    },
+    {
+      "update_id": "payments-meal-vouchers-fr-meal-vouchers-setupintent-scope",
+      "target_path": "wiki/concepts/stripe-fr-meal-vouchers.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Save for future use**: CVC required on first payment; reusable without CVC after that. To save without charging: `stripe.setupIntents.create({ customer, setup_details: { benefit: { fr_meal_voucher: { siret } } } })`. Temporary **0.30 EUR auth charge** may appear when saving — reversed almost immediately (restored to daily balance).",
+      "proposed_markdown": "**Save for future use.** The May guides show literal SIRET in `setup_details.benefit.fr_meal_voucher.siret` for SetupIntent and discuss first-payment CVC. The separate November save guide requires `2026-05-27.preview` or later and an active voucher capability, with the Payment Location and conditional voucher eligibility nested in `setup_details`. For later on-session payment it uses Customer and PaymentMethod IDs with the separate PaymentIntent `payment_details`. Both save guides describe a temporary €0.30 verification authorization that Stripe reverses almost immediately. See [[source-stripe-fr-meal-vouchers-save-payment]].",
+      "warnings": [
+        "May save raw lines 19-60 and 90-92, November save raw lines 25-71 and 83-85. The first-payment CVC statement remains historical and contextual.",
+        "May acceptance raw lines 48-56 documents first-payment CVC."
+      ],
+      "quote_indexes": []
+    },
+    {
+      "update_id": "payments-meal-vouchers-fr-meal-vouchers-connect-payment-request",
+      "target_path": "wiki/concepts/stripe-fr-meal-vouchers.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Platform charges**: create PaymentIntent on platform account; omit `transfer_data`, `application_fee_amount`, `transfer_group`; pass `siret`.",
+      "proposed_markdown": "- **Platform charges.** Create the PaymentIntent on the platform account without `transfer_data`, `application_fee_amount` or `transfer_group`. The November Connect preview requires `2026-05-27.preview` or later, Payment Location onboarding on behalf of the merchant of record, and the location-and-conditional-benefit PaymentIntent route. The literal SIRET request in the May and November product overviews belongs to their separate implementation descriptions. See [[source-stripe-fr-meal-vouchers-connect]].",
+      "warnings": [
+        "November Connect raw lines 25-68, November acceptance raw lines 25-39 and dated overview literal examples May raw lines 106-116 and November raw lines 119-129."
+      ],
+      "quote_indexes": []
+    }
+  ]
+}

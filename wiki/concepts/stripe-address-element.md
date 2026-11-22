@@ -68,6 +68,8 @@ The Address Element API differs between the Checkout Sessions and Payment Intent
 | React billing | `<BillingAddressElement>` from `@stripe/react-stripe-js/checkout` | `<AddressElement options={{mode:'billing'}}>` |
 | React shipping | `<ShippingAddressElement>` from `@stripe/react-stripe-js/checkout` | `<AddressElement options={{mode:'shipping'}}>` |
 
+The May 8 and November 7, 2026 captures of [[source-stripe-add-link-elements-integration]] name `ShippingAddressElement` in React setup prose. Their standard Elements and PaymentIntent shipping examples import `AddressElement` from `@stripe/react-stripe-js` and set `mode: 'shipping'`. The `ShippingAddressElement` name in the table is the separate Checkout Sessions React component.
+
 ### Checkout Sessions: Sync Address Checkbox
 
 When using both billing and shipping Address Elements, enable a checkbox to let customers sync them:
@@ -134,3 +136,4 @@ Uses the Appearance API — same theming system as Payment Element and Express C
 - [[source-stripe-address-element]] — primary reference: modes, autocomplete, Link autofill, combining with other elements
 - [[source-stripe-collect-addresses]] — full integration guide: Checkout Sessions vs Payment Intents API differences, syncAddressCheckbox, getValue(), blockPoBox, multi-page flow, CSP for own Maps key
 - [[source-stripe-inapp-collect-addresses]] — mobile integration: iOS UIKit (AddressViewController), iOS SwiftUI, Android (AddressLauncher + Google Places), React Native (AddressSheet); distinct APIs from web variant
+- [[source-stripe-inapp-address-element]] — April 2026 mobile overview and November platform index. The April mobile implementation uses platform-specific shipping configuration for optional prefill and documents `PaymentIntent.shipping` on confirmation with populated details. The shared Stripe.js Elements instance rule above is for web.

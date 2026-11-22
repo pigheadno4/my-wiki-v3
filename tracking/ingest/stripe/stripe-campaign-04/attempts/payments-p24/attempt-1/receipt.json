@@ -1,0 +1,195 @@
+{
+  "job_id": "payments-p24",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-p24-2026-11-07.md",
+  "raw_sha256": "c84440e203197eebc3ff4675c3ff660b76da824d35e2f9af9b15a56dd5eb1b3b",
+  "prior_raw_path": "raw/stripe-p24-2025.md",
+  "prior_raw_sha256": "f18170bf0ff0939708a42d1b7e5efe8f06095cc3c0d8a080a7c14acd658a0079",
+  "source_targets": [
+    "wiki/sources/source-stripe-p24.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-p24.md": "f6966531d16d1d9fd7366d5ec4a77ae839e24b8b7830fd4d4ff618279dffe197"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-p24-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 155
+      },
+      {
+        "start": 156,
+        "end": 310
+      }
+    ],
+    "raw/stripe-p24-2025.md": [
+      {
+        "start": 1,
+        "end": 183
+      }
+    ],
+    "wiki/sources/source-stripe-p24.md": [
+      {
+        "start": 1,
+        "end": 33
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/9bb454c8c1a0fa2346a3028f/content.diff": [
+      {
+        "start": 1,
+        "end": 235
+      },
+      {
+        "start": 236,
+        "end": 464
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 4,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 280,
+        "end": 286
+      },
+      {
+        "start": 751,
+        "end": 757
+      }
+    ],
+    "wiki/concepts/stripe-p24.md": [
+      {
+        "start": 1,
+        "end": 73
+      }
+    ],
+    "wiki/concepts/stripe-bank-redirects.md": [
+      {
+        "start": 1,
+        "end": 48
+      }
+    ],
+    "wiki/sources/source-stripe-bank-redirects.md": [
+      {
+        "start": 1,
+        "end": 51
+      }
+    ],
+    "wiki/sources/source-stripe-p24-accept-payment.md": [
+      {
+        "start": 13,
+        "end": 46
+      }
+    ],
+    "raw/stripe-payments-bank-redirects-2026-11-07.md": [
+      {
+        "start": 18,
+        "end": 54
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 707,
+        "end": 713
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Access type: Instant provisional access",
+      "location": "raw/stripe-payments-p24-2026-11-07.md:12"
+    },
+    {
+      "text": "Restricted** MCCs may be supported, but require additional information at account creation.",
+      "location": "raw/stripe-payments-p24-2026-11-07.md:37"
+    },
+    {
+      "text": "Refunds for P24 payments are asynchronous and take up to 3 business days to complete. P24 refunds can\u2019t be canceled.",
+      "location": "raw/stripe-payments-p24-2026-11-07.md:221"
+    },
+    {
+      "text": "After the payment completes, expand `latest_charge` on the PaymentIntent to retrieve the P24 reference number from `latest_charge.payment_method_details.p24.reference`.",
+      "location": "raw/stripe-payments-p24-2026-11-07.md:302"
+    },
+    {
+      "text": "Request the `p24_payments` capability and check that its status is `active` before accepting P24 payments.",
+      "location": "raw/stripe-payments-p24-2026-11-07.md:310"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Przelewy24 is a Poland-based payment method aggregator that allows customers to complete transactions online using bank transfers and other methods.",
+      "location": "raw/stripe-p24-2025.md:8"
+    },
+    {
+      "text": "Authenticated bank debit",
+      "location": "raw/stripe-p24-2025.md:30"
+    },
+    {
+      "text": "1Not supported when using Checkout in subscription mode or setup mode.2Available by invite only.",
+      "location": "raw/stripe-p24-2025.md:111"
+    },
+    {
+      "text": "Payments made with Przelewy24 can only be submitted for refund within 180 days from the date of the original charge.",
+      "location": "raw/stripe-p24-2025.md:183"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Both guides describe a Poland-based aggregator for Polish customers in EUR or PLN, an established 40-business-location list, bank authentication/redirect, immediate payment notification, no recurring payments or chargebacks, full and partial refunds, and Dashboard or manual configuration routing. November gives domestic/crossborder labels, local settlement regions, and a stated 0.50 EUR minimum without supplying a PLN minimum (old raw lines 8-54,56-111,113-148,177-183, new raw lines 7-21,162-216,237-265,266-310).",
+    "May labels the family authenticated bank debit and describes standard payout timing (old raw lines 12-38). November labels it bank redirects, with immediate confirmation, instant provisional access and settlement up to T+2 business days (new raw lines 7-15). Preserve the dated label change and distinguish payment confirmation, provisional access, settlement and merchant payout. No replatforming or payout SLA is established. May's 180 days is a refund submission limit, not a merchant return promise or completion time (old raw lines 177-183, new raw lines 208-231).",
+    "May asks for a publicly accessible website or app, priced product/service list, company identifiers and refund/privacy policy links, with a warning about suspension or termination for category or site violations (old raw lines 167-175). November lists a website beyond Stripe activation requirements, address/tax/registration, return and refund, privacy and terms of service; eligibility may be reviewed after activation and restrictions can be appealed through support (new raw lines 18-37). November omits the May priced-list and public-access wording and does not expressly withdraw it.",
+    "November retains the ten broadly prohibited categories and adds a code-level table treating prohibited MCCs as unsupported and restricted MCCs as potentially supported with additional information at account creation (old raw lines 150-175, new raw lines 18-37,39-160,174-190). The two rules overlap without a precedence explanation, such as broad pawn shops prohibited versus MCC 5933 restricted (new raw lines 138,184) and broad automotive prohibition versus MCC 5511 restricted (new raw lines 126,182). Connect marketplaces are a listed account type and Marketplace MCC 5262 is prohibited (new raw lines 19-22,55). Preserve those scopes and warn reciprocally rather than using a restricted or account-type cell to infer an exception or individual approval.",
+    "The November P24 page marks Billing and Invoicing supported, with a `send_invoice`-only collection note after the matrix (new raw lines 241-265). May's method page says Invoicing was invite-only, and Checkout setup/subscription modes were excluded (old raw lines 101-111). The same-date November Bank Redirects P24 row still says Invoicing invite-only, excludes Checkout setup and subscription modes, marks Subscriptions `send_invoice` only, and excludes SetupIntents, future usage and manual capture (raw/stripe-payments-bank-redirects-2026-11-07.md:25-34,38-50). Keep these support/access/collection distinctions and reciprocal warnings in P24 and Bank Redirects. Billing/invoice collection offers no evidence of recurring automatic P24 charges or unrestricted Invoicing access.",
+    "Separate the customer bank authorization, payment notification and merchant return from verified payment outcome and funds availability. The November customer flow adds completion of bank authorization within one hour of checkout (new raw lines 266-290). After payment completion, retrieve its P24 reference from an expanded PaymentIntent `latest_charge.payment_method_details.p24.reference`; the statement carries this reference and the custom pre-confirmation or account-default descriptor (new raw lines 292-302). The refund reference is a different field and can be shared after refund success if available (new raw lines 229-235).",
+    "November limits explicit Connect capability instructions to connected accounts with Express Dashboard or no Stripe-hosted Dashboard. Request `p24_payments` and verify `active` before accepting. Front-end Dashboard enablement lets Stripe determine relevant methods, and the manual route links the acceptance guide (new raw lines 304-310; old raw lines 134-148). Neither enablement nor a support cell proves account or transaction eligibility."
+  ],
+  "substantive_changes": [
+    "Documented family changes from authenticated bank debit to bank redirects, and November specifies single-use, instant provisional access, immediate confirmation and up to T+2 settlement while May described standard payout timing (old raw lines 12-38, new raw lines 7-15). The old and new describe a similar bank-authorization flow.",
+    "New detailed account type, B2B/B2C and post-activation review/appeal language, website terms and return/refund wording, prohibited/restricted MCC table, local settlement geography, domestic/crossborder and 0.50 EUR minimum documentation (old raw lines 56-99,150-175, new raw lines 18-190). The ten broad categories are retained.",
+    "New expanded capability and UI/API matrices, one-hour authorization window, P24 payment and refund reference lookups, and express/no-dashboard Connect requirement (old raw lines 32-54,101-148, new raw lines 192-216,229-235,241-310).",
+    "New refund operational rules specify asynchronous completion up to three business days, noncancelable separate bank credit, Refund status and events, failed amount returning to Stripe balance and alternative refund responsibility, and conditional reference (old raw lines 52-54,181-183, new raw lines 208-235). The 180-day submission window stays documented."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain actual 2026-05-03 date despite the 2025 filename. Keep the May family and standard payout wording, mode exclusions, invite-only Invoicing, publicly accessible site/app, prices, disclosure links and suspension/termination wording as dated (old raw lines 12-54,101-111,150-175). The six artwork references and simpler link/layout differences are presentational; November adds the one-hour condition to the flow (old raw lines 113-132, new raw lines 266-290).",
+    "Retain May/November nonrecurring and no-chargeback scope, Polish customers and EUR/PLN presentment, and full/partial refund with a 180-day submission window (old raw lines 14-54,177-183, new raw lines 174-239). Keep the May separate implementation guide's 14-character descriptor shorthand as its own dated topic if retained in the concept (wiki/sources/source-stripe-p24-accept-payment.md:39-46); the November method overview's descriptor section does not specify that limit."
+  ],
+  "conflicts": [
+    "The November P24 page marks Billing and Invoicing supported, with a `send_invoice`-only collection note after the matrix (new raw lines 241-265). May's method page says Invoicing was invite-only, and Checkout setup/subscription modes were excluded (old raw lines 101-111). The same-date November Bank Redirects P24 row still says Invoicing invite-only, excludes Checkout setup and subscription modes, marks Subscriptions `send_invoice` only, and excludes SetupIntents, future usage and manual capture (raw/stripe-payments-bank-redirects-2026-11-07.md:25-34,38-50). Keep these support/access/collection distinctions and reciprocal warnings in P24 and Bank Redirects. Billing/invoice collection offers no evidence of recurring automatic P24 charges or unrestricted Invoicing access.",
+    "November retains the ten broadly prohibited categories and adds a code-level table treating prohibited MCCs as unsupported and restricted MCCs as potentially supported with additional information at account creation (old raw lines 150-175, new raw lines 18-37,39-160,174-190). The two rules overlap without a precedence explanation, such as broad pawn shops prohibited versus MCC 5933 restricted (new raw lines 138,184) and broad automotive prohibition versus MCC 5511 restricted (new raw lines 126,182). Connect marketplaces are a listed account type and Marketplace MCC 5262 is prohibited (new raw lines 19-22,55). Preserve those scopes and warn reciprocally rather than using a restricted or account-type cell to infer an exception or individual approval.",
+    "May asks for a publicly accessible website or app, priced product/service list, company identifiers and refund/privacy policy links, with a warning about suspension or termination for category or site violations (old raw lines 167-175). November lists a website beyond Stripe activation requirements, address/tax/registration, return and refund, privacy and terms of service; eligibility may be reviewed after activation and restrictions can be appealed through support (new raw lines 18-37). November omits the May priced-list and public-access wording and does not expressly withdraw it.",
+    "May labels the family authenticated bank debit and describes standard payout timing (old raw lines 12-38). November labels it bank redirects, with immediate confirmation, instant provisional access and settlement up to T+2 business days (new raw lines 7-15). Preserve the dated label change and distinguish payment confirmation, provisional access, settlement and merchant payout. No replatforming or payout SLA is established. May's 180 days is a refund submission limit, not a merchant return promise or completion time (old raw lines 177-183, new raw lines 208-231)."
+  ],
+  "unresolved_questions": [
+    "The method page and hub do not resolve individual Invoicing access or the printed collection footnote's precise attachment to the method page's product cells. The broad category versus MCC table overlap has no stated precedence, and no PLN minimum or timing for an external merchant payout is established by the November method page."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-p24.md",
+    "wiki/concepts/stripe-bank-redirects.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-p24.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Current source lines 13-24 preserve the May core identity, access notes and ten categories. November adds eligibility/MCC, lifecycle, refund, references, enablement/Connect and product matrix details that need discoverable source sections (new raw lines 18-190,208-235,241-310). Preserve May provenance at source lines 4-7 and 31-33 and add November provenance.",
+        "Independently, source lines 13,17 should scope Poland-only to customers and EUR/PLN to presentment, separate from account locations/local settlement. Source lines 13,20 should label 180 days explicitly as refund submission window from original charge, already stated in May (old raw lines 14-22,56-99,181-183). Source lines 26-29 omit the May public site/app scope and phrase the suspension consequence only under site requirements though May also names category breaches (old raw lines 167-175). Source lacks a link back to the existing P24 concept that already links it at wiki/concepts/stripe-p24.md:72."
+      ],
+      "conflicts": [
+        "The November P24 page marks Billing and Invoicing supported, with a `send_invoice`-only collection note after the matrix (new raw lines 241-265). May's method page says Invoicing was invite-only, and Checkout setup/subscription modes were excluded (old raw lines 101-111). The same-date November Bank Redirects P24 row still says Invoicing invite-only, excludes Checkout setup and subscription modes, marks Subscriptions `send_invoice` only, and excludes SetupIntents, future usage and manual capture (raw/stripe-payments-bank-redirects-2026-11-07.md:25-34,38-50). Keep these support/access/collection distinctions and reciprocal warnings in P24 and Bank Redirects. Billing/invoice collection offers no evidence of recurring automatic P24 charges or unrestricted Invoicing access.",
+        "November retains the ten broadly prohibited categories and adds a code-level table treating prohibited MCCs as unsupported and restricted MCCs as potentially supported with additional information at account creation (old raw lines 150-175, new raw lines 18-37,39-160,174-190). The two rules overlap without a precedence explanation, such as broad pawn shops prohibited versus MCC 5933 restricted (new raw lines 138,184) and broad automotive prohibition versus MCC 5511 restricted (new raw lines 126,182). Connect marketplaces are a listed account type and Marketplace MCC 5262 is prohibited (new raw lines 19-22,55). Preserve those scopes and warn reciprocally rather than using a restricted or account-type cell to infer an exception or individual approval.",
+        "May asks for a publicly accessible website or app, priced product/service list, company identifiers and refund/privacy policy links, with a warning about suspension or termination for category or site violations (old raw lines 167-175). November lists a website beyond Stripe activation requirements, address/tax/registration, return and refund, privacy and terms of service; eligibility may be reviewed after activation and restrictions can be appealed through support (new raw lines 18-37). November omits the May priced-list and public-access wording and does not expressly withdraw it.",
+        "May labels the family authenticated bank debit and describes standard payout timing (old raw lines 12-38). November labels it bank redirects, with immediate confirmation, instant provisional access and settlement up to T+2 business days (new raw lines 7-15). Preserve the dated label change and distinguish payment confirmation, provisional access, settlement and merchant payout. No replatforming or payout SLA is established. May's 180 days is a refund submission limit, not a merchant return promise or completion time (old raw lines 177-183, new raw lines 208-231)."
+      ],
+      "reason": "November supplies substantive documented eligibility, product/capture and refund lifecycle information. Several existing May summary statements independently need precise scope and a reciprocal concept route."
+    }
+  ],
+  "answers": {
+    "Q1": "The November 7 capture of https://docs.stripe.com/payments/p24 describes Przelewy24, a single-use bank-redirect aggregator. It serves Polish customers in EUR or PLN and lists eligible business locations and local settlement geography separately. It specifies a 0.50 EUR minimum, account and business categories, site disclosures, possible review, and additional information for restricted MCCs. The customer selects a bank and authorizes within one hour. Immediate confirmation and provisional access are separate from up-to-T+2 settlement, and a browser return alone does not verify payment or payout (new raw lines 7-39, new raw lines 162-216 and new raw lines 266-310). The page lists Checkout Sessions and PaymentIntents for one-time payments, excludes SetupIntents and setup_future_usage, and excludes recurring and manual capture. Express or no-Stripe-dashboard connected accounts need active p24_payments. Full/partial refund submission is allowed for 180 days from the original payment. An asynchronous, noncancelable refund is a separate bank credit and final status belongs to the Refund object. An original-payment P24 reference instead belongs to the PaymentIntent's latest Charge (new raw lines 208-265 and new raw lines 292-310). The May guide and source-stripe-p24.md preserve Polish buyers, EUR/PLN, merchant geography, no recurring or chargebacks, refund window, prohibited categories and website rules. The November guide expands these and the baseline should label 180 days as a submission window (old raw lines 8-54, old raw lines 56-111 and old raw lines 150-183).",
+    "Q2": "For https://docs.stripe.com/payments/p24, the November capture adds substantive documented eligibility and MCC rules, website terms, account review and appeal, local settlement geography and a 0.50 EUR minimum, the authorization window, fuller UI/API boundaries, a connected-account capability condition, refund status and payment/refund reference handling (new raw lines 18-190, new raw lines 208-265 and new raw lines 266-310). The unchanged ten broad categories coexist with a prohibited/restricted MCC list and some overlapping labels. Carry the conflict reciprocally in P24 and avoid treating restricted codes or Connect marketplace support as clearance. May's authenticated-bank-debit label, standard payout wording, publicly accessible site/app, product prices, suspension, Checkout mode exclusions and invite-only Invoicing need dated retention in source-stripe-p24.md (old raw lines 12-54, old raw lines 101-111 and old raw lines 150-183). November's bank-redirect label and T+2 settlement do not establish a different payment mechanism or external payout schedule. The method page lists Billing/Invoicing with a send_invoice collection note, while the same-date Bank Redirects matrix retains invite-only Invoicing and checkout-mode exclusions and scopes Subscriptions to send_invoice. Warn reciprocally without inferring automatic recurring billing or an invitation waiver. Replacing flow assets with headings and adding navigation links is presentational apart from the one-hour condition. Keep bank authorization, browser return, payment confirmation, settlement, and final Refund status distinct."
+  }
+}

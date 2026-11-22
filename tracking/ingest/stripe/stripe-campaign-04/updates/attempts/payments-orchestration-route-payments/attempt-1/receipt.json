@@ -1,0 +1,229 @@
+{
+  "job_id": "payments-orchestration-route-payments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe — Orchestration: Route Payments to Multiple Processors\"\ntype: source\ndate_ingested: 2026-05-11\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/orchestration/route-payments\"\nraw_files:\n  - \"stripe-payments-orchestration-route-payments-2026-11-07.md\"\n  - \"stripe-orchestration-route-payments-2026.md\"\ntags: [stripe, orchestration, multi-processor, routing, payment-record, webhooks, private-preview]\n---\n\n## Summary\n\n[[stripe]]’s May 11 and November 7, 2026 guides show how to use [[stripe-orchestration]] to select a payment processor using Dashboard rules. Rules can match card country, amount, currency and other conditions and configure one optional cross-processor retry. Both guides identify private preview and representative-led onboarding. November adds an email-based access request. Onboarding checks that the destination processor and Stripe integration are supported and requires entering the destination processor’s API keys in the Dashboard. See May lines 8-20 and November lines 9-33.\n\nNovember explicitly says Link credentials cannot transfer between processors, so Link transactions bypass routing rules and Stripe processes them regardless of configuration. The May product overview already lists Link as excluded from routing feature support. Apple Pay and Google Pay have a separate routing guide for supported configurations. See [[source-stripe-orchestration]] and [[source-stripe-orchestration-wallet-payments]].\n\n## Sandbox and Server Integration\n\n1. Select the sandbox in the Dashboard account picker, add test rules, then activate them. The November examples use the selected sandbox’s API key. See November lines 39-54.\n2. Set `payments_orchestration[enabled]=true` when the server creates a PaymentIntent. Billing, Checkout Sessions, Payment Links and Dashboard payments automatically create PaymentIntents. Contact a Stripe representative to configure those PaymentIntents to use Orchestration.\n3. Verify a test payment under **Processor** or **Recent activity** in Dashboard. Alternatively, use the PaymentIntent’s `payment_record` ID to retrieve the record through the API or inspect it in Workbench and read `processor_details`. See November lines 69-112.\n4. After sandbox testing, configure and activate live rules on the onboarded integration. A successful sandbox test establishes test routing for that setup. See [[source-stripe-orchestration-rules]] and November lines 208-220.\n\nThe guides exclude the Setup Intents API and flexible acquiring features on other processors. For transactions involving a 3D Secure request, supply the Acquirer BIN for the destination processor.\n\n## Execution History, Reporting and Payment Outcome\n\nThe Payment Record provides execution history for payments with Orchestration enabled. The example retains the same `payment_record` ID throughout the PaymentIntent lifecycle and generates an attempt record each time the PaymentIntent is confirmed. The November diagram shows the Payment Record’s `latest_payment_attempt_record` link. See [[source-stripe-payment-records]] and November lines 84-119, 121-155 and 178-206.\n\nFor external routing, Stripe creates Payment Records and Payment Attempt Records in place of Charges. The example sets `latest_charge` to `null`. If internal reporting or reconciliation relies on Charges, the guides direct you to use Payment Attempt Records across **all Stripe volume**. External payments lack Stripe Balance Transactions because their funds do not move through the Stripe account.\n\nWhen another processor handles a card payment, Stripe reports `processing` and sends `payment_intent.processing`, which can support a temporary inventory hold. After the processor reports capture, Stripe transitions the PaymentIntent to `succeeded` and sends `payment_intent.succeeded`. Existing handlers that fulfill from the latter event need no change according to both guides. A return URL, processor selection, processor-reported capture and Stripe-account settlement identify different stages.\n\nDashboard analytics can take up to two days to populate. For externally processed payments, the Dashboard lacks balance summary and activity reports, dispute status and receipts. See November lines 212-220.\n\n## Error Prevention and Retry Eligibility\n\nOnboarding opt-in enables error prevention. If a selected main or retry processor cannot support a required feature, Orchestration attempts the payment on Stripe instead of returning the unsupported-feature error. If Stripe is the main processor and the payment fails there, Stripe evaluates whether the configured retry processor can handle the payment and skips the retry if it cannot. The November feature-support guide says failover from Stripe ignores error protection to avoid a duplicate Stripe attempt. Other retry conditions still apply, including unsuccessful 3DS and features the retry processor cannot handle. See May lines 171-175, November lines 222-226, [[source-stripe-orchestration-feature-support]] and [[source-stripe-orchestration-retries]].\n\n## Dated API Examples\n\nThe May 11 guide uses Node.js for two PaymentIntent-create samples with `payment_method_types: [\"card\"]` and for Payment Record retrieval. The November 7 guide uses cURL and the two PaymentIntent examples include `return_url` and omit the explicit card list. The changed samples leave the reason, the request API version and any universal return-URL requirement unstated. The sandbox button label changes from **Add rules** to **Add test rules**. Text diagrams expose existing object and webhook links in the same illustrated flow. The two create arrows identify a single illustrated PaymentIntent flow, and its `2025-01-27` value is the sample webhook event version.\n\nThe separate removal changelog’s REST links and table identify the affected PaymentIntent Create endpoint as `2026-09-30.endive`. It documents HTTP 400 (`payment_method_types_no_longer_supported`) when sending the older writable request parameter at that endpoint. The response property remains computed and read-only. The same changelog’s Impact paragraph separately names `2026-08-26.preview`. Check the versioned endpoint before reusing the May samples. See May lines 38-52, 61-75 and 128-134 and November lines 56-65, 73-82 and 178-185.\n\n## Related Pages\n\n- [[stripe-orchestration]] — routing, product constraints and related guides.\n- [[source-stripe-orchestration]] — product and processor overview.\n- [[source-stripe-orchestration-rules]] — conditions, actions and rule lifecycle.\n- [[source-stripe-orchestration-retries]] — eligibility, 3DS and retry outcomes.\n\n## Raw Sources\n\n- [[raw/stripe-payments-orchestration-route-payments-2026-11-07|Stripe’s November 7, 2026 routing implementation guide]]\n- [[raw/stripe-orchestration-route-payments-2026|Stripe’s May 11, 2026 routing implementation guide]]\n\n## Related raw API references\n\n- [[raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07|Endive PaymentIntent and SetupIntent request-parameter changelog]] — November 7, 2026 capture, lines 5-36.\n",
+  "quotes": {
+    "payments-orchestration-route-payments": [
+      {
+        "text": "Link transactions are automatically excluded from your routing rules and always processed on Stripe, regardless of your routing configuration.",
+        "location": "raw/stripe-payments-orchestration-route-payments-2026-11-07.md:37"
+      },
+      {
+        "text": "Use the API key from your selected sandbox for the PaymentIntent examples.",
+        "location": "raw/stripe-payments-orchestration-route-payments-2026-11-07.md:54"
+      },
+      {
+        "text": "If you rely on Charges for any of your internal reporting or reconciliation, you must use Payment Attempt Records instead across all of your Stripe volume.",
+        "location": "raw/stripe-payments-orchestration-route-payments-2026-11-07.md:118"
+      },
+      {
+        "text": "After the processor informs Stripe the payment is captured, the PaymentIntent status transitions from `processing` to `succeeded`",
+        "location": "raw/stripe-payments-orchestration-route-payments-2026-11-07.md:161"
+      },
+      {
+        "text": "If we’re the main processor and the payment fails on Stripe, we evaluate whether the retry processor can handle the payment and, if not, we don’t attempt to route the payment to the retry processor.",
+        "location": "raw/stripe-payments-orchestration-route-payments-2026-11-07.md:224"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-orchestration-route-payments": [
+      {
+        "text": "Orchestration is in private preview.",
+        "location": "raw/stripe-orchestration-route-payments-2026.md:10"
+      },
+      {
+        "text": "If you rely on Charges for any of your internal reporting or reconciliation, you must use Payment Attempt Records instead across all of your Stripe volume.",
+        "location": "raw/stripe-orchestration-route-payments-2026.md:116"
+      },
+      {
+        "text": "If Stripe is the main processor and the payment fails on Stripe, we evaluate if the retry processor can handle the payment and if not, we don’t attempt to route the payment to the retry processor.",
+        "location": "raw/stripe-orchestration-route-payments-2026.md:173"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-orchestration-route-payments-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 226
+      }
+    ],
+    "raw/stripe-orchestration-route-payments-2026.md": [
+      {
+        "start": 1,
+        "end": 175
+      }
+    ],
+    "wiki/sources/source-stripe-orchestration-route-payments.md": [
+      {
+        "start": 1,
+        "end": 59
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/831cae1127857800bf34e916/content.diff": [
+      {
+        "start": 1,
+        "end": 244
+      }
+    ],
+    "raw/stripe-orchestration-2026.md": [
+      {
+        "start": 31,
+        "end": 39
+      }
+    ],
+    "raw/stripe-payments-orchestration-2026-11-07.md": [
+      {
+        "start": 43,
+        "end": 51
+      }
+    ],
+    "raw/stripe-payments-orchestration-feature-support-2026-11-07.md": [
+      {
+        "start": 25,
+        "end": 29
+      }
+    ],
+    "raw/stripe-payments-orchestration-retries-2026-11-07.md": [
+      {
+        "start": 26,
+        "end": 36
+      }
+    ],
+    "raw/stripe-payments-orchestration-wallet-payments-2026-11-07.md": [
+      {
+        "start": 23,
+        "end": 38
+      }
+    ],
+    "raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 36
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 7,
+        "end": 7
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 577,
+        "end": 577
+      },
+      {
+        "start": 706,
+        "end": 706
+      }
+    ],
+    "wiki/concepts/stripe-orchestration.md": [
+      {
+        "start": 8,
+        "end": 124
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-orchestration-route-payments/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 206
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-orchestration-route-payments/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 86
+      }
+    ]
+  },
+  "answers": {
+    "payments-orchestration-route-payments": {
+      "Q1": "At https://docs.stripe.com/payments/orchestration/route-payments, the November private-preview capture documents Dashboard rules selecting a processor by conditions such as card country, amount or currency and an optional single cross-processor retry. Stripe representative onboarding checks the destination and integration and requires destination credentials in Dashboard. The email path requests access. Link transactions are excluded from the rules and processed on Stripe. Use sandbox rules and the sandbox key for tests, then activate live rules separately. The server enables payments_orchestration on the PaymentIntent; Billing, Checkout Sessions, Payment Links and Dashboard-created PaymentIntents need representative configuration. Setup Intents API and flexible acquiring on other processors remain unsupported, and 3DS needs the Acquirer BIN for the destination (old raw lines 8-55 and new raw lines 9-67). Retrieve the Payment Record execution history and inspect processor_details or Dashboard routing information. Externally routed payments have Payment Records and Payment Attempt Records in place of Charges and no Stripe Balance Transaction. The payment_record ID remains stable across the PaymentIntent lifecycle, and the attempt record is generated on confirmation. Charge-dependent reporting migrates to Payment Attempt Records across all Stripe volume. The external card flow is processing until the processor reports capture, then succeeded, the event used by existing fulfillment handlers (old raw lines 78-155, new raw lines 84-206). The mapped source-stripe-orchestration-route-payments.md preserves the main May flow, but omits Link and reporting scope and incorrectly makes failed main-Stripe attempts skip every retry processor. With error prevention enabled during onboarding, an unsupported feature on the selected main or retry processor triggers an attempt on Stripe. When Stripe is the main processor and fails, it evaluates the retry processor and skips it if it cannot handle the payment (old raw lines 171-175 and new raw lines 222-226). The revised source restores Link, conditional cross-volume reporting, capture and the error-prevention branch.",
+      "Q2": "At https://docs.stripe.com/payments/orchestration/route-payments, the November changes missing from source-stripe-orchestration-route-payments.md are the email request path within private preview, the explicit Stripe-only Link behavior and the clearer sandbox account/key selection (old raw lines 8-36 and new raw lines 9-54). The related May product overview already excludes Link. Keep that dated distinction and the separate Apple Pay/Google Pay routing scope in reciprocal source and concept guidance. November curl PaymentIntent examples add return_url and omit the May Node samples' explicit card list. Those are example request changes, and the CLI syntax, textual diagrams, and label revisions are presentation changes. The separate Stripe Endive changelog's What's new section and REST table identify PaymentIntent Create at 2026-09-30.endive. At that endpoint sending the May example's writable payment_method_types returns HTTP 400 with payment_method_types_no_longer_supported. The field remains as a computed read-only response property. The changelog's Impact paragraph separately names 2026-08-26.preview. Keep those references distinct from the route's 2025-01-27 illustrative webhook event version. The route comparison shows the request example difference and leaves its cause, the account's request version and any universal return_url requirement unverified (old raw lines 38-52, old raw lines 61-75 and old raw lines 128-134, new raw lines 56-65, new raw lines 73-82 and new raw lines 178-185, separate Endive changelog at raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07.md:9-16, :28 and :30-36). Preserve the conditional reporting migration across all Stripe volume, lack of Balance Transactions for external volume, and capture-notification boundary for fulfillment. Correct reciprocally the historical error-prevention oversimplification. Unsupported features on a selected main or retry processor can trigger an attempt on Stripe after opt-in. If Stripe is main and fails, it checks whether the alternate can handle it and skips the retry if it cannot. The related feature-support guide says failover from Stripe ignores error protection to prevent a duplicate Stripe attempt (old raw lines 112-126 and old raw lines 171-175, new raw lines 114-119, new raw lines 157-176 and new raw lines 222-226). Registration, sandbox routing, processor capture notification, settlement and live eligibility have distinct evidence boundaries. The revised source retains both captured dates and routes to the versioned changelog and related feature guides."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "s04-route-payments-link",
+      "target_path": "wiki/concepts/stripe-orchestration.md",
+      "update_kind": "durable_fact",
+      "anchor": "Non-card payments, Link, Capital, Connect, Terminal, Organizations, Radar (for third-party routed payments), Sigma, disputes, settlement-related activity.",
+      "proposed_markdown": "Non-card payments, Capital, Connect, Terminal, Organizations, Radar (for third-party routed payments), Sigma, disputes, settlement-related activity. The November routing guide says Link transactions bypass configured routing rules and Stripe processes them because Link credentials cannot transfer between processors. Apple Pay and Google Pay have separate routing guidance.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "November route raw lines 35-37; May product overview raw lines 31-39; November wallet guide raw lines 23-38."
+      ]
+    },
+    {
+      "update_id": "s04-route-payments-records",
+      "target_path": "wiki/concepts/stripe-orchestration.md",
+      "update_kind": "durable_fact",
+      "anchor": "For payments routed to third-party processors, Stripe creates **Payment Records** and **Payment Attempt Records** instead of Charges:",
+      "proposed_markdown": "For payments with Orchestration enabled, the Payment Record contains execution history. The guide’s example keeps `payment_record` stable through the PaymentIntent lifecycle and generates a new attempt record at confirmation. For payments routed to third-party processors, Stripe creates **Payment Records** and **Payment Attempt Records** instead of Charges. Retrieve using the Payment Record ID:",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "November route raw lines 84-119, 121-155 and 195-202; May raw lines 78-117 and 128-151."
+      ]
+    },
+    {
+      "update_id": "s04-route-payments-reporting",
+      "target_path": "wiki/concepts/stripe-orchestration.md",
+      "update_kind": "durable_fact",
+      "anchor": "- No Charges for third-party routed payments → switch to Payment Attempt Records",
+      "proposed_markdown": "- Third-party routed payments have no Stripe Charges. If reporting or reconciliation relies on Charges, use Payment Attempt Records across all Stripe volume.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "November route raw lines 114-119 and May raw lines 112-117."
+      ]
+    },
+    {
+      "update_id": "s04-route-payments-capture",
+      "target_path": "wiki/concepts/stripe-orchestration.md",
+      "update_kind": "durable_fact",
+      "anchor": "- Then `succeeded` + `payment_intent.succeeded` (no change needed if already handling)",
+      "proposed_markdown": "- After the external processor reports capture, Stripe transitions the PaymentIntent to `succeeded` and sends `payment_intent.succeeded`. Existing fulfillment handlers based on that event need no change according to the routing guide.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "November route raw lines 157-176 and May raw lines 120-126."
+      ]
+    },
+    {
+      "update_id": "s04-route-payments-retry",
+      "target_path": "wiki/concepts/stripe-orchestration.md",
+      "update_kind": "durable_fact",
+      "anchor": "When enabled: if the chosen processor doesn't support a required feature, Stripe auto-falls back. If Stripe also fails, retry processor is not attempted.",
+      "proposed_markdown": "If you opt in during onboarding, Orchestration attempts the payment on Stripe when a selected main or retry processor cannot support a required feature. If Stripe is the main processor and its payment fails, Stripe evaluates the configured retry processor and skips it if it cannot handle the payment. The feature-support guide says failover from Stripe ignores error protection to avoid a duplicate Stripe attempt. Other retry restrictions also apply. See [[source-stripe-orchestration-route-payments]] and [[source-stripe-orchestration-retries]].",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "November route raw lines 222-226; May raw lines 171-175; November feature-support raw lines 25-29; November retries raw lines 26-36."
+      ]
+    },
+    {
+      "update_id": "s04-route-payments-source",
+      "target_path": "wiki/concepts/stripe-orchestration.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-orchestration-route-payments]] — implementation: API param, Payment Records, reporting/webhook changes, error prevention",
+      "proposed_markdown": "- [[source-stripe-orchestration-route-payments]] — May and November 2026 implementation guides for private-preview onboarding, sandbox rules, Payment Records, capture webhooks and error prevention.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ]
+}

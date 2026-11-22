@@ -1,0 +1,184 @@
+{
+  "job_id": "payments-payment-element-design-an-integration",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Design a Custom Payment Element Integration\"\ntype: source\ndate_ingested: 2026-04-21\ndate_updated: 2026-11-22\ncanonical_url: \"https://docs.stripe.com/payments/payment-element/design-an-integration\"\noriginal_format: webpage\nraw_files:\n  - \"stripe-payment-element-design-integration-2025.md\"\ntags: [stripe, payment-element, payment-intents, setup-intents, integration-design, deferred-intent, client-confirmation, server-confirmation]\n---\n\n## Summary\n\nThe April 21, 2026 guide describes two custom Payment Element routes. It recommends Checkout Sessions for most integrations, including one-time payments and checkouts with tax, discounts, shipping, or subscriptions. The lower-level Payment Intents route leaves checkout features such as tax, discounts, shipping, and currency conversion to the integration.\n\nThe November 7, 2026 capture gives two documentation links. The Checkout Sessions variant uses `payment-ui=embedded-components` and the Payment Intents variant uses `payment-ui=elements`. These query parameters select documentation. The November index supplies no updated integration steps or API and SDK versions.\n\n## April Checkout Sessions route\n\nThe April guide uses `ui_mode: \"elements\"` in its Checkout Sessions example. The Checkout Session client secret initializes Checkout itself. The HTML path uses `stripe.initCheckoutElementsSdk` and confirms with `actions.confirm()` after loading actions. The React path imports from `@stripe/react-stripe-js/checkout`, supplies the secret to `CheckoutElementsProvider`, and uses `checkout.confirm`. Keep this initialization and confirmation separate from Elements initialized with a PaymentIntent or SetupIntent client secret.\n\nThe same capture describes Checkout Sessions for both basic payment collection with `price_data` and full line-item checkout, and assigns Adaptive Pricing to Checkout Sessions in this comparison. See the [[source-stripe-checkout-sessions-vs-payment-intents|separate API comparison]].\n\n## April Payment Intents route\n\nThe Payment Element supplies payment details to a PaymentIntent for payment or to a SetupIntent to prepare a method for future use. The April guide gives two decisions for this route.\n\n### When to create the Intent\n\n| Approach | Order and use |\n| --- | --- |\n| **Deferred** | Render the Payment Element first. Create and confirm the PaymentIntent or SetupIntent after the customer submits the payment form. This suits multi-page checkouts and checkouts with changing items, quantities, or discounts. Changing amounts can affect payment method eligibility. Deferring the Intent avoids synchronizing it after every client-side change. |\n| **Eager** | Create the PaymentIntent or SetupIntent before loading checkout. Create Elements with that Intent’s `client_secret` so the Payment Element is associated with the Intent. This is the April guide’s quick-start choice for a static checkout. |\n\n### Where to confirm the Intent\n\n| Approach | Responsibility |\n| --- | --- |\n| **Client-side** | Client code uses a Stripe SDK to confirm. The SDK handles supported next actions such as 3D Secure and localizes errors. Choose this when the integration does not need server control at confirmation. The integration can still use a backend. |\n| **Server-side** | Run the required business logic first, such as applying payment method restrictions or adjusting application fees, then confirm immediately on the server before the client can change the inputs. Handle any returned next actions manually or with a Stripe SDK. The linked PaymentIntent route uses `stripe.handleNextAction` for required customer authentication or redirects. |\n\nConfirmation associates the submitted details with the Intent. Check the resulting state separately for required customer action or a successful payment or setup. The companion [[source-stripe-finalize-payments-server|server-finalization guide]] gives the dated web PaymentIntent `requires_action` example.\n\n## Related Pages\n\n- [[stripe-payment-intents]] — Intent creation, confirmation and lifecycle\n- [[source-stripe-checkout-sessions-vs-payment-intents]] — API comparison\n- [[source-stripe-finalize-payments-server]] — server confirmation and next actions\n- [[stripe]] — company page\n\n## Raw Sources\n\n- [[raw/stripe-payment-element-design-integration-2025|2026-04-21 Payment Element design guide]] — verbatim architectural decision guide, 48 lines\n\n## Related raw API references\n\n- [[raw/stripe-payments-payment-element-design-an-integration-2026-11-07|2026-11-07 Payment Element design index]] — Checkout Sessions and Payment Intents variant navigation\n",
+  "quotes": {
+    "payments-payment-element-design-an-integration": [
+      {
+        "text": "Learn which choices you need to make before building a custom Payment Element integration.",
+        "location": "raw/stripe-payments-payment-element-design-an-integration-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-payment-element-design-an-integration-2026-11-07.md:11"
+      },
+      {
+        "text": "[Checkout Sessions API](https://docs.stripe.com/payments/payment-element/design-an-integration.md?payment-ui=embedded-components)",
+        "location": "raw/stripe-payments-payment-element-design-an-integration-2026-11-07.md:13"
+      },
+      {
+        "text": "[Payment Intents API](https://docs.stripe.com/payments/payment-element/design-an-integration.md?payment-ui=elements)",
+        "location": "raw/stripe-payments-payment-element-design-an-integration-2026-11-07.md:14"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-payment-element-design-an-integration": [
+      {
+        "text": "We recommend the Checkout Sessions API for most integrations.",
+        "location": "raw/stripe-payment-element-design-integration-2025.md:14"
+      },
+      {
+        "text": "Defer creating and confirming the PaymentIntent or SetupIntent until the customer submits the payment form",
+        "location": "raw/stripe-payment-element-design-integration-2025.md:32"
+      },
+      {
+        "text": "Payment information collected by the Payment Element is transferred onto the PaymentIntent or SetupIntent at confirmation time.",
+        "location": "raw/stripe-payment-element-design-integration-2025.md:42"
+      },
+      {
+        "text": "If next actions are required, you must handle them either manually or by using a Stripe SDK",
+        "location": "raw/stripe-payment-element-design-integration-2025.md:47"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-payment-element-design-an-integration-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-payment-element-design-integration-2025.md": [
+      {
+        "start": 1,
+        "end": 48
+      }
+    ],
+    "wiki/sources/source-stripe-payment-element-design-integration.md": [
+      {
+        "start": 1,
+        "end": 43
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/316f7933245fb93644fb35e9/content.diff": [
+      {
+        "start": 1,
+        "end": 50
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-payment-element-design-an-integration/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 168
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-payment-element-design-an-integration/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 96
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 68,
+        "end": 76
+      },
+      {
+        "start": 727,
+        "end": 731
+      }
+    ],
+    "wiki/concepts/stripe-payment-intents.md": [
+      {
+        "start": 8,
+        "end": 58
+      },
+      {
+        "start": 132,
+        "end": 149
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 763,
+        "end": 769
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-sessions-vs-payment-intents.md": [
+      {
+        "start": 10,
+        "end": 49
+      }
+    ],
+    "wiki/sources/source-stripe-finalize-payments-server.md": [
+      {
+        "start": 14,
+        "end": 24
+      }
+    ],
+    "raw/stripe-finalize-payments-server-2026.md": [
+      {
+        "start": 685,
+        "end": 706
+      }
+    ]
+  },
+  "answers": {
+    "payments-payment-element-design-an-integration": {
+      "Q1": "The November 7, 2026 capture of https://docs.stripe.com/payments/payment-element/design-an-integration establishes the Payment Element design guide’s purpose and two documentation routes: Checkout Sessions at `payment-ui=embedded-components` and Payment Intents at `payment-ui=elements` (new raw lines 5-14). The April 21 guide recommends Checkout Sessions for most integrations and describes initializing Checkout with the Checkout Session client secret, using `stripe.initCheckoutElementsSdk` and loaded `actions.confirm()` for HTML or `CheckoutElementsProvider` and `checkout.confirm` in React. Its lower-level Payment Intents variant leaves checkout features such as tax and shipping to the integration (old raw lines 8-22). For a multi-page or dynamic checkout, the April guide renders the Payment Element before creating and confirming the relevant Intent on submission, avoiding separate sync as amount and method eligibility change. For a static eager path, create the Intent before loading checkout and pass its client secret into Elements. PaymentIntent collects payment; SetupIntent prepares a future method (old raw lines 28-38). The client SDK handles supported next actions and localization. For server-side business logic, confirm immediately after it runs and handle required next actions manually or through an SDK, such as `stripe.handleNextAction` for the linked PaymentIntent route (old raw lines 40-48). source-stripe-payment-element-design-integration.md captures the two choices but omits the order and required-action qualifications. The revised mapped source preserves the April setup and next-action guidance beside the November selector.",
+      "Q2": "For https://docs.stripe.com/payments/payment-element/design-an-integration the November change is variant navigation (new raw lines 9-14 compared with old raw lines 10-18). It does not substantively refresh the April recommendation, lower-level checkout ownership, deferred/eager guidance or client/server handling. Preserve those dated details and their PaymentIntent-versus-SetupIntent purpose (old raw lines 20-48). In source-stripe-payment-element-design-integration.md and its reciprocal Payment Intents concept, clarify that the client confirmation choice concerns control at confirmation and does not mean an integration has no backend. Server confirmation still requires handling any returned next actions, such as customer 3DS or a redirect. Confirming the Intent and associating the submitted payment data do not independently prove payment or setup success. Keep Checkout Sessions-specific client initialization and confirmation separate from the eager Intent client-secret association and the Payment Intent SDK/server paths (old raw lines 8-14, old raw lines 37-38 and old raw lines 40-48). A documentation query parameter is not an API mode, and the selector gives no fresh SDK or API version evidence. The revised source dates the retained design choices and links the companion web server-finalization example."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-payment-element-design-an-integration-intent-creation-order",
+      "target_path": "wiki/concepts/stripe-payment-intents.md",
+      "update_kind": "durable_fact",
+      "anchor": "| **Deferred** (create Payment Element first) | Multi-page flows; dynamic amounts (items, quantities, discounts can change before Pay) |\n| **Eager** (create Intent + Payment Element together) | Static checkout pages; quickest setup |",
+      "proposed_markdown": "| **Deferred** | Render Payment Element first, then create and confirm the PaymentIntent or SetupIntent on customer submission. Useful for multi-page checkout or changing amounts. |\n| **Eager** | Create the PaymentIntent or SetupIntent before loading checkout, then initialize Elements with that Intent’s client secret. The April 2026 guide recommends this for static checkout. |",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": [
+        "April creation order and use cases: raw/stripe-payment-element-design-integration-2025.md:28-38. November has a documentation route only: raw/stripe-payments-payment-element-design-an-integration-2026-11-07.md:9-14."
+      ]
+    },
+    {
+      "update_id": "payments-payment-element-design-an-integration-confirm-and-handle-actions",
+      "target_path": "wiki/concepts/stripe-payment-intents.md",
+      "update_kind": "durable_fact",
+      "anchor": "| **Client-side** | No server business logic needed; quickest; Stripe SDK handles 3DS + next actions automatically + localizes errors |\n| **Server-side** | Must run business logic before confirmation (PM restrictions, application fees); confirm immediately after to prevent client invalidation |",
+      "proposed_markdown": "| **Client-side** | When server control at confirmation is unnecessary, use the client SDK. It handles supported next actions such as 3D Secure and localizes errors. The rest of the integration can still use a backend. |\n| **Server-side** | Run pre-confirmation business logic, such as applying payment method restrictions or adjusting application fees, then confirm immediately. Handle any returned next actions manually or through an SDK. In the linked web PaymentIntent example, use `stripe.handleNextAction` for required customer action. |\n\nCheck the resulting Intent state. Confirmation can leave customer action pending, and setup success differs from a completed payment.",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": [
+        "April confirmation and action handling: raw/stripe-payment-element-design-integration-2025.md:40-48. Dated web PaymentIntent example: raw/stripe-finalize-payments-server-2026.md:689-703. November selector is navigation only."
+      ]
+    },
+    {
+      "update_id": "payments-payment-element-design-an-integration-dated-design-guide-route",
+      "target_path": "wiki/concepts/stripe-payment-intents.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-payment-element-design-integration]] — 2×2 integration design framework: when to create Intent × where to confirm (deferred vs eager, client vs server)",
+      "proposed_markdown": "- [[source-stripe-payment-element-design-integration]] — April 2026 Checkout Sessions and Payment Intents paths, including separate initialization and Intent creation/confirmation choices. The November capture is variant navigation.",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "Detailed April guidance: raw/stripe-payment-element-design-integration-2025.md:8-48. November selector: raw/stripe-payments-payment-element-design-an-integration-2026-11-07.md:9-14."
+      ]
+    }
+  ]
+}

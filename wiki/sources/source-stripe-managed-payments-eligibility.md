@@ -2,99 +2,80 @@
 title: "Managed Payments Eligibility"
 type: source
 date_ingested: 2026-04-23
+date_updated: 2026-11-22
 original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/managed-payments/eligibility"
 raw_files:
+  - "stripe-payments-managed-payments-eligibility-2026-11-07.md"
   - "stripe-managed-payments-eligibility-2025.md"
 tags: [stripe, managed-payments, merchant-of-record, tax-codes, eligibility, digital-goods, buyer-countries]
 ---
 
 ## Summary
 
-Detailed eligibility requirements for Stripe Managed Payments: which business locations, product types, tax codes, buyer countries, and performance standards are required. Primary reference for the tax code list.
+Stripe reviews direct integrations for Managed Payments eligibility based on factors including business type and geography. The November 7, 2026 capture lists 37 merchant business locations and 76 eligible Product tax codes. Each sale through a Checkout Session or Payment Link must meet the product, distribution, and tax-code requirements. Customer coverage and ongoing account requirements apply separately.
 
 ## Account Eligibility
 
-- **Business types**: Direct integrations only — no Connect platforms, Express accounts, or platform-controlled accounts
-- **Supported business locations**: ~38 countries across North America, Europe, and Asia Pacific
+Use a direct integration with a business based in a supported location. Connect platforms, Express accounts, and accounts controlled by a platform are excluded. A listed business location or Product tax code alone does not establish Stripe approval.
 
-### Supported Business Locations
+### Supported business locations
 
-**North America**: CA, US
+The November 7, 2026 eligibility capture lists 37 entries (raw lines 22–68).
 
-**Europe** (32 countries): AT, BE, BG, CH, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GI, GR, HR, HU, IE, IT, LI, LT, LU, LV, MT, NL, NO, PL, PT, RO, SE, SI, SK
+- **North America**: CA, US
+- **Europe**: AT, BE, BG, CH, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GR, HR, HU, IE, IT, LI, LT, LU, LV, MT, NL, NO, PL, PT, RO, SE, SI, SK
+- **Asia Pacific**: AU, HK, JP, SG
 
-**Asia Pacific**: AU, HK, JP, SG
+The April 23, 2026 eligibility capture lists 38 entries, including Gibraltar (GI, raw lines 21–69). The November list otherwise matches April's. The [[source-stripe-managed-payments-changelog]] separately reports 39 countries, including Australia, at the April 22, 2026 general-availability milestone. The November [[source-stripe-managed-payments-tax-compliance]] capture still includes Gibraltar for cross-border sales to customers there. The eligibility snapshots give no effective date for the listing change or account-specific treatment for Gibraltar.
 
 ## Product Eligibility
 
-### Supported Categories
+For each Product sold through a Checkout Session or Payment Link, assign an eligible tax code on the Product in the Dashboard or through the API. Sell directly to customers, hold the necessary distribution rights and licences, and provide a fully automated digital product. Live human intervention such as one-to-one coaching disqualifies the service. If Stripe determines that a product is ineligible, stop using Managed Payments for that product and take responsibility for its indirect tax liability. The guide points to Stripe Tax as a separate option when a product appears ineligible.
 
-- Software (IaaS, PaaS, SaaS, downloadable)
-- Video games
-- Digital media (audiobooks, ebooks, magazines, newspapers, audio/video works, images)
-- Online courses and training (self-study, on-demand)
-- Electronically supplied business/web services (website hosting, information services)
+Eligible categories include software (IaaS, PaaS, SaaS, and downloads), video games, digital media, self-study and on-demand courses, and electronically supplied business and web services. Physical goods, professional services, and live in-person events are excluded. Some Digital Audio Visual Works rows cover live-event content delivered as digital downloads, streams, or bundles (November raw lines 153–155 and 175–177, April raw lines 149–151 and 172–174). Check the exact code definition, direct sale, distribution rights, and automated delivery together. The general electronically supplied services description for `txcd_10000000` mentions minimal human involvement (line 108 in both captures). The fully automated Managed Payments requirement still applies.
 
-### Unsupported Categories
+### Exact eligible tax codes
 
-- Physical goods
-- Professional services (consulting, marketing, design, development, tech support)
-- Live in-person events
+Use the enumerated dated tables for code lookup: November 7 raw lines 104–183 (76 rows) and April 23 raw lines 104–180 (73 rows). The SaaS rows, for example, are `txcd_10103000`, `txcd_10103001`, `txcd_10103100`, and `txcd_10103101`. The personal and business distinctions on applicable codes matter for US sales.
 
-### Critical Rule: Fully Automated Only
+November includes these four AIaaS rows (raw lines 117–120), which the November [[source-stripe-managed-payments-changelog]] capture dates to June 2, 2026.
 
-Product must be **fully automated** — no human intervention:
-> "If your service involves human intervention (such as live 1-1 coaching), it doesn't qualify."
-
-If Stripe determines ineligibility after the fact → you're responsible for indirect tax liability and must stop using Managed Payments for that product.
-
-### Eligible Tax Codes (Summary by Category)
-
-Must assign one of 60+ eligible `txcd_` codes. Key codes by category:
-
-| Category | Tax codes |
+| Tax code | AIaaS delivery and use |
 | --- | --- |
-| General digital services | `txcd_10000000` |
-| IaaS (personal/business) | `txcd_10010001`, `txcd_10101000` |
-| PaaS (personal/business) | `txcd_10102001`, `txcd_10102000` |
-| SaaS (personal/business, download variants) | `txcd_10103000`–`txcd_10103101` |
-| Video games (download/stream, perm/limited/subscription) | `txcd_10201000`–`txcd_10201004` |
-| Downloadable software | `txcd_10202000`, `txcd_10202001`, `txcd_10202003` |
-| Audiobook | `txcd_10301000` |
-| Digital books | `txcd_10302000`–`txcd_10302003` |
-| Digital magazines/periodicals | `txcd_10303000`–`txcd_10303104` |
-| Digital newspapers | `txcd_10304000`–`txcd_10304102` |
-| Digital school textbooks | `txcd_10305000`, `txcd_10305001` |
-| Digital audio works | `txcd_10401000`–`txcd_10401200` |
-| Digital audio-visual works | `txcd_10402000`–`txcd_10402200` |
-| Digital photos/images | `txcd_10501000` |
-| Digital news/documents | `txcd_10503000`–`txcd_10503005` |
-| Software documentation/manuals | `txcd_10504003` |
-| Digital finished artwork | `txcd_10505000`–`txcd_10505002` |
-| Digital greeting cards | `txcd_10506000`–`txcd_10506002` |
-| Website advertising/hosting/info services | `txcd_10701000`–`txcd_10701411` |
-| Digital AV/audio bundles | `txcd_10804001`–`txcd_10804010` |
-| Online courses (self-study, on-demand) | `txcd_20060058`–`txcd_20060358` |
-| Software maintenance agreements | `txcd_37071001` |
+| `txcd_10105001` | Cloud-based, personal use |
+| `txcd_10105002` | Cloud-based, business use |
+| `txcd_10105003` | Cloud-based and downloaded, personal use |
+| `txcd_10105004` | Cloud-based and downloaded, business use |
 
-**US note**: business/personal use distinction on tax codes only relevant if you have US sales.
+April includes Website Advertising `txcd_10701000` (raw line 166) and November omits it. Website Hosting `txcd_10701100` remains in the November table. The April changelog capture listed Website Advertising in its September 22, 2025 one-time and in-app payment entry. The November changelog capture omits it from that entry. These omissions give no effective removal date, replacement code, or treatment of existing products or invoices.
 
-## Buyer Eligibility
+November explicitly excludes data brokering from the four following information-service code definitions (raw lines 171–174). It also drops “of any kind” from the electronically delivered definitions.
 
-- **195+ countries and territories** supported
-- **9 restricted countries**: Ascension Island, China, Cuba, Iran, Kosovo, North Korea, Russia, Syria, Tristan da Cunha
+| Tax code | Information service |
+| --- | --- |
+| `txcd_10701400` | Via website, business use |
+| `txcd_10701401` | Via website, personal use |
+| `txcd_10701410` | Electronically delivered, business use |
+| `txcd_10701411` | Electronically delivered, personal use |
+
+## Customer Coverage
+
+Both captures describe coverage in more than 195 customer countries and territories. The nine listed restrictions are Ascension Island, China, Cuba, Iran, Kosovo, North Korea, Russia, Syria, and Tristan da Cunha. This customer coverage is distinct from merchant business locations and product eligibility.
 
 ## Ongoing Performance Requirements
 
-- **Dispute rate**: must maintain low historical dispute rate, no prior risk issues
-- **Refunds**: Stripe can issue refunds within **60 days** of purchase in certain cases to reduce chargebacks
-- **Consumer protection**: Stripe applies regional cooling off periods and other applicable consumer protection requirements
+Maintain a low historical dispute rate and have no prior risk issues. Stripe can issue refunds within 60 days of purchase in certain cases, including to help reduce chargebacks. Stripe applies regional cooling-off periods and other applicable consumer protection requirements.
 
 ## Related Pages
 
-- [[stripe-managed-payments]] — concept page
-- [[source-stripe-managed-payments-overview]] — overview (integration paths, feature comparison)
+- [[stripe]] — Stripe and its Managed Payments documentation
+- [[stripe-managed-payments]] — account and product eligibility, integrations, and operating requirements
+- [[source-stripe-managed-payments-overview]] — integration paths and feature comparison
+- [[source-stripe-managed-payments-changelog]] — dated availability and eligible-code milestones
+- [[source-stripe-managed-payments-tax-compliance]] — customer tax coverage and merchant responsibilities
 
 ## Raw Sources
 
-- [[stripe-managed-payments-eligibility-2025]] — verbatim eligibility page (212 lines, complete with buyer eligibility and ongoing requirements)
+- [[raw/stripe-payments-managed-payments-eligibility-2026-11-07]] — full eligibility capture, November 7, 2026
+- [[raw/stripe-managed-payments-eligibility-2025]] — full eligibility capture, April 23, 2026

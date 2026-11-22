@@ -1,0 +1,40 @@
+--- wiki/concepts/stripe-off-session-payments.md
++++ wiki/concepts/stripe-off-session-payments.md
+@@ -7,13 +7,13 @@
+ 
+ ## Overview
+ 
+-The Off-Session Payments API (`stripe.v2.payments.offSessionPayments`) is a v2 API for initiating recurring and unscheduled payments against saved payment methods. It adds two capabilities not in standard Payment Intents: **AI-powered smart retries** and **multi-processor routing**, both handled by Stripe in a single API call.
++The Off-Session Payments API (`stripe.v2.payments.offSessionPayments`) is a v2 private preview for initiating recurring and unscheduled payments against saved payment methods. Stripe's November overview documents an access request. The API supports eligible retries and has a separate Orchestration route.
+ 
+ ## Key Features
+ 
+-**Smart retries**: Set `retry_details.retry_strategy: 'best_available'` and Stripe uses AI inference to choose optimal retry times for failed payments — no retry logic required on your server.
++**Retry strategy**: `retry_details.retry_strategy=best_available` requests an eligible retry strategy. The response can show `smart` for AI-based Smart Retries, `scheduled` for a custom schedule, or `heuristic` for Direct Debit. A payment can enter `pending_retry`. Hard declines such as `authentication_required` prevent automatic retry. See [[source-stripe-off-session-payments-api#Retry strategy|the dated strategy comparison]].
+ 
+-**Multi-processor routing**: Route to any Stripe-supported processor or let Stripe auto-route. Works with the Off-Session Payments API and other supported payments APIs.
++**Multi-processor routing**: The May overview described routing to supported processors. The November overview omits that paragraph, while the separate November guide documents an opted-in, card-only Orchestration path that excludes Smart Retries.
+ 
+ ## API (v2 namespace)
+ 
+@@ -27,17 +27,17 @@
+ })
+ ```
+ 
+-Full API reference at `docs.stripe.com/api/v2/payments/off-session-payments/object` (preview).
++The May guide links the [preview API reference](https://docs.stripe.com/api/v2/payments/off-session-payments/object.md?api-version=preview). The [[source-stripe-off-session-payments-api#Create an off-session payment|dated request examples]] distinguish the November overview's `2026-04-22.preview` from the integration guide's `2026-08-26.preview` payment request and `2026-10-28.preview` event destination example.
+ 
+ ## Workflow
+ 
+ 1. Collect and save the customer's payment method using Checkout Sessions, Payment Intents, or Setup Intents (see [[stripe-saved-payment-methods]])
+ 2. Pass the saved `payment_method` ID to the Off-Session Payments API
+-3. Stripe handles the charge and any retries automatically
++3. Stripe attempts authorization after returning the create response. A separate v2 event destination reports authorization attempts and outcomes. See [[source-stripe-off-session-payments-api#Asynchronous attempts and outcomes|the event and capture distinctions]].
+ 
+ ## Relationship to Orchestration
+ 
+-Multi-processor routing in the Off-Session Payments API overlaps with [[stripe-orchestration]]. Orchestration is the broader routing layer for card payments across external processors; Off-Session Payments adds AI smart retries on top for recurring use cases.
++The November companion describes [[stripe-orchestration|Orchestration]] for Off-Session Payments as a separate card-only routing path with access to both previews, an onboarded processor, an active configuration and per-request opt-in. It excludes Connect, raw card data and Smart Retries. A routing rule can name an optional retry processor. See [[source-stripe-off-session-payments-api#Separate Orchestration path|the dated routing scope]].
+ 
+ ## Sources
+ 

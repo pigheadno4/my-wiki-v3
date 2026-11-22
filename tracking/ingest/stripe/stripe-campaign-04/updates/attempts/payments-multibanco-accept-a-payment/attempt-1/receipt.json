@@ -1,0 +1,201 @@
+{
+  "job_id": "payments-multibanco-accept-a-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Accept a Multibanco Payment\"\ntype: source\ndate_ingested: 2026-05-07\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/multibanco/accept-a-payment\"\nraw_files:\n  - \"stripe-multibanco-accept-payment-2025.md\"\ntags: [stripe, vouchers, multibanco, portugal, eur, checkout, direct-api, ios, android, entity-reference, expiry]\n---\n\n## Summary\n\nThe 2026-05-07 guide documents Checkout, web Direct API, iOS and Android for businesses in Europe or the United States accepting Multibanco from customers in Portugal. The customer receives an entity and reference and pays the EUR voucher outside checkout via online banking or an ATM. Transfer delays can push payment confirmation back several days, especially over weekends.\n\nThe 2026-11-07 base capture is a directory to the same four variants. The integration details below come from the May guide. Current variant compatibility, account eligibility and SDK requirements are unresolved by the directory.\n\n## Integration details from 2026-05-07\n\n- **Checkout** uses payment mode with one-time, same-currency EUR line items. The guide describes dynamic payment method presentation and separately shows how to list `multibanco` in `payment_method_types`. The Stripe-hosted example sets `success_url` and the full embedded example sets `return_url` with `ui_mode: embedded_page`. For Multibanco, successful form submission redirects to `hosted_voucher_url`. `checkout.session.completed` signals form submission and voucher creation. Fulfill after `checkout.session.async_payment_succeeded`, when the associated PaymentIntent succeeds. `checkout.session.async_payment_failed` covers expiry or other failure and the associated PaymentIntent returns to `requires_payment_method`.\n- **Direct API** creates an amount-and-EUR PaymentIntent on the server. The browser calls `stripe.confirmMultibancoPayment()` with its client secret and the required billing email. Stripe.js displays the voucher in a modal by default. With `handleActions: false`, the integration can display the voucher with entity, reference, expiry date, amount and EUR. In the optional server-confirmation path, Stripe creates and uses a PaymentMethod from the supplied `payment_method_data` including billing email. On `requires_action` with `next_action.type` of `multibanco_display_details`, the server can redirect to `next_action.multibanco_display_details.hosted_voucher_url`.\n- **iOS and Android** use the server-created EUR PaymentIntent's client secret and the customer's billing email. iOS uses `STPPaymentHandler.confirmPayment()` with `STPPaymentMethodMultibancoParams`. Android uses `PaymentLauncher.confirm()` with Multibanco payment method parameters. Each displays the voucher in a webview. The iOS `.succeeded` and Android `PaymentResult.Completed` callbacks in these examples indicate voucher display.\n- **PaymentIntent events** apply independently of Checkout Session events and client callbacks. `payment_intent.requires_action` indicates a voucher was created and exposes the link at `next_action.multibanco_display_details.hosted_voucher_url`. The same details contain `entity`, `reference` and `expires_at`. The May Direct API and mobile guides identify `payment_intent.succeeded` as the server-observed payment signal for fulfillment.\n\n## Expiry, cancellation and testing in the May guide\n\n- A voucher can be paid until its `next_action.multibanco_display_details.expires_at` Unix timestamp, seven days after creation. On expiry an intent awaiting voucher payment moves from `requires_action` to `processing`, with `payment_intent.processing`. The voucher can no longer be paid. The processing window lasts up to four days for delayed notification of an already initiated transfer. If payment fails to complete within the window, the intent moves to `requires_payment_method` and Stripe sends `payment_intent.payment_failed`.\n- Cancel the PaymentIntent to cancel the voucher. Stripe sends `payment_intent.canceled`. Canceling a pending payment invalidates its original voucher instructions, so inform the customer. If funds arrive after the buffer or against a canceled voucher, Stripe automatically initiates a refund for the mispaid amount.\n- Successfully reconfirming a `requires_action` PaymentIntent generates new instructions and a new `hosted_voucher_url`. Give the customer the replacements.\n- The `fill_never` sandbox scenario delivers `payment_intent.payment_failed` after 11 days and is described as mimicking live behavior. The voucher expiry and the subsequent processing window are separately defined.\n\n## Detail locators\n\n- May raw lines 8–191 cover Checkout compatibility, hosted and embedded examples, voucher redirect, events and tests.\n- May raw lines 193–612 cover the Direct API, including client confirmation at 307–385, optional server confirmation at 387–458 and manual presentation at 460–524.\n- May raw lines 614–893 cover iOS and lines 895–1166 cover Android, including platform-specific SDK setup, webview callbacks and post-payment events.\n\n## Related\n\n- [[stripe]]\n- [[stripe-vouchers]]\n- [[source-stripe-multibanco|Multibanco product overview]]\n\n## Raw Sources\n\n- [[raw/stripe-multibanco-accept-payment-2025|2026-05-07 Multibanco acceptance guide]] — verbatim webpage content (1,166 lines); fixed `*Prices*` ×1, `*subscription*` ×1, `*webhooks*` ×1, `*fulfillment*` ×1, `*client secret*` ×3, `*PaymentMethod*` ×1, `*webhook*` ×3, `*sandbox*` ×2, `*confirm*` ×2.\n\n## Related raw API references\n\n- [[raw/stripe-payments-multibanco-accept-a-payment-2026-11-07|Multibanco acceptance variant directory]] — 2026-11-07 navigation for Checkout, Direct API, iOS and Android.\n",
+  "quotes": {
+    "payments-multibanco-accept-a-payment": [
+      {
+        "text": "Learn how to accept the Multibanco payment method.",
+        "location": "raw/stripe-payments-multibanco-accept-a-payment-2026-11-07.md:7"
+      },
+      {
+        "text": "[Checkout](https://docs.stripe.com/payments/multibanco/accept-a-payment.md?payment-ui=checkout)",
+        "location": "raw/stripe-payments-multibanco-accept-a-payment-2026-11-07.md:13"
+      },
+      {
+        "text": "[Direct API](https://docs.stripe.com/payments/multibanco/accept-a-payment.md?payment-ui=direct-api)",
+        "location": "raw/stripe-payments-multibanco-accept-a-payment-2026-11-07.md:14"
+      },
+      {
+        "text": "[iOS](https://docs.stripe.com/payments/multibanco/accept-a-payment.md?payment-ui=mobile&platform=ios)",
+        "location": "raw/stripe-payments-multibanco-accept-a-payment-2026-11-07.md:16"
+      },
+      {
+        "text": "[Android](https://docs.stripe.com/payments/multibanco/accept-a-payment.md?payment-ui=mobile&platform=android)",
+        "location": "raw/stripe-payments-multibanco-accept-a-payment-2026-11-07.md:17"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-multibanco-accept-a-payment": [
+      {
+        "text": "Customers use these voucher details to make a payment outside your checkout flow through online banking or from an ATM.",
+        "location": "raw/stripe-multibanco-accept-payment-2025.md:20"
+      },
+      {
+        "text": "The PaymentIntent remains in the `processing` status for a maximum buffer period of 4 days",
+        "location": "raw/stripe-multibanco-accept-payment-2025.md:172"
+      },
+      {
+        "text": "When you successfully reconfirm a PaymentIntent in status `requires_action`, Stripe creates new voucher instructions and a new `hosted_voucher_url`.",
+        "location": "raw/stripe-multibanco-accept-payment-2025.md:182"
+      },
+      {
+        "text": "The customer has successfully submitted the Checkout form. Stripe has generated a Multibanco voucher.",
+        "location": "raw/stripe-multibanco-accept-payment-2025.md:125"
+      },
+      {
+        "text": "The customer has successfully paid the Multibanco voucher. The `PaymentIntent` transitions to `succeeded`.",
+        "location": "raw/stripe-multibanco-accept-payment-2025.md:126"
+      },
+      {
+        "text": "After confirmation, Stripe automatically opens a modal to display the Multibanco voucher to your customer.",
+        "location": "raw/stripe-multibanco-accept-payment-2025.md:352"
+      },
+      {
+        "text": "The Multibanco voucher was displayed successfully. The customer can now pay the Multibanco voucher",
+        "location": "raw/stripe-multibanco-accept-payment-2025.md:794"
+      },
+      {
+        "text": "Stripe automatically initiates a refund process for the mispaid amount.",
+        "location": "raw/stripe-multibanco-accept-payment-2025.md:172"
+      },
+      {
+        "text": "The `payment_intent.payment_failed` webhook arrives after 11 days, which mimics behavior in live mode.",
+        "location": "raw/stripe-multibanco-accept-payment-2025.md:164"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-multibanco-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "raw/stripe-multibanco-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 1166
+      }
+    ],
+    "wiki/sources/source-stripe-multibanco-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 38
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/b1eb062cf3bf7de6669a837f/content.diff": [
+      {
+        "start": 1,
+        "end": 1171
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 372,
+        "end": 383
+      }
+    ],
+    "wiki/concepts/stripe-vouchers.md": [
+      {
+        "start": 1,
+        "end": 30
+      },
+      {
+        "start": 75,
+        "end": 94
+      },
+      {
+        "start": 110,
+        "end": 123
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-multibanco-accept-a-payment/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 145
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-multibanco-accept-a-payment/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 66
+      }
+    ]
+  },
+  "answers": {
+    "payments-multibanco-accept-a-payment": {
+      "Q1": "For https://docs.stripe.com/payments/multibanco/accept-a-payment, new raw lines 5-17 give the purpose and links to Checkout, Direct API, iOS and Android without capturing the variant instructions. The 2026-05-07 detailed guide says Portuguese customers receive an entity/reference voucher and pay outside checkout through online banking or an ATM. Old raw lines 18-55 restrict the captured Checkout route to one-time EUR items in payment mode and describe Europe/US business scope. Old raw lines 218-238 and 307-392 separate server creation of a EUR PaymentIntent from confirmation with the client secret and billing email, with an optional server confirmation path. Old raw lines 109-127 and 543-556 distinguish voucher creation from eventual paid status and fulfillment. The revised source-stripe-multibanco-accept-payment.md preserves the voucher fields and central lifecycle, identifies the distinct Checkout Session and PaymentIntent events, qualifies the processing buffer and explains that mobile webview callbacks in the examples indicate voucher display.",
+      "Q2": "For https://docs.stripe.com/payments/multibanco/accept-a-payment, new raw lines 5-17 are navigation to the same four query variants named in old raw lines 8-10, 193-195, 614-616 and 895-897. The capture format changed and supplies no substantive product change. The detailed behavior remains dated 2026-05-07. Old raw lines 109-127 show that a Checkout voucher redirect or `checkout.session.completed` establishes issuance, while asynchronous success supports fulfillment. Old raw lines 350-385, 387-518, 778-805 and 1034-1078 distinguish the default Stripe.js modal, optional server redirect or manual presentation, and mobile SDK display results. Old raw lines 164-182 describe the sandbox 11-day test, seven days of voucher validity, a conditional processing interval of up to four more days, automatic refund initiation for late or canceled-voucher funds, and replacement instructions after successful reconfirmation. source-stripe-multibanco-accept-payment.md and its voucher concept route distinguish the event families and retain online banking as a Multibanco route. The captures leave live eligibility, settlement and completion of a specific refund unverified."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "multibanco-vouchers-definition-channel",
+      "target_path": "wiki/concepts/stripe-vouchers.md",
+      "update_kind": "durable_fact",
+      "anchor": "Cash voucher payment methods let customers complete online purchases in-person at authorized locations (convenience stores, ATMs, banks). Customers receive a digital voucher code after checkout and pay with cash at a physical location. Stripe supports four voucher methods.",
+      "proposed_markdown": "Voucher payment methods let customers complete online purchases using a digital voucher. Payment channels vary by method. Customers can pay cash vouchers in person, and Multibanco vouchers can be paid through online banking or at an ATM. Stripe supports four voucher methods.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "The 2026-05-07 Multibanco acceptance capture explicitly names online banking and ATM payment at raw/stripe-multibanco-accept-payment-2025.md:18-22."
+      ]
+    },
+    {
+      "update_id": "multibanco-vouchers-payment-flow-channel",
+      "target_path": "wiki/concepts/stripe-vouchers.md",
+      "update_kind": "durable_fact",
+      "anchor": "3. Customer pays in-person with cash at authorized location (convenience store, ATM, bank)",
+      "proposed_markdown": "3. Customer pays through a channel supported by the method, such as in-person cash payment for a cash voucher or online banking or an ATM for Multibanco.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "May acceptance capture identifies online banking or ATM, raw/stripe-multibanco-accept-payment-2025.md:18-22."
+      ]
+    },
+    {
+      "update_id": "multibanco-acceptance-dated-integration",
+      "target_path": "wiki/concepts/stripe-vouchers.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Integration**: Checkout, Direct API, iOS/Android SDK. `hosted_voucher_url` redirect. 7-day voucher expiry → `processing` (4-day bank transfer buffer) → `requires_payment_method`. If funds arrive after buffer → Stripe auto-refunds. `stripe.confirmMultibancoPayment()` for web Direct API; email only required. `next_action.multibanco_display_details`: `entity`, `reference`, `expires_at`, `hosted_voucher_url`.",
+      "proposed_markdown": "**Integration (2026-05-07 acceptance guide)**: Checkout, web Direct API, iOS and Android. Checkout uses one-time EUR line items in payment mode. The `send_invoice` billing path is separate. Checkout and the optional Direct API server path redirect to `hosted_voucher_url`. The web Direct API requires billing email and uses a Stripe.js modal by default with `stripe.confirmMultibancoPayment()`, while iOS and Android use webviews. Voucher issuance precedes payment and fulfillment. `next_action.multibanco_display_details` contains `entity`, `reference`, `expires_at` and `hosted_voucher_url`. After seven-day voucher expiry, a pending PaymentIntent can process for up to four days for delayed transfer notification. It returns to `requires_payment_method` if payment fails to complete within the window. Stripe initiates a refund if funds arrive after the window or against a canceled voucher.",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Historical Checkout and Direct API/mobile boundaries are in raw/stripe-multibanco-accept-payment-2025.md:18-41,109-127,307-458,543-556,778-805,1034-1078. Timing and refund initiation are in lines 168-182. November links are variant navigation."
+      ]
+    },
+    {
+      "update_id": "multibanco-acceptance-reciprocal-source",
+      "target_path": "wiki/concepts/stripe-vouchers.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-multibanco-accept-payment]] — Multibanco integration: 3 paths + mobile, 7-day expiry + 4-day buffer, confirmMultibancoPayment(), entity+reference",
+      "proposed_markdown": "- [[source-stripe-multibanco-accept-payment]] — May 2026 integration guide for Checkout, Direct API, iOS and Android. November 2026 capture is a variant directory.",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The May variant headings occur at raw/stripe-multibanco-accept-payment-2025.md:8-10,193-195,614-616,895-897."
+      ]
+    }
+  ]
+}

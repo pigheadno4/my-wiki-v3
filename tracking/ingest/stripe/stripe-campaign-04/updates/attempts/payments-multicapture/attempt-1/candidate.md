@@ -1,0 +1,90 @@
+---
+title: "Stripe — Multicapture"
+type: source
+date_ingested: 2026-05-11
+date_updated: 2026-11-22
+original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/multicapture"
+raw_files:
+  - "stripe-multicapture-2026.md"
+tags: [stripe, multicapture, capture, payment-intents, checkout, ic-plus, connect, webhooks]
+---
+
+## Summary
+
+[[stripe-multicapture|Multicapture]] allows several captures against a single PaymentIntent, up to the authorized amount. The May 11, 2026 full guide uses an order with multiple shipments as an example. It covers Stripe-hosted Checkout, full embedded Checkout, and an Advanced route using direct PaymentIntents. The November 7, 2026 index repeats the definition and points to those three web variants. The operational guidance below is dated to May unless otherwise stated.
+
+## Availability
+
+- Stripe offers multicapture to users on IC+ pricing. The May guide directs blended-pricing users seeking access to contact Stripe support.
+- Online card payments use manual capture. The guide lists Amex, Visa, Discover, Mastercard, Cartes Bancaires, Diners Club, CUP and JCB. CUP is US only. JCB is available in the US, Canada, Australia and New Zealand.
+- Up to 50 captures per PaymentIntent. Separate charges and transfers using `source_transaction` are outside the supported Connect flows.
+
+## Requesting and Checking Multicapture
+
+- **Hosted [[stripe-checkout|Checkout]].** Create a payment-mode Checkout Session with `payment_method_options.card.request_multicapture: 'if_available'` and `payment_intent_data.capture_method: 'manual'`. Redirect to `session.url` and configure `success_url`. Checkout Session confirmation creates the PaymentIntent.
+- **Full embedded Checkout.** The same payment mode, request option and manual capture requirement apply. Use `ui_mode: 'embedded_page'`, the Session client secret to mount Checkout, and `return_url` with `{CHECKOUT_SESSION_ID}` for return-page lookup. The May embedded Node example omits `payment_intent_data.capture_method: 'manual'` despite the guide's availability requirement.
+- **Advanced.** Create and confirm a manual PaymentIntent directly. Use `payment_method_options.card.request_multicapture: 'if_available'` to request it when the method supports it, or `'never'` to disallow it. The November `ui=elements` query is a documentation route selector.
+
+For an eligible manual flow, expand `latest_charge` and check `latest_charge.payment_method_details.card.multicapture.status` for `available` or `unavailable` after confirmation. The May guide warns that `automatic` or `automatic_async` can accept the request and show `available` even though the PaymentIntent is automatically captured in full. In May, Stripe left open whether a future API version would reject that parameter combination. See May raw lines 18–35, 53–125, 329–415 and 794–855.
+
+### Embedded Checkout return-page states
+
+The May sample uses `open` for remounting and `complete` for return-page messaging. Its prose equates `open` with failed or canceled payment and `complete` with payment success. The November Checkout Session API object defines separate `status` and `payment_status` fields. `open` means the Session is in progress and payment processing has yet to start. `complete` means the Session is complete while payment may still be processing. Use the return page for messaging or remounting, consult payment status for payment and fulfillment decisions, and check the PaymentIntent separately for capture. See May raw lines 530–561 and the November Checkout Session API object at `raw/stripe-api-checkout-sessions-object-2026-11-07.md:312-322,368-378`.
+
+## Capture and Authorization Release
+
+- The server captures by PaymentIntent ID while the Intent is in `requires_capture` and multicapture is available. A partial capture with `final_capture: false` leaves the remainder authorized. `amount_capturable` and `amount_received` track the remainder and amount received separately from the authorized amount.
+- A final capture uses `final_capture: true`, which is also the default. It releases any uncaptured authorization and takes the captured PaymentIntent to `succeeded`.
+- Expiry releases the remaining authorization. An Intent with no captures goes to `canceled`, while an already partially captured Intent becomes `succeeded` when finalized on expiry.
+- On an **already partially captured** payment, send `amount_to_capture: 0` with `final_capture: true` to release the remainder and finalize the Intent as `succeeded`.
+
+See May raw lines 137–222 and 293–308. For the separate May beta-to-GA migration, see [[source-stripe-flexible-features-migration#Multicapture|the multicapture migration guide]]. Its preconfirmation request, example `Stripe-Version` header, HTTP 400 when attempting the full remaining amount with `final_capture: false`, non-final event change and GA release without a refund object are dated to that migration context.
+
+## Webhooks
+
+| Event | When |
+| --- | --- |
+| `charge.updated` | Each capture |
+| `payment_intent.amount_capturable_updated` | Each capture |
+| `charge.captured` | Final capture or reversal of the remaining authorization on expiry |
+| `refund.created` | Each partial refund |
+
+The Charge Boolean `captured` becomes true after final capture or authorization reversal. Connect also emits `application_fee.refunded` for fee refunds and `transfer.reversed` for transfer reversals. See May raw lines 247–317.
+
+## Refunds
+
+- A PaymentIntent still in `requires_capture` can have already captured funds refunded repeatedly up to `amount_received - amount_refunded`. The Charge object's Boolean `refunded` becomes true only after final capture and refund of the entire `amount_received`.
+- The May guide excludes partial refunds using `refund_application_fee=true` or `reverse_transfer=true`. It routes partial fee refunds and transfer reversals to their respective endpoints. After using one of those endpoints, further refunds with the corresponding flag are unavailable.
+
+## Connect
+
+- The guide supports Connect flows except separate charges and transfers using `source_transaction`.
+- Setting `application_fee_amount` or `transfer_data[amount]` on the first capture makes that parameter required for subsequent captures. Capture-time values override the values from PaymentIntent creation, confirmation or update.
+
+## Compliance
+
+The guide assigns network compliance to the merchant. It describes common restrictions for card-not-present payments on goods shipped separately, industry-specific permissions such as travel, and possible restrictions for installment or deposit workflows. It advises disclosing refund and cancellation policy, giving the estimated date and amount for each shipment at checkout, and notifying the customer with the amount at shipment. See May raw lines 37–51.
+
+## Test Cards
+
+| Number | Payment Method | Simulated outcome |
+| --- | --- | --- |
+| 4242424242424242 | `pm_card_visa` | Supports multicapture |
+| 4000002500001001 | `pm_card_visa_cartesBancaires` | Supports multicapture |
+| 4000008400000076 | `pm_card_credit_disableEnterpriseCardFeatures` | Does not support multicapture |
+
+## Related Pages
+
+- [[stripe]] — company page
+- [[stripe-multicapture]] — concept page
+- [[stripe-checkout]] — Checkout Session states and fulfillment
+- [[source-stripe-payment-line-items-flexible]] — see Multicapture Rules for line-item behavior
+
+## Raw Sources
+
+- [[raw/stripe-multicapture-2026|May 11, 2026 full multicapture guide (1,033 lines)]]
+
+## Related raw API references
+
+- [[raw/stripe-payments-multicapture-2026-11-07|November 7, 2026 multicapture variant index]] — Stripe-hosted, full embedded, and Advanced web guide links.

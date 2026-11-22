@@ -1,0 +1,87 @@
+--- wiki/sources/source-stripe-inapp-collect-addresses.md
++++ tracking/ingest/stripe/stripe-campaign-04/updates/attempts/payments-mobile-collect-addresses/attempt-2/candidate.md
+@@ -2,7 +2,9 @@
+ title: "Collect Physical Addresses and Phone Numbers — Mobile"
+ type: source
+ date_ingested: 2026-04-22
++date_updated: 2026-11-22
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/payments/mobile/collect-addresses"
+ raw_files:
+   - "stripe-inapp-collect-addresses-2025.md"
+ tags: [stripe, mobile, ios, android, react-native, address-element, autocomplete, billing-address, shipping-address, google-places]
+@@ -10,11 +12,13 @@
+ 
+ ## Summary
+ 
+-Full integration guide for the mobile Address Element across iOS UIKit, iOS SwiftUI, Android, and React Native. Covers SDK setup, configuration, address retrieval, Payment Element prefill, and billing details collection customization.
++The 2026-04-22 integration guide covers the mobile Address Element across iOS UIKit, iOS SwiftUI, Android and React Native. It shows SDK setup, configuration, address retrieval, optional Payment Element prefill and billing details collection. The 2026-11-07 capture of the same URL introduces address and phone collection and indexes the same four variants. The examples and requirements below come from the April guide.
+ 
+ > See also [[source-stripe-inapp-address-element]] for the overview page, and [[source-stripe-collect-addresses]] for the web variant.
+ 
+ ## Platform API Comparison
++
++The April guide calls for a Stripe account and the platform SDK with a client publishable key. Use test keys during development and live keys in production. The April iOS compatibility wording is iOS 13 or above. The Android dependency examples use Stripe Android 23.5.0 and Google Places 2.6.0. The sample Financial Connections dependency serves US bank account payments.
+ 
+ | | iOS UIKit | iOS SwiftUI | Android | React Native |
+ | --- | --- | --- | --- | --- |
+@@ -24,6 +28,8 @@
+ | Result | `AddressViewController.AddressDetails?` | `AddressElement.AddressDetails?` | `AddressLauncherResult.Succeeded`/`.Canceled` | `addressDetails` in `onSubmit` |
+ 
+ ## iOS UIKit
++
++The April example makes the phone field required. Stripe says to collect phone numbers only when needed for the transaction. The delegate receives optional address details.
+ 
+ ```swift
+ // 1. Configure
+@@ -50,6 +56,8 @@
+ ```
+ 
+ ## iOS SwiftUI
++
++The bound address value updates when the customer completes or cancels address collection. The April SwiftUI section mentions billing prefill from a shipping address. The concrete shipping-prefill examples are in the UIKit, Android and React Native sections.
+ 
+ ```swift
+ var configuration = AddressElement.Configuration()
+@@ -90,6 +98,8 @@
+ 
+ ## React Native
+ 
++The April example makes the phone field required. Stripe says to collect phone numbers only when needed for the transaction.
++
+ ```jsx
+ <AddressSheet
+   visible={addressSheetVisible}
+@@ -115,22 +125,27 @@
+ ## Billing Details Collection (All Platforms)
+ 
+ `billingDetailsCollectionConfiguration` controls what's collected in PaymentSheet:
+-- `name`, `email`, `phone`, `address` — each can be `always`/`never`/`if_required`
+-- `attachDefaultsToPaymentMethod` — if `true`, `defaultBillingDetails` attach to PM even when not shown in UI
++- **Field-specific modes.** Name, email and phone have general collection controls. The examples set name to always and email to never. The address setting uses its own modes. The full-address value shown is `.full` in UIKit and SwiftUI, `BillingDetailsCollectionConfiguration.AddressCollectionMode.Full` in Android and `PaymentSheet.AddressCollectionMode.FULL` in React Native.
++- **PaymentMethod billing defaults.** `defaultBillingDetails` prefills the billing fields. `attachDefaultsToPaymentMethod: true` opts into attaching those defaults to the PaymentMethod, including values omitted from the UI. The React Native guide explicitly requires providing any method-required values skipped in the UI as `defaultBillingDetails` and enabling attachment.
+ 
+ ## Key Notes
+ 
+ - **Android onCreate rule**: `AddressLauncher` MUST be instantiated in `onCreate` — after will crash
+-- **Autocomplete on Android/RN**: requires Google Places SDK + API key (not automatic)
++- **Autocomplete**. The April guide says iOS enables it by default, including React Native on iOS. Android, including React Native on Android, needs the Google Places SDK and API key to enable autocomplete. Address collection is available without enabling autocomplete.
+ - **Dismiss on RN**: must manually set `visible={false}` in both `onSubmit` and `onError`
+-- **Shipping → billing prefill**: setting `shippingDetails` on PaymentSheet auto-shows "Billing same as shipping" checkbox and populates PaymentIntent `shipping` field
++- **Optional shipping-to-billing prefill**. The April examples populate PaymentSheet `shippingDetails` in UIKit and Android or `defaultShippingDetails` in React Native with the collected address. The payment UI then prefills billing and shows the same-as-shipping checkbox. In those paths, populated shipping details are recorded in `PaymentIntent.shipping` upon confirmation. Address UI completion, autocomplete and populated shipping or billing details establish neither payment success nor address ownership.
+ 
+ ## Related Pages
+ 
++- [[stripe]] — Stripe company profile
+ - [[stripe-inapp-payments]] — in-app payments concept page
+ - [[source-stripe-inapp-address-element]] — mobile Address Element overview
+ - [[stripe-address-element]] — web Address Element concept page
+ 
+ ## Raw Sources
+ 
+-- [[stripe-inapp-collect-addresses-2025]] — verbatim guide (~768 lines, iOS UIKit + iOS SwiftUI + Android + React Native)
++- [[raw/stripe-inapp-collect-addresses-2025|Mobile Address Element guide captured 2026-04-22]] — verbatim guide (~768 lines, iOS UIKit + iOS SwiftUI + Android + React Native)
++
++## Related raw API references
++
++- [[raw/stripe-payments-mobile-collect-addresses-2026-11-07|Mobile Address Element collection variant index]] — 2026-11-07 navigation capture for iOS UIKit, iOS SwiftUI, Android and React Native.

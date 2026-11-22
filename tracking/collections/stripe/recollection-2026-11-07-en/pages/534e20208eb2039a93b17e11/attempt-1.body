@@ -1,0 +1,277 @@
+# x402
+
+Use x402 to accept payments from agents.
+
+[x402](https://x402.org) is a protocol for internet payments. When a client requests a paid resource, your server returns an HTTP `402` response with payment details, including a Stripe deposit address. The client pays, then retries the request with authorization. After the facilitator settles the payment on-chain, Stripe records it as a [PaymentIntent](https://docs.stripe.com/api/payment_intents.md).
+
+> To accept card payments alongside stablecoin payments, you should also integrate with the [Machine Payments Protocol (MPP)](https://docs.stripe.com/payments/machine/mpp.md).
+
+## Before you begin
+
+> Stablecoin payments are available to businesses in all US states, except New York. For businesses operating outside of the US, email [machine-payments@stripe.com](mailto:machine-payments@stripe.com) with your Stripe account ID to request access to stablecoin payments in more than 30 countries.
+
+To start accepting stablecoin payments:
+
+1. Make sure you’ve [set up your Stripe account](https://dashboard.stripe.com/register).
+2. Go to your [Payment methods](https://dashboard.stripe.com/settings/payment_methods) settings in the Dashboard and request the **Stablecoins and Crypto** payment method. If you want to accept stablecoin or crypto payments only for [machine payments](https://docs.stripe.com/payments/machine.md), create a separate [payment method configuration](https://docs.stripe.com/payments/payment-method-configurations.md) dedicated to machine payments.
+3. Stripe reviews your access request and contacts you for more details if necessary. The payment method appears as **Pending** while we review your request.
+4. After we approve your request, the **Stablecoins and Crypto** payment method becomes active in the Dashboard.
+
+## Payment lifecycle
+
+In this guide, you build the server. Your server indicates that payment is required and returns the content after successful payment. You interact with Stripe and a facilitator to complete the payment.
+
+A diagram showing the x402 payment flow between client, server, facilitator, and Stripe (See full diagram at https://docs.stripe.com/payments/machine/x402)
+
+```text
+[Client] -- Request paid resource without payment --> [Server]
+[Server] -- HTTP 402 with payment requirements --> [Client]
+[Client] -- Retry request with payment credential --> [Server]
+[Server] -- Verify payment --> [Facilitator]
+[Facilitator] -- Settle transaction on-chain --> [Facilitator]
+[Facilitator] -- Payment verified --> [Server]
+[Server] -- POST /v1/payment_intents to record payment --> [Stripe]
+[Stripe] -- Return confirmed PaymentIntent --> [Server]
+[Server] -- Return requested resource --> [Client]
+```
+
+## Use a coding agent
+
+You can build an API that uses x402 with a single prompt to your coding agent:
+
+```bash
+Read https://docs.stripe.com/payments/machine/x402.md?lang=node, and create an API that uses x402 to charge for access using the Base network for crypto.
+```
+
+To build the integration yourself, follow the steps in this guide to install the dependencies, create an endpoint that returns an HTTP `402` challenge and verifies payments, record the payments with Stripe, and test the full flow.
+
+You can also review the app’s [complete source code](https://github.com/stripe-samples/machine-payments) on GitHub.
+
+## Create your Coinbase Developer account
+
+x402 mainnet payments settle through the Coinbase Developer Platform (CDP) facilitator. Sign up for a [Coinbase Developer Platform account](https://portal.cdp.coinbase.com/), then create API keys to authenticate your facilitator client.
+
+For details, see the Coinbase Developer Platform guide on [running on mainnet](https://docs.cdp.coinbase.com/x402/quickstart-for-sellers#running-on-mainnet).
+
+## Create a Stripe deposit address
+
+Before you configure your server, create a crypto deposit address. This is the on-chain address where Base payments are sent.
+
+```bash
+curl https://api.stripe.com/v1/crypto/deposit_addresses \
+  -u "<<YOUR_SECRET_KEY>>:" \
+  -H "Stripe-Version: 2026-05-27.preview" \
+  -d network=base
+```
+
+Store the returned address as your `DEPOSIT_ADDRESS` environment variable.
+
+You can create deposit addresses as often as you want, but we recommend that you keep these calls off your core request path.
+
+## Install dependencies
+
+Install the required dependencies:
+
+```bash
+npm install @x402/core @x402/evm @x402/hono @coinbase/x402 hono @hono/node-server stripe
+```
+
+## Create your endpoint
+
+Configure your server with x402 payment verification. Use the deposit address from the previous step as the static `payTo` recipient.
+
+This example requires 0.01 USD, paid in USDC, per request to `/paid`.
+
+#### Node.js
+
+```typescript
+import { createFacilitatorConfig } from "@coinbase/x402";
+import { HTTPFacilitatorClient } from "@x402/core/server";
+import { ExactEvmScheme } from "@x402/evm/exact/server";
+import { paymentMiddleware, x402ResourceServer } from "@x402/hono";
+import { serve } from "@hono/node-server";
+import { Hono } from "hono";
+
+const DEPOSIT_ADDRESS = process.env.DEPOSIT_ADDRESS!.toLowerCase();
+
+const app = new Hono();
+
+const facilitatorClient = new HTTPFacilitatorClient(
+  createFacilitatorConfig(process.env.CDP_API_KEY_ID!, process.env.CDP_API_KEY_SECRET!),
+);
+
+const resourceServer = new x402ResourceServer(facilitatorClient).register(
+  "eip155:8453", // Base mainnet
+  new ExactEvmScheme(),
+);
+
+// Register the payment middleware — requires $0.01 in USDC on Base per request.
+app.use(
+  paymentMiddleware(
+    {
+      "GET /paid": {
+        accepts: [
+          {
+            scheme: "exact",
+            price: "$0.01",
+            network: "eip155:8453", // Base mainnet
+            payTo: DEPOSIT_ADDRESS,
+          },
+        ],
+        description: "Data retrieval endpoint",
+        mimeType: "application/json",
+      },
+    },
+    resourceServer,
+  ),
+);
+
+// This endpoint is only accessible after valid payment is verified and settled.
+app.get("/paid", (c) => {
+  return c.json({ foo: "bar" });
+});
+
+serve({ fetch: app.fetch, port: 4242 });
+```
+
+## Create a PaymentIntent
+
+Because you created the deposit address ahead of time, incoming payments on Base are sent to that static address. After the x402 facilitator settles a payment, record the on-chain transaction as a [PaymentIntent](https://docs.stripe.com/api/payment_intents.md) using `transaction_verification` mode.
+
+> #### API version
+> 
+> This feature requires the `2026-05-27.preview` API version. Set the `Stripe-Version` header to `2026-05-27.preview` when you initialize your Stripe client.
+
+#### Node.js
+
+```typescript
+import Stripe from "stripe";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2026-05-27.preview",
+});
+
+// Record settled on-chain payments as Stripe PaymentIntents using transaction_verification mode.
+resourceServer.onAfterSettle(async ({ result, requirements }) => {
+  const txHash = result.transaction;
+  if (!txHash || !result.success) return;
+
+  // requirements.amount is in atomic USDC units (6 decimals).
+  // $0.01 = 10000 atomic units. Convert to cents for Stripe.
+  const amountInCents = Math.round(Number(requirements.amount) / 10000);
+  if (amountInCents < 1) return;
+
+  const pi = await stripe.paymentIntents.create(
+    {
+      amount: amountInCents,
+      currency: "usd",
+      confirm: true,
+      payment_method_data: { type: "crypto" },
+      allowed_payment_method_types: ["crypto"],
+      payment_method_options: {
+        crypto: {
+          mode: "transaction_verification",
+          transaction_verification_options: {
+            network: "base",
+            transaction_hash: txHash,
+          },
+        },
+      },
+    },
+    { idempotencyKey: txHash },
+  );
+
+  console.log(`Recorded PaymentIntent ${pi.id} for tx ${txHash}`);
+});
+```
+
+## Test your endpoint
+
+Make a request to your server without an eligible client to confirm it returns a `402` status code. Use `-iv` to see the response headers.
+
+```bash
+curl -iv http://localhost:4242/paid
+```
+
+The response includes a `payment-required` header with a base64-encoded payment requirements payload:
+
+```
+> GET /paid HTTP/1.1
+< HTTP/1.1 402 Payment Required
+< payment-required: eyJ4NDAyVmVyc2lvbiI6MiwiZXJyb3IiO...
+```
+
+Next, make a request with an eligible client. Because you created the deposit address in live mode, this request moves real funds. Use Stripe’s [purl](https://github.com/stripe/purl) to test from the command line.
+
+```bash
+purl http://localhost:4242/paid
+```
+
+After a successful payment, the server returns the content. In the [Dashboard](https://dashboard.stripe.com), go to **Payments** to see the transaction.
+
+## Token and network support
+
+`PaymentIntents` with the `crypto` payment method in `mode: transaction_verification` support USDC on the following networks:
+
+| Network | Token | Token contract address |
+| --- | --- | --- |
+| Tempo | USDC | `0x20c000000000000000000000b9537d11c60e8b50` |
+| Base | USDC | `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` |
+| Solana | USDC | `EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v` |
+
+## Test in a Stripe sandbox
+
+You can test your integration without moving real money by using a Stripe [sandbox](https://docs.stripe.com/sandboxes.md) and Base Sepolia, the testnet for Base. For testing, you can use the public test facilitator at `https://x402.org/facilitator` without signing up for a CDP account.
+
+Make the following changes to your integration:
+
+Create a Base deposit address in your Stripe sandbox:
+
+```bash
+curl https://api.stripe.com/v1/crypto/deposit_addresses \
+  -u sk_test_...: \
+  -H "Stripe-Version: 2026-07-29.preview" \
+  -d network=base
+```
+
+Set `DEPOSIT_ADDRESS` to the sandbox deposit address and `STRIPE_SECRET_KEY` to your sandbox secret key. Then, configure the facilitator client to use the public test facilitator:
+
+```javascript
+const facilitatorClient = new HTTPFacilitatorClient(
+  { url: "https://x402.org/facilitator" }
+);
+```
+
+Configure the resource server and middleware to use Base Sepolia:
+
+```javascript
+const resourceServer = new x402ResourceServer(facilitatorClient).register(
+  "eip155:84532",  // Base Sepolia
+  new ExactEvmScheme(),
+);
+
+// Register the payment middleware — requires $0.01 in USDC on Base per request.
+app.use(
+  paymentMiddleware(
+    {
+      "GET /paid": {
+        accepts: [
+          {
+            scheme: "exact",
+            price: "$0.01",
+            network: "eip155:84532", // Base Sepolia
+            payTo: DEPOSIT_ADDRESS,
+          },
+        ],
+        description: "Data retrieval endpoint",
+        mimeType: "application/json",
+      },
+    },
+    resourceServer,
+  ),
+);
+```
+
+Restart the server and fund your `purl` wallet with Base Sepolia USDC using the [Circle faucet](https://faucet.circle.com/).
+
+To test your integration, run `purl http://localhost:4242/paid`.

@@ -1,0 +1,50 @@
+--- wiki/concepts/stripe-express-checkout-element.md
++++ wiki/concepts/stripe-express-checkout-element.md
+@@ -25,7 +25,7 @@
+ | --- | --- |
+ | Apple Pay | Requires domain registration; desktop Chromium needs `paymentMethods.applePay: 'always'` |
+ | Google Pay | Firefox/Safari support requires `paymentMethods.googlePay: 'always'` |
+-| Link | Stripe's saved-payment network; not supported in Firefox |
++| Link | Stripe's saved-payment network. In the November matrix, desktop Firefox, Edge on iOS 16+ and in-app webviews are unsupported. Firefox on iOS 16+ is listed as supported, subject to the remaining eligibility gates. |
+ | PayPal | Broad browser support; not available on Firefox iOS or Edge iOS |
+ | Klarna | BNPL option; not supported in Firefox |
+ | Amazon Pay | Single button type; broad support |
+@@ -82,18 +82,20 @@
+ 
+ The 2026-04-21 [[source-stripe-express-checkout-element-accept-payment]] guide documents Checkout Sessions and Payment Intents paths with different initialization and confirmation. Its Payment Intents path recommends collecting details before creating an Intent; neither that guide nor the 2026-11-07 base-URL index ranks Checkout Sessions over Payment Intents.
+ 
+-### Payment Method Type Mappings
+-
+-`card` enables both Apple Pay and Google Pay automatically. Link requires `link` + `card`.
+-
+-| Payment Method | type(s) |
++### Historical Explicit Method Lists and Endive Changes
++
++The April 21, 2026 acceptance guide defaults to Dashboard settings. Its explicit method lists are optional overrides. The historical guide gives these mappings when choosing explicit types.
++
++| Payment method | Historical explicit type(s) |
+ | --- | --- |
+ | Apple Pay | `card` |
+ | Google Pay | `card` |
+ | Link | `link`, `card` |
+ | PayPal | `paypal` |
+ | Amazon Pay | `amazon_pay` |
+-| Klarna | `klarna` (Payment Intents only) |
++| Klarna | `klarna` in the Payment Intents table. The historical Checkout Sessions table does not list Klarna. |
++
++Separate Endive notes govern later fields. At `2026-09-30.endive`, Checkout Session Create rejects the writable `payment_method_types` request with HTTP 400, keeps the computed response field, and documents `allowed_payment_method_types` for explicit server configuration. At that API version, PaymentIntent Create, Update and Confirm and SetupIntent Create and Update reject writable `payment_method_types` with HTTP 400 `payment_method_types_no_longer_supported`. Their computed response field is read-only. The Intent note separately names `2026-08-26.preview` in upgrade guidance. The Endive Stripe.js note separately replaces `paymentMethodTypes` with `allowedPaymentMethodTypes` for deferred Elements creation and `elements.update()`. See [[source-stripe-express-checkout-element-accept-payment]] and [[source-stripe-express-checkout-link#Acceptance and Versioned Method Lists]].
+ 
+ ### Checkout Sessions Path (2026-04-21 guide)
+ 
+@@ -212,7 +214,11 @@
+ 
+ > If migrating from the Charges API, first migrate to Payment Intents before adopting ECE.
+ 
++For the existing Charges-to-Payment Intents route and the historical Payment Request Button token and completion-callback behavior, see [[source-stripe-legacy-apis]]. The September 2026 changelog says Element creation throws starting with Endive and remains supported through Dahlia.
++
+ Payment Request Button → ECE migration: [[source-stripe-express-checkout-element-migration]] preserves the Payment Intents steps captured on 2026-04-21 and identifies the Checkout Sessions and Payment Intents variant routes in Stripe's 2026-11-07 index. The index does not establish either variant's current implementation details.
++
++The September 30, 2026 Endive changelog documents a Web Elements runtime cutoff: `elements.create('paymentRequestButton')` throws starting with Endive, including integrations using React `PaymentRequestButtonElement`. The November Link guide says earlier Stripe.js versions retain the Element only while those versions are supported. See [[source-stripe-payment-request-button-link]] for the runtime and legacy Link conditions.
+ 
+ ### React wrapper boundary at 7.0.0
+ 

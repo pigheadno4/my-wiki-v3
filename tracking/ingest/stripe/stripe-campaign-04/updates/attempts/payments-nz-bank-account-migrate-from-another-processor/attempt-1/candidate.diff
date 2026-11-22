@@ -1,0 +1,67 @@
+--- wiki/sources/source-stripe-nz-becs-migrate-from-processor.md
++++ tracking/ingest/stripe/stripe-campaign-04/updates/attempts/payments-nz-bank-account-migrate-from-another-processor/attempt-1/candidate.md
+@@ -2,35 +2,47 @@
+ title: "Stripe: Migrate NZ BECS Bank Accounts from Another Processor"
+ type: source
+ date_ingested: 2026-05-03
++date_updated: 2026-11-22
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/payments/nz-bank-account/migrate-from-another-processor"
+ raw_files:
++  - "stripe-payments-nz-bank-account-migrate-from-another-processor-2026-11-07.md"
+   - "stripe-nz-becs-migrate-from-processor-2025.md"
+ tags: [stripe, nz-becs, becs, new-zealand, nzd, migration, setup-intents, mandates]
+ ---
+ 
+ ## Summary
+ 
+-Guide for migrating NZ bank accounts from another payment processor to Stripe. Requires retaining copies of Direct Debit Authorities (DDAs), sending customers pre-migration and first-debit notifications, and creating confirmed SetupIntents with offline mandate acceptance.
++[[stripe]]’s May 3 and November 7, 2026 guides describe importing an already authorized [[stripe-nz-becs-debit|NZ BECS bank account]] from another processor. Before migration, retain a copy of each customer’s original Direct Debit Authority (DDA). Provide copies promptly if Stripe asks and remain responsible for any disputes opened before migration. See May lines 8-18 and November lines 9-19.
+ 
+-## Key Details
++## Customer Notifications
+ 
+-**Notification requirements before migration**:
+-- Pre-migration notice to customers: Stripe New Zealand Limited (auth code `3143978`), migration date, your contact details
+-- Tell customers no action required unless they wish to cancel
++1. **Before migration:** Tell customers the new processor is Stripe New Zealand Limited (Direct Debit Authority code `3143978`), the date of the transfer and start of Stripe processing, and the merchant’s customer support details. Explain that they need take no further action unless they choose to cancel the mandate.
++2. **After successful import:** Stripe normally sends the mandate confirmation after importing the bank account details successfully.
++3. **For each post-migration payment:** Stripe normally sends a pre-debit notification. Its default sends immediately after a successful PaymentIntent confirmation. The May [[source-stripe-nz-becs-debit|NZ BECS overview]] describes the scheme deadline as the day of the debit. November states no later than the debit day. The confirmation trigger and the scheme deadline are separate.
++4. **After the first successful post-migration payment:** The merchant separately notifies the customer after successfully processing that first payment. This notice is additional to the successful-import confirmation.
+ 
+-**Post-migration notifications**:
+-1. Stripe automatically sends mandate confirmation emails after importing bank account details
+-2. Stripe sends pre-debit notification on each payment post-migration
+-3. Merchant must also send a separate first-debit notification in addition to Stripe's automatic one
++Contact Stripe Support to turn off Stripe’s automated notices and send your own. If automation is off, the merchant must send the applicable mandate confirmation and per-debit notices. See May migration lines 20-30 and November migration lines 21-31. The general notice rules are at May overview lines 135-161 and November overview lines 224-249.
+ 
+-**Migration process** (per customer/bank account):
+-1. Create or retrieve Customer/Account object
+-2. Create + confirm SetupIntent with:
+-   - Raw bank details: `bank_code`, `branch_code`, `account_number`, `suffix`
+-   - `billing_details.email` + `billing_details.name` (required for Stripe auto-emails)
+-   - `mandate_data.customer_acceptance.type: 'offline'` + original DDA `accepted_at` timestamp
+-3. Store resulting PaymentMethod ID for future payments
++## Server-Side Setup
++
++1. For each customer and bank account, create or retrieve the associated identity. Use `customer_account` for a customer-configured Accounts v2 Account, or `customer` for a Customers v1 Customer. These are alternatives. The customer identity, NZ bank account, documented DDA, SetupIntent and resulting PaymentMethod are distinct.
++2. Create a SetupIntent with `confirm=true` to attempt confirmation. Supply `payment_method_data[type]=nz_bank_account` with `bank_code`, `branch_code`, `account_number` and `suffix`. Include required `billing_details.email` and `billing_details.name`.
++3. Set `mandate_data.customer_acceptance.type` to `offline` and `accepted_at` to the customer’s original debit authorization timestamp. The numerical timestamp in the examples is illustrative. Retain the DDA copy separately.
++4. Verify successful setup before relying on the method’s association. The SetupIntent reference defines `payment_method` as nullable and shows the setup status separately. Store the PaymentMethod ID from the successful response or retrieve it by listing the customer’s PaymentMethods.
++
++The May guide’s Node.js examples and November’s cURL examples show equivalent fields in both identity branches. Step numbering and formatting also change. See May lines 32-103 and November lines 33-76.
++
++## Future Debits
++
++Successful import attaches a PaymentMethod for future use, subject to the underlying authorization. It is separate from a first debit, later payment success and funds availability. The November NZ BECS overview marks off-session payments unsupported, while the dated [[source-stripe-nz-becs-accept-payment|acceptance]] and [[source-stripe-nz-becs-set-up-payment|save-for-future]] guides show later server PaymentIntents using `off_session=true` after attachment. The migration captures link to future payments and leave that separate documentation conflict and account-specific eligibility unresolved.
+ 
+ ## Raw Sources
+ 
+-- [[stripe-nz-becs-migrate-from-processor-2025]] — verbatim webpage content
++- [[raw/stripe-payments-nz-bank-account-migrate-from-another-processor-2026-11-07|Stripe’s November 7, 2026 NZ BECS migration guide]]
++- [[raw/stripe-nz-becs-migrate-from-processor-2025|Stripe’s May 3, 2026 NZ BECS migration guide]] — verbatim webpage content.
++
++## Related raw API references
++
++- [[raw/stripe-api-setup-intents-create-2026-11-07|SetupIntent Create reference]] — November 7, 2026 capture, confirmation attempt and identity attachment, lines 370-386.
++- [[raw/stripe-api-setup-intents-object-2026-11-07|SetupIntent object reference]] — November 7, 2026 capture, nullable method and status, lines 591-614.

@@ -1,0 +1,158 @@
+{
+  "job_id": "payments-meal-vouchers-fr-meal-vouchers-saving-payment-details",
+  "source_target": "wiki/sources/source-stripe-fr-meal-vouchers-save-payment.md",
+  "source_before_sha256": "f35bcf6f0e514661501017c244d38ef649c87e638309984684e5a4f87d5113f6",
+  "contributions": [
+    {
+      "job_id": "payments-meal-vouchers-fr-meal-vouchers-saving-payment-details",
+      "canonical_url": "https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/saving-payment-details",
+      "attempt": 2,
+      "raw_path": "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-saving-payment-details-2026-11-07.md",
+      "raw_sha256": "6624950f023aeeea57245acb1cb46d826978ac708d592be3641b9296ea7c4556",
+      "prior_raw_path": "raw/stripe-fr-meal-vouchers-save-payment-2025.md",
+      "prior_raw_sha256": "65ed581bb69dcd9f91590ec2dd96784c0f91f7b854edf51e7e85a821ad9869b7",
+      "new_capture_role": "full_captured_page",
+      "proposed_disposition": "source_required_update",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-meal-vouchers-fr-meal-vouchers-saving-payment-details/attempt-2/receipt.json",
+      "receipt_sha256": "4fbe50fb0d4b213037de48ee0749c9692f44c57b9534315c3798e71e6ad71696",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-meal-vouchers-fr-meal-vouchers-saving-payment-details/attempt-2/review.json",
+      "review_sha256": "ceb3b75a28f716249265b5986269a423ccd70e8d448701627e6f58866ba7550a",
+      "source_assessments": [
+        {
+          "source_target": "wiki/sources/source-stripe-fr-meal-vouchers-save-payment.md",
+          "proposed_disposition": "source_required_update",
+          "update_needed": true,
+          "findings": [
+            "Update the primary summary to the November private-preview PaymentLocation workflow, version gate, active capability, two location and eligibility request shapes, client secret and confirmSetup boundary, and same-sandbox setup ID.",
+            "Preserve May 5 snippets and fixtures as dated evidence. Link reciprocally to the restaurant onboarding and accept-payment routes and update the France Meal Vouchers concept so the old SIRET shape, first-payment CVC scope, and new route cannot be confused.",
+            "Pair the meal voucher guide's client secret and stripe.confirmSetup handoff with its later use of the saved PaymentMethod ID (old raw lines 50-62, new raw lines 47-57). Before reuse, verify the SetupIntent result and the resulting saved PaymentMethod. The April 21 general Elements save guide shows retrieving the SetupIntent with stripe.retrieveSetupIntent using the client secret, checking for succeeded instead of processing or requires_payment_method, and successful confirmation saving the resulting payment_method to the Customer (raw/stripe-save-and-reuse-elements-2025.md:946-953,967-998). The November Stripe.js reference corroborates retrieval by client secret (raw/stripe-js-setup-intents-retrieve-setup-intent-2026-11-07.md:5-12). Treat this as companion Elements guidance. Return navigation on its own does not verify setup or a purchase, and the meal voucher captures do not specify a distinct response contract.",
+            "Both November curl intent requests omit Stripe-Version despite the 2026-05-27.preview or later requirement (new raw lines 25-29,39-45,61-71). For these raw HTTP requests, a missing Stripe-Version header means Stripe uses the account's default (raw/stripe-sdks-set-version-2026-11-07.md:5-17). The request must actually select the supported preview API version. Set an explicit Stripe-Version header such as 2026-05-27.preview for the HTTP samples when the account default does not meet that requirement. This is API version selection and does not grant preview entitlement or establish support in a specific SDK release."
+          ],
+          "conflicts": [
+            "The mapped source lines 17-36 and wiki/concepts/stripe-fr-meal-vouchers.md lines 33-37 and 49-72 present nested SIRET inputs and the old test SIRETs without qualifying the API route. The May 5 save guide used Dashboard-provisioned SIRET as an intent field; the November save guide takes a location ID and conditional eligibility flag instead (old raw lines 19-47 and 58-88, new raw lines 25-44 and 53-81). Link the current preview and dated direct-SIRET examples reciprocally. The new location API still registers the SIRET under business_registration and represents a single physical branch. The retained November Dashboard guide is still a distinct route where the restaurant’s name and SIRET are immutable, while the API guide allows acknowledged updates to certain onboarding data and can return the capability to pending (restaurant API raw lines 51-64 and 285-310; Dashboard raw lines 25-42). This does not establish removal of the old request fields or a universal migration deadline.",
+            "Keep saving without payment separate from the neighboring save-during-payment CVC claim in the concept line 70 and wiki/sources/source-stripe-fr-meal-vouchers-accept-payment.md lines 29-31. The November accept-payment guide lines 52-62 describes first-payment CVC and confirmPayment as a PaymentIntent path, while this save guide uses a SetupIntent followed by on-session reuse (new raw lines 35-70). Cross-link both with that boundary. The payment guide documents SIRET resolution at PaymentIntent confirmation rather than creation and exposes the charged SIRET on expanded latest_charge (accept-payment raw lines 60-74); apply that claim to its documented PaymentIntent scope without inferring when SetupIntent resolves SIRET or that a saved method freezes or bypasses the location requirement.",
+            "Reconcile the dated fixture descriptions with the testing instructions. May's 42424242424242 is a provisioned test SIRET, and 00000000000000 is invalid for that old intent field, not generic fixtures for the new PaymentLocation. November retains the same test card, but requires the sandbox location ID from sandbox onboarding for SetupIntent. The API onboarding guide provides a separate SIRET/postal-code matrix (restaurant API raw lines 342-354). Keep the test scopes explicit in the save source, concept and setup/accept routes."
+          ],
+          "reason": "The canonical guide materially changes onboarding, request identity and sandbox prerequisites. The mapped source presents the May request contract without version qualification and lacks the new preview and client/server details. The summary must also explain the SetupIntent result check and actual preview version selection for the HTTP examples."
+        }
+      ],
+      "affected_concepts": [
+        "wiki/concepts/stripe-fr-meal-vouchers.md"
+      ],
+      "unresolved_questions": [
+        "This pair does not establish legacy SIRET request-field availability for other versions or already provisioned accounts, required SDK library releases, response behavior for an ineligible payment method, a migration path for already saved methods, or off-session/recurring support. No preview enrollment, onboarding, API call or live payment was executed."
+      ],
+      "mapped_source_assessment": {
+        "source_target": "wiki/sources/source-stripe-fr-meal-vouchers-save-payment.md",
+        "proposed_disposition": "source_required_update",
+        "update_needed": true,
+        "findings": [
+          "Update the primary summary to the November private-preview PaymentLocation workflow, version gate, active capability, two location and eligibility request shapes, client secret and confirmSetup boundary, and same-sandbox setup ID.",
+          "Preserve May 5 snippets and fixtures as dated evidence. Link reciprocally to the restaurant onboarding and accept-payment routes and update the France Meal Vouchers concept so the old SIRET shape, first-payment CVC scope, and new route cannot be confused.",
+          "Pair the meal voucher guide's client secret and stripe.confirmSetup handoff with its later use of the saved PaymentMethod ID (old raw lines 50-62, new raw lines 47-57). Before reuse, verify the SetupIntent result and the resulting saved PaymentMethod. The April 21 general Elements save guide shows retrieving the SetupIntent with stripe.retrieveSetupIntent using the client secret, checking for succeeded instead of processing or requires_payment_method, and successful confirmation saving the resulting payment_method to the Customer (raw/stripe-save-and-reuse-elements-2025.md:946-953,967-998). The November Stripe.js reference corroborates retrieval by client secret (raw/stripe-js-setup-intents-retrieve-setup-intent-2026-11-07.md:5-12). Treat this as companion Elements guidance. Return navigation on its own does not verify setup or a purchase, and the meal voucher captures do not specify a distinct response contract.",
+          "Both November curl intent requests omit Stripe-Version despite the 2026-05-27.preview or later requirement (new raw lines 25-29,39-45,61-71). For these raw HTTP requests, a missing Stripe-Version header means Stripe uses the account's default (raw/stripe-sdks-set-version-2026-11-07.md:5-17). The request must actually select the supported preview API version. Set an explicit Stripe-Version header such as 2026-05-27.preview for the HTTP samples when the account default does not meet that requirement. This is API version selection and does not grant preview entitlement or establish support in a specific SDK release."
+        ],
+        "conflicts": [
+          "The mapped source lines 17-36 and wiki/concepts/stripe-fr-meal-vouchers.md lines 33-37 and 49-72 present nested SIRET inputs and the old test SIRETs without qualifying the API route. The May 5 save guide used Dashboard-provisioned SIRET as an intent field; the November save guide takes a location ID and conditional eligibility flag instead (old raw lines 19-47 and 58-88, new raw lines 25-44 and 53-81). Link the current preview and dated direct-SIRET examples reciprocally. The new location API still registers the SIRET under business_registration and represents a single physical branch. The retained November Dashboard guide is still a distinct route where the restaurant’s name and SIRET are immutable, while the API guide allows acknowledged updates to certain onboarding data and can return the capability to pending (restaurant API raw lines 51-64 and 285-310; Dashboard raw lines 25-42). This does not establish removal of the old request fields or a universal migration deadline.",
+          "Keep saving without payment separate from the neighboring save-during-payment CVC claim in the concept line 70 and wiki/sources/source-stripe-fr-meal-vouchers-accept-payment.md lines 29-31. The November accept-payment guide lines 52-62 describes first-payment CVC and confirmPayment as a PaymentIntent path, while this save guide uses a SetupIntent followed by on-session reuse (new raw lines 35-70). Cross-link both with that boundary. The payment guide documents SIRET resolution at PaymentIntent confirmation rather than creation and exposes the charged SIRET on expanded latest_charge (accept-payment raw lines 60-74); apply that claim to its documented PaymentIntent scope without inferring when SetupIntent resolves SIRET or that a saved method freezes or bypasses the location requirement.",
+          "Reconcile the dated fixture descriptions with the testing instructions. May's 42424242424242 is a provisioned test SIRET, and 00000000000000 is invalid for that old intent field, not generic fixtures for the new PaymentLocation. November retains the same test card, but requires the sandbox location ID from sandbox onboarding for SetupIntent. The API onboarding guide provides a separate SIRET/postal-code matrix (restaurant API raw lines 342-354). Keep the test scopes explicit in the save source, concept and setup/accept routes."
+        ],
+        "reason": "The canonical guide materially changes onboarding, request identity and sandbox prerequisites. The mapped source presents the May request contract without version qualification and lacks the new preview and client/server details. The summary must also explain the SetupIntent result check and actual preview version selection for the HTTP examples."
+      },
+      "findings": [
+        "Both captures document Payment Element and SetupIntent saving without a purchase for Bimpli, Pluxee and Up Déjeuner in private preview. November explicitly adds the waitlist, preview Stripe API version 2026-05-27.preview or later, a per-restaurant/store PaymentLocation set up through the API and an active fr_meal_vouchers_conecs_payments capability. Preview access, location capability and payment-method eligibility are distinct requirements (new raw lines 5-37).",
+        "Server SetupIntent creation takes Customer ID, setup_details[location] and setup_details[benefit][fr_meal_voucher][enabled]=if_payment_method_is_eligible. The server sends only the SetupIntent client secret to the client. Payment Element supplies the details to stripe.confirmSetup with a return_url. A later on-session payment, while the customer is present and can authenticate, takes Customer and saved PaymentMethod IDs, EUR, payment_details[location] and the matching payment_details eligibility field in a separate server PaymentIntent. The example requests confirmation with confirm=true. An active location, a return URL and a confirmation request alone establish neither eligible classification nor successful authorization, capture or settlement (new raw lines 35-71).",
+        "November's sandbox keeps the Bimpli with Conecs test card, any three-digit CVC and any future expiration, but uses a PaymentLocation ID from onboarding in that same sandbox. Both captures describe possible issuer verification during saving, reflected as a temporary EUR 0.30 statement entry that Stripe reverses almost immediately and restores to the daily balance. This is conditional card verification, distinct from a completed voucher purchase or refund (old raw lines 75-92, new raw lines 73-85).",
+        "The mapped May 5 summary lines 13-36 captures saving, EUR on-session reuse and the temporary authorization, but it has only the historical direct-SIRET request shapes and fixtures. It also omits the issuer and onboarding scope and client confirmation handoff. Date its examples and add the November preview and server/client boundaries.",
+        "Pair the meal voucher guide's client secret and stripe.confirmSetup handoff with its later use of the saved PaymentMethod ID (old raw lines 50-62, new raw lines 47-57). Before reuse, verify the SetupIntent result and the resulting saved PaymentMethod. The April 21 general Elements save guide shows retrieving the SetupIntent with stripe.retrieveSetupIntent using the client secret, checking for succeeded instead of processing or requires_payment_method, and successful confirmation saving the resulting payment_method to the Customer (raw/stripe-save-and-reuse-elements-2025.md:946-953,967-998). The November Stripe.js reference corroborates retrieval by client secret (raw/stripe-js-setup-intents-retrieve-setup-intent-2026-11-07.md:5-12). Treat this as companion Elements guidance. Return navigation on its own does not verify setup or a purchase, and the meal voucher captures do not specify a distinct response contract.",
+        "Both November curl intent requests omit Stripe-Version despite the 2026-05-27.preview or later requirement (new raw lines 25-29,39-45,61-71). For these raw HTTP requests, a missing Stripe-Version header means Stripe uses the account's default (raw/stripe-sdks-set-version-2026-11-07.md:5-17). The request must actually select the supported preview API version. Set an explicit Stripe-Version header such as 2026-05-27.preview for the HTTP samples when the account default does not meet that requirement. This is API version selection and does not grant preview entitlement or establish support in a specific SDK release."
+      ],
+      "substantive_changes": [
+        "The prerequisites and identity contract changed in the current guide. The restaurant's active PaymentLocation is selected separately for setup and charging, replacing the older direct nested SIRET inputs with the two location fields and the eligibility flag in each intent. November names the preview API version and private-preview request path (old raw lines 8-19,31-47,58-72 and new raw lines 9-29,35-44,53-70). The waitlist documents how to request access, not activation.",
+        "The test procedure changes from valid/invalid SIRET intent examples to the sandbox onboarding location and ID in the same sandbox. The Bimpli/Conecs card and the EUR 0.30 conditional verification behavior remain. Removing the old Elements variant banner, switching the SetupIntent snippet from Node to curl, and reformatting test headings and columns are presentation changes. The underlying UI remains Payment Element, and both November intent examples need preview version context despite omitting an explicit version header (old raw lines 21-54 and 75-92, new raw lines 25-51 and 61-85)."
+      ],
+      "historical_claims_to_preserve": [
+        "Retain the May 5, 2026 capture's Dashboard-provisioned branch SIRET, distinct setup and payment nested SIRET parameters, and old provisioned/invalid SIRET fixtures as dated behavior. The filename's 2025 suffix is not its capture date.",
+        "Retain supported issuers/private preview, client secret handoff with stripe.confirmSetup and return_url, later on-session EUR PaymentIntent with Customer and saved PaymentMethod, Bimpli sandbox test card and conditional EUR 0.30 temporary verification. Document the preview location contract alongside the old request shapes."
+      ],
+      "conflicts": [
+        "The mapped source lines 17-36 and wiki/concepts/stripe-fr-meal-vouchers.md lines 33-37 and 49-72 present nested SIRET inputs and the old test SIRETs without qualifying the API route. The May 5 save guide used Dashboard-provisioned SIRET as an intent field; the November save guide takes a location ID and conditional eligibility flag instead (old raw lines 19-47 and 58-88, new raw lines 25-44 and 53-81). Link the current preview and dated direct-SIRET examples reciprocally. The new location API still registers the SIRET under business_registration and represents a single physical branch. The retained November Dashboard guide is still a distinct route where the restaurant’s name and SIRET are immutable, while the API guide allows acknowledged updates to certain onboarding data and can return the capability to pending (restaurant API raw lines 51-64 and 285-310; Dashboard raw lines 25-42). This does not establish removal of the old request fields or a universal migration deadline.",
+        "Keep saving without payment separate from the neighboring save-during-payment CVC claim in the concept line 70 and wiki/sources/source-stripe-fr-meal-vouchers-accept-payment.md lines 29-31. The November accept-payment guide lines 52-62 describes first-payment CVC and confirmPayment as a PaymentIntent path, while this save guide uses a SetupIntent followed by on-session reuse (new raw lines 35-70). Cross-link both with that boundary. The payment guide documents SIRET resolution at PaymentIntent confirmation rather than creation and exposes the charged SIRET on expanded latest_charge (accept-payment raw lines 60-74); apply that claim to its documented PaymentIntent scope without inferring when SetupIntent resolves SIRET or that a saved method freezes or bypasses the location requirement.",
+        "Reconcile the dated fixture descriptions with the testing instructions. May's 42424242424242 is a provisioned test SIRET, and 00000000000000 is invalid for that old intent field, not generic fixtures for the new PaymentLocation. November retains the same test card, but requires the sandbox location ID from sandbox onboarding for SetupIntent. The API onboarding guide provides a separate SIRET/postal-code matrix (restaurant API raw lines 342-354). Keep the test scopes explicit in the save source, concept and setup/accept routes."
+      ],
+      "expected_read_files": [
+        {
+          "path": "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-saving-payment-details-2026-11-07.md",
+          "sha256": "6624950f023aeeea57245acb1cb46d826978ac708d592be3641b9296ea7c4556",
+          "lines": 85
+        },
+        {
+          "path": "raw/stripe-fr-meal-vouchers-save-payment-2025.md",
+          "sha256": "65ed581bb69dcd9f91590ec2dd96784c0f91f7b854edf51e7e85a821ad9869b7",
+          "lines": 92
+        },
+        {
+          "path": "wiki/sources/source-stripe-fr-meal-vouchers-save-payment.md",
+          "sha256": "f35bcf6f0e514661501017c244d38ef649c87e638309984684e5a4f87d5113f6",
+          "lines": 40
+        },
+        {
+          "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/c2732be78e79c9df7532117f/content.diff",
+          "sha256": "3d6247ecbab7d2ec1174cc5f0fda2d7c4ef050f5445c0a8f461ca2a860c16589",
+          "lines": 112
+        }
+      ],
+      "original_query_prompts_path": "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md",
+      "original_prompts": "New raw: `raw/stripe-payments-meal-vouchers-fr-meal-vouchers-saving-payment-details-2026-11-07.md`. Prior raw: `raw/stripe-fr-meal-vouchers-save-payment-2025.md`. Current summaries: `wiki/sources/source-stripe-fr-meal-vouchers-save-payment.md`.\n\n- Q1: For `https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/saving-payment-details`, what central documented behavior, prerequisites, identities and state boundaries does the complete new capture establish, and how does it compare with the matched old capture and every mapped current summary?\n\n- Q2: Which changes are substantive versus presentational or navigation-only? Which historical claims must remain dated, which conflicts need reciprocal warnings, and which API, UI, version, client/server or outcome qualifications prevent unsupported inferences?",
+      "reviewed_answers": {
+        "Q1": "At https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/saving-payment-details, November documents saving French meal vouchers for Bimpli, Pluxee and Up Déjeuner in private preview. It requires Stripe API version 2026-05-27.preview or later and an API-onboarded PaymentLocation with active fr_meal_vouchers_conecs_payments. The server creates a SetupIntent with Customer ID, setup_details[location] and setup_details[benefit][fr_meal_voucher][enabled]=if_payment_method_is_eligible, then passes the client secret to Payment Element's stripe.confirmSetup flow with return_url. Before reuse, verify that SetupIntent succeeded and identify its saved PaymentMethod. The April 21 general Elements save guide shows looking up the SetupIntent via stripe.retrieveSetupIntent with its client secret, checking its status, and finding the resulting payment_method saved to the Customer on success. The November Stripe.js reference corroborates lookup by client secret (raw/stripe-save-and-reuse-elements-2025.md:946-953,967-986 and raw/stripe-js-setup-intents-retrieve-setup-intent-2026-11-07.md:5-12). This companion guidance distinguishes arrival at return_url from successful setup or a purchase. The meal voucher's SetupIntent handoff and saved-method reuse are in old raw lines 50-62 and new raw lines 47-57. A later on-session EUR charge uses a separate PaymentIntent, Customer and saved PaymentMethod IDs, payment_details[location], the corresponding eligibility flag and confirm=true in the example. Sandbox setup takes a location ID from the same sandbox. An issuer verification may appear as a temporary 0.30 EUR authorization that is reversed almost immediately (new raw lines 9-51 and new raw lines 53-85). The May 5 capture and source-stripe-fr-meal-vouchers-save-payment.md use a pre-provisioned SIRET in each intent and older test SIRET examples. They share the SetupIntent versus on-session PaymentIntent split, EUR, test card and conditional authorization behavior (old raw lines 19-54 and old raw lines 56-92).",
+        "Q2": "At https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/saving-payment-details, the preview access and version terms, active per-location capability, location and eligibility parameters on both intents, and sandbox input are substantive (new raw lines 9-44 and new raw lines 53-81). The Node-to-curl switch and Elements variant banner removal are presentational. Date the May direct-SIRET setup and payment parameters and provisioned/invalid test SIRETs in source-stripe-fr-meal-vouchers-save-payment.md (old raw lines 19-54 and old raw lines 56-92). Cross-link the two contracts and distinguish the preview location's registered SIRET and possible onboarding review from the older Dashboard-managed record. Keep the companion accept-payment CVC and PaymentIntent SIRET-at-confirmation claims specific to that path. Both new curl samples omit Stripe-Version (new raw lines 39-45 and new raw lines 61-71), so a raw HTTP request as shown uses the account's default API version (raw/stripe-sdks-set-version-2026-11-07.md:5-17). Actually select 2026-05-27.preview or a later supported preview version (new raw lines 25-29). When the account default does not meet that requirement, use an explicit Stripe-Version header for those HTTP requests. Version selection establishes neither a particular SDK release nor preview entitlement. The client receives the SetupIntent client secret, while server requests use the secret key. A waitlist request, location activation, client redirect and conditional verification do not establish a successful purchase, capture, settlement or off-session eligibility."
+      }
+    }
+  ],
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-saving-payment-details-2026-11-07.md",
+      "sha256": "6624950f023aeeea57245acb1cb46d826978ac708d592be3641b9296ea7c4556",
+      "lines": 85
+    },
+    {
+      "path": "raw/stripe-fr-meal-vouchers-save-payment-2025.md",
+      "sha256": "65ed581bb69dcd9f91590ec2dd96784c0f91f7b854edf51e7e85a821ad9869b7",
+      "lines": 92
+    },
+    {
+      "path": "wiki/sources/source-stripe-fr-meal-vouchers-save-payment.md",
+      "sha256": "f35bcf6f0e514661501017c244d38ef649c87e638309984684e5a4f87d5113f6",
+      "lines": 40
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/c2732be78e79c9df7532117f/content.diff",
+      "sha256": "3d6247ecbab7d2ec1174cc5f0fda2d7c4ef050f5445c0a8f461ca2a860c16589",
+      "lines": 112
+    }
+  ],
+  "concept_targets": [
+    {
+      "path": "wiki/concepts/stripe-fr-meal-vouchers.md",
+      "before_sha256": "253ce6f26c1f9d8b5d853ea6de446d83c898b682a7b3812f4b420078c8a98ff6",
+      "contributing_jobs": [
+        "payments-meal-vouchers-fr-meal-vouchers",
+        "payments-meal-vouchers-fr-meal-vouchers-accept-a-payment",
+        "payments-meal-vouchers-fr-meal-vouchers-accept-with-connect",
+        "payments-meal-vouchers-fr-meal-vouchers-checking-a-card-balance",
+        "payments-meal-vouchers-fr-meal-vouchers-saving-payment-details",
+        "payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    }
+  ],
+  "state": "worker_running",
+  "attempt": 1,
+  "review_scope": "full",
+  "worker_agent": "/root/s04iw02",
+  "reviewer_agent": "/root/s04ir07",
+  "role_notes": "tracking/ingest/stripe/stripe-campaign-04/updates/role-notes.md",
+  "worker_output": "/tmp/stripe-s04-ingest/payments-meal-vouchers-fr-meal-vouchers-saving-payment-details-worker.json",
+  "reviewer_output": "/tmp/stripe-s04-ingest/payments-meal-vouchers-fr-meal-vouchers-saving-payment-details-reviewer.json"
+}

@@ -1,0 +1,232 @@
+{
+  "job_id": "payments-link-payment-element-link",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Docs — Link in the Payment Element\"\ntype: source\ndate_ingested: 2026-05-08\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/link/payment-element-link\"\nraw_files:\n  - \"stripe-payments-link-payment-element-link-2026-11-07.md\"\n  - \"stripe-payment-element-link-2025.md\"\ntags: [stripe, link, payment-element, prefill, autofill, accelerated-signup, defaultValues]\n---\n\n## Summary\n\nStripe documents Link in the browser Payment Element, including email collection, account authentication and enrollment, field prefill and sandbox testing.\n\n## Integration Options\n\nThe default Payment Element integration includes a Link prompt in the card form. The merchant controls Link in Payment Methods settings. Customers already logged in to Link can autofill details saved with another business.\n\n| Option | When | How |\n| --- | --- | --- |\n| **Pass email (recommended)** | The merchant already has the customer's email | Pass it through `defaultValues.billingDetails.email` when creating the Payment Element. Returning Link customers can authenticate in the payment form and use saved details. |\n| **Collect in Payment Element** | The customer enters an email in the payment form | This route needs no code changes. A customer who has enrolled can use saved details. An unenrolled customer who selects a supported payment method is prompted to save their details and can choose whether to enroll. |\n\nName and address are optional in the billing-details example.\n\n```js\nelements.create('payment', { defaultValues: { billingDetails: { name, email, address } } })\n```\n\n## Accelerated sign-up\n\nBy default, Link expands the sign-up fields to make enrollment easier. Configure this under Settings → Payment Methods → Link or in Connected Accounts settings. The behavior depends on customer country, can be limited or disabled by local privacy laws, and allows the customer to opt out.\n\n## Prefill tool\n\nStripe enables the separate prefill tool by default when Link is enabled. Disable it under Link settings → Features in the Dashboard without changing code. It detects customer fields on the same checkout page as the Link-enabled Payment Element when Stripe customer data has yet to be supplied programmatically. The scan description calls the parameter `defaultValue`, while the browser code examples use `defaultValues`.\n\nDuring sign-up, Link can prefill email, phone and name. It holds detected values in local session memory without cookies, local storage, or transfer to Stripe services by the prefill tool. Link stores prefilled data for account creation only after the customer acts and consents. For returning login, Link uses the email to prompt one-time passcode authentication and stores no page data from that flow.\n\n## Sandbox OTP codes\n\nCreate sandbox Link accounts with any valid email. Treat them as effectively public because they are tied to the publishable key. Keep real user data out of them.\n\n| Code | Sandbox authentication result |\n| --- | --- |\n| `000001` | Invalid code |\n| `000002` | Expired code |\n| `000003` | Maximum attempts exceeded |\n| Any other six digits | Successful authentication |\n\nThe separate [[source-stripe-checkout-link|Checkout guide]] documents the same sandbox code outcomes. These codes exercise Link account authentication. Payment confirmation and settlement have separate evidence requirements.\n\n## Funding and domain registration\n\n- **2026-05-08 capture** describes credit cards, debit cards and qualified US bank account purchases as the only supported choices and explicitly links to domain registration. It describes additional funding sources as using the same settlement time and guarantees as card and bank account payments.\n- **2026-11-07 capture** lists the same three choices without exclusivity and drops the registration sentence. The separate [[raw/stripe-payments-payment-methods-pmd-registration-2026-11-07|November domain-registration overview]] expressly includes Link in Elements and Checkout's embeddable payment form and routes to the Dashboard and API variants. See [[source-stripe-pmd-registration]] for the registration route. The Payment Element guide's wording change leaves that independently documented prerequisite in scope.\n- **2026-11-07 capture** describes the same transaction settlement time and processing behavior for additional funding sources as for card and bank account payments. Both captures describe automatic support without integration changes. The dated phrasing establishes the guide's comparison. Market-specific eligibility, contractual guarantees and actual funds availability require separate evidence.\n\n## CDN Assets\n\n- `raw/assets/stripe-link-in-payment-element.png` — Payment Element with Link prompt (430 KB)\n\n## Related Pages\n\n- [[stripe-link]] — Link concept page, including browser Payment Element\n- [[source-stripe-checkout-link]] — Link with Checkout, including its sandbox testing\n- [[source-stripe-pmd-registration]] — Domain registration for Elements and embeddable Checkout\n- [[stripe]] — Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-payments-link-payment-element-link-2026-11-07]] — 2026-11-07 full webpage capture (117 lines)\n- [[raw/stripe-payment-element-link-2025]] — 2026-05-08 full webpage capture (116 lines)\n",
+  "quotes": {
+    "payments-link-payment-element-link": [
+      {
+        "text": "The default Payment Element integration includes a Link prompt in the card form.",
+        "location": "raw/stripe-payments-link-payment-element-link-2026-11-07.md:9"
+      },
+      {
+        "text": "Prefilled values are never stored unless the customer completes a Link sign-up.",
+        "location": "raw/stripe-payments-link-payment-element-link-2026-11-07.md:64"
+      },
+      {
+        "text": "We only store the prefilled information if the customer takes action and provides consent to create a Link account.",
+        "location": "raw/stripe-payments-link-payment-element-link-2026-11-07.md:91"
+      },
+      {
+        "text": "Link supports credit cards, debit cards, and qualified US bank account purchases.",
+        "location": "raw/stripe-payments-link-payment-element-link-2026-11-07.md:97"
+      },
+      {
+        "text": "They use the same transaction settlement time and processing behavior as card and bank account payments.",
+        "location": "raw/stripe-payments-link-payment-element-link-2026-11-07.md:110"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-link-payment-element-link": [
+      {
+        "text": "Link requires [domain registration](https://docs.stripe.com/payments/payment-methods/pmd-registration.md).",
+        "location": "raw/stripe-payment-element-link-2025.md:97"
+      },
+      {
+        "text": "the same transaction settlement time and guarantees as card and bank account payments.",
+        "location": "raw/stripe-payment-element-link-2025.md:110"
+      },
+      {
+        "text": "Any other 6 digits not listed below",
+        "location": "raw/stripe-payment-element-link-2025.md:103"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-link-payment-element-link-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 117
+      }
+    ],
+    "raw/stripe-payment-element-link-2025.md": [
+      {
+        "start": 1,
+        "end": 116
+      }
+    ],
+    "wiki/sources/source-stripe-payment-element-link.md": [
+      {
+        "start": 1,
+        "end": 61
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/dee11d00b2438775ace63100/content.diff": [
+      {
+        "start": 1,
+        "end": 131
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-link-payment-element-link/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 186
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-link-payment-element-link/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 50
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 123,
+        "end": 129
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 12
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 432,
+        "end": 453
+      }
+    ],
+    "wiki/concepts/stripe-link.md": [
+      {
+        "start": 22,
+        "end": 54
+      },
+      {
+        "start": 81,
+        "end": 108
+      },
+      {
+        "start": 172,
+        "end": 183
+      }
+    ],
+    "wiki/sources/source-stripe-pmd-registration.md": [
+      {
+        "start": 12,
+        "end": 31
+      }
+    ],
+    "raw/stripe-payments-payment-methods-pmd-registration-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-checkout-link-2025.md": [
+      {
+        "start": 94,
+        "end": 105
+      }
+    ],
+    "raw/stripe-payments-link-checkout-link-2026-11-07.md": [
+      {
+        "start": 79,
+        "end": 91
+      }
+    ]
+  },
+  "answers": {
+    "payments-link-payment-element-link": {
+      "Q1": "At https://docs.stripe.com/payments/link/payment-element-link, the browser Payment Element defaults to a Link prompt in the card form, with merchant control in payment method settings. A customer already logged into Link can autofill details saved through another business. Stripe recommends supplying a known email through defaultValues.billingDetails.email, with name and address available as optional billing details. The in-form email collection route requires no code change. Returning Link customers can use the form to authenticate and populate their saved details. An unenrolled customer who chooses a supported payment method is prompted to save their details and can choose whether to enroll. See old raw lines 15-24 and new raw lines 16-25 for the route conditions, and old raw lines 9-60 and new raw lines 9-60 for the card UI and programmatic billing examples. In old raw lines 62-91 and new raw lines 62-91, accelerated sign-up expands enrollment fields by default with country, legal and customer opt-out conditions. The separately configurable prefill tool defaults on when Link is enabled. Its same-page detection requires Stripe customer data to be absent from supplied defaults, uses session-local memory, stores no page data for returning login and persists new enrollment details only after action and consent. source-stripe-payment-element-link.md lines 13-43 preserve the two routes and local memory but blur the controls and omit eligibility and consent conditions. For sandbox Link authentication, 000001 is invalid, 000002 is expired, 000003 exceeds maximum attempts, and any other six digits succeed. Treat sandbox Link accounts tied to the publishable key as publicly available, use no real user data and use any valid email to create the account, as documented in old raw lines 93-106 and new raw lines 93-106. The updated summary replaces the shorthand at baseline lines 45-47 with the successful sandbox authentication case and three exceptions. Authentication and enrollment are distinct from payment confirmation and settlement outcomes.",
+      "Q2": "For https://docs.stripe.com/payments/link/payment-element-link, old raw lines 93-110 and new raw lines 93-110 establish two material documentation shifts. The listed credit cards, debit cards and qualified US bank purchases lose the exclusivity wording and the registration sentence. The additional-funding comparison replaces guarantees with processing behavior while retaining the same transaction settlement time and automatic support. The updated source preserves both May claims as dated. The separate November registration overview expressly includes Link in Elements and Checkout's embeddable payment form (raw/stripe-payments-payment-methods-pmd-registration-2026-11-07.md lines 5-14). The candidate links the affirmative registration overview and canonical registration source from its dated omission. A reverse source edit belongs to the coordinator because that source is outside this order. The edits establish wording changes. Current live eligibility, specific guarantee terms and actual outcomes still require separate evidence. Table reflow, snippet punctuation and the CDN image change are presentation. The extra before-payment custom checkout link in new raw lines 112-117 beyond old raw lines 112-116 is navigation. Independently, source-stripe-payment-element-link.md lines 30-47 and the Link concept baseline need separate corrections to distinguish the controls and authentication outcomes already documented in both captures. Customer country, privacy law and customer opt-out qualify accelerated sign-up. The separate page-scanning prefill tool defaults on when Link is enabled, can be disabled in the Dashboard and scans the surrounding checkout page when Stripe customer data has not already been supplied. The scanning prose spells the parameter in the singular as defaultValue, while the Web Elements browser example shows plural defaultValues (old raw lines 24-35 and 71-91, new raw lines 25-35 and 71-91). Keep detected data in the documented session-local and consent boundaries, and keep fixed OTP outcomes scoped to sandbox authentication. This browser route and its test codes do not establish an SDK revision, native or hosted behavior, a server-confirmation contract, payment success or available funds."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-link-payment-element-link-default",
+      "target_path": "wiki/concepts/stripe-link.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Two options** for adding Link to Payment Element:",
+      "proposed_markdown": "The default browser Payment Element shows a Link prompt in its card form, with merchant control in Payment Methods settings. A customer already logged in to Link can autofill details saved with another business. There are two in-form email routes:",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Both raw captures lines 9–24 support the default, scope and returning account behavior."
+      ]
+    },
+    {
+      "update_id": "payments-link-payment-element-link-collect",
+      "target_path": "wiki/concepts/stripe-link.md",
+      "update_kind": "durable_fact",
+      "anchor": "2. **Collect in Payment Element**: no code change; Link prompts appear automatically in the form",
+      "proposed_markdown": "2. **Collect in Payment Element**: no code changes. When an unenrolled customer selects a supported payment method, the form prompts them to save their details and they can choose whether to enroll.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Both raw captures lines 21–24 and 61–69 distinguish customer choice and the supported-method prompt from the default card-form Link prompt."
+      ]
+    },
+    {
+      "update_id": "payments-link-payment-element-link-prefill",
+      "target_path": "wiki/concepts/stripe-link.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Prefill tool** (on by default): scans surrounding page for email/phone/name → auto-populates Link login/sign-up fields; values held only in local memory; disabled by local data privacy laws; customers can opt out. Disable in Link settings Dashboard.",
+      "proposed_markdown": "**Prefill tool**: defaults on when Link is enabled and can be disabled under Link settings → Features. When Stripe customer data has yet to be supplied programmatically, it detects email, phone and name fields on the same page. It holds detected values in local session memory. Returning login uses email for a one-time passcode and stores no page data. Enrollment persists prefilled details only after customer action and consent.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [
+        "Both raw captures lines 77–91 define the independent Dashboard setting and storage scope. The programmatic option is `defaultValues` in the examples at 25–60."
+      ]
+    },
+    {
+      "update_id": "payments-link-payment-element-link-accelerated",
+      "target_path": "wiki/concepts/stripe-link.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Accelerated sign-up** (on by default): auto-expands Link sign-up fields; configurable in Settings → Payment Methods → Link.",
+      "proposed_markdown": "**Accelerated sign-up**: expands sign-up fields by default. Configure under Settings → Payment Methods → Link or in Connected Accounts settings. Customer country and local privacy laws affect availability, and customers can opt out.\n\nFor Link in the browser Payment Element, see [[source-stripe-pmd-registration|domain registration]]. The November Payment Element capture omits the registration sentence, while the separate November registration overview expressly includes Link for Elements and Checkout’s embeddable payment form.",
+      "quote_indexes": [
+        1,
+        3
+      ],
+      "warnings": [
+        "Both raw captures lines 62–77 place country, privacy laws and opt-out with accelerated sign-up. May raw line 97 explicitly links domain registration and the separate November registration overview raw/stripe-payments-payment-methods-pmd-registration-2026-11-07.md:5–14 still includes Link."
+      ]
+    },
+    {
+      "update_id": "payments-link-payment-element-link-funding",
+      "target_path": "wiki/concepts/stripe-link.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "**Immediate confirmation** regardless of funding. Settlement same timeline as cards.",
+      "proposed_markdown": "**Immediate confirmation** regardless of funding. Settlement same timeline as cards. For the browser Payment Element route, see [[source-stripe-payment-element-link#Funding and domain registration|the dated funding comparison]]. The May guide described the same settlement time and guarantees for additional funding sources. The November guide describes the same settlement time and processing behavior. Method-specific settlement and guarantee claims have their own sources.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "Old and new raw lines 108–110 distinguish the route-specific wording about additional funding from the independent method-specific sources. The reciprocal addition preserves the existing general concept statements and does not derive them from this guide."
+      ]
+    },
+    {
+      "update_id": "payments-link-payment-element-link-source",
+      "target_path": "wiki/concepts/stripe-link.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-payment-element-link]] — Link in Payment Element: pass-email vs collect-email options, prefill tool (page scan, local memory only), accelerated sign-up",
+      "proposed_markdown": "- [[source-stripe-payment-element-link]] — Browser Payment Element email routes, separate accelerated sign-up and prefill controls, sandbox OTP exceptions, and dated funding and registration wording",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Both raw captures lines 93–106 establish the sandbox authentication outcomes. The separate Checkout guide independently documents the same three exceptions."
+      ]
+    }
+  ]
+}

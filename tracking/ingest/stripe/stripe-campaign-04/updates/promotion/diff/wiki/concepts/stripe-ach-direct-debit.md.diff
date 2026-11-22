@@ -1,0 +1,18 @@
+--- wiki/concepts/stripe-ach-direct-debit.md
++++ wiki/concepts/stripe-ach-direct-debit.md
+@@ -121,12 +121,15 @@
+ | Cost | Lower | Higher |
+ | Best for | Large/recurring B2B | Instant confirmation needed |
+ 
++ACH takes precedence over Link Instant Bank Payments for the same eligible transaction. See [[source-stripe-instant-bank-payments]] for dated object-specific request rules and the unresolved Mobile Payment Element disagreement between the dedicated guides and [[source-stripe-bank-debits|combined bank-debits matrix]].
++
+ ## Sources
+ 
+ - [[source-stripe-ach-direct-debit]] — primary source: settlement, mandates, disputes, verification, refunds, Connect, testing
+ - [[source-stripe-ach-accept-payment]] — integration guide: Checkout/Elements/PaymentIntents, verification options, Financial Connections, payment reference, target debit date
+ - [[source-stripe-ach-set-up-payment]] — save for future: dated 2026-05-02 Checkout setup mode, Elements and iOS/Android/React Native SetupIntent variants, Financial Connections and microdeposit verification; 2026-11-07 base URL is a five-route navigation index, with variant instructions not fetched
+ - [[source-stripe-ach-migration]] — dated legacy-to-Payment Intents/Checkout migration: T+6 versus T+4 (conditional T+2), active mandates, conditional balance-type updates, rare two-microdeposit fallback, and branch-specific webhook matrix; payout descriptors might differ
++- [[source-stripe-legacy-apis]] — April and November Older APIs overview and the separate November ACH with Charges restriction on new legacy onboarding. See the current ACH routes above.
+ - [[source-stripe-ach-migrate-bank-accounts]] — 2026-05-02 full legacy BankAccount migration guide: verified-account prerequisites differ for Checkout and Payment Intents, with active mandate for the latter and mandate acknowledgment before Invoicing/Subscriptions defaults; 2026-11-07 base URL is a two-variant index
+ - [[source-stripe-subscriptions-ach-debit]] — ACH subscription setup: 10-day microdeposit window, default PM webhook required, trial flow via SetupIntent, Checkout delayed notification events, test account table
+ - [[source-stripe-ach-migrate-from-processor]] — migrate from another processor: Stripe-managed vs self-service, verification_method skip, raw bank details SetupIntent

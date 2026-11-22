@@ -1,0 +1,197 @@
+{
+  "job_id": "payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Set Up a Restaurant for Titres-Restaurant Payments\"\ntype: source\ndate_ingested: 2026-05-05\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/set-up-restaurant\"\nraw_files:\n  - \"stripe-payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant-2026-11-07.md\"\n  - \"stripe-fr-meal-vouchers-setup-restaurant-2025.md\"\ntags: [stripe, meal-vouchers, france, titres-restaurant, siret, onboarding, connect]\n---\n\n## Summary\n\nThe May 5 and November 7, 2026 Dashboard guides cover restaurant and store onboarding for Bimpli, Pluxee and Up Déjeuner. Obtain a CNTR license for the branch and a contract with each issuer it intends to accept. November documents an [email waitlist for the private preview](https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/set-up-restaurant.md#fr_meal_voucher_preview) and links a separate Payment Locations API route. May instead described access for selected API preview users via fr-meal-voucher-beta@stripe.com. The captures leave current access approval and continued use of the May address unconfirmed.\n\n## Dashboard Onboarding and Readiness\n\n1. Open **French meal vouchers SIRETs** in Dashboard and choose **Add SIRET**.\n2. Enter the branch's SIRET, postal code and store name, then select **Confirm**. The SIRET and postal code must match. Dashboard prevents changes to the restaurant’s name and SIRET after creation.\n3. Both Dashboard captures describe a 1–2 business day validation period after submission. Open the restaurant drawer to verify successful onboarding and inspect the status for each issuer before accepting vouchers.\n\nThe November drawer also displays the Payment Location ID. That ID identifies the location separately from the branch's SIRET or the connected account ID. A location can exist and list issuers before the voucher capability becomes active.\n\n## Dashboard Onboarding Problems\n\n- **Ineligible.** The November Dashboard guide uses this status when Conecs rejects a nonexistent SIRET, a SIRET with no CNTR approval or one whose approval was revoked. Verify the SIRET and obtain or re-obtain a valid CNTR license when required. An incorrect SIRET requires a new Dashboard onboarding request with the correct value. If the SIRET is correct but CNTR registration remains pending, Stripe resumes automatically after Conecs processes it.\n- **Invalid postal code.** The captures show this case under **Requires Action**. Open the restaurant drawer, choose **Update Details**, enter the correct postal code and select **Confirm**. The guides describe a status update within 1–2 business days after correction.\n\n## Preview API and Payment Location Handoff\n\nThe separate November Payment Locations API guide requires preview Stripe version `2026-05-27.preview` or later. It describes private-preview SDK support and the documented private-parameter or custom-request alternatives. The branch Payment Location represents one physical establishment. Confirm that its `fr_meal_vouchers_conecs_payments` capability is `active` before acceptance. A populated issuer list or its update event can precede capability activation.\n\nFor a nonexistent SIRET or missing CNTR approval, the API guide illustrates a `pending` voucher capability with `business_registration.siret` currently due. That example has a narrower scope than the list of Dashboard **Ineligible** causes. Correct a wrong SIRET on the existing Payment Location in the API. For onboarding-sensitive changes after activation, such as SIRET or address changes, the API requires `onboarding_data_update_acknowledged=true`. The capability returns to `pending` and acceptance pauses until reactivation. The API update path is separate from the Dashboard path for creating a corrected request.\n\nThe May 5 acceptance guide sends the pre-provisioned branch SIRET in `payment_details[benefit][fr_meal_voucher][siret]`. The separate November acceptance guide uses the preview version floor and sends the `loc_` ID as `payment_details[location]` and `payment_details[benefit][fr_meal_voucher][enabled]=if_payment_method_is_eligible` when the server creates the PaymentIntent. The client confirms through Stripe.js. Stripe resolves the location’s SIRET at confirmation, so a change between creation and confirmation can apply. Previously confirmed payments retain their SIRET. Creation, capability activation and confirmation describe different stages. Payment and issuer settlement require their own outcome evidence. See [[source-stripe-fr-meal-vouchers-accept-payment]].\n\n## Connect and Test SIRETs\n\nIn Dashboard, open **Connected Accounts**, select the intended account and go to **Payment methods**, **French Meal Voucher Conecs**, then **Configure SIRETs**. The resulting SIRETs page manages locations for that selected account. Charge-type scope is documented separately in [[source-stripe-fr-meal-vouchers-connect]].\n\nBoth Dashboard captures use these test fixtures.\n\n| SIRET | Postal code | Scenario |\n| --- | --- | --- |\n| `42424242424242` | `42424` | Valid onboarded restaurant |\n| `11111111111111` | `11111` | Awaiting an onboarding outcome |\n| `42424242424242` | Any other value | SIRET and postal code mismatch |\n\n## Related Pages\n\n- [[stripe-fr-meal-vouchers]] — product concept and operational scope\n- [[source-stripe-fr-meal-vouchers]] — product overview\n- [[source-stripe-fr-meal-vouchers-accept-payment]] — dated PaymentIntent request and confirmation routes\n- [[source-stripe-fr-meal-vouchers-connect]] — Connect charge paths and merchant-of-record onboarding\n- [[stripe]] — company page\n\n## Related raw API references\n\n- [[raw/stripe-payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant-api-2026-11-07|November 7 Payment Locations API guide]] — preview capability, state and location-update paths\n\n## Raw Sources\n\n- [[raw/stripe-payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant-2026-11-07|November 7, 2026 Dashboard guide]] — full capture\n- [[raw/stripe-fr-meal-vouchers-setup-restaurant-2025|May 5, 2026 Dashboard guide]] — full historical capture\n",
+  "quotes": {
+    "payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant": [
+      {
+        "location": "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant-2026-11-07.md:15",
+        "text": "Enter your email to request access."
+      },
+      {
+        "location": "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant-2026-11-07.md:35",
+        "text": "Enter a SIRET, postal code, and store name. The SIRET and postal code you provide must match for the restaurant to be onboarded successfully."
+      },
+      {
+        "location": "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant-2026-11-07.md:51",
+        "text": "The open drawer displays the restaurant’s status, the supported card issuers, and the Payment Location ID."
+      },
+      {
+        "location": "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant-2026-11-07.md:64",
+        "text": "A restaurant displays an `Ineligible` status when Conecs (the French meal voucher network) rejects the restaurant’s SIRET during onboarding validation."
+      },
+      {
+        "location": "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant-2026-11-07.md:74",
+        "text": "If the SIRET is incorrect, create a new onboarding request with the correct SIRET after resolving the issue."
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant": [
+      {
+        "location": "raw/stripe-fr-meal-vouchers-setup-restaurant-2025.md:18",
+        "text": "The Stripe API for onboarding restaurants to accept French meal vouchers payments is in preview and is only available for select preview users."
+      },
+      {
+        "location": "raw/stripe-fr-meal-vouchers-setup-restaurant-2025.md:44",
+        "text": "You can see the restaurant’s status and the supported card issuers."
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 106
+      }
+    ],
+    "raw/stripe-fr-meal-vouchers-setup-restaurant-2025.md": [
+      {
+        "start": 1,
+        "end": 91
+      }
+    ],
+    "wiki/sources/source-stripe-fr-meal-vouchers-setup-restaurant.md": [
+      {
+        "start": 1,
+        "end": 42
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/2b2e4f9f2280e28ed111c291/content.diff": [
+      {
+        "start": 1,
+        "end": 134
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 195
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 74
+      }
+    ],
+    "wiki/concepts/stripe-fr-meal-vouchers.md": [
+      {
+        "start": 31,
+        "end": 52
+      },
+      {
+        "start": 76,
+        "end": 90
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 315,
+        "end": 320
+      },
+      {
+        "start": 746,
+        "end": 746
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 4,
+        "end": 9
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 516,
+        "end": 521
+      }
+    ],
+    "wiki/sources/source-stripe-fr-meal-vouchers-accept-payment.md": [
+      {
+        "start": 11,
+        "end": 30
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 323,
+        "end": 329
+      }
+    ],
+    "raw/stripe-fr-meal-vouchers-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 3
+      },
+      {
+        "start": 31,
+        "end": 45
+      }
+    ],
+    "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 24,
+        "end": 62
+      }
+    ],
+    "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant-api-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      },
+      {
+        "start": 35,
+        "end": 65
+      },
+      {
+        "start": 130,
+        "end": 172
+      },
+      {
+        "start": 218,
+        "end": 236
+      },
+      {
+        "start": 258,
+        "end": 310
+      }
+    ]
+  },
+  "answers": {
+    "payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant": {
+      "Q1": "The November capture of https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/set-up-restaurant documents Stripe Dashboard onboarding per restaurant for Bimpli, Pluxee and Up Déjeuner. The restaurant needs CNTR licensing and agreements with each intended issuer. Add SIRET takes the SIRET, postal code and store name, and the SIRET/postal pair must match. The Dashboard prevents changing the restaurant’s name and SIRET after creation. After validation in 1–2 business days, check successful onboarding and issuer statuses before attempting payment. November also shows a Payment Location ID in the drawer, distinct from the SIRET and connected-account identity (old raw lines 6-51, new raw lines 7-56). In both captures, a postal mismatch can reach Requires Action and be corrected in Dashboard, Connect setup is for the selected connected account, and test SIRETs model successful, pending and mismatched onboarding (old raw lines 53-91, new raw lines 76-106). November adds the Dashboard `Ineligible` state when Conecs rejects a nonexistent SIRET, a SIRET without CNTR approval, or a SIRET whose CNTR approval was revoked. Verify the SIRET and obtain or re-obtain the CNTR license. For a wrong SIRET, create a new Dashboard onboarding request. For a correct SIRET with pending registration, Stripe automatically resumes once Conecs processes registration. Separately, an invalid postal code follows the `Requires Action` drawer → Update Details → correct postal code → Confirm path, with a status update in 1–2 business days (new raw lines 62-86). source-stripe-fr-meal-vouchers-setup-restaurant.md covers the May flow but overstates field matching and Requires Action, and its preview notes need dates and its new location-based handoff needs a reciprocal link.",
+      "Q2": "At https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/set-up-restaurant, the substantive November changes are the explicit private-preview waitlist, the added Payment Location ID and handoff to acceptance, and the Ineligible branch for Conecs rejection, with a new Dashboard request for an incorrect SIRET and automatic resumption after Conecs processes a pending CNTR registration for a correct SIRET. Keep May's select-user API preview and email contact dated. Changes to repeated Dashboard step headings, hyperlinks and table layout do not change the shared Dashboard and Connect procedure (old raw lines 8-18, old raw lines 24-91, new raw lines 9-25, new raw lines 31-106). In source-stripe-fr-meal-vouchers-setup-restaurant.md and reciprocal acceptance and concept references, preserve the May 5, 2026 branch SIRET field payment_details[benefit][fr_meal_voucher][siret] (raw/stripe-fr-meal-vouchers-accept-payment-2025.md:31-45). The November server-side PaymentIntent instead sends a loc_ PaymentLocation ID in payment_details[location] plus payment_details[benefit][fr_meal_voucher][enabled]=if_payment_method_is_eligible. Before accepting, require the location’s fr_meal_vouchers_conecs_payments capability to be active. An issuer listing or newly created location can precede activation. The separate private-preview API flow requires Stripe API 2026-05-27.preview or later; Stripe resolves the SIRET at payment confirmation (raw/stripe-payments-meal-vouchers-fr-meal-vouchers-accept-a-payment-2026-11-07.md:24-62, raw/stripe-payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant-api-2026-11-07.md:130-172). In the API’s nonexistent or unapproved SIRET example, the capability is pending with business_registration.siret due. This example does not map every Dashboard Ineligible case to an API status. Whereas the Dashboard creates a new request for a wrong SIRET, the API updates the existing location. For relevant changes after activation, send onboarding_data_update_acknowledged=true and expect the capability to return to pending with acceptance suspended during re-onboarding (raw/stripe-payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant-api-2026-11-07.md:261-310). Waitlist requests and test fixtures give no evidence of account activation, payment or settlement."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant-onboarding-remediation",
+      "target_path": "wiki/concepts/stripe-fr-meal-vouchers.md",
+      "update_kind": "durable_fact",
+      "anchor": "Eligible businesses: restaurants, grocers, canteens, food-serving businesses.",
+      "proposed_markdown": "Eligible businesses generally include restaurants, grocers, canteens and other businesses serving prepared food.\n\nIn the November Dashboard guide, enter SIRET, postal code and store name. The SIRET and postal code must match. The name and SIRET cannot be changed after creation in this UI. A postal-code mismatch can use the `Requires Action` and Update Details flow. Conecs rejection can show `Ineligible` for a nonexistent SIRET, missing CNTR approval or revoked approval. A wrong SIRET requires a new Dashboard request, while a correct SIRET awaiting CNTR registration automatically resumes after Conecs processes it. The November API's specific nonexistent or unapproved SIRET example shows a pending capability with `business_registration.siret` currently due. There, correct a wrong SIRET on the existing location. After activation, onboarding-sensitive changes require `onboarding_data_update_acknowledged=true` and pause voucher acceptance during re-onboarding. See [[source-stripe-fr-meal-vouchers-setup-restaurant]].",
+      "warnings": [
+        "November Dashboard raw lines 31-42, 62-86 and November onboarding API raw lines 258-310. The overview packet's requirements-timing suggestion also corrects the preceding SIRET step and scopes time estimates."
+      ],
+      "quote_indexes": [
+        1,
+        3,
+        4
+      ]
+    },
+    {
+      "update_id": "payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant-onboarding-and-acceptance-route",
+      "target_path": "wiki/concepts/stripe-fr-meal-vouchers.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-fr-meal-vouchers-setup-restaurant]] — SIRET provisioning flow, postal code matching, immutability, Connect path, test SIRET table",
+      "proposed_markdown": "- [[source-stripe-fr-meal-vouchers-setup-restaurant]] — dated Dashboard onboarding, postal and SIRET remediation, distinct preview API capability states, and handoff from branch SIRET to the November Payment Location ID. Verify the location capability is active before the location-based acceptance flow.",
+      "warnings": [
+        "November Dashboard raw lines 44-56 and 62-86, November acceptance raw lines 24-39, and November API raw lines 130-172. The overview or acceptance packet supplies the related Integration section's exact server and client request details."
+      ],
+      "quote_indexes": [
+        2
+      ]
+    }
+  ]
+}

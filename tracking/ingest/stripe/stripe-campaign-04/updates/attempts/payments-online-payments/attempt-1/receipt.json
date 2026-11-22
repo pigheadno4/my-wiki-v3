@@ -1,0 +1,267 @@
+{
+  "job_id": "payments-online-payments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Accept a Payment\"\ntype: source\ndate_ingested: 2026-11-09\ndate_updated: 2026-11-22\ncanonical_url: https://docs.stripe.com/payments/accept-a-payment\noriginal_format: webpage\nraw_files:\n  - \"stripe-payments-online-payments-2026-11-07.md\"\n  - \"stripe-accept-a-payment-2025.md\"\n  - \"stripe-design-payments-integration-2025.md\"\ntags: [stripe, checkout, payment-element, payment-intents, mobile, ios, android, react-native, webhooks, saved-payment-methods]\n---\n\n## Summary\n\nThe 2026-11-07 capture of the base URL is a 20-line index linking to Checkout, Elements, and mobile variants. It contains no implementation body. The retained 2026-04-20 capture contains the detailed hosted Checkout, embedded Checkout, Checkout Sessions Elements, Payment Intents Elements, iOS, Android, and React Native guides. The index's omission of the older Payment Intents Elements link does not establish removal or deprecation. The parameterized November variant bodies were not captured here, so their current examples, availability, and version requirements remain unverified.\n\n## Online payments decision guide\n\nStripe's full November 7, 2026 [Online payments guide](https://docs.stripe.com/payments/online-payments) covers the Optimized Checkout Suite. Its options include no-code Payment Links without a website, a recommended full prebuilt page embedded on or redirected from the merchant site, a separate prebuilt embedded Checkout Form, custom Stripe Elements, and the Mobile Payment Element for iOS, Android, and React Native. Checkout studio is marked **Private preview** for launching, configuring, and monitoring Checkout from the Dashboard, including payment-method configuration. The separate studio guide describes these Dashboard workflows without establishing general availability.\n\nStripe recommends Checkout Sessions for most integrations. Use `price_data` for basic collection or build fuller flows with line items, addresses, subscriptions, discounts, shipping, order and receipt handling, dynamic inventory or line-item updates, and Adaptive Pricing. Stripe Tax is integrated through `automatic_tax.enabled=true` when applicable. The lower-level Payment Intents API leaves the final amount and checkout lifecycle with the merchant. Tax and Subscriptions need separate integration where used, and the merchant implements shipping, discounts, address and order tracking, currency conversion, and amount changes. Adaptive Pricing is a Checkout Sessions capability in this comparison. PaymentIntents can separately specify `receipt_email`; that is separate from integrated checkout order tracking and receipts.\n\nCheckout Sessions have checkout lifecycle events and expire 24 hours after creation by default. The captured creation reference allows `expires_at` between 30 minutes and 24 hours from creation. The overview compares PaymentIntent payment-status events and the absence of automatic Checkout Session expiry on that route. Its event comparison is scoped to the two API paths.\n\nDynamic payment methods control ordering and display. Payment method rules govern availability, configurations group methods by checkout scenario, and the Dashboard can A/B test payment methods. Link offers saved credit/debit cards and US bank accounts and names Instant Bank Payments and Klarna. Use the separate Link paths for Checkout, Web Elements, and native iOS, Android and React Native, and configure Link under Wallets. Eligibility depends on business, currency, amount, customer location, and recurring or off-session use. Shopify, Squarespace, and Adobe Commerce are partner or plugin discovery links.\n\nThe April 20, 2026 Online payments guide stated the account signup and Dashboard prerequisite and linked to online sales, subscriptions, quotes and invoices, in-person acceptance, and tips and donations. Its Checkout Sessions Elements example uses a Session `client_secret`, Checkout initializer or React provider, and Checkout confirmation. The separate April implementation below retains that distinction from a PaymentIntent's client secret and `stripe.confirmPayment`. The November overview's omission of the old no-code links and signup instruction establishes no removal or waiver.\n\n### Checkout UI values and completion\n\nThe separate **Accept a Payment** November index uses `ui=embedded-page` as a URL selector. In the captured create API, the full embedded page uses `ui_mode=embedded_page`. The November Checkout Form quickstart sends `ui_mode=form` for the separate embedded form. The Stripe `2026-03-25.dahlia` Checkout Session creation contract replaces `hosted`, `embedded`, and `custom` with `hosted_page`, `embedded_page`, and `elements` and adds `form` separately. Requests using any of the three old values fail on that API version. The April and November metadata examples in [[source-stripe-checkout-sessions]] literally use `ui_mode=custom`. Treat this value as dated sample evidence and use the API contract for the deployed version.\n\nFor a return page, `status=complete` represents checkout completion while payment may still be processing. For a paid order, verify `payment_status=paid` server-side or wait for `checkout.session.async_payment_succeeded` when a delayed method remains pending. Handle `checkout.session.async_payment_failed` separately. No-payment-required orders have their own completion rule. See the event table below and the [[stripe-checkout]] fulfillment guidance.\n\n## Web integration paths in the 2026-04-20 guide\n\n| Path | Checkout `ui_mode` | Dated integration distinction |\n| --- | --- | --- |\n| Stripe-hosted Checkout | Hosted redirect | Create a Checkout Session server-side and redirect the customer to its URL. |\n| Full embedded Checkout page | `embedded_page` | Create a Checkout Session and render its embedded page; the older variant URL uses `ui=embedded-form`. |\n| Payment Element with Checkout Sessions API | `elements` | Initialize Checkout from the Session `client_secret` with `stripe.initCheckoutElementsSdk` or React `CheckoutElementsProvider`; confirm through Checkout actions. |\n| Payment Element with Payment Intents API | Not a Checkout `ui_mode` | Create a PaymentIntent, initialize Elements with its `client_secret`, and use `stripe.confirmPayment`; this is a distinct API flow. |\n\nThe November index links hosted Checkout, a variant labeled **Full embedded page** (`ui=embedded-page`), and Elements with `api-integration=checkout`. It also links iOS, Android, and React Native. The changed embedded-page label and query alone do not establish a behavior migration from the older embedded-form variant.\n\n## Checkout Sessions: dated behavior\n\n- The older hosted guide says a Checkout Session expires after 24 hours by default. It describes branding choices including preset fonts, corner radii, colors, and logo.\n- For the Checkout Sessions Elements variant, the Session `client_secret` initializes Checkout; `checkout.confirm` or loaded Checkout actions confirm the payment. The older document recommends this path for most integrations, while Payment Intents offers a separate lower-level flow. The raw page's agent-directed text is historical page content, not an instruction to this wiki.\n- The older guide shows `payment_intent_data.capture_method: 'manual'` on Session creation. The resulting PaymentIntent can later be captured via Dashboard or `stripe.paymentIntents.capture(id)`; obtain its ID from `session.payment_intent`.\n\n## Server-side payment events\n\n| Dated flow | Event | Meaning and response |\n| --- | --- | --- |\n| Checkout Sessions | `checkout.session.completed` | Customer completed the Session. For immediately paid orders, confirm paid status before fulfillment; for delayed methods, completion alone is not final payment success. |\n| Checkout Sessions | `checkout.session.async_payment_succeeded` | Delayed payment succeeded; fulfill according to the order's rules. |\n| Checkout Sessions | `checkout.session.async_payment_failed` | Delayed payment failed; notify the customer and offer a way to retry. |\n| Payment Intents and the older mobile variants | `payment_intent.succeeded` | Payment succeeded; use this server event for fulfillment or other post-payment work. |\n| Payment Intents and the older mobile variants | `payment_intent.processing` | Payment initiated but has not completed; communicate the pending status. |\n| Payment Intents and the older mobile variants | `payment_intent.payment_failed` | Payment failed; handle the failure and possible retry. |\n\nThe 2026-04-20 guide recommends server-side event handling because a client can leave before its callback runs. A redirect, return page, or completed sheet is not a universal paid-funds signal. Fulfillment timing remains conditional on the payment method and the order's risk tolerance.\n\n## Saved payment methods in the older Checkout guide\n\n- `payment_intent_data.setup_future_usage: 'off_session'` saves an eligible method for later off-session use; subscription mode can save for subsequent payments. Cards saved this way have `allow_redisplay: limited` and do not automatically prefill returning Checkout purchases.\n- `saved_payment_method_options.payment_method_save: 'enabled'` presents an optional consent checkbox in payment or subscription mode. If selected, Checkout saves with `allow_redisplay: always`, allowing eligible saved cards to prefill. `payment_method_remove: 'enabled'` can expose removal.\n- The save-checkbox path needs a customer-configured Account or Customer. For a new customer, the dated guide uses `customer_creation: 'always'`; without a customer object the customer and method are not saved through this path. Checkout can save cards and other methods for off-session charging but only prefills saved cards.\n- The older guide describes Accounts v2 as generally available for Connect users and in public preview for other Stripe users. Participants in that preview need a preview API version. Its recommendation to model customers as customer-configured Accounts is conditional on that context; Customer v1 remains a documented alternative.\n\n## Mobile PaymentSheet in the older guide\n\n| Platform | Dated API shape |\n| --- | --- |\n| iOS (Swift) | `PaymentSheet`, `PaymentSheet.Configuration`, and `present(from:completion:)`; a `PaymentSheet.FlowController` supports a separate selection and confirmation flow. |\n| Android (Kotlin) | `PaymentSheet`, `PaymentSheet.Configuration`, and `presentWithPaymentIntent`; FlowController supports a separate flow. |\n| React Native | `useStripe()` exposes `initPaymentSheet` and `presentPaymentSheet`; `customFlow: true` can use `confirmPaymentSheetPayment` after selection. |\n\nWhen `allowsDelayedPaymentMethods` is enabled, a completed PaymentSheet result can precede final payment success or failure. The dated guide says to confirm the customer's order in the UI after a completed sheet, while waiting for successful payment before fulfilling goods. Keep the order acknowledgement, payment state, and fulfillment decision separate.\n\n## Test examples in the older guide\n\n| Number | Example outcome |\n| --- | --- |\n| `4242424242424242` | Card succeeds without authentication. |\n| `4000002500003155` | Card requires authentication. |\n| `4000000000009995` | Card declines with an insufficient-funds-like code. |\n| `6205500000000000004` | UnionPay card with variable-length number. |\n\nThese are test-mode examples from the dated guide, not live authorization guarantees.\n\n## Related Pages\n\n- [[source-stripe-checkout-sessions]] — Checkout Sessions API features and UI modes\n- [[source-stripe-payment-intents]] — PaymentIntent lifecycle and status\n- [[stripe-checkout]] — Checkout concept and fulfillment conditions\n- [[stripe-payment-intents]] — separate Payment Intents path\n- [[stripe]] — Stripe company page\n\n## Related raw API references\n\n- [[raw/stripe-payments-accept-a-payment-2026-11-07]] — navigation-only variant index fetched 2026-11-07; links are discovery pointers, not captured implementation bodies\n\n## Raw Sources\n\n- [[raw/stripe-payments-online-payments-2026-11-07]] — full November 7, 2026 `/payments/online-payments` decision guide, separate from `/payments/accept-a-payment`\n- [[raw/stripe-accept-a-payment-2025]] — full integration guide fetched 2026-04-20: hosted and embedded Checkout, Checkout Sessions Elements, Payment Intents Elements, mobile PaymentSheet, webhooks, saved methods, auth and capture, and test examples\n- [[raw/stripe-design-payments-integration-2025]] — April 20, 2026 `/payments/online-payments` overview of Payment Links, Checkout, Elements, and Mobile Elements\n",
+  "quotes": {
+    "payments-online-payments": [
+      {
+        "text": "[Checkout studio (Private preview)](https://docs.stripe.com/payments/checkout-studio.md): Launch, configure, and monitor Checkout integrations from the Dashboard without writing code.",
+        "location": "raw/stripe-payments-online-payments-2026-11-07.md:27"
+      },
+      {
+        "text": "We recommend the Checkout Sessions API for most integrations.",
+        "location": "raw/stripe-payments-online-payments-2026-11-07.md:35"
+      },
+      {
+        "text": "When you use this API, you calculate the final amount and manage the entire checkout lifecycle in your own code.",
+        "location": "raw/stripe-payments-online-payments-2026-11-07.md:42"
+      },
+      {
+        "text": "Automatic expiration after 24 hours.",
+        "location": "raw/stripe-payments-online-payments-2026-11-07.md:61"
+      },
+      {
+        "text": "Your customers can save their credit cards, debit cards, or US bank accounts for faster checkout at any Link-enabled business.",
+        "location": "raw/stripe-payments-online-payments-2026-11-07.md:80"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-online-payments": [
+      {
+        "text": "Stripe recommends using the Checkout Sessions API with the Payment Element over Payment Intents for most integrations.",
+        "location": "raw/stripe-design-payments-integration-2025.md:8"
+      },
+      {
+        "text": "Before you get started, you must [register for a Stripe account](https://dashboard.stripe.com/register).",
+        "location": "raw/stripe-design-payments-integration-2025.md:12"
+      },
+      {
+        "text": "Use Mobile Elements to accept payments in iOS and Android apps.",
+        "location": "raw/stripe-design-payments-integration-2025.md:20"
+      },
+      {
+        "text": "Create, customize, and send invoices from the Dashboard.",
+        "location": "raw/stripe-design-payments-integration-2025.md:28"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-online-payments-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 96
+      }
+    ],
+    "raw/stripe-design-payments-integration-2025.md": [
+      {
+        "start": 1,
+        "end": 32
+      }
+    ],
+    "wiki/sources/source-stripe-accept-a-payment.md": [
+      {
+        "start": 1,
+        "end": 90
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/c58be6d0dfd7edf9cf88eadc/content.diff": [
+      {
+        "start": 1,
+        "end": 109
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-online-payments/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 256
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-online-payments/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 110
+      }
+    ],
+    "wiki/concepts/stripe-checkout.md": [
+      {
+        "start": 12,
+        "end": 30
+      },
+      {
+        "start": 202,
+        "end": 214
+      },
+      {
+        "start": 246,
+        "end": 255
+      }
+    ],
+    "wiki/concepts/stripe-payment-intents.md": [
+      {
+        "start": 12,
+        "end": 28
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 13
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 20,
+        "end": 32
+      },
+      {
+        "start": 724,
+        "end": 733
+      },
+      {
+        "start": 767,
+        "end": 774
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 627,
+        "end": 634
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-sessions.md": [
+      {
+        "start": 1,
+        "end": 55
+      }
+    ],
+    "raw/stripe-payments-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 20
+      }
+    ],
+    "raw/stripe-api-checkout-sessions-create-2026-11-07.md": [
+      {
+        "start": 314,
+        "end": 319
+      },
+      {
+        "start": 518,
+        "end": 531
+      }
+    ],
+    "raw/stripe-api-checkout-sessions-object-2026-11-07.md": [
+      {
+        "start": 309,
+        "end": 328
+      },
+      {
+        "start": 365,
+        "end": 381
+      }
+    ],
+    "raw/stripe-changelog-dahlia-2026-03-25-updates-available-checkout-session-ui-modes-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 28
+      }
+    ],
+    "raw/stripe-checkout-form-quickstart-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 12
+      },
+      {
+        "start": 31,
+        "end": 74
+      }
+    ],
+    "raw/stripe-payments-checkout-studio-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 25
+      }
+    ],
+    "raw/stripe-api-payment-intents-create-2026-11-07.md": [
+      {
+        "start": 665,
+        "end": 668
+      }
+    ],
+    "raw/stripe-payments-link-link-payment-integrations-2026-11-07.md": [
+      {
+        "start": 7,
+        "end": 16
+      }
+    ],
+    "raw/stripe-payments-link-link-payment-methods-2026-11-07.md": [
+      {
+        "start": 40,
+        "end": 52
+      }
+    ],
+    "raw/stripe-payments-checkout-sessions-2026-11-07.md": [
+      {
+        "start": 39,
+        "end": 50
+      }
+    ],
+    "raw/stripe-checkout-sessions-api-2025.md": [
+      {
+        "start": 40,
+        "end": 55
+      }
+    ]
+  },
+  "answers": {
+    "payments-online-payments": {
+      "Q1": "For https://docs.stripe.com/payments/online-payments, the November 7 guide describes the Optimized Checkout Suite’s payment UIs, dynamic payment methods and Link. It names no-code Payment Links without a website, the recommended full-page Checkout experience embedded or redirected on a merchant site, a separate prebuilt embedded form, custom Elements, Mobile Payment Element on iOS, Android and React Native, and Dashboard Checkout studio in Private preview (new raw lines 5-27). The April overview already described Payment Links, hosted and embedded Checkout, Elements, iOS and Android and explicitly required Stripe signup (old raw lines 8-20). Both favor Checkout Sessions for most integrations. November distinguishes basic `price_data` collection and fuller Session-owned checkout with built-in Stripe Tax, shipping, discounts, subscriptions, Adaptive Pricing, address/order tools and dynamic updates from the lower-level PaymentIntent route where the merchant computes the amount and owns checkout logic, integrating Tax and Subscriptions separately as needed. It contrasts default 24-hour Session expiry and checkout lifecycle events with PaymentIntent's lack of automatic Session expiry and payment-state tracking. Session completion is distinct from paid status (new raw lines 29-62, and separate Session object reference lines 312-322 and 368-378). Dynamic payment methods, eligibility rules, configurations and A/B tests are decision tools. Link reuses saved credit/debit cards or U.S. bank accounts and names Instant Bank Payments and Klarna, with separate Checkout/web/mobile routes and eligible transaction conditions. Shopify, Squarespace and Adobe Commerce are discovery routes (new raw lines 64-96). `source-stripe-accept-a-payment.md` retains its distinct `/payments/accept-a-payment` index and April implementation. The revised source adds the separate November `/payments/online-payments` decision guide beside its April-dated predecessor.",
+      "Q2": "For https://docs.stripe.com/payments/online-payments, the substantive change is fuller strategy coverage through UI, API and feature comparisons, Private preview Checkout studio, payment method controls, Link and partner routes (old raw lines 8-32 and new raw lines 13-96). Title, layout, demo link and changed quickstart targets are presentation or navigation. The revised source dates the April signup statement, no-code product links and Checkout Sessions client-secret and confirmation example to April (old raw lines 8-32). Their omission does not establish a signup waiver or a product removal. The revised source distinguishes this full November overview from the November 20-line `/payments/accept-a-payment` variant index and April implementation already described by `source-stripe-accept-a-payment.md`. For the UI terminology (new raw lines 17-27 and 39-57), the separate Checkout Form quickstart sends `ui_mode=form`, the full embedded page uses API `ui_mode=embedded_page`, and the separate Accept a Payment index uses `ui=embedded-page` as a URL selector. The `2026-03-25.dahlia` Checkout Session create contract replaces `hosted`, `embedded`, and `custom` with `hosted_page`, `embedded_page`, and `elements`, rejects all three old values on that version, and adds `form` separately (Dahlia changelog lines 9-28). The revised source routes the warning to `source-stripe-checkout-sessions.md` lines 33-44 and preserves its dated metadata sample’s literal `ui_mode=custom` alongside the warning that it fails on Dahlia. Read the 24-hour Checkout Session expiry as the API default, configurable from 30 minutes to 24 hours, and keep PaymentIntent events distinct (new raw lines 59-62). The proposed Checkout concept replacement qualifies the earlier embedded return-page shorthand at line 27. `status=complete` can support checkout completion messaging while payment is still processing. For paid-order fulfillment use separate server-side `payment_status=paid` and follow the documented delayed events, including `checkout.session.async_payment_succeeded` and `checkout.session.async_payment_failed` (concept lines 202-214 and Checkout Session object lines 312-322 and 368-378). Mobile, Link, preview and partner links provide discovery within the documented eligibility and rollout scope. Runtime payment success and deployed API/SDK versions remain unverified."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-online-payments-checkout-return",
+      "target_path": "wiki/concepts/stripe-checkout.md",
+      "update_kind": "durable_fact",
+      "anchor": "2. **Embedded form** (`ui_mode: 'embedded_page'`) — Checkout renders in iframe on your site; server returns `clientSecret`; `return_url` with `{CHECKOUT_SESSION_ID}` template; return page checks `session.status` via `/session-status` endpoint; `open` → remount, `complete` → success",
+      "proposed_markdown": "2. **Full embedded page** (`ui_mode: 'embedded_page'`) — Checkout renders on your site. The server returns `clientSecret`. The April return example uses `return_url` with `{CHECKOUT_SESSION_ID}` and reads `session.status` via `/session-status`. Remount for `open`; `complete` can show checkout completion even while payment processes. Verify `payment_status=paid` server-side for paid-order fulfillment, or wait for `checkout.session.async_payment_succeeded` if pending and handle `checkout.session.async_payment_failed` separately. Apply the separate no-payment-required rule when applicable. The Accept a Payment index uses URL selector `ui=embedded-page`; the separate prebuilt Checkout Form uses API `ui_mode=form`. See [[source-stripe-accept-a-payment]].",
+      "quote_indexes": [
+        1,
+        3
+      ],
+      "warnings": [
+        "Checkout Session object lines 312–322 and 368–378 distinguish checkout and payment states. The Form quickstart and API create reference separately identify the UI modes."
+      ]
+    },
+    {
+      "update_id": "payments-online-payments-checkout-dahlia",
+      "target_path": "wiki/concepts/stripe-checkout.md",
+      "update_kind": "durable_fact",
+      "anchor": "- [[source-stripe-checkout-sessions]] — April and November 2026 Checkout Sessions API overviews: hosted, embedded and custom Elements UI routes, built-in tax/discounts/shipping/subscriptions/Adaptive Pricing, and an illustrative server-side `ui_mode=custom` metadata request. The separate version-qualified React custom path on this page uses `ui_mode='elements'`; the overview's sample does not settle that SDK naming or prove payment completion.",
+      "proposed_markdown": "- [[source-stripe-checkout-sessions]] — April and November 2026 Checkout Sessions API overviews include a dated server-side metadata example with literal `ui_mode=custom`. Checkout Session creation under `2026-03-25.dahlia` rejects `hosted`, `embedded`, and `custom` and replaces them with `hosted_page`, `embedded_page`, and `elements`. It adds `form` separately. See [[source-stripe-accept-a-payment]] for the dated decision guide, API contract, and separate Form and full embedded page routes.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "The version cutoff is from the separate Dahlia changelog lines 9–28. The two overview examples remain dated evidence."
+      ]
+    },
+    {
+      "update_id": "payments-online-payments-intent-expiry",
+      "target_path": "wiki/concepts/stripe-payment-intents.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **No session expiration** — sessions don't auto-expire (Checkout Sessions expire after 24h)",
+      "proposed_markdown": "- **Expiration and events**. The November comparison contrasts PaymentIntent payment-status events and merchant-owned checkout lifecycle with Checkout Session lifecycle events and automatic Session expiration. Checkout Sessions default to 24 hours, with `expires_at` configurable from 30 minutes to 24 hours after creation. Payment Intents has no automatic Checkout Session expiry. See [[source-stripe-accept-a-payment]] for the dated API comparison.",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "The configurable range is from the Checkout Session create API lines 316–317. The overview table compares the two paths and does not enumerate all account events."
+      ]
+    }
+  ]
+}

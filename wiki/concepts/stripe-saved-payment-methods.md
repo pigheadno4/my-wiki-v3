@@ -83,7 +83,8 @@ When saved for future use, these redirect-based methods generate a `sepa_debit` 
 - **Checkout Sessions**: A `customer` or eligible `customer_account` identifies whose saved methods Checkout can consider, but identity alone does not make them prefill. In the 2026-04-20 [[source-stripe-accept-a-payment|Accept a payment guide]], selecting the optional save-consent checkbox sets `allow_redisplay: always`; eligible saved **cards** can then prefill returning Checkout purchases. Cards saved through `setup_future_usage` or subscription mode without that checkbox can have `limited` and do not automatically prefill. The retained 2026-05-11 existing-customer guide permits Checkout `saved_payment_method_options.allow_redisplay_filters` to include `limited`; a saved card can prefill after this display setting is adjusted if the other Checkout conditions hold, including `payment` or `subscription` mode and the required billing details. The guide states a 30-minute prefill window after Session creation. Displaying a saved method still requires consent for the specific future use. `unspecified` methods are excluded by default unless redisplay behavior is appropriately changed or overridden; Checkout prefills saved cards only.
 - **Payment Intents**: requires CustomerSession with `payment_method_redisplay: 'enabled'`
 - **Legacy `unspecified` PMs**: either update `allow_redisplay` to `'always'` via API, or configure CustomerSession filters
-- **Display order**: most recently added first; default PM always first
+- **Payment Element subscription or recurring checkout**: the April 21, 2026 [[source-stripe-payment-element-saved-pms|saved-methods reference]] describes redisplay starting with the most recently added payment method, with the customer's default method shown first when set.
+- **Link PaymentIntent checkout**: the May and November 2026 integration guide describes the three most recently used saved cards alongside Link-saved methods when the customer has more than one saved method. See [[source-stripe-add-link-elements-integration#Saved-Data Redisplay and Future Link Payments|the dated Link redisplay examples]].
 - **Subscription warning**: removing a PM from the saved section also removes it from active subscriptions — disable `payment_method_remove` and use account settings instead
 
 ## Save Without an Initial Payment (Setup Mode)
@@ -109,6 +110,8 @@ After `checkout.session.completed`: retrieve session → get `setup_intent` → 
 **Apple Pay merchant tokens**: configure `applePay.deferredPaymentRequest` on the Payment Element for deferred/recurring setups.
 
 ## Off-Session Charging
+
+`off_session: true` describes the current confirmation attempt when the customer is absent and cannot authenticate. `setup_future_usage` describes planned reuse. The 2026-04-23 [[source-stripe-inapp-save-card-without-auth|mobile save-card guide]] uses `setup_future_usage: 'on_session'` in its combined example for future payments with the customer present.
 
 ```js
 stripe.paymentIntents.create({
@@ -151,10 +154,10 @@ Disable built-in UI with `enableSave: 'never'` + `enableRedisplay: 'never'`, the
 - [[source-stripe-payment-element-saved-pms]] — display/management: allow_redisplay values, CVC re-collection, subscription removal warning, unspecified legacy PMs
 - [[source-stripe-save-during-payment-elements]] — full integration: both API paths, CustomerSession, enableSave/enableRedisplay, Bancontact→SEPA, off-session charging
 - [[source-stripe-save-and-reuse-elements]] — save without payment: CS mode=setup + Setup Intents, confirmSetup, retrieveSetupIntent, Apple Pay MPANs, Radar note
-- [[source-stripe-inapp-save-during-payment]] — Mobile save-during-payment: setup_future_usage supports cards + US bank only on mobile, mobile_payment_element CustomerSession, allowsDelayedPaymentMethods
-- [[source-stripe-inapp-set-up-future-payments]] — Mobile setup without charge: SetupIntent supports card/Bancontact/iDEAL/Link/SEPA/Sofort/US bank (more than setup_future_usage), setupIntentClientSecret
+- [[source-stripe-inapp-save-during-payment]] — 2026-04-22 mobile save-during-payment guide, scoped to the `mobile_payment_element` CustomerSession component and initial PaymentIntent `setup_future_usage` for cards and US bank accounts. The web `payment_element` example above is a separate integration. The 2026-11-07 capture is a Payment Sheet variant index.
+- [[source-stripe-inapp-set-up-future-payments]] — April 2026 mobile setup without charge using a precreated SetupIntent. The seven-method list applies to iOS. The Android and React Native variants list cards, Link, and US bank accounts. The separately documented React Native deferred server-confirmation route names cards and PayPal. See [[source-stripe-inapp-finalize-payments-server]].
 - [[source-stripe-inapp-customer-sheet]] — CustomerSheet (Payment Method Settings Sheet): app settings PM management UI for iOS/Android/RN; CustomerSession + SetupIntent dual endpoints; retrievePaymentOptionSelection without presenting
-- [[source-stripe-inapp-save-card-without-auth]] — Legacy save-card (US/Canada only): attach PM to Customer, charge with error_on_requires_action, setup_future_usage=on_session, CVC re-collection; non-compliant in India
+- [[source-stripe-inapp-save-card-without-auth]] — 2026-04-23 guide to mobile card saving and later charging for merchants doing business primarily in the US and Canada, with authentication limits and optional CVC re-collection. The November capture is platform navigation.
 - [[source-stripe-payments-existing-customers]] — The retained 2026-05-11 guide covers five on-session routes: hosted, full embedded, and Elements Checkout Sessions; a PaymentIntent with CustomerSession; and Direct API PaymentMethod listing plus PaymentIntent confirmation. Redisplay filters, card prefill and events vary by route. The 2026-11-07 canonical capture is variant navigation only, not refreshed behavior.
 - [[source-stripe-save-card-without-auth]] — Web legacy save card (US/CA only): createPaymentMethod→attach Customer, error_on_requires_action, setup_future_usage=on_session, CVC re-collection
 - [[source-metronome-guides-customers-billing-optimize-customer-experience-india-e-mandates]] — source-scoped Indian-card SetupIntent mandate creation, activation states, invoice attachment, action-required handling, and Stripe lifecycle ownership

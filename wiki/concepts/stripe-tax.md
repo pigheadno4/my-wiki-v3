@@ -114,6 +114,7 @@ Use `stripe.taxRates.create()` when you need hard-coded rates instead of automat
 
 - [[source-metronome-integrations-tax-integrations-anrok]] — distinction between Anrok as third-party calculator and Stripe Tax calculation with Anrok compliance, filing, and reporting
 
+- [[source-stripe-managed-payments-tax-compliance]] — April and November 2026 guides identify Stripe Tax as the sole integrated tax solution for seller-responsible Managed Payments cases. Calculation fees receive no additional charge for Managed Payments transactions.
 - [[source-stripe-checkout-taxes]] — Stripe Tax + Checkout: automatic_tax param, new/existing customer flows, Accounts v2 + Customers v1, customer_update, wallet constraints
 - [[source-stripe-checkout-shipping]] — Shipping tax: `tax_code: 'txcd_92010001'` for ShippingRate objects
 - [[source-stripe-checkout-manual-tax-rates]] — Manual Tax Rates: TaxRate API, fixed + dynamic rates, 30-country list, wallet constraints, Dashboard reporting exports

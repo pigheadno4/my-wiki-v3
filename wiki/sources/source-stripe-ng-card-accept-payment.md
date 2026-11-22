@@ -2,7 +2,9 @@
 title: "Stripe Docs — Accept a payment using local cards in Nigeria"
 type: source
 date_ingested: 2026-05-08
+date_updated: 2026-11-22
 original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/ng-card/accept-a-payment"
 raw_files:
   - "stripe-ng-card-accept-payment-2025.md"
 tags: [stripe, nigeria, naira, ng-card, local-payment-methods, merchant-of-record, payment-intents, checkout, recurring]
@@ -10,39 +12,46 @@ tags: [stripe, nigeria, naira, ng-card, local-payment-methods, merchant-of-recor
 
 ## Summary
 
-Integration guide for Naira card (`ng_card`) covering Checkout and Direct API paths. Uses Stripe's MoR partner redirect flow. Key differentiator from Naira bank transfer: supports setup and subscription mode (recurring).
+[[stripe]]’s May 8, 2026 guide describes Checkout and Direct API acceptance of Nigerian-issued cards (`ng_card`) for Nigerian customers. The November 7 capture keeps the local-card title and links the Checkout and Direct API variants. It provides navigation. The implementation below describes the full May guide.
 
-## Key Facts
+The separate [[source-stripe-nigeria-payment-methods|November Nigeria overview]] describes the Nigerian partner as merchant of record and lists US Stripe accounts with USD settlement and NGN presentment. It provides an invitation request and describes Dashboard settings for Stripe front ends. An invitation request or a front-end payment-method display gives no approval evidence. Its recurring matrix lists cards as supported and bank transfers as unsupported. The separate May [[source-stripe-ng-bank-transfer-accept-payment|bank-transfer guide]] lists Checkout payment mode and excludes setup and subscriptions.
 
-- **PM type**: `ng_card`
-- **Currency**: NGN only; **business locations**: US only
-- **Amount limits**: 500–100,000,000 NGN
-- **Modes**: payment ✓, setup ✓, subscription ✓ (recurring supported — unlike bank transfer)
+## May 8, 2026 — Checkout
 
-## Integration Paths
+The guide lists US businesses, NGN presentment, all Checkout line items in `ngn`, and a Checkout transaction range of 500–100,000,000 NGN. Checkout compatibility covers `payment`, `setup` and `subscription`. The hosted and embedded examples both use `payment` mode. The hosted sample sets `success_url`, and the embedded sample sets `return_url` and `ui_mode: 'embedded_page'`.
 
-### Checkout
+With dynamic payment methods, Stripe describes evaluating currency, payment method restrictions and other parameters to determine relevant methods. The historical manual alternative lists `ng_card` in the Checkout Session creation request’s `payment_method_types`. Check the Endive version warning below before reusing either create sample. The May test selects **Naira payment methods** and proceeds through the test checkout. See May lines 8-103.
 
-- Add `ng_card` to `payment_method_types`
-- All `line_items` must use `ngn` currency
-- Testing: select "Naira payment methods" and click Pay
+## May 8, 2026 — Direct API and Payment Verification
 
-### Direct API
+1. The server creates a PaymentIntent with amount, `ngn` and, in the historical manual request, `ng_card` in `payment_method_types`. The server example additionally sets `payment_method_data.type` to `ng_card`. This is documented example placement.
+2. The server passes the PaymentIntent client secret to the browser. The guide describes a server endpoint for a single-page app or passing the secret with a server-rendered form.
+3. The browser sample loads the Dahlia Stripe.js script and calls `stripe.confirmPayment` with the client secret, `confirmParams.payment_method_data.type: 'ng_card'`, and `return_url`. Its error handler destructures `error` but reads undeclared `result.error.message`.
+4. Stripe redirects to the Nigerian merchant-of-record provider for authentication and authorization. Stripe returns the customer to the merchant’s page with `payment_intent` and `payment_intent_client_secret` for status verification. A redirect or authentication alone gives no evidence of a successful payment, fulfillment, merchant balance or payout.
+5. With test API keys, simulated authorization moves `requires_action` to `succeeded`. Choosing **Fail test payment** moves it to `requires_payment_method`. The guide recommends asynchronous `payment_intent.succeeded` handling through Dashboard, a webhook or a partner integration for post-payment actions. A live `succeeded` status establishes payment completion within that PaymentIntent’s lifecycle. Payout is separate.
 
-1. Create PaymentIntent with `payment_method_types: ['ng_card']` **and** `payment_method_data: { type: 'ng_card' }` at creation time
-2. Pass `client_secret` to client
-3. Call `stripe.confirmPayment()` with `payment_method_data.type: 'ng_card'` + `return_url`
-4. Customer redirected to MoR partner checkout; on return, `return_url` receives `payment_intent` + `payment_intent_client_secret` query params
-5. Testing: success → `requires_action` → `succeeded`; fail → click "Fail test payment" → `requires_payment_method`
-6. Post-payment: `payment_intent.succeeded` webhook
+See May lines 105-153 for the server sample, lines 151-220 for client-secret handoff and lines 222-296 for confirmation, error handling, verification, sandbox tests and events.
+
+## API Version Boundary — Endive Create Requests
+
+The historical Checkout and Direct API samples write `payment_method_types` on server Create requests. The two separate `2026-09-30.endive` REST changelogs document HTTP 400 when sending that field to Checkout Session Create or PaymentIntent Create. The Checkout Session response can still show the computed compatible subset in `payment_method_types`. PaymentIntent Create documents `payment_method_types_no_longer_supported`, and the PaymentIntent object retains a computed read-only list. The PaymentIntent changelog’s Impact paragraph separately names `2026-08-26.preview`, while the REST table and upgrade header identify Endive.
+
+Both endpoint changelogs document Dashboard-managed dynamic methods, `excluded_payment_method_types` to exclude specific dynamic results, and `allowed_payment_method_types` to submit a set that Stripe filters for compatibility. These are request and response contracts. Eligibility, `ng_card` compatibility, appearance in the returned list and buyer display depend on the account and checkout configuration. The change concerns writing `payment_method_types` on the named server endpoints. The browser’s historical Dahlia Stripe.js URL supplies no evidence of the account’s API version.
 
 ## Related Pages
 
-- [[stripe-nigeria-payment-methods]] — Nigeria payment methods concept page
-- [[source-stripe-nigeria-payment-methods]] — Nigeria overview (properties, disputes, refunds, VAT)
-- [[source-stripe-ng-bank-transfer-accept-payment]] — Naira bank transfer integration (payment mode only)
-- [[stripe]] — Stripe company page
+- [[stripe-nigeria-payment-methods]] — Nigerian payment methods, partner merchant of record and dated endpoint qualifications.
+- [[source-stripe-nigeria-payment-methods]] — Nigeria overview including access requests, card and bank-transfer matrix, settlement and VAT.
+- [[source-stripe-ng-bank-transfer-accept-payment]] — the separate Naira bank-transfer acceptance flow.
+- [[source-stripe-ng-card-set-up-future-payments]] — the separate local-card setup and future payment guide.
+- [[stripe]] — provider.
 
 ## Raw Sources
 
-- [[stripe-ng-card-accept-payment-2025]] — verbatim webpage content
+- [[raw/stripe-ng-card-accept-payment-2025|Stripe’s May 8, 2026 local Nigerian card guide with both full variants]]
+
+## Related raw API references
+
+- [[raw/stripe-payments-ng-card-accept-a-payment-2026-11-07|Nigerian card acceptance variant index]] — November 7, 2026 capture, Checkout and Direct API navigation.
+- [[raw/stripe-changelog-endive-2026-09-30-remove-payment-method-types-checkout-sessions-2026-11-07|Endive Checkout Session Create parameter changelog]] — November 7, 2026 capture, lines 9-23, 27-32 and 83-92.
+- [[raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07|Endive PaymentIntent and SetupIntent parameter changelog]] — November 7, 2026 capture, lines 9-24, 28, 32-36 and 80-89.

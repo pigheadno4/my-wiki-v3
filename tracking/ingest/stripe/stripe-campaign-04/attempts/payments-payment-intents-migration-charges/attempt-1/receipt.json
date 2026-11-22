@@ -1,0 +1,212 @@
+{
+  "job_id": "payments-payment-intents-migration-charges",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-payment-intents-migration-charges-2026-11-07.md",
+  "raw_sha256": "16d3b4f5082b9233fbf2000c90009df9f3770d55e1eb88f70f3b3508a95850b0",
+  "prior_raw_path": "raw/stripe-charges-vs-payment-intents-2025.md",
+  "prior_raw_sha256": "fb670165dabd39f9c64f8dd56a4a37f23c330a0185159b12206c7b32f99b3ea9",
+  "source_targets": [
+    "wiki/sources/source-stripe-legacy-apis.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-legacy-apis.md": "7721203237bcc81fe7768e450d1ab3cf23c975ece42ab816086090969d2739f5"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-payment-intents-migration-charges-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 72
+      }
+    ],
+    "raw/stripe-charges-vs-payment-intents-2025.md": [
+      {
+        "start": 1,
+        "end": 72
+      }
+    ],
+    "wiki/sources/source-stripe-legacy-apis.md": [
+      {
+        "start": 1,
+        "end": 146
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/2931b23d4052304e8bbb2c25/content.diff": [
+      {
+        "start": 1,
+        "end": 107
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 8
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 18,
+        "end": 28
+      },
+      {
+        "start": 459,
+        "end": 463
+      },
+      {
+        "start": 729,
+        "end": 729
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 166,
+        "end": 184
+      },
+      {
+        "start": 291,
+        "end": 300
+      }
+    ],
+    "wiki/concepts/stripe-payment-intents.md": [
+      {
+        "start": 8,
+        "end": 31
+      },
+      {
+        "start": 125,
+        "end": 153
+      }
+    ],
+    "raw/stripe-payments-charges-api-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 35
+      }
+    ],
+    "raw/stripe-older-apis-2025.md": [
+      {
+        "start": 1,
+        "end": 32
+      }
+    ],
+    "raw/stripe-payments-payment-intents-migration-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 24
+      }
+    ],
+    "raw/stripe-changelog-2020-08-27-updates-3d-scure-charge-object-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 30
+      }
+    ],
+    "raw/stripe-payments-3d-secure-authentication-flow-2026-11-07.md": [
+      {
+        "start": 59,
+        "end": 81
+      },
+      {
+        "start": 492,
+        "end": 505
+      }
+    ],
+    "raw/stripe-api-charges-object-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 19
+      },
+      {
+        "start": 57,
+        "end": 85
+      }
+    ],
+    "wiki/sources/source-stripe-3d-secure-authentication-flow.md": [
+      {
+        "start": 18,
+        "end": 32
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 795,
+        "end": 801
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "New integrations can\u2019t use the Charges API to create payments.",
+      "location": "raw/stripe-payments-payment-intents-migration-charges-2026-11-07.md:23"
+    },
+    {
+      "text": "These fields are available on all API versions and on charge objects created with both the Charges API and the Payment Intents API.",
+      "location": "raw/stripe-payments-payment-intents-migration-charges-2026-11-07.md:35"
+    },
+    {
+      "text": "`charge.source.id` (`charge.source.three_d_secure.card` if 3D Secure source used) | `charge.payment_method`",
+      "location": "raw/stripe-payments-payment-intents-migration-charges-2026-11-07.md:59"
+    },
+    {
+      "text": "`charge.payment_method_details.card.three_d_secure.succeeded`",
+      "location": "raw/stripe-payments-payment-intents-migration-charges-2026-11-07.md:64"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "While we aren\u2019t deprecating Charges, new features are only available with the Payment Intents API.",
+      "location": "raw/stripe-charges-vs-payment-intents-2025.md:20"
+    },
+    {
+      "text": "These fields are available on all API versions and on charge objects created with both the Charges API and the Payment Intents API.",
+      "location": "raw/stripe-charges-vs-payment-intents-2025.md:35"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The November comparison explicitly deprecates using Charges to create card payments, states planned removal of that support without a date, bars new integrations from using Charges to create payments, and directs them to Checkout or Payment Intents. April's explicit statement that Stripe was not deprecating Charges is superseded for the card-payment-creation scope. November adds India businesses and bank-requested authentication to its explicit unsupported list and retains the SCA limitation (old raw lines 10\u201329, new raw lines 11\u201329).",
+    "The older feature-comparison table is removed and replaced by the scoped deprecation and unsupported-features block. Keep its US/Canada legacy-use, web/iOS/Android, Sources method, SCA and Terminal claims dated. November expands the introductory description of Checkout to hosted, embedded and Elements-backed forms and keeps Payment Intents as the unifying API with new features. Neither change to presentation or links proves API availability changes beyond the express notice (old raw lines 12\u201329, new raw lines 13\u201329, diff lines 7\u201344).",
+    "Mapped source lines 22 and 28 already report the scoped November card-creation deprecation from the separate Charges page. Add the same-URL November comparison provenance to its historical comparison at lines 54\u201375 and raw route at lines 137\u2013146. Retain the April comparison language and date rather than broadening the November claim to all Charges operations.",
+    "Mapped source lines 65\u201375 refer to the read mappings but omit the prerequisite for incremental migration to update Charge readers first and the documented all-versions, both-creation-routes scope for the two top-level fields. Keep the Sources and cards/bank-account legacy shapes distinct, map the ID to charge.payment_method rather than to the detail object, and qualify row 75 against the separately documented 3DS enum. Preserve its Google Pay enum transition and full nested path from the raw table (old and new raw lines 31\u201368).",
+    "Mapped source lines 32\u201342 contain implementation and fulfillment material from the separate Charges page. This comparison is an API-choice and Charge-read guide, not a client/server implementation recipe. Deleting the old comparison table does not change the documented existing-integration coexistence, which is addressed separately. Scope line 128 to migration of existing integrations and keep payment success separate from a request, token or authentication result.",
+    "Both field-mapping tables keep the same mappings. Padding, emphasis, headings and link text changes are editorial. Existing Charge readers still migrate before changing write flows (old and new raw lines 31\u201372; diff lines 43\u2013107)."
+  ],
+  "substantive_changes": [
+    "The November comparison explicitly deprecates using Charges to create card payments, states planned removal of that support without a date, bars new integrations from using Charges to create payments, and directs them to Checkout or Payment Intents. April's explicit statement that Stripe was not deprecating Charges is superseded for the card-payment-creation scope. November adds India businesses and bank-requested authentication to its explicit unsupported list and retains the SCA limitation (old raw lines 10\u201329, new raw lines 11\u201329).",
+    "November removes the April feature table as a retained historical comparison, replacing it with a scoped deprecation and unsupported-features block (old raw lines 22\u201329 and new raw lines 21\u201329)."
+  ],
+  "historical_claims_to_preserve": [
+    "The prior source was captured 2026-04-20 (old raw line 2). Keep its Charges-not-deprecated statement and comparative table dated, and distinguish its US/Canada use cases and SCA, method and Terminal differences from the November new-integration bar (old raw lines 10\u201329 and new raw lines 11\u201329).",
+    "Both captures guide existing readers to migrate Charge reads first. They map legacy source objects to top-level common payment_method_details and billing_details and a separate payment_method ID, with card/bank account and Source-specific legacy fields. Preserve version-qualified historic mappings and use the separate 3DS guidance where the boolean conflicts (old and new raw lines 31\u201368)."
+  ],
+  "conflicts": [
+    "Both comparison captures retain the historical Sources table's charge.payment_method_details.card.three_d_secure.succeeded mapping (old and new raw line 64), and the mapped source repeats it at line 75. The separate 'Updates to 3D Secure details in Charge object' changelog explicitly removes succeeded and authenticated booleans and uses result instead; its REST table points to API version 2024-06-20 for Charge and SetupAttempt (raw changelog lines 1\u201321). The November 3DS flow guide uses the Charge result enum (raw November 3DS flow lines 60\u201380 and 495\u2013505), and wiki/sources/source-stripe-3d-secure-authentication-flow.md lines 21 and 31 already distinguish authentication from payment success, capture or settlement. Add a reciprocal warning and exact field/version context. This is a pre-existing incompatibility in the table, not a November comparison delta. The general all-versions availability statement for payment_method_details and billing_details at line 35 does not cover all nested properties or guarantee they are populated.",
+    "Both November Charges pages give the same card-creation deprecation and new-integration bar (new raw lines 21\u201329 and raw/stripe-payments-charges-api-2026-11-07.md lines 15\u201325). The April older-APIs page said unsupported Charges remained available and was not going away (raw/stripe-older-apis-2025.md lines 20\u201325); retain that as historical scope. wiki/companies/stripe.md line 175 repeats the older availability framing without its date. Date it and route to the mapped legacy source. The comparison does not announce removal of the Charge object, retrieval or refunds. The separate November migration guide says parallel adoption is safe for an existing integration (raw/stripe-payments-payment-intents-migration-2026-11-07.md lines 11\u201319); the mapped source's line 128 should scope it accordingly."
+  ],
+  "unresolved_questions": [
+    "The November notice provides no effective removal date or tested coverage for existing operations. Published mappings do not establish that a particular Charge has non-null nested data or that a payment or refund succeeded."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-payment-intents.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-legacy-apis.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Mapped source lines 22 and 28 already report the scoped November card-creation deprecation from the separate Charges page. Add the same-URL November comparison provenance to its historical comparison at lines 54\u201375 and raw route at lines 137\u2013146. Retain the April comparison language and date rather than broadening the November claim to all Charges operations.",
+        "Mapped source lines 65\u201375 refer to the read mappings but omit the prerequisite for incremental migration to update Charge readers first and the documented all-versions, both-creation-routes scope for the two top-level fields. Keep the Sources and cards/bank-account legacy shapes distinct, map the ID to charge.payment_method rather than to the detail object, and qualify row 75 against the separately documented 3DS enum. Preserve its Google Pay enum transition and full nested path from the raw table (old and new raw lines 31\u201368).",
+        "Mapped source lines 32\u201342 contain implementation and fulfillment material from the separate Charges page. This comparison is an API-choice and Charge-read guide, not a client/server implementation recipe. Deleting the old comparison table does not change the documented existing-integration coexistence, which is addressed separately. Scope line 128 to migration of existing integrations and keep payment success separate from a request, token or authentication result."
+      ],
+      "conflicts": [
+        "Both comparison captures retain the historical Sources table's charge.payment_method_details.card.three_d_secure.succeeded mapping (old and new raw line 64), and the mapped source repeats it at line 75. The separate 'Updates to 3D Secure details in Charge object' changelog explicitly removes succeeded and authenticated booleans and uses result instead; its REST table points to API version 2024-06-20 for Charge and SetupAttempt (raw changelog lines 1\u201321). The November 3DS flow guide uses the Charge result enum (raw November 3DS flow lines 60\u201380 and 495\u2013505), and wiki/sources/source-stripe-3d-secure-authentication-flow.md lines 21 and 31 already distinguish authentication from payment success, capture or settlement. Add a reciprocal warning and exact field/version context. This is a pre-existing incompatibility in the table, not a November comparison delta. The general all-versions availability statement for payment_method_details and billing_details at line 35 does not cover all nested properties or guarantee they are populated.",
+        "Both November Charges pages give the same card-creation deprecation and new-integration bar (new raw lines 21\u201329 and raw/stripe-payments-charges-api-2026-11-07.md lines 15\u201325). The April older-APIs page said unsupported Charges remained available and was not going away (raw/stripe-older-apis-2025.md lines 20\u201325); retain that as historical scope. wiki/companies/stripe.md line 175 repeats the older availability framing without its date. Date it and route to the mapped legacy source. The comparison does not announce removal of the Charge object, retrieval or refunds. The separate November migration guide says parallel adoption is safe for an existing integration (raw/stripe-payments-payment-intents-migration-2026-11-07.md lines 11\u201319); the mapped source's line 128 should scope it accordingly."
+      ],
+      "reason": "Add the November comparison to the existing Charges deprecation record, scope the documented migration sequence and both common Charge fields, and label the inherited 3DS boolean mapping as historical with a reciprocal reference to the enum evidence."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/payment-intents/migration/charges, November directs new integrations to Checkout or Payment Intents. Stripe deprecates Charges for card-payment creation, plans to remove that support and says new integrations cannot create payments with Charges. It lists no support for India businesses, bank requests for card authentication or SCA (new raw lines 11-29). April instead explicitly said Stripe was not deprecating Charges and included a historical feature comparison (old raw lines 10-29). For existing multi-flow migrations, both captures recommend updating Charge readers first. They say Charge.payment_method_details and Charge.billing_details provide a common read interface across API versions and Charges created via either API. Charge.payment_method supplies the payment-method identifier. The tables distinguish legacy cards/bank accounts and Sources representations and map details, billing, brands and Google Pay (old raw lines 31-68 and new raw lines 31-68). The mapped source-stripe-legacy-apis.md already reflects the deprecation from a separate November Charges guide and uses April as historical comparison context. The November comparison adds direct provenance and retains the old 3DS boolean row, which needs a version warning against the separately documented result enum. Charge data and the PaymentIntent lifecycle are distinct. An authentication result alone does not establish a completed payment.",
+    "Q2": "For https://docs.stripe.com/payments/payment-intents/migration/charges, the substantive change is the explicit card-payment-creation deprecation and planned removal, the new-integration creation bar and the stated limitations for India, bank-requested authentication and SCA (old raw lines 10-29 and new raw lines 11-29). Preserve April's distinct no-deprecation claim and feature table as historical support context. Do not apply historical US/Canada usage to new integrations or interpret this notice as a dated shutdown of Charge reads or refunds. The separate migration guide allows parallel use during migration of existing integrations. The comparison's Charge read mappings and all-version wording for its two common top-level fields persist. Formatting, the expanded Checkout description and linking changes do not themselves alter those contracts (old raw lines 31-72 and new raw lines 31-72). Date the comparison evidence in source-stripe-legacy-apis.md and qualify the reciprocal company deprecation row and 3DS source. Both comparison tables show three_d_secure.succeeded in the Sources migration row, while the separate Charge changelog links 2024-06-20 REST definitions and says succeeded and authenticated were removed in favor of result. November 3DS guidance also uses result. The historical boolean row is neither a universally available nested field nor proof of authorization, capture or settlement."
+  }
+}

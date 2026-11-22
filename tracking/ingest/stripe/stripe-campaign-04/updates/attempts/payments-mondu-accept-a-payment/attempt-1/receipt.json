@@ -1,0 +1,193 @@
+{
+  "job_id": "payments-mondu-accept-a-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Accept a Payment with Mondu\"\ntype: source\ndate_ingested: 2026-05-06\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/mondu/accept-a-payment\"\nraw_files:\n  - \"stripe-mondu-accept-payment-2025.md\"\ntags: [stripe, bnpl, mondu, buy-now-pay-later, b2b, europe, checkout, payment-intents, elements]\n---\n\n## Summary\n\nStripe’s May 6, 2026 full guide describes Mondu (`mondu`) as a single-use payment method with 30-day net terms and customer authorization by redirect. The November 7, 2026 capture is a selector for Checkout, Elements with Checkout Sessions API, Elements with Payment Intents API, and Direct API. The route details below come from the May guide. The linked November variants would be needed to verify November API, SDK, and Checkout currency details.\n\n## Integration routes in the May 6, 2026 guide\n\n- **Hosted-style Checkout.** The example sets `success_url` on the Checkout Session. The compatibility section lists Europe as the supported business-location category, lists EUR for presentment, and requires all line items in a Session to use the same currency. It lists payment mode as supported and setup and subscription modes as unsupported. The Elements route backed by Checkout Sessions lists the same conditions. Use the compatibility prose for the May Checkout currency scope given the malformed currency comment in the hosted example. See lines 18–35, 44–69, and 95–112.\n- **Elements with Checkout Sessions.** The server creates the Session with `ui_mode: elements` and `return_url` and passes its client secret to the frontend. The guide collects, validates, and saves the customer email on the client unless it is set as `customer_email`, supplied by a `customer_account` or `customer` with an email, or independently validated and supplied at confirmation. The client uses the Checkout SDK and its `confirm` method. The May HTML/JS example uses `initCheckoutElementsSdk`, loads Dahlia directly or specifies `@stripe/stripe-js` 7.0.0 or later for module loading. The React instructions specify React Stripe.js 5.0.0 or later and the Stripe.js loader 8.0.0 or later. See lines 125–251, 330–345, 378–391, and 488–527.\n- **Elements with PaymentIntents.** The server creates the PaymentIntent and returns its client secret. The client uses Stripe.js `stripe.confirmPayment` with `return_url`. Accounts v2 `customer_account` and Customers v1 `customer` are separate examples for saving and retrieving payment methods. See lines 799–933 and 960–981.\n- **Direct API.** Create the PaymentIntent on the server and use its client secret with Stripe.js `stripe.confirmPayment` and `return_url` on the client. The optional server-driven redirect supplies `return_url` at confirmation, checks for `requires_action`, and uses the URL under `next_action.redirect_to_url`. The Direct API currency section lists EUR as the default, CHF for Switzerland, and GBP for Great Britain. See lines 1179–1195, 1268–1362, and 1376–1380.\n\n## Payment result and optional manual capture in the May guide\n\n- **Payment result.** Verify the PaymentIntent status when the customer returns. The PaymentIntent sections identify `payment_intent.succeeded` as the payment-completion event and recommend listening for it to trigger work such as fulfillment. A browser return alone does not establish payment completion. See lines 1076–1080 and 1315–1362.\n- **Optional manual capture.** The Elements with PaymentIntents section sets `capture_method: manual` to authorize first. After successful authorization the PaymentIntent transitions to `requires_capture`. A capture request takes the full authorized amount by default or a specified amount up to that total. If capture does not occur within seven days, Stripe cancels the PaymentIntent and sends `payment_intent.canceled`. See lines 1094–1140.\n- **Testing and errors.** The May Elements examples describe approve/decline controls on the sandbox test page and a redirect to Mondu in live mode. The May PaymentIntent error tables include `payment_intent_invalid_currency`, `payment_intent_authentication_failure`, and `payment_intent_redirect_confirmation_without_return_url`. See lines 564–568, 1142–1158, and 1382–1392.\n\n## Related\n\n- [[stripe]]\n- [[stripe-bnpl]]\n- [[source-stripe-mondu]] — Stripe’s method overview for dated Connect and general currency coverage. The May overview marks Connect No and the November overview marks it Yes. These are method-level documentation entries.\n\n## Raw Sources\n\n- [[raw/stripe-mondu-accept-payment-2025|May 6, 2026 full guide]] — verbatim webpage content (1392 lines); fixed `_Prices_` (×2), `_sandbox_` (×2), `_PaymentIntent_` (×2), `_client secret_` (×2), `_webhook_` (×2); downloaded 1 CDN image to `raw/assets/`\n\n## Related raw API references\n\n- [[raw/stripe-payments-mondu-accept-a-payment-2026-11-07|November 7, 2026 variant selector]] — navigation to four integration variants\n",
+  "quotes": {
+    "payments-mondu-accept-a-payment": [
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-mondu-accept-a-payment-2026-11-07.md:11"
+      },
+      {
+        "text": "[Checkout](https://docs.stripe.com/payments/mondu/accept-a-payment.md?payment-ui=checkout)",
+        "location": "raw/stripe-payments-mondu-accept-a-payment-2026-11-07.md:13"
+      },
+      {
+        "text": "[Checkout Sessions API](https://docs.stripe.com/payments/mondu/accept-a-payment.md?payment-ui=elements&api-integration=checkout)",
+        "location": "raw/stripe-payments-mondu-accept-a-payment-2026-11-07.md:15"
+      },
+      {
+        "text": "[Payment Intents API](https://docs.stripe.com/payments/mondu/accept-a-payment.md?payment-ui=elements&api-integration=paymentintents)",
+        "location": "raw/stripe-payments-mondu-accept-a-payment-2026-11-07.md:16"
+      },
+      {
+        "text": "[Direct API](https://docs.stripe.com/payments/mondu/accept-a-payment.md?payment-ui=direct-api)",
+        "location": "raw/stripe-payments-mondu-accept-a-payment-2026-11-07.md:17"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-mondu-accept-a-payment": [
+      {
+        "text": "success_url: \"https://example.com/success\",",
+        "location": "raw/stripe-mondu-accept-payment-2025.md:68"
+      },
+      {
+        "text": "return_url: 'https://example.com/return?session_id={CHECKOUT_SESSION_ID}'",
+        "location": "raw/stripe-mondu-accept-payment-2025.md:156"
+      },
+      {
+        "text": "Stripe cancels the PaymentIntent and sends a [payment_intent.canceled](https://docs.stripe.com/api/events/types.md#event_types-payment_intent.canceled) event if the payment isn’t captured during the 7-day window.",
+        "location": "raw/stripe-mondu-accept-payment-2025.md:1096"
+      },
+      {
+        "text": "You can create Mondu payments in the currencies that map to your country. The default local currency for Mondu is `eur`.",
+        "location": "raw/stripe-mondu-accept-payment-2025.md:1376"
+      },
+      {
+        "text": "Stripe captures the total authorized amount by default. You can also specify `amount_to_capture` to be less than or equal to the total.",
+        "location": "raw/stripe-mondu-accept-payment-2025.md:1136"
+      },
+      {
+        "text": "The `return_url` corresponds to a page on your website that displays the result of the payment.",
+        "location": "raw/stripe-mondu-accept-payment-2025.md:1315"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-mondu-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "raw/stripe-mondu-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 1392
+      }
+    ],
+    "wiki/sources/source-stripe-mondu-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 25
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/f3082f8e5f756618dbf45580/content.diff": [
+      {
+        "start": 1,
+        "end": 1397
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 332,
+        "end": 346
+      },
+      {
+        "start": 744,
+        "end": 750
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 537,
+        "end": 547
+      }
+    ],
+    "wiki/concepts/stripe-bnpl.md": [
+      {
+        "start": 1,
+        "end": 38
+      },
+      {
+        "start": 172,
+        "end": 199
+      },
+      {
+        "start": 250,
+        "end": 266
+      }
+    ],
+    "wiki/sources/source-stripe-mondu.md": [
+      {
+        "start": 1,
+        "end": 31
+      }
+    ],
+    "raw/stripe-mondu-2025.md": [
+      {
+        "start": 29,
+        "end": 41
+      }
+    ],
+    "raw/stripe-payments-mondu-2026-11-07.md": [
+      {
+        "start": 30,
+        "end": 42
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-mondu-accept-a-payment/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 187
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-mondu-accept-a-payment/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 122
+      }
+    ]
+  },
+  "answers": {
+    "payments-mondu-accept-a-payment": {
+      "Q1": "For https://docs.stripe.com/payments/mondu/accept-a-payment, the November 7, 2026 capture (new raw lines 1-17) establishes navigation to Checkout, Elements with Checkout Sessions API, Elements with Payment Intents API, and Direct API. The May 6, 2026 guide documents single-use, 30-day net terms and customer authorization by redirect (old raw lines 12-69). Both May Checkout compatibility sections list Europe for supported business locations, EUR presentment, same-currency line items and payment mode only (old raw lines 18-35 and old raw lines 95-112). The geographic category does not establish any particular account’s eligibility. The hosted-style example uses `success_url` (old raw lines 53-69). With Elements and Checkout Sessions, the server creates the Session with `ui_mode: elements` and `return_url` and returns the Session client secret (old raw lines 125-194). The client collects, validates and saves an email unless the Session already has `customer_email`, is created with a `customer_account` or `customer` that has an email, or receives an independently validated email at confirmation (old raw lines 330-345 and old raw lines 378-391). With Elements and PaymentIntents, the server creates the Intent and returns its client secret for Stripe.js confirmation in the client. The Dashboard and manual-listing examples show Accounts v2 `customer_account` and Customers v1 `customer` as distinct alternatives for saving and retrieving payment methods, without establishing either association as mandatory for every Mondu payment (old raw lines 799-864 and old raw lines 865-925). The Direct API route likewise uses a server-created PaymentIntent and client Stripe.js confirmation, with an optional server-managed `requires_action` and `next_action.redirect_to_url` path (old raw lines 1179-1362). Browser return calls for status verification. Old raw lines 1076-1140 distinguish `payment_intent.succeeded` from optional manual authorization (`requires_capture`), which expires with cancellation if uncaptured within seven days. The baseline `source-stripe-mondu-accept-payment.md` lines 13-21 compressed the routes and selected errors into shared claims. The revised source dates the May 6 guide, separates the four routes and their return fields, and locates redirect verification and optional capture-state transitions.",
+      "Q2": "For https://docs.stripe.com/payments/mondu/accept-a-payment, new raw lines 5-17 show a presentation and navigation change from the May 6, 2026 combined guide to a November 7, 2026 selector. No new substantive API or payment behavior is established by the selector. Keep the May 6 guide dated for hosted-style `success_url`, Checkout Sessions with Elements `return_url`, EUR and payment-mode compatibility (old raw lines 18-69 and old raw lines 95-194), and for the separate Direct API EUR-default country map including CHF for CH and GBP for GB (old raw lines 1376-1380). The revised `source-stripe-mondu-accept-payment.md` scopes the return destination to its integration and the seven-day cancellation window to optional manual PaymentIntent capture (old raw lines 1094-1140). The proposed reciprocal Stripe BNPL wording follows that scope and routes readers to the source. The Stripe index and company route descriptions also need the scoped wording. Do not generalize the malformed Checkout example comment into a new currency rule. Keep the Checkout-specific client SDK and PaymentIntent confirmation and identity alternatives distinct (old raw lines 204-251 and old raw lines 799-933), as well as sandbox test controls, redirect/action, successful authorization and actual payment completion (old raw lines 1076-1146 and old raw lines 1287-1362). The separate Mondu overview documents a dated May No versus November Yes on Connect (overview raw lines 36-38 and 37-39 respectively); resolve the cross-reference by date and source scope, with no acceptance-flow or account-entitlement inference."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "mondu-may-acceptance-route-scope",
+      "target_path": "wiki/concepts/stripe-bnpl.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Integration notes**: `return_url` required. Manual capture: 7-day window. EUR only for Checkout integration path.",
+      "proposed_markdown": "The May 6, 2026 guide shows `success_url` for hosted-style Checkout, `return_url` on the server-created Session for Elements with Checkout Sessions, and `return_url` at confirmation for the PaymentIntent routes. Its two Checkout compatibility sections list EUR. The seven-day cancellation window applies to optional manual PaymentIntent capture. See [[source-stripe-mondu-accept-payment]].",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "May route evidence: raw/stripe-mondu-accept-payment-2025.md:18-35, :53-69, :95-112, :125-194, :927-981 and :1287-1339. Scope seven-day cancellation to optional manual PaymentIntent capture in :1094-1140.",
+        "November 7, 2026 capture is variant navigation only; its linked bodies were not read."
+      ]
+    },
+    {
+      "update_id": "mondu-acceptance-source-route",
+      "target_path": "wiki/concepts/stripe-bnpl.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-mondu-accept-payment]] — Mondu integration: return_url required, 7-day manual capture, EUR-only Checkout path",
+      "proposed_markdown": "- [[source-stripe-mondu-accept-payment]] — May 2026 Mondu acceptance guide with route-specific return fields and optional PaymentIntent manual capture; November 2026 variant selector",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "May route evidence: raw/stripe-mondu-accept-payment-2025.md:18-35, :53-69, :95-112, :125-194, :927-981 and :1287-1339. Scope seven-day cancellation to optional manual PaymentIntent capture in :1094-1140.",
+        "November 7, 2026 capture is variant navigation only; its linked bodies were not read."
+      ]
+    }
+  ]
+}

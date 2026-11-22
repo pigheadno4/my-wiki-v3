@@ -1,0 +1,288 @@
+{
+  "job_id": "payments-managed-payments-set-up",
+  "attempt": 3,
+  "source_page": "---\ntitle: \"Build a Checkout Integration with Managed Payments\"\ntype: source\ndate_ingested: 2026-04-23\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/managed-payments/set-up\"\nraw_files:\n  - \"stripe-payments-managed-payments-set-up-2026-11-07.md\"\n  - \"stripe-managed-payments-setup-2025.md\"\ntags: [stripe, managed-payments, checkout, merchant-of-record, subscriptions, one-time-payments, tax-behavior, webhooks]\n---\n\n## Summary\n\nThe April 23 and November 7, 2026 captures show how to build a **new Stripe-hosted Checkout integration** with Managed Payments for subscriptions and one-time purchases. The November guide describes Stripe as the merchant of record for eligible digital products such as SaaS, software, and digital content. It describes indirect-tax compliance in more than 80 countries, fraud prevention, dispute management, and transaction-level customer support. See [[source-stripe-managed-payments-how-it-works]] for coverage boundaries, including seller responsibility where Stripe does not handle indirect tax. Its November capture explicitly excludes custom domains from Managed Payments checkouts.\n\n## Prerequisites\n\n- Both captures require Dashboard activation, a development environment, and API version `2025-03-31.basil` or later.\n- The April 23 guide explicitly requires accepting the Managed Payments terms of service in the Dashboard before use and says all products the customer is purchasing must be eligible to process the payment with Managed Payments.\n- The November 7 guide calls for product eligibility before processing and an eligible tax code on the product. It omits the express merchant terms-acceptance sentence. The captures leave the current terms-acceptance workflow and mixed-cart error or fallback behavior undetermined. See [[source-stripe-managed-payments-eligibility]] for the dated eligibility rules.\n\n## Create a hosted Checkout Session\n\nCreate products and one-time or recurring Prices through the Dashboard or API. Give each product sold through Managed Payments an eligible `tax_code`; the Dashboard labels these codes. The preview pane shows tax by customer location. For subscriptions the Price example sets `recurring.interval`; the one-time Price omits `recurring`.\n\nThe checkout button calls a merchant server endpoint. Use the Price as a line item, choose `mode: 'subscription'` for a subscription or `mode: 'payment'` for a one-time purchase, and set `managed_payments.enabled: true` to enable Managed Payments. **The November guide explicitly documents `managed_payments.enabled: false` to disable Managed Payments for a specific Session at creation.** These captures leave the field's omission default and any post-creation effect undetermined.\n\nUse `success_url` for the hosted success page and the optional `cancel_url` for the cancellation destination. The November Checkout Sessions Create reference documents them as separate fields, clarifying the ambiguous setup prose. After creating the Session, the server redirects the browser to the returned Stripe-hosted Session URL. The examples use HTTP 303.\n\nApril hosted Node example, with a merchant success URL:\n\n```javascript\nstripe.checkout.sessions.create({\n    line_items: [{ price: priceId, quantity: 1 }],\n    managed_payments: { enabled: true },\n    mode: 'subscription', // or 'payment'\n    success_url: 'https://example.com/success',\n})\n```\n\nThe November capture uses cURL to create Sessions at lines 282–314 and Ruby/Sinatra for the endpoint at lines 316–380.\n\n## Hosted and embedded scope\n\nThis setup guide demonstrates hosted Checkout. The separate November 7 [[source-stripe-managed-payments-update-checkout]] guide lists existing hosted or embedded Checkout pages that create `payment`- or `subscription`-mode Sessions as a migration prerequisite. It limits subscription adoption to new eligible purchases, and its server examples use the hosted `success_url`. Those examples document the hosted implementation.\n\nThe November Checkout Sessions Create reference distinguishes an embedded Checkout form (`ui_mode: embedded_page`) from Checkout Elements (`ui_mode: elements`). Both modes exclude `success_url` and `cancel_url`, and require `return_url` when redirect-based payment methods are enabled. This is API field scope, separate from Managed Payments product eligibility.\n\n## Webhooks\n\n| Event | What it signals |\n| --- | --- |\n| `checkout.session.completed` | The customer completed Checkout. A delayed payment may still be pending. |\n| `checkout.session.async_payment_succeeded` | A delayed payment succeeded. |\n| `checkout.session.async_payment_failed` | A delayed payment failed. |\n\nUse server webhooks for downstream paid-order actions. Check paid status on Session completion and handle delayed success or failure separately. A 303 and the browser's return describe navigation. ACH Direct Debit illustrates a delayed method in the event table.\n\n## Tax behavior\n\nAn explicit Price `tax_behavior` takes precedence: `exclusive` adds tax and `inclusive` includes tax in the price. Where Price tax behavior is unspecified, the guide says Managed Payments adds tax on top by default. Change the fallback in **Dashboard → Tax settings → Include tax in prices**.\n\n## Subscription consent and Link testing\n\n- When a customer purchases a subscription through Managed Payments, the purchase authorizes only Managed Payments to charge that payment method. Obtain appropriate separate customer consent before using the method outside Managed Payments.\n- The guide describes Link as the customer-facing merchant of record at checkout, with subscription management and transaction support on Link. The test passcode is `000000` when testing with the same Link email. Test purchases stay out of the Link app. The guide describes a live-mode Checkout Session for testing the app's order-management tools. Sandbox receipt emails can be sent manually.\n\n## Related Pages\n\n- [[stripe]] — payment provider\n- [[stripe-managed-payments]] — Managed Payments integration options\n- [[stripe-checkout]] — Checkout UI, API, and fulfillment\n- [[source-stripe-managed-payments-how-it-works]] — Link, coverage, and checkout restrictions\n\n## Raw Sources\n\n- [[raw/stripe-payments-managed-payments-set-up-2026-11-07|2026-11-07 hosted Checkout setup guide]]\n- [[raw/stripe-managed-payments-setup-2025|2026-04-23 hosted Checkout setup guide]] — 531 lines\n\n## Related raw API references\n\n- [[raw/stripe-api-checkout-sessions-create-2026-11-07|2026-11-07 Checkout Sessions Create reference]] — hosted URLs and UI-mode fields at lines 198–199, 464–477, and 512–525\n",
+  "quotes": {
+    "payments-managed-payments-set-up": [
+      {
+        "text": "in more than 80 countries, along with fraud prevention, dispute management, and transaction-level customer support.",
+        "location": "raw/stripe-payments-managed-payments-set-up-2026-11-07.md:9"
+      },
+      {
+        "text": "Use an API version of `2025-03-31.basil` or [later]",
+        "location": "raw/stripe-payments-managed-payments-set-up-2026-11-07.md:16"
+      },
+      {
+        "text": "To disable Managed Payments for a specific Checkout Session, set [managed_payments[enabled]](https://docs.stripe.com/api/checkout/sessions/create.md#create_checkout_session-managed_payments-enabled) to `false`.",
+        "location": "raw/stripe-payments-managed-payments-set-up-2026-11-07.md:300"
+      },
+      {
+        "text": "Avoid only using your success page to trigger post-checkout actions.",
+        "location": "raw/stripe-payments-managed-payments-set-up-2026-11-07.md:408"
+      },
+      {
+        "text": "When a customer purchases a subscription through Managed Payments, it only authorizes Managed Payments to charge their payment method.",
+        "location": "raw/stripe-payments-managed-payments-set-up-2026-11-07.md:437"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-managed-payments-set-up": [
+      {
+        "text": "before you can use Managed Payments.",
+        "location": "raw/stripe-managed-payments-setup-2025.md:10"
+      },
+      {
+        "text": "To process a payment with Managed Payments, all of the products the customer is purchasing must be eligible.",
+        "location": "raw/stripe-managed-payments-setup-2025.md:16"
+      },
+      {
+        "text": "To enable Managed Payments, set `managed_payments[enabled]` to `true`.",
+        "location": "raw/stripe-managed-payments-setup-2025.md:316"
+      },
+      {
+        "text": "Avoid only using your success page to trigger post-checkout actions.",
+        "location": "raw/stripe-managed-payments-setup-2025.md:454"
+      },
+      {
+        "text": "it only authorizes their payment method to be charged by Managed Payments.",
+        "location": "raw/stripe-managed-payments-setup-2025.md:493"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-managed-payments-set-up-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 477
+      }
+    ],
+    "raw/stripe-managed-payments-setup-2025.md": [
+      {
+        "start": 1,
+        "end": 531
+      }
+    ],
+    "wiki/sources/source-stripe-managed-payments-setup.md": [
+      {
+        "start": 1,
+        "end": 70
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/82cc2a0d86b3f033f3ebad7f/content.diff": [
+      {
+        "start": 1,
+        "end": 752
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-managed-payments-set-up/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 231
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-managed-payments-set-up/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 118
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 11
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 130,
+        "end": 138
+      },
+      {
+        "start": 788,
+        "end": 788
+      }
+    ],
+    "wiki/concepts/stripe-managed-payments.md": [
+      {
+        "start": 60,
+        "end": 123
+      }
+    ],
+    "wiki/concepts/stripe-checkout.md": [
+      {
+        "start": 103,
+        "end": 143
+      },
+      {
+        "start": 185,
+        "end": 218
+      },
+      {
+        "start": 272,
+        "end": 286
+      }
+    ],
+    "raw/stripe-api-checkout-sessions-create-2026-11-07.md": [
+      {
+        "start": 198,
+        "end": 199
+      },
+      {
+        "start": 377,
+        "end": 386
+      },
+      {
+        "start": 464,
+        "end": 477
+      },
+      {
+        "start": 512,
+        "end": 525
+      }
+    ],
+    "raw/stripe-payments-managed-payments-update-checkout-2026-11-07.md": [
+      {
+        "start": 9,
+        "end": 18
+      },
+      {
+        "start": 74,
+        "end": 100
+      }
+    ],
+    "raw/stripe-payments-managed-payments-how-it-works-2026-11-07.md": [
+      {
+        "start": 9,
+        "end": 36
+      }
+    ],
+    "raw/stripe-payments-managed-payments-eligibility-2026-11-07.md": [
+      {
+        "start": 9,
+        "end": 20
+      },
+      {
+        "start": 92,
+        "end": 102
+      }
+    ],
+    "raw/stripe-managed-payments-update-checkout-2025.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 219,
+        "end": 225
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/updates/attempts/payments-managed-payments-set-up/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 153
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/updates/attempts/payments-managed-payments-set-up/attempt-1/candidate.md": [
+      {
+        "start": 63,
+        "end": 70
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/updates/attempts/payments-managed-payments-set-up/attempt-1/candidate.diff": [
+      {
+        "start": 95,
+        "end": 95
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/updates/attempts/payments-managed-payments-set-up/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 16
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/updates/attempts/payments-managed-payments-set-up/attempt-2/candidate.md": [
+      {
+        "start": 70,
+        "end": 77
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/updates/attempts/payments-managed-payments-set-up/attempt-2/candidate.diff": [
+      {
+        "start": 98,
+        "end": 105
+      }
+    ],
+    "rules/ingest-roles.md": [
+      {
+        "start": 66,
+        "end": 68
+      }
+    ]
+  },
+  "answers": {
+    "payments-managed-payments-set-up": {
+      "Q1": "The November 7 capture of https://docs.stripe.com/payments/managed-payments/set-up describes Stripe's merchant-of-record solution for eligible digital products, including indirect tax compliance in more than 80 countries, fraud prevention, disputes and transaction-level support. It calls for product eligibility, Dashboard activation, a development environment, API version 2025-03-31.basil or later and an eligible tax code on the Product. Create recurring or one-time Prices through Dashboard or API (new raw lines 5-26, 34-46 and 96-148). The merchant's checkout button calls a server endpoint that creates a Checkout Session with a Price line item, mode subscription or payment, and managed_payments[enabled]=true. The server redirects to the returned Stripe-hosted URL. Explicit false disables Managed Payments for that Session (new raw lines 164-172 and 278-320). Use webhook events for downstream actions. Session completion and the browser return are distinct from a delayed payment's later success or failure (new raw lines 382-410). A Managed Payments subscription authorizes Managed Payments charges only, and an outside charge needs appropriate separate consent (new raw lines 425-437). The guide distinguishes Link's customer-facing MoR role and sandbox visibility, and applies the Price's tax behavior before the Dashboard default (new raw lines 449-470). The April 23 capture describes the same hosted flow, true flag and event separation, and explicitly requires merchant Dashboard ToS acceptance and all purchased products to be eligible (old raw lines 8-19, 308-366 and 450-464). source-stripe-managed-payments-setup.md preserves April's central flow but omits Dashboard activation and the development environment and overstates what happens to a Session with an ineligible item. It lacks the November per-Session false setting. The revised source restores both prerequisites, scopes the April all-product rule to processing, and records the explicit opt-out, hosted URL fields and webhook state distinctions.",
+      "Q2": "For https://docs.stripe.com/payments/managed-payments/set-up, the substantive November documentation addition is explicit false as a per-Checkout-Session opt-out, with no evidence that this was a new API launch, changed an existing Session or converted a subscription (old raw lines 308-360 and new raw lines 278-314). The November MoR introduction expands the April scope description and gives the dated 80-plus-country indirect-tax statement, while the new setup prerequisites omit the express Dashboard merchant ToS sentence and shorten the all-products statement to general product eligibility. Keep the April 23 claims with their original date and avoid inferring a policy relaxation, mixed-cart fallback or Session-create error from these passages (old raw lines 8-19 and new raw lines 5-16). Correct the mixed-cart overstatement in source-stripe-managed-payments-setup.md and qualify related source-route wording in the Stripe index and Managed Payments concept. The sample shifts from Node/Express to cURL and Ruby/Sinatra, reorganized steps, table copy edits and new eligibility/tax links change presentation or navigation (old raw lines 59-105, 368-432 and 528-531, new raw lines 62-94, 322-380 and 472-477). The new setup demonstrates hosted Checkout (new raw lines 164-172 and 278-320). The November 7 update-checkout capture names an existing hosted or embedded payment- or subscription-mode Session integration at lines 9-18, while its lines 74-100 show hosted success_url examples. Qualify the Managed Payments concept's broad restriction at line 83 by distinguishing embedded_page from the Checkout Elements UI and without extrapolating hosted examples to embedded. The November Sessions Create reference lines 198-199, 464-477 and 512-525 distinguishes hosted success_url and optional cancel_url from the conditionally required return_url for embedded_page or elements. This also resolves the setup prose that assigns both hosted destinations to success_url (old raw lines 338-360 and new raw lines 278-314). Date-qualify the API floor of 2025-03-31.basil or later and all-products eligibility shorthand at Managed Payments concept line 120, Checkout concept line 286 and Stripe index line 135. The November 7 how-it-works capture lines 25-36 explicitly excludes custom domains from Managed Payments checkouts, an exception to the generic hosted feature at Checkout concept lines 129-133. Keep the version floor, server creation/client redirect, three webhook events, subscription charge consent, Link sandbox behavior and Price tax default conditional on an unspecified tax behavior. A 303, a browser return or checkout.session.completed alone gives no proof of success for a delayed payment, settlement or eligibility (old raw lines 434-526 and new raw lines 382-470). The revised source records the hosted setup scope and the distinct migration and API scopes. The source links the dated custom-domain restriction."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-managed-payments-set-up-embedded-checkout-scope",
+      "target_path": "wiki/concepts/stripe-managed-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "- Elements / embeddable web components / advanced integrations",
+      "proposed_markdown": "- Checkout Elements (`ui_mode: elements`) and advanced custom integrations. The November 7, 2026 [[source-stripe-managed-payments-update-checkout]] guide separately lists existing hosted and embedded Checkout pages (`embedded_page`) in `payment` or `subscription` mode. Its examples show the hosted `success_url` path.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [
+        "Migration prerequisite and hosted examples: raw/stripe-payments-managed-payments-update-checkout-2026-11-07.md:9-18,74-100. Distinct UI modes and redirect fields: raw/stripe-api-checkout-sessions-create-2026-11-07.md:198-199,464-477,512-525. The examples leave embedded implementation details outside scope."
+      ]
+    },
+    {
+      "update_id": "payments-managed-payments-set-up-managed-payments-dated-setup",
+      "target_path": "wiki/concepts/stripe-managed-payments.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-managed-payments-setup]] — Checkout integration: managed_payments.enabled param, API version 2025-03-31.basil required, all-products-eligible rule, tax behavior, webhooks",
+      "proposed_markdown": "- [[source-stripe-managed-payments-setup]] — New Stripe-hosted Checkout setup, API `2025-03-31.basil` or later. April 23, 2026 requires all purchased products to be eligible for Managed Payments processing. November 7, 2026 calls for product eligibility and documents the per-Session opt-out.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [
+        "Eligibility and API floor: raw/stripe-managed-payments-setup-2025.md:14-19 and raw/stripe-payments-managed-payments-set-up-2026-11-07.md:11-16. Hosted route and opt-out: raw/stripe-payments-managed-payments-set-up-2026-11-07.md:164-172,278-320."
+      ]
+    },
+    {
+      "update_id": "payments-managed-payments-set-up-managed-payments-custom-domain-exception",
+      "target_path": "wiki/concepts/stripe-checkout.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Custom domains**: paid feature; applies to Checkout (hosted page only), **Payment Links**, and the **customer portal**",
+      "proposed_markdown": "- **Custom domains**: paid feature for hosted Checkout, **Payment Links**, and the **customer portal**. The November 7, 2026 [[source-stripe-managed-payments-how-it-works]] guide excludes custom domains from Managed Payments checkouts.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Managed Payments exception: raw/stripe-payments-managed-payments-how-it-works-2026-11-07.md:25-36. This setup's hosted path: raw/stripe-payments-managed-payments-set-up-2026-11-07.md:164-172,316-320."
+      ]
+    },
+    {
+      "update_id": "payments-managed-payments-set-up-checkout-dated-setup",
+      "target_path": "wiki/concepts/stripe-checkout.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-managed-payments-setup]] — Checkout with Managed Payments: managed_payments.enabled, API 2025-03-31.basil, all-products-eligible rule, tax behavior config",
+      "proposed_markdown": "- [[source-stripe-managed-payments-setup]] — New Stripe-hosted Checkout setup, API `2025-03-31.basil` or later. April 23, 2026 requires all purchased products to be eligible for Managed Payments processing. November 7, 2026 calls for product eligibility and documents the per-Session opt-out.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [
+        "Eligibility and API floor: raw/stripe-managed-payments-setup-2025.md:14-19 and raw/stripe-payments-managed-payments-set-up-2026-11-07.md:11-16. Hosted route and opt-out: raw/stripe-payments-managed-payments-set-up-2026-11-07.md:164-172,278-320."
+      ]
+    }
+  ]
+}

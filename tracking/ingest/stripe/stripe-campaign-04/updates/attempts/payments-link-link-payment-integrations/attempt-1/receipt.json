@@ -1,0 +1,259 @@
+{
+  "job_id": "payments-link-link-payment-integrations",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Docs — Link in different payment integrations\"\ntype: source\ndate_ingested: 2026-05-08\ndate_updated: 2026-11-22\ncanonical_url: \"https://docs.stripe.com/payments/link/link-payment-integrations\"\noriginal_format: webpage\nraw_files:\n  - \"stripe-payments-link-link-payment-integrations-2026-11-07.md\"\n  - \"stripe-link-payment-integrations-2025.md\"\ntags: [stripe, link, payment-method-types, card-integration, ic-plus, backup-payment, instant-bank-payments]\n---\n\n## Summary\n\nThe May 8 and November 7, 2026 guides describe two ways to integrate Link. Enable Link under **Wallets** in Payment methods settings and integrate it for the use case. Stripe then displays Link automatically for eligible transactions. Both routes can use credit, debit, and eligible non-card funding such as Instant Bank Payments and Klarna. Funding methods have their own eligibility and integration limits.\n\n## Integration paths\n\n| Path | May manual request | November manual request | PaymentMethod representation |\n| --- | --- | --- | --- |\n| **Standalone Link** (recommended) | Include `link` in `payment_method_types`, or use dynamic payment methods | Include `link` in `allowed_payment_method_types`, or use dynamic payment methods | `type=link` |\n| **Card-specific Link** | Include `card` and omit `link` in `payment_method_types` | Include `card` and omit `link` in `allowed_payment_method_types` | `type=card`, `card.wallet.type=link` |\n\nIn each dated manual recipe, including `link` selects standalone Link even when the list also includes `card`. Card-specific integration exposes genuine brand and last-four details for actual credit or debit funding. The standalone PaymentMethod does not reveal the exact underlying instrument.\n\nStandalone Link uses a single blended rate in the integration guide and excludes Interchange+ (IC+). November explicitly excludes extended authorization, incremental authorization, and overcapture. Stripe directs integrations affected by these limits to the card-specific route. These standalone exclusions leave feature availability and pricing entitlement on a particular card integration unresolved.\n\nOnly standalone Link offers backup payment selection. Link suggests a backup if the customer has multiple eligible saved payment sources. If the customer approves it and the first attempt fails, Link retries with that source. The card-specific route offers no backup selection at checkout.\n\n## Request fields by API surface\n\n- **PaymentIntent and SetupIntent.** The `2026-07-29.dahlia` changelog adds `allowed_payment_method_types`. It filters a requested list to compatible methods based on inputs such as currency, amount, and customer, then returns the subset in `payment_method_types`. Do not combine the allow list with `payment_method_types`, `excluded_payment_method_types`, `automatic_payment_methods`, or `payment_method_configuration`. On `2026-09-30.endive`, the removal changelog’s named PaymentIntent create, update, and confirm and SetupIntent create and update methods return HTTP 400 `payment_method_types_no_longer_supported` for writes to the old field. The response field remains computed and read-only. The same changelog’s Impact section separately names `2026-08-26.preview` for upgrade preparation. The captured documentation leaves a universal start version unresolved.\n- **Hosted Checkout Session Create.** The November [[source-stripe-checkout-link|Checkout Link guide]] still says to include both `card` and `link` in `payment_method_types` and use a single currency across line items. Both hosted guides separately advise listing payment methods manually when collecting card details for future use via SetupIntent. Select the supported request field for the Intent endpoint and version in use. The separate `2026-09-30.endive` Checkout Sessions changelog says the old request field returns HTTP 400 on Session creation. It directs integrations to dynamic payment methods or `allowed_payment_method_types`, with compatible methods still reported in the response’s computed `payment_method_types`.\n- **Stripe.js deferred Elements.** On Endive, `paymentMethodTypes` throws a client integration error when creating Elements without a PaymentIntent or SetupIntent or calling `elements.update()`. Use the client option `allowedPaymentMethodTypes` or Dashboard-managed dynamic methods.\n\nReceiving a compatible subset does not itself establish that Link displays or that a payment succeeds. Wallets enablement, integration, and transaction eligibility still apply.\n\n## Non-card funding in a card integration\n\nFor non-card funding such as Instant Bank Payments, Stripe uses the following fixed PaymentMethod values.\n\n| Field | Fixed value |\n| --- | --- |\n| `type` | `card` |\n| `card.brand` | `link` |\n| `card.last4` | `0000` |\n| `card.exp_month`, `card.exp_year` | `12`, `2040` |\n| `card.funding` | `unknown` |\n| `card.display_brand` | `other` |\n| `card.networks.available` | `[\"link\"]` |\n| `card.checks` results | `null` |\n\nStripe recommends showing **Link** in the customer interface in place of these placeholder card details.\n\nThe separate November US [[source-stripe-link-payment-methods|Link funding-groups guide]] describes coarse Charge metadata. Read `payment_method_details.link.funding_source_group` for standalone Link or `payment_method_details.card.wallet.link.funding_source_group` for card-specific Link. A group can contain multiple methods, such as Pix and UPI. This reporting does not identify the exact funding instrument. The US guide separately applies Link Group fees under the Stripe Pricing Agreement regardless of eligibility for any particular funding method. Use that agreement to determine the applicable fees.\n\n## Confirmation and settlement\n\nBoth integration captures describe immediate confirmation and settlement of successful payments to the Stripe balance on the card timeline. Payout to a bank account is a separate step. The November [[source-stripe-instant-bank-payments|Instant Bank Payments guide]] says authorized payments settle on the card timeline and covers bank-initiated ACH returns. Customer-initiated disputes with the bank are an exception and can debit the payment amount and dispute fee.\n\nThe November [[source-stripe-klarna-on-link|Klarna on Link guide]] limits eligible US use to Payment Links, hosted Checkout, and Payment Element. It describes a credit to the Stripe account for the purchase amount minus Stripe fees immediately after issuer authorization. That wording concerns the Stripe account credit.\n\n## Related Pages\n\n- [[stripe]] — payment provider\n- [[stripe-link]] — Link integration paths and funding methods\n- [[stripe-instant-bank-payments]] — non-card Link funding and dispute boundary\n\n## Raw Sources\n\n- [[raw/stripe-payments-link-link-payment-integrations-2026-11-07|2026-11-07 Link in different payment integrations]] — 93 lines\n- [[raw/stripe-link-payment-integrations-2025|2026-05-08 Link in different payment integrations]] — verbatim webpage content, 87 lines\n\n## Related raw API references\n\n- [[raw/stripe-changelog-dahlia-2026-07-29-allowed-payment-method-types-parameter-2026-11-07|2026-11-07 Dahlia Intent allow-list changelog]] — compatible-subset and mutual-exclusion rules\n- [[raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07|2026-11-07 Endive Intent request-field changelog]] — endpoint table, error, and preview upgrade note\n- [[raw/stripe-changelog-endive-2026-09-30-remove-payment-method-types-checkout-sessions-2026-11-07|2026-11-07 Endive Checkout Session Create changelog]] — request and response properties\n- [[raw/stripe-changelog-endive-2026-09-30-remove-elements-deferred-intent-payment-method-types-2026-11-07|2026-11-07 Endive Stripe.js changelog]] — deferred Elements client option\n",
+  "quotes": {
+    "payments-link-link-payment-integrations": [
+      {
+        "text": "After you’ve enabled and integrated it, Stripe automatically displays Link to your customers for eligible transactions.",
+        "location": "raw/stripe-payments-link-link-payment-integrations-2026-11-07.md:9"
+      },
+      {
+        "text": "or pass `link` in the `allowed_payment_method_types` parameter.",
+        "location": "raw/stripe-payments-link-link-payment-integrations-2026-11-07.md:24"
+      },
+      {
+        "text": "It doesn’t support advanced acquiring features",
+        "location": "raw/stripe-payments-link-link-payment-integrations-2026-11-07.md:31"
+      },
+      {
+        "text": "Passing `link` in the `allowed_payment_method_types` parameter always treats Link as a payment method, even if you also pass `card`.",
+        "location": "raw/stripe-payments-link-link-payment-integrations-2026-11-07.md:39"
+      },
+      {
+        "text": "Stripe recommends identifying non-card payments as Link payments instead of rendering the fixed values.",
+        "location": "raw/stripe-payments-link-link-payment-integrations-2026-11-07.md:89"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-link-link-payment-integrations": [
+      {
+        "text": "or pass `link` in the `payment_method_types` parameter.",
+        "location": "raw/stripe-link-payment-integrations-2025.md:23"
+      },
+      {
+        "text": "If the customer approves the backup, and the initial payment attempt fails, Link automatically retries the payment using the backup.",
+        "location": "raw/stripe-link-payment-integrations-2025.md:25"
+      },
+      {
+        "text": "To include Link in a card integration, pass `card` in the `payment_method_types` parameter.",
+        "location": "raw/stripe-link-payment-integrations-2025.md:33"
+      },
+      {
+        "text": "Last 4 digits are `0000`",
+        "location": "raw/stripe-link-payment-integrations-2025.md:41"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-link-link-payment-integrations-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 93
+      }
+    ],
+    "raw/stripe-link-payment-integrations-2025.md": [
+      {
+        "start": 1,
+        "end": 87
+      }
+    ],
+    "wiki/sources/source-stripe-link-payment-integrations.md": [
+      {
+        "start": 1,
+        "end": 53
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/7a44e56f7117c67ae927a16b/content.diff": [
+      {
+        "start": 1,
+        "end": 56
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-link-link-payment-integrations/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 287
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-link-link-payment-integrations/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 96
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 11
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 450,
+        "end": 457
+      },
+      {
+        "start": 732,
+        "end": 738
+      }
+    ],
+    "wiki/concepts/stripe-link.md": [
+      {
+        "start": 8,
+        "end": 50
+      },
+      {
+        "start": 75,
+        "end": 91
+      },
+      {
+        "start": 169,
+        "end": 185
+      }
+    ],
+    "wiki/concepts/stripe-instant-bank-payments.md": [
+      {
+        "start": 8,
+        "end": 60
+      },
+      {
+        "start": 65,
+        "end": 67
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 107,
+        "end": 113
+      }
+    ],
+    "raw/stripe-changelog-dahlia-2026-07-29-allowed-payment-method-types-parameter-2026-11-07.md": [
+      {
+        "start": 7,
+        "end": 29
+      }
+    ],
+    "raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07.md": [
+      {
+        "start": 7,
+        "end": 36
+      }
+    ],
+    "raw/stripe-changelog-endive-2026-09-30-remove-payment-method-types-checkout-sessions-2026-11-07.md": [
+      {
+        "start": 7,
+        "end": 32
+      }
+    ],
+    "raw/stripe-changelog-endive-2026-09-30-remove-elements-deferred-intent-payment-method-types-2026-11-07.md": [
+      {
+        "start": 7,
+        "end": 17
+      }
+    ],
+    "raw/stripe-payments-link-link-payment-methods-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 54
+      }
+    ],
+    "raw/stripe-payments-link-checkout-link-2026-11-07.md": [
+      {
+        "start": 25,
+        "end": 59
+      }
+    ],
+    "raw/stripe-payments-link-klarna-2026-11-07.md": [
+      {
+        "start": 8,
+        "end": 17
+      },
+      {
+        "start": 55,
+        "end": 64
+      }
+    ],
+    "raw/stripe-payments-link-instant-bank-payments-2026-11-07.md": [
+      {
+        "start": 8,
+        "end": 13
+      },
+      {
+        "start": 105,
+        "end": 137
+      }
+    ],
+    "raw/stripe-checkout-link-2025.md": [
+      {
+        "start": 25,
+        "end": 38
+      }
+    ]
+  },
+  "answers": {
+    "payments-link-link-payment-integrations": {
+      "Q1": "The November capture of https://docs.stripe.com/payments/link/link-payment-integrations requires enabling Link under Wallets and integrating it for the use case. Stripe then shows it for eligible transactions (new raw lines 9-16). The recommended standalone route uses dynamic payment methods or includes `link` in `allowed_payment_method_types` and returns `PaymentMethod.type=link`. If eligible saved sources are multiple, Link can suggest a backup. After customer approval, it retries that backup if the first attempt fails. The route uses blended pricing and excludes IC+, extended authorization, incremental authorization and overcapture (new raw lines 20-31). The card integration includes `card` and omits `link` from the allow list, since `link` takes precedence even alongside `card`. It returns `type=card` and `card.wallet.type=link` and offers no checkout backup. Genuine credit or debit funding retains card details, while eligible non-card funding has values such as brand `link` and last four `0000`, which Stripe says to label Link in the UI (new raw lines 33-91). Both routes allow eligible Link funding including Instant Bank Payments and Klarna, with method and surface restrictions. The guide describes immediate confirmation and card-timeline settlement of successful payments to the Stripe balance (new raw lines 9-16). The May capture and source-stripe-link-payment-integrations.md used `payment_method_types`, preserved the PaymentMethod distinction, and did not give the newer acquiring exclusions. The standalone-only backup rule is historical and still present. The current summary already specifies primary-attempt failure and excludes card integrations (current summary line 26). It omits the requirement for multiple eligible saved payment sources before Link suggests a backup and the requirement for customer approval before Link retries after failure (old raw lines 23-27 and new raw lines 24-26 and 89-93). The revised mapped source dates the two request recipes and gives the conditions for offering and retrying the backup separately.",
+      "Q2": "For https://docs.stripe.com/payments/link/link-payment-integrations, November switches the manual request field to `allowed_payment_method_types` on both routes. It also newly makes explicit that standalone Link excludes extended authorization, incremental authorization and overcapture. These are documentation additions. The capture establishes neither a removal date for those features nor entitlement to them on the card route. IC+ remains excluded for standalone Link, which the integration guide describes as billed at a single blended rate (old raw lines 19-35 and new raw lines 20-39). Heading and JSON formatting changes preserve the sample values (old raw lines 37-83 and new raw lines 41-89). source-stripe-link-payment-integrations.md and the Link concept should date May’s `payment_method_types` recipe, preserve Link precedence and conditional standalone backup, and cross-link the API warnings below.\n\nThe 2026-07-29.dahlia Intent changelog describes the compatible subset and makes `allowed_payment_method_types` mutually exclusive with `payment_method_types`, `excluded_payment_method_types`, `automatic_payment_methods` and `payment_method_configuration` (raw/stripe-changelog-dahlia-2026-07-29-allowed-payment-method-types-parameter-2026-11-07.md:7-21,25-29). The Intent removal changelog names PaymentIntent create, update and confirm and SetupIntent create and update in its `2026-09-30.endive` REST table. Passing the old request field to those methods returns HTTP 400 `payment_method_types_no_longer_supported`. The object retains the computed, read-only `payment_method_types` response list. The same changelog’s Impact section separately names `2026-08-26.preview` in upgrade guidance. Retain both labels with their source scope and leave the universal start version unresolved (raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07.md:7-36).\n\nThe November hosted Checkout Link guide still says to pass `link` and `card` in `payment_method_types` and use one currency for all line items (raw/stripe-payments-link-checkout-link-2026-11-07.md:51-57). Its reciprocal warning belongs to the separate Checkout Session Create changelog. On `2026-09-30.endive`, sending that old request field returns HTTP 400. Dynamic payment methods or the allowed list are the documented replacements. The allowed list filters incompatible types, with the resulting compatible subset visible in the computed `payment_method_types` response (raw/stripe-changelog-endive-2026-09-30-remove-payment-method-types-checkout-sessions-2026-11-07.md:7-32). Separately, the Endive Stripe.js changelog says `paymentMethodTypes` now throws a client integration error when creating Elements without an Intent or calling `elements.update()`. Use the client option `allowedPaymentMethodTypes` or Dashboard-managed dynamic methods on that surface (raw/stripe-changelog-endive-2026-09-30-remove-elements-deferred-intent-payment-method-types-2026-11-07.md:7-17). Compatibility filtering still leaves actual Link display subject to the Wallets, integration and transaction eligibility conditions (new raw lines 9-16).\n\nThe separate US funding-group guide describes Link Group fees under the Stripe Pricing Agreement regardless of eligibility for a particular funding method. Its reporting is coarse Charge metadata under `payment_method_details.link.funding_source_group` for standalone Link and `payment_method_details.card.wallet.link.funding_source_group` for the card route. Exact funding identification and genuine versus placeholder PaymentMethod card details have separate evidence (raw/stripe-payments-link-link-payment-methods-2026-11-07.md:5-11,29-54 and new raw lines 22-24,35-41,89-93). Keep the eligible US Klarna surfaces and Stripe-account credit after authorization, along with the Instant Bank Payments customer-initiated dispute exception, beside the general Stripe-balance settlement statement (raw/stripe-payments-link-klarna-2026-11-07.md:8-17,57-64 and raw/stripe-payments-link-instant-bank-payments-2026-11-07.md:105-137). Successful-payment settlement to the Stripe balance and a later bank payout are distinct outcomes. The revised source routes the Intent, hosted Checkout, deferred Elements, funding group and settlement qualifications to their own captured references."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-link-link-payment-integrations-dated-route-retry-acquiring",
+      "target_path": "wiki/concepts/stripe-link.md",
+      "update_kind": "durable_fact",
+      "anchor": "- Passing `link` in `payment_method_types` ALWAYS triggers PM path — even alongside `card`. Card integration = pass `card` only.\n- **IC+ pricing incompatibility**: Link as PM uses blended rate; use card integration if on IC+ pricing.\n- **Backup payment source**: only in PM path (auto-retry with backup if primary fails); not in card integration.",
+      "proposed_markdown": "- **Manual routing.** May’s integration guide used `payment_method_types`. November’s uses `allowed_payment_method_types`. In each dated recipe, including `link` selects standalone Link even if `card` is present. For card-specific Link, include `card` and omit `link`. See [[source-stripe-link-payment-integrations]] for the API and version distinctions.\n- **Standalone restrictions.** The guide describes blended pricing and excludes IC+. November explicitly excludes extended authorization, incremental authorization, and overcapture. The guide directs affected integrations to the card-specific route, where payment-specific feature eligibility still applies.\n- **Backup payment source.** Standalone Link suggests a backup if the customer has multiple eligible saved methods. Link retries with that source if the customer approves it and the first attempt fails. Card-specific Link offers no checkout backup.",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "May integration: raw/stripe-link-payment-integrations-2025.md:19-35. November source: raw/stripe-payments-link-link-payment-integrations-2026-11-07.md:20-39,89-93."
+      ]
+    },
+    {
+      "update_id": "payments-link-link-payment-integrations-hosted-checkout-version-boundary",
+      "target_path": "wiki/concepts/stripe-link.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "**Dynamic PMs** (recommended): enable Link in Dashboard → remove `payment_method_types` from code. Note: if using Setup Intents for future card storage, must list manually instead.\n\n**Manual listing**: `payment_method_types: ['card', 'link']` — `card` must be included.",
+      "proposed_markdown": "**Hosted Checkout Session creation.** Enable Link in the Dashboard for dynamic payment methods. The November [[source-stripe-checkout-link|Checkout Link guide]] still shows the manual `payment_method_types` list with both `card` and `link`, and one currency across line items. Checkout Session Create on `2026-09-30.endive` rejects that request field with HTTP 400. Use dynamic payment methods or `allowed_payment_method_types`, and inspect the computed `payment_method_types` response. The hosted guide separately advises manually listing payment methods when collecting cards for future use via SetupIntent. See [[source-stripe-link-payment-integrations]] for the separately versioned Intent and deferred Elements fields.",
+      "quote_indexes": [
+        1,
+        3
+      ],
+      "warnings": [
+        "Hosted Checkout guide: raw/stripe-payments-link-checkout-link-2026-11-07.md:25-59. Session Create removal and computed response: raw/stripe-changelog-endive-2026-09-30-remove-payment-method-types-checkout-sessions-2026-11-07.md:7-32. This Session Create patch leaves SetupIntent guidance to the separate Intent changelog."
+      ]
+    },
+    {
+      "update_id": "payments-link-link-payment-integrations-balance-timing-and-funding-detail",
+      "target_path": "wiki/concepts/stripe-link.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Immediate confirmation** regardless of funding. Settlement same timeline as cards.",
+      "proposed_markdown": "**Confirmation and settlement.** The dated Link integration guide describes immediate confirmation and settlement of successful payments to the Stripe balance on the card timeline. A later payout to a bank account is separate. The November Instant Bank Payments guidance keeps the customer-bank dispute exception. The separate US Link funding guide describes coarse `funding_source_group` reporting on the Charge, with field placement depending on the integration route. See [[source-stripe-link-payment-integrations]].",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": [
+        "General timing: raw/stripe-payments-link-link-payment-integrations-2026-11-07.md:9-16. Instant Bank Payments dispute scope: raw/stripe-payments-link-instant-bank-payments-2026-11-07.md:105-113. Group versus underlying instrument: raw/stripe-payments-link-link-payment-methods-2026-11-07.md:29-54."
+      ]
+    },
+    {
+      "update_id": "payments-link-link-payment-integrations-ibp-link-integration-route",
+      "target_path": "wiki/concepts/stripe-instant-bank-payments.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-instant-bank-payments]] — primary: settlement guarantee, ACH comparison, eligibility, ACH priority rule, cash back promotions, testing",
+      "proposed_markdown": "- [[source-stripe-instant-bank-payments]] — primary: settlement guarantee, ACH comparison, eligibility, ACH priority rule, cash back promotions, testing\n- [[source-stripe-link-payment-integrations]] — standalone versus card-specific Link representation, non-card placeholders, and general Stripe-balance timing alongside the Instant Bank Payments dispute exception",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "Non-card representation and UI: raw/stripe-payments-link-link-payment-integrations-2026-11-07.md:35-49,89-91. Reciprocal reference and dispute exception: raw/stripe-payments-link-instant-bank-payments-2026-11-07.md:105-113,119-129."
+      ]
+    }
+  ]
+}

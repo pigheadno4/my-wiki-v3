@@ -2,30 +2,35 @@
 title: "Stripe: Mondu Payments"
 type: source
 date_ingested: 2026-05-06
+date_updated: 2026-11-22
 original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/mondu"
 raw_files:
+  - "stripe-payments-mondu-2026-11-07.md"
   - "stripe-mondu-2025.md"
 tags: [stripe, bnpl, mondu, buy-now-pay-later, b2b, europe, uk, disputes, refunds]
 ---
 
 ## Summary
 
-Deep-dive on Mondu as a Stripe B2B BNPL payment method (Pay in 30) for EU/UK businesses. Multi-currency, no Connect, and the most extensive prohibited category list of any payment method (~90 categories).
+Mondu offers businesses and marketplaces B2B invoice payment on 30-day net terms for the buyer. The buyer initiates payment, follows a redirect to Mondu for a credit check, then returns to the merchant. Check the payment status after the redirect to determine the outcome. The May and November 2026 guides describe upfront merchant payment and label payout timing Standard. The captures give no bank payout schedule.
 
 ## Key Details
 
-**B2B only** — Pay in 30 days. EU/UK, 14 merchant countries. Multi-currency: EUR, CHF, GBP. **No Connect support**.
+- **Availability.** Customer locations are EU and UK. Separately, the guides list 14 Stripe-account business locations (AT, BE, CH, DE, DK, ES, FI, FR, GB, IT, NL, NO, PL and SE). The method lists EUR, CHF and GBP presentment, with EUR as default. Its map lists EUR for DE, NL, FR, FI, AT, IT, ES, BE, PL, NO, DK, SE and CH, CHF for CH, and GBP for GB. The May acceptance guide separately lists EUR for Checkout and the Elements route using Checkout Sessions. See [[source-stripe-mondu-accept-payment]] for the dated integration variants.
+- **Connect.** The November 7 method capture says Yes. It adds an email-based early-access route with eligibility screening and a waitlist for applicants who qualify, alongside Dashboard enablement and dynamic display for eligible payments. The capture does not specify eligible Connect account configurations, charge types or provisioning dates. The May 6 method capture said No while the May cross-method matrix said Supported. The November method and cross-method labels agree.
+- **Products and payment behavior.** The method overview lists Payment Links, Checkout and Elements. This excludes Checkout setup and subscription modes and the Express Checkout Element. The guides describe customer-initiated confirmation, no recurring payments, manual capture support and a manual configuration route when integrations list methods explicitly.
+- **Stripe product and API matrices.** The May and November BNPL product matrices both list Stripe Invoicing and Stripe Subscriptions as Unsupported for Mondu. The buyer’s Mondu invoice is a separate product. Both API matrices list PaymentIntents, manual capture, redirect and `setup_future_usage`, with the latter limited by the footnote to `off_session` for supported non-card/non-bank-debit methods. They list SetupIntents as Unsupported. Mobile Payment Element changes from Unsupported in May to Supported in November in the product matrix. The matrix does not specify a Mondu mobile integration or account entitlement. See [[source-stripe-bnpl-overview]] for the dated tables.
+- **Charge limit and prohibited categories.** The November maximum is 19,999.99 EUR or the equivalent in supported currencies. Neither capture gives a minimum. Consult “Prohibited and restricted business categories” in the method capture and Stripe’s linked restrictions. Mondu reserves discretion to prohibit other categories. The method list is unchanged between captures.
+- **Disputes.** November gives customers 120 calendar days from the transaction to initiate a dispute and merchants 15 calendar days to submit evidence. The start of the merchant evidence clock is unspecified. The May capture gave merchants 12 calendar days and did not state a customer filing window. Stripe notifies by email, Dashboard or configured `charge.dispute.created` webhook and holds the disputed amount until Mondu resolves the case. Merchants can submit evidence through Dashboard or the disputes API. A merchant win returns the amount to the Stripe balance. A customer win leaves it with the customer.
+- **Refunds.** Full and partial refunds are available up to 180 days after purchase. The documented asynchronous completion time is up to five minutes. Use `refund.updated` or `refund.failed` and the final `Refund.status` to determine the outcome. On success the status is `succeeded`. On failure the amount returns to the Stripe balance and the merchant must arrange an alternative refund.
 
-**Maximum**: €19,999.99 EUR (or equivalent). No stated minimum.
+## Related
 
-**Disputes**: 12-day evidence window.
-
-**Refunds**: 180-day window; async (up to 5 min). `refund.updated`/`refund.failed` webhooks.
-
-**Prohibited categories** (~90, the most extensive of any payment method): transportation (airlines, buses, taxis, ferries, railways), services (cleaning, repair, landscaping, laundry), gambling, healthcare (nursing, opticians, ambulances), government services, chemicals, fuel, utilities, crypto, pawn shops, timeshares, and many more.
-
-**Currencies by country**: EUR for DE/NL/FR/FI/AT/IT/ES/BE/PL/NO/DK/SE/CH; CHF for CH; GBP for GB.
+- [[stripe]] — Stripe company profile
+- [[stripe-bnpl]] — Stripe BNPL concept and dated product and API boundaries
 
 ## Raw Sources
 
-- [[stripe-mondu-2025]] — verbatim webpage content (261 lines); fixed `_webhook_` → `*webhook*`; MP4 video URL left as-is
+- [[raw/stripe-payments-mondu-2026-11-07|Stripe Mondu payments, captured 2026-11-07]] — full method overview (273 lines)
+- [[raw/stripe-mondu-2025|Stripe Mondu payments, captured 2026-05-06]] — verbatim webpage content (261 lines); fixed `_webhook_` → `*webhook*`; MP4 video URL left as-is

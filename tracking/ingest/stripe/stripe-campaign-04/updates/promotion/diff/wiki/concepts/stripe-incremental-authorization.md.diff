@@ -1,0 +1,11 @@
+--- wiki/concepts/stripe-incremental-authorization.md
++++ wiki/concepts/stripe-incremental-authorization.md
+@@ -53,7 +53,7 @@
+ 
+ ## Combining with Partial Authorization
+ 
+-Can combine incremental auth with [[stripe-partial-authorization]] — pass `request_partial_authorization: 'if_available'` on the increment endpoint to allow the issuer to partially approve the requested increment amount.
++An eligible, confirmed, uncaptured Intent with incremental authorization `available` on the latest Charge can request [[stripe-partial-authorization|partial approval]] of an increment. Send the desired total and `request_partial_authorization=if_available` on the increment. The confirmation's partial opt-in carries forward unless set to `never` on the increment. A partial increment still requires capture. See [[source-stripe-partial-authorization]].
+ 
+ ## Related IC+ Features
+ 

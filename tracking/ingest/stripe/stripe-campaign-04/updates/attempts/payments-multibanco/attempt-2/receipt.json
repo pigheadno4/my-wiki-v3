@@ -1,0 +1,256 @@
+{
+  "job_id": "payments-multibanco",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Stripe: Multibanco Payments\"\ntype: source\ndate_ingested: 2026-05-07\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/multibanco\"\nraw_files:\n  - \"stripe-payments-multibanco-2026-11-07.md\"\n  - \"stripe-multibanco-2025.md\"\ntags: [stripe, vouchers, multibanco, portugal, eur, online-banking, atm, connect, billing]\n---\n\n## Summary\n\nThe May 7 and November 7, 2026 overviews describe Multibanco (`multibanco`) as a single-use EUR voucher for customers in Portugal. Eligible merchants are in 33 listed European and US locations, including Gibraltar. The customer pays by bank transfer outside checkout, via online banking or ATM. The documented payment range is EUR 0.50–99,999, with delayed confirmation and standard payout timing.\n\n## Customer payment and fulfillment\n\n1. The November walkthrough shows the customer choosing Multibanco and providing an email address. Stripe displays the voucher's entity, reference, amount and expiry seven days after creation. Checkout can optionally email the voucher instructions.\n2. While awaiting payment, the PaymentIntent is `requires_action`. The customer pays outside checkout and Multibanco does not redirect back after payment. The May Checkout guide's redirect to `hosted_voucher_url` displays payment instructions after the checkout form is submitted. The deprecated Sources API separately describes returning to `redirect[return_url]` even when the customer hasn't sent funds.\n3. Payment confirmation can take several days, particularly over weekends. Separately, after voucher expiry, the November overview says the PaymentIntent can remain in `processing` for up to four days while Stripe waits for delayed notifications. Stripe confirms successful payments asynchronously as `succeeded`. Fulfill after verified success. Voucher display, a customer's funds-sent confirmation, processing and standard payout are distinct.\n4. The May [[source-stripe-multibanco-accept-payment|acceptance guide]] documents `payment_intent.processing` on expiry, `requires_payment_method` with `payment_intent.payment_failed` if the payment does not complete during the buffer, and automatic initiation of a refund for funds received after the buffer. Its separate November acceptance capture links Checkout, Direct API, iOS and Android variants. Their bodies are outside that capture.\n\n## Refunds and disputes\n\n- **Submission window.** The May overview gives 365 days from the original payment. The November overview gives 456 days and says submission cannot be canceled. Both document full and partial refunds from the Dashboard or Refunds API, with funds typically reaching the customer's bank account within one day depending on the bank. The captures leave any retroactive application of the longer window unspecified.\n- **Final status.** Read the final status in the Dashboard refund entry, on the retrieved Refund object's `status` field, or from a `refund.updated` or `refund.failed` event after verifying the event signature. If the refund status is `succeeded`, share `destination_details.multibanco.reference` if available. If it is `failed`, Stripe returns the amount to the merchant's Stripe balance and the merchant must refund the customer another way.\n- **Dispute scope.** The overviews describe no Multibanco dispute process that can result in a chargeback withdrawing funds from the merchant's Stripe account.\n\n## Enablement, product support and Connect\n\n- The November overview describes instant provisional access and possible review after activation. Multibanco adds no extra website requirement beyond Stripe account activation. Stripe Support can receive capability appeals. Enable Multibanco in Dashboard Payment methods for Stripe front-end products; Stripe selects the relevant methods for eligible customers.\n- The November overview lists full-page and embedded Checkout, Payment Links, Payment Element, in-app payments, Billing/Invoicing, Radar and Connect. It excludes Express Checkout Element, Payment Method Messaging Element, Managed Payments, Customer Portal and Terminal. The named APIs are Checkout Sessions and PaymentIntents. It excludes SetupIntents, PaymentIntents with `setup_future_usage`, off-session payments and manual capture.\n- In the May overview and November [[source-stripe-vouchers|vouchers matrix]], invoices and subscriptions support `send_invoice` only. The November method overview separately marks recurring payments unsupported. The customer pays each voucher.\n- May describes direct charges, destination charges, and separate charges and transfers. Connected accounts using the standard Stripe Dashboard can enable the method in Payment methods. For connected accounts with Express Dashboard or no Stripe-hosted Dashboard, November directs platforms to request `multibanco_payments` and verify that it is `active` before accepting the method.\n- In November, a payment-level `statement_descriptor` can be set. Otherwise Stripe uses the account-level descriptor. For Connect, direct charges and charges using `on_behalf_of` use the connected account's descriptor. Destination and separate charges and transfers without `on_behalf_of` use the platform's descriptor. The display varies by bank.\n\n## Related\n\n- [[stripe]]\n- [[stripe-vouchers]]\n- [[source-stripe-multibanco-accept-payment]] — dated voucher creation, display, expiry and state transitions\n\n## Raw Sources\n\n- [[raw/stripe-payments-multibanco-2026-11-07|November 7, 2026 full Multibanco overview]] — 151 lines. Eligibility and limits at 9–67, refund and dispute flow at 68–88, product and API support at 90–116, customer lifecycle at 117–137, and descriptor and activation at 139–151.\n- [[raw/stripe-multibanco-2025|May 7, 2026 full Multibanco overview]] — 199 lines. Refunds at 173–179, Billing and Connect at 181–199. The original capture preparation fixed `*invoices*` ×1 and `*subscriptions*` ×1 and downloaded seven SVG flow diagrams to `raw/assets/`.\n",
+  "quotes": {
+    "payments-multibanco": [
+      {
+        "text": "Access type: Instant provisional access",
+        "location": "raw/stripe-payments-multibanco-2026-11-07.md:14"
+      },
+      {
+        "text": "You can’t cancel a Multibanco refund after submitting it.",
+        "location": "raw/stripe-payments-multibanco-2026-11-07.md:70"
+      },
+      {
+        "text": "The voucher expires 7 days after creation.",
+        "location": "raw/stripe-payments-multibanco-2026-11-07.md:125"
+      },
+      {
+        "text": "The PaymentIntent remains in `requires_action` while awaiting payment.",
+        "location": "raw/stripe-payments-multibanco-2026-11-07.md:133"
+      },
+      {
+        "text": "Request the `multibanco_payments` capability and check that its status is `active` before accepting Multibanco payments.",
+        "location": "raw/stripe-payments-multibanco-2026-11-07.md:151"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-multibanco": [
+      {
+        "text": "The refund period for Multibanco is up to 365 days after the original payment.",
+        "location": "raw/stripe-multibanco-2025.md:177"
+      },
+      {
+        "text": "Multibanco invoices and subscriptions only support the `send_invoice`",
+        "location": "raw/stripe-multibanco-2025.md:183"
+      },
+      {
+        "text": "Standard payout timing",
+        "location": "raw/stripe-multibanco-2025.md:40"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-multibanco-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 151
+      }
+    ],
+    "raw/stripe-multibanco-2025.md": [
+      {
+        "start": 1,
+        "end": 199
+      }
+    ],
+    "wiki/sources/source-stripe-multibanco.md": [
+      {
+        "start": 1,
+        "end": 37
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/a7e01e2d37a078c89e76e66a/content.diff": [
+      {
+        "start": 1,
+        "end": 305
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-multibanco/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 196
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-multibanco/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 50
+      }
+    ],
+    "wiki/concepts/stripe-vouchers.md": [
+      {
+        "start": 14,
+        "end": 27
+      },
+      {
+        "start": 75,
+        "end": 95
+      },
+      {
+        "start": 113,
+        "end": 123
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 372,
+        "end": 382
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 507,
+        "end": 513
+      }
+    ],
+    "raw/stripe-multibanco-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 11
+      },
+      {
+        "start": 110,
+        "end": 115
+      },
+      {
+        "start": 162,
+        "end": 174
+      },
+      {
+        "start": 385,
+        "end": 394
+      },
+      {
+        "start": 439,
+        "end": 447
+      },
+      {
+        "start": 587,
+        "end": 600
+      }
+    ],
+    "raw/stripe-payments-multibanco-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "raw/stripe-payments-vouchers-2026-11-07.md": [
+      {
+        "start": 27,
+        "end": 44
+      }
+    ],
+    "raw/stripe-sources-multibanco-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      },
+      {
+        "start": 108,
+        "end": 128
+      }
+    ]
+  },
+  "answers": {
+    "payments-multibanco": {
+      "Q1": "The November 7, 2026 overview at https://docs.stripe.com/payments/multibanco documents a single-use Portuguese-customer EUR voucher, accepted by eligible Europe/US merchants, with EUR 0.50–99,999 limits and provisional access that may be reviewed. Express or external-Dashboard connected accounts request `multibanco_payments` and check it is active (new raw lines 9-67 and new raw lines 145-151). For Stripe front-end products, enable the method in Dashboard Payment methods. November lists Payment Element, Checkout Sessions and PaymentIntents support, with Express Checkout Element, Payment Method Messaging Element, SetupIntents, `setup_future_usage` and off-session payments excluded (new raw lines 90-116 and new raw lines 145-149). The customer supplies email, receives entity, reference, amount and an expiry seven days from creation, and pays outside checkout via online banking or ATM. `requires_action` while awaiting payment can be followed after expiry by up to four days of `processing`; Stripe confirms asynchronously as `succeeded` before fulfillment. There is no return redirect after payment, and verified success and standard payouts are different states (new raw lines 119-137). November changes May's 365-day refund window to 456 days. Full or partial refunds to the bank cannot be canceled once submitted, typically take one bank-dependent day, with final status checked in the Dashboard, by retrieving the Refund object through the API, or through signature-verified `refund.updated` or `refund.failed` webhook events. When the Refund status is `succeeded`, share `destination_details.multibanco.reference` if available. If it is `failed`, Stripe returns the amount to your Stripe balance and you must refund the customer using another method (old raw lines 173-179 and new raw lines 59-84). The revised source-stripe-multibanco.md retains the May fundamentals and delayed confirmation (old raw lines 8-64 and old raw lines 117-150) and adds the dated November payment, refund and activation details.",
+      "Q2": "For https://docs.stripe.com/payments/multibanco, consolidation of the diagrams and navigation into the customer walkthrough is largely presentational (old raw lines 117-167 and new raw lines 117-149). The 365-to-456 day refund change, noncancelability, final-status tracking and failure recovery, provisional eligibility, active capability check and descriptor rules are substantive documented changes or clarifications (old raw lines 173-199, new raw lines 14-24, new raw lines 59-84 and new raw lines 139-151). When a payment-level `statement_descriptor` is unset, Stripe uses the account-level statement descriptor. For Connect, direct charges and charges using `on_behalf_of` select the connected account’s statement descriptor. Destination charges and separate charges and transfers without `on_behalf_of` use the platform’s statement descriptor. The customer’s bank determines how the descriptor is displayed (new raw lines 139-143). The revised source-stripe-multibanco.md and its Voucher concept route date the earlier refund rule. Distinguish a refund submission from successful refund/reference availability, and a voucher or delayed transfer from a succeeded PaymentIntent. May's separate acceptance guide records post-buffer failure and late-funds refund initiation; the November overview documents the seven-day expiry and processing bound, while the acceptance selector is navigation. Historical Sources return URLs do not define modern payment completion. Keep May invoice and subscription collection restricted to `send_invoice`, supported by the November voucher hub, alongside the November overview's no recurring/off-session limits (old raw lines 104-115, old raw lines 181-183 and new raw lines 90-116)."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-multibanco-refund",
+      "target_path": "wiki/concepts/stripe-vouchers.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Refunds**: **365-day** window. Typically 1 day to customer. `destination_details.multibanco.reference` provides refund identifier.",
+      "proposed_markdown": "**Refunds**: May 2026 documents 365 days from the original payment. November documents 456 days and noncancelable submission. Bank credit typically takes one day, varying by bank. Share `destination_details.multibanco.reference` only after the Refund succeeds and when the reference is available. A failed refund returns the amount to the Stripe balance and requires another refund method. See [[source-stripe-multibanco]].",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "May raw lines 173–179 and November raw lines 59–84."
+      ]
+    },
+    {
+      "update_id": "payments-multibanco-dispute",
+      "target_path": "wiki/concepts/stripe-vouchers.md",
+      "update_kind": "durable_fact",
+      "anchor": "**No disputes** (customer pushes funds).",
+      "proposed_markdown": "**Dispute scope**: The Multibanco overviews describe no dispute process that can result in a chargeback withdrawing funds from the merchant's Stripe account.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "May raw line 171 and November raw line 88."
+      ]
+    },
+    {
+      "update_id": "payments-multibanco-billing",
+      "target_path": "wiki/concepts/stripe-vouchers.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Billing**: `send_invoice` only. No recurring. Capability: `multibanco_payments`.",
+      "proposed_markdown": "**Billing**: Invoices and subscriptions use `send_invoice` only. The November overview marks recurring and off-session payments unsupported.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "May raw lines 104–115 and 181–183, November raw lines 44 and 100–116, and November voucher hub raw lines 28–43."
+      ]
+    },
+    {
+      "update_id": "payments-multibanco-connect",
+      "target_path": "wiki/concepts/stripe-vouchers.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Connect**: Direct, Destination, Separate charges and transfers (standard, no invite required).",
+      "proposed_markdown": "**Connect**: May lists direct, destination, and separate charges and transfers. November documents provisional access with possible follow-up review. Express or external-Dashboard connected accounts must have an active `multibanco_payments` capability before accepting the method. See [[source-stripe-multibanco]].",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": [
+        "May raw lines 185–199 and November raw lines 14–24 and 139–151."
+      ]
+    },
+    {
+      "update_id": "payments-multibanco-lifecycle",
+      "target_path": "wiki/concepts/stripe-vouchers.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Confirmation delay**: several days, especially over weekends (bank transfer-based). Konbini also waits for customer action: its voucher instructions give provisional access, and Stripe confirms asynchronously after the customer pays cash at a store; the November guide says notification follows that store payment, not voucher issuance.",
+      "proposed_markdown": "**Confirmation delay**: several days, especially over weekends. The November Multibanco overview shows a seven-day voucher and up to four days of `processing` after expiry. Fulfill after asynchronous `succeeded`. The May `hosted_voucher_url` displays instructions. The November overview describes no return redirect after payment. The deprecated Sources API's return URL could occur without funds sent. Konbini also waits for customer action: its voucher instructions give provisional access, and Stripe confirms asynchronously after the customer pays cash at a store; the November guide says notification follows that store payment, not voucher issuance.",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": [
+        "November Multibanco raw lines 119–137, May acceptance raw lines 110–115 and 168–172, and November deprecated Sources raw lines 5–12 and 109–117. Konbini sentence preserved verbatim."
+      ]
+    },
+    {
+      "update_id": "payments-multibanco-overview-route",
+      "target_path": "wiki/concepts/stripe-vouchers.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-multibanco]] — Multibanco: Portugal voucher, 2 flows (online/ATM), delayed confirmation, 365-day refunds, send_invoice only",
+      "proposed_markdown": "- [[source-stripe-multibanco]] — May and November 2026 EUR voucher overviews with delayed payment, dated 365- and 456-day refund windows, noncancelable submission, provisional review and `send_invoice` scope.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "May raw lines 8–64 and 169–199; November raw lines 9–151."
+      ]
+    }
+  ]
+}

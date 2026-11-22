@@ -1,0 +1,334 @@
+{
+  "job_id": "payments-oxxo",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Stripe: OXXO Payments\"\ntype: source\ndate_ingested: 2026-05-07\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/oxxo\"\nraw_files:\n  - \"stripe-payments-oxxo-2026-11-07.md\"\n  - \"stripe-oxxo-2025.md\"\ntags: [stripe, vouchers, oxxo, mexico, mxn, cash, convenience-store, connect]\n---\n\n## Summary\n\nStripe documents OXXO (`oxxo`) as a single-use [[stripe-vouchers|cash voucher]] for customers in Mexico. Buyers present the voucher and pay cash in an OXXO convenience store. Both the May 7 and November 7, 2026 overviews list a range of 10–10,000 MXN and MXN presentment. The November overview adds merchant eligibility, voucher identifiers, status and settlement details. For implementation variants, see [[source-stripe-oxxo-accept-payment]].\n\n## November 7, 2026 — Merchant and Customer Scope\n\nThe overview lists eligible Stripe accounts in CA, MX, SG and US, with domestic and cross-border coverage for customers located in Mexico. The headline calls out private preview in the EEA and UK. The named preview table includes Switzerland (CH) as well. See November lines 9, 27-38 and 63-81 for the two descriptions and the complete location list. The May overview listed Mexico accounts only. The May acceptance guide also lists MX businesses for Checkout and Elements with Checkout Sessions. The November acceptance index contains links to variants and no new compatibility instructions.\n\nNovember lists B2B and B2C, merchant accounts and platforms or marketplaces using Connect. Access is instant and provisional. Stripe can review eligibility after activation. Normal Stripe account-activation website requirements apply. Prohibited merchant category codes are ineligible. Restricted codes may qualify after additional information at account creation. See November lines 27-61 for the exact MCC table. Product support and provisional access leave individual eligibility, continued approval and specific Connect charge types to account-level confirmation.\n\n## Voucher and Payment Lifecycle\n\n1. The buyer provides both name and email at checkout and gets a voucher with a 32-digit transaction reference. Desktop may use a modal or hosted voucher page, depending on integration. The overview describes an in-app webview for mobile using the hosted voucher URL. See November lines 140-146.\n2. Checkout redirects to the Stripe-hosted voucher page. The May Checkout guide locates the URL at `payment_intent.next_action.oxxo_display_details.hosted_voucher_url`. An optional payment-instructions email can link to it. The hosted page and email display the OXXO transaction number and the merchant-of-record business name in place of a statement descriptor. In Connect that merchant of record can be the platform or a connected account. See November lines 156-160 and the documented Checkout variant in the acceptance guide. The Voucher hub’s method-level **Requires redirect: No** label and Checkout’s voucher-display redirect describe different scopes.\n3. The customer pays cash at an OXXO store and gets a cashier receipt as immediate proof for the customer. Stripe sends `payment_intent.requires_action` upon voucher issuance and `payment_intent.succeeded` after the store payment is processed. November describes confirmation by the next business day. See November lines 13-23 and 148-154. The voucher and cashier receipt are distinct from the Stripe status used for fulfillment.\n4. The May Checkout guide documents `checkout.session.completed` when Stripe generates the voucher, followed by `checkout.session.async_payment_succeeded` or `checkout.session.async_payment_failed` for the outcome. Its mobile and Direct API guides describe processing after expiry and later failure for an unpaid voucher, separately from simulated test fixtures. See the acceptance guide’s event tables.\n\n## Settlement and Voucher Expiry\n\nThe November overview separates next-business-day confirmation from settlement up to four business days (T+4). It says payments made Tuesday through Thursday settle the following Monday, and payments made Friday through Monday settle the following Wednesday. The May overview paired next-business-day confirmation with “settled funds” and separately said standard payout timing applies. The May acceptance guide says funds are not immediately available and dates the success webhook to the next business day, Monday to Friday excluding Mexican holidays. Settlement, a merchant’s payout schedule and receipt in its bank account are distinct. See November lines 13-23, May overview lines 8-10 and 34-36, and May acceptance lines 1474-1487 and 2294-2307.\n\nNovember documents a five-day voucher expiry default and a 1–7 day custom range using `payment_method_options[oxxo][expires_after_days]` on the PaymentIntent. The May acceptance guide lists three calendar days by default and the same custom range for both Checkout Sessions and PaymentIntent paths. It illustrates expiry at 23:59 America/Mexico_City and shows the separate `next_action.oxxo_display_details.expires_after` response timestamp. The November acceptance index adds no default or implementation details. The two dates leave the changeover and variant-specific defaults unresolved. See November lines 11-15 and the May acceptance expiry sections.\n\n## Product and Integration Boundaries\n\nNovember recommends full-page Checkout and the Checkout Sessions API and lists embedded Checkout, Payment Links, Payment Element, in-app payments, Payment Intents and Connect. The dated voucher hub specifies Checkout payment mode only and distinguishes Mobile Payment Element support from unsupported Express Checkout Element. The November overview also lists no recurring payments, SetupIntents, `setup_future_usage`, Managed Payments, Billing, Invoicing, Customer Portal, Radar or Terminal for OXXO. The authorization and capture restrictions are at lines 82-97, including no manual, partial, multi- or over-capture.\n\nThe May acceptance guide covers iOS, Android and React Native as well as Checkout, the two Elements API paths and Direct API. It labels the specific Direct API browser guide Legacy, describes it as still supported there and allows for possible future deprecation. That section uses `stripe.confirmOxxoPayment` with the PaymentIntent client secret to display a voucher modal. The separate November Stripe.js reference requires `name` and `email` when confirming with collected data. First and last name must each contain at least two characters. Alternatively, pass an existing PaymentMethod’s ID. If the PaymentMethod is already attached, the reference allows a call without additional data. See [[source-stripe-oxxo-accept-payment]] for the dated implementation and browser-reference locators.\n\nThe two overviews describe no native refunds or standard chargeback process. A merchant that chooses to offer a credit can create its own separate process. Customers with concerns contact the merchant directly.\n\n## May 7, 2026 — Historical Overview\n\nThe May overview listed Mexico accounts, Mexico customers, MXN presentment, standard payout timing and Checkout payment mode. It named four unsupported categories at that date: Direct Marketing – Other, Direct Marketing – Subscription, Gift/Card/Novelty/Souvenir Shops, and Service Stations. Its four voucher-flow diagrams and quickstart and sample links remain available from the May raw capture. November reorganizes those sections and retains Dashboard enablement and the manual acceptance guide. See May lines 14-68, 70-96 and 110-117.\n\n## Related Pages\n\n- [[stripe]] — Stripe company page.\n- [[stripe-vouchers]] — voucher payment and settlement concepts.\n- [[source-stripe-vouchers]] — product and API support matrices.\n- [[source-stripe-oxxo-accept-payment]] — detailed implementation, eligibility, expiry variants and status events.\n\n## Raw Sources\n\n- [[raw/stripe-payments-oxxo-2026-11-07|Stripe’s November 7, 2026 OXXO overview]]\n- [[raw/stripe-oxxo-2025|Stripe’s May 7, 2026 OXXO overview]] — verbatim webpage capture, 117 numbered lines, with no italic fixes and four SVG flow diagrams downloaded to `assets/`.\n\n## Related raw API references\n\n- [[raw/stripe-payments-oxxo-accept-a-payment-2026-11-07|OXXO acceptance variant index]] — November 7, 2026 capture, navigation for Checkout, two Elements APIs, Direct API and three mobile variants.\n- [[raw/stripe-js-payment-intents-confirm-oxxo-payment-2026-11-07|Stripe.js confirmOxxoPayment reference]] — November 7, 2026 capture, lines 14-17, 41-53 and 61-79.\n",
+  "quotes": {
+    "payments-oxxo": [
+      {
+        "text": "OXXO is available to Stripe accounts in Mexico, the United States, Canada, and Singapore.",
+        "location": "raw/stripe-payments-oxxo-2026-11-07.md:9"
+      },
+      {
+        "text": "Vouchers expire after 5 days by default.",
+        "location": "raw/stripe-payments-oxxo-2026-11-07.md:13"
+      },
+      {
+        "text": "Payments made Tuesday through Thursday settle on the following Monday.",
+        "location": "raw/stripe-payments-oxxo-2026-11-07.md:17"
+      },
+      {
+        "text": "**Restricted** MCCs may be supported, but require additional information at account creation.",
+        "location": "raw/stripe-payments-oxxo-2026-11-07.md:38"
+      },
+      {
+        "text": "The customer receives a voucher containing a 32-digit transaction reference number.",
+        "location": "raw/stripe-payments-oxxo-2026-11-07.md:146"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-oxxo": [
+      {
+        "text": "You’ll receive payment confirmation by the next business day along with the settled funds.",
+        "location": "raw/stripe-oxxo-2025.md:10"
+      },
+      {
+        "text": "Standard payout timing applies",
+        "location": "raw/stripe-oxxo-2025.md:36"
+      },
+      {
+        "text": "- MX",
+        "location": "raw/stripe-oxxo-2025.md:58"
+      },
+      {
+        "text": "1Not supported when using Checkout in subscription mode or setup mode.2Express Checkout Element doesn’t support OXXO.",
+        "location": "raw/stripe-oxxo-2025.md:68"
+      },
+      {
+        "text": "at least 10.00 MXN and no more than 10,000.00 MXN.",
+        "location": "raw/stripe-oxxo-2025.md:108"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-oxxo-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 166
+      }
+    ],
+    "raw/stripe-oxxo-2025.md": [
+      {
+        "start": 1,
+        "end": 117
+      }
+    ],
+    "wiki/sources/source-stripe-oxxo.md": [
+      {
+        "start": 1,
+        "end": 37
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/b6c27e286871fc8fc2535860/content.diff": [
+      {
+        "start": 1,
+        "end": 234
+      }
+    ],
+    "raw/stripe-oxxo-accept-payment-2025.md": [
+      {
+        "start": 20,
+        "end": 37
+      },
+      {
+        "start": 103,
+        "end": 107
+      },
+      {
+        "start": 172,
+        "end": 194
+      },
+      {
+        "start": 208,
+        "end": 215
+      },
+      {
+        "start": 241,
+        "end": 258
+      },
+      {
+        "start": 1271,
+        "end": 1277
+      },
+      {
+        "start": 1368,
+        "end": 1394
+      },
+      {
+        "start": 1474,
+        "end": 1487
+      },
+      {
+        "start": 1535,
+        "end": 1541
+      },
+      {
+        "start": 1629,
+        "end": 1633
+      },
+      {
+        "start": 1793,
+        "end": 1799
+      },
+      {
+        "start": 1891,
+        "end": 1897
+      },
+      {
+        "start": 2077,
+        "end": 2083
+      },
+      {
+        "start": 2191,
+        "end": 2193
+      },
+      {
+        "start": 2244,
+        "end": 2275
+      },
+      {
+        "start": 2294,
+        "end": 2307
+      }
+    ],
+    "raw/stripe-payments-oxxo-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 21
+      }
+    ],
+    "raw/stripe-payments-vouchers-2026-11-07.md": [
+      {
+        "start": 25,
+        "end": 46
+      }
+    ],
+    "raw/stripe-vouchers-2025.md": [
+      {
+        "start": 25,
+        "end": 46
+      }
+    ],
+    "raw/stripe-js-payment-intents-confirm-oxxo-payment-2026-11-07.md": [
+      {
+        "start": 14,
+        "end": 17
+      },
+      {
+        "start": 41,
+        "end": 53
+      },
+      {
+        "start": 61,
+        "end": 79
+      }
+    ],
+    "wiki/sources/source-stripe-oxxo-accept-payment.md": [
+      {
+        "start": 11,
+        "end": 33
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 7,
+        "end": 7
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 372,
+        "end": 383
+      }
+    ],
+    "wiki/concepts/stripe-vouchers.md": [
+      {
+        "start": 8,
+        "end": 27
+      },
+      {
+        "start": 95,
+        "end": 123
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-oxxo/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 276
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-oxxo/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 80
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/updates/attempts/payments-oxxo/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 38
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/updates/attempts/payments-oxxo/attempt-1/candidate.md": [
+      {
+        "start": 1,
+        "end": 63
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/updates/attempts/payments-oxxo/attempt-1/candidate.diff": [
+      {
+        "start": 33,
+        "end": 35
+      },
+      {
+        "start": 52,
+        "end": 54
+      },
+      {
+        "start": 62,
+        "end": 74
+      }
+    ]
+  },
+  "answers": {
+    "payments-oxxo": {
+      "Q1": "The November 7 capture of https://docs.stripe.com/payments/oxxo describes a single-use cash voucher for Mexican customers in MXN, 10–10,000 MXN, for eligible CA, MX, SG and US Stripe accounts and separately named private-preview locations, described in the headline as the EEA and UK. It covers merchant and Connect platform or marketplace accounts, B2B and B2C, and domestic or cross-border business coverage with Mexican customers. Access is provisional and may be reviewed after activation. Prohibited MCCs cannot use OXXO and restricted MCCs may qualify but require additional information at account creation. Standard Stripe website requirements still apply (new raw lines 9-13 and 19-81). At checkout, the customer provides both name and email before receiving a voucher with a 32-digit transaction reference. The Stripe-hosted voucher page and optional payment-instruction email show the OXXO transaction number and the merchant-of-record business name in place of a statement descriptor. In Connect the merchant of record can be the platform or a connected account. The customer pays cash at an OXXO store and gets a cashier receipt as immediate proof for the customer, separate from Stripe's payment confirmation (new raw lines 140-160). Stripe issues payment_intent.requires_action when the voucher is created and payment_intent.succeeded after the store payment is processed, with confirmation by the next business day. The overview lists settlement up to T+4, with Tuesday through Thursday payments settling the following Monday and Friday through Monday payments settling the following Wednesday (new raw lines 13-23 and 138-160). Its PaymentIntent voucher default is five days, customizable from one to seven. Checkout Sessions and Payment Intents are listed, with Payment Element and in-app support and Express Checkout Element, SetupIntents, setup_future_usage, recurring payments, native refunds and standard disputes excluded (new raw lines 82-137). The May 7 overview and source-stripe-oxxo.md retain MX-only merchant wording and same-next-business-day confirmation with settled funds alongside May standard payout language. They preserve the cash voucher, MXN range and refund limits (old raw lines 8-20, 34-68 and 98-117). The current summary also overstates unconditional Connect eligibility and still lists four historical categories without the new detail. The revised source dates those May claims and routes to the November eligibility table, voucher details and the separate acceptance guide.",
+      "Q2": "At https://docs.stripe.com/payments/oxxo November's substantive additions include expanded and provisional merchant eligibility, a detailed prohibited/restricted MCC table, five-day PaymentIntent voucher default, explicit payment events and T+4 weekday settlement, expanded feature and UI limits and voucher display identifiers (new raw lines 9-81 and 82-160). Reordered sections, removal of diagrams and old quickstart/sample links and the separately captured November acceptance variant index affect presentation or navigation. Preserve May 7 account scope, four listed categories, payout wording and Checkout payment-only mode in source-stripe-oxxo.md (old raw lines 34-68, 70-96 and 110-117). The November private-preview table includes CH while the headline says EEA and UK. The May acceptance guide remains dated to MX businesses for its Checkout and Checkout Sessions Elements paths, whereas November overview supports four standard account locations and private preview. Keep reciprocal warnings across overview, acceptance, concept and index. May acceptance lines 103-107, 1368-1394 and 2191-2193 give a three-day default on both Checkout Sessions and PaymentIntent forms. November overview line 13 gives five days on PaymentIntent with the same 1–7 day custom range. The November acceptance index gives no new default. Distinguish the expires_after_days request option from the expires_after response timestamp in the May acceptance guide at lines 208-215. Its illustrative expiry time is 23:59 America/Mexico_City. May overview joins confirmation and settled funds and separately lists standard payout timing (old raw lines 8-10 and 34-36). May acceptance lines 1474-1487 and 2294-2307 say funds are not immediate and scope the success webhook to the next business day, excluding Mexican holidays. November separates next-business-day confirmation from settlement up to T+4, with Tuesday–Thursday to following Monday and Friday–Monday to following Wednesday (new raw lines 13-23). Voucher issuance, receipt, Stripe success, settlement and arrival in the merchant bank account are distinct. May Checkout Session completion marks voucher creation. Await asynchronous paid or failed events to know the outcome (May acceptance lines 172-194). Checkout sends the customer to Stripe's hosted voucher page, and mobile can open that hosted voucher URL in an in-app webview (new raw lines 142-160 and May acceptance lines 172-174). The November voucher hub's API grid at lines 37-46 lists no required redirect for the payment method. Its label does not prevent Checkout from routing a customer to a hosted voucher for display. The May Direct API browser flow is the specific legacy route and uses stripe.confirmOxxoPayment with the PaymentIntent client secret to open a voucher modal (May acceptance lines 2077-2083 and 2244-2266). The collected-data variant requires both first and last name and email, correcting the email-only wording in the acceptance summary at line 23 and Cash Vouchers concept at line 107. The separately captured November Stripe.js reference specifies an existing PaymentMethod by ID, and permits a call without additional data when the PaymentMethod is already attached (Stripe.js reference lines 14-17, 41-53 and 61-79). These UI and API choices display or submit the voucher without confirming its cash payment. The revised source keeps the dated disagreement visible and cross-links the supported acceptance and concept routes."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "s04-oxxo-overview-geography",
+      "target_path": "wiki/concepts/stripe-vouchers.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Mexico-only** cash voucher, MXN only, MX merchants only. OXXO convenience stores only.",
+      "proposed_markdown": "**Customer scope** — OXXO is a single-use cash voucher in MXN for customers in Mexico, payable at OXXO stores. The May 2026 overview listed MX Stripe accounts. The November overview lists eligible CA, MX, SG and US accounts, plus private preview. The headline names EEA and UK, and the named preview list includes Switzerland (CH).",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "November overview raw lines 9, 27-33 and 63-81; May overview raw lines 14-20 and 54-68."
+      ]
+    },
+    {
+      "update_id": "s04-oxxo-overview-settlement",
+      "target_path": "wiki/concepts/stripe-vouchers.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Payment confirmation**: next business day (with settled funds).",
+      "proposed_markdown": "**Confirmation and settlement** — November 2026 separates confirmation by the next business day after store payment from settlement up to T+4. It lists Tuesday–Thursday payments settling the following Monday and Friday–Monday payments settling the following Wednesday. Voucher issuance and the cashier receipt are distinct from Stripe `payment_intent.succeeded`. The May overview paired confirmation with settled funds and separately mentioned standard payout timing. Merchant payout and bank arrival are separate.",
+      "quote_indexes": [
+        2,
+        4
+      ],
+      "warnings": [
+        "November overview raw lines 13-23 and 138-160; May overview raw lines 8-10 and 34-36; May acceptance raw lines 1474-1487 and 2294-2307."
+      ]
+    },
+    {
+      "update_id": "s04-oxxo-overview-limits",
+      "target_path": "wiki/concepts/stripe-vouchers.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Amount limits**: 10.00 – 10,000.00 MXN (lowest ceiling of all 4 vouchers).\n\n**No refunds**. **No disputes**. **No subscriptions or invoicing** (most limited of the 4 vouchers).\n\n**Connect**: Yes (standard, no invite required).",
+      "proposed_markdown": "**Amount and features** — 10–10,000 MXN per voucher payment. OXXO has no native refunds or standard dispute process, and the November overview lists subscriptions and invoicing as unsupported. A merchant can choose to offer separate credits.\n\n**Access and Connect** — the November overview lists merchant accounts and Connect platforms or marketplaces, with provisional access and possible review after activation. Check the dated eligibility route for account and category scope.",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": [
+        "November overview raw lines 19-38, 75-113 and 124-137; May overview raw lines 38-40, 60-68 and 98-117."
+      ]
+    },
+    {
+      "update_id": "s04-oxxo-overview-integration",
+      "target_path": "wiki/concepts/stripe-vouchers.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Integration**: Checkout, Checkout Sessions API, Payment Intents API, Direct API, iOS, Android. `hosted_voucher_url` redirect. `expires_after_days`: 1–7 days (default 3), expiry at 23:59 America/Mexico_City. `stripe.confirmOxxoPayment()` for web Direct API; email only required. `next_action.oxxo_display_details.expires_after` (note: `expires_after`, not `expires_at` as with Multibanco/Konbini).",
+      "proposed_markdown": "**Integration** — November lists Checkout Sessions, Payment Intents, Payment Element and in-app payments. The May guide covers iOS, Android and React Native. Checkout sends buyers to a hosted voucher at `payment_intent.next_action.oxxo_display_details.hosted_voucher_url`, while mobile can display it in an in-app webview. The voucher hub’s method-level redirect property describes a separate scope. The dated Legacy Direct API browser example opens a voucher modal with `stripe.confirmOxxoPayment()`. For collected data, `name` and `email` are required, with first and last name at least two characters each. The helper can also take an existing PaymentMethod ID or omit additional data when a PaymentMethod is already attached.\n\n**Expiry** — the May acceptance guide documents three days by default for Checkout Sessions and PaymentIntent paths and illustrates 23:59 America/Mexico_City expiry. The November overview documents five days by default for PaymentIntent. Both describe a 1–7 day `expires_after_days` option. The response timestamp is `next_action.oxxo_display_details.expires_after`. The November acceptance index supplies no new default. See [[source-stripe-oxxo-accept-payment]].",
+      "quote_indexes": [
+        1,
+        4
+      ],
+      "warnings": [
+        "November overview raw lines 13-15 and 115-160; May acceptance raw lines 103-107, 172-194, 208-215, 1271-1277, 1368-1394, 1535-1541, 1793-1799, 2077-2083 and 2244-2275; November voucher hub raw lines 37-46; November Stripe.js reference raw lines 14-17, 41-53 and 61-79."
+      ]
+    },
+    {
+      "update_id": "s04-oxxo-overview-categories",
+      "target_path": "wiki/concepts/stripe-vouchers.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Unsupported categories** (4): Direct Marketing - Other, Direct Marketing - Subscription, Gift/Card/Novelty/Souvenir Shops, Service Stations.",
+      "proposed_markdown": "**Categories** — the May 2026 overview named four unsupported categories. November lists prohibited MCCs and separate restricted MCCs that may qualify after providing additional information. See the dated eligibility table in [[source-stripe-oxxo]].",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "May overview raw lines 110-117; November overview raw lines 27-61."
+      ]
+    },
+    {
+      "update_id": "s04-oxxo-overview-source",
+      "target_path": "wiki/concepts/stripe-vouchers.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-oxxo]] — OXXO: Mexico cash voucher, next-biz-day confirmation, 10–10k MXN, no refunds, no subscriptions, 4 prohibited categories",
+      "proposed_markdown": "- [[source-stripe-oxxo]] — May and November 2026 OXXO overviews with merchant eligibility, voucher references, status and dated expiry and settlement boundaries.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+--- wiki/sources/source-stripe-mobile-payment-element-link.md
++++ tracking/ingest/stripe/stripe-campaign-04/updates/attempts/payments-link-mobile-payment-element-link/attempt-1/candidate.md
+@@ -2,40 +2,64 @@
+ title: "Stripe Docs — Link in the Mobile Payment Element"
+ type: source
+ date_ingested: 2026-05-08
++date_updated: 2026-11-22
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/payments/link/mobile-payment-element-link"
+ raw_files:
++  - "stripe-payments-link-mobile-payment-element-link-2026-11-07.md"
+   - "stripe-mobile-payment-element-link-2025.md"
+ tags: [stripe, link, mobile, ios, android, react-native, payment-element, defaultBillingDetails]
+ ---
+ 
+ ## Summary
+ 
+-Guide for enabling Link in the Mobile Payment Element across iOS, Android, and React Native. Covers setup steps, prefilling customer details, and sandbox testing.
++Both the May 8 and November 7, 2026 captures describe Link in the native iOS, Android, and React Native Mobile Payment Element. The default integration includes a Link prompt in the card form. Link can autofill existing customers' saved details even if they enrolled through a different business. Link authenticates customers using their email address and phone number. Optional billing prefill supplies customer details, and authentication and confirmed payment remain separate steps.
+ 
+-## Key Facts
++## Enablement
+ 
+-- **Platforms**: iOS (Swift), Android (Kotlin), React Native
+-- **Setup**: latest Stripe Mobile SDK + Link enabled in Dashboard + dynamic PMs (`automatic_payment_methods`)
+-- **Sandbox OTP**: `000000` — differs from web (web uses any 6 random digits)
++1. Integrate the Mobile Payment Element using what both captures call the latest Stripe Mobile SDK.
++2. Enable Link in Dashboard **Payment Method settings**.
++3. Enable dynamic payment methods on the PaymentIntent. The captures describe two routes: use an API version with dynamic methods enabled by default, described in the captures as the latest API, or explicitly add `automatic_payment_methods` at PaymentIntent creation.
++4. Optionally prefill the customer's email and phone and any available name.
+ 
+-## Prefilling `defaultBillingDetails` (iOS / Android / React Native)
++The separately captured automatic payment methods changelog describes the default in its linked `2024-06-20` PaymentIntent and SetupIntent references. It describes the earlier behavior as card-only when neither `payment_method_types` nor `automatic_payment_methods` was supplied. The November PaymentIntent create reference says explicitly enabled automatic methods are limited to Dashboard-enabled methods compatible with the Intent's other parameters. This is server API behavior, separate from the native SDK prerequisite and Dashboard Link setting. The mobile captures do not give a numeric current SDK or API minimum.
+ 
+-| Platform | Code |
++## Optional prefill
++
++Supply the customer's name, email address, and phone number using the platform-specific `defaultBillingDetails` hook.
++
++| Platform | Captured configuration |
+ | --- | --- |
+-| iOS | `configuration.defaultBillingDetails.name/email/phone = "..."` |
+-| Android | `PaymentSheet.BillingDetails(name, email, phone)` in `PaymentSheet.Configuration(...)` |
+-| React Native | `initPaymentSheet({ defaultBillingDetails: { name, email, phone } })` |
++| iOS | Set `configuration.defaultBillingDetails.name`, `.email`, and `.phone` after initializing `PaymentSheet.Configuration`. |
++| Android | Supply `PaymentSheet.BillingDetails(name, email, phone)` as `defaultBillingDetails` when initializing `PaymentSheet.Configuration`. |
++| React Native | Pass `defaultBillingDetails: { name, email, phone }` in `initPaymentSheet`. |
+ 
+-## CDN Assets
++Both Android snippets begin with `let configuration` (May raw lines 39–54 and November raw lines 40–55), which is invalid as a Kotlin declaration. Use the excerpts for the parameter shape. The separate version-qualified `PaymentSheet.LinkConfiguration.Display.WalletButtonHidden` evidence in [[stripe-link]] describes the configured Android wallet entry, distinct from the mobile guide's default card-form prompt. Neither guide verifies how a particular device or session renders Link.
+ 
+-- `raw/assets/stripe-link-in-ios.png` — Link in iOS Mobile Payment Element (248 KB)
++## Sandbox authentication
++
++Create a sandbox Link account with a valid email address. Both mobile captures say to enter `000000` when prompted for the one-time passcode. They do not give a broader mobile passcode table.
++
++The separate [[source-stripe-payment-element-link]] web Payment Element sandbox table reserves `000001` for invalid code, `000002` for expired code, and `000003` for maximum attempts exceeded. Other six-digit values, including `000000`, succeed in that web table. Keep those outcomes scoped to that web sandbox. Prefill and sandbox authentication do not establish live eligibility, payment, or settlement.
++
++## Capture and image history
++
++The May capture links to the iOS-specific Mobile Payment Element route and retains `raw/assets/stripe-link-in-ios.png` (248 KB). Its guide already names all three platforms. November links to the general mobile route and adds a build-an-app link. The iOS illustration uses a CDN URL with the same caption. These are navigation and presentation changes.
+ 
+ ## Related Pages
+ 
+-- [[stripe-link]] — Link concept page (Mobile Payment Element section)
+-- [[source-stripe-payment-element-link]] — Link in web Payment Element
++- [[stripe-link]] — Link concept, mobile configuration, and Android wallet-entry evidence
++- [[source-stripe-payment-element-link]] — separate web Payment Element and sandbox test table
++- [[source-stripe-link-payment-integrations]] — Link payment integration paths
++- [[source-stripe-payment-intents]] — server PaymentIntent behavior
+ - [[stripe]] — Stripe company page
++
++## Related raw API references
++
++- [[raw/stripe-changelog-2023-08-16-automatic-payment-methods-2026-11-07]] — changelog for the default behavior, captured November 7, 2026
++- [[raw/stripe-api-payment-intents-create-2026-11-07]] — PaymentIntent create and compatibility, November 7, 2026
+ 
+ ## Raw Sources
+ 
+-- [[stripe-mobile-payment-element-link-2025]] — verbatim webpage content (77 lines)
++- [[raw/stripe-payments-link-mobile-payment-element-link-2026-11-07]] — complete November 7, 2026 mobile Link capture
++- [[raw/stripe-mobile-payment-element-link-2025]] — verbatim May 8, 2026 mobile Link capture (77 lines), with original iOS image

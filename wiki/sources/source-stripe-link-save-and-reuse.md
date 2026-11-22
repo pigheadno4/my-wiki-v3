@@ -2,59 +2,73 @@
 title: "Stripe Docs — Set up future payments using Elements and Link"
 type: source
 date_ingested: 2026-05-08
+date_updated: 2026-11-22
 original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/link/save-and-reuse"
 raw_files:
+  - "stripe-payments-link-save-and-reuse-2026-11-07.md"
   - "stripe-link-save-and-reuse-2025.md"
-tags: [stripe, link, setup-intents, save-and-reuse, payment-element, link-authentication-element, accounts-v2, off-session]
+tags: [stripe, link, setup-intents, save-and-reuse, payment-element, contact-details-element, link-authentication-element, accounts-v2, off-session]
 ---
 
 ## Summary
 
-SetupIntent counterpart to the PaymentIntent custom checkout guide. Same three email strategies (pass/collect/LAE) + Accounts v2 dual-path throughout. Key difference: saves payment details without immediate charge; charges later off-session.
+The 2026-11-07 Stripe guide documents setting up Link payment details in Elements with a SetupIntent and charging the customer later with a separate off-session PaymentIntent. The 2026-05-08 capture documents the same lifecycle with different SetupIntent examples and a different separate-email Element.
 
 ## Key Differences from PaymentIntent Guide
 
-| Aspect | PaymentIntent Guide | This Guide (SetupIntent) |
+| Aspect | PaymentIntent guide | This SetupIntent guide |
 | --- | --- | --- |
-| API | PaymentIntents | SetupIntents |
-| Submit | `stripe.confirmPayment()` | `stripe.confirmSetup()` |
-| Accounts v2 | No | Yes — `customer_account` throughout |
-| Charge timing | Immediate | Later (off-session) |
-| Manual capture | Yes (7-day window) | N/A |
+| API and browser submit | PaymentIntent, `stripe.confirmPayment()` | SetupIntent, `stripe.confirmSetup()` |
+| Accounts v2 | Both captures show a customer-configured Account and `customer_account` in the optional save-for-future-use path, including for a later charge | `customer_account` with Accounts v2 or `customer` with Customers v1 for setup and later charge |
+| Payment timing | Takes a payment at checkout. Manual capture separates authorization from capture, with a seven-day capture window in the guide. | Checkout sets up details for a later off-session payment. Setup itself has no capture step. |
 
-## Server-side Flow
+## Server-side Setup
 
-1. Create Customer (`customers.create`) or Account (`v2.core.accounts.create`)
-2. Create SetupIntent with `customer`/`customer_account` and `payment_method_types: ['card', 'link']`
-3. Return `client_secret` to client
+1. Create a customer-configured Accounts v2 Account or a Customers v1 Customer. Both captures describe Accounts v2 as generally available to Connect users and in public preview for other Stripe users, with a preview API version required for preview participants. The November capture specifies enabling **Reusable payment methods for Global Payouts** in the Dashboard and shows the `Stripe-Version: 2026-04-22.preview` header in the Account creation example.
+2. Create the SetupIntent with `customer_account` or `customer` for the corresponding identity. May shows Node examples with `payment_method_types: ['card', 'link']`. November shows cURL examples with `automatic_payment_methods[enabled]=true` for both identities and still describes supporting Link and the other desired methods. The sample change establishes the documented configuration, leaving actual Link display subject to the integration's settings and eligibility.
+3. Pass the **SetupIntent** client secret to Elements in the browser. November corrects May's PaymentIntent gloss in the main definition. Elements initialization references in both captures still link to the PaymentIntent secret, although this flow retrieves the secret from the SetupIntent.
+
+## Client-side Email Collection and Setup Confirmation
+
+Both captures describe three email strategies for Link authentication or enrollment.
+
+- Pass a known email to Payment Element via `defaultValues.billingDetails.email`.
+- Collect email directly in the Payment Element with Link enabled in Payment methods settings.
+- Use a separate email component. May documents the [[stripe-link-authentication-element|Link Authentication Element]] (`linkAuthentication`). November documents Contact Details Element (`ContactDetailsElement` in React and `contactDetails` in the Stripe.js example), followed by Address Element when collecting shipping and then Payment Element. The order applies across pages as well. A recognized Link email triggers a one-time phone code. Successful authentication enables saved payment and address autofill.
+
+Use HTTPS for a live payment page. Both captures allow testing without HTTPS. The May HTML examples load the Dahlia Stripe.js script and the November examples load Endive.
+
+The browser calls `stripe.confirmSetup()` with a `return_url`. The November React submit sample still imports and renders `LinkAuthenticationElement` even though its separate-email integration, prefill and shipping instructions use Contact Details Element. The capture leaves that mismatch unresolved and provides no universal React minimum version or deprecation notice for Link Authentication Element. Both captures use payment wording around the redirect. Setup confirmation and the browser return belong to the setup flow. The later payment has its own outcome.
 
 ## Charge Later
 
-```js
-// List saved PMs
-stripe.paymentMethods.list({ customer: '{{ID}}', type: 'link' })
+On the server, list saved payment methods with `type=link` for the same `customer_account` or `customer` used in setup. Select a PaymentMethod and create a separate PaymentIntent with its ID, the matching account or customer ID, the amount and currency, `off_session=true` and `confirm=true`. This attempts confirmation immediately at creation. The PaymentIntent can return an error if authentication is required while the customer is away.
 
-// Create and immediately confirm PaymentIntent
-stripe.paymentIntents.create({
-  confirm: true,
-  payment_method: '{{PM_ID}}',
-  customer: '{{CUSTOMER_ID}}',  // or customer_account
-  off_session: true,
-  amount, currency,
-})
-```
+## Domain Registration, Funding and Testing
 
-## CDN Assets
+- The 2026-05-08 guide explicitly requires domain registration. The 2026-11-07 guide omits that sentence. Stripe's separate 2026-11-07 [[source-stripe-pmd-registration|domain registration guide]] still names Link in Elements.
+- May says Link works only with credit and debit cards and qualified US bank account purchases. It describes added funding sources as having the same settlement time and guarantees as card and bank account payments. November names the same supported types without an exclusive list and describes the same settlement time and processing behavior for additional sources. These dated statements describe the guides' wording. Method-specific off-session availability, changes to financial terms and actual settlement remain outside the captures' evidence.
+- Use test data in sandbox Link accounts, which are associated with the publishable key. The fixed passcodes and mock 3DS2 challenge simulate test outcomes. The 3DS2 discussion applies to card authentication and a qualified fraudulent-chargeback liability shift. Stripe's Elements data disclosure and the merchant's responsibility for necessary rights and consents apply in both captures. Sandbox results provide no live payment evidence.
 
-All 7 images reused from `source-stripe-add-link-elements-integration`:
+## Detail Locators
+
+- November capture, lines 40–168 for identities, SetupIntent examples and delivery of the client secret. Lines 170–238, 369–373, 479–680 and 843–897 cover email collection, HTTPS, settings and shipping order. Lines 1017–1175 cover confirmation and the later charge. Lines 1177–1212 cover test data, funding wording and disclosure.
+- May capture, lines 32–123 for identities and explicit method examples, 482–502 for the Link Authentication Element, 1039–1220 for setup confirmation and later charging, and 1222–1257 for domain registration, funding wording, tests and disclosure.
+
+## May 2026 CDN Assets
+
+The 2026-05-08 capture reused seven images from the PaymentIntent guide.
+
 - `stripe-link-in-payment-element.png`, `stripe-link-lape-unregistered.png`, `stripe-link-collect-email-returning.png`, `stripe-link-with-elements.png`, `stripe-link-prefill-pe-new-user.png`, `stripe-link-prefill-lae-new-user.png`, `stripe-link-appearance-example.png`
 
 ## Related Pages
 
-- [[stripe-link]] — Link concept page (Custom Checkout Page section)
-- [[source-stripe-add-link-elements-integration]] — PaymentIntent counterpart (immediate payment)
+- [[stripe-link]] — Link concept page, Custom Checkout Page section
+- [[source-stripe-add-link-elements-integration]] — PaymentIntent checkout counterpart, including optional manual capture and saving for future use
 - [[stripe]] — Stripe company page
 
 ## Raw Sources
 
-- [[stripe-link-save-and-reuse-2025]] — verbatim webpage content (1,263 lines)
+- [[raw/stripe-payments-link-save-and-reuse-2026-11-07|2026-11-07 full webpage capture]] — 1,218 lines
+- [[raw/stripe-link-save-and-reuse-2025|2026-05-08 full webpage capture]] — 1,263 lines

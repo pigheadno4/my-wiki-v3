@@ -1,0 +1,23 @@
+--- wiki/concepts/stripe-payment-links.md
++++ wiki/concepts/stripe-payment-links.md
+@@ -63,12 +63,12 @@
+ - **Inline price**: use `price_data` to create product + price in one call
+ - **Subscriptions**: add `subscription_data: { trial_period_days: N }`
+ - **Customer-defined price**: set `custom_unit_amount: { enabled: true }` on Price object
+-- **Override payment methods**: `payment_method_types: ['card', 'klarna']`
++- **Override payment methods**: ordinary Payment Links can specify `payment_method_types`. Managed Payments links use Stripe’s dynamic selection. [[source-stripe-managed-payments-payment-links]]
+ - **Supported pricing models**: flat rate, tiered, package pricing (recurring + one-off)
+ 
+ ## PHP 21.3.0 Update Surface
+ 
+-The PHP SDK's Payment Link update parameters add `application_fee_amount`, `application_fee_percent`, `on_behalf_of` and `transfer_data` (destination plus optional amount). This is version-qualified Connect request-contract evidence, not a statement that every merchant or payment flow is eligible. Source: [[source-github-stripe-php]].
++The PHP SDK's Payment Link update parameters add `application_fee_amount`, `application_fee_percent`, `on_behalf_of` and `transfer_data` (destination plus optional amount). The `2026-08-26.dahlia` changelog applies ordinary Payment Link Connect updates to future Checkout Sessions and preserves existing active Sessions. Connect eligibility still depends on the account and flow. The separate Managed Payments path excludes Connect and fixes its Managed Payments setting at creation. [[source-github-stripe-php]] · [[source-stripe-managed-payments-payment-links]]
+ 
+ ## PHP 22.0.0 Scope Boundary
+ 
+@@ -156,4 +156,4 @@
+ 
+ - [[source-stripe-payment-links]] — Payment Links overview, features table, Invoicing vs Payment Links comparison, API creation details
+ - [[source-stripe-inapp-digital-goods-payment-links]] — April/November 2026 iOS digital-goods guide: a static Dashboard Payment Link needs no application endpoint for link creation, while production fulfillment calls for a trusted webhook endpoint or receiver; US/EEA Apple Pay is a dated can-accept statement, and `client_reference_id` is reconciliation context rather than authenticated identity (https://docs.stripe.com/mobile/digital-goods/payment-links; old raw/stripe-inapp-digital-goods-payment-links-2025.md:8-14,123-129,142-146; new raw/stripe-mobile-digital-goods-payment-links-2026-11-07.md:9-15,122-128,141-145).
+-- [[source-stripe-managed-payments-payment-links]] — Payment Links with Managed Payments (MoR): managed_payments.enabled, immutable MoR state, variable pricing, iOS Stripe app restriction
++- [[source-stripe-managed-payments-payment-links]] — Managed Payments variant in the April/November 2026 guides. The setting belongs to the Payment Link at creation and applies to resulting resources as applicable. This variant uses dynamic payment methods and excludes Connect. Its subscription authorization covers Managed Payments charges, with separate consent for outside charges.

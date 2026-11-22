@@ -1,0 +1,364 @@
+{
+  "759e8a317aee598465c8": {
+    "path": "wiki/concepts/stripe-inapp-payments.md",
+    "ids": [
+      "payments-mobile-upgrade-to-handle-actions-dated-mobile-migration",
+      "payments-mobile-without-card-authentication-migration-route"
+    ],
+    "baseline": "- [[source-stripe-inapp-upgrade-to-handle-actions]] — Upgrade legacy integration to handle 2FA: remove error_on_requires_action, add confirmation_method=manual + use_stripe_sdk, two-round-trip pattern, 1-hour re-confirm window",
+    "replacement": "- [[source-stripe-inapp-upgrade-to-handle-actions]] — April 2026 manual-confirm card authentication migration. The guide points to repeated Dashboard failures like the issuer-authentication example or the API diagnostic `requires_action_not_handled`. A first attempt can succeed. When action is required, reconfirm the same Intent from `requires_confirmation` within the guide’s one-hour window and fulfill on server `succeeded`. The November 2026 capture links platform variants. The source dates the sandbox mismatch, React Native `handleCardAction` removal (replacement verified in 0.84.0), iOS 26.11.0 Objective-C selector deprecation, and Android 23.25.1 `ComponentActivity` and `Fragment` overloads.",
+    "rationale": "Combined the independently reviewed migration trigger and diagnostic from the basic card guide with the upgrade guide’s manual confirmation, dated sandbox mismatch and SDK-specific scope."
+  },
+  "f0b1161932a295489736": {
+    "path": "wiki/concepts/stripe-machine-payments.md",
+    "ids": [
+      "payments-machine-mpp-amount-geography",
+      "payments-machine-x402-eligibility",
+      "payments-machine-x402-privacy"
+    ],
+    "baseline": "- **Min charge**: 0.01 USDC (microtransaction-friendly)\n- **Fiat settlement**: payments land in Stripe balance; same reporting, multi-currency payouts as regular payments\n- **Privacy**: unique deposit address per payment (reduces on-chain visibility of processing volume)\n- **Refunds**: stablecoin refunds returned to \"From\" wallet address\n- **US only**: SPT card payments nationwide (US legal entity); stablecoin: all states except **New York and Texas**",
+    "replacement": "- **Minimums in the November MPP guide**: 0.50 USD for card SPTs and 0.01 USDC for stablecoins.\n- **Fiat settlement**: Stripe describes off-ramping supported stablecoin payments into Stripe balance. The May overview describes standard reporting and multicurrency payouts.\n- **Deposit addresses and privacy**: The May overview describes a unique address per payment and reduced on-chain visibility for its deposit flow. The May MPP example creates a Tempo address with a deposit-mode PaymentIntent. The November MPP handler uses a separately provisioned or fetched account-level Tempo address, and the November x402 walkthrough uses a precreated static Base recipient. See [[source-stripe-machine-payments-mpp-quickstart]] and [[source-stripe-machine-payments-x402-quickstart]].\n- **Refunds**: The May overview describes returning stablecoin refunds to the sender wallet.\n- **Eligibility**: The May overview describes nationwide SPT card and wallet acceptance for developers with a US legal entity and excludes New York and Texas for stablecoins. The May x402 webpage describes US-only stablecoin acceptance. The November overview routes non-US SPT businesses to supported-country guidance. The November x402 guide and Machine Payments overview describe US stablecoin availability except New York and an access-request route covering 30+ countries outside the US. Access is subject to eligibility and Stripe approval.",
+    "rationale": "Kept the dated MPP minimums, compared distinct Tempo and Base recipient flows, and reconciled the US and non-US availability evidence without turning approval conditions into account entitlement."
+  },
+  "7606dfe3d6c40b9eb0ca": {
+    "path": "wiki/concepts/stripe-managed-payments.md",
+    "ids": [
+      "payments-managed-payments-set-up-embedded-checkout-scope",
+      "s04-managed-payments-migration-elements-return"
+    ],
+    "baseline": "- Elements / embeddable web components / advanced integrations",
+    "replacement": "- Checkout Elements (`ui_mode: elements`) and advanced custom integrations. The April and November 2026 [[source-stripe-managed-payments-update-checkout|Managed Payments migration guide]] separately covers eligible existing hosted and embedded Checkout pages in payment or subscription mode. Its examples set `success_url` and omit `ui_mode`. Use the embedded Checkout Session return contract for `embedded_page`.",
+    "rationale": "Preserved the Checkout Elements exclusion and the separately supported embedded page migration. Kept the hosted example and embedded return-contract distinction."
+  },
+  "ae9329f5659cbd9060cd": {
+    "path": "wiki/concepts/stripe-inapp-payments.md",
+    "ids": [
+      "payments-mobile-accept-payment-embedded-consent",
+      "payments-mobile-finalize-payments-on-the-server-consent-responsibility",
+      "payments-mobile-save-during-payment-inapp-consent",
+      "s04-mobile-overview-consent"
+    ],
+    "baseline": "Consent collection is automatic — handles global compliance requirements.",
+    "replacement": "Stripe provides configurable consent and redisplay controls. The April 2026 mobile guides assign the merchant responsibility for compliance with applicable laws, regulations and network rules when saving payment details. Explain the intended use in the terms, obtain explicit consent for that use, and retain the written agreement. CustomerSession features control the saved-method UI. Use `allow_redisplay` to distinguish methods that can be shown for future purchases, with consent for that specific use. In the April 22 mobile Payment Element save-during-payment guide, `setup_future_usage` is limited to cards and US bank accounts. See [[source-stripe-inapp-accept-payment-embedded#Saving Payment Methods and Consent]], [[source-stripe-inapp-finalize-payments-server]] and [[source-stripe-inapp-save-during-payment]].",
+    "rationale": "Merged the four dated mobile guides on compliance, consent, recorded agreement, supported methods, CustomerSession and redisplay."
+  },
+  "342262186948c2a3f57f": {
+    "path": "wiki/concepts/stripe-inapp-payments.md",
+    "ids": [
+      "mobile-save-no-auth-charge-save",
+      "payments-mobile-accept-payment-embedded-per-method-preview",
+      "s04-mobile-overview-future-use"
+    ],
+    "baseline": "Charge now AND save the PM for future.",
+    "replacement": "Use a PaymentIntent with `setup_future_usage` to attempt payment and save an eligible method for future use. Top-level future use excludes one-time methods such as most BNPLs. The April mobile Payment Element pay-and-save guide limits this flow to cards and US bank accounts. In the April 23 mobile card flow with a Customer, `setup_future_usage` expresses intended reuse and attaches the resulting PaymentMethod after confirmation and any required customer actions. Use `on_session` for future payments with the customer present, as shown in the combined example, or `off_session` for intended reuse that can occur while they are absent. See [[source-stripe-inapp-save-card-without-auth]].\n\nThe examples below show generic server-side settings. In the standard April 2026 embedded pay-and-save flow, the server’s global `setup_future_usage` matches the client `IntentConfiguration`. The separate embedded per-method SDK preview leaves both `setup_future_usage` and `payment_method_options[X][setup_future_usage]` unset on the server PaymentIntent so the SDK can supply the settings. See [[source-stripe-inapp-accept-payment-embedded#Saving Payment Methods and Consent]].",
+    "rationale": "Combined mobile Payment Element supported-method scope, card reuse and attachment, and the two separately scoped embedded configurations."
+  },
+  "9cab9b4a38935d5ce3ec": {
+    "path": "wiki/concepts/stripe-custom-payment-methods.md",
+    "ids": [
+      "embedded-cpm-sheet-ios-scope",
+      "payments-mobile-custom-payment-methods-mobile-handler-spelling"
+    ],
+    "baseline": "- **iOS**: `async -> PaymentSheetResult` (`.completed`/`.canceled`/`.failed`); beta import required\n- **Android**: `ConfirmCustomPaymentMethodCallback`; call `CustomPaymentMethodResultHandler.handleCustomPaymentMethodResult()` even on cancel (FlowController)",
+    "replacement": "- **iOS PaymentSheet and FlowController**: The April 22, 2026 Swift examples use `async -> PaymentSheetResult` with completed, canceled or failed outcomes. The April PaymentSheet example shows the custom-method SPI import. The prose names `failure(error:)` and the examples use `.failed(error:)`. Swift EmbeddedPaymentElement uses `EmbeddedPaymentElementResult`.\n- **Android PaymentSheet and FlowController**: The April guide uses `ConfirmCustomPaymentMethodCallback`. PaymentSheet prose names `onCustomPaymentMethodResult()`, while the Kotlin examples and FlowController prose use `handleCustomPaymentMethodResult()`. The Android FlowController guidance calls for a canceled result when exiting without confirming payment.",
+    "rationale": "Kept both API naming discrepancies and the Android-only cancellation scope, plus the separate iOS embedded result type."
+  },
+  "b8079e6cd66347eef311": {
+    "path": "wiki/concepts/stripe-wallets.md",
+    "ids": [
+      "mb-way-wallet-scope",
+      "payments-mb-way-accept-a-payment-customer-timing"
+    ],
+    "baseline": "**Portugal customers only**, EUR only. Phone number-based (push notification → app authorization). Immediate confirmation.\n\n**Transaction limits**: €0.50 – €5,000. Daily default: €1,000 (customer can adjust to €10,000).\n\n**40 merchant countries** — broad for Portugal-only wallet (includes MX, HK, JP, NZ, US).\n\n**Disputes**: Yes — 7-day evidence submission. Stripe holds amount until resolution.\n\n**Refunds**: 365-day. Minutes. Full and partial. Multiple partials allowed.\n\n**Statement descriptor**: ignored — `Stripe Inc` shown on bank statements.\n\n**No recurring, no manual capture, no Mobile Payment Element.**\n\n**Checkout restrictions**: no subscription mode, no setup mode, no `setup_future_usage`.\n\n**Connect**: all charge types. Capability: `mb_way_payments`.",
+    "replacement": "MB WAY serves **customers in Portugal** with EUR presentment and can use international phone numbers. The November 2026 capture lists 40 business locations subject to supported settlement currency and marks B2C supported. Both captures document EUR 0.50–5,000 per payment and a EUR 1,000 default daily cumulative user limit adjustable up to EUR 10,000. In November, the customer has four minutes to approve in the app, while the merchant page polls without a browser redirect or method-level return URL. Stripe documents immediate notification when it confirms success or failure. App approval and return from the app precede that separate payment confirmation. The standard payout schedule applies. See [[source-stripe-mb-way-accept-payment]] for Checkout Session return settings, payment states and May sandbox simulations.\n\n- Full disputes are supported. Partial disputes are excluded in November. Stripe holds the balance during resolution and the evidence window is seven calendar days.\n- Full or partial refunds can be issued up to 365 days from completion, typically processing in minutes. Cumulative partials cannot exceed the payment. November documents checking the Refund status and arranging another refund method if it fails and Stripe returns the amount to the balance.\n- May specifies `Stripe Inc` on statements and excludes Mobile Payment Element. November says Stripe's name cannot be overridden and separately marks in-app payments supported. See [[stripe-ios-sdk]] for iOS 26.6.0 PaymentSheet evidence.\n- Checkout remains one-time, with no setup or subscription mode, future usage or off-session payments. November Billing and Invoicing describe `send_invoice` with separately authorized hosted invoices, including subscription invoices. Manual capture remains unsupported.\n- Connect platforms can use all charge types. Enable it through the applicable Dashboard or Capabilities API path and verify the connected account's `mb_way_payments` capability in the account API or webhooks. See [[source-stripe-mb-way]] for the dated overview and version-specific notes.",
+    "rationale": "Preserved approved product controls and dated terms, the distinct buyer action and outcome states, and the direct route to scoped Checkout parameters and sandbox simulations."
+  },
+  "a10a03fc41c31ee0a8ed": {
+    "path": "wiki/concepts/stripe-managed-payments.md",
+    "ids": [
+      "payments-managed-payments-changelog-checkout-future-usage-route",
+      "s04-managed-payments-migration-route"
+    ],
+    "baseline": "- [[source-stripe-managed-payments-update-checkout]] — Migration guide: existing subscriptions NOT eligible (new only); unsupported params tables for subscriptions + one-time payments",
+    "replacement": "- [[source-stripe-managed-payments-update-checkout]] — April and November 2026 migration guides for hosted or embedded Checkout, with mode-specific removal lists. Subscription migration applies to new subscriptions purchased through a Managed Payments Checkout Session. The older one-time table excludes two future-usage fields. The September 3, 2026 [[source-stripe-managed-payments-changelog|changelog entry]] documents `payment_intent_data.setup_future_usage` and `payment_method_options.{payment_method}.setup_future_usage` for creating a Managed Payments Checkout Session.",
+    "rationale": "Preserved the dated Checkout migration routes, new subscription restriction and exact September exceptions to the older one-time list."
+  },
+  "485eb387a974e4e49ade": {
+    "path": "wiki/concepts/stripe-managed-payments.md",
+    "ids": [
+      "payments-managed-payments-changelog-eligibility-tax-code-dates",
+      "payments-managed-payments-eligibility-codes"
+    ],
+    "baseline": "Must assign an eligible `txcd_` code (60+ available) to each product. Key categories: IaaS/PaaS/SaaS, video games, downloadable software, digital books/magazines/newspapers/audio/video, online courses, website hosting. See [[source-stripe-managed-payments-eligibility]] for full table.",
+    "replacement": "Assign an eligible `txcd_` code to each Product through the Dashboard or API for sales through Checkout Sessions or Payment Links. Key categories include IaaS, PaaS, SaaS, video games, downloadable software, digital publications and media, online courses, and website hosting. The June 2, 2026 [[source-stripe-managed-payments-changelog|changelog entry]] adds four AIaaS codes. The [[source-stripe-managed-payments-eligibility|eligibility tables]] list 73 codes in April and 76 in November. November omits April’s Website Advertising code (`txcd_10701000`) and excludes data brokering from four specific information-service definitions. Withdrawal timing and grandfathering remain undetermined.",
+    "rationale": "Reconciled the Product tax-code requirements, the dated June AIaaS addition, exact eligibility tables, information-service exclusions and the unresolved timing of Website Advertising’s removal from the captured list."
+  },
+  "4fca440e7bc153ca9a85": {
+    "path": "wiki/concepts/stripe-checkout.md",
+    "ids": [
+      "payments-link-checkout-link-checkout-domain",
+      "payments-managed-payments-set-up-managed-payments-custom-domain-exception"
+    ],
+    "baseline": "- **Custom domains**: paid feature; applies to Checkout (hosted page only), **Payment Links**, and the **customer portal**",
+    "replacement": "- **Custom domains**: Paid feature for hosted Checkout, Payment Links and the customer portal. The November 7, 2026 [[source-stripe-managed-payments-how-it-works|Managed Payments guide]] excludes custom domains from Managed Payments checkouts.\n- **Link payment-method domains**: The separate [[source-stripe-pmd-registration|registration guide]] covers domains and subdomains displaying Link in Elements and the embedded Checkout form. The May [[source-stripe-checkout-link|Link with Checkout guide]] gave an unqualified registration statement, which its November capture omits. Its Checkout Session examples use the hosted success URL. The embedded flow has its own return URL rules.",
+    "rationale": "Preserved the different meanings of hosted custom domains and embedded payment-method registration, and kept the Managed Payments product exception dated."
+  },
+  "00435636540676d33ddb": {
+    "path": "wiki/concepts/stripe-fr-meal-vouchers.md",
+    "ids": [
+      "payments-meal-vouchers-fr-meal-vouchers-accept-with-connect-connect-routing-and-fees",
+      "payments-meal-vouchers-fr-meal-vouchers-connect-payment-request"
+    ],
+    "baseline": "- **Direct charges**: add `Stripe-Account` header; rest of integration unchanged.\n- **Platform charges**: create PaymentIntent on platform account; omit `transfer_data`, `application_fee_amount`, `transfer_group`; pass `siret`.\n- **Fee collection**: after capture, create `v1/transfers` from connected account to platform. Refund via transfer reversal.\n- **SIRET provisioned on**: the merchant of record.",
+    "replacement": "- **Direct charges**: Use the connected account's `Stripe-Account` header. The November preview uses `payment_details.location` and `if_payment_method_is_eligible`.\n- **Platform charges**: Create the PaymentIntent on the platform. Omit `transfer_data`, `application_fee_amount` and `transfer_group`. The May 5 Connect example passes the branch’s literal `payment_details.benefit.fr_meal_voucher.siret`. November’s `2026-05-27.preview` path uses a Payment Location and conditional benefit and retains `on_behalf_of` in its examples. The separate setup API discusses destination-charge merchant-of-record onboarding. The Connect payment matrix excludes voucher destination charges.\n- **Fees and settlement**: The issuer settles with the connected account outside Stripe. Stripe debits platform processing fees separately. After capture, the platform can collect its application fee through the documented connected-account balance debit, subject to Account Debits requirements. A transfer reversal returns that application fee only.\n- **Merchant of record**: May provisions the literal SIRET. The November preview provisions the Payment Location and requests its capability on behalf of the merchant of record. Accept vouchers after the capability becomes active. See [[source-stripe-fr-meal-vouchers-connect]].",
+    "rationale": "Reconciled the dated direct and platform request fields while preserving separate destination-charge onboarding, fee, issuer settlement and capability boundaries."
+  },
+  "9f8566aad93ee968108e": {
+    "path": "wiki/concepts/stripe-fr-meal-vouchers.md",
+    "ids": [
+      "payments-meal-vouchers-fr-meal-vouchers-accept-with-connect-classifier-shape",
+      "payments-meal-vouchers-fr-meal-vouchers-accept-with-connect-dated-payment-fields",
+      "payments-meal-vouchers-fr-meal-vouchers-payment-request-and-shape",
+      "s04-fr-meal-accept-intent"
+    ],
+    "baseline": "Opt in per PaymentIntent by passing a pre-provisioned `siret`:\n\n```text\npayment_details.benefit.fr_meal_voucher.siret = SIRET_VALUE\n```\n\n**Identify via** `paymentMethod.card.benefits` hash:\n\n- `benefits.programs = 'fr_meal_voucher'`\n- `benefits.issuer` = issuer name (e.g., `pluxee`)",
+    "replacement": "**PaymentIntent.** The May acceptance and Connect guides and the May and November product overviews describe a pre-provisioned literal `payment_details.benefit.fr_meal_voucher.siret`. The separate November acceptance and Connect preview guides use a Payment Location with an active voucher capability, `payment_details[location]` and `payment_details[benefit][fr_meal_voucher][enabled]=if_payment_method_is_eligible` in their `2026-05-27.preview` examples. Stripe resolves the location’s stored SIRET at confirmation. Changes before confirmation can apply, and already-confirmed payments retain the SIRET used. Both overviews say Stripe does not retry failures between voucher and ordinary card routes. See [[source-stripe-fr-meal-vouchers-accept-payment]] for the separate preview request and optional Charge lookup.\n\n**Identification.** The May Connect and the two product-overview examples show scalar `PaymentMethod.card.benefits.programs` and use the corresponding issuer field. The November Connect example shows an array in the PaymentMethod and a scalar at `ConfirmationToken.payment_method_preview.card.benefits.programs`. These dated object examples leave general response shape and actual payment eligibility undetermined. See [[source-stripe-fr-meal-vouchers-connect]].",
+    "rationale": "Preserved the historical SIRET and preview Payment Location as separate dated paths. Combined confirmation-time lookup, no fallback retries and the distinct PaymentMethod and ConfirmationToken shapes."
+  },
+  "ca7e8c19f3a797e29af7": {
+    "path": "wiki/concepts/stripe-fr-meal-vouchers.md",
+    "ids": [
+      "payments-meal-vouchers-fr-meal-vouchers-accept-with-connect-dashboard-api-edit-scope",
+      "payments-meal-vouchers-fr-meal-vouchers-requirements-timing",
+      "s04-fr-meal-accept-branch"
+    ],
+    "baseline": "3. **SIRET provisioning**: Dashboard → French meal vouchers SIRETs → Add SIRET (SIRET + postal code + store name — all must match CNTR record). Takes **1–2 business days**. SIRET and name are **immutable** after creation. Postal code mismatch → `Requires Action`; fix via Update Details (another 1–2 days). Connect: go to connected account → Configure SIRETs.",
+    "replacement": "3. **SIRET provisioning.** The May and November overviews estimate 1–3 business days. In the November Dashboard guide, add the branch’s SIRET, postal code matching its CNTR record, and store name. The Dashboard validation estimate is 1–2 business days. Name and SIRET are immutable in the Dashboard after creation. For a postal mismatch, open the restaurant marked `Requires Action`, select **Update Details**, enter the corrected postal code, and confirm. The Dashboard guide describes another 1–2 business days. For Connect, open **Configure SIRETs** under the connected account’s **Payment methods**. The November Dashboard drawer shows the Payment Location ID after successful onboarding. The separate November preview API guide estimates 1–2 business days for pending onboarding. Create the location and request its capability on behalf of the merchant of record. The API blocks onboarding-sensitive edits by default. Acknowledging a SIRET or address edit with `onboarding_data_update_acknowledged=true` returns the capability to `pending` and pauses voucher acceptance until it becomes active again. See [[source-stripe-fr-meal-vouchers-setup-restaurant]] and [[source-stripe-fr-meal-vouchers-connect]].",
+    "rationale": "Combined the dated workflow-specific estimates and preserved Dashboard recovery, connected-account routing, and the separate API re-onboarding and capability boundary."
+  },
+  "b44d1a801d17bdd79fa3": {
+    "path": "wiki/concepts/stripe-fr-meal-vouchers.md",
+    "ids": [
+      "payments-meal-vouchers-fr-meal-vouchers-checking-a-card-balance-tender",
+      "payments-meal-vouchers-fr-meal-vouchers-split-tender-order"
+    ],
+    "baseline": "**Split tender order**: charge secondary payment method first (no refunds on meal vouchers); or use auth+capture for the meal voucher after secondary succeeds.\n\n**Split tender**: Stripe doesn't natively support split tender. Orchestrate manually: create separate PaymentIntents for the meal-voucher portion and for ancillary/overage amounts charged to another payment method.",
+    "replacement": "**Split tender order.** The May and November 2026 written guidance puts the secondary method first or defers manual voucher capture until the secondary leg succeeds. The [[source-stripe-fr-meal-vouchers-check-balance#November 7, 2026 diagram|November diagram]] instead confirms the voucher first and shows a revert arrow on secondary failure. It leaves voucher capture mode and reversible state unspecified. The overview allows release of an uncaptured voucher authorization. Captured vouchers cannot be refunded. A prior balance lookup does not reserve funds against concurrent spending.\n\n**Split tender.** The merchant orchestrates separate PaymentIntents for the voucher and secondary payment method. The secondary method covers ineligible fees or an eligible amount above the voucher's available balance.",
+    "rationale": "Kept both November representations visible and preserved the uncaptured-release versus captured-refund boundary, the balance limitation, and separate payment responsibilities."
+  },
+  "bcc4e28ceb728c865c5d": {
+    "path": "wiki/concepts/stripe-nz-becs-debit.md",
+    "ids": [
+      "payments-nz-bank-account-accept-a-payment-acceptance-route",
+      "payments-nz-bank-account-acceptance-route"
+    ],
+    "baseline": "- [[source-stripe-nz-becs-accept-payment]] — integration guide: PaymentIntent + Payment Element, DDA mandate text, off-session charging, 6 test accounts, target_date",
+    "replacement": "- [[source-stripe-nz-becs-accept-payment]] — May and November 2026 PaymentIntent and Payment Element guides covering explicit and dynamic setup, Endive Create, DDA notices, target dates and sandbox tests. November describes measuring result notification from submission. Its later `off_session=true` examples conflict with the same-date overview’s Unsupported cell. May’s mandate sample says five business days and November’s says five days.",
+    "rationale": "Merged the reviewed implementation route, payment and notice timing, and the same-date off-session support conflict."
+  },
+  "c0a80b1cac0ac897f329": {
+    "path": "wiki/concepts/stripe-nz-becs-debit.md",
+    "ids": [
+      "payments-nz-bank-account-accept-a-payment-mandate-sample",
+      "payments-nz-bank-account-set-up-payment-mandate-email"
+    ],
+    "baseline": "1. **Mandate confirmation** (within 5 days of mandate establishment): date, Stripe NZ Limited (auth code 3143978) statement, link to NZ Direct Debit Service T&Cs, bank name/account number/account name, signatory name if different, your contact info (address, email, phone).",
+    "replacement": "1. **Mandate confirmation.** Both method overviews say within five days of mandate establishment. The May acceptance and setup samples say five business days. Their November versions say five days. For setup-based collection, Stripe’s November default sends immediately after a successful SetupIntent. Include the date, the Stripe NZ Limited statement and authorization code 3143978, a link to the NZ Direct Debit Service Terms and Conditions, the bank name, account number and account name, the signatory name if different, and merchant address, email and phone. See [[source-stripe-nz-becs-accept-payment]] and [[source-stripe-nz-becs-set-up-payment]].",
+    "rationale": "Preserved dated calendar and business-day wording, the separate default SetupIntent trigger, all notice fields and both detailed source routes."
+  },
+  "e97ec38ddb345ea36794": {
+    "path": "wiki/concepts/stripe-bnpl.md",
+    "ids": [
+      "payments-kriya-connect-overview",
+      "payments-mondu-connect"
+    ],
+    "baseline": "**Connect conflict**: Both overview product matrices mark all eleven methods Supported on Connect, while the May method-specific captures for Kriya, Mondu, SeQura, and Scalapay say Connect No. This is an unresolved dated source conflict, not an established account entitlement; see [[source-stripe-bnpl-overview]] and the individual method sources.",
+    "replacement": "**Dated Connect evidence.** Both BNPL overview product matrices mark all eleven methods Supported. The May 2026 Kriya, Mondu, SeQura and Scalapay method captures say No, conflicting with the May overview. The November Kriya and Mondu method captures say Yes and match their November matrix cells. November separately describes a Kriya early-access request and Mondu eligibility screening with a conditional early-access waitlist. These are dated documentation labels. Individual account eligibility and activation timing remain undetermined. See [[source-stripe-bnpl-overview]], [[source-stripe-kriya]] and [[source-stripe-mondu]].",
+    "rationale": "Preserved the four historical contradictions and added the two evidenced November method-level alignments without expanding them to other methods or live accounts."
+  },
+  "d8b46e5f3aea766f1067": {
+    "path": "wiki/concepts/stripe-fr-meal-vouchers.md",
+    "ids": [
+      "payments-meal-vouchers-fr-meal-vouchers-saving-payment-details-save-sandbox-siret-scope",
+      "s04-fr-meal-accept-testing"
+    ],
+    "baseline": "**Test data**: card `4000002501000002` (Bimpli with Conecs). Test SIRETs: `42424242424242` (valid), `00000000000000` (invalid).",
+    "replacement": "**Test data.** Both acceptance captures use the Bimpli with Conecs sandbox card `4000002501000002`. The May direct-SIRET examples use `42424242424242` as provisioned and `00000000000000` as invalid. The November acceptance and save guides use the onboarded `loc_` Payment Location ID from the same sandbox as the payment or setup. The preview location API supplies separate SIRET and postal-code fixtures for simulated onboarding. See [[source-stripe-fr-meal-vouchers-accept-payment]] and [[source-stripe-fr-meal-vouchers-save-payment]].",
+    "rationale": "Combined the acceptance and save examples and preserved the distinction between May literal-SIRET fixtures and November same-sandbox Payment Location IDs."
+  },
+  "52a2e3e3e675089380f8": {
+    "path": "wiki/concepts/stripe-fr-meal-vouchers.md",
+    "ids": [
+      "payments-meal-vouchers-fr-meal-vouchers-saving-payment-details-save-setup-versus-payment",
+      "payments-meal-vouchers-fr-meal-vouchers-setupintent-scope"
+    ],
+    "baseline": "**Save for future use**: CVC required on first payment; reusable without CVC after that. To save without charging: `stripe.setupIntents.create({ customer, setup_details: { benefit: { fr_meal_voucher: { siret } } } })`. Temporary **0.30 EUR auth charge** may appear when saving — reversed almost immediately (restored to daily balance).",
+    "replacement": "**Saving without a purchase.** The May SetupIntent example uses the provisioned SIRET in `setup_details.benefit.fr_meal_voucher.siret`. The [[source-stripe-fr-meal-vouchers-save-payment|November save guide]] uses `2026-05-27.preview` or later, an active location capability, `setup_details[location]` and `setup_details[benefit][fr_meal_voucher][enabled]=if_payment_method_is_eligible`. Call `stripe.confirmSetup` with Payment Element and verify the SetupIntent succeeded. A later on-session PaymentIntent uses the Customer and saved PaymentMethod IDs and its separate `payment_details`. Both save guides describe a temporary €0.30 verification authorization that may appear on the customer’s statement. Stripe reverses it almost immediately and restores the daily balance.\n\nThe May [[source-stripe-fr-meal-vouchers-accept-payment|acceptance guide]] describes first-payment CVC and later reuse without CVC when saving during payment.",
+    "rationale": "Kept setup and later on-session payment requests separate and preserved confirmed setup, temporary authorization and the May payment-time CVC scope."
+  },
+  "78f5063fab85f3befab0": {
+    "path": "wiki/concepts/stripe-nz-becs-debit.md",
+    "ids": [
+      "payments-nz-bank-account-accept-a-payment-debit-notice",
+      "payments-nz-bank-account-set-up-payment-debit-notice",
+      "s04-nz-becs-migrate-notice-deadline"
+    ],
+    "baseline": "2. **Pre-debit notification** (day of every PaymentIntent confirmation): payment amount, Stripe NZ Limited debit statement, debit date, bank statement label warning, your contact info.",
+    "replacement": "2. **Debit notification.** The May method overview says to notify on each debit day, and November says no later than the debit day. Under Stripe’s separate November default, it sends the notice immediately after successful PaymentIntent confirmation. Include the amount, Stripe NZ Limited debit statement, debit date, bank statement label notice and your contact information. Contact Stripe Support to disable Stripe’s emails and send custom notices.",
+    "rationale": "Kept merchant notice timing separate from Stripe’s default trigger and preserved required content and the custom delivery pathway."
+  },
+  "0a118027e12b6ae7bf86": {
+    "path": "wiki/concepts/stripe-link.md",
+    "ids": [
+      "payments-link-checkout-link-link-checkout-fields",
+      "payments-link-link-payment-integrations-hosted-checkout-version-boundary"
+    ],
+    "baseline": "## Checkout Integration (Hosted Checkout Product)\n\n**Dynamic PMs** (recommended): enable Link in Dashboard → remove `payment_method_types` from code. Note: if using Setup Intents for future card storage, must list manually instead.\n\n**Manual listing**: `payment_method_types: ['card', 'link']` — `card` must be included.",
+    "replacement": "## Link in Hosted and Embedded Checkout\n\n**Dynamic methods.** Both dated guides say to enable Link in Dashboard and omit the manual payment method list. Both separately give manual-list advice for SetupIntents used to save cards. Their manual prose names `card` and `link` and a common line-item currency. The May Node.js example sends `payment_method_types`. The November Ruby example omits the field despite the surrounding manual prose.\n\n**Versioned request boundary.** Checkout Session Create on `2026-09-30.endive` rejects writable `payment_method_types` with HTTP 400. Use the applicable dynamic method or `allowed_payment_method_types` request route, and inspect the computed `payment_method_types` response. The affected PaymentIntent and SetupIntent request fields and deferred Elements options have separate scopes. See [[source-stripe-checkout-link]] and [[source-stripe-link-payment-integrations]].\n\n**Domain registration.** The separate [[source-stripe-pmd-registration|registration guide]] covers Link in Elements and the embeddable Checkout form. The November Link with Checkout capture omits May’s unqualified registration statement.",
+    "rationale": "Preserved distinct dated manual prose and examples, separate request and response fields, Checkout and Intent scopes, and the embedded-domain rule."
+  },
+  "65724799ca3f9b515751": {
+    "path": "wiki/concepts/stripe-link.md",
+    "ids": [
+      "payments-link-instant-bank-payments-link-field",
+      "payments-link-link-payment-integrations-dated-route-retry-acquiring"
+    ],
+    "baseline": "- Passing `link` in `payment_method_types` ALWAYS triggers PM path — even alongside `card`. Card integration = pass `card` only.\n- **IC+ pricing incompatibility**: Link as PM uses blended rate; use card integration if on IC+ pricing.\n- **Backup payment source**: only in PM path (auto-retry with backup if primary fails); not in card integration.",
+    "replacement": "- **Manual routing.** The May guide uses `payment_method_types` and the November guide uses `allowed_payment_method_types`. In each dated recipe, including `link` selects standalone Link even alongside `card`. For card-specific Link, include `card` and omit `link`. See [[source-stripe-link-payment-integrations]] for the request, response and version distinctions, and [[source-stripe-instant-bank-payments]] for the separate `us_bank_account` precedence rule.\n- **Standalone restrictions.** The guide describes blended pricing and excludes IC+. November explicitly excludes extended authorization, incremental authorization and overcapture. The guide directs affected integrations to the card-specific route, where payment-specific feature eligibility still applies.\n- **Backup payment source.** Standalone Link suggests a backup when the customer has multiple eligible saved methods. Link retries with it if the customer approves it and the first attempt fails. Card-specific Link offers no checkout backup.",
+    "rationale": "Preserved the versioned explicit routing, separate ACH precedence, card-acquiring restrictions, and conditional backed-up retry."
+  },
+  "5de765f83002c40907fa": {
+    "path": "wiki/concepts/stripe-instant-bank-payments.md",
+    "ids": [
+      "payments-link-instant-bank-payments-dated-source",
+      "payments-link-link-payment-integrations-ibp-link-integration-route"
+    ],
+    "baseline": "- [[source-stripe-instant-bank-payments]] — primary: settlement guarantee, ACH comparison, eligibility, ACH priority rule, cash back promotions, testing",
+    "replacement": "- [[source-stripe-instant-bank-payments]] — May and November 2026 guides to eligible presentment, settlement and dispute scope, dated ACH precedence, the mobile listing conflict, cash back and testing.\n- [[source-stripe-link-payment-integrations]] — Standalone and card-specific Link representations, non-card placeholders and general Stripe-balance timing alongside the Instant Bank Payments dispute exception.",
+    "rationale": "Kept the dated primary product route and separate Link integration representation and balance route."
+  },
+  "a9240a2ae83a632cd6d0": {
+    "path": "wiki/concepts/stripe-link.md",
+    "ids": [
+      "payments-link-card-element-link-source-route",
+      "payments-link-elements-link-card-element-source-route"
+    ],
+    "baseline": "- [[source-stripe-card-element-link]] — Link in Card Element (deprecated): 90-day auth, 350px/28px min, no COOP same-origin, disableLink param, Connect eligibility rules",
+    "replacement": "- [[source-stripe-card-element-link]] — May and November 2026 Link guidance for existing Card Element integrations. The November Web Elements overview still lists saving and autofill. The dedicated guide no longer recommends Card Element and covers display, authentication, browser and Connect scope, the Contact Details Element rename, and the separate Payment Request Button cutoff.",
+    "rationale": "Kept documented saving and autofill availability separate from the recommendation for new integrations and the Button-specific cutoff."
+  },
+  "00e1e33d651bb5ad4c05": {
+    "path": "wiki/concepts/stripe-link.md",
+    "ids": [
+      "payments-link-card-element-link-card-operations",
+      "payments-link-elements-link-card-element-scope"
+    ],
+    "baseline": "## Card Element (Deprecated for Link)\n\n> Not recommended — use Link Authentication Element, Express Checkout Element, or Payment Element instead.\n\nSingle-line and split (Card Number/Expiry/CVC) forms both supported. Same 90-day auth window. Display requirements: ≥ 350px wide, ≥ 28px tall; popup support required; `Cross-Origin-Opener-Policy: same-origin` blocks Link. Disable via Dashboard or `disableLink: true`. Not supported in India.\n\n**Connect**: direct charges + payment methods on connected accounts + full Dashboard → accounts manage own settings; otherwise platform controls.",
+    "replacement": "## Card Element for Existing Link Integrations\n\nThe November Web Elements overview still lists Link saving and autofill with Card Element. Stripe’s May and November 2026 dedicated guides no longer recommend Card Element for Web Elements. May names Link Authentication Element, which the May 27 Dahlia changelog renames to Contact Details Element while documenting both Web Elements creation aliases. The November guide recommends Contact Details Element, Express Checkout Element or Payment Element.\n\nBoth single-line and split forms use the documented 90-day Link authentication window. Stripe automatically enables Link for granted-access accounts outside India and can selectively show it in production. An enabled sandbox shows Link in eligible sessions. Use test data only in sandbox Link accounts. The typical 350 × 28 px guidance depends on font, locale, placeholder and icon visibility. Pop-ups need opener communication, which `Cross-Origin-Opener-Policy: same-origin` blocks. Disable via Dashboard or `disableLink: true`.\n\n**Connect.** Direct charges, payment methods created and charged on the connected account, and full Dashboard access permit connected-account settings control. Cloning methods from the platform, destination charges, separate charges and transfers and lack of full Dashboard access leave control for platform transactions with the platform. Settings for payments without the platform are separate. See [[source-stripe-card-element-link]] and the separate [[source-stripe-payment-request-button-link]] Endive cutoff.",
+    "rationale": "Retained the November listing alongside the separate recommendation, followed by the reviewed operational and Connect conditions and exact scope of the Button cutoff."
+  },
+  "489e58712f7a18910f48": {
+    "path": "wiki/concepts/stripe-checkout.md",
+    "ids": [
+      "payments-multicapture-checkout-session-states",
+      "payments-online-payments-checkout-return",
+      "s04-checkout-managed-payments-embedded-return"
+    ],
+    "baseline": "2. **Embedded form** (`ui_mode: 'embedded_page'`) — Checkout renders in iframe on your site; server returns `clientSecret`; `return_url` with `{CHECKOUT_SESSION_ID}` template; return page checks `session.status` via `/session-status` endpoint; `open` → remount, `complete` → success",
+    "replacement": "2. **Full embedded Checkout page** (`ui_mode: 'embedded_page'` in the November create reference) — The April Accept a Payment example calls this an embedded form and renders Checkout in an iframe. The server supplies a Session client secret. The create reference requires `return_url` when redirect-based payment methods are enabled and disallows `success_url` in `embedded_page` and `elements`. The separate return example places `{CHECKOUT_SESSION_ID}` in `return_url`. Checkout substitutes the ID before redirecting. The example passes it to `/session-status`, checks `session.status`, and remounts when `open`. May multicapture and older embedded examples use `complete` for success messaging. The November Checkout Session object describes `open` as in progress before payment processing and `complete` as Session completion while payment may continue processing. For paid fulfillment, verify `payment_status=paid` server-side or await `checkout.session.async_payment_succeeded` when pending, and handle `checkout.session.async_payment_failed` separately. Apply the separate no-payment-required rule when applicable. Use PaymentIntent status for capture. The Accept a Payment URL selector `ui=embedded-page` and the separate prebuilt Checkout Form’s `ui_mode=form` have their own scopes. See [[source-stripe-accept-a-payment]], [[source-stripe-multicapture]] and [[source-stripe-managed-payments-update-checkout]] for the dated examples, including migration samples that set `success_url` without selecting an embedded mode.",
+    "rationale": "Integrated the three approved guides and kept distinct the historical UI label, API mode and selector, return-template contract, Session stages, payment outcomes and later capture state."
+  },
+  "a1e4ba50f7764c862253": {
+    "path": "wiki/concepts/stripe-managed-payments.md",
+    "ids": [
+      "payments-managed-payments-tax-route",
+      "s04-mp-tax-primary-route"
+    ],
+    "baseline": "- [[source-stripe-managed-payments-tax-compliance]] — tax coverage: 80+ countries auto-handled, Japan/Singapore B2B exceptions, Stripe Tax only for unsupported countries (free), Serbia VAT caveat",
+    "replacement": "- [[source-stripe-managed-payments-tax-compliance]] — April and November 2026 tax guidance. Transaction tax coverage exceeds 80 countries. The 39-country April 2026 merchant GA milestone is a separate measure. Japan-based sellers remain responsible for indirect tax on all domestic sales. Singapore-based sellers remain responsible for domestic B2B sales when the customer identifies as a business at checkout. Where Managed Payments cannot assume the tax liability, Stripe Tax is the only compatible solution. Managed Payments transactions incur no additional fee for Stripe Tax calculation. See the dated guide for setup, Serbia VAT scope, and the invoice and receipt identity.",
+    "rationale": "Preserved the two distinct geographic measures, both domestic tax exceptions and the exact scope of Stripe Tax exclusivity and calculation fees, with the document-identity route."
+  },
+  "244b17fbba1540e5b4df": {
+    "path": "wiki/concepts/stripe-link.md",
+    "ids": [
+      "payments-link-elements-link-payment-request-button-source-route",
+      "payments-link-payment-request-button-link-link-route"
+    ],
+    "baseline": "- [[source-stripe-payment-request-button-link]] — Link in Payment Request Button (deprecated): 90-day auth window, Connect support; use ECE/PE/Auth Element instead",
+    "replacement": "- [[source-stripe-payment-request-button-link]] — Deprecated Link integration and migration to Express Checkout Element. See the November Stripe.js Endive cutoff and the dated returning-user authentication and Connect settings for supported earlier versions.",
+    "rationale": "Combined the November navigation and exact version cutoff with the retained earlier-version authentication and settings guidance."
+  },
+  "1284f01027264a462a3f": {
+    "path": "wiki/concepts/stripe-link.md",
+    "ids": [
+      "payments-link-elements-link-payment-request-button-migration",
+      "payments-link-payment-request-button-link-link-version"
+    ],
+    "baseline": "> Stripe no longer recommends the Payment Request Button for Link. Use Link Authentication Element, Express Checkout Element, or Payment Element instead.\n\nIf already using it: returning customers get 90-day auth window (any Link-enabled site); no re-auth needed within window. Connect: auto-available; platform manages for platform-processed payments.",
+    "replacement": "The May 8, 2026 Link guide recommends Link Authentication Element, Express Checkout Element or Payment Element. The November Web Elements overview marks Payment Request Button deprecated and directs existing integrations to Express Checkout Element. The separate November Link guide identifies the cutoff at Stripe.js Endive or later. Earlier Stripe.js versions can use the Element while those versions remain supported. The dedicated guide also names Contact Details Element, formerly Link Authentication Element, and Payment Element as alternatives. See [[source-stripe-payment-request-button-link]].\n\nOn supported earlier versions, returning customers can authenticate with an SMS or email code, or skip reauthentication after authenticating on a Link-enabled site within the prior 90 days. Connected accounts accessing the Element through a platform get Link automatically. Platforms manage Link for payments they process. Connected accounts manage independent payments in their own Dashboard.",
+    "rationale": "Preserved separate recommendation, deprecation and runtime version evidence while retaining the dated authentication and payment actor scope."
+  },
+  "05df8164f6f52b191bfd": {
+    "path": "wiki/concepts/stripe-link.md",
+    "ids": [
+      "payments-link-klarna-balance-scope",
+      "payments-link-link-payment-integrations-balance-timing-and-funding-detail",
+      "payments-link-payment-element-link-funding"
+    ],
+    "baseline": "**Immediate confirmation** regardless of funding. Settlement same timeline as cards.",
+    "replacement": "**Confirmation and settlement.** The [[source-stripe-link-payment-integrations|dated Link integration guide]] describes immediate confirmation and settlement of successful payments to the Stripe balance on the card timeline. The [[source-stripe-klarna-on-link#Merchant funding and payout|Klarna on Link guide]] separately describes issuer-authorized net Stripe-account credit. Later bank payout is a distinct stage. November Instant Bank Payments preserves the customer-bank dispute exception. The separate US funding guidance describes coarse `funding_source_group` reporting on the Charge, with placement varying by integration. For the [[source-stripe-payment-element-link#Funding and domain registration|browser Payment Element route]], May describes the same settlement time and guarantees for additional funding sources. November describes the same settlement time and processing behavior. See the individual payment method for the documented terms.",
+    "rationale": "Scoped confirmation, Klarna credit and general balance settlement to their respective authorities and preserved the bank dispute exception, funding fields and dated browser wording."
+  },
+  "31206c1f9ee03c16e9f0": {
+    "path": "wiki/concepts/stripe-orchestration.md",
+    "ids": [
+      "payments-orchestration-feature-support-error-prevention-path",
+      "payments-orchestration-retries-fallback",
+      "s04-route-payments-retry"
+    ],
+    "baseline": "When enabled: if the chosen processor doesn't support a required feature, Stripe auto-falls back. If Stripe also fails, retry processor is not attempted.",
+    "replacement": "When onboarding error protection is enabled, Orchestration can try Stripe if the selected main or retry processor lacks a required feature. If Stripe was already tried, failover ignores error protection to avoid a duplicate Stripe attempt. An otherwise eligible payment can still use a compatible configured retry processor. When Stripe was main and its attempt fails, Orchestration checks whether the selected retry processor can handle the payment and skips it if incompatible. An attempted Stripe fallback can also fail. Without applicable fallback, unsupported-feature request validation can return HTTP 400 `orchestration_unsupported` and name the first unsupported feature. See [[source-stripe-orchestration-feature-support]], [[source-stripe-orchestration-route-payments]] and [[source-stripe-orchestration-retries]].",
+    "rationale": "Maintained opt-in fallback, exclusion of a repeated Stripe attempt, compatible retry eligibility and separate request-validation failure."
+  },
+  "02b297f5ec6653b64a99": {
+    "path": "wiki/concepts/stripe-orchestration.md",
+    "ids": [
+      "payments-orchestration-feature-support-retry-feature-scope",
+      "payments-orchestration-retries-alternate-eligibility"
+    ],
+    "baseline": "| Retry processor doesn't support a payment feature (e.g., Connect `on_behalf_of`) | No retry |",
+    "replacement": "| The configured retry processor lacks a required feature, such as Connect `on_behalf_of` | Skip the incompatible processor. A compatible configured processor can receive an otherwise eligible retry. Evaluate opt-in error protection and the original-Stripe failover exception separately. See [[source-stripe-orchestration-retries#Unsupported-feature validation and error protection|retry and fallback scope]]. |",
+    "rationale": "Merged compatible-processor eligibility with the separate opt-in and repeated-Stripe checks inside the original single row."
+  },
+  "c097e9ad39d434f64cd9": {
+    "path": "wiki/concepts/stripe-orchestration.md",
+    "ids": [
+      "payments-orchestration-dated-exclusions",
+      "s04-route-payments-link"
+    ],
+    "baseline": "Non-card payments, Link, Capital, Connect, Terminal, Organizations, Radar (for third-party routed payments), Sigma, disputes, settlement-related activity.",
+    "replacement": "The November 7, 2026 overview excludes non-card payments, Link, Capital, Connect, Terminal, Organizations, disputes and settlement-related activity. The November routing guide explains that Link credentials cannot transfer between processors. Stripe processes Link outside the configured routing rules. Apple Pay and Google Pay have separate wallet and processor conditions.\n\nThe May 11 overview also lists Radar for third-party routed payments and Sigma as exclusions. November omits both names, leaving their support undetermined. The separate retry guide says a Stripe-main payment blocked by Stripe, for example through Radar, is treated as a decline and can be retried on the selected processor under documented conditions. See [[source-stripe-orchestration]] and [[source-stripe-orchestration-retries]].",
+    "rationale": "Preserved the exact November Link routing rule, separate wallet scope, and May-only exclusions alongside the conditional Stripe-main retry."
+  },
+  "ba086d862e5d8ec5a10c": {
+    "path": "wiki/concepts/stripe-vouchers.md",
+    "ids": [
+      "oxxo-acceptance-dated-integration",
+      "s04-oxxo-overview-integration"
+    ],
+    "baseline": "**Integration**: Checkout, Checkout Sessions API, Payment Intents API, Direct API, iOS, Android. `hosted_voucher_url` redirect. `expires_after_days`: 1–7 days (default 3), expiry at 23:59 America/Mexico_City. `stripe.confirmOxxoPayment()` for web Direct API; email only required. `next_action.oxxo_display_details.expires_after` (note: `expires_after`, not `expires_at` as with Multibanco/Konbini).",
+    "replacement": "**Integration.** The November product overview lists Checkout Sessions, Payment Intents, Payment Element and in-app payments. The May acceptance guide covers Checkout, Elements with Checkout Sessions or Payment Intents, Direct API, iOS, Android and React Native. See its dated Mexico-business conditions for Checkout and Direct API. Checkout redirects to `payment_intent.next_action.oxxo_display_details.hosted_voucher_url`. Mobile can show the voucher in an in-app webview. The voucher hub’s separate method-level redirect property has its own scope. The May Legacy Direct API opens a voucher modal with `stripe.confirmOxxoPayment()`. Collected data requires full billing name and email, with each name at least two characters. The helper can use an existing PaymentMethod ID or omit additional data when a PaymentMethod is already attached. The May guide recommends the newer path and says Legacy support could end if deprecated.\n\n**Expiry.** May documents a three-day default for Checkout Session and PaymentIntent paths and illustrates 23:59 America/Mexico_City. The November product overview gives a five-day PaymentIntent default. Both describe a 1–7 day `expires_after_days` option. The response field is `next_action.oxxo_display_details.expires_after`. The November acceptance capture links variants, while their detailed defaults and conditions remain outside that selector. See [[source-stripe-oxxo-accept-payment]].",
+    "rationale": "Kept the dated product and integration scopes, validated name requirements, alternate PaymentMethod routes and nonidentical expiry defaults."
+  },
+  "aadb8d18a10a4efcc967": {
+    "path": "wiki/concepts/stripe-custom-payment-methods.md",
+    "ids": [
+      "embedded-cpm-report-scope",
+      "payments-mobile-custom-payment-methods-recording-versions",
+      "payments-payment-element-custom-payment-methods-reporting-versioned"
+    ],
+    "baseline": "Requires beta API version. Creates a `PaymentMethod` object of type `custom`, then calls `paymentRecords.reportPayment(...)` with amount, currency, processor reference, outcome, and timing.",
+    "replacement": "The April 2026 Payment Intents Elements, mobile and embedded mobile guides show optional server-side reporting for a payment handled by an external provider. Their examples use `2026-03-25.dahlia` with `invoice_partial_payments_beta=v3`. They create a `custom` PaymentMethod using a Dashboard `cpmt_` type ID, then report the actual processor outcome, timing and external reference with the new `pm_` instance ID. Use `guaranteed` only when the PSP result supports it. See [[source-stripe-payment-element-custom-payment-methods#Recording to Stripe (Optional)]], [[source-stripe-inapp-custom-payment-methods#Optional Server-Side Reporting]] and [[source-stripe-inapp-embedded-custom-payment-methods]].\n\nThe November [[raw/stripe-api-payment-record-report-2026-11-07|Report a payment API]] example uses `POST /v1/payment_records/report_payment` with `2026-10-28.endive` and inline `payment_method_details[custom][display_name]`. It supplies no PaymentMethod ID. Its initialized response shows `payment_method: null` and zero guaranteed amount. The separate terminal outcome reporting describes external activity. Payment completion depends on the external PSP’s result. The dated examples leave merchant access and cross-version or embedded SDK compatibility undetermined.",
+    "rationale": "Merged the three reviewed source routes and kept different versioned request shapes, object IDs, PSP outcomes and optional reporting distinct."
+  }
+}

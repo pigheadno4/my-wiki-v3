@@ -1,0 +1,179 @@
+{
+  "job_id": "payments-mobilepay-accept-a-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Accept a MobilePay Payment\"\ntype: source\ndate_ingested: 2026-05-07\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/mobilepay/accept-a-payment\"\nraw_files:\n  - \"stripe-mobilepay-accept-payment-2025.md\"\ntags: [stripe, wallets, mobilepay, denmark, finland, checkout, elements, direct-api, ios, android, react-native, manual-capture, 5-minute-window]\n---\n\n## Summary\n\nThe 2026-05-07 Stripe guide describes MobilePay as a single-use card wallet used in Denmark and Finland. Stripe processes the underlying card transaction. The guide covers six variants: Checkout, Elements, Direct API, iOS, Android and React Native. The 2026-11-07 capture of the same URL indexes those six variants. The integration details below come from the May guide.\n\n## Key Details\n\n- **Checkout.** The May guide covers dynamic payment method selection and manual Checkout Session configuration with `mobilepay` in `payment_method_types`. It lists an EEA business location and EUR, DKK, SEK or NOK for every line item. Checkout is documented in payment mode only. Hosted and embedded are two presentations within Checkout.\n- **Elements.** Create the PaymentIntent on the server and confirm it with the Payment Element on the client using `stripe.confirmPayment` and a `return_url`. The guide describes Dashboard-managed and manually listed payment methods, and explicitly calls for enabling MobilePay in the Dashboard when using the Dashboard-managed path. The automatic-payment-method example uses USD as a sample currency. That sample establishes no MobilePay USD eligibility. Limit client secret exposure to the customer and use the PaymentIntent status to decide what to show on return.\n- **Direct API.** The May instructions list EUR, DKK, SEK and NOK. The example creates the PaymentIntent on the server with `mobilepay` in `payment_method_types` and `payment_method_data.type`. Confirm by PaymentIntent ID. The example moves from `requires_confirmation` to `requires_action`, at which point `next_action.redirect_to_url.url` is the customer-action destination.\n- **Mobile SDKs.** The May iOS, Android and React Native paths call for enabling MobilePay in the Dashboard and show server-created PaymentIntents with client-side SDK confirmation. iOS uses `STPPaymentHandler.confirmPayment()` with `STPPaymentMethodMobilePayParams` and a custom return URL scheme forwarded to the SDK. Android uses `PaymentLauncher.confirm()` with `ConfirmPaymentIntentParams` and the MobilePay-specific `PaymentMethodCreateParams.createMobilePay()`. React Native shows client `confirmPayment` with `paymentMethodType: \"MobilePay\"`, a webview for authorization, and custom return URL configuration scoped to iOS. The iOS 13+ compatibility wording and Android 23.7.0 example reflect the May snapshot.\n- **Customer authentication.** The May failure sections give the customer five minutes to authenticate while the PaymentIntent is in `requires_action`. On timeout the PaymentMethod detaches and the Intent returns to `requires_payment_method`. The May iOS and Android introductions say completing the purchase requires no additional action in the app, while the confirmation and failure sections describe in-app authorization and the five-minute timeout. The May guide distinguishes test-page approval or failure examples from live web redirects and app behavior. It routes post-payment actions through Stripe events such as `payment_intent.succeeded`. For fulfilment, follow the Stripe payment event rather than inferring completion from creation, redirects or an SDK callback.\n- **Manual capture.** The May Checkout, Elements and Direct API instructions specify capturing the full amount after authorization, when the PaymentIntent enters `requires_capture` and Stripe reports `payment_intent.amount_capturable_updated`. In Checkout the example sets `payment_intent_data.capture_method` to `manual`. The separate 2026-11-07 [MobilePay overview](https://docs.stripe.com/payments/mobilepay) documents manual and partial capture and says a partial capture is final: Stripe releases the uncaptured remainder and a second capture cannot collect it. See [[source-stripe-mobilepay]] for the conflicting dated guidance and separate partial refunds. The effective change date, individual variant behavior and account eligibility remain unverified.\n- **Cancellation, refunds and disputes.** The May guide documents cancelling the associated PaymentIntent before expiry. Refunds and disputes follow Visa and Mastercard network rules.\n\n## Detail locators\n\n- May raw lines 8–228 cover Checkout, including hosted and embedded examples at lines 59–117. Lines 229–832 cover Elements, including return-page status and post-payment handling at lines 611–748. Lines 833–1083 cover Direct API, including confirmation, customer redirect and test outcomes at lines 958–1025.\n- May raw lines 1084–1380 cover iOS, lines 1381–1604 Android, and lines 1605–1888 React Native. The React Native iOS return configuration and example payment-method spelling are at lines 1750–1832.\n\n## Related\n\n- [[stripe-wallets]] — MobilePay and other Stripe wallets.\n- [[stripe]] — Stripe company and source routes.\n\n## Raw Sources\n\n- [[raw/stripe-mobilepay-accept-payment-2025|MobilePay acceptance guide captured 2026-05-07]] — verbatim webpage content (1,888 lines); fixed `*Prices*` ×1, `*webhook*` ×4, `*client secret*` ×4, `*confirm*` ×3, `*PaymentMethod*` ×2, `*require*` ×1\n\n## Related raw API references\n\n- [[raw/stripe-payments-mobilepay-accept-a-payment-2026-11-07|MobilePay acceptance variant index]] — 2026-11-07 navigation capture for Checkout, Elements, Direct API, iOS, Android and React Native.\n",
+  "quotes": {
+    "payments-mobilepay-accept-a-payment": [
+      {
+        "text": "Learn how to accept MobilePay, a popular payment method in Denmark and Finland.",
+        "location": "raw/stripe-payments-mobilepay-accept-a-payment-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-mobilepay-accept-a-payment-2026-11-07.md:11"
+      },
+      {
+        "text": "- [Direct API](https://docs.stripe.com/payments/mobilepay/accept-a-payment.md?payment-ui=direct-api)",
+        "location": "raw/stripe-payments-mobilepay-accept-a-payment-2026-11-07.md:15"
+      },
+      {
+        "text": "- [React Native](https://docs.stripe.com/payments/mobilepay/accept-a-payment.md?payment-ui=mobile&platform=react-native)",
+        "location": "raw/stripe-payments-mobilepay-accept-a-payment-2026-11-07.md:19"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-mobilepay-accept-a-payment": [
+      {
+        "text": "When the PaymentIntent’s status is `requires_action`, your customer must authenticate the payment within 5 minutes.",
+        "location": "raw/stripe-mobilepay-accept-payment-2025.md:217"
+      },
+      {
+        "text": "Stripe only support manual captures of the full amount.",
+        "location": "raw/stripe-mobilepay-accept-payment-2025.md:194"
+      },
+      {
+        "text": "This guide covers how to accept MobilePay from your native mobile application using your own custom payment form. Your native mobile application redirects your customer to a webview to complete the payment on MobilePay.",
+        "location": "raw/stripe-mobilepay-accept-payment-2025.md:1615"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-mobilepay-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 19
+      }
+    ],
+    "raw/stripe-mobilepay-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 1888
+      }
+    ],
+    "wiki/sources/source-stripe-mobilepay-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 35
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/68bda928eacf6420762f0776/content.diff": [
+      {
+        "start": 1,
+        "end": 1895
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-mobilepay-accept-a-payment/attempt-3/receipt.json": [
+      {
+        "start": 1,
+        "end": 218
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-mobilepay-accept-a-payment/attempt-3/review.json": [
+      {
+        "start": 1,
+        "end": 30
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 385,
+        "end": 385
+      },
+      {
+        "start": 398,
+        "end": 410
+      }
+    ],
+    "wiki/concepts/stripe-wallets.md": [
+      {
+        "start": 210,
+        "end": 241
+      },
+      {
+        "start": 409,
+        "end": 418
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 598,
+        "end": 607
+      }
+    ],
+    "wiki/sources/source-stripe-mobilepay.md": [
+      {
+        "start": 1,
+        "end": 37
+      }
+    ],
+    "raw/stripe-payments-mobilepay-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 8
+      },
+      {
+        "start": 68,
+        "end": 100
+      }
+    ]
+  },
+  "answers": {
+    "payments-mobilepay-accept-a-payment": {
+      "Q1": "At https://docs.stripe.com/payments/mobilepay/accept-a-payment, the November 7 base capture introduces MobilePay as popular in Denmark and Finland and links Checkout, Elements, Direct API, iOS, Android and React Native (new raw lines 5-19). The fetched index leaves prerequisites, integration mechanics and transaction states to individual variants. The May 7 capture describes a single-use wallet with an underlying Stripe-processed card transaction. It documents dynamic or manual Checkout Session configuration for EEA businesses with EUR/DKK/SEK/NOK line items in payment mode, excluding setup and subscriptions (old raw lines 12-40 and 55-117). It instructs integrators to enable MobilePay in Dashboard settings for Dashboard-managed Elements before creating the Intent and for the documented iOS, Android and React Native paths (old raw lines 256-261, 1191-1195, 1463-1467 and 1695-1699). The server creates the PaymentIntent for client-side Elements or SDK confirmation. Direct API shows server confirmation and a customer-action URL (old raw lines 252-296, 515-517 and 854-1006). During requires_action the customer has five minutes to authenticate before timeout detaches the PaymentMethod and returns the Intent to requires_payment_method. In May's documented manual-capture paths, authorization instead reaches requires_capture and permits full-amount capture. Stripe sends payment_intent.succeeded when payment completes (old raw lines 123-127, 155-217 and 1027-1078). The earlier source-stripe-mobilepay-accept-payment.md used an ambiguous authorization-window label, miscounted the web variants, and omitted historical React Native (old raw lines 1605-1888). The revised entry distinguishes the six variants and indexes the historical React Native section. The separate November overview's partial-capture statement qualifies the older full-amount wording.",
+      "Q2": "At https://docs.stripe.com/payments/mobilepay/accept-a-payment, replacing the detailed bodies with six variant links is a navigation change (new raw lines 9-19). Keep the May 7 Checkout, Elements, Direct API, iOS, Android and React Native instructions dated, including the server-created PaymentIntent and client-side Elements and SDK confirmation, Direct API's next_action.redirect_to_url.url, and platform-specific return handling (old raw lines 252-296, 515-517, 958-1006, 1239-1346, 1510-1570 and 1748-1855). The May iOS and Android introductions say no additional action is required in the app, while their confirmation and failure sections describe customer authorization in the app and a five-minute requires_action window before timeout detaches the PaymentMethod and restores requires_payment_method (old raw lines 1092-1094, 1305-1340, 1371-1375, 1389-1391, 1516-1564 and 1595-1599). Keep the action and status evidence qualified by this tension. React Native's example spells the SDK value MobilePay (old raw lines 1830-1832). The revised source-stripe-mobilepay-accept-payment.md corrects the variant count, surfaces React Native, and qualifies the five-minute customer authentication deadline. The Wallets, index and company routes need matching corrections. The May acceptance guide documents full-amount-only manual capture for Checkout, Elements and Direct API in requires_capture (old raw lines 190-205, 800-815 and 1051-1066). The separate November 7 MobilePay overview at https://docs.stripe.com/payments/mobilepay expressly permits manual and partial capture and states that a partial capture is final. Stripe releases the uncaptured remainder and a second capture cannot collect it (raw/stripe-payments-mobilepay-2026-11-07.md lines 76-80 and 90-92). Add dated reciprocal warnings in the acceptance and overview summaries, including source-stripe-mobilepay.md, and qualify the shared routes that repeat the older limit. Partial refunds are distinct (November overview lines 82-85 and 94-96). The overview establishes no effective change date or every variant's or account's support. Keep historical SDK versions and test/live examples scoped. For post-payment actions the May guide relies on payment_intent.succeeded, with PaymentIntent status used for customer messaging (old raw lines 123-153, 611-665 and 744-774). Resource creation, redirects and SDK callbacks alone do not establish payment completion."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "mobilepay-capture-dated-conflict",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Manual capture**: Yes. **Disputes**: Yes (same as cards). Full and partial refunds.",
+      "proposed_markdown": "**Manual capture**: Yes. The 2026-11-07 [[source-stripe-mobilepay|overview]] also documents partial capture as final, with the remainder released and no second capture. The 2026-05-07 [[source-stripe-mobilepay-accept-payment|acceptance guide]] specifies full-amount manual capture for Checkout, Elements and Direct API. The captures leave the effective change date and individual variant and account support unverified. **Disputes**: Yes (same as cards). Full and partial refunds.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [
+        "Capture conflict is between two different URLs. November overview raw/stripe-payments-mobilepay-2026-11-07.md:76-96 and May acceptance raw/stripe-mobilepay-accept-payment-2025.md:190-205, :800-815 and :1051-1066. November acceptance raw lines 9-19 give variant navigation only."
+      ]
+    },
+    {
+      "update_id": "mobilepay-acceptance-variants-and-customer-action",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Integration**: Checkout, Elements, Direct API, iOS, Android. **5-minute authorization window** across all paths. Manual capture (full amount only). Direct API: `next_action.redirect_to_url`. Cancellation supported. iOS: `STPPaymentMethodMobilePayParams` + custom URL scheme. Refunds/disputes subject to Visa/Mastercard rules.",
+      "proposed_markdown": "**Integration (2026-05-07 guide)**: Checkout, Elements, Direct API, iOS, Android and React Native. The customer has five minutes to authenticate while the PaymentIntent is in `requires_action`. Timeout detaches the PaymentMethod and returns the PaymentIntent to `requires_payment_method`. Direct API sends the customer to `next_action.redirect_to_url.url`. The guide documents cancelling the associated PaymentIntent before expiry, iOS `STPPaymentMethodMobilePayParams` with a custom return scheme, and Visa/Mastercard rules for refunds and disputes. See [[source-stripe-mobilepay-accept-payment]] for the dated capture and SDK qualifications.",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "May acceptance raw lines 213-221, 958-1006, 1070-1082, 1239-1340 and 1605-1888 support the corresponding details. Five minutes covers customer authentication in requires_action. Read the capture qualification above for requires_capture."
+      ]
+    },
+    {
+      "update_id": "mobilepay-acceptance-reciprocal-source-route",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-mobilepay-accept-payment]] — MobilePay integration: 4 paths + mobile, 5-min auth window, manual capture full only, redirect_to_url",
+      "proposed_markdown": "- [[source-stripe-mobilepay-accept-payment]] — 2026-05-07 MobilePay acceptance guide covering Checkout, Elements, Direct API, iOS, Android and React Native, with dated customer authentication and capture guidance. The 2026-11-07 capture indexes the same six variants.",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "May acceptance raw lines 8-10, 229-231, 833-835, 1084-1086, 1381-1383 and 1605-1607 name the variants. November acceptance raw lines 9-19 contain the index."
+      ]
+    }
+  ]
+}

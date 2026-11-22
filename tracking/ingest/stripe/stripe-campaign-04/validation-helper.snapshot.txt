@@ -1,0 +1,54 @@
+from pathlib import Path
+import json,hashlib,runpy,sys,collections
+P=Path('tracking/ingest/stripe/stripe-campaign-04')
+sys.argv=['/tmp/stripe-s04-control.py','status'];mod=runpy.run_path(sys.argv[0]);jobs=json.loads((P/'jobs.json').read_text());attempts=[]
+sha=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest()
+load=lambda p:json.loads(Path(p).read_text())
+proposal=load(P/'proposal.json')
+manifest=load(P/'manifest.json')
+assert sha(P/'manifest.json')==proposal['manifest_sha256']==sha(P/'manifest.proposed.json')
+assert sha(P/'dispatch-contract.proposed.md')==proposal['contract_sha256']
+assert sha(P/'activation-context.proposed.json')==proposal['activation_context_sha256']
+assert sha(P/'proposed-queries.md')==proposal['query_prompts_sha256']
+assert len(jobs)==len({j['canonical_url'] for j in jobs})==len({j['job_id'] for j in jobs})==100
+assert len({p for j in jobs for p in j['source_targets']})==97
+assert sum(len(j['expected_read_files']) for j in jobs)==400
+assert proposal['remaining_changed_before']-len(jobs)==proposal['remaining_changed_after_proposed_review']==162
+assert proposal['new_candidates_deferred']==4265
+manifest_jobs={j['job_id']:j for j in manifest['jobs']}
+context=load(P/'activation-context.proposed.json')
+for path,expected in context['policy_sha256'].items():
+ assert sha(path)==expected,path
+for pins in context['source_to_relevant_concept_context'].values():
+ for pin in pins:
+  assert sha(pin['path'])==pin['sha256'],pin['path']
+for j in jobs:
+ assert all(j[k]==v for k,v in manifest_jobs[j['job_id']].items())
+ mod['pins'](j)
+ for n in range(1,j['attempt']+1):
+  a=P/'attempts'/j['job_id']/f'attempt-{n}'
+  if not(a/'receipt.json').exists():continue
+  ii=load(a/'input.json');ids=load(a/'identities.json');jj={**j,'attempt':n,'expected_review_scope':ii['expected_review_scope']}
+  receipt=json.loads((a/'receipt.json').read_text());mod['worker'](receipt,jj)
+  row={'job_id':j['job_id'],'attempt':n,'worker':ids['worker'],'receipt_sha256':sha(a/'receipt.json')}
+  assert ids['worker']['model']=='gpt-6.2-sol'and ids['worker']['reasoning_effort']=='medium'
+  if(a/'review.json').exists():
+   review=json.loads((a/'review.json').read_text());mod['reviewer'](review,jj);assert ids['worker']['agent']!=ids['reviewer']['agent'];assert ids['reviewer']['model']=='gpt-6.2-sol'and ids['reviewer']['reasoning_effort']=='high'
+   if n==1:assert review['review_scope']=='full'
+   if n>1:
+    prior=load(a.parent/f'attempt-{n-1}'/'review.json')
+    if prior['verdict']=='approved':
+     supplement=ii['supplementary_audit_reopen']
+     assert sha(supplement['path'])==supplement['sha256']
+     assert load(supplement['path'])['expected_review_scope']==review['review_scope']
+    else:
+     assert prior['verdict']=='changes_requested' and prior['retry_review_scope']==review['review_scope']
+   row.update({'reviewer':ids['reviewer'],'verdict':review['verdict'],'review_scope':review['review_scope'],'review_sha256':sha(a/'review.json')})
+  assert n<=3;attempts.append(row)
+ if j['state']=='approved':
+  assert sha(j['receipt_path'])==j['receipt_sha256'] and sha(j['review_path'])==j['review_sha256']
+  assert load(j['review_path'])['verdict']=='approved'
+baseline=context['aggregate_sha256'];drift=[f for f,h in baseline.items()if not Path(f).exists()or sha(f)!=h];stripe_drift=[f for f in drift if 'stripe' in f]
+out={'state':'interim'if any(j['state']not in{'approved','failed'}for j in jobs)else'complete','job_states':dict(collections.Counter(j['state']for j in jobs)),'expected_units':100,'expected_distinct_source_targets':len({s for j in jobs for s in j['source_targets']}),'evidence_pin_instances_checked':sum(len(j['expected_read_files'])for j in jobs),'all_evidence_pins_match':True,'attempts':attempts,'max_attempts_used':max(j['attempt']for j in jobs),'wiki_drift_from_activation':drift,'canonical_writes_observed':len(drift),'actual_final_answers_available':2*sum(j['state']=='approved'for j in jobs)}
+out.pop('canonical_writes_observed');out['stripe_wiki_drift_from_activation']=stripe_drift;out['s04_canonical_writes']=0;out['drift_attribution']='S04 delegates are repository-read-only and the coordinator writes tracking only.'
+(P/'attempt-validation.json').write_text(json.dumps(out,indent=2)+'\n');print(json.dumps({k:v for k,v in out.items()if k!='attempts'},indent=2))

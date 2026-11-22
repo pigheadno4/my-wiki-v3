@@ -1,0 +1,277 @@
+{
+  "job_id": "payments-overcapture",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Stripe — Overcapture\"\ntype: source\ndate_ingested: 2026-05-11\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/overcapture\"\nraw_files:\n  - \"stripe-overcapture-2026.md\"\ntags: [stripe, overcapture, capture, payment-intents, checkout, ic-plus, sca]\n---\n\n## Summary\n\nThe November 7, 2026 capture defines overcapture as capture above a PaymentIntent's authorized amount and links three web variants: Stripe-hosted Checkout, full embedded Checkout and advanced Elements. The May 11, 2026 full guide documents the mechanics below for those three routes. Overcapture requires no additional card-network authorization. The pending card statement entry updates with the final captured amount after settlement.\n\n## May 11, 2026 availability\n\n- **Pricing.** The May dedicated guide offers overcapture on IC+ and directs standard-pricing users to Stripe Support to ask for access. The separate November 7 [[source-stripe-elements-advanced-payments|Advanced Elements comparison]] lists Overcapture for both Checkout Sessions and Payment Intents under flexible scenarios marked IC+ only. The Support referral leaves exceptions, plan changes and actual account access unverified.\n- **Network and transaction restrictions.** The May guide limits overcapture to eligible online card payments and lists Visa, Mastercard, American Express and Discover. It excludes EEA businesses from the Visa rows and lists Diners Club as limited beta in the US through Discover. Eligibility and limits depend on network, merchant country and category, and where applicable issuer country and card type.\n\n## Percent Limits by Network\n\n| Network | Merchant/Country | Limit |\n| --- | --- | --- |\n| Visa | US restaurants/fast food/caterers | +30% |\n| Visa | Global restaurants/fast food, taxicabs, bars, beauty/spas | +20% |\n| Visa | Car rentals | Greater of +15% or USD 75 (or local currency equivalent) |\n| Visa | Lodging, cruise lines; all other (cardholder-initiated) | +15% |\n| Mastercard | US restaurants/fast food (US-issued cards only) | +30% |\n| AmEx | Global restaurants, bars, fast food | +30% (debit/prepaid capped at +20%) |\n| AmEx | Taxicabs, beauty/spas | +20% |\n| AmEx | Lodging, car/truck/RV rental, grocery, retail stores | +15% |\n| Discover | Global restaurants, taxicabs, bars, beauty/spas | +20% |\n| Discover | Lodging, car rentals | +15% |\n| Diners Club (beta) | US via Discover — taxicabs/limousines, restaurants/fast food, drinking places serving alcoholic beverages, beauty/barber shops and health/beauty spas | +20% |\n| Diners Club (beta) | US via Discover — lodging, car rentals | +15% |\n\n## May 11, 2026 Strong Customer Authentication (SCA)\n\nWhen the merchant and cardholder are in a country with SCA requirements, Stripe's May guide generally calls for authenticating and authorizing at least the expected capture amount. If the final amount exceeds the originally authenticated and authorized amount, the guide directs the merchant to cancel and recreate the payment unless an applicable exemption applies. A merchant-initiated transaction with the customer absent is potentially exempt. A reported capture maximum does not supersede SCA or applicable network rules.\n\n## May 11, 2026 request and capture flow\n\n1. **Hosted or full embedded Checkout.** Create the Checkout Session on the server with `mode=payment`, `payment_intent_data.capture_method=manual` and `payment_method_options.card.request_overcapture=if_available`. The May availability prose requires manual capture, but both Session creation examples omit `payment_intent_data.capture_method`. Hosted Checkout uses the Session URL and `success_url`. Full embedded Checkout uses `ui_mode=embedded_page`, the Session `client_secret` to mount Checkout in the browser, and `return_url` when configured. The JavaScript mounting example uses Dahlia Stripe.js.\n2. **Advanced Elements using PaymentIntents directly.** Create the PaymentIntent with `capture_method=manual` and request overcapture using `payment_method_options.card.request_overcapture=if_available` before or at confirmation. The direct example uses `confirm: true` and includes manual capture. Overcapture applies to a confirmed, uncaptured payment.\n3. **Check the PaymentIntent and its latest Charge server-side.** Inspect `latest_charge.payment_method_details.card.overcapture.status` and `maximum_amount_capturable`. If overcapture is `unavailable`, the maximum is the authorized amount. The May embedded return-page example labels Checkout Session `complete` as payment success. Its overcapture flow can still have an associated PaymentIntent in `requires_capture` with `amount_received=0`. A completed Session or browser return leaves capture unverified.\n4. **Capture the PaymentIntent.** Send `amount_to_capture` within the reported cap. If more is needed, incremental authorization is an option where available. The separate May beta-to-GA migration example offers a choice between overcapture and incremental authorization only when both features report `available` on the latest Charge after confirmation. The successful overcapture example moves the Intent from `requires_capture` to `succeeded`, with `amount=1200`, `amount_received=1200` and `amount_capturable=0`. The Charge's `payment_method_details.card.amount_authorized` retains the initial 1000. Settlement and the later statement update are separate stages.\n\n## May 11, 2026 test cards\n\nStripe's May guide says availability for a given network in testing carries over to live payments for that network. The examples below cover four supporting networks and one Visa card with overcapture unavailable. This network-level statement leaves individual account and transaction eligibility, capture and settlement unverified.\n\n| Number | Payment Method | Notes |\n| --- | --- | --- |\n| 4242424242424242 | pm_card_visa | Supports overcapture |\n| 5555555555554444 | pm_card_mastercard | Supports overcapture |\n| 378282246310005 | pm_card_amex | Supports overcapture |\n| 6011111111111117 | pm_card_discover | Supports overcapture |\n| 4000008400000076 | pm_card_credit_disableEnterpriseCardFeatures | Does NOT support overcapture |\n\n## Related Pages\n\n- [[stripe]]\n- [[stripe-checkout]] — Checkout Session request and capture boundaries\n- [[source-stripe-flexible-features-migration]] — dated migration example for checking both overcapture and incremental authorization\n- [[stripe-overcapture]] — concept page\n- [[stripe-multicapture]] — related IC+ capture feature (multiple partial captures vs. single overcapture)\n- [[source-stripe-payment-line-items-flexible]] — overcapture with payment line items\n\n## Raw Sources\n\n- [[raw/stripe-overcapture-2026|May 11, 2026 full overcapture guide]] — 751 lines across all three web variants. See network tables and SCA at lines 28–77, hosted Session at 79–224, embedded Session and return page at 297–568, advanced Elements PaymentIntent flow at 637–739, and test methods at 741–751.\n\n## Related raw API references\n\n- [[raw/stripe-payments-overcapture-2026-11-07|Overcapture web variant index]] — November 7, 2026 navigation to Stripe-hosted, full embedded and advanced Elements variants (lines 9–15).\n",
+  "quotes": {
+    "payments-overcapture": [
+      {
+        "text": "Use overcapture to capture more than the authorized amount for a PaymentIntent.",
+        "location": "raw/stripe-payments-overcapture-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-overcapture-2026-11-07.md:11"
+      },
+      {
+        "text": "- [Stripe-hosted page](https://docs.stripe.com/payments/overcapture.md?platform=web&ui=stripe-hosted)",
+        "location": "raw/stripe-payments-overcapture-2026-11-07.md:13"
+      },
+      {
+        "text": "- [Full embedded page](https://docs.stripe.com/payments/overcapture.md?platform=web&ui=embedded-page)",
+        "location": "raw/stripe-payments-overcapture-2026-11-07.md:14"
+      },
+      {
+        "text": "- [Advanced integration](https://docs.stripe.com/payments/overcapture.md?platform=web&ui=elements)",
+        "location": "raw/stripe-payments-overcapture-2026-11-07.md:15"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-overcapture": [
+      {
+        "text": "If `unavailable`, the maximum_amount_capturable is the amount authorized.",
+        "location": "raw/stripe-overcapture-2026.md:664"
+      },
+      {
+        "text": "If you’re on standard Stripe pricing and want access to this feature, contact us using the form at [Stripe support](https://support.stripe.com).",
+        "location": "raw/stripe-overcapture-2026.md:586"
+      },
+      {
+        "text": "If you need to capture an amount larger than the `maximum_amount_capturable`, perform an [incremental authorization](https://docs.stripe.com/payments/incremental-authorization.md) to increase the authorized amount, where available.",
+        "location": "raw/stripe-overcapture-2026.md:698"
+      },
+      {
+        "text": "If you and the cardholder are in a country that has Strong Customer Authentication (SCA) requirements",
+        "location": "raw/stripe-overcapture-2026.md:64"
+      },
+      {
+        "text": "\"status\": \"requires_capture\",",
+        "location": "raw/stripe-overcapture-2026.md:360"
+      },
+      {
+        "text": "`complete`: The payment succeeded.",
+        "location": "raw/stripe-overcapture-2026.md:536"
+      },
+      {
+        "text": "If overcapture is available on payments for a given network while testing, it’s also available on live payments.",
+        "location": "raw/stripe-overcapture-2026.md:743"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-overcapture-2026.md": [
+      {
+        "start": 1,
+        "end": 751
+      }
+    ],
+    "raw/stripe-payments-overcapture-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "wiki/sources/source-stripe-overcapture.md": [
+      {
+        "start": 1,
+        "end": 70
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/b62e92caed6a1ec7696ddb53/content.diff": [
+      {
+        "start": 1,
+        "end": 754
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 568,
+        "end": 572
+      },
+      {
+        "start": 710,
+        "end": 714
+      }
+    ],
+    "wiki/concepts/stripe-overcapture.md": [
+      {
+        "start": 1,
+        "end": 66
+      }
+    ],
+    "wiki/concepts/stripe-checkout.md": [
+      {
+        "start": 95,
+        "end": 135
+      }
+    ],
+    "wiki/sources/source-stripe-elements-advanced-payments.md": [
+      {
+        "start": 13,
+        "end": 25
+      },
+      {
+        "start": 34,
+        "end": 49
+      }
+    ],
+    "raw/stripe-payments-advanced-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 12
+      },
+      {
+        "start": 36,
+        "end": 53
+      }
+    ],
+    "raw/stripe-flexible-features-migration-2026.md": [
+      {
+        "start": 491,
+        "end": 549
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 683,
+        "end": 689
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-overcapture/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 211
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-overcapture/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 92
+      }
+    ]
+  },
+  "answers": {
+    "payments-overcapture": {
+      "Q1": "The November 7 capture at https://docs.stripe.com/payments/overcapture describes overcapture as capture above a PaymentIntent's authorized amount and routes readers to Stripe-hosted, full embedded and advanced Elements web variants (new raw lines 5-15). The mapped source-stripe-overcapture.md covers mechanics from the May 11 full guide. May describes eligible online card payments, IC+ availability with a Support route for standard pricing, and network limits (old raw lines 12-60). When the merchant and cardholder are in a country with Strong Customer Authentication requirements, the May guide generally requires authenticating and authorizing for at least the expected capture amount. Above the original authenticated and authorized amount, it directs the merchant to cancel and recreate the payment unless an applicable exemption applies. An absent-customer merchant-initiated transaction is only potentially exempt. The reported capture maximum does not supersede this SCA condition (old raw lines 62-77, old raw lines 280-295 and old raw lines 622-635). Hosted and embedded variants start with a server-created Checkout Session in payment mode and require `payment_intent_data.capture_method=manual` on the underlying PaymentIntent, though both May samples omit it. The advanced integration uses a confirmed uncaptured PaymentIntent directly. The card request uses request_overcapture=if_available. After confirmation the associated latest Charge reports status and maximum_amount_capturable, which equals the authorized amount if overcapture is unavailable. Capture the PaymentIntent within the reported cap. In the successful example it transitions from requires_capture to succeeded and updates PaymentIntent amount, amount_received and amount_capturable, while the Charge retains amount_authorized. Checkout completion and later settlement are distinct from capture. The revised source dates the full guide and distinguishes the Checkout and direct PaymentIntent request paths, the capture boundary, and the eligibility conditions (old raw lines 108-224, old raw lines 297-425 and old raw lines 637-739).",
+      "Q2": "At https://docs.stripe.com/payments/overcapture, the November capture is a navigation change. It retains the common definition and links the three variant URLs in place of their full bodies (new raw lines 5-15). The revised source-stripe-overcapture.md keeps the May 11 mechanics dated, including pricing, network/merchant/card limits and limited beta support, SCA and potential exemptions, server-side request and Charge status/cap inspection, the browser setup in the embedded path, and test-card examples (old raw lines 12-77, old raw lines 230-350, old raw lines 427-568 and old raw lines 637-751). Carry reciprocal source and concept warnings that the May hosted and embedded Session examples omit payment_intent_data.capture_method=manual despite the stated prerequisite, and that embedded Session completion can precede PaymentIntent capture. The old successful capture response and later statement update address different stages. The separate November 7 Advanced Elements matrix lists Overcapture for both Checkout Sessions and Payment Intents and labels flexible scenarios IC+ only (raw/stripe-payments-advanced-2026-11-07.md lines 36-53). The May 11 dedicated guide offers IC+ and gives standard-pricing users a Support contact route. The dedicated source and concept routes connect both dated claims to the Advanced Elements comparison. The referral documents a way to ask about access, while exceptions, plan changes and approval for standard-priced accounts remain unverified. Incremental authorization is a fallback only where available (old raw lines 22-26, old raw lines 108-149, old raw lines 179-196, old raw lines 236-244, old raw lines 307-397, old raw lines 530-562 and old raw lines 694-711). The separate May beta-to-GA example offers the two options only when both statuses on the latest Charge are available after confirmation (raw/stripe-flexible-features-migration-2026.md lines 545-549). Its condition is separate from the dedicated guide's fallback. The May limited US Diners Club beta via Discover includes drinking places serving alcoholic beverages at +20% (old raw lines 53-60). The May guide says overcapture availability during testing for a given network also applies to live payments for that network (old raw lines 741-751). That dated network-level statement leaves individual account and transaction eligibility, actual capture and settlement unverified. The November variant links supply no newer SDK or compliance evidence."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-overcapture-definition-pricing",
+      "target_path": "wiki/concepts/stripe-overcapture.md",
+      "update_kind": "durable_fact",
+      "anchor": "Overcapture lets you capture a higher amount than the original card authorization without triggering a new authorization with card networks. The pending authorization settles at the captured amount — customers see no immediate statement change. **IC+ pricing required.**",
+      "proposed_markdown": "Overcapture lets you capture a higher amount than the original card authorization without triggering a new network authorization. The customer's pending statement entry updates once the captured amount settles.\n\nThe May 11, 2026 dedicated guide offers overcapture on IC+ and directs users on standard pricing to Stripe Support to ask about access. The November 7, 2026 [[source-stripe-elements-advanced-payments|Advanced Elements matrix]] lists Overcapture for Checkout Sessions and Payment Intents under flexible scenarios marked IC+ only. The Support referral leaves exceptions, plan changes and actual access unverified. See [[source-stripe-overcapture]].",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "May dedicated raw lines 12–26, 230–244 and 574–586. November Advanced Elements raw lines 36–53."
+      ]
+    },
+    {
+      "update_id": "payments-overcapture-network-business",
+      "target_path": "wiki/concepts/stripe-overcapture.md",
+      "update_kind": "durable_fact",
+      "anchor": "- Cards: Visa (excl. EEA), Mastercard, AmEx, Discover",
+      "proposed_markdown": "- Cards in the May 2026 guide: Visa (excluding EEA businesses), Mastercard, AmEx, Discover",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "May dedicated raw lines 18–20 and 30–51."
+      ]
+    },
+    {
+      "update_id": "payments-overcapture-car-rental-cap",
+      "target_path": "wiki/concepts/stripe-overcapture.md",
+      "update_kind": "durable_fact",
+      "anchor": "| Visa | Car rentals | Greater of +15% or $75 USD |",
+      "proposed_markdown": "| Visa | Car rentals | Greater of +15% or USD 75 (or local currency equivalent) |",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "May dedicated raw lines 30–36."
+      ]
+    },
+    {
+      "update_id": "payments-overcapture-sca",
+      "target_path": "wiki/concepts/stripe-overcapture.md",
+      "update_kind": "durable_fact",
+      "anchor": "In SCA-required countries, authenticate for the highest estimated amount upfront. Exceeding the authenticated amount requires canceling and re-creating the payment. MIT (merchant-initiated transactions) may qualify for exemption.",
+      "proposed_markdown": "When the merchant and cardholder are in a country with SCA requirements, the May 2026 guide generally calls for authenticating and authorizing at least the expected capture amount. Capture above the original authenticated and authorized amount calls for canceling and recreating the payment unless an applicable exemption applies. A merchant-initiated transaction with the customer absent is potentially exempt.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "May dedicated raw lines 62–77 and 622–635."
+      ]
+    },
+    {
+      "update_id": "payments-overcapture-capture-checkout",
+      "target_path": "wiki/concepts/stripe-overcapture.md",
+      "update_kind": "durable_fact",
+      "anchor": "If `amount_to_capture` needs to exceed `maximum_amount_capturable`, use incremental authorization instead.",
+      "proposed_markdown": "If overcapture is unavailable, `maximum_amount_capturable` is the authorized amount. If a higher amount is needed, incremental authorization is an option where available.\n\nThe May 11, 2026 [[source-stripe-overcapture|Overcapture guide]] requires `payment_intent_data.capture_method=manual` for hosted and embedded Checkout, although both Session examples omit it. Embedded Session `complete` can precede PaymentIntent capture. Check the PaymentIntent and latest Charge server-side.",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "May dedicated raw lines 18–26, 108–149, 181–196, 236–244, 307–397, 530–562 and 637–698. May migration raw lines 491–549 describe checking both feature statuses."
+      ]
+    },
+    {
+      "update_id": "payments-overcapture-dated-route",
+      "target_path": "wiki/concepts/stripe-overcapture.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-overcapture]] — full guide with percent limit tables, SCA rules, test cards, all 3 integration paths",
+      "proposed_markdown": "- [[source-stripe-overcapture]] — May 2026 full guide to overcapture eligibility, request paths and capture state. November 2026 web variant index provides navigation.",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "May dedicated guide lines 8–751 and November variant index lines 7–15."
+      ]
+    },
+    {
+      "update_id": "payments-overcapture-checkout-pricing",
+      "target_path": "wiki/concepts/stripe-checkout.md",
+      "update_kind": "durable_fact",
+      "anchor": "**IC+ only** (both APIs): Multicapture, Overcapture, Extended authorization, Incremental authorization. See [[source-stripe-elements-advanced-payments]] for full comparison matrix.",
+      "proposed_markdown": "The November 7, 2026 [[source-stripe-elements-advanced-payments|Advanced Elements matrix]] lists Multicapture, Overcapture, Extended authorization and Incremental authorization for both APIs under its IC+ only footnote. The May 11, 2026 [[source-stripe-overcapture|Overcapture guide]] describes the IC+ offering and gives standard-pricing users a Support route to ask about access. Exceptions, plan changes and actual access are unverified.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "May dedicated guide lines 24–26, 242–244 and 584–586. November Advanced Elements raw lines 36–53."
+      ]
+    },
+    {
+      "update_id": "payments-overcapture-checkout-capture",
+      "target_path": "wiki/concepts/stripe-checkout.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Auth + capture**: `payment_intent_data.capture_method: 'manual'`",
+      "proposed_markdown": "- **Auth + capture**: `payment_intent_data.capture_method: 'manual'`. The May 11, 2026 [[source-stripe-overcapture|Overcapture guide]] requires `payment_intent_data.capture_method=manual` for hosted and embedded Checkout, although both Session examples omit it. Embedded Session `complete` can precede PaymentIntent capture. Check the PaymentIntent and latest Charge server-side.",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": [
+        "May dedicated guide lines 18–26, 108–147, 236–244, 307–397 and 530–562."
+      ]
+    }
+  ]
+}

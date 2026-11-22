@@ -1,0 +1,187 @@
+{
+  "job_id": "payments-ng-bank-transfer-accept-a-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Docs — Accept a payment through local bank transfers in Nigeria\"\ntype: source\ndate_ingested: 2026-05-08\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/ng-bank-transfer/accept-a-payment\"\nraw_files:\n  - \"stripe-ng-bank-transfer-accept-payment-2025.md\"\ntags: [stripe, nigeria, naira, bank-transfer, ng-bank-transfer, merchant-of-record, payment-intents, checkout]\n---\n\n## Summary\n\nThe May 8, 2026 guide covers Checkout and Direct API for Nigerian customers paying via local Naira bank transfer (`ng_bank_transfer`). Stripe directs the customer to its local merchant-of-record service provider's checkout to authenticate and authorize, then sends the customer back to the merchant site. This bank-transfer method is separate from Naira cards (`ng_card`) and the Nigerian partner is the merchant of record for this route. In the separate [[stripe-managed-payments|Stripe Managed Payments]] product Stripe is the merchant of record.\n\nThe November 7, 2026 acceptance capture links the Checkout and Direct API variants. Their detailed bodies are outside the capture, so the integration mechanics below are dated to May.\n\n## May 8, 2026 Checkout\n\nThe Checkout compatibility section lists US business locations, NGN presentment and line-item prices, and 500–100,000,000 NGN per transaction. Payment mode is supported, with setup and subscription modes excluded. The guide offers dynamic Checkout method selection or manual configuration that lists `ng_bank_transfer` in the Session's historical `payment_method_types` parameter. The hosted example sets `success_url`. The full embedded example sets `ui_mode: embedded_page` and `return_url`. For testing, the guide says to select **Nigerian payment methods** in Checkout and click **Pay**.\n\n## May 8, 2026 Direct API\n\n1. Use a Stripe account and create a PaymentIntent on the server. The May instructions list the amount, `ngn` and `ng_bank_transfer` in `payment_method_types`. The Node.js creation example additionally shows `payment_method_data.type: 'ng_bank_transfer'`.\n2. Pass the Intent's client secret to the browser. The May sample uses Dahlia Stripe.js initialized with a publishable key. The browser calls `stripe.confirmPayment` with the client secret, `payment_method_data.type: 'ng_bank_transfer'` and `return_url` to initiate the partner redirect.\n3. The May browser snippet destructures `error` and branches on it, then tries to read `result.error.message` without a `result` binding in the shown code. The November index leaves the Direct API code and its error handling unverified.\n4. The redirect back includes the `payment_intent` and `payment_intent_client_secret` query parameters. Use those identifiers to verify PaymentIntent status before displaying the outcome. The May test-key flow moves from `requires_action` to `succeeded` after test authentication, or to `requires_payment_method` after **Fail test payment**.\n5. For order confirmation or shipping, act after verifying successful payment independently of the browser return. The May guide points to `payment_intent.succeeded` and the Dashboard, a webhook or a partner integration for handling completion.\n\n## API version and country access\n\n- **Endive request fields.** The separate [Checkout Sessions changelog](https://docs.stripe.com/changelog/endive/2026-09-30/remove-payment-method-types-checkout-sessions) and [PaymentIntents changelog](https://docs.stripe.com/changelog/endive/2026-09-30/removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents) identify `2026-09-30.endive` endpoints that reject writable `payment_method_types` on Checkout Session create and PaymentIntent create, update and confirm. The PaymentIntent changelog's Impact text separately names `2026-08-26.preview`; its REST table and endpoint links specify Endive. The changelogs point to dynamic methods with optional `allowed_payment_method_types` or `excluded_payment_method_types`. An allowed list filters incompatible methods and the computed `payment_method_types` remains readable on the response. These general endpoint rules leave the current Nigerian bank-transfer variants and account eligibility unverified.\n- **Recurring and access.** The separate [[source-stripe-nigeria-payment-methods|Nigeria method overview]] said recurring bank transfer was “Coming soon” in May. The November matrix lists one-time Yes and recurring No, separately from the Naira card row. The November overview adds a preview invite request. A request, Dashboard setting or partner redirect leaves approval and live payment outcomes unverified.\n\n## Related Pages\n\n- [[stripe-nigeria-payment-methods]] — concept and dated country routes\n- [[source-stripe-nigeria-payment-methods]] — country overview, scope and access, disputes, refunds and VAT\n- [[stripe]] — Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-ng-bank-transfer-accept-payment-2025|May 8, 2026 full Naira bank transfer acceptance guide]] — verbatim webpage content, 294 lines. Checkout selection, compatibility and examples at lines 8–101. Direct API server setup at 103–151, browser setup and return at 220–272, test and completion outcomes at 274–294.\n\n## Related raw API references\n\n- [[raw/stripe-payments-ng-bank-transfer-accept-a-payment-2026-11-07|Naira bank transfer acceptance variant index]] — November 7, 2026 navigation to Checkout and Direct API (lines 7–12).\n",
+  "quotes": {
+    "payments-ng-bank-transfer-accept-a-payment": [
+      {
+        "text": "# Accept a payment through local bank transfers in Nigeria",
+        "location": "raw/stripe-payments-ng-bank-transfer-accept-a-payment-2026-11-07.md:5"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-ng-bank-transfer-accept-a-payment-2026-11-07.md:9"
+      },
+      {
+        "text": "- [Checkout](https://docs.stripe.com/payments/ng-bank-transfer/accept-a-payment.md?payment-ui=checkout)",
+        "location": "raw/stripe-payments-ng-bank-transfer-accept-a-payment-2026-11-07.md:11"
+      },
+      {
+        "text": "- [Direct API](https://docs.stripe.com/payments/ng-bank-transfer/accept-a-payment.md?payment-ui=direct-api)",
+        "location": "raw/stripe-payments-ng-bank-transfer-accept-a-payment-2026-11-07.md:12"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-ng-bank-transfer-accept-a-payment": [
+      {
+        "text": "The transaction amount must be between 500 NGN and 100,000,000 NGN.",
+        "location": "raw/stripe-ng-bank-transfer-accept-payment-2025.md:37"
+      },
+      {
+        "text": "The PaymentIntent transitions from `requires_action` to `succeeded`.",
+        "location": "raw/stripe-ng-bank-transfer-accept-payment-2025.md:276"
+      },
+      {
+        "text": "Listen for these events rather than waiting on a callback from the client.",
+        "location": "raw/stripe-ng-bank-transfer-accept-payment-2025.md:282"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-ng-bank-transfer-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 12
+      }
+    ],
+    "raw/stripe-ng-bank-transfer-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 294
+      }
+    ],
+    "wiki/sources/source-stripe-ng-bank-transfer-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 47
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/13d1b6e73c6ec973078d8196/content.diff": [
+      {
+        "start": 1,
+        "end": 297
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-ng-bank-transfer-accept-a-payment/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 189
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-ng-bank-transfer-accept-a-payment/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 40
+      }
+    ],
+    "wiki/concepts/stripe-nigeria-payment-methods.md": [
+      {
+        "start": 8,
+        "end": 84
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 418,
+        "end": 425
+      },
+      {
+        "start": 786,
+        "end": 792
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 625,
+        "end": 629
+      }
+    ],
+    "wiki/sources/source-stripe-nigeria-payment-methods.md": [
+      {
+        "start": 11,
+        "end": 50
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 555,
+        "end": 561
+      }
+    ],
+    "raw/stripe-payments-countries-nigeria-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 39
+      },
+      {
+        "start": 70,
+        "end": 117
+      }
+    ],
+    "raw/stripe-nigeria-payment-methods-2025.md": [
+      {
+        "start": 96,
+        "end": 104
+      }
+    ],
+    "raw/stripe-changelog-endive-2026-09-30-remove-payment-method-types-checkout-sessions-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 23
+      }
+    ],
+    "raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 36
+      }
+    ]
+  },
+  "answers": {
+    "payments-ng-bank-transfer-accept-a-payment": {
+      "Q1": "At https://docs.stripe.com/payments/ng-bank-transfer/accept-a-payment, the November capture gives the topic and links to Checkout and Direct API. The parent has no details on setup, eligibility or payment states (new raw lines 5-12). The May guide describes a Nigerian customer transferred to the local merchant-of-record provider to authenticate and authorize, then sent back to the merchant's site. The Checkout variant offers dynamic selection or a historical manual list, and its compatibility rules specify US businesses, NGN-only line items, 500–100,000,000 NGN and payment mode without setup or subscriptions (old raw lines 8-44). The hosted Checkout example sets success_url. The full embedded Checkout example sets return_url with ui_mode=embedded_page (old raw lines 46-97). The May Direct API setup explicitly requires a Stripe account (old raw lines 113-117). Its server creates a PaymentIntent with amount, ngn and ng_bank_transfer listed in the May instructions. The example also includes payment_method_data.type. The browser uses the client secret and publishable-key Stripe.js to confirm with that type and return_url (old raw lines 113-151 and 220-264). The return parameters identify the Intent and its client secret so the page can verify status. Test-key examples transition from requires_action to succeeded or requires_payment_method. Independently verify completion for fulfillment, with payment_intent.succeeded visible through Dashboard, webhook or partner solution (old raw lines 267-294). The revised source-stripe-ng-bank-transfer-accept-payment.md dates the historical sample field and restores dynamic Checkout and the status-verification boundary.",
+      "Q2": "At https://docs.stripe.com/payments/ng-bank-transfer/accept-a-payment, the November change is navigation: the same two historical variants appear as links, and their November bodies remain unverified (new raw lines 5-12). Keep the US/NGN and Checkout mode/amount prerequisites, distinct hosted success_url and embedded return_url examples, and client/server Direct API and test-mode states dated to May (old raw lines 8-101, 113-151 and 220-282). The revised source-stripe-ng-bank-transfer-accept-payment.md and its reciprocal Nigeria concept qualify payment_method_data.type at server creation as a sample field and distinguish verified completion from browser return. The May browser snippet destructures error and branches on it but reads result.error.message without defining result in the shown code (old raw lines 248-262). This example defect is dated to May. The linked November Direct API code remains unverified. The separate 2026-09-30.endive changelogs remove writable payment_method_types on Checkout Session creation and applicable PaymentIntent requests and describe dynamic selection or allowed/excluded compatibility filtering. The reciprocal route keeps those changes separate from the November parent capture. The country overview's November invite-request step and Yes/No one-time/recurring matrix qualify use independently of the historical May Coming soon wording. An invite request is distinct from approval and the transfer path is distinct from Naira cards and Stripe Managed Payments."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-ng-bank-transfer-accept-a-payment-dated-flow",
+      "target_path": "wiki/concepts/stripe-nigeria-payment-methods.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Amount limits**: 500–100,000,000 NGN\n- **Checkout**: add `ng_bank_transfer` to `payment_method_types`; all line items in `ngn`; no setup/subscription mode\n- **Direct API**: create PaymentIntent with `ng_bank_transfer` **and** `payment_method_data: { type: 'ng_bank_transfer' }` at creation; then client-side `stripe.confirmPayment()` with same `payment_method_data.type` + `return_url`\n- **Redirect params on return**: `payment_intent` + `payment_intent_client_secret`\n- **Testing**: success → `requires_action` → `succeeded`; fail → click \"Fail test payment\" → `requires_payment_method`\n- **Post-payment**: `payment_intent.succeeded` webhook",
+      "proposed_markdown": "- **Checkout (May 2026)**: US businesses, 500–100,000,000 NGN, all line items in NGN and payment mode only. Use dynamic selection or the historical `ng_bank_transfer` list. The hosted example uses `success_url`; the embedded example uses `return_url` and `ui_mode: embedded_page`.\n- **Direct API (May 2026)**: The server creates an NGN PaymentIntent and passes its client secret to the browser. The creation example includes `payment_method_data.type`; the stated creation prerequisites list amount, currency and the historical method list. Browser `stripe.confirmPayment` uses the transfer type and `return_url`. The return identifiers let the merchant verify Intent status, and business actions follow verified `payment_intent.succeeded`. Test-key transitions describe sandbox outcomes.\n- **API version**: The separate Endive changelogs remove writable `payment_method_types` in the documented `2026-09-30.endive` Checkout Session create and PaymentIntent create/update/confirm endpoints. Dynamic methods and compatibility filters are distinct from the computed response property. See [[source-stripe-ng-bank-transfer-accept-payment]] for the endpoint version, example defect, test paths and November navigation boundary.\n- **Access and recurring**: The country overview's May “Coming soon” recurring cell is historical. The November bank-transfer row is Yes for one-time and No for recurring; the preview invite request leaves approval unverified. See [[source-stripe-nigeria-payment-methods]].",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "May acceptance raw lines 8–101, 113–151 and 220–294. November acceptance raw lines 5–12. Separate Endive changelog excerpts: Checkout lines 7–23 and PaymentIntents lines 7–24, 28 and 34–36. May Nigeria overview lines 96–104 and November lines 70–117."
+      ]
+    },
+    {
+      "update_id": "payments-ng-bank-transfer-accept-a-payment-dated-route",
+      "target_path": "wiki/concepts/stripe-nigeria-payment-methods.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-ng-bank-transfer-accept-payment]] — Naira bank transfer integration: ng_bank_transfer, 500–100M NGN limits, confirmPayment(), redirect flow, test modes",
+      "proposed_markdown": "- [[source-stripe-ng-bank-transfer-accept-payment]] — May Naira bank-transfer Checkout and Direct API guide, including dated request fields, Endive warning and verification after partner redirect. The November capture is variant navigation.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "May raw lines 8–101, 113–151 and 220–294. November raw lines 5–12."
+      ]
+    }
+  ]
+}

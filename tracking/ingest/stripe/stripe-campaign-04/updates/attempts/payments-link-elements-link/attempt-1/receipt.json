@@ -1,0 +1,269 @@
+{
+  "job_id": "payments-link-elements-link",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Docs — Link with Web Elements\"\ntype: source\ndate_ingested: 2026-05-08\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/link/elements-link\"\nraw_files:\n  - \"stripe-payments-link-elements-link-2026-11-07.md\"\n  - \"stripe-elements-link-2025.md\"\ntags: [stripe, link, link-authentication-element, elements, payment-element, react, email, autofill]\n---\n\n## Summary\n\nThe November 7, 2026 overview describes one-click Link checkout on a custom payment page using Web Elements. New Link customers can save payment details and shipping information for later checkouts. The same URL contained the May 8, 2026 standalone Link Authentication Element implementation, preserved below.\n\n## Web Elements Routes (November 7, 2026)\n\n- [[source-stripe-payment-element-link|Payment Element]] — Recommended. Starts the Link flow when the customer selects a supported payment method.\n- [[source-stripe-express-checkout-link|Express Checkout Element]] — Recommended. Displays Link alongside Apple Pay, Google Pay and PayPal.\n- [[stripe-link-authentication-element|Contact Details Element]] — Collects email and authenticates Link customers in the same field.\n- [[source-stripe-payment-request-button-link|Payment Request Button]] — Deprecated. Stripe directs existing Link integrations to migrate to Express Checkout Element.\n- [[source-stripe-card-element-link|Card Element]] — Supports saving and autofilling payment information. The separate Card Element guide recommends other Web Elements for new integrations.\n\nThe overview routes readers to [[source-stripe-link-payment-integrations]] for integration-specific behavior. The listed routes leave per-customer eligibility and payment outcomes to their respective integrations and runtime results.\n\n## Link Authentication Element (May 8, 2026 PaymentIntent Guide)\n\nThe May guide uses one field for email collection and Link authentication. When the customer’s email is already known, Stripe recommends [passing it directly to the Payment Element](https://docs.stripe.com/payments/link/payment-element-link.md?elements=pass-email). A customer without a Link account can be offered sign-up after selecting a supported credit card, debit card or US bank account. When an email matches an existing Link account, Stripe sends a one-time code to the customer’s phone. Stripe displays their Link-saved addresses and payment methods after successful authentication.\n\nRegister the payment domain. In standard Elements with a PaymentIntent, initialize the Elements instance with the PaymentIntent client secret and optionally use the skeleton loader (`loader: 'auto'`). The May guide renders the authentication field early, followed by an optional Address Element and the Payment Element. The components can be placed on different pages, with one rendering of the authentication field per flow.\n\n### Stripe.js\n\n```js\nconst elements = stripe.elements({ clientSecret, loader: 'auto' });\nconst linkAuthElement = elements.create('linkAuthentication', {\n  defaultValues: { email: 'customer@example.com' }\n});\nlinkAuthElement.mount('#link-authentication-element');\n```\n\nThe email default is optional. The distinct Payment Element can receive prefilled billing details such as name and phone.\n\n### React and Email Changes\n\nThe May example wraps the form with a standard `<Elements>` provider using the PaymentIntent client secret and optional loader. It prints lowercase `<linkAuthenticationElement>` for JSX. That is a discrepancy in the legacy example. In the retained `@stripe/react-stripe-js@7.0.0` root entrypoint, use `<LinkAuthenticationElement>` for `linkAuthentication` or `<ContactDetailsElement>` for `contactDetails`. Both names are standard Elements exports in that snapshot. The separate `LinkSignupElement` export requires beta access and creates `linkSignup`. See [[source-github-react-stripe-js]].\n\nFor the documented email event, the handler reads `event.value.email` through the React `onChange` prop. It fires after the customer changes the email or Link autofills a saved email. Pass `options.defaultValues.email` only if prefilling is appropriate. The November dedicated Contact Details guide retains this behavior, domain registration and the one-field layout.\n\n## Contact Details Rename and API Scope\n\nThe May 27, 2026 Dahlia rename keeps the same standard Elements contact collection and Link sign-in behavior. Stripe continues to support both `elements.create('linkAuthentication')` and `elements.create('contactDetails')`, with no change required for an existing integration. The November overview uses the name Contact Details Element. The Payment Request Button migration applies to the deprecated button.\n\nA separate May 27 Dahlia change adds Contact Details email collection, validation and Link sign-in in Elements integrations using Checkout Sessions at the linked `2026-05-27.dahlia` API version. Checkout Sessions previously required a custom email input and `updateEmail`. The standard PaymentIntent client-secret setup and root React wrapper above are scoped to their own integration. The retained 7.0.0 React Checkout entrypoint exports its own `ContactDetailsElement`. See the two dated changelog captures below and the [[stripe-link-authentication-element]] concept.\n\nEmail collection, Link authentication and autofill precede or support the checkout flow. Payment confirmation, capture and settlement require separate evidence.\n\n## CDN Assets\n\n- `raw/assets/stripe-link-authentication-element.png` — May checkout page illustration (639 KB)\n\n## Related Pages\n\n- [[stripe-link]] — Link concept and integration routes\n- [[stripe-link-authentication-element]] — Contact Details and Link Authentication Element behavior\n- [[source-stripe-link-authentication-element]] — earlier source on the field, loader, onChange and prefill\n- [[source-github-react-stripe-js]] — dated React root and Checkout entrypoint declarations\n- [[stripe]] — company page\n\n## Related raw API references\n\n- [[raw/stripe-payments-link-contact-details-element-2026-11-07|November 7 Contact Details guide]] — dedicated implementation guide\n- [[raw/stripe-changelog-dahlia-2026-05-27-link-authentication-element-rename-2026-11-07|May 27 Dahlia rename]] — preserves standard creation strings and behavior\n- [[raw/stripe-changelog-dahlia-2026-05-27-add-contact-details-element-to-checkout-2026-11-07|May 27 Dahlia Checkout Sessions addition]] — version-linked email collection, validation and Link sign-in\n\n## Raw Sources\n\n- [[raw/stripe-payments-link-elements-link-2026-11-07|November 7, 2026 Link with Web Elements overview]] — full capture including per-surface integration guidance\n- [[raw/stripe-elements-link-2025|May 8, 2026 Link Authentication Element guide]] — full historical capture\n",
+  "quotes": {
+    "payments-link-elements-link": [
+      {
+        "text": "Customers new to Link can save their payment details and shipping information to enable faster checkout in the future.",
+        "location": "raw/stripe-payments-link-elements-link-2026-11-07.md:9"
+      },
+      {
+        "text": "Trigger Link in the Payment Element whenever a customer selects a supported payment method.",
+        "location": "raw/stripe-payments-link-elements-link-2026-11-07.md:13"
+      },
+      {
+        "text": "Display Link alongside Apple Pay, Google Pay, and PayPal using the Express Checkout Element.",
+        "location": "raw/stripe-payments-link-elements-link-2026-11-07.md:15"
+      },
+      {
+        "text": "Use the Contact Details Element to create an email input field that authenticates Link customers.",
+        "location": "raw/stripe-payments-link-elements-link-2026-11-07.md:17"
+      },
+      {
+        "text": "The Payment Request Button is deprecated.",
+        "location": "raw/stripe-payments-link-elements-link-2026-11-07.md:19"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-link-elements-link": [
+      {
+        "text": "Create a single email input for both email collection and Link authentication.",
+        "location": "raw/stripe-elements-link-2025.md:6"
+      },
+      {
+        "text": "Only show it once.",
+        "location": "raw/stripe-elements-link-2025.md:116"
+      },
+      {
+        "text": "The `onChange` handler fires when a user updates the email field or Link autofills a saved customer email.",
+        "location": "raw/stripe-elements-link-2025.md:120"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-link-elements-link-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 21
+      }
+    ],
+    "raw/stripe-elements-link-2025.md": [
+      {
+        "start": 1,
+        "end": 134
+      }
+    ],
+    "wiki/sources/source-stripe-elements-link.md": [
+      {
+        "start": 1,
+        "end": 58
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/aaf8acd12e2ea4bb9a903495/content.diff": [
+      {
+        "start": 1,
+        "end": 142
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-link-elements-link/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 203
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-link-elements-link/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 78
+      }
+    ],
+    "wiki/concepts/stripe-link-authentication-element.md": [
+      {
+        "start": 8,
+        "end": 85
+      }
+    ],
+    "wiki/concepts/stripe-link.md": [
+      {
+        "start": 67,
+        "end": 82
+      },
+      {
+        "start": 118,
+        "end": 186
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 445,
+        "end": 452
+      },
+      {
+        "start": 774,
+        "end": 774
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 4,
+        "end": 9
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 655,
+        "end": 655
+      }
+    ],
+    "wiki/sources/source-stripe-link-authentication-element.md": [
+      {
+        "start": 11,
+        "end": 28
+      },
+      {
+        "start": 70,
+        "end": 83
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 67,
+        "end": 73
+      }
+    ],
+    "raw/stripe-payments-link-contact-details-element-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 58
+      },
+      {
+        "start": 99,
+        "end": 130
+      }
+    ],
+    "raw/stripe-payments-link-card-element-link-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 24
+      }
+    ],
+    "raw/stripe-changelog-dahlia-2026-05-27-link-authentication-element-rename-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "raw/stripe-changelog-dahlia-2026-05-27-add-contact-details-element-to-checkout-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 19
+      }
+    ],
+    "raw/github/stripe/react-stripe-js/snapshots/2026-10-16-3b42f3d/files/package.json": [
+      {
+        "start": 1,
+        "end": 11
+      }
+    ],
+    "raw/github/stripe/react-stripe-js/snapshots/2026-10-16-3b42f3d/files/src/index.ts": [
+      {
+        "start": 102,
+        "end": 126
+      }
+    ],
+    "raw/github/stripe/react-stripe-js/snapshots/2026-10-16-3b42f3d/files/src/checkout/index.ts": [
+      {
+        "start": 44,
+        "end": 62
+      }
+    ],
+    "wiki/sources/stripe/github/source-github-react-stripe-js.md": [
+      {
+        "start": 73,
+        "end": 100
+      }
+    ]
+  },
+  "answers": {
+    "payments-link-elements-link": {
+      "Q1": "At https://docs.stripe.com/payments/link/elements-link, November describes one-click Link checkout in Web Elements, where new Link customers can save payment and shipping information. It recommends triggering Link on selection of a supported method in Payment Element or showing Link in Express Checkout Element beside Apple Pay, Google Pay and PayPal. Contact Details Element uses an email field to authenticate Link customers. Payment Request Button is deprecated, with existing Link integrations directed to Express Checkout Element, and Card Element remains a save and autofill route (new raw lines 5-21). The May 8 guide documents a standalone PaymentIntent Link Authentication Element using a client secret and a registered domain, with optional prefilled email and an optional Address Element between the authentication and payment components. Customers without a Link account can be offered sign-up after choosing a supported credit card, debit card or US bank account. Stripe displays a returning customer's Link-saved addresses and methods after successful authentication with a one-time code sent to their phone. May also recommends passing already-known email directly to Payment Element (old raw lines 6-12, old raw lines 19-50 and old raw lines 54-128). Before this revision, source-stripe-elements-link.md lines 13-22 retained the sign-up and phone-code behavior while leaving out the known-email alternative. Its lines 34-44 reproduced the old lowercase React JSX. The revision covers the preferred November routes and restores the dated May alternative. Client authentication and autofill establish no payment confirmation, capture or settlement.",
+      "Q2": "At https://docs.stripe.com/payments/link/elements-link, replacing the full how-to with links is structural, while the preferred routes, their trigger and display behavior, the renamed authentication route and the Payment Request Button migration affect integration decisions (new raw lines 9-21). In source-stripe-elements-link.md preserve the dated setup, sign-up and successful phone-OTP conditions, registered domain, optional shipping placement, email prefill, single rendering and change handler (old raw lines 6-50 and old raw lines 54-128). Link May guidance and November routes reciprocally. The May 27 Dahlia rename preserves behavior and both standard Stripe.js creation strings, `linkAuthentication` and `contactDetails`, with existing integrations requiring no change (raw/stripe-changelog-dahlia-2026-05-27-link-authentication-element-rename-2026-11-07.md:5-13). The legacy lowercase `<linkAuthenticationElement>` JSX is the example discrepancy. The retained @stripe/react-stripe-js 7.0.0 standard root exports `LinkAuthenticationElement` and `ContactDetailsElement`, mapped to their corresponding Stripe.js strings, and `LinkSignupElement` is a separate beta (raw/github/stripe/react-stripe-js/snapshots/2026-10-16-3b42f3d/files/package.json:1-11 and raw/github/stripe/react-stripe-js/snapshots/2026-10-16-3b42f3d/files/src/index.ts:102-119). Scope those root Elements and client-secret examples to standard PaymentIntent integration. The separate May 27 addition links to Checkout Sessions API version 2026-05-27.dahlia for Contact Details Element email collection, validation and Link sign-in, where Checkout Sessions previously required a custom email input with `updateEmail` (raw/stripe-changelog-dahlia-2026-05-27-add-contact-details-element-to-checkout-2026-11-07.md:5-15). The root exports do not define the Checkout entrypoint. The deprecation and recommended Express Checkout migration apply to Payment Request Button. The listed Card Element route retains its save and autofill purpose, with a separate guide preferring other Elements. The overview establishes neither runtime interoperability nor a completed payment."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-link-elements-link-field-authentication",
+      "target_path": "wiki/concepts/stripe-link-authentication-element.md",
+      "update_kind": "durable_fact",
+      "anchor": "The Link Authentication Element is a single email input field that serves two purposes simultaneously: collecting the customer's email address and triggering Link authentication for returning Link users. When a returning customer enters their email, Stripe autofills their saved payment and shipping details.",
+      "proposed_markdown": "Contact Details Element, previously Link Authentication Element, collects an email address and starts Link authentication from one field. In the dated standard Elements flow, a recognized Link email triggers a one-time code to the customer’s phone. Successful authentication allows Stripe to display saved addresses and payment methods. See [[source-stripe-elements-link]].",
+      "warnings": [
+        "May raw lines 6-12 and 46-50 and November overview raw lines 15-21. Separate Contact Details raw lines 7-13 and 44-55 confirm the same success gate."
+      ],
+      "quote_indexes": [
+        3
+      ]
+    },
+    {
+      "update_id": "payments-link-elements-link-react-names",
+      "target_path": "wiki/concepts/stripe-link-authentication-element.md",
+      "update_kind": "durable_fact",
+      "anchor": "React: `<LinkAuthenticationElement />` from `@stripe/react-stripe-js` inside an `<Elements>` provider.",
+      "proposed_markdown": "React in the retained `@stripe/react-stripe-js@7.0.0` standard root uses `<LinkAuthenticationElement>` or `<ContactDetailsElement>` inside the `<Elements>` provider for this PaymentIntent client-secret flow. The lowercase JSX printed in the May guide differs from these exports. Standard Stripe.js creation strings are lowercase `linkAuthentication` and `contactDetails`. `LinkSignupElement` is a separate beta export. See [[source-github-react-stripe-js]].",
+      "warnings": [
+        "May raw lines 31-36, 62-66, 88-93 and 120-128. Retained 7.0.0 package metadata lines 1-11 and root source lines 102-119."
+      ],
+      "quote_indexes": []
+    },
+    {
+      "update_id": "payments-link-elements-link-integration-boundaries",
+      "target_path": "wiki/concepts/stripe-link-authentication-element.md",
+      "update_kind": "durable_fact",
+      "anchor": "- Works with both Checkout Sessions API and Payment Intents API",
+      "proposed_markdown": "- The May client-secret setup is a standard PaymentIntent Elements flow. The May 27 Dahlia rename retains `linkAuthentication` and `contactDetails` creation strings and preserves the documented behavior for existing integrations.\n- The separate May 27 Dahlia change adds Contact Details Element email collection, validation and Link sign-in with Elements and Checkout Sessions at the linked `2026-05-27.dahlia` API version. The prior Checkout Sessions route used a custom email input with `updateEmail`. Checkout’s React entrypoint in the retained 7.0.0 snapshot has its own `ContactDetailsElement` export. See [[source-stripe-elements-link#Contact Details Rename and API Scope]].",
+      "warnings": [
+        "Separate May 27 rename raw lines 5-13 and Checkout Sessions addition raw lines 5-15. Retained Checkout source lines 44-62 establish its own export."
+      ],
+      "quote_indexes": []
+    },
+    {
+      "update_id": "payments-link-elements-link-link-authentication-scope",
+      "target_path": "wiki/concepts/stripe-link.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Link Authentication Element\n\nSingle email input field that serves two purposes: collecting customer email + triggering Link auth for returning users. When a returning Link user enters their email, Stripe autofills saved payment and shipping details.",
+      "proposed_markdown": "## Contact Details Element (formerly Link Authentication Element)\n\nThe email field collects customer email and starts Link authentication. In the dated PaymentIntent Elements flow, Link sends a recognized customer a one-time phone code and displays saved addresses and payment methods after successful authentication. Both standard Stripe.js creation strings remain documented for the renamed field. The separate Link Signup Element is a beta surface. See [[stripe-link-authentication-element]] and [[source-stripe-elements-link]].",
+      "warnings": [
+        "May raw lines 6-12, 46-50. November overview raw lines 15-21. May 27 Dahlia rename raw lines 5-13 and retained React root source lines 102-119."
+      ],
+      "quote_indexes": [
+        3
+      ]
+    },
+    {
+      "update_id": "payments-link-elements-link-card-element-scope",
+      "target_path": "wiki/concepts/stripe-link.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Card Element (Deprecated for Link)\n\n> Not recommended — use Link Authentication Element, Express Checkout Element, or Payment Element instead.",
+      "proposed_markdown": "## Card Element (Available for Link Saving and Autofill)\n\nThe November Web Elements overview still lists this save and autofill route. The separate Card Element guide no longer recommends the Card Element for Web Elements, and names Contact Details Element, Express Checkout Element and Payment Element as preferred routes. See [[source-stripe-card-element-link]].",
+      "warnings": [
+        "November overview raw lines 17-21 and November Card Element guide raw lines 5-13."
+      ],
+      "quote_indexes": []
+    },
+    {
+      "update_id": "payments-link-elements-link-payment-request-button-migration",
+      "target_path": "wiki/concepts/stripe-link.md",
+      "update_kind": "durable_fact",
+      "anchor": "> Stripe no longer recommends the Payment Request Button for Link. Use Link Authentication Element, Express Checkout Element, or Payment Element instead.",
+      "proposed_markdown": "> The November Web Elements overview labels Payment Request Button deprecated and directs existing Link integrations to migrate to Express Checkout Element. See [[source-stripe-payment-request-button-link]].",
+      "warnings": [
+        "November Web Elements raw lines 17-21 distinguish the deprecated Payment Request Button from Contact Details and the Card Element route."
+      ],
+      "quote_indexes": [
+        4
+      ]
+    }
+  ]
+}

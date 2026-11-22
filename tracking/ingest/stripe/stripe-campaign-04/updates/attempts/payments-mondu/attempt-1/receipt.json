@@ -1,0 +1,237 @@
+{
+  "job_id": "payments-mondu",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Mondu Payments\"\ntype: source\ndate_ingested: 2026-05-06\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/mondu\"\nraw_files:\n  - \"stripe-payments-mondu-2026-11-07.md\"\n  - \"stripe-mondu-2025.md\"\ntags: [stripe, bnpl, mondu, buy-now-pay-later, b2b, europe, uk, disputes, refunds]\n---\n\n## Summary\n\nMondu offers businesses and marketplaces B2B invoice payment on 30-day net terms for the buyer. The buyer initiates payment, follows a redirect to Mondu for a credit check, then returns to the merchant. Check the payment status after the redirect to determine the outcome. The May and November 2026 guides describe upfront merchant payment and label payout timing Standard. The captures give no bank payout schedule.\n\n## Key Details\n\n- **Availability.** Customer locations are EU and UK. Separately, the guides list 14 Stripe-account business locations (AT, BE, CH, DE, DK, ES, FI, FR, GB, IT, NL, NO, PL and SE). The method lists EUR, CHF and GBP presentment, with EUR as default. Its map lists EUR for DE, NL, FR, FI, AT, IT, ES, BE, PL, NO, DK, SE and CH, CHF for CH, and GBP for GB. The May acceptance guide separately lists EUR for Checkout and the Elements route using Checkout Sessions. See [[source-stripe-mondu-accept-payment]] for the dated integration variants.\n- **Connect.** The November 7 method capture says Yes. It adds an email-based early-access route with eligibility screening and a waitlist for applicants who qualify, alongside Dashboard enablement and dynamic display for eligible payments. The capture does not specify eligible Connect account configurations, charge types or provisioning dates. The May 6 method capture said No while the May cross-method matrix said Supported. The November method and cross-method labels agree.\n- **Products and payment behavior.** The method overview lists Payment Links, Checkout and Elements. This excludes Checkout setup and subscription modes and the Express Checkout Element. The guides describe customer-initiated confirmation, no recurring payments, manual capture support and a manual configuration route when integrations list methods explicitly.\n- **Stripe product and API matrices.** The May and November BNPL product matrices both list Stripe Invoicing and Stripe Subscriptions as Unsupported for Mondu. The buyer’s Mondu invoice is a separate product. Both API matrices list PaymentIntents, manual capture, redirect and `setup_future_usage`, with the latter limited by the footnote to `off_session` for supported non-card/non-bank-debit methods. They list SetupIntents as Unsupported. Mobile Payment Element changes from Unsupported in May to Supported in November in the product matrix. The matrix does not specify a Mondu mobile integration or account entitlement. See [[source-stripe-bnpl-overview]] for the dated tables.\n- **Charge limit and prohibited categories.** The November maximum is 19,999.99 EUR or the equivalent in supported currencies. Neither capture gives a minimum. Consult “Prohibited and restricted business categories” in the method capture and Stripe’s linked restrictions. Mondu reserves discretion to prohibit other categories. The method list is unchanged between captures.\n- **Disputes.** November gives customers 120 calendar days from the transaction to initiate a dispute and merchants 15 calendar days to submit evidence. The start of the merchant evidence clock is unspecified. The May capture gave merchants 12 calendar days and did not state a customer filing window. Stripe notifies by email, Dashboard or configured `charge.dispute.created` webhook and holds the disputed amount until Mondu resolves the case. Merchants can submit evidence through Dashboard or the disputes API. A merchant win returns the amount to the Stripe balance. A customer win leaves it with the customer.\n- **Refunds.** Full and partial refunds are available up to 180 days after purchase. The documented asynchronous completion time is up to five minutes. Use `refund.updated` or `refund.failed` and the final `Refund.status` to determine the outcome. On success the status is `succeeded`. On failure the amount returns to the Stripe balance and the merchant must arrange an alternative refund.\n\n## Related\n\n- [[stripe]] — Stripe company profile\n- [[stripe-bnpl]] — Stripe BNPL concept and dated product and API boundaries\n\n## Raw Sources\n\n- [[raw/stripe-payments-mondu-2026-11-07|Stripe Mondu payments, captured 2026-11-07]] — full method overview (273 lines)\n- [[raw/stripe-mondu-2025|Stripe Mondu payments, captured 2026-05-06]] — verbatim webpage content (261 lines); fixed `_webhook_` → `*webhook*`; MP4 video URL left as-is\n",
+  "quotes": {
+    "payments-mondu": [
+      {
+        "text": "- **Connect support**\n\n  Yes",
+        "location": "raw/stripe-payments-mondu-2026-11-07.md:37-39"
+      },
+      {
+        "text": "We'll work with you to determine your eligibility and add you to the waitlist if you qualify.",
+        "location": "raw/stripe-payments-mondu-2026-11-07.md:84"
+      },
+      {
+        "text": "Customers can initiate a dispute within 120 calendar days of the transaction.",
+        "location": "raw/stripe-payments-mondu-2026-11-07.md:236"
+      },
+      {
+        "text": "You must submit the requested information within 15 calendar days.",
+        "location": "raw/stripe-payments-mondu-2026-11-07.md:256"
+      },
+      {
+        "text": "When a refund succeeds, the [Refund](https://docs.stripe.com/api/refunds/object.md) object’s status transitions to `succeeded`.",
+        "location": "raw/stripe-payments-mondu-2026-11-07.md:265"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-mondu": [
+      {
+        "text": "- **Connect support**\n\n  No",
+        "location": "raw/stripe-mondu-2025.md:36-38"
+      },
+      {
+        "text": "You must submit the requested information within 12 calendar days.",
+        "location": "raw/stripe-mondu-2025.md:244"
+      },
+      {
+        "text": "The maximum charge limit is 19,999,99 EUR or the equivalent for other supported currencies.",
+        "location": "raw/stripe-mondu-2025.md:103"
+      },
+      {
+        "text": "You get paid immediately.",
+        "location": "raw/stripe-mondu-2025.md:8"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-mondu-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 273
+      }
+    ],
+    "raw/stripe-mondu-2025.md": [
+      {
+        "start": 1,
+        "end": 261
+      }
+    ],
+    "wiki/sources/source-stripe-mondu.md": [
+      {
+        "start": 1,
+        "end": 31
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/e86da9eb571ad150f64a24f5/content.diff": [
+      {
+        "start": 1,
+        "end": 91
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 13
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 333,
+        "end": 346
+      },
+      {
+        "start": 743,
+        "end": 750
+      }
+    ],
+    "wiki/concepts/stripe-bnpl.md": [
+      {
+        "start": 16,
+        "end": 43
+      },
+      {
+        "start": 173,
+        "end": 197
+      },
+      {
+        "start": 256,
+        "end": 269
+      }
+    ],
+    "wiki/sources/source-stripe-bnpl-overview.md": [
+      {
+        "start": 1,
+        "end": 44
+      }
+    ],
+    "wiki/sources/source-stripe-mondu-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 25
+      }
+    ],
+    "raw/stripe-payments-buy-now-pay-later-2026-11-07.md": [
+      {
+        "start": 37,
+        "end": 72
+      }
+    ],
+    "raw/stripe-bnpl-overview-2025.md": [
+      {
+        "start": 38,
+        "end": 71
+      }
+    ],
+    "raw/stripe-payments-mondu-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "raw/stripe-mondu-accept-payment-2025.md": [
+      {
+        "start": 16,
+        "end": 35
+      },
+      {
+        "start": 95,
+        "end": 112
+      },
+      {
+        "start": 1094,
+        "end": 1103
+      },
+      {
+        "start": 1122,
+        "end": 1139
+      },
+      {
+        "start": 1376,
+        "end": 1380
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-mondu/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 222
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-mondu/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 104
+      }
+    ]
+  },
+  "answers": {
+    "payments-mondu": {
+      "Q1": "For https://docs.stripe.com/payments/mondu, the November 7, 2026 guide describes customer invoice payment offered by Mondu on 30-day net terms and a customer-initiated redirect to Mondu for a credit check, followed by return to the merchant (old raw lines 6-8 and new raw lines 7-9). These are the buyer’s Mondu terms. The separate May and November BNPL matrices both mark Stripe Invoicing and Stripe Subscriptions Unsupported for Mondu (May BNPL raw lines 40-48 and November BNPL raw lines 41-49). Their footnoted `setup_future_usage` support does not establish recurring payments. Both captures list EU/UK customers, 14 Stripe-account business locations, EUR/CHF/GBP presentment by country with EUR default, and Standard payout timing. The paid-upfront wording does not prove bank payout, and browser return does not prove approval or payment success (old raw lines 6-79, new raw lines 7-80, old raw lines 255-261 and new raw lines 267-273). The method lists Payment Links, Checkout and Elements, with no Express Checkout Element, no Checkout setup or subscription modes, and no recurring payments. It documents manual capture support and a maximum of 19,999.99 EUR or equivalent (new raw lines 41-51 and new raw lines 113-115). Dashboard enablement and dynamic selection remain, and November adds an email-based early access eligibility review and conditional waitlist alongside the method’s Connect Yes (old raw lines 36-38 and old raw lines 86-99, new raw lines 37-39 and new raw lines 72-111). November gives customers 120 calendar days from the transaction to dispute and merchants 15 calendar days to submit evidence. Stripe can notify through email, Dashboard, or the configured `charge.dispute.created` webhook and holds the disputed amount pending Mondu’s decision. A merchant win returns it to the Stripe balance. A customer win leaves it with the customer. Full and partial refunds up to 180 days after purchase remain asynchronous, up to five minutes, with final `Refund` state and `refund.updated` or `refund.failed` events. Failed refunds return the amount to the Stripe balance and require an alternative merchant refund (old raw lines 222-253, new raw lines 234-265). `source-stripe-mondu.md` now records November’s Connect, early-access and dispute changes and preserves May’s Connect No and 12-day evidence wording as dated history.",
+      "Q2": "For https://docs.stripe.com/payments/mondu, the substantive November changes are method-level Connect No to Yes, new eligibility screening and conditional early-access waitlist, added customer filing limit of 120 calendar days from the transaction, and merchant evidence deadline 12 to 15 calendar days (old raw lines 36-38, new raw lines 37-39 and new raw lines 82-92, old raw lines 222-244 and new raw lines 234-256). The guide does not specify a start for counting the evidence period. Keep May No and 12 days dated in `source-stripe-mondu.md`, the Stripe BNPL concept and the separate overview route. The cross-method tables already marked Connect Supported in May and do in November. November’s method Yes aligns with that capture without specifying account eligibility or charge types. Keep Mondu's 30-day buyer invoice payment terms distinct from Stripe Invoicing and Stripe Subscriptions, both marked Unsupported in the separate May and November BNPL product matrices. Keep their footnoted `setup_future_usage` signal separate from the method’s No for recurring payments. The Mobile Payment Element cell changes from Unsupported in May to Supported in November in those same cross-method matrices (May BNPL raw lines 40-48 and November BNPL raw lines 41-49). That matrix change supplies no mobile integration contract or account entitlement and is separate from the changes in the pinned method overview. New Checkout and Elements links, the quickstart path, punctuation in the 19,999.99 EUR maximum, and formatting are presentational or navigational. The prohibited bullet block is unchanged and does not establish a cross-method ranking (old raw lines 71-107 and old raw lines 109-220, new raw lines 72-119 and new raw lines 121-232). Preserve the May detailed EUR-only Checkout compatibility separately from the overview’s currency map, the optional manual PaymentIntent capture schedule as acceptance-guide evidence, and the specific distinction between instant merchant-offer language, Standard payout and actual bank availability (old raw lines 6-38 and old raw lines 255-261, new raw lines 7-39 and new raw lines 267-273)."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-mondu-matrix",
+      "target_path": "wiki/concepts/stripe-bnpl.md",
+      "update_kind": "durable_fact",
+      "anchor": "| Mondu | `mondu` | — | — | setup_future_usage |",
+      "proposed_markdown": "| Mondu | `mondu` | EU and UK customers; 14 Stripe-account business locations | 19,999.99 EUR or equivalent in November method overview | Method lists no recurring payments; BNPL matrices list `setup_future_usage` with the `off_session` footnote and mark SetupIntents, Stripe Invoicing, and Stripe Subscriptions Unsupported. |",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Method coverage and the separate cross-method product/API matrices have distinct scopes."
+      ]
+    },
+    {
+      "update_id": "payments-mondu-connect",
+      "target_path": "wiki/concepts/stripe-bnpl.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Connect conflict**: Both overview product matrices mark all eleven methods Supported on Connect, while the May method-specific captures for Kriya, Mondu, SeQura, and Scalapay say Connect No. This is an unresolved dated source conflict, not an established account entitlement; see [[source-stripe-bnpl-overview]] and the individual method sources.",
+      "proposed_markdown": "**Connect documentation by capture date.** Both cross-method BNPL product matrices mark all eleven methods Supported on Connect. The May method captures for Kriya, Mondu, SeQura and Scalapay say No. The November Mondu method capture says Yes, matching its November matrix cell, and documents eligibility screening and a conditional early-access waitlist. The Kriya, SeQura and Scalapay conflicts here refer to their May method captures. See [[source-stripe-bnpl-overview]] and [[source-stripe-mondu]].",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "A support cell does not specify eligible accounts or charge types.",
+        "Coordinate with the Kriya contribution if it also updates this anchor."
+      ]
+    },
+    {
+      "update_id": "payments-mondu-details",
+      "target_path": "wiki/concepts/stripe-bnpl.md",
+      "update_kind": "durable_fact",
+      "anchor": "**B2B only** — Pay in 30 days. EU/UK, 14 merchant countries. Multi-currency: EUR, CHF, GBP. **No Connect support**.\n\n**Maximum**: ~€20,000 EUR. No stated minimum.\n\n**Disputes**: 12-day evidence window.\n\n**Refunds**: 180-day window; async (up to 5 min).\n\n**Prohibited** (~90 categories, most extensive of any payment method): transportation, cleaning/repair services, gambling, healthcare, government services, chemicals, fuel, utilities, crypto, pawn shops, timeshares, and many more.",
+      "proposed_markdown": "**B2B terms and coverage.** The buyer receives Mondu invoice payment on 30-day net terms and redirects to Mondu for a credit check. Both method captures label payout Standard and describe upfront merchant payment without specifying a bank payout schedule. Customer coverage is EU and UK. The 14 Stripe-account business locations and method presentment currencies (EUR, CHF and GBP) are separate from individual integration compatibility.\n\n**Product scope.** The November method capture marks Connect Yes and describes early-access eligibility screening and a conditional waitlist. The May method capture says No. Both cross-method product matrices mark Stripe Invoicing and Subscriptions Unsupported. The Mobile Payment Element cell changes from Unsupported in May to Supported in November in that matrix, which gives no mobile implementation details. The method lists no recurring payments, while the separate API matrices show `setup_future_usage` with the `off_session` footnote and no SetupIntents.\n\n**Charge limit and eligibility.** November lists 19,999.99 EUR or equivalent, with no minimum given in either capture. Consult the capture’s prohibited and restricted categories. Mondu can exclude other categories at its discretion.\n\n**Disputes.** November gives customers 120 calendar days from the transaction to file and merchants 15 calendar days to submit evidence. It supplies no merchant clock start. May gives merchants 12 calendar days and supplies no customer filing window. Stripe holds disputed funds until Mondu resolves the case. A merchant win returns the amount to the Stripe balance. A customer win leaves it with the customer.\n\n**Refunds.** Full and partial refunds are available up to 180 days after purchase and can take up to five minutes asynchronously. Check final `Refund.status` and `refund.updated` or `refund.failed`. On failure Stripe returns the amount to the Stripe balance and the merchant arranges an alternative refund. See [[source-stripe-mondu]] and [[source-stripe-bnpl-overview]].",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The method overview, separate BNPL matrices, and detailed acceptance variants describe different scopes."
+      ]
+    },
+    {
+      "update_id": "payments-mondu-route",
+      "target_path": "wiki/concepts/stripe-bnpl.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-mondu]] — Mondu: B2B Pay-in-30, 14 EU/UK countries, multi-currency, no Connect, ~90 prohibited categories",
+      "proposed_markdown": "- [[source-stripe-mondu]] — Mondu B2B buyer invoice terms, method-level currencies, November Connect label and early access, dispute filing and evidence deadlines, and asynchronous refunds",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ]
+}

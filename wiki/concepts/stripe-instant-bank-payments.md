@@ -18,7 +18,7 @@ Instant Bank Payments (IBP) let US customers pay with their bank account through
 | Confirmation | Instant | T+4 business days |
 | Settlement | 2 days (card parity) | T+4 to T+7 |
 | Bank-initiated returns | Stripe guarantees payment | Funds reversed |
-| Transaction limit | < $5,000 (default) | No specific limit |
+| Default presentment threshold | May 2026 under 5,000 USD; November under 7,500 USD; dynamic risk threshold | No specific limit |
 | Checkout experience | Link accelerated checkout | Standard flow |
 
 > Use ACH Direct Debit for businesses that don't immediately fulfill goods/services and can wait up to 4 business days for confirmation.
@@ -28,26 +28,20 @@ Instant Bank Payments (IBP) let US customers pay with their bank account through
 - **Currency**: USD; **Customer location**: US only
 - **Settlement**: 2-day (same as cards); Stripe **guarantees** settlement vs bank-initiated ACH returns
 - **Customer-initiated disputes**: Stripe debits your balance + dispute fee (same process as card disputes)
-- **Recurring/off-session**: Yes — no re-auth after first Link authentication
+- **Recurring/off-session**: After the customer authenticates and completes their first Link transaction, the guides describe future use of the saved account without reauthentication.
 - **Manual capture**: Yes; **Connect**: Yes; **Refunds**: Yes / partial Yes
 
 ## Eligibility
 
-IBP appears only when all met:
-- US business with Stripe usage history (onboarding criteria)
-- Transaction amount < $5,000 (dynamic risk threshold)
-- ACH Direct Debit is NOT also enabled for this transaction
+Stripe applies dynamic risk and onboarding criteria for each session. The examples include US business with Stripe usage history, an amount below the applicable risk cutoff, and ACH Direct Debit not being enabled for the transaction.
 
-**Supported integrations (May 8, 2026 dedicated Link Instant Bank Payments guide)**: Checkout, Payment Links, Hosted Invoice Page, Payment Element, Mobile Payment Element. **Dated disagreement:** the May 2 bank-debits overview also marked its combined Instant Bank Payments-or-ACH row supported for Mobile Payment Element, but the November 7 overview marks that combined row unsupported. It does not separate the two methods or verify a live client/platform change. See [[source-stripe-instant-bank-payments]] for the dedicated May claim and [[source-stripe-bank-debits]] for both overview captures; verify the specific current route before relying on mobile support.
+**Supported integrations (May 8 and November 7, 2026 dedicated guides)**: Checkout, Payment Links, hosted invoice page, Payment Element and Mobile Payment Element. The May 2 bank-debits overview lists mobile support for its combined Instant Bank Payments-or-ACH row. The November 7 bank-debits overview lists that combined row as unsupported. The row leaves specific method and client changes unresolved. See [[source-stripe-instant-bank-payments]] and [[source-stripe-bank-debits]].
 
 ## ACH Direct Debit Interaction Rule
 
-IBP and ACH cannot appear together. ACH always takes precedence:
+ACH Direct Debit takes precedence for the same transaction. May names `us_bank_account` in `payment_method_types` on Checkout Session, PaymentIntent and SetupIntent. The November dedicated guide uses `allowed_payment_method_types` on PaymentIntent and SetupIntent, while retaining `payment_method_types` for Checkout Session. The separate Endive changelogs reject the writable field on `2026-09-30.endive` Checkout Session Create and affected Intent requests. Endive Checkout allowlist precedence remains unverified.
 
-- **Explicit**: if `us_bank_account` in `payment_method_types` → IBP never shown
-- **Dynamic PMs**: any ACH-eligible transaction → IBP suppressed
-
-**Workaround**: use [[stripe-payment-method-rules]] to restrict ACH eligibility; transactions that don't meet ACH criteria but are IBP-eligible will show IBP instead.
+Dynamic ACH eligibility suppresses Instant Bank Payments. [[stripe-payment-method-rules|Restricting ACH by a rule]] can leave Instant Bank Payments available only for transactions that separately qualify. The sibling Link guide's `link` or `card` route selection and resulting PaymentMethod response types describe a separate choice. See [[source-stripe-instant-bank-payments]].
 
 ## Stripe-Funded Cash Back Promotions
 
@@ -64,4 +58,5 @@ Stripe may offer consumer cash back/credits to drive IBP adoption:
 
 ## Sources
 
-- [[source-stripe-instant-bank-payments]] — primary: settlement guarantee, ACH comparison, eligibility, ACH priority rule, cash back promotions, testing
+- [[source-stripe-instant-bank-payments]] — May and November 2026 guides to eligible presentment, settlement and dispute scope, dated ACH precedence, the mobile listing conflict, cash back and testing.
+- [[source-stripe-link-payment-integrations]] — Standalone and card-specific Link representations, non-card placeholders and general Stripe-balance timing alongside the Instant Bank Payments dispute exception.

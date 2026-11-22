@@ -1,0 +1,13 @@
+from pathlib import Path
+import json,hashlib,sys
+P=Path('tracking/ingest/stripe/stripe-campaign-04');X=Path('/tmp/stripe-s04-review')
+cohort=int(sys.argv[1]);jobs=json.loads((P/'jobs.json').read_text());prior=set()
+for f in (P/'audits/answers').glob('cohort-*-input.json'):
+ for j in json.loads(f.read_text())['jobs']:prior.add(j['job_id'])
+done=[j for j in jobs if j['state']=='approved' and j['job_id']not in prior]
+assert len(done)>=25,len(done)
+selected=done[:25];payload={'cohort':cohort,'scope':'25 distinct accepted final receipts and their 50 actual fixed answers; supplementary answer audit, not coordinator full-raw audit','jobs':[]}
+for j in selected:
+ payload['jobs'].append({'job_id':j['job_id'],'attempt':j['attempt'],'input':str(P/'attempts'/j['job_id']/f"attempt-{j['attempt']}"/'input.json'),'receipt_path':j['receipt_path'],'receipt_sha256':j['receipt_sha256'],'review_path':j['review_path'],'review_sha256':j['review_sha256']})
+f=P/'audits/answers'/f'cohort-{cohort}-input.json';f.parent.mkdir(parents=True,exist_ok=True);f.write_text(json.dumps(payload,indent=2)+'\n')
+aux=[a for a in json.loads((X/'aux-slots.json').read_text())if not(a.get('role')=='answer_auditor_reserved'and a.get('cohort')==cohort)];aux.append({'role':'answer_auditor','cohort':cohort,'input':str(f)});(X/'aux-slots.json').write_text(json.dumps(aux,indent=2)+'\n');print(f)

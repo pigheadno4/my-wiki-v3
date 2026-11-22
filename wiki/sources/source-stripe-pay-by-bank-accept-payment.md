@@ -2,7 +2,9 @@
 title: "Stripe: Accept a Pay by Bank Payment"
 type: source
 date_ingested: 2026-05-06
+date_updated: 2026-11-22
 original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/pay-by-bank/accept-a-payment"
 raw_files:
   - "stripe-pay-by-bank-accept-payment-2025.md"
 tags: [stripe, real-time-payments, pay-by-bank, open-banking, uk, europe, checkout, payment-intents, elements]
@@ -10,28 +12,36 @@ tags: [stripe, real-time-payments, pay-by-bank, open-banking, uk, europe, checko
 
 ## Summary
 
-Integration guide for Pay by Bank via Checkout and Elements (PaymentIntents). Confirms API enum `pay_by_bank` for UK/Europe open banking product. Notable: `statement_descriptor` required in `payment_method_options`. No Direct API path.
+The 2026-05-06 guide documents two detailed routes for the single-use `pay_by_bank` payment method, Checkout and web Elements with the Payment Intents API. The customer authenticates in a bank app or web portal and returns to the merchant. The 2026-11-07 capture of the same URL indexes five variants: Checkout, Elements with Checkout Sessions API, Elements with Payment Intents API, iOS and Android. The capture gives navigation only.
 
-## Key Details
+## May 2026 Checkout and Elements
 
-**API enum**: `pay_by_bank`. EUR and GBP only. Redirect-based.
+- **Checkout.** Use payment mode with one-time line items in the same currency. The guide describes dynamic payment methods and a manual route. The manual instructions list `pay_by_bank` in `payment_method_types` and set `payment_method_options.pay_by_bank.statement_descriptor` to identify the payment on the customer's bank statement. The hosted example uses `success_url` and the full embedded example uses `return_url` and `ui_mode: embedded_page`. The Checkout compatibility table names DE and GB business locations and EUR and GBP currencies. The manual instructions and both examples specify GBP. The acceptance text separately mentions a France/Germany/Ireland private preview, which the May [[source-stripe-pay-by-bank|method overview]] identifies as customer availability. The November method overview lists customer bank accounts in Finland, Ireland and the UK as generally available and Belgium, France and Germany as private preview. It specifies GBP for UK bank accounts and EUR for the listed European countries. The overview describes customer bank location separately from Stripe account business location and does not settle the Checkout example conflict or current merchant eligibility.
+- **Web Elements with Payment Intents.** Price and create the PaymentIntent on the server and pass the customer-scoped client secret to the payment UI. The guide says to avoid logging the secret or embedding it in URLs and to expose it only to the customer. In the example, Stripe appends return parameters that can be used to retrieve the PaymentIntent. The client uses `stripe.confirmPayment` with a `return_url`. The return-page examples use retrieved `succeeded`, `processing` and `requires_payment_method` states to message the customer across payment methods. They establish no Pay by Bank-specific transition or timing. May uses Stripe.js Dahlia in its example, calls for HTTPS in live use, and cautions against nesting the Payment Element in another iframe because some methods redirect. The Dashboard-managed example mentions enabling Swish and creates a USD PaymentIntent. The manual example instead uses `pay_by_bank` and GBP, with no descriptor shown. The Swish/USD example cannot establish a supported Pay by Bank setup.
+- **Testing and refunds.** May Checkout's Authorize and Fail controls are sandbox examples for successful payment and failed authentication. The May guide gives up to 730 days to refund after the original payment, says the refund generally arrives by the next business day and can take up to seven days to appear successful, and states that there is no dispute process.
 
-**Two integration paths**:
-- **Checkout**: `payment_method_types: ['pay_by_bank']`; must set `payment_method_options.pay_by_bank.statement_descriptor` (business name or identifier shown on customer's bank statement)
-- **Elements (PaymentIntents)**: standard `stripe.confirmPayment` with `return_url`; no Direct API path
+## Payment outcome and related evidence
 
-**`statement_descriptor` required** — unique among real-time methods; appears on customer's bank statement to identify the transaction.
+- **Notification timing differs across captures.** The May acceptance guide describes immediate success/failure notification. The 2026-04-20 [[source-stripe-checkout-dashboard-payment-methods|Dashboard-managed Checkout migration guide]] lists Pay by Bank under delayed notification and advises waiting for verified success or failure if `checkout.session.completed` records authorization. In that guidance, wait until funds are available in the Stripe account to fulfill. Its general 2–14 day illustration is not a method-specific timing promise. Keep bank authorization, browser return, verified payment success, available funds and merchant payout distinct.
+- **Late funds.** The separate 2026-11-07 [[source-stripe-pay-by-bank|method overview]] says an authorized payment fails with `payment_method_provider_timeout` when bank funds miss the expected settlement window. If funds arrive after failure, Stripe automatically returns them to the customer.
+- **Mobile and recurring scope.** The separate [[source-stripe-real-time-payments|real-time product matrix]] marks Mobile Payment Element unsupported in May and supported in November. This is a dated capability listing, while the acceptance selector supplies links and no SDK requirements or account eligibility. The November method overview separately describes a private-preview Elements and Payment Intents flow combining an initial Pay by Bank payment with a Bacs Direct Debit mandate for recurring payments. The mandate is distinct from the May single-use payment and the May Checkout payment-mode restriction.
 
-**Supported business locations (Checkout)**: DE and GB only (remaining EU countries in private preview).
+## Detail locators
 
-**Test data**:
-- "Authorize test payment" → success
-- "Fail test payment" → authentication failure
+- May acceptance raw lines 12–112 cover authentication, Checkout configuration, geography, currencies and redirect fields. Lines 118–127 and 632–634 cover testing and refunds.
+- May acceptance raw lines 156–200 and 269–318 cover Elements PaymentIntent creation, currency and method examples, the client secret and setup. Lines 419–450, 515–569 and 587–624 cover client confirmation, browser return and status handling.
+- April Dashboard-managed Checkout raw lines 66–84 cover delayed-notification methods and events. November method overview raw lines 15–27 and 111–117 cover bank-account geography, and lines 260–277 cover the late-funds and recurring preview guidance.
 
-**Refund timing**: up to 730 days; arrives next business day but can take up to 7 days to show as successful.
+## Related
 
-**Note**: Stripe's Elements guide text says "turn **Swish** on in payment methods settings" — likely a copy-paste error; should say Pay by Bank.
+- [[stripe]] — Stripe company and source routes.
+- [[stripe-real-time-payments]] — Pay by Bank product and integration context.
+- [[source-stripe-pay-by-bank]] — Pay by Bank method overview.
 
 ## Raw Sources
 
-- [[stripe-pay-by-bank-accept-payment-2025]] — verbatim webpage content (640 lines); fixed `*Prices*` ×1, `*subscription*` ×1, `*client secret*` ×1
+- [[raw/stripe-pay-by-bank-accept-payment-2025|Pay by Bank acceptance guide captured 2026-05-06]] — verbatim webpage content (640 lines); fixed `*Prices*` ×1, `*subscription*` ×1, `*client secret*` ×1
+
+## Related raw API references
+
+- [[raw/stripe-payments-pay-by-bank-accept-a-payment-2026-11-07|Pay by Bank acceptance variant index]] — 2026-11-07 navigation for Checkout, the two Elements API routes, iOS and Android.

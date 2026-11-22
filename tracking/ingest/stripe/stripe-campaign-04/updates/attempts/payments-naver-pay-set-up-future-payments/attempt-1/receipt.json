@@ -1,0 +1,167 @@
+{
+  "job_id": "payments-naver-pay-set-up-future-payments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Docs — Set up future payments with Naver Pay\"\ntype: source\ndate_ingested: 2026-05-08\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/naver-pay/set-up-future-payments\"\nraw_files:\n  - \"stripe-naver-pay-set-up-future-payments-2025.md\"\ntags: [stripe, south-korea, krw, naver-pay, recurring, setup-intents, mandate, accounts-v2, nicepay]\n---\n\n## Summary\n\nThe 2026-05-08 guide details saving `naver_pay` for future payments through hosted Checkout or the Direct API. The 2026-11-07 capture retains that purpose and indexes Checkout and Direct API. The instructions below are from the full May capture.\n\n## Customer agreement and identity\n\nGet the customer's permission before saving and keep a record of their written opt-in. For off-session charges, the May guide says to specify the permitted transactions, the timing and frequency of charges, how amounts are determined, and the cancellation policy for subscriptions. Submit charges only under the agreed terms.\n\nAttach the method to a customer-configured Accounts v2 Account using `customer_account` or a Customers v1 Customer using `customer`. May describes Accounts v2 as generally available for Connect users and in public preview for other Stripe users. Preview participants need a preview API version. The November index establishes no current access or version requirements.\n\n## Save paths in the May guide\n\n- **Hosted Checkout setup.** Create a Checkout Session server-side with `mode: 'setup'` and the matching customer identity, and redirect to the Session URL. The example lists `card` and `naver_pay`. The customer authorizes their NICEPAY account for future use. A separate [[source-stripe-subscriptions-naver-pay|subscription guide]] covers a Checkout subscription-mode example.\n- **Direct API setup without an initial payment.** Create a server-side SetupIntent for the matching customer with `naver_pay` in `payment_method_types`. The guide lists `usage: 'on_session'` and `'off_session'` and illustrates the latter. Pass the SetupIntent client secret to the browser. The May Stripe.js Dahlia example calls `stripe.confirmNaverPaySetup` with that secret, a `return_url`, and online `mandate_data.customer_acceptance` using `infer_from_client: true`. The prose inserts a PaymentIntent client-secret gloss, while the code retrieves and confirms a SetupIntent.\n- **Direct API charge and save.** The separate server-side PaymentIntent example uses `naver_pay`, a matching customer identity, `confirm: true`, `setup_future_usage: 'off_session'` and a `return_url`. Include `mandate_data` if creating a mandate. The examples illustrate online IP address and user agent. Both charge-and-save examples use `ngn`, in conflict with the same guide's manual redirect and saved-method examples in `krw` and the separate [[source-stripe-naver-pay-accept-payment|Naver Pay compatibility guide]]. The discrepancy's cause is unverified and these examples establish no NGN support.\n- **Optional manual redirect.** The nearby May example creates and confirms a KRW PaymentIntent, with `requires_action` directing the customer to `next_action.redirect_to_url.url`. It omits a customer attachment, `setup_future_usage` and mandate settings. It illustrates a payment redirect. Use webhooks to confirm the payment status. The action and browser return establish neither saved setup nor payment success.\n\n## Reuse, detach and sandbox tests\n\n- Create and confirm a new PaymentIntent using the same saved PaymentMethod ID and matching customer-configured Account or Customer. The May examples use KRW. Set `off_session: true` when the customer is outside this PaymentIntent's checkout flow. The May guide separately requires `capture_method: 'automatic'` for recurring payments and excludes manual capture in that recurring scope.\n- Server-side PaymentMethod detachment deactivates reuse and sends `mandate.updated` and `payment_method.detached`.\n- In the May Checkout setup sandbox, choosing Naver Pay and **Continue to Naver Pay** opens a Stripe-hosted page with authorization and failure options for setup. The separate example at the end describes a PaymentIntent test, from `requires_action` to `succeeded` on authorization or `requires_payment_method` on failure.\n\n## Detail locators\n\n- May raw lines 29–56 and 155–219 cover consent and customer identity. Lines 88–139 cover Checkout setup and its sandbox controls.\n- May raw lines 221–261 and 293–380 cover SetupIntent options and browser confirmation. Lines 382–440 cover the separate PaymentIntent redirect and webhook guidance.\n- May raw lines 449–518 cover charge and save, including `ngn` at lines 482 and 511. Lines 520–572 cover saved-method reuse, recurring capture, detachment and the PaymentIntent sandbox example.\n\n## Related Pages\n\n- [[stripe-korea-payment-methods]] — South Korea payment methods concept page\n- [[source-stripe-naver-pay-accept-payment]] — Naver Pay acceptance and funding sources\n- [[source-stripe-kakao-pay-set-up-future-payments]] — Kakao Pay save and recurring guide\n- [[stripe]] — Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-naver-pay-set-up-future-payments-2025|Naver Pay future payments guide captured 2026-05-08]] — verbatim webpage content\n\n## Related raw API references\n\n- [[raw/stripe-payments-naver-pay-set-up-future-payments-2026-11-07|Naver Pay future payments variant index]] — 2026-11-07 navigation for Checkout and Direct API.\n",
+  "quotes": {
+    "payments-naver-pay-set-up-future-payments": [
+      {
+        "text": "Learn how to save Naver Pay to charge your customers later.",
+        "location": "raw/stripe-payments-naver-pay-set-up-future-payments-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-naver-pay-set-up-future-payments-2026-11-07.md:11"
+      },
+      {
+        "text": "[Checkout](https://docs.stripe.com/payments/naver-pay/set-up-future-payments.md?payment-ui=checkout)",
+        "location": "raw/stripe-payments-naver-pay-set-up-future-payments-2026-11-07.md:13"
+      },
+      {
+        "text": "[Direct API](https://docs.stripe.com/payments/naver-pay/set-up-future-payments.md?payment-ui=direct-api)",
+        "location": "raw/stripe-payments-naver-pay-set-up-future-payments-2026-11-07.md:14"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-naver-pay-set-up-future-payments": [
+      {
+        "text": "Learn how to save Naver Pay to charge your customers later.",
+        "location": "raw/stripe-naver-pay-set-up-future-payments-2025.md:6"
+      },
+      {
+        "text": "Your customer must authorize you to use their NICEPAY account for future payments through Stripe Checkout.",
+        "location": "raw/stripe-naver-pay-set-up-future-payments-2025.md:90"
+      },
+      {
+        "text": "The `off_session` value must also be set to true if the customer isn’t in a checkout flow for this PaymentIntent.",
+        "location": "raw/stripe-naver-pay-set-up-future-payments-2025.md:522"
+      },
+      {
+        "text": "Recurring payments must be made with `capture_method: \"automatic\"`. Manual capture isn’t supported.",
+        "location": "raw/stripe-naver-pay-set-up-future-payments-2025.md:524"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-naver-pay-set-up-future-payments-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-naver-pay-set-up-future-payments-2025.md": [
+      {
+        "start": 1,
+        "end": 572
+      }
+    ],
+    "wiki/sources/source-stripe-naver-pay-set-up-future-payments.md": [
+      {
+        "start": 1,
+        "end": 58
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/17fe1a5aa1ba579710d2162b/content.diff": [
+      {
+        "start": 1,
+        "end": 574
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-naver-pay-set-up-future-payments/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 184
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-naver-pay-set-up-future-payments/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 94
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 424,
+        "end": 434
+      },
+      {
+        "start": 790,
+        "end": 790
+      }
+    ],
+    "wiki/concepts/stripe-korea-payment-methods.md": [
+      {
+        "start": 20,
+        "end": 33
+      },
+      {
+        "start": 80,
+        "end": 100
+      },
+      {
+        "start": 143,
+        "end": 153
+      }
+    ],
+    "raw/stripe-naver-pay-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 3
+      },
+      {
+        "start": 24,
+        "end": 41
+      }
+    ],
+    "wiki/sources/source-stripe-subscriptions-naver-pay.md": [
+      {
+        "start": 27,
+        "end": 43
+      }
+    ]
+  },
+  "answers": {
+    "payments-naver-pay-set-up-future-payments": {
+      "Q1": "The November 7 capture of https://docs.stripe.com/payments/naver-pay/set-up-future-payments identifies saving Naver Pay for later charges and lists Checkout and Direct API. It provides navigation (new raw lines 5-14). The May 8 guide documents prior opt-in and recorded written terms and binds the saved method to a Customers v1 Customer or customer-configured Accounts v2 Account. It describes Accounts v2 as generally available for Connect and a version-qualified public preview for other Stripe users (old raw lines 29-56 and old raw lines 155-167). Its hosted Checkout setup-mode flow requires the customer to authorize future NICEPAY use. The Direct API SetupIntent is created on the server, its SetupIntent secret is passed to the browser, and the browser calls confirmNaverPaySetup with a return URL and online acceptance. A separate server PaymentIntent can attempt a payment while saving with setup_future_usage off_session. To charge later, use the same saved PaymentMethod ID on a new PaymentIntent with the corresponding customer identity. Set off_session when the customer is outside the checkout flow. The May recurring rule requires automatic capture. Setup, authorization or browser return does not establish successful payment. The guide reports that server detachment deactivates reusable methods and sends mandate.updated and payment_method.detached (old raw lines 88-139, old raw lines 221-261, old raw lines 330-440 and old raw lines 442-572). The revised source-stripe-naver-pay-set-up-future-payments.md retains the May paths and currency warning and scopes the automatic-capture rule to recurring payments.",
+      "Q2": "For https://docs.stripe.com/payments/naver-pay/set-up-future-payments, new raw lines 5-14 retain the purpose and replace May's Checkout and Direct API variant bodies with links. Operational claims about mandates, account representation, one- and two-step payment flows, setup usage, SDK example, recurring capture and detach remain dated to May 8, 2026 (old raw lines 29-56, old raw lines 208-261, old raw lines 330-380 and old raw lines 442-572). In source-stripe-naver-pay-set-up-future-payments.md and the reciprocal Korea concept route, preserve the mismatch between the two historical NGN charge-and-save examples and documented KRW, and distinguish recurring automatic capture from the independent off_session condition. The old SetupIntent prose borrows a PaymentIntent secret gloss despite showing a SetupIntent secret. The optional manual redirect sample uses a PaymentIntent without the save fields, so its requires_action and browser return describe a payment action and cannot establish future-use setup or payment success (old raw lines 259-297, old raw lines 358-440 and old raw lines 449-564). Preserve the Checkout sandbox setup authorize/fail choice separately from the historical PaymentIntent sandbox outcome. No variant implementation or current availability was established by the index."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "naver-pay-save-dated-currency-and-capture",
+      "target_path": "wiki/concepts/stripe-korea-payment-methods.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Accounts v2 + v1 dual-path** — same structure as kr_card and kakao_pay save guides\n- **`stripe.confirmNaverPaySetup()`** — client-side setup confirmation; `mandate_data: { customer_acceptance: { type: 'online', online: { infer_from_client: true } } }`\n- **Recurring caveat**: `capture_method: 'automatic'` required — manual capture not supported\n- **Detach**: fires `mandate.updated` + `payment_method.detached`\n- **Source bug**: `currency: 'ngn'` in `setup_future_usage` PaymentIntent examples — same copy-paste error as kr_card and kakao_pay guides",
+      "proposed_markdown": "- **May customer identity**. The guide shows `customer_account` for a customer-configured Accounts v2 Account and `customer` for Customers v1. It describes Accounts v2 as generally available for Connect users and version-qualified public preview for other users.\n- **Setup**. The browser uses `stripe.confirmNaverPaySetup()` with a SetupIntent secret, return URL and online `mandate_data` using `infer_from_client` in the example. The separate charge-and-save route includes `mandate_data` if a mandate needs to be created.\n- **Reuse and capture**. Set `off_session: true` when the customer is outside this checkout flow. The May guide requires automatic capture for recurring payments. This recurring constraint is separate from the general manual capture property.\n- **Detach**. Server detachment deactivates reuse and sends `mandate.updated` and `payment_method.detached`.\n- **Currency discrepancy**. The two May charge-and-save examples use `ngn`, in conflict with the `krw` redirect and reuse examples and the separate Naver Pay acceptance guide. The capture establishes no NGN support. See [[source-stripe-naver-pay-set-up-future-payments]] for dated details.",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "May setup raw lines 29-56, 221-261, 358-380 and 449-568. The May acceptance raw/stripe-naver-pay-accept-payment-2025.md:24-41 specifies KRW. The November selector provides no updated implementation or eligibility."
+      ]
+    },
+    {
+      "update_id": "naver-pay-save-source-route",
+      "target_path": "wiki/concepts/stripe-korea-payment-methods.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-naver-pay-set-up-future-payments]] — Naver Pay save/recurring: Accounts v2 + v1, confirmNaverPaySetup(), automatic capture only, same ngn currency bug",
+      "proposed_markdown": "- [[source-stripe-naver-pay-set-up-future-payments]] — May 2026 hosted Checkout setup and Direct API guide with dated customer identity, recurring automatic capture and conflicting currency examples. The November capture indexes the two variants.",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "May raw lines 8-14, 141-153 and 449-564 support the dated scope. November raw lines 9-14 are navigation only."
+      ]
+    }
+  ]
+}

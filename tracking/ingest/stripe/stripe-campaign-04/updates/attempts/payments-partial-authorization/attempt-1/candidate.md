@@ -1,0 +1,63 @@
+---
+title: "Stripe — Partial Authorization"
+type: source
+date_ingested: 2026-05-11
+date_updated: 2026-11-22
+original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/partial-authorization"
+raw_files:
+  - "stripe-payments-partial-authorization-2026-11-07.md"
+  - "stripe-partial-authorization-2026.md"
+tags: [stripe, partial-authorization, capture, payment-intents, ic-plus, debit, prepaid]
+---
+
+## Summary
+
+The May 11 and November 7, 2026 guides describe an IC+ feature that lets a supporting issuer approve part of an online card transaction when the available balance cannot cover the requested amount. Decide how to handle the remainder before capturing. The guide gives three choices: create a separate PaymentIntent for another payment method, cancel the original Intent, or capture only up to the partial approval. Explain the chosen action and its effect to the customer.
+
+## Availability and limits
+
+- Contact Stripe sales or Support to enable partial authorization on IC+ pricing. The guides list Visa, Mastercard, Discover and American Express, subject to issuer and card type.
+- The guides cite separate **May 2024 network examples**. American Express restricts the feature to debit and prepaid cards and excludes recurring and cross-border transactions. Visa requires using the feature across card types. The merchant is responsible for applicable law, regulation and network rules.
+- A partially authorized transaction cannot be overcaptured above the approved amount. For a charge processed on behalf of a Connect account, Stripe caps `transfer_amount` at the partial approval when the configured amount is greater. A partial approval below Stripe's minimum charge amount is declined.
+
+## Manual and automatic capture
+
+1. **Request and inspect.** Set `payment_method_options.card.request_partial_authorization=if_available` on the PaymentIntent. After confirmation, inspect the expanded latest Charge's `payment_method_details.card` for `partial_authorization.status` (`partially_authorized`, `fully_authorized`, `declined` or `not_requested`), `amount_requested` and `amount_authorized`. The issuer-decline example returns `card_declined`.
+2. **Manual capture.** The guides recommend `capture_method=manual` so the merchant can review the approval before deciding how to proceed. In the 100 USD request and 70 USD partial approval example, the Intent is `requires_capture` with `amount_received=0` and the Charge is uncaptured. Capture is bounded by the returned Intent `amount` or `amount_capturable`. The successful example captures the full approved 70 USD, with `amount_received=7000` and status `succeeded`.
+3. **Auto-capture.** The examples end with `succeeded` and only 70 USD captured and received on the 100 USD request. Authorization, partial capture, collection of the full order price and availability of funds are separate outcomes.
+
+**Capture default scope.** The May and November partial-authorization guides describe explicit `automatic` or omission, and the omitted-field examples show `automatic` in the response. The separate November Create PaymentIntent reference lists `automatic_async` as its general default. The examples do not establish which default applies across accounts or versions, or partial-authorization support under `automatic_async`. The [Create PaymentIntent reference](https://docs.stripe.com/api/payment_intents/create#create_payment_intent-capture_method) and [asynchronous capture guide](https://docs.stripe.com/payments/payment-intents/asynchronous-capture) describe that general API default separately from the partial-authorization examples.
+
+## Combining with incremental authorization
+
+The dedicated [[source-stripe-incremental-authorization|incremental authorization guide]] requires a confirmed, uncaptured PaymentIntent and a separate incremental-authorization request. The partial guide's example sets `payment_method_options.card.request_incremental_authorization=if_available` with manual capture at initial confirmation. Check the latest Charge for `payment_method_details.card.incremental_authorization.status=available`. At the increment step, set `request_partial_authorization=if_available` to allow partial approval of the increase. The first confirmation's partial opt-in carries forward by default; explicitly set `never` on the increment to suppress it.
+
+The increment's `amount` is the desired new total. The sample requests 150 USD total after authorizing 100 USD. It receives 35 USD more, leaving 135 USD authorized and capturable, zero received and the Intent in `requires_capture`. Capture is a separate operation.
+
+## Dated request examples and API version
+
+The May Node.js create-and-confirm examples pass `payment_method_types: ["card"]`. The November form-encoded cURL examples omit that field and add `return_url` with `confirm=true`; the capture example also switches to cURL. These are request-example changes. The November examples specify neither an API version nor a reason for the omission. The Create API describes `return_url` as optional and usable with `confirm=true` for return after authentication or cancellation. Returning to the merchant leaves authorization, capture and fulfillment unverified.
+
+Separately, the [Endive changelog](https://docs.stripe.com/changelog/endive/2026-09-30/removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents) identifies the `2026-09-30.endive` REST PaymentIntent Create endpoint as rejecting writable `payment_method_types` with HTTP 400 and `payment_method_types_no_longer_supported`. The computed object field remains read-only. Its Impact paragraph cites `2026-08-26.preview`, while the endpoint links and REST table cite Endive. The changelog leaves the first affected version ambiguous.
+
+## Sandbox test cards
+
+These are dated Stripe test fixtures. The percentages in the fixtures describe simulated outcomes.
+
+| Number | Payment Method | Behavior |
+| --- | --- | --- |
+| 4000058400000071 | pm_card_debit_partialAuthorization | Authorizes 70% of amount (rounded down) when partial auth requested; otherwise declines with insufficient funds |
+| 4000058400000816 | pm_card_debit_partialIncrement | Full auth initially; 70% of the requested increase (rounded down) when partial auth requested; otherwise insufficient funds |
+
+## Related Pages
+
+- [[stripe]]
+- [[stripe-partial-authorization]] — concept page
+- [[stripe-incremental-authorization]] — the separate request, readiness and capture boundaries for increments
+- [[stripe-overcapture]] and [[source-stripe-overcapture]] — a typical overcapture maximum does not override the partial-authorization cap
+
+## Raw Sources
+
+- [[raw/stripe-payments-partial-authorization-2026-11-07|November 7, 2026 full partial authorization guide]] — 279 lines. See network and merchant scope at 9–33, manual capture at 35–114, auto-capture at 117–168, increments at 170–270 and sandbox fixtures at 272–279.
+- [[raw/stripe-partial-authorization-2026|May 11, 2026 full partial authorization guide]] — 296 lines. The May Node.js examples cover creation at 38–57, capture at 102–108, auto-capture at 133–151 and incremental authorization opt-in at 191–210.

@@ -1,0 +1,142 @@
+{
+  "job_id": "payments-mobile-collect-addresses",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Collect Physical Addresses and Phone Numbers — Mobile\"\ntype: source\ndate_ingested: 2026-04-22\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/mobile/collect-addresses\"\nraw_files:\n  - \"stripe-inapp-collect-addresses-2025.md\"\ntags: [stripe, mobile, ios, android, react-native, address-element, autocomplete, billing-address, shipping-address, google-places]\n---\n\n## Summary\n\nThe 2026-04-22 integration guide covers the mobile Address Element across iOS UIKit, iOS SwiftUI, Android and React Native. It shows SDK setup, configuration, address retrieval, optional Payment Element prefill and billing details collection. The 2026-11-07 capture of the same URL introduces address and phone collection and indexes the same four variants. The examples and requirements below come from the April guide.\n\n> See also [[source-stripe-inapp-address-element]] for the overview page, and [[source-stripe-collect-addresses]] for the web variant.\n\n## Platform API Comparison\n\nThe April guide calls for a Stripe account and the platform SDK with a client publishable key. Use test keys during development and live keys in production. The April iOS compatibility wording is iOS 13 or above. The Android dependency examples use Stripe Android 23.5.0 and Google Places 2.6.0. The sample Financial Connections dependency serves US bank account payments.\n\n| | iOS UIKit | iOS SwiftUI | Android | React Native |\n| --- | --- | --- | --- | --- |\n| Component | `AddressViewController` | `AddressElement` (SwiftUI sheet) | `AddressLauncher` | `<AddressSheet>` |\n| Config type | `AddressViewController.Configuration` | `AddressElement.Configuration` | `AddressLauncher.Configuration` | Props on component |\n| Callback | `AddressViewControllerDelegate` | Bound `$address` state | `AddressLauncherResultCallback` | `onSubmit`/`onError` |\n| Result | `AddressViewController.AddressDetails?` | `AddressElement.AddressDetails?` | `AddressLauncherResult.Succeeded`/`.Canceled` | `addressDetails` in `onSubmit` |\n\n## iOS UIKit\n\nThe April example makes the phone field required. Stripe says to collect phone numbers only when needed for the transaction. The delegate receives optional address details.\n\n```swift\n// 1. Configure\nlet addressConfiguration = AddressViewController.Configuration(\n    additionalFields: .init(phone: .required),\n    allowedCountries: [\"US\", \"CA\", \"GB\"],\n    title: \"Shipping Address\"\n)\n\n// 2. Retrieve via delegate\nextension MyViewController: AddressViewControllerDelegate {\n    func addressViewControllerDidFinish(_ vc: AddressViewController, with address: AddressViewController.AddressDetails?) {\n        vc.dismiss(animated: true)\n        self.addressDetails = address\n    }\n}\n\n// 3. Present\nlet addressVC = AddressViewController(configuration: addressConfiguration, delegate: self)\npresent(UINavigationController(rootViewController: addressVC), animated: true)\n\n// 4. Prefill Payment Element (optional)\nconfiguration.shippingDetails = { [weak self] in self?.addressDetails }\n```\n\n## iOS SwiftUI\n\nThe bound address value updates when the customer completes or cancels address collection. The April SwiftUI section mentions billing prefill from a shipping address. The concrete shipping-prefill examples are in the UIKit, Android and React Native sections.\n\n```swift\nvar configuration = AddressElement.Configuration()\nconfiguration.allowedCountries = [\"US\", \"CA\", \"GB\", \"AU\"]\n\n// Present as sheet; address state variable updates automatically\n.sheet(isPresented: $showingAddressElement) {\n    AddressElement(address: $collectedAddress, configuration: configuration)\n}\n```\n\n## Android (Kotlin)\n\n```kotlin\n// Must instantiate in onCreate — crashes if later\nprivate lateinit var addressLauncher: AddressLauncher\n\noverride fun onCreate(savedInstanceState: Bundle?) {\n    addressLauncher = AddressLauncher(this, ::onAddressLauncherResult)\n}\n\nprivate fun onAddressLauncherResult(result: AddressLauncherResult) {\n    when (result) {\n        is AddressLauncherResult.Succeeded -> shippingDetails = result.address\n        is AddressLauncherResult.Canceled -> { /* handle */ }\n    }\n}\n\n// Present\naddressLauncher.present(publishableKey = publishableKey, configuration = addressConfiguration)\n\n// Prefill Payment Element (optional)\nPaymentSheet.Configuration.Builder(\"Merchant\").shippingDetails(shippingDetails).build()\n```\n\n- Autocomplete requires Google Places SDK dependency + API key\n- `AddressLauncher.Configuration.googlePlacesApiKey` — optional field\n\n## React Native\n\nThe April example makes the phone field required. Stripe says to collect phone numbers only when needed for the transaction.\n\n```jsx\n<AddressSheet\n  visible={addressSheetVisible}\n  allowedCountries={['US', 'CA', 'GB']}\n  additionalFields={{ phoneNumber: 'required' }}\n  googlePlacesApiKey={'(optional) YOUR KEY HERE'}\n  onSubmit={async (addressDetails) => {\n    setAddressSheetVisible(false);\n    // use addressDetails\n  }}\n  onError={(error) => {\n    setAddressSheetVisible(false); // must set back to false\n  }}\n/>\n\n// Prefill Payment Element (optional)\nawait initPaymentSheet({ defaultShippingDetails: addressDetails });\n```\n\n- iOS autocomplete: enabled by default\n- Android autocomplete: requires Google Places SDK in `build.gradle` + API key\n\n## Billing Details Collection (All Platforms)\n\n`billingDetailsCollectionConfiguration` controls what's collected in PaymentSheet:\n- **Field-specific modes.** Name, email and phone have general collection controls. The examples set name to always and email to never. The address setting uses its own modes. The full-address value shown is `.full` in UIKit and SwiftUI, `BillingDetailsCollectionConfiguration.AddressCollectionMode.Full` in Android and `PaymentSheet.AddressCollectionMode.FULL` in React Native.\n- **PaymentMethod billing defaults.** `defaultBillingDetails` prefills the billing fields. `attachDefaultsToPaymentMethod: true` opts into attaching those defaults to the PaymentMethod, including values omitted from the UI. The React Native guide explicitly requires providing any method-required values skipped in the UI as `defaultBillingDetails` and enabling attachment.\n\n## Key Notes\n\n- **Android onCreate rule**: `AddressLauncher` MUST be instantiated in `onCreate` — after will crash\n- **Autocomplete**. The April guide says iOS enables it by default, including React Native on iOS. Android, including React Native on Android, needs the Google Places SDK and API key to enable autocomplete. Address collection is available without enabling autocomplete.\n- **Dismiss on RN**: must manually set `visible={false}` in both `onSubmit` and `onError`\n- **Optional shipping-to-billing prefill**. The April examples populate PaymentSheet `shippingDetails` in UIKit and Android or `defaultShippingDetails` in React Native with the collected address. The payment UI then prefills billing and shows the same-as-shipping checkbox. In those paths, populated shipping details are recorded in `PaymentIntent.shipping` upon confirmation. Address UI completion, autocomplete and populated shipping or billing details establish neither payment success nor address ownership.\n\n## Related Pages\n\n- [[stripe]] — Stripe company profile\n- [[stripe-inapp-payments]] — in-app payments concept page\n- [[source-stripe-inapp-address-element]] — mobile Address Element overview\n- [[stripe-address-element]] — web Address Element concept page\n\n## Raw Sources\n\n- [[raw/stripe-inapp-collect-addresses-2025|Mobile Address Element guide captured 2026-04-22]] — verbatim guide (~768 lines, iOS UIKit + iOS SwiftUI + Android + React Native)\n\n## Related raw API references\n\n- [[raw/stripe-payments-mobile-collect-addresses-2026-11-07|Mobile Address Element collection variant index]] — 2026-11-07 navigation capture for iOS UIKit, iOS SwiftUI, Android and React Native.\n",
+  "quotes": {
+    "payments-mobile-collect-addresses": [
+      {
+        "text": "Learn how to collect customer addresses and phone numbers in your mobile app with the Address Element.",
+        "location": "raw/stripe-payments-mobile-collect-addresses-2026-11-07.md:7"
+      },
+      {
+        "text": "[iOS (UIKit)](https://docs.stripe.com/payments/mobile/collect-addresses.md?payment-ui=mobile&platform=ios)",
+        "location": "raw/stripe-payments-mobile-collect-addresses-2026-11-07.md:13"
+      },
+      {
+        "text": "[iOS (SwiftUI)](https://docs.stripe.com/payments/mobile/collect-addresses.md?payment-ui=mobile&platform=plugins)",
+        "location": "raw/stripe-payments-mobile-collect-addresses-2026-11-07.md:14"
+      },
+      {
+        "text": "[Android](https://docs.stripe.com/payments/mobile/collect-addresses.md?payment-ui=mobile&platform=android)",
+        "location": "raw/stripe-payments-mobile-collect-addresses-2026-11-07.md:15"
+      },
+      {
+        "text": "[React Native](https://docs.stripe.com/payments/mobile/collect-addresses.md?payment-ui=mobile&platform=react-native)",
+        "location": "raw/stripe-payments-mobile-collect-addresses-2026-11-07.md:16"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-mobile-collect-addresses": [
+      {
+        "text": "Autocomplete is enabled by default on iOS.",
+        "location": "raw/stripe-inapp-collect-addresses-2025.md:101"
+      },
+      {
+        "text": "address = BillingDetailsCollectionConfiguration.AddressCollectionMode.Full,",
+        "location": "raw/stripe-inapp-collect-addresses-2025.md:578"
+      },
+      {
+        "text": "address: PaymentSheet.AddressCollectionMode.FULL,",
+        "location": "raw/stripe-inapp-collect-addresses-2025.md:762"
+      },
+      {
+        "text": "Only collect phone numbers if you need them for the transaction.",
+        "location": "raw/stripe-inapp-collect-addresses-2025.md:768"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-mobile-collect-addresses-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 16
+      }
+    ],
+    "raw/stripe-inapp-collect-addresses-2025.md": [
+      {
+        "start": 1,
+        "end": 768
+      }
+    ],
+    "wiki/sources/source-stripe-inapp-collect-addresses.md": [
+      {
+        "start": 1,
+        "end": 136
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/8c4e8c5f080360ec173d0129/content.diff": [
+      {
+        "start": 1,
+        "end": 772
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-mobile-collect-addresses/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 199
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-mobile-collect-addresses/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 70
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 106,
+        "end": 121
+      },
+      {
+        "start": 766,
+        "end": 779
+      }
+    ],
+    "wiki/concepts/stripe-inapp-payments.md": [
+      {
+        "start": 8,
+        "end": 38
+      },
+      {
+        "start": 89,
+        "end": 109
+      }
+    ],
+    "wiki/concepts/stripe-address-element.md": [
+      {
+        "start": 24,
+        "end": 44
+      },
+      {
+        "start": 126,
+        "end": 136
+      }
+    ],
+    "wiki/sources/source-stripe-inapp-address-element.md": [
+      {
+        "start": 1,
+        "end": 43
+      }
+    ],
+    "raw/stripe-inapp-address-element-2025.md": [
+      {
+        "start": 1,
+        "end": 66
+      }
+    ]
+  },
+  "answers": {
+    "payments-mobile-collect-addresses": {
+      "Q1": "The November 7, 2026 capture of https://docs.stripe.com/payments/mobile/collect-addresses describes collecting physical addresses and phone numbers via the mobile Address Element (new raw lines 5-7). Its four links route readers to UIKit, SwiftUI, Android and React Native variants (new raw lines 13-16). The April 22, 2026 guide documents Stripe account and SDK setup with a client publishable key, UIKit optional delegate results, SwiftUI bound address state, Android onCreate registration and Succeeded/Canceled, and React Native AddressSheet onSubmit/onError dismissal. It documents default iOS autocomplete and Google Places dependency and key for Android autocomplete, including React Native Android (old raw lines 23-149, old raw lines 203-356, old raw lines 408-535 and old raw lines 603-719). Optionally passing populated shipping details to the payment UI can prefill billing and set PaymentIntent.shipping upon confirmation in the documented paths. PaymentMethod billing defaults use separate configuration, and address capture is independent of payment completion (old raw lines 140-184, old raw lines 526-583 and old raw lines 711-764). The prior source-stripe-inapp-collect-addresses.md preserved the four client integrations and overgeneralized address collection modes. The revised entry distinguishes those modes and supplies explicit OS and confirmation scope.",
+      "Q2": "For https://docs.stripe.com/payments/mobile/collect-addresses the four links are documentation navigation (new raw lines 9-16 compared with old raw lines 8-10, old raw lines 188-190, old raw lines 393-395 and old raw lines 588-590). The capture supplies no substantive change, renewed SDK minimum, or deprecation. The revised source-stripe-inapp-collect-addresses.md dates SDK compatibility, Android onCreate and React Native dismissal requirements, Android-only Google Places autocomplete setup, and the field-specific `Full` address example to April 22, 2026 (old raw lines 23-35, old raw lines 414-513, old raw lines 562-583 and old raw lines 644-709). Preserve the distinction between PaymentSheet `shippingDetails` and React Native `defaultShippingDetails`, and between confirmation-time PaymentIntent.shipping and attached PaymentMethod billing defaults (old raw lines 140-184, old raw lines 526-583 and old raw lines 711-764). The required-phone options in the April UIKit and React Native examples are configuration examples. The guide directs readers to collect phone numbers only when needed for the transaction (old raw lines 184-186, old raw lines 389-391, old raw lines 584-586 and old raw lines 766-768). The reciprocal overview should point to the available detailed guide and avoid making broad automatic integration or equal-feature language a mobile API instruction. The separate same-instance web Elements flow does not establish mobile behavior. Address entry, prefill and even a confirmation-time shipping field do not prove a completed charge."
+    }
+  },
+  "concept_suggestions": []
+}

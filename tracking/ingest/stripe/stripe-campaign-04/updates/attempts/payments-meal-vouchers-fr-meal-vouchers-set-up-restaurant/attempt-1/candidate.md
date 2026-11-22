@@ -1,0 +1,66 @@
+---
+title: "Stripe: Set Up a Restaurant for Titres-Restaurant Payments"
+type: source
+date_ingested: 2026-05-05
+date_updated: 2026-11-22
+original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/set-up-restaurant"
+raw_files:
+  - "stripe-payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant-2026-11-07.md"
+  - "stripe-fr-meal-vouchers-setup-restaurant-2025.md"
+tags: [stripe, meal-vouchers, france, titres-restaurant, siret, onboarding, connect]
+---
+
+## Summary
+
+The May 5 and November 7, 2026 Dashboard guides cover restaurant and store onboarding for Bimpli, Pluxee and Up Déjeuner. Obtain a CNTR license for the branch and a contract with each issuer it intends to accept. November documents an [email waitlist for the private preview](https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/set-up-restaurant.md#fr_meal_voucher_preview) and links a separate Payment Locations API route. May instead described access for selected API preview users via fr-meal-voucher-beta@stripe.com. The captures leave current access approval and continued use of the May address unconfirmed.
+
+## Dashboard Onboarding and Readiness
+
+1. Open **French meal vouchers SIRETs** in Dashboard and choose **Add SIRET**.
+2. Enter the branch's SIRET, postal code and store name, then select **Confirm**. The SIRET and postal code must match. Dashboard prevents changes to the restaurant’s name and SIRET after creation.
+3. Both Dashboard captures describe a 1–2 business day validation period after submission. Open the restaurant drawer to verify successful onboarding and inspect the status for each issuer before accepting vouchers.
+
+The November drawer also displays the Payment Location ID. That ID identifies the location separately from the branch's SIRET or the connected account ID. A location can exist and list issuers before the voucher capability becomes active.
+
+## Dashboard Onboarding Problems
+
+- **Ineligible.** The November Dashboard guide uses this status when Conecs rejects a nonexistent SIRET, a SIRET with no CNTR approval or one whose approval was revoked. Verify the SIRET and obtain or re-obtain a valid CNTR license when required. An incorrect SIRET requires a new Dashboard onboarding request with the correct value. If the SIRET is correct but CNTR registration remains pending, Stripe resumes automatically after Conecs processes it.
+- **Invalid postal code.** The captures show this case under **Requires Action**. Open the restaurant drawer, choose **Update Details**, enter the correct postal code and select **Confirm**. The guides describe a status update within 1–2 business days after correction.
+
+## Preview API and Payment Location Handoff
+
+The separate November Payment Locations API guide requires preview Stripe version `2026-05-27.preview` or later. It describes private-preview SDK support and the documented private-parameter or custom-request alternatives. The branch Payment Location represents one physical establishment. Confirm that its `fr_meal_vouchers_conecs_payments` capability is `active` before acceptance. A populated issuer list or its update event can precede capability activation.
+
+For a nonexistent SIRET or missing CNTR approval, the API guide illustrates a `pending` voucher capability with `business_registration.siret` currently due. That example has a narrower scope than the list of Dashboard **Ineligible** causes. Correct a wrong SIRET on the existing Payment Location in the API. For onboarding-sensitive changes after activation, such as SIRET or address changes, the API requires `onboarding_data_update_acknowledged=true`. The capability returns to `pending` and acceptance pauses until reactivation. The API update path is separate from the Dashboard path for creating a corrected request.
+
+The May 5 acceptance guide sends the pre-provisioned branch SIRET in `payment_details[benefit][fr_meal_voucher][siret]`. The separate November acceptance guide uses the preview version floor and sends the `loc_` ID as `payment_details[location]` and `payment_details[benefit][fr_meal_voucher][enabled]=if_payment_method_is_eligible` when the server creates the PaymentIntent. The client confirms through Stripe.js. Stripe resolves the location’s SIRET at confirmation, so a change between creation and confirmation can apply. Previously confirmed payments retain their SIRET. Creation, capability activation and confirmation describe different stages. Payment and issuer settlement require their own outcome evidence. See [[source-stripe-fr-meal-vouchers-accept-payment]].
+
+## Connect and Test SIRETs
+
+In Dashboard, open **Connected Accounts**, select the intended account and go to **Payment methods**, **French Meal Voucher Conecs**, then **Configure SIRETs**. The resulting SIRETs page manages locations for that selected account. Charge-type scope is documented separately in [[source-stripe-fr-meal-vouchers-connect]].
+
+Both Dashboard captures use these test fixtures.
+
+| SIRET | Postal code | Scenario |
+| --- | --- | --- |
+| `42424242424242` | `42424` | Valid onboarded restaurant |
+| `11111111111111` | `11111` | Awaiting an onboarding outcome |
+| `42424242424242` | Any other value | SIRET and postal code mismatch |
+
+## Related Pages
+
+- [[stripe-fr-meal-vouchers]] — product concept and operational scope
+- [[source-stripe-fr-meal-vouchers]] — product overview
+- [[source-stripe-fr-meal-vouchers-accept-payment]] — dated PaymentIntent request and confirmation routes
+- [[source-stripe-fr-meal-vouchers-connect]] — Connect charge paths and merchant-of-record onboarding
+- [[stripe]] — company page
+
+## Related raw API references
+
+- [[raw/stripe-payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant-api-2026-11-07|November 7 Payment Locations API guide]] — preview capability, state and location-update paths
+
+## Raw Sources
+
+- [[raw/stripe-payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant-2026-11-07|November 7, 2026 Dashboard guide]] — full capture
+- [[raw/stripe-fr-meal-vouchers-setup-restaurant-2025|May 5, 2026 Dashboard guide]] — full historical capture

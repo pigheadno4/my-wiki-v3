@@ -1,0 +1,113 @@
+{
+  "job_id": "payments-multibanco",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "The pins and quotes verify. The receipt correctly identifies the documented refund-window change, the voucher flow and Connect eligibility changes, and the need to qualify the existing source and voucher concept. The user-facing answers still need to preserve the exact boundary of the Connect descriptor rules and show what confirms the newly documented refund outcome.",
+  "required_changes": [
+    "In Q2 state explicitly that the named Connect charge routes select which account\u2019s statement descriptor is used, per new raw lines 139-143. Replace the broader 'connected-account identity' and 'platform identity' wording, which could be read as selecting the account that owns or settles the charge. Preserve the account-level fallback if statement_descriptor is unset and the bank-dependent display qualification.",
+    "Complete Q1's distinct Refund state boundary against new raw lines 70-84. Name the Refund object's succeeded and failed outcomes and the Dashboard/API or signature-verified refund events that establish the outcome. Preserve that the succeeded reference is conditional on availability and that failure returns the amount to the Stripe balance and requires another method to refund the customer. The existing Q1 'need final state verification' does not answer how to tell whether the refund was delivered or what happens on failure. In the mapped source assessment keep the current line 29's no-chargeback claim scoped to the documented absence of a Multibanco dispute process that debits the Stripe balance (old raw line 171 and new raw line 88)."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "read_ranges": {
+    "raw/stripe-payments-multibanco-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 151
+      }
+    ],
+    "raw/stripe-multibanco-2025.md": [
+      {
+        "start": 1,
+        "end": 199
+      }
+    ],
+    "wiki/sources/source-stripe-multibanco.md": [
+      {
+        "start": 1,
+        "end": 37
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/a7e01e2d37a078c89e76e66a/content.diff": [
+      {
+        "start": 1,
+        "end": 305
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 507,
+        "end": 513
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 371,
+        "end": 382
+      }
+    ],
+    "wiki/concepts/stripe-vouchers.md": [
+      {
+        "start": 14,
+        "end": 26
+      },
+      {
+        "start": 75,
+        "end": 95
+      },
+      {
+        "start": 113,
+        "end": 122
+      }
+    ],
+    "raw/stripe-multibanco-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 11
+      },
+      {
+        "start": 166,
+        "end": 174
+      },
+      {
+        "start": 592,
+        "end": 600
+      }
+    ],
+    "raw/stripe-payments-multibanco-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "raw/stripe-payments-vouchers-2026-11-07.md": [
+      {
+        "start": 27,
+        "end": 44
+      }
+    ],
+    "raw/stripe-sources-multibanco-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      },
+      {
+        "start": 108,
+        "end": 128
+      }
+    ]
+  },
+  "source_assessment_decisions": [
+    {
+      "source_target": "wiki/sources/source-stripe-multibanco.md",
+      "verdict": "changes_requested",
+      "reason": "The source-required-update disposition is supported. State the documented no-chargeback dispute-process boundary in the mapped assessment and preserve the final Refund status and conditional reference rather than implying successful delivery from submission."
+    }
+  ]
+}

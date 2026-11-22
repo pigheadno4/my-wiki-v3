@@ -1,0 +1,177 @@
+{
+  "job_id": "payments-off-session-payments",
+  "attempt": 2,
+  "raw_path": "raw/stripe-payments-off-session-payments-2026-11-07.md",
+  "raw_sha256": "f1e92298b85d6eff2fc6f10657dda414c62003bc6ea3fe18ef26e0991b1c6ca4",
+  "prior_raw_path": "raw/stripe-off-session-payments-api-2026.md",
+  "prior_raw_sha256": "b8863a50c30af1c302490ee2f6c4a6597c624a414217a8582230350dd03f398b",
+  "source_targets": [
+    "wiki/sources/source-stripe-off-session-payments-api.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-off-session-payments-api.md": "2e53ae524b38cab726e8ca62fe7d3b625341ce1ed486284615d6ba3a377048b4"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-off-session-payments-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 73
+      }
+    ],
+    "raw/stripe-off-session-payments-api-2026.md": [
+      {
+        "start": 1,
+        "end": 63
+      }
+    ],
+    "wiki/sources/source-stripe-off-session-payments-api.md": [
+      {
+        "start": 1,
+        "end": 56
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/704aea140daf43db9e966ba5/content.diff": [
+      {
+        "start": 1,
+        "end": 86
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 573,
+        "end": 578
+      },
+      {
+        "start": 705,
+        "end": 709
+      }
+    ],
+    "wiki/concepts/stripe-off-session-payments.md": [
+      {
+        "start": 1,
+        "end": 44
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 611,
+        "end": 617
+      }
+    ],
+    "raw/stripe-payments-off-session-payments-integrate-with-off-session-payments-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 55
+      },
+      {
+        "start": 58,
+        "end": 79
+      },
+      {
+        "start": 133,
+        "end": 162
+      }
+    ],
+    "raw/stripe-payments-off-session-payments-orchestration-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 52
+      }
+    ],
+    "raw/stripe-payments-off-session-payments-smart-retries-2026-11-07.md": [
+      {
+        "start": 27,
+        "end": 98
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "The Off-Session Payments API is in private preview.",
+      "location": "raw/stripe-payments-off-session-payments-2026-11-07.md:9"
+    },
+    {
+      "text": "-H \"Stripe-Version: 2026-04-22.preview\"",
+      "location": "raw/stripe-payments-off-session-payments-2026-11-07.md:18"
+    },
+    {
+      "text": "\"retry_strategy\": \"best_available\"",
+      "location": "raw/stripe-payments-off-session-payments-2026-11-07.md:29"
+    },
+    {
+      "text": "When you save a payment method, you can only use it for the specific usage you\u2019ve included in your terms.",
+      "location": "raw/stripe-payments-off-session-payments-2026-11-07.md:50"
+    },
+    {
+      "text": "Make sure you keep a record of your customer\u2019s written agreement to these terms.",
+      "location": "raw/stripe-payments-off-session-payments-2026-11-07.md:59"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Route payments to any of the Stripe-supported processors, or automatically route payments created through the Off-Session Payments API and other supported payments APIs.",
+      "location": "raw/stripe-off-session-payments-api-2026.md:12"
+    },
+    {
+      "text": "stripe.v2.payments.offSessionPayments.create",
+      "location": "raw/stripe-off-session-payments-api-2026.md:23"
+    },
+    {
+      "text": "Your cancellation policy, if the payment method is for a subscription service.",
+      "location": "raw/stripe-off-session-payments-api-2026.md:61"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Both captures describe initiating recurring and unscheduled off-session payments and Stripe Smart Retries using a chosen timing strategy. November explicitly says private preview and adds request-access mechanics; May linked a preview API reference without this explicit access label (old 4-16 and 38; new 5-13 and 61-73). Requesting interest does not establish access.",
+    "The November secret-key cURL example posts JSON to `/v2/payments/off_session_payments` using `2026-04-22.preview`, with amount value/currency, Customer and saved PaymentMethod IDs, recurring cadence, metadata and `best_available`. May has the corresponding Node example (old 18-38; new 15-34). Examples do not establish comprehensive field or schema requirements or final payment outcomes.",
+    "Both retain setup roles: Checkout Sessions can collect and save with or without a payment, PaymentIntents implement the payment step with computed final amount, and SetupIntents save without charging for future recurring or later-priced one-time use (old 40-48; new 36-44). Saving or confirming setup does not initiate or complete an OffSessionPayment by itself.",
+    "Both retain purpose-limited permission, merchant responsibility, terms and opt-in, written agreement records, agreement to specified payments or a series, timing/frequency, amount calculation and a cancellation policy specifically for subscription service (old 50-63; new 46-59). Current source line 47 wrongly compresses cancellation into a universal term and could obscure the allowed-use limit.",
+    "Root index line 7 routes via Stripe index lines 575 and 707 to wiki/concepts/stripe-off-session-payments.md lines 8-16, 18-40 and 44. That route and source lines 13-18 conflate Smart Retries and routing in one call and omit private preview and dated version scope."
+  ],
+  "substantive_changes": [
+    "November explicitly labels this API private preview and adds a request-for-access form and example (new 9 and 61-73); old 38 was a preview reference without a form in this overview. The qualifier and request process are substantive documentation, not evidence that access or enrollment was granted.",
+    "November keeps Smart Retries and removes the broad multi-processor paragraph from the overview (old 8-12; new 9-13). Companion routing documentation confirms a separate Orchestration path with exclusions, so do not treat omission as feature removal. Versioned HTTP example and integration link replace a Node example and reference route; exact header is example evidence and not a global recommendation."
+  ],
+  "historical_claims_to_preserve": [
+    "May Node example and API preview reference remain dated (old 18-38); preserve the older broad routing claim as historical and qualify it with the November companion, rather than silently carrying it forward.",
+    "The supported setup-API roles and compliance terms are stable (old 40-63; new 36-59), including documented examples of specific-use opt-in and written records without claiming that a checkbox alone proves legal or network compliance."
+  ],
+  "conflicts": [
+    "The November Orchestration companion (raw/stripe-payments-off-session-payments-orchestration-2026-11-07.md:9-19, 21-48) explicitly says Smart Retries is incompatible with Orchestration. The separate routing flow requires both previews, an onboarded processor and active routing config, opted in per request; it is card-only and excludes Connect and raw card data. Active rules choose the processor (and may name a retry processor); this does not permit Smart Retries on the same flow. Correct the source lines 13-18 and concept lines 10-16 and 38-40 reciprocally.",
+    "The November overview example uses `2026-04-22.preview` (new lines 15-31). The linked integration guide specifies `2026-08-26.preview` for v2 payment requests and shows `2026-10-28.preview` for creation of a v2 event destination (raw/stripe-payments-off-session-payments-integrate-with-off-session-payments-2026-11-07.md:9-35, 58-79). Retain these operation-specific examples and their divergence; do not infer universal compatibility or treat a newer example as proof of removal of older version support.",
+    "The linked integration guide at lines 14-16, 42-53, 133-141 separates a successful create request and created notification from asynchronous authorization attempts, retryable failure and terminal outcome. Use the appropriate v2 event destination, separate from v1 setup. Do not treat Smart Retry scheduling, request acceptance or setup success as payment success, settled funds or payout. If adding an event identifier, note the integration guide's pluralized prose at line 139, versus the singular event name in subscription/table and payload (25-29, 42-50, 141-156).",
+    "Source lines 17-18 and concept line 14 overgeneralize the request strategy; distinguish the applied response and hard-decline behavior from the separate dated Smart Retries capture at raw/stripe-payments-off-session-payments-smart-retries-2026-11-07.md:27-73, 86-98."
+  ],
+  "unresolved_questions": [
+    "Preview acceptance, account/payment-method eligibility, supported versions in a specific account, final outcome and payout cannot be established from the overview or examples."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-off-session-payments.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-off-session-payments-api.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Preserve May and November as dated. Add private preview and access-request boundary, server-side v2 example and version scope, saved Customer/PaymentMethod and setup API roles, purpose-limited consent and written records, and asynchronous outcome route.",
+        "Correct source line 17 and concept line 14 and link the dated Smart Retries companion. The request value `best_available` asks Stripe to apply an eligible retry strategy. The Smart Retries guide documents response `smart` for Smart Retries, `scheduled` for a custom schedule, and `heuristic` for Direct Debit, where AI retries are unavailable (Smart Retries companion lines 27-61). An OffSessionPayment can have `pending_retry`, but hard declines such as `authentication_required` cannot be retried automatically (lines 63-73 and 86-98). A retry option or failed attempt does not imply AI retry, an automatic reattempt for hard declines, or eventual success. Stripe attempts authorization asynchronously after returning the create response. A separate v2 event destination receives notifications for authorization attempts and other state changes (integration companion lines 14-16 and 133-135). The subscription, table and payload use the singular `v2.payments.off_session_payment.*` namespace despite the pluralized prose at line 139. `created` reflects the accepted create request, `attempt_started` marks an initial or retry authorization attempt, `attempt_failed` indicates a retryable failed attempt with retries remaining, and `failed` marks terminal failure. `succeeded` is sent after successful authorization for automatic capture or after calling the capture endpoint for manual capture (integration companion lines 24-35, 42-53 and 137-156). Those events do not establish settlement or payout."
+      ],
+      "conflicts": [
+        "Replace the single-call Smart Retries plus processor routing claim at lines 13-18 with a reciprocal warning: November companion Orchestration excludes Smart Retries and scopes processor/configuration and card/Connect/raw-card conditions. Preserve the differing preview headers and qualify line 47's cancellation policy to subscriptions (old 56-63; new 52-59)."
+      ],
+      "reason": "The overview adds material preview access documentation and the mapped summary currently invites an unsupported combined Smart Retries/Orchestration configuration."
+    }
+  ],
+  "answers": {
+    "Q1": "The November 7, 2026 overview at https://docs.stripe.com/payments/off-session-payments describes a private-preview v2 API that initiates recurring or unscheduled payments and can use Stripe Smart Retries to choose when to retry failed attempts. Its server-side JSON create example posts to `/v2/payments/off_session_payments` with `2026-04-22.preview`, amount value/currency, Customer and saved PaymentMethod IDs, recurring cadence, metadata and `best_available`. An access request is not preview activation (new raw lines 5-34 and new raw lines 61-73). The request value `best_available` asks Stripe to apply an eligible retry strategy. The Smart Retries guide documents response `smart` for Smart Retries, `scheduled` for a custom schedule, and `heuristic` for Direct Debit, where AI retries are unavailable (Smart Retries companion lines 27-61). An OffSessionPayment can have `pending_retry`, but hard declines such as `authentication_required` cannot be retried automatically (lines 63-73 and 86-98). A retry option or failed attempt does not imply AI retry, an automatic reattempt for hard declines, or eventual success. The May guide shows matching fields in Node and mentions processor routing (old raw lines 8-38). Checkout Sessions can collect and save with or without a payment, PaymentIntents handle the payment step with a final amount, and SetupIntents save without an initial payment for future use. Both retain explicit permission for the specified payment or series, payment timing/frequency and amount terms, subscription-only cancellation policy, and records of written agreement (old raw lines 40-63 and new raw lines 36-59). Stripe attempts authorization asynchronously after returning the create response. A separate v2 event destination receives notifications for authorization attempts and other state changes (integration companion lines 14-16 and 133-135). The subscription, table and payload use the singular `v2.payments.off_session_payment.*` namespace despite the pluralized prose at line 139. `created` reflects the accepted create request, `attempt_started` marks an initial or retry authorization attempt, `attempt_failed` indicates a retryable failed attempt with retries remaining, and `failed` marks terminal failure. `succeeded` is sent after successful authorization for automatic capture or after calling the capture endpoint for manual capture (integration companion lines 24-35, 42-53 and 137-156). Those events do not establish settlement or payout. source-stripe-off-session-payments-api.md retains May features but needs the preview and routing boundary.",
+    "Q2": "For https://docs.stripe.com/payments/off-session-payments, November's explicit private-preview label and access request are substantive qualifications (old raw lines 8-16, old raw lines 35-38 and new raw lines 9-13 and new raw lines 61-73). Node versus cURL and links to the integration guide and updated Checkout quickstart are example or navigation changes, with a newly visible dated `2026-04-22.preview` header (old raw lines 18-44 and new raw lines 15-40). The linked v2 integration guide specifies `2026-08-26.preview` for payments and shows `2026-10-28.preview` for creation of the event destination; preserve this difference. Keep May's routing paragraph dated in source-stripe-off-session-payments-api.md and warn reciprocally that the separate November Orchestration flow requires both previews, an onboarded processor, an activated configuration and request opt-in. It is card-only without Connect or raw-card requests and incompatible with Smart Retries. The overview's omission is not proof of withdrawal. Preserve the unchanged merchant responsibility and purpose-specific written consent terms (old raw lines 50-63 and new raw lines 46-59). Neither example nor a preview request or payment creation proves final authorization, capture, funds availability, payout or compliance."
+  }
+}

@@ -1,0 +1,112 @@
+--- raw/stripe-fr-meal-vouchers-save-payment-2025.md
++++ raw/stripe-payments-meal-vouchers-fr-meal-vouchers-saving-payment-details-2026-11-07.md
+@@ -3,45 +3,41 @@
+ Learn how to save a customer's French meal vouchers payment method using a SetupIntent.
+ 
+ > #### Want to accept France titres-restaurant payments?
+->
+-> France titres-restaurant is in private preview. >
++> 
++> France titres-restaurant is in private preview. Enter your email address to [join the waitlist](https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/saving-payment-details.md#fr_meal_voucher_preview). Stripe will contact you when we can onboard additional users.
+ 
+-> This guide is only for the following French meal vouchers issuers:
+->
+-> - Bimpli
++### Want to accept France titres-restaurant payments?
+ 
+-- Pluxee
+-- Up Déjeuner
++Enter your email to request access.
+ 
+-Before you begin, make sure that you [provisioned your restaurant or store SIRET](https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/set-up-restaurant.md) for French meal vouchers acceptance with Stripe.
++```bash
++curl https://docs.stripe.com/preview/register \
++  -X POST \
++  -H "Content-Type: application/json" \
++  -H "Referer: https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/saving-payment-details" \
++  -d '{"email": "EMAIL", "preview": "fr_meal_voucher_preview"}'
++```
+ 
+-# Elements
++> This guide is only for the following French meal vouchers issuers: Bimpli, Pluxee, and Up Déjeuner. It also requires preview [Stripe version](https://docs.stripe.com/sdks/set-version.md) `2026-05-27.preview` or later—see [Update the Stripe SDK](https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/set-up-restaurant-api.md#update-sdk) for setup instructions.
+ 
+-> This is a Elements for when payment-ui is elements. View the full page at https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/saving-payment-details?payment-ui=elements.
++## Before you begin
++
++[Set up your restaurant](https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/set-up-restaurant-api.md) using the Payment Locations API. Make sure the location’s `fr_meal_vouchers_conecs_payments` capability status is `active` before saving payment details.
+ 
+ ## Review the Saved Payment Methods documentation
+ 
+-Make sure to first review how to [save a customer’s payment method](https://docs.stripe.com/payments/save-and-reuse.md) without making a payment.
++Before you start, review how to [save a customer’s payment method](https://docs.stripe.com/payments/save-and-reuse.md) without making a payment.
+ 
+ ## Create a SetupIntent
+ 
+-To specify that the payment method is set up as a French meal vouchers payment, you must pass the SIRET of your business branch in the [siret](https://docs.stripe.com/api/setup_intents/create.md#create_setup_intent-setup_details-benefit-fr_meal_voucher-siret) field, as shown in the following example:
++To specify that the payment method is set up as a French meal vouchers payment, pass the ID of your [payment location](https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/set-up-restaurant-api.md#create-location) in [setup_details[location]](https://docs.stripe.com/api/setup_intents/create.md?api-version=2026-05-27.preview#create_setup_intent-setup_details-location) and set [setup_details[benefit][fr_meal_voucher][enabled]](https://docs.stripe.com/api/setup_intents/create.md?api-version=2026-05-27.preview#create_setup_intent-setup_details-benefit-fr_meal_voucher-enabled) to `if_payment_method_is_eligible`:
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const setupIntent = await stripe.setupIntents.create({
+-  customer: "{{CUSTOMER_ID}}",
+-  setup_details: {
+-    benefit: {
+-      fr_meal_voucher: {
+-        siret: "42424242424242",
+-      },
+-    },
+-  },
+-});
++```curl
++curl https://api.stripe.com/v1/setup_intents \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "customer={{CUSTOMER_ID}}" \
++  -d "setup_details[location]=loc_xxx" \
++  -d "setup_details[benefit][fr_meal_voucher][enabled]=if_payment_method_is_eligible"
+ ```
+ 
+ After you create the `SetupIntent`, return its [client secret](https://docs.stripe.com/api/setup_intents/object.md#setup_intent_object-client_secret) to the client.
+@@ -54,7 +50,7 @@
+ 
+ When you charge the saved payment method *on-session* (A payment is described as on-session if it occurs while the customer is actively in your checkout flow and able to authenticate the payment method), use the `Customer` and `PaymentMethod` IDs to create a `PaymentIntent`.
+ 
+-Pass the SIRET of your business branch in the [siret](https://docs.stripe.com/api/payment_intents/create.md#create_payment_intent-payment_details-benefit-fr_meal_voucher-siret) field, as shown in the following example:
++Pass the ID of your payment location in [payment_details[location]](https://docs.stripe.com/api/payment_intents/create.md?api-version=2026-05-27.preview#create_payment_intent-payment_details-location) and set [payment_details[benefit][fr_meal_voucher][enabled]](https://docs.stripe.com/api/payment_intents/create.md?api-version=2026-05-27.preview#create_payment_intent-payment_details-benefit-fr_meal_voucher-enabled) to `if_payment_method_is_eligible`:
+ 
+ French meal vouchers payments are in EUR only.
+ 
+@@ -66,23 +62,19 @@
+   -d "customer={{CUSTOMER_ID}}" \
+   -d "payment_method={{PAYMENTMETHOD_ID}}" \
+   -d confirm=true \
+-  -d "payment_details[benefit][fr_meal_voucher][siret]=42424242424242"
++  -d "payment_details[location]=loc_xxx" \
++  -d "payment_details[benefit][fr_meal_voucher][enabled]=if_payment_method_is_eligible"
+ ```
+ 
+-## Test your integration
++### Test your integration 
+ 
+-You can use the following cards to test your integration:
++Use the following cards to test your integration in a *sandbox* (A sandbox is an isolated test environment that allows you to test Stripe functionality in your account without affecting your live integration. Use sandboxes to safely experiment with new features and changes):
+ 
+-| French meal vouchers issuer | Number           | CVC          | Expiry date     |
+-| --------------------------- | ---------------- | ------------ | --------------- |
+-| Bimpli with Conecs          | 4000002501000002 | Any 3 digits | Any future date |
++| French meal vouchers issuer | Number | CVC | Expiration date |
++| --- | --- | --- | --- |
++| Bimpli with Conecs | 4000002501000002 | Any 3 digits | Any future date |
+ 
+-You can test different scenarios with the SIRET passed into `setup_details[benefit][fr_meal_voucher][siret]`.
+-
+-| SIRET            | Scenario                                                                     |
+-| ---------------- | ---------------------------------------------------------------------------- |
+-| `42424242424242` | A SIRET that you provisioned for French meal vouchers acceptance with Stripe |
+-| `00000000000000` | Invalid SIRET                                                                |
++Use the PaymentLocation ID from your [sandbox onboarding setup](https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/set-up-restaurant-api.md#testing). Pass this location ID in `setup_details[location]` when creating the SetupIntent in the same sandbox.
+ 
+ ## Temporary card authorization charge
+ 

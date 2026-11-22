@@ -1,0 +1,239 @@
+{
+  "job_id": "payments-mobile-embedded-filter-card-brands",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Filter Card Brands — EmbeddedPaymentElement\"\ntype: source\ndate_ingested: 2026-04-22\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/mobile/embedded-filter-card-brands\"\nraw_files:\n  - \"stripe-inapp-embedded-filter-card-brands-2025.md\"\ntags: [stripe, mobile, ios, android, react-native, embedded-payment-element, card-brand-filtering, card-brands]\n---\n\n## Summary\n\n[[stripe]]’s April 22, 2026 guide explains card-brand filtering in the Mobile Embedded Payment Element for iOS, Android and React Native. It assumes a Stripe account and an existing [[source-stripe-inapp-accept-payment-embedded|Mobile Embedded Payment Element integration]]. The November 7 capture identifies the same three platform routes and provides navigation. The April full capture supplies the implementation examples.\n\n## April 22, 2026 — Filter and Examples\n\nFor the card form, allow only the listed brands with `allowed` or exclude the listed brands with `disallowed`. The four documented categories are Visa, Mastercard, Amex and Discover. Discover includes Discover, Diners Club, JCB, UnionPay and Elo through Discover Global Network. The guide uses a nonempty Visa and Mastercard allow list on each platform.\n\n| Platform | Dated example configuration |\n| --- | --- |\n| iOS | Set `cardBrandAcceptance` on an `EmbeddedPaymentElement.Configuration` instance to `.allowed(brands: [.visa, .mastercard])`. The April prose names `EmbeddedPaymentElement.Configuration.CardBrandAcceptance.BrandCategory`. See the retained package qualification below. |\n| Android | Call `cardBrandAcceptance` on `EmbeddedPaymentElement.Configuration.Builder`, passing the shared `PaymentSheet.CardBrandAcceptance.allowed` with its Visa and Mastercard categories. |\n| React Native | Set `cardBrandAcceptance` on `EmbeddedPaymentElementConfiguration`. The example uses `PaymentSheet.CardBrandAcceptanceFilter.Allowed` and `PaymentSheet.CardBrandCategory.Visa` and `.Mastercard`. |\n\nThe April iOS, Android and React Native examples and test-card instructions are at lines 12-57, 63-133 and 139-195, respectively. Those instructions describe how to check whether the UI accepts or blocks a test brand. See [[source-stripe-inapp-filter-card-brands]] for the separate PaymentSheet and Flow Controller guide.\n\n## Platform and SDK Boundaries\n\n**iOS.** The retained StripePaymentSheet 26.11.0 snapshot (`2026-09-30-7037819`) exposes `cardBrandAcceptance` on the distinct Embedded configuration. `EmbeddedPaymentElement.CardBrandAcceptance` and `EmbeddedPaymentElement.BrandCategory` alias `PaymentSheet.CardBrandAcceptance` and its category. The captured Embedded setting defaults to `.all`, applies the filter to `PKPaymentRequest.supportedNetworks` for its Apple Pay flow, describes a client-side control and excludes Link filtering. A dedicated Apple Pay button uses a separate configuration route in the April Embedded acceptance guide.\n\n**Android.** The April Embedded filter guide repeats “Apple Pay” in its Android paragraph. The separate April Android PaymentSheet filter guide names Google Pay, and the April Embedded acceptance guide documents an Android Google Pay configuration and a separate dedicated button route. The retained Android PaymentSheet 23.25.1 defines the shared category and `all()`, `allowed()` and `disallowed()` used by the dated Embedded builder example. The Android setup passages and configuration types leave actual Embedded Google Pay network filtering unverified.\n\n**React Native.** In 0.84.0 (`2026-10-29-33ef1ee`), the Embedded configuration scopes `applePay` to iOS and `googlePay` to Android. The interface describes card-brand filtering as client-side, excludes Link filtering and uses the shared PaymentSheet union for all, allow and disallow. The native Embedded bridges forward that setting. The Android bridge falls back to `all()` when an allow or disallow brands list is missing or contains no recognized brands. With a provided array of strings, the iOS bridge returns the selected filter with the mapped array, even if it is empty. These are versioned input-mapping behaviors. They leave server authorization and actual checkout outcomes unverified.\n\n## Retained SDK Locators\n\n- StripePaymentSheet 26.11.0, snapshot `2026-09-30-7037819`: `StripePaymentSheet.podspec` lines 1-9, `EmbeddedPaymentElementConfiguration.swift` lines 133-138, `EmbeddedPaymentElement.swift` lines 593-611, and `PaymentSheetConfiguration.swift` lines 846-871.\n- Android PaymentSheet 23.25.1, snapshot `2026-10-27-bb0d8d0`: `gradle.properties` lines 25-27 and `PaymentSheet.kt` lines 1185-1196 and 3540-3602.\n- React Native 0.84.0, snapshot `2026-10-29-33ef1ee`: `src/types/EmbeddedPaymentElement.tsx` lines 133-145 and 191-197, `src/types/PaymentSheet.ts` lines 743-789, `ios/StripeSdkImpl+Embedded.swift` lines 337-344, `ios/StripeSdkImpl+PaymentSheet.swift` lines 261-299, `EmbeddedPaymentElementViewManager.kt` lines 150-165, and `PaymentElementConfig.kt` lines 220-253.\n\n## Related Pages\n\n- [[stripe-inapp-payments]] — native UI and payment configuration context.\n- [[source-stripe-inapp-filter-card-brands]] — separate PaymentSheet and Flow Controller filter guide.\n- [[source-stripe-inapp-accept-payment-embedded]] — Embedded integration and platform wallet setup.\n\n## Raw Sources\n\n- [[raw/stripe-inapp-embedded-filter-card-brands-2025|Stripe’s April 22, 2026 Embedded Payment Element card-brand guide]] — 195 lines, iOS, Android and React Native, with one reused image.\n\n## Related raw API references\n\n- [[raw/stripe-payments-mobile-embedded-filter-card-brands-2026-11-07|Embedded Payment Element card-brand variant index]] — November 7, 2026 capture, iOS, Android and React Native navigation.\n",
+  "quotes": {
+    "payments-mobile-embedded-filter-card-brands": [
+      {
+        "text": "Choose which card brands to accept",
+        "location": "raw/stripe-payments-mobile-embedded-filter-card-brands-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-mobile-embedded-filter-card-brands-2026-11-07.md:11"
+      },
+      {
+        "text": "[iOS](https://docs.stripe.com/payments/mobile/embedded-filter-card-brands.md?platform=ios)",
+        "location": "raw/stripe-payments-mobile-embedded-filter-card-brands-2026-11-07.md:13"
+      },
+      {
+        "text": "[Android](https://docs.stripe.com/payments/mobile/embedded-filter-card-brands.md?platform=android)",
+        "location": "raw/stripe-payments-mobile-embedded-filter-card-brands-2026-11-07.md:14"
+      },
+      {
+        "text": "[React Native](https://docs.stripe.com/payments/mobile/embedded-filter-card-brands.md?platform=react-native)",
+        "location": "raw/stripe-payments-mobile-embedded-filter-card-brands-2026-11-07.md:15"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-mobile-embedded-filter-card-brands": [
+      {
+        "text": "Accept only the card brands you specify.",
+        "location": "raw/stripe-inapp-embedded-filter-card-brands-2025.md:19"
+      },
+      {
+        "text": "the Discover Global Network, including Discover, Diners Club, JCB, UnionPay, and Elo.",
+        "location": "raw/stripe-inapp-embedded-filter-card-brands-2025.md:29"
+      },
+      {
+        "text": "guide to integrate with Mobile Payment Element.",
+        "location": "raw/stripe-inapp-embedded-filter-card-brands-2025.md:36"
+      },
+      {
+        "text": "The cards buyers can use with Apple Pay.",
+        "location": "raw/stripe-inapp-embedded-filter-card-brands-2025.md:66"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-mobile-embedded-filter-card-brands-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-inapp-embedded-filter-card-brands-2025.md": [
+      {
+        "start": 1,
+        "end": 195
+      }
+    ],
+    "wiki/sources/source-stripe-inapp-embedded-filter-card-brands.md": [
+      {
+        "start": 1,
+        "end": 88
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/035b20c735c7d1d9f02b7951/content.diff": [
+      {
+        "start": 1,
+        "end": 198
+      }
+    ],
+    "raw/stripe-inapp-filter-card-brands-2025.md": [
+      {
+        "start": 63,
+        "end": 82
+      }
+    ],
+    "raw/stripe-inapp-accept-payment-embedded-2025.md": [
+      {
+        "start": 930,
+        "end": 936
+      },
+      {
+        "start": 4423,
+        "end": 4447
+      }
+    ],
+    "raw/github/stripe/stripe-react-native/snapshots/2026-10-29-33ef1ee/files/package.json": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "raw/github/stripe/stripe-react-native/snapshots/2026-10-29-33ef1ee/files/src/types/EmbeddedPaymentElement.tsx": [
+      {
+        "start": 133,
+        "end": 145
+      },
+      {
+        "start": 191,
+        "end": 197
+      }
+    ],
+    "raw/github/stripe/stripe-react-native/snapshots/2026-10-29-33ef1ee/files/src/types/PaymentSheet.ts": [
+      {
+        "start": 743,
+        "end": 789
+      }
+    ],
+    "raw/github/stripe/stripe-react-native/snapshots/2026-10-29-33ef1ee/files/android/src/main/java/com/reactnativestripesdk/EmbeddedPaymentElementViewManager.kt": [
+      {
+        "start": 150,
+        "end": 165
+      }
+    ],
+    "raw/github/stripe/stripe-react-native/snapshots/2026-10-29-33ef1ee/files/android/src/main/java/com/reactnativestripesdk/PaymentElementConfig.kt": [
+      {
+        "start": 220,
+        "end": 253
+      }
+    ],
+    "raw/github/stripe/stripe-react-native/snapshots/2026-10-29-33ef1ee/files/ios/StripeSdkImpl+Embedded.swift": [
+      {
+        "start": 337,
+        "end": 344
+      }
+    ],
+    "raw/github/stripe/stripe-react-native/snapshots/2026-10-29-33ef1ee/files/ios/StripeSdkImpl+PaymentSheet.swift": [
+      {
+        "start": 261,
+        "end": 299
+      }
+    ],
+    "raw/github/stripe/stripe-ios/snapshots/2026-09-30-7037819/files/StripePaymentSheet.podspec": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "raw/github/stripe/stripe-ios/snapshots/2026-09-30-7037819/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElementConfiguration.swift": [
+      {
+        "start": 133,
+        "end": 138
+      }
+    ],
+    "raw/github/stripe/stripe-ios/snapshots/2026-09-30-7037819/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement.swift": [
+      {
+        "start": 593,
+        "end": 611
+      }
+    ],
+    "raw/github/stripe/stripe-ios/snapshots/2026-09-30-7037819/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetConfiguration.swift": [
+      {
+        "start": 846,
+        "end": 871
+      }
+    ],
+    "raw/github/stripe/stripe-android/snapshots/2026-10-27-bb0d8d0/files/gradle.properties": [
+      {
+        "start": 25,
+        "end": 27
+      }
+    ],
+    "raw/github/stripe/stripe-android/snapshots/2026-10-27-bb0d8d0/files/paymentsheet/src/main/java/com/stripe/android/paymentsheet/PaymentSheet.kt": [
+      {
+        "start": 1185,
+        "end": 1196
+      },
+      {
+        "start": 3540,
+        "end": 3602
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 7,
+        "end": 7
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 115,
+        "end": 115
+      },
+      {
+        "start": 778,
+        "end": 778
+      }
+    ],
+    "wiki/concepts/stripe-inapp-payments.md": [
+      {
+        "start": 8,
+        "end": 24
+      },
+      {
+        "start": 69,
+        "end": 106
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-mobile-embedded-filter-card-brands/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 294
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-mobile-embedded-filter-card-brands/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 192
+      }
+    ]
+  },
+  "answers": {
+    "payments-mobile-embedded-filter-card-brands": {
+      "Q1": "The 2026-11-07 capture of https://docs.stripe.com/payments/mobile/embedded-filter-card-brands identifies card-brand choice and routes iOS, Android and React Native (new raw lines 5-15). The detailed 2026-04-22 guide assumes a Stripe account and an existing Mobile Embedded Payment Element integration. Its client configuration can allow only listed brands or disallow them, and shows a Visa/Mastercard allow list. The four categories are Visa, Mastercard, Amex and Discover, with Discover covering its global network including Diners Club, JCB, UnionPay and Elo (old raw lines 12-52, old raw lines 63-128 and old raw lines 139-190). The configuration belongs to the Embedded Element. Android and React Native examples refer to PaymentSheet brand types, and the April Swift example sets the Embedded configuration. The mapped source-stripe-inapp-embedded-filter-card-brands.md preserves those mechanics but calls Apple Pay an all-platform feature. The April Android Embedded wording repeats Apple Pay, while the related April Android Embedded integration documents Google Pay setup and leaves the actual Google Pay filter scope unverified (`raw/stripe-inapp-accept-payment-embedded-2025.md:4423-4447`). The retained SDKs describe client-side filtering. The April checkout test suggestions provide a way to test a filter, and the captures do not show a successful payment or a server authorization rule (old raw lines 130-133 and old raw lines 192-195). The revised source retains the April prerequisites and examples and routes the November capture as navigation only.",
+      "Q2": "For https://docs.stripe.com/payments/mobile/embedded-filter-card-brands, November is presentation and navigation to the same platform variants (new raw lines 9-15). source-stripe-inapp-embedded-filter-card-brands.md and the reciprocal in-app concept should keep April's allow/disallow semantics, brand categories, prerequisites and platform examples dated (old raw lines 12-52, old raw lines 63-128 and old raw lines 139-190). The Android Apple Pay line conflicts with the dated Android PaymentSheet Google Pay line and Embedded Google Pay setup, while the retained React Native SDK scopes Apple Pay to iOS and Google Pay to Android (`raw/stripe-inapp-filter-card-brands-2025.md:63-82`, `raw/stripe-inapp-accept-payment-embedded-2025.md:4423-4447`, React Native snapshot 2026-10-29-33ef1ee `EmbeddedPaymentElement.tsx:133-145`). Wallet setup does not prove an Embedded Google Pay network-filter outcome. On iOS StripePaymentSheet 26.11.0 uses a distinct Embedded configuration with aliases to the PaymentSheet brand type, so the April namespace table needs a version qualification (snapshot 2026-09-30-7037819, `EmbeddedPaymentElement.swift:593-611`, `PaymentSheetConfiguration.swift:846-871`). The retained iOS and React Native interfaces call the feature client-side and exclude Link. React Native 0.84.0's Android mapping falls back to all brands for a missing list or one with no recognized brands, while iOS maps a provided array even if empty (snapshot 2026-10-29-33ef1ee, `PaymentElementConfig.kt:220-253`, `StripeSdkImpl+PaymentSheet.swift:261-299`). Keep those package-specific boundaries apart from a server acceptance policy, a universal compatibility minimum, and actual payment execution. The revised source and reciprocal In-App Payments route date the Swift type identity and distinguish wallet configuration from a verified filter outcome."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "s04-embedded-brand-wallet-route",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "- [[source-stripe-inapp-embedded-filter-card-brands]] — EmbeddedPaymentElement card brand filtering: EmbeddedPaymentElement.Configuration.CardBrandAcceptance.BrandCategory (iOS), same discover network, API diff table vs PaymentSheet",
+      "proposed_markdown": "- [[source-stripe-inapp-embedded-filter-card-brands]] — April 2026 Embedded card-brand guide and November platform index. In StripePaymentSheet 26.11.0 the separate Embedded configuration uses aliases to the PaymentSheet brand type. The iOS setting filters Apple Pay’s request networks on the client. React Native 0.84.0 scopes Apple Pay to iOS and Google Pay to Android. Both retained SDKs exclude Link filtering. Android Google Pay setup alone leaves actual Embedded network filtering unverified.",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "April Embedded raw lines 12-52, 63-128 and 139-190; November raw lines 5-15 provide navigation. StripePaymentSheet 26.11.0 EmbeddedPaymentElement.swift lines 593-611 and EmbeddedPaymentElementConfiguration.swift lines 133-138, React Native 0.84.0 EmbeddedPaymentElement.tsx lines 133-145 and 191-197, April Embedded acceptance raw lines 4423-4447."
+      ]
+    }
+  ]
+}

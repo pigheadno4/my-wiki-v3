@@ -1,0 +1,86 @@
+from pathlib import Path
+from collections import Counter
+import json,hashlib,re,sys,datetime,shutil
+P=Path('tracking/ingest/stripe/stripe-campaign-04');X=Path('/tmp/stripe-s04-review')
+def load(p):return json.loads(Path(p).read_text())
+def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+def save(p,d):Path(p).parent.mkdir(parents=True,exist_ok=True);Path(p).write_text(json.dumps(d,indent=2)+'\n')
+def event(kind,j,detail=None):
+ with(P/'events.jsonl').open('a')as f:f.write(json.dumps({'time':datetime.datetime.now(datetime.timezone.utc).isoformat(),'event':kind,'job_id':j['job_id'],'attempt':j['attempt'],'detail':detail})+'\n')
+def pins(j):
+ for f in j['expected_read_files']:assert sha(f['path'])==f['sha256'],f['path']
+def ranges(d,j,full):
+ for f in j['expected_read_files']:
+  rr=d.get(f['path'],[]);end=0
+  if full:assert rr,('missing full read',f['path'])
+  for r in sorted(rr,key=lambda r:r['start']):
+   assert 1<=r['start']<=r['end']<=f['lines']
+   if full:assert r['start']<=end+1,('read gap',f['path'],end,r)
+   end=max(end,r['end'])
+  if full:assert end==f['lines'],('EOF not read',f['path'],end)
+def quotes(q,path,lo,hi=None):
+ assert isinstance(q,list)and len(q)>=lo and(hi is None or len(q)<=hi);ls=Path(path).read_text().splitlines()
+ for x in q:
+  assert set(x)=={'text','location'};m=re.search(re.escape(path)+r':(\d+)(?:[-–](\d+))?',x['location']);assert m,x['location'];a=int(m[1]);b=int(m[2]or a);assert 1<=a<=b<=len(ls)and x['text']in'\n'.join(ls[a-1:b]),x['location']
+def worker(d,j):
+ assert set(d)==set('job_id attempt raw_path raw_sha256 prior_raw_path prior_raw_sha256 source_targets source_before_sha256 read_ranges quotes old_evidence proposed_disposition findings substantive_changes historical_claims_to_preserve conflicts unresolved_questions affected_concepts source_assessments answers'.split()),set(d)
+ for k in 'job_id attempt raw_path raw_sha256 prior_raw_path prior_raw_sha256 source_targets source_before_sha256'.split():assert d[k]==j[k],k
+ ranges(d['read_ranges'],j,True);quotes(d['quotes'],j['raw_path'],3,5);quotes(d['old_evidence'],j['prior_raw_path'],1);assert d['proposed_disposition']in DISPOSITIONS
+ for k in ['findings','substantive_changes','historical_claims_to_preserve','conflicts','unresolved_questions','affected_concepts']:assert isinstance(d[k],list),k
+ ss=d['source_assessments'];assert len(ss)==len(j['source_targets'])and {s['source_target']for s in ss}==set(j['source_targets'])
+ for s in ss:assert set(s)==set('source_target proposed_disposition update_needed findings conflicts reason'.split())and s['proposed_disposition']in DISPOSITIONS and isinstance(s['update_needed'],bool)and isinstance(s['findings'],list)and isinstance(s['conflicts'],list)and s['reason']
+ assert set(d['answers'])=={'Q1','Q2'}
+ for answer in d['answers'].values():
+  assert len(answer.split())>=35 and j['canonical_url']in answer
+  assert all(Path(p).stem in answer for p in j['source_targets']),('missing answer source route',j['job_id'])
+  assert re.search(r'old raw lines?\s*\d+',answer,re.I)and re.search(r'new raw lines?\s*\d+',answer,re.I),('missing old/new numeric locators',j['job_id'])
+def reviewer(d,j):
+ assert set(d)==set('job_id attempt verdict reason required_changes review_scope retry_review_scope read_ranges source_assessment_decisions'.split()),set(d);assert d['job_id']==j['job_id']and d['attempt']==j['attempt'];assert d['verdict']in{'approved','changes_requested','rejected'}and d['review_scope']==j['expected_review_scope'];ranges(d['read_ranges'],j,d['review_scope']=='full')
+ decisions=d['source_assessment_decisions'];assert len(decisions)==len(j['source_targets'])and {s['source_target']for s in decisions}==set(j['source_targets'])
+ for s in decisions:assert set(s)=={'source_target','verdict','reason'}
+ if d['verdict']=='approved':assert not d['required_changes']and d['retry_review_scope']is None and all(s['verdict']=='approved'for s in decisions)
+ else:assert d['required_changes']and d['retry_review_scope']in{'full','targeted'}
+DISPOSITIONS={'source_required_update','raw_reference','no_substantive_update','unresolved'};jobs=load(P/'jobs.json');op=sys.argv[1]
+fixed_audit_jobs=set(load(P/'manifest.json')['audit_job_ids'])
+if op=='bind':
+ for role,bindings in json.loads(sys.argv[2]).items():
+  assert role in {'worker','reviewer'}
+  for j in jobs:
+   if j['job_id']not in bindings:continue
+   agent=bindings[j['job_id']];j[role+'_agent']=agent;a=P/'attempts'/j['job_id']/f"attempt-{j['attempt']}";ids=load(a/'identities.json')if(a/'identities.json').exists()else{};ids[role]={'agent':agent,'model':'gpt-6.2-sol','reasoning_effort':'medium'if role=='worker'else'high'};save(a/'identities.json',ids);inp=load(a/'input.json');inp[role+'_agent']=agent;save(a/'input.json',inp);event('bind_'+role,j,agent)
+ save(P/'jobs.json',jobs);print('Bound actual role identities')
+elif op=='cycle':
+ for j in jobs:
+  role='worker'if j['state']=='worker_running'else'reviewer'if j['state']=='review_running'else None
+  if not role:continue
+  suffix='worker'if role=='worker'else'review';f=X/(j['job_id']+'-'+suffix+'.json');ready=X/(j['job_id']+'-'+suffix+'.ready')
+  if not(f.exists()and ready.exists()and ready.read_text().strip()==str(j['attempt'])):continue
+  try:
+   pins(j);a=P/'attempts'/j['job_id']/f"attempt-{j['attempt']}";ids=load(a/'identities.json');assert ids[role]['agent']==j[role+'_agent']and j[role+'_agent'];d=load(f)
+   if role=='worker':worker(d,j);save(a/'receipt.json',d);j['state']='candidate_ready';j['receipt_path']=str(a/'receipt.json');j['receipt_sha256']=sha(a/'receipt.json')
+   else:
+    reviewer(d,j);assert ids['worker']['agent']!=ids['reviewer']['agent'];save(a/'review.json',d);j['review_path']=str(a/'review.json');j['review_sha256']=sha(a/'review.json');j['state']='approved'if d['verdict']=='approved'else'failed'if d['verdict']=='rejected'or j['attempt']>=3 else'queued'
+    if j['state']=='queued':j['expected_review_scope']=d['retry_review_scope']
+   event('accepted_'+role,j,d.get('verdict',d.get('proposed_disposition')));print(role,j['job_id'],j['state'])
+  except Exception as e:
+   key=sha(f)+repr(e)
+   if key!=j.get('invalid_key'):j['invalid_key']=key;event('invalid_handoff',j,repr(e));print('HOLD',j['job_id'],repr(e))
+ aux=load(X/'aux-slots.json');orders=[];capacity=10-len(aux)
+ while sum(j['state']in{'worker_running','review_running'}for j in jobs)<capacity:
+  ready=[j for j in jobs if j['state']=='candidate_ready'];queued=sorted([j for j in jobs if j['state']=='queued'],key=lambda j:(j['attempt']==0,j['job_id'] not in fixed_audit_jobs,-j['source_packet_lines'],j['job_id']));workers=sum(j['state']=='worker_running'for j in jobs)
+  if ready and(workers>=2 or not queued):j=ready[0];role='reviewer';j['state']='review_running'
+  elif queued:j=queued[0];role='worker';j['attempt']+=1;j['state']='worker_running'
+  elif ready:j=ready[0];role='reviewer';j['state']='review_running'
+  else:break
+  a=P/'attempts'/j['job_id']/f"attempt-{j['attempt']}";a.mkdir(parents=True,exist_ok=True)
+  if role=='worker':
+   query=(P/'proposed-queries.md').read_text().split('## '+j['job_id']+'\n',1)[1].split('\n## ',1)[0];inp={**j,'role':'review_only_comparison','provider_notes':'/tmp/stripe-s04-notes.md','original_query_prompts':query,'worker_output':str(X/(j['job_id']+'-worker.json')),'worker_ready':str(X/(j['job_id']+'-worker.ready')),'review_output':str(X/(j['job_id']+'-review.json')),'review_ready':str(X/(j['job_id']+'-review.ready')),'accepted_receipt_path':str(a/'receipt.json')}
+   if j['attempt']>1:
+    prior=P/'attempts'/j['job_id']/f"attempt-{j['attempt']-1}"
+    inp['prior_attempt_dir']=str(prior)
+    extra=prior/'supplementary-audit-reopen.json'
+    if extra.exists():inp['supplementary_audit_reopen']={'path':str(extra),'sha256':sha(extra)}
+   save(a/'input.json',inp)
+  orders.append({'role':role,'job_id':j['job_id'],'attempt':j['attempt'],'input':str(a/'input.json'),'review_scope':j['expected_review_scope'],'preferred_agent':j[role+'_agent']});event('dispatch_'+role,j)
+ save(P/'jobs.json',jobs);save(X/'latest-orders.json',orders);save(P/'status.json',{'state':'running_review_only','counts':dict(Counter(j['state']for j in jobs)),'canonical_writes':0});print('ORDERS',json.dumps(orders));print('COUNTS',dict(Counter(j['state']for j in jobs)))
+elif op=='status':print(dict(Counter(j['state']for j in jobs)))

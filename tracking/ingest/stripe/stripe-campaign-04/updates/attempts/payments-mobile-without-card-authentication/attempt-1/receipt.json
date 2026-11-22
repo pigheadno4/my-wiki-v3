@@ -1,0 +1,168 @@
+{
+  "job_id": "payments-mobile-without-card-authentication",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Card Payments Without Bank Authentication — Mobile\"\ntype: source\ndate_ingested: 2026-04-23\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/mobile/without-card-authentication\"\nraw_files:\n  - \"stripe-inapp-without-card-auth-2025.md\"\ntags: [stripe, mobile, ios, android, react-native, card-payments, error-on-requires-action, basic-card-integration, us-canada, payment-intents]\n---\n\n## Summary\n\nThe April 23, 2026 guide describes Stripe's basic mobile integration for businesses accepting only US and Canadian cards. An issuer authentication request causes the payment to fail immediately. The April snapshot includes iOS, Android and React Native examples (raw lines 8–334, 335–629 and 630–930).\n\n## When to Use\n\n- The business accepts only US and Canadian cards.\n- The integration attempts confirmation immediately on the server and declines cards that require issuer authentication.\n\nFor growing or global businesses, the April guide points to Stripe's [global integration](https://docs.stripe.com/payments/accept-a-payment.md), which supports issuer authentication and recommends webhooks for post-payment tasks (raw lines 12–34).\n\n## April Server Example\n\n```javascript\nconst intent = await stripe.paymentIntents.create({\n    amount: 1099, currency: 'usd', // Example amount selected by the server\n    payment_method: req.body.payment_method_id,\n    confirm: true,\n    error_on_requires_action: true, // Fail confirmation if customer action is required\n});\n```\n\nThe April Node.js example fulfills only when the server observes a `PaymentIntent` status of `succeeded`. It returns the `StripeCardError` message to the client and handles unexpected statuses and other exceptions as separate error paths. The authentication-required API example shows `error.code: authentication_required`, `decline_code: authentication_not_handled` and an embedded `PaymentIntent` with status `requires_payment_method` (raw lines 216–265 and 290–316).\n\n## April Platform UI Components\n\n| Platform | Component | SDK Product |\n| --- | --- | --- |\n| iOS | `STPPaymentCardTextField` | `StripePaymentsUI` |\n| Android | `CardInputWidget` | `stripe-android` |\n| React Native | `CardField` | `@stripe/stripe-react-native` |\n\nThe April SDK guidance lists iOS 13 or later and shows Stripe Android SDK `23.5.0` in the Gradle sample. The examples use publishable keys on the client and distinguish test keys from live keys (raw lines 38–123, 369–415 and 682–722).\n\n## Flow\n\n1. The client SDK collects sensitive card details and creates a `PaymentMethod` with `createPaymentMethod`. The app sends its ID to the merchant server.\n2. The trusted server determines the amount and creates a distinct `PaymentIntent` using the supplied payment method ID. It attempts confirmation immediately with `confirm: true` and `error_on_requires_action: true`.\n3. For this synchronous example, the server can run immediate post-payment actions from its `succeeded` response without waiting for a webhook.\n\n## April Comparison with the Global Integration\n\n| Feature | Basic example | Global integration |\n| --- | --- | --- |\n| US and Canadian cards | Supported | Supported |\n| Global cards | Outside scope | Supported |\n| Issuer authentication requests | Declines the payment | Handles authentication |\n| Post-payment handling | Immediate actions use the server's `succeeded` result | Webhooks recommended |\n| Other payment methods | Card-only guide | Can scale to other methods |\n\n## April Sandbox Test Cards\n\nThe April test guide uses any CVC and postal code with a future expiration date (raw lines 317–327).\n\n| Number | Test-environment result |\n| --- | --- |\n| 4242 4242 4242 4242 | Payment succeeds immediately |\n| 4000 0000 0000 9995 | Decline with `insufficient_funds` |\n| 4000 0025 0000 3155 | Authentication required. This flow fails with `authentication_not_handled` |\n\n## Upgrade Path\n\nThe [April 23, 2026 mobile migration guide](https://docs.stripe.com/payments/mobile/upgrade-to-handle-actions) recommends upgrading if you see many Dashboard failures like its issuer-authentication example or the API diagnostic `requires_action_not_handled`. The [November 7, 2026 Payment Intents migration guide](https://docs.stripe.com/payments/payment-intents/upgrade-to-handle-actions) repeats that diagnostic. The basic acceptance example above has its own authentication error fields, and the `insufficient_funds` card illustrates a separate decline. See [[source-stripe-inapp-upgrade-to-handle-actions]] for the mobile authentication flow.\n\n## Related Pages\n\n- [[stripe]]\n- [[stripe-inapp-payments]] — in-app payments concept page\n\n## Raw Sources\n\n- [[raw/stripe-inapp-without-card-auth-2025|April 23, 2026 basic mobile card guide]] — iOS, Android and React Native, with two video assets.\n\n## Related raw API references\n\n- [[raw/stripe-payments-mobile-without-card-authentication-2026-11-07|November 7, 2026 platform selector]] — navigation for iOS, Android and React Native. The linked variant bodies were outside the capture.\n",
+  "quotes": {
+    "payments-mobile-without-card-authentication": [
+      {
+        "text": "Card payments without bank authentication",
+        "location": "raw/stripe-payments-mobile-without-card-authentication-2026-11-07.md:5"
+      },
+      {
+        "text": "Build a simpler mobile integration with regional limitations.",
+        "location": "raw/stripe-payments-mobile-without-card-authentication-2026-11-07.md:7"
+      },
+      {
+        "text": "[iOS](https://docs.stripe.com/payments/mobile/without-card-authentication.md?platform=ios)",
+        "location": "raw/stripe-payments-mobile-without-card-authentication-2026-11-07.md:13"
+      },
+      {
+        "text": "[Android](https://docs.stripe.com/payments/mobile/without-card-authentication.md?platform=android)",
+        "location": "raw/stripe-payments-mobile-without-card-authentication-2026-11-07.md:14"
+      },
+      {
+        "text": "[React Native](https://docs.stripe.com/payments/mobile/without-card-authentication.md?platform=react-native)",
+        "location": "raw/stripe-payments-mobile-without-card-authentication-2026-11-07.md:15"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-mobile-without-card-authentication": [
+      {
+        "text": "This integration supports businesses accepting only US and Canadian cards.",
+        "location": "raw/stripe-inapp-without-card-auth-2025.md:12"
+      },
+      {
+        "text": "Always decide how much to charge on the server, a trusted environment, as opposed to the client.",
+        "location": "raw/stripe-inapp-without-card-auth-2025.md:195"
+      },
+      {
+        "text": "If the payment was successful, it will have a status of `succeeded`.",
+        "location": "raw/stripe-inapp-without-card-auth-2025.md:264"
+      },
+      {
+        "text": "\"status\": \"requires_payment_method\",",
+        "location": "raw/stripe-inapp-without-card-auth-2025.md:303"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-mobile-without-card-authentication-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-inapp-without-card-auth-2025.md": [
+      {
+        "start": 1,
+        "end": 930
+      }
+    ],
+    "wiki/sources/source-stripe-inapp-without-card-auth.md": [
+      {
+        "start": 1,
+        "end": 78
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/573a5876884c7bacda73f127/content.diff": [
+      {
+        "start": 1,
+        "end": 933
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-mobile-without-card-authentication/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 179
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-mobile-without-card-authentication/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 84
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 12
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 121,
+        "end": 131
+      },
+      {
+        "start": 775,
+        "end": 780
+      }
+    ],
+    "wiki/concepts/stripe-inapp-payments.md": [
+      {
+        "start": 8,
+        "end": 34
+      },
+      {
+        "start": 77,
+        "end": 116
+      }
+    ],
+    "raw/stripe-inapp-upgrade-to-handle-actions-2025.md": [
+      {
+        "start": 1,
+        "end": 23
+      }
+    ],
+    "raw/stripe-payments-payment-intents-upgrade-to-handle-actions-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 19
+      }
+    ],
+    "wiki/sources/source-stripe-inapp-upgrade-to-handle-actions.md": [
+      {
+        "start": 1,
+        "end": 26
+      },
+      {
+        "start": 84,
+        "end": 91
+      }
+    ]
+  },
+  "answers": {
+    "payments-mobile-without-card-authentication": {
+      "Q1": "At https://docs.stripe.com/payments/mobile/without-card-authentication, new raw lines 5-15 describe a simpler region-limited integration and route to iOS, Android and React Native. The April 23, 2026 capture supplies the actual behavior. Old raw lines 12-34 scope it to businesses accepting only US and Canadian cards and say an issuer authentication request immediately fails the payment. The dated client components are iOS `STPPaymentCardTextField` in `StripePaymentsUI`, Android `CardInputWidget` and React Native `CardField` (old raw lines 112-123, 412-415 and 715-722). Client-side creation of a PaymentMethod supplies its ID to the server (old raw lines 162-178, 454-473 and 754-775). The server chooses the amount and creates and confirms a PaymentIntent with `confirm: true` and `error_on_requires_action: true`. The sample gates immediate fulfillment on server-observed `succeeded`, while the authentication-error example uses `authentication_required`, `authentication_not_handled` and `requires_payment_method` (old raw lines 191-265 and 290-316). The prior source-stripe-inapp-without-card-auth.md summarized the core path with a looser regional criterion and broad webhook and error wording. The candidate retains the component and test examples, restores the only-US-and-Canadian-cards criterion, and scopes the immediate post-payment action to the server-observed succeeded branch. The Node example also reports StripeCardError and handles other exceptions and unexpected statuses separately (old raw lines 234-255).",
+      "Q2": "At https://docs.stripe.com/payments/mobile/without-card-authentication, new raw lines 5-15 replace the inline implementation surface with navigation to the iOS, Android and React Native variants represented in old raw lines 8-12, 335-340 and 630-635. The November capture establishes a navigation change. The candidate links it as navigation and preserves the April implementation capture under Raw Sources. Date the April 23, 2026 scope to businesses accepting only US and Canadian cards and distinguish the client PaymentMethod from the server-created and immediately confirmed PaymentIntent. The April example applies its no-webhook shortcut only to immediate post-payment actions from the trusted server response, with fulfillment gated on `succeeded`. The global route handles authentication requests and recommends webhooks (old raw lines 12-34 and 193-265). In source-stripe-inapp-without-card-auth.md and the reciprocal in-app route, qualify the regional criterion and no-webhook wording, keep issuer-authentication errors separate from insufficient-funds and other errors, and retain the April client UI names: iOS `STPPaymentCardTextField` in `StripePaymentsUI`, Android `CardInputWidget` and React Native `CardField` (old raw lines 112-123, 412-415 and 715-722). Use the guide’s “basic” wording for this dated integration. In the April 23, 2026 acceptance sample, `error.code=authentication_required` pairs with `decline_code=authentication_not_handled` and PaymentIntent `requires_payment_method`. Insufficient funds is a separate sandbox scenario (old raw lines 290-327). The revised Upgrade Path and the reciprocal mobile migration route limit the recommendation to many failures like the authentication-required Dashboard example or the API diagnostic `requires_action_not_handled`. That distinct diagnostic appears in the April 23 mobile migration capture (raw/stripe-inapp-upgrade-to-handle-actions-2025.md:4-17) and the separate November 7 Payment Intents migration capture (raw/stripe-payments-payment-intents-upgrade-to-handle-actions-2026-11-07.md:5-14). Neither diagnostic is a novel finding from the November acceptance selector, and an ordinary card decline does not establish the migration condition. A test response or the new index cannot verify current compatibility, merchant eligibility, live payment success or settlement."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-mobile-without-card-authentication-acceptance-route",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-inapp-without-card-auth]] — Legacy simple integration (US/Canada only): error_on_requires_action=true, STPPaymentCardTextField/CardInputWidget/CardField, synchronous decline, no webhooks",
+      "proposed_markdown": "- [[source-stripe-inapp-without-card-auth]] — April 2026 basic card integration for businesses accepting only US and Canadian cards. The server immediately attempts to confirm the PaymentIntent and uses its `succeeded` response for immediate fulfillment. Issuer authentication requests fail in this path. November supplies platform navigation.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "April acceptance raw lines 12-34, 162-195, 216-265 and 290-327. Server-side immediate fulfillment is scoped to the dated synchronous example. November raw lines 5-15 supply platform navigation."
+      ]
+    },
+    {
+      "update_id": "payments-mobile-without-card-authentication-migration-route",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-inapp-upgrade-to-handle-actions]] — Upgrade legacy integration to handle 2FA: remove error_on_requires_action, add confirmation_method=manual + use_stripe_sdk, two-round-trip pattern, 1-hour re-confirm window",
+      "proposed_markdown": "- [[source-stripe-inapp-upgrade-to-handle-actions]] — Migrate the basic card integration to handle issuer authentication after repeated authentication-related Dashboard failures or the API diagnostic `requires_action_not_handled`. The April mobile guide describes server and client authentication handling, including explicit server reconfirmation.",
+      "quote_indexes": [],
+      "warnings": [
+        "April mobile migration raw lines 4-17 and separate November Payment Intents migration raw lines 5-14 establish the diagnostic. April acceptance raw lines 290-327 distinguish authentication_required and authentication_not_handled from insufficient-funds declines."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+<!-- Source URL: https://docs.stripe.com/payments/online-payments -->
+<!-- Fetched: 2026-11-07 -->
+<!-- Discovery: reconciled llms.txt,sitemap.xml -->
+
+# Online payments
+
+Learn about your options for accepting payments online.
+
+Use the Optimized Checkout Suite for your payments integration, which includes [payment UIs](https://docs.stripe.com/payments/online-payments.md#payment-uis), [dynamic payment methods](https://docs.stripe.com/payments/online-payments.md#payment-methods), and [faster checkout with Link](https://docs.stripe.com/payments/online-payments.md#link). To get started, [find the integration](https://docs.stripe.com/payments/use-cases/get-started.md) that meets your business needs.
+
+[See the demo](https://checkout.stripe.dev/)
+
+## Payment UIs 
+
+Use prebuilt payment UIs to accept payments online.
+
+[Shareable payment links (No code)](https://docs.stripe.com/payment-links.md): Use Payment Links to embed or share a link to a Stripe payment page to accept payments without a website.
+
+[Full page (Recommended)](https://docs.stripe.com/checkout/quickstart.md): Embed or redirect to a prebuilt payment page on your website.
+
+[Embedded form](https://docs.stripe.com/checkout/form/quickstart.md): Embed a prebuilt payment form on your website.
+
+[Custom payment flow](https://docs.stripe.com/payments/quickstart.md): Use Stripe Elements to design a custom page to collect payments.
+
+[Mobile app payments](https://docs.stripe.com/payments/mobile/quickstart.md): Use the Mobile Payment Element to accept payments in your iOS, Android, or React Native app.
+
+[Checkout studio (Private preview)](https://docs.stripe.com/payments/checkout-studio.md): Launch, configure, and monitor Checkout integrations from the Dashboard without writing code.
+
+## Payment APIs
+
+Choose the API to address your payments use case.
+
+### Choose your API 
+
+We recommend the Checkout Sessions API for most integrations. Checkout Sessions allows you to build both a basic payment collection integration and complex checkout flows.
+
+If you use PaymentIntents, you must manually build equivalent features in your code, including discount logic, tax calculation, and currency conversion. Some features, such as Adaptive Pricing, require significant effort to replicate with PaymentIntents. Choose PaymentIntents only if you want to own every part of your checkout, and rebuild these capabilities yourself.
+
+|  | [Checkout Sessions](https://docs.stripe.com/api/checkout/sessions.md) | [Payment Intents](https://docs.stripe.com/api/payment_intents.md) |
+| --- | --- | --- |
+| **Recommended for** | Any businesses that wants to accept payments with less code and less maintenance. Checkout Sessions covers similar use cases as Payment Intents (basic payment collection using `price_data` or full checkout with line items, tax, discounts, shipping, subscriptions, and [Adaptive Pricing](https://docs.stripe.com/payments/currencies/localize-prices/adaptive-pricing.md). | Businesses that want to own their checkout state and build their own discount, tax, subscription, and currency conversion logic. This requires significantly more code and ongoing maintenance. |
+| **Integration** | Use code to add a checkout page and integrate additional products. For example, enable Stripe Tax by setting [automatic_tax.enabled = true](https://docs.stripe.com/api/checkout/sessions/create.md#create_checkout_session-automatic_tax-enabled), compared to the Payment Intents API which requires you to manually call the Tax API and link calculations. Some features, such as [Adaptive Pricing](https://docs.stripe.com/payments/currencies/localize-prices/adaptive-pricing.md), are only available with Checkout Sessions. | The Payment Intents API is a lower-level API that allows you to build everything yourself, including tax calculation, discounts, subscriptions, and currency conversion. When you use this API, you calculate the final amount and manage the entire checkout lifecycle in your own code. |
+| **User interface** | - Full page
+- Embedded form
+- Elements | Elements |
+| **Complexity** | Scales with your business from simple payment collection to complex checkout flows. It covers similar use cases as Payment Intents. | Requires building and maintaining checkout features included with Checkout Sessions. Be deliberate about choosing this path. |
+
+### Feature comparison 
+
+| Feature | Checkout Sessions API | Payment Intents API |
+| --- | --- | --- |
+| **Design** | Use for complete checkout flows, including one-time payments or complex flows with line items, taxes, shipping, and subscriptions. | A lower-level API for building your own payment flow from scratch. You must implement all checkout logic yourself. |
+| **Tax calculation** | Built-in tax calculation with [Stripe Tax](https://docs.stripe.com/tax.md). | Requires a separate integration with the [Tax API](https://docs.stripe.com/api/tax/settings.md). |
+| **Subscriptions** | Built-in [subscription creation](https://docs.stripe.com/payments/advanced/build-subscriptions.md). | Requires a separate integration with [Subscriptions](https://docs.stripe.com/billing/subscriptions/overview.md). |
+| **Coupons and discounts** | Built-in [coupon and discount](https://docs.stripe.com/payments/advanced/discounts.md?payment-ui=embedded-components) handling. | Requires calculating discounts manually. |
+| **Shipping costs** | Built-in shipping cost calculation. | Requires calculating shipping costs manually. |
+| **UI flexibility** | Hosted checkout page, embedded forms, and custom UI. | Custom UI only. |
+| **Address collection** | Built-in [customer, billing, and shipping address](https://docs.stripe.com/payments/advanced/collect-addresses.md) collection. | Requires handling addresses manually. |
+| **Order tracking** | Built-in order summary and [receipt](https://docs.stripe.com/receipts.md) functionality. | Requires implementing custom order tracking. |
+| **Amount updates** | [Dynamic inventory and line item updates](https://docs.stripe.com/payments/advanced/dynamic-updates.md). | Requires manually updating the amount. |
+| **Session expiration** | Automatic expiration after 24 hours. | No automatic expiration. |
+| **Webhook events** | [Webhook events](https://docs.stripe.com/webhooks.md) for the complete checkout lifecycle. | Payment status events only. |
+
+## Add payment methods 
+
+Accept more payment methods to help your business expand its global reach and improve checkout conversion.
+
+[Dynamic payment methods](https://docs.stripe.com/payments/payment-methods/dynamic-payment-methods.md): Simplify your payment methods code by dynamically ordering and displaying payment methods.
+
+[Configure payment methods in Checkout studio (Private preview)](https://docs.stripe.com/payments/checkout-studio/how-it-works.md): Use Checkout studio to manage the payment methods you use in your Checkout integration.
+
+[A/B test payment methods](https://docs.stripe.com/payments/a-b-testing.md): Launch an A/B test for a new payment method in the Dashboard.
+
+[Payment method rules](https://docs.stripe.com/payments/payment-method-rules.md): Control when payment methods are available to your customers.
+
+[Payment method configurations](https://docs.stripe.com/payments/payment-method-configurations.md): Create different sets of payment methods to display to customers based on specific checkout scenarios.
+
+## Add Link for faster checkout 
+
+Use [Link](https://docs.stripe.com/payments/link.md) to let your customers select a saved payment method at checkout instead of entering payment information. Your customers can save their credit cards, debit cards, or US bank accounts for faster checkout at any Link-enabled business. Link also lets you accept [Instant Bank Payments](https://docs.stripe.com/payments/link/instant-bank-payments.md) and [Klarna](https://docs.stripe.com/payments/link/klarna.md).
+
+[Link with Checkout](https://docs.stripe.com/payments/link/checkout-link.md): Use Link with the Stripe prebuilt payment page.
+
+[Link with Web Elements](https://docs.stripe.com/payments/link/elements-link.md): Embed Link into your custom payment page for faster checkout.
+
+[Link with Mobile Elements](https://docs.stripe.com/payments/link/mobile-payment-element-link.md): Add Link to your native iOS, Android, and React Native apps.
+
+## Integrate with a platform or a plugin 
+
+Stripe partners with thousands of popular platforms and supports plugins to bring Stripe payments into your website. See [all of our integration solutions](https://stripe.partners) in our online directory.
+
+[Shopify](https://stripe.com/partners/shopify): Sell online, on social media, and in person with a multichannel commerce platform.
+
+[Squarespace](https://stripe.com/partners/squarespace): Use Stripe payments on a single platform to sell your products.
+
+[Adobe Commerce](https://docs.stripe.com/use-stripe-apps/adobe-commerce.md): Use the Stripe app for Adobe Commerce for accepting payments on Adobe Commerce.

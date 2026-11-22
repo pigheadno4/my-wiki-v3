@@ -1,0 +1,304 @@
+{
+  "job_id": "payments-link-instant-bank-payments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Docs — Instant Bank Payments\"\ntype: source\ndate_ingested: 2026-05-08\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/link/instant-bank-payments\"\nraw_files:\n  - \"stripe-payments-link-instant-bank-payments-2026-11-07.md\"\n  - \"stripe-instant-bank-payments-2025.md\"\ntags: [stripe, instant-bank-payments, link, ach, bank-debit, us-only, recurring, guaranteed-settlement, cash-back]\n---\n\n## Summary\n\nThe May 8 and November 7, 2026 guides describe Instant Bank Payments as a Link option for eligible US customers using a US bank account in USD. Enabling Link also enables this method subject to business, session and transaction eligibility. Confirmation is immediate. Authorized payments settle to the Stripe balance on the documented two-day card timeline.\n\n## Eligibility and supported integrations\n\n- Stripe dynamically sets a risk threshold per eligible transaction. The May guide gives a default of **under 5,000 USD** and the November guide gives **under 7,500 USD**. Onboarding criteria include being a US business and having Stripe usage history. These are neither exhaustive criteria nor an individual account's guaranteed amount limit.\n- Both dedicated guides list Checkout, Payment Links, hosted invoice page, Payment Element and Mobile Payment Element, and mark Connect, manual capture and full or partial refunds supported.\n- **Dated mobile disagreement.** The May 2 [[source-stripe-bank-debits|bank-debits overview]] marks the combined Instant Bank Payments-or-ACH row supported for Mobile Payment Element. The November 7 overview marks that combined row unsupported, while both dedicated Instant Bank Payments guides still list Mobile Payment Element. The combined row does not isolate the method or client route. Current SDK-specific support, account eligibility and runtime removal remain unverified.\n\n## Checkout, reuse and settlement\n\nA new Link customer selects a bank, accepts the Link terms, signs up or in with email, and authenticates with the bank. A returning customer authenticates with Link 2FA and can select a saved account. Returning from bank linking precedes completing the transaction. After the customer authenticates and **completes their first Link transaction**, the guides describe charging the saved bank account for future recurring or off-session payments without reauthentication.\n\nThe settlement guarantee applies to an authorized Instant Bank Payment when the bank initiates an ACH return. If the customer disputes through their bank, Stripe debits the payment amount and dispute fee from the Stripe balance. The guide routes responses through the same Dashboard workflow used for cardholder disputes. The November capture adds navigation to [dispute evidence by return code](https://docs.stripe.com/payments/link/instant-bank-payments/disputed-payments). Payment confirmation, settlement to Stripe balance and external payout are separate events.\n\n## ACH Direct Debit precedence\n\n[ACH Direct Debit](https://docs.stripe.com/payments/ach-direct-debit) takes precedence when both options would be offered for the same transaction. The explicit request input is the ACH enum `us_bank_account`.\n\n- **May 8 guide.** The dedicated instructions name `payment_method_types` for Checkout Session, PaymentIntent and SetupIntent.\n- **November 7 guide.** The dedicated instructions still name `payment_method_types` for Checkout Session and use `allowed_payment_method_types` for PaymentIntent and SetupIntent.\n- **Dynamic payment methods.** When a transaction qualifies for ACH, Link suppresses Instant Bank Payments. A payment-method rule can narrow ACH eligibility. Transactions outside that ACH rule can show Instant Bank Payments if they independently qualify. The guides recommend ACH Direct Debit for businesses that can wait up to four business days for confirmation.\n\n**Separate Endive request rules.** The [Checkout Session changelog](https://docs.stripe.com/changelog/endive/2026-09-30/remove-payment-method-types-checkout-sessions) documents HTTP 400 for the writable `payment_method_types` field on Checkout Session Create in `2026-09-30.endive`, despite the dedicated November guide's Checkout wording. Its alternatives are dynamic methods and `allowed_payment_method_types` or `excluded_payment_method_types`. The compatible subset appears in the computed response property. The changelog leaves ACH precedence with a Checkout Session Endive allowlist unverified.\n\nThe separate [Intents changelog](https://docs.stripe.com/changelog/endive/2026-09-30/removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents) documents HTTP 400 with `payment_method_types_no_longer_supported` for writable use on the listed Endive PaymentIntent create/update/confirm and SetupIntent create/update REST endpoints. The computed response property remains readable. Its Impact paragraph separately names `2026-08-26.preview`; the endpoint links and REST table identify `2026-09-30.endive`. Allowed lists filter incompatible methods.\n\n## Link route selection and PaymentMethod responses\n\nThe separate [[source-stripe-link-payment-integrations|Link integration guide]] describes both Instant Bank Payments representations. Link as a payment method returns `PaymentMethod.type=link` without the underlying funding method. The card-specific route returns `PaymentMethod.type=card` and `card.wallet.type=link`, with `card.brand=link` for non-card funding such as Instant Bank Payments.\n\nThe May Link integration guide uses `payment_method_types` for explicit `link` or `card` route selection. The November Link integration guide names `allowed_payment_method_types`. That selection is distinct from the dedicated guide's `us_bank_account` ACH precedence input and from the versioned Endive request limits. The resulting response representation leaves eligibility and payment status to separate checks.\n\n## Stripe-funded promotions\n\nStripe can show qualifying US customers cash back or promotional credits according to Link settings. The customer pays the full amount and the business receives the full amount. Stripe separately deposits the promotional amount to the customer's bank account within seven business days.\n\n## Sandbox tests\n\n- **Success, Disputed and Blocked** simulate a successful bank connection with authorization, a subsequent customer-initiated dispute, or a risk decline, respectively.\n- The non-OAuth test institution's initial login accepts any input, with sandbox prompts `options`, `mfa`, `confirm_mfa`, `security_question`, `error` and `incorrect`. The OAuth test institution uses a popup to select accounts.\n- **Down (Scheduled), Down (Unscheduled) and Down (Error)** simulate unavailable institutions or an unknown communication error.\n\n## May 8, 2026 capture assets (9 screenshots)\n\n- `raw/assets/stripe-ibp-bank-tab.png` — bank selection tab (93 KB)\n- `raw/assets/stripe-ibp-consent.png` — Link agreement page (78 KB)\n- `raw/assets/stripe-ibp-sign-up.png` — Link sign-up (64 KB)\n- `raw/assets/stripe-ibp-oauth.png` — bank OAuth login (132 KB)\n- `raw/assets/stripe-ibp-success.png` — success page (29 KB)\n- `raw/assets/stripe-ibp-returning.png` — returning customer welcome back (77 KB)\n- `raw/assets/stripe-ibp-otp.png` — 2FA code entry (55 KB)\n- `raw/assets/stripe-ibp-saved.png` — saved account selection (73 KB)\n- `raw/assets/stripe-ibp-settlement-timing.png` — 2-day settlement diagram (13 KB)\n\n## Related Pages\n\n- [[stripe-instant-bank-payments]]\n- [[stripe-link]]\n- [[stripe-ach-direct-debit]] and [[source-stripe-ach-direct-debit]]\n- [[stripe-payment-method-rules]]\n- [[stripe]]\n\n## Raw Sources\n\n- [[raw/stripe-payments-link-instant-bank-payments-2026-11-07|November 7, 2026 full Instant Bank Payments guide]] — 185 lines. Checkout and returns at lines 61–117, eligibility and products at 119–137, promotions and ACH precedence at 139–157, and tests at 159–178.\n- [[raw/stripe-instant-bank-payments-2025|May 8, 2026 full Instant Bank Payments guide]] — verbatim webpage content, 185 lines, with local checkout screenshots and settlement diagram.\n",
+  "quotes": {
+    "payments-link-instant-bank-payments": [
+      {
+        "text": "By default, Instant Bank Payments are presented only for transactions under 7500 USD.",
+        "location": "raw/stripe-payments-link-instant-bank-payments-2026-11-07.md:136"
+      },
+      {
+        "text": "The same applies when you include `us_bank_account` in `allowed_payment_method_types`",
+        "location": "raw/stripe-payments-link-instant-bank-payments-2026-11-07.md:154"
+      },
+      {
+        "text": "Stripe guarantees that authorized payments settle to your account unless the customer initiates a dispute with their bank.",
+        "location": "raw/stripe-payments-link-instant-bank-payments-2026-11-07.md:107"
+      },
+      {
+        "text": "After a customer authenticates and completes their first transaction through Link, you can charge the saved bank account for future payments without requiring the customer to re-authenticate.",
+        "location": "raw/stripe-payments-link-instant-bank-payments-2026-11-07.md:117"
+      },
+      {
+        "text": "For the evidence to submit by return code, see [Disputed Instant Bank Payments](https://docs.stripe.com/payments/link/instant-bank-payments/disputed-payments.md).",
+        "location": "raw/stripe-payments-link-instant-bank-payments-2026-11-07.md:113"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-link-instant-bank-payments": [
+      {
+        "text": "By default, Instant Bank Payments are presented only for transactions under 5000 USD.",
+        "location": "raw/stripe-instant-bank-payments-2025.md:136"
+      },
+      {
+        "text": "including `us_bank_account` in `payment_method_types`, Link never presents Instant Bank Payments as a payment option.",
+        "location": "raw/stripe-instant-bank-payments-2025.md:154"
+      },
+      {
+        "text": "Stripe still guarantees settlement and doesn’t debit any funds from your balance.",
+        "location": "raw/stripe-instant-bank-payments-2025.md:112"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-link-instant-bank-payments-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 185
+      }
+    ],
+    "raw/stripe-instant-bank-payments-2025.md": [
+      {
+        "start": 1,
+        "end": 185
+      }
+    ],
+    "wiki/sources/source-stripe-instant-bank-payments.md": [
+      {
+        "start": 1,
+        "end": 65
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/e25d5f19b796fc3cb5c2979a/content.diff": [
+      {
+        "start": 1,
+        "end": 101
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-link-instant-bank-payments/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 222
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-link-instant-bank-payments/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 74
+      }
+    ],
+    "wiki/concepts/stripe-instant-bank-payments.md": [
+      {
+        "start": 1,
+        "end": 67
+      }
+    ],
+    "wiki/concepts/stripe-link.md": [
+      {
+        "start": 8,
+        "end": 44
+      }
+    ],
+    "wiki/concepts/stripe-ach-direct-debit.md": [
+      {
+        "start": 115,
+        "end": 128
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 438,
+        "end": 445
+      },
+      {
+        "start": 731,
+        "end": 739
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 83,
+        "end": 89
+      }
+    ],
+    "wiki/sources/source-stripe-bank-debits.md": [
+      {
+        "start": 16,
+        "end": 24
+      }
+    ],
+    "raw/stripe-bank-debits-2025.md": [
+      {
+        "start": 1,
+        "end": 3
+      },
+      {
+        "start": 27,
+        "end": 34
+      }
+    ],
+    "raw/stripe-payments-bank-debits-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 4
+      },
+      {
+        "start": 29,
+        "end": 35
+      }
+    ],
+    "raw/stripe-link-payment-integrations-2025.md": [
+      {
+        "start": 1,
+        "end": 41
+      }
+    ],
+    "raw/stripe-payments-link-link-payment-integrations-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 45
+      }
+    ],
+    "raw/stripe-changelog-endive-2026-09-30-remove-payment-method-types-checkout-sessions-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 36
+      }
+    ],
+    "raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 36
+      }
+    ]
+  },
+  "answers": {
+    "payments-link-instant-bank-payments": {
+      "Q1": "At https://docs.stripe.com/payments/link/instant-bank-payments, the November guide describes eligible US customers paying from US bank accounts via Link in USD. Link enablement automatically enables the method subject to business and transaction criteria, including US business and Stripe use history. The dynamic risk cutoff has a November default under 7500 USD, versus under 5000 USD in May, both dated in the revised source-stripe-instant-bank-payments.md (old raw lines 119-137 and new raw lines 119-137). A new Link user chooses and authenticates a bank, and a returning user authenticates and selects a saved account. Recurring and off-session reuse follows both authentication and completion of the first Link transaction. Confirmation is instant, while authorized payments settle to Stripe balance on the documented two-day card timeline. Stripe covers bank-initiated ACH returns, but a customer-initiated bank dispute debits the amount and fee (old raw lines 61-117 and new raw lines 61-117). The separately linked Link integration guides document both representations for Instant Bank Payments. The Link-as-payment-method route returns PaymentMethod.type=link and does not expose how the customer paid. The card-specific route returns PaymentMethod.type=card and card.wallet.type=link, with card.brand=link for non-card funding such as Instant Bank Payments (raw/stripe-link-payment-integrations-2025.md:15-37 and raw/stripe-payments-link-link-payment-integrations-2026-11-07.md:16-41). Those response identities describe representation, with availability and payment outcomes assessed separately. ACH Direct Debit takes precedence for the same transaction. The November guide names us_bank_account in Checkout Session payment_method_types or PaymentIntent and SetupIntent allowed_payment_method_types. Dynamic ACH eligibility suppresses the Link option, while transactions outside a restrictive ACH rule can still show it if separately eligible. The revised source distinguishes the dated object-specific instructions and the separate Endive API-version rules (old raw lines 150-157 and new raw lines 150-157).",
+      "Q2": "At https://docs.stripe.com/payments/link/instant-bank-payments, the substantive November changes recorded in source-stripe-instant-bank-payments.md are the under-7500-USD default in place of May's under-5000-USD default and the explicit ACH field split between Checkout Session and PaymentIntent or SetupIntent. Preserve both defaults with their capture dates and dynamic risk qualification (old raw lines 131-137 and old raw lines 150-157, new raw lines 131-137 and new raw lines 150-157). The Endive Checkout Create changelog separately removes writable payment_method_types in 2026-09-30.endive, despite the dedicated guide's Checkout wording. Preserve a reciprocal version warning and keep the changelog's computed response property and alternative request controls distinct from verified Link presentation outcomes. The separate Intent changelog documents HTTP 400 payment_method_types_no_longer_supported for writable use on affected 2026-09-30.endive requests and separately names 2026-08-26.preview in its Impact paragraph. The reciprocal Link concept route dates the route-selection instructions. In the separate Link integration guide, May selected the Link or card integration path through payment_method_types and November names allowed_payment_method_types (raw/stripe-link-payment-integrations-2025.md:15-37 and raw/stripe-payments-link-link-payment-integrations-2026-11-07.md:16-41). That sibling change concerns Link/card route selection. The dedicated guide's us_bank_account instead selects ACH Direct Debit and limits Link Instant Bank Payments presentment. Keep the returned PaymentMethod identity separate from either field instruction, eligibility and actual payment outcomes. Both dedicated captures list Mobile Payment Element, while the November bank-debits overview marks its combined ACH-or-Instant Bank Payments mobile row unsupported. Carry that disagreement reciprocally without attributing the combined row to a specific method or platform. Screenshot/CDN and wording changes are presentational. The new return-code dispute-evidence link adds navigation while the bank-return guarantee and customer amount-plus-fee debit remain the same. Keep bank linking, first completed Link transaction, instant confirmation, settlement to Stripe balance, external payout and sandbox simulations distinct (old raw lines 61-129 and old raw lines 159-178, new raw lines 61-129 and new raw lines 159-178)."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-link-instant-bank-payments-amount-table",
+      "target_path": "wiki/concepts/stripe-instant-bank-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "| Transaction limit | < $5,000 (default) | No specific limit |",
+      "proposed_markdown": "| Default presentment threshold | May 2026 under 5,000 USD; November under 7,500 USD; dynamic risk threshold | No specific limit |",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Dedicated May and November raw lines 131–137."
+      ]
+    },
+    {
+      "update_id": "payments-link-instant-bank-payments-eligibility",
+      "target_path": "wiki/concepts/stripe-instant-bank-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "IBP appears only when all met:\n- US business with Stripe usage history (onboarding criteria)\n- Transaction amount < $5,000 (dynamic risk threshold)\n- ACH Direct Debit is NOT also enabled for this transaction",
+      "proposed_markdown": "Stripe applies dynamic risk and onboarding criteria for each session. The examples include US business with Stripe usage history, an amount below the applicable risk cutoff, and ACH Direct Debit not being enabled for the transaction.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Dedicated May and November raw lines 131–137."
+      ]
+    },
+    {
+      "update_id": "payments-link-instant-bank-payments-reuse",
+      "target_path": "wiki/concepts/stripe-instant-bank-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Recurring/off-session**: Yes — no re-auth after first Link authentication",
+      "proposed_markdown": "- **Recurring/off-session**: After the customer authenticates and completes their first Link transaction, the guides describe future use of the saved account without reauthentication.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Both dedicated guides lines 115–117. Returning from linking precedes completing the transaction at lines 80–103."
+      ]
+    },
+    {
+      "update_id": "payments-link-instant-bank-payments-mobile",
+      "target_path": "wiki/concepts/stripe-instant-bank-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Supported integrations (May 8, 2026 dedicated Link Instant Bank Payments guide)**: Checkout, Payment Links, Hosted Invoice Page, Payment Element, Mobile Payment Element. **Dated disagreement:** the May 2 bank-debits overview also marked its combined Instant Bank Payments-or-ACH row supported for Mobile Payment Element, but the November 7 overview marks that combined row unsupported. It does not separate the two methods or verify a live client/platform change. See [[source-stripe-instant-bank-payments]] for the dedicated May claim and [[source-stripe-bank-debits]] for both overview captures; verify the specific current route before relying on mobile support.",
+      "proposed_markdown": "**Supported integrations (May 8 and November 7, 2026 dedicated guides)**: Checkout, Payment Links, hosted invoice page, Payment Element and Mobile Payment Element. The May 2 bank-debits overview lists mobile support for its combined Instant Bank Payments-or-ACH row. The November 7 bank-debits overview lists that combined row as unsupported. The row leaves specific method and client changes unresolved. See [[source-stripe-instant-bank-payments]] and [[source-stripe-bank-debits]].",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Both dedicated guides lines 119–129, May bank-debits raw lines 27–34, and November bank-debits raw lines 29–35."
+      ]
+    },
+    {
+      "update_id": "payments-link-instant-bank-payments-ach-fields",
+      "target_path": "wiki/concepts/stripe-instant-bank-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "IBP and ACH cannot appear together. ACH always takes precedence:\n\n- **Explicit**: if `us_bank_account` in `payment_method_types` → IBP never shown\n- **Dynamic PMs**: any ACH-eligible transaction → IBP suppressed\n\n**Workaround**: use [[stripe-payment-method-rules]] to restrict ACH eligibility; transactions that don't meet ACH criteria but are IBP-eligible will show IBP instead.",
+      "proposed_markdown": "ACH Direct Debit takes precedence for the same transaction. May names `us_bank_account` in `payment_method_types` on Checkout Session, PaymentIntent and SetupIntent. The November dedicated guide uses `allowed_payment_method_types` on PaymentIntent and SetupIntent, while retaining `payment_method_types` for Checkout Session. The separate Endive changelogs reject the writable field on `2026-09-30.endive` Checkout Session Create and affected Intent requests. Endive Checkout allowlist precedence remains unverified.\n\nDynamic ACH eligibility suppresses Instant Bank Payments. [[stripe-payment-method-rules|Restricting ACH by a rule]] can leave Instant Bank Payments available only for transactions that separately qualify. The sibling Link guide's `link` or `card` route selection and resulting PaymentMethod response types describe a separate choice. See [[source-stripe-instant-bank-payments]].",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "Dedicated May and November lines 150–157, May Link integrations raw lines 15–37 and November lines 16–41. Endive Checkout changelog lines 9–23 and 27–32, and Intent changelog lines 9–16, 28 and 30–36."
+      ]
+    },
+    {
+      "update_id": "payments-link-instant-bank-payments-dated-source",
+      "target_path": "wiki/concepts/stripe-instant-bank-payments.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-instant-bank-payments]] — primary: settlement guarantee, ACH comparison, eligibility, ACH priority rule, cash back promotions, testing",
+      "proposed_markdown": "- [[source-stripe-instant-bank-payments]] — May and November 2026 guides to eligible presentment, settlement and dispute scope, dated ACH precedence, the mobile listing conflict, cash back, and testing.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "May and November dedicated guide lines 105–178."
+      ]
+    },
+    {
+      "update_id": "payments-link-instant-bank-payments-link-funding",
+      "target_path": "wiki/concepts/stripe-link.md",
+      "update_kind": "durable_fact",
+      "anchor": "Cards, US bank accounts, [[stripe-instant-bank-payments|Instant Bank Payments]] (Link-exclusive — lower cost than cards, guaranteed settlement), Klarna, other BNPLs.",
+      "proposed_markdown": "Cards, US bank accounts, [[stripe-instant-bank-payments|Instant Bank Payments]], Klarna, and other BNPLs. The Instant Bank Payments guides describe a two-day settlement timeline to the Stripe balance and a guarantee for bank-initiated ACH returns. A customer-initiated bank dispute debits the amount and dispute fee.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "Both dedicated guides lines 41–55 and 105–113."
+      ]
+    },
+    {
+      "update_id": "payments-link-instant-bank-payments-link-field",
+      "target_path": "wiki/concepts/stripe-link.md",
+      "update_kind": "durable_fact",
+      "anchor": "- Passing `link` in `payment_method_types` ALWAYS triggers PM path — even alongside `card`. Card integration = pass `card` only.",
+      "proposed_markdown": "- For explicit Link route selection, the May integration guide names `payment_method_types`, and November names `allowed_payment_method_types`. Including `link` selects the Link-as-payment-method path even alongside `card`. The card-specific path uses `card` without `link`. The separate Endive field restrictions depend on the request object and version. See [[source-stripe-link-payment-integrations]] for response representations and [[source-stripe-instant-bank-payments]] for the distinct `us_bank_account` precedence rule.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "May Link integrations raw lines 19–37, November Link integrations raw lines 20–41, dedicated Instant Bank Payments raw lines 150–157, and the separate Endive Checkout and Intents changelogs."
+      ]
+    },
+    {
+      "update_id": "payments-link-instant-bank-payments-ach-reciprocal",
+      "target_path": "wiki/concepts/stripe-ach-direct-debit.md",
+      "update_kind": "durable_fact",
+      "anchor": "| Best for | Large/recurring B2B | Instant confirmation needed |",
+      "proposed_markdown": "| Best for | Large/recurring B2B | Instant confirmation needed |\n\nACH takes precedence over Link Instant Bank Payments for the same eligible transaction. See [[source-stripe-instant-bank-payments]] for dated object-specific request rules and the unresolved Mobile Payment Element disagreement between the dedicated guides and [[source-stripe-bank-debits|combined bank-debits matrix]].",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "Both dedicated Instant Bank Payments guides lines 119–129 and 150–157, May bank-debits raw line 31 and November line 32."
+      ]
+    }
+  ]
+}

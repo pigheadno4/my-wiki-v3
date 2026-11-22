@@ -1,0 +1,194 @@
+{
+  "job_id": "payments-mb-way",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Stripe: MB WAY Payments\"\ntype: source\ndate_ingested: 2026-05-07\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/mb-way\"\nraw_files:\n  - \"stripe-payments-mb-way-2026-11-07.md\"\n  - \"stripe-mb-way-2025.md\"\ntags: [stripe, wallets, mb-way, portugal, eur, phone-number, disputes, connect, refunds]\n---\n\n## Summary and eligibility\n\n[[stripe|Stripe]] documents MB WAY (`mb_way`) as a phone-number-based [[stripe-wallets|wallet]] for customers in Portugal, with EUR presentment. International numbers can be linked to the wallet, and most customers use a Portuguese +351 number. The May 7 and November 7, 2026 captures list the same 40 business locations, including Mexico, Hong Kong, Japan, New Zealand and the United States. The November overview qualifies those locations by supported settlement currency and marks domestic and cross-border payments and B2C supported, with B2B unsupported.\n\nBoth captures document EUR 0.50–5,000 per payment and a EUR 1,000 default daily cumulative user limit, adjustable in the app up to EUR 10,000. November describes single use, instant access and immediate confirmation with the standard payout schedule. These are documented properties, with account eligibility and actual payout separate.\n\n## App authorization and payment status\n\nThe customer enters the linked phone number and receives a push in the MB WAY app. November specifies approval within four minutes. The merchant page remains open and polls payment state without a browser redirect or return URL. Desktop customers approve on their phone. Mobile customers switch to the app and then back to the merchant page. The captured flow describes Stripe updating the page upon confirmation. Check payment status separately from app approval or a customer's return to the page.\n\nThe [[raw/stripe-changelog-endive-2026-09-30-handle-next-action-mb-way-bizum-ui-2026-11-07|Endive Stripe.js changelog]] separately documents pending authorization instructions in `stripe.handleNextAction`. Previous Stripe.js major versions retain the earlier wait behavior. The modal is a version-qualified client change, separate from the overview's merchant-page polling and payment result.\n\n## Product, capture and Connect boundaries\n\n- The May overview specifically excludes Mobile Payment Element and Checkout subscription/setup mode and saved details during payment (`setup_future_usage`). November lists Checkout for one-time payments, with setup mode unsupported, and supports Checkout Sessions and PaymentIntents while excluding SetupIntents, `setup_future_usage` and off-session payments. Both rule out automatic recurring payments.\n- November marks Billing and Invoicing supported through `send_invoice` only. Customers authorize each hosted invoice payment, including invoices on subscriptions. The separate [[raw/stripe-changelog-dahlia-2026-07-29-hosted-invoice-page-mb-way-support-2026-11-07|2026-07-29.dahlia changelog]] documents Dashboard enablement or the Invoice and Subscription `payment_settings.payment_method_types` field, with `collection_method=send_invoice`.\n- The November matrix lists in-app payments as supported. Its broader category leaves individual SDKs, variants and account availability unresolved. See [[stripe-ios-sdk]] for the separate iOS `26.6.0` PaymentSheet evidence. The November base [[source-stripe-mb-way-accept-payment|acceptance guide]] only routes to Checkout, Elements and Direct API variants. Its navigation neither extends the May web Elements beta wording nor resolves the mobile scopes.\n- Manual capture remains unsupported. The November matrix also excludes partial, multi and over-capture and lists unsupported authorization variations under **Capabilities**.\n- Stripe front-end integrations can enable MB WAY in Dashboard payment settings. Stripe then selects relevant methods to display. For manually configured methods, see [[source-stripe-mb-way-accept-payment]]. Both captures say a Connect platform supports all charge types. Connected accounts with full Dashboard access can enable MB WAY there. For Express Dashboard or a dashboard hosted outside Stripe, request `mb_way_payments` through the Capabilities API. Check that the account's capability is `active` in the account API or webhooks.\n\n## Disputes, refunds and statement text\n\n**Disputes.** November supports full disputes and excludes partial disputes. A customer can dispute suspected fraud, duplicate payments or order-to-charge differences. Stripe notifies via email, Dashboard and `charge.dispute.created`, and holds the disputed amount until resolution. Submit evidence within seven calendar days. Stripe returns the held amount if the merchant wins. If the customer wins, the balance charge becomes permanent.\n\n**Refunds.** Issue full or partial refunds up to 365 days after the payment completes. Multiple partial refunds cannot total more than the original payment. Processing typically takes minutes. November documents return to the original method and tracking through the Dashboard or the Refund object's `status`, with `refund.updated` or `refund.failed` events for final status. Failed refunds return the amount to the Stripe balance, and the merchant must refund the customer another way.\n\n**Statement descriptors.** In May, `statement_descriptor` is ignored and the guide says `Stripe Inc` appears with the amount. November says Stripe's name appears and that PaymentIntent, account and Connect descriptors do not override it.\n\n## Raw Sources\n\n- [[raw/stripe-payments-mb-way-2026-11-07|MB WAY payments, November 7, 2026 full capture]]\n- [[raw/stripe-mb-way-2025|MB WAY payments, May 7, 2026 capture]] — 177 lines of webpage content, with `*sandbox*` corrected ×1. One stripecdn `.mp4` video was skipped for download and its link was retained.\n",
+  "quotes": {
+    "payments-mb-way": [
+      {
+        "text": "Business model: ✗ B2B, ✓ B2C",
+        "location": "raw/stripe-payments-mb-way-2026-11-07.md:23"
+      },
+      {
+        "text": "You have 7 calendar days to submit evidence.",
+        "location": "raw/stripe-payments-mb-way-2026-11-07.md:98"
+      },
+      {
+        "text": "MB WAY invoices and subscriptions only support the `send_invoice` collection method.",
+        "location": "raw/stripe-payments-mb-way-2026-11-07.md:147"
+      },
+      {
+        "text": "Authorize the payment in the MB WAY app within 4 minutes.",
+        "location": "raw/stripe-payments-mb-way-2026-11-07.md:161"
+      },
+      {
+        "text": "MB WAY doesn’t redirect the browser and doesn’t use a return URL.",
+        "location": "raw/stripe-payments-mb-way-2026-11-07.md:169"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-mb-way": [
+      {
+        "text": "The Mobile Payment element doesn’t support MB WAY.",
+        "location": "raw/stripe-mb-way-2025.md:109"
+      },
+      {
+        "text": "Stripe’s company name (`Stripe Inc`) is shown on bank statements along with the transaction amount.",
+        "location": "raw/stripe-mb-way-2025.md:165"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-mb-way-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 183
+      }
+    ],
+    "raw/stripe-mb-way-2025.md": [
+      {
+        "start": 1,
+        "end": 177
+      }
+    ],
+    "wiki/sources/source-stripe-mb-way.md": [
+      {
+        "start": 1,
+        "end": 41
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/b55494138cbd520594d6484a/content.diff": [
+      {
+        "start": 1,
+        "end": 306
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-mb-way/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 206
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-mb-way/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 40
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 7,
+        "end": 7
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 384,
+        "end": 385
+      },
+      {
+        "start": 404,
+        "end": 405
+      },
+      {
+        "start": 642,
+        "end": 642
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 70,
+        "end": 76
+      },
+      {
+        "start": 601,
+        "end": 601
+      }
+    ],
+    "wiki/concepts/stripe-wallets.md": [
+      {
+        "start": 227,
+        "end": 267
+      },
+      {
+        "start": 405,
+        "end": 417
+      }
+    ],
+    "wiki/concepts/stripe-ios-sdk.md": [
+      {
+        "start": 245,
+        "end": 261
+      }
+    ],
+    "wiki/sources/source-stripe-mb-way-accept-payment.md": [
+      {
+        "start": 10,
+        "end": 38
+      }
+    ],
+    "raw/stripe-payments-mb-way-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 9,
+        "end": 15
+      }
+    ],
+    "raw/stripe-changelog-dahlia-2026-07-29-hosted-invoice-page-mb-way-support-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 21
+      },
+      {
+        "start": 61,
+        "end": 70
+      }
+    ],
+    "raw/stripe-changelog-endive-2026-09-30-handle-next-action-mb-way-bizum-ui-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ]
+  },
+  "answers": {
+    "payments-mb-way": {
+      "Q1": "At https://docs.stripe.com/payments/mb-way, November describes a single-use Portuguese customer wallet with EUR presentment, domestic and cross-border support, and the same 40 eligible business locations for payments settling in a supported currency. The account matrix marks B2C supported and B2B unsupported. An international number can still be linked to the wallet (old raw lines 8-38 and 56-99; new raw lines 9-45). The customer authorizes a push in the app within four minutes. The web page polls without a browser redirect or return URL. App approval or returning to the web page alone does not prove payment success. The result is immediate when confirmed and the payout schedule is standard (new raw lines 149-171). Enable MB WAY in Dashboard for Stripe front-end products or follow the manual-integration route. A Connect platform can use all charge types, but connected accounts enable through full Dashboard access or a Capabilities API request as applicable. Check mb_way_payments=active in accounts events or API (new raw lines 131-141 and 179-183). Manual capture remains unsupported (old raw lines 48-50 and new raw lines 57-61). Checkout is one-time only, and hosted invoices on send_invoice can be paid individually, including subscription invoices (new raw lines 104-147). The revised source-stripe-mb-way.md preserves the May payment flow, amount limits, refunds and disputes and adds dated UI and collection-method qualifiers and the November refund status details.",
+      "Q2": "For https://docs.stripe.com/payments/mb-way, November adds explicit B2C eligibility, richer authorization/capture and product/API support matrices, a four-minute approval limit, browser polling without return_url, and terminal Refund statuses and events (old raw lines 101-118 and 135-165; new raw lines 20-45, 47-147 and 149-177). The November matrix marks manual, partial, multi and over-capture unsupported. Full disputes are supported and partial disputes are unsupported. Full and partial refunds are supported (new raw lines 57-78). Refunds return to the original method and can be full or partial up to 365 days after completion, with cumulative partials capped at the original payment. Minutes are typical. Check Refund status or refund.updated/refund.failed. A failed refund puts funds back in the Stripe balance and requires another refund method. Disputes retain a seven-calendar-day evidence deadline and held balance pending outcome. The revised source-stripe-mb-way.md dates the May Mobile Payment Element exclusion and Stripe Inc label, and the proposed Wallets wording carries the same qualifications. November's in-app row does not define a universal mobile SDK contract. The distinct iOS 26.6.0 PaymentSheet evidence does not establish account eligibility. Hosted Invoice and Subscription support is send_invoice only, with individual authorization and the 2026-07-29.dahlia changelog scope. Checkout subscription/setup modes, automatic recurring payments and off-session reuse remain unsupported. Endive's Stripe.js pending modal is a separate version-qualified client behavior. Table formatting, the removed video reference and the acceptance parent links are presentation and navigation."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "mb-way-wallet-scope",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Portugal customers only**, EUR only. Phone number-based (push notification → app authorization). Immediate confirmation.\n\n**Transaction limits**: €0.50 – €5,000. Daily default: €1,000 (customer can adjust to €10,000).\n\n**40 merchant countries** — broad for Portugal-only wallet (includes MX, HK, JP, NZ, US).\n\n**Disputes**: Yes — 7-day evidence submission. Stripe holds amount until resolution.\n\n**Refunds**: 365-day. Minutes. Full and partial. Multiple partials allowed.\n\n**Statement descriptor**: ignored — `Stripe Inc` shown on bank statements.\n\n**No recurring, no manual capture, no Mobile Payment Element.**\n\n**Checkout restrictions**: no subscription mode, no setup mode, no `setup_future_usage`.\n\n**Connect**: all charge types. Capability: `mb_way_payments`.",
+      "proposed_markdown": "MB WAY serves **customers in Portugal** with EUR presentment and can use international phone numbers. November's snapshot lists 40 business locations subject to supported settlement currency and marks B2C supported. Both captures document EUR 0.50–5,000 per payment and a EUR 1,000 default daily cumulative user limit adjustable up to EUR 10,000. In November, the customer has four minutes to approve in-app, while the merchant page polls without a browser redirect or return URL. Stripe documents immediate notification of success or failure when it confirms the outcome. App approval, an open merchant page and returning from the app are separate from confirmation. The standard payout schedule applies.\n\n- Full disputes are supported. Partial disputes are excluded in November. Stripe holds the balance during resolution and the evidence window is seven calendar days.\n- Full or partial refunds can be issued up to 365 days from completion, typically processing in minutes. Cumulative partials cannot exceed the payment. November documents checking the Refund status and refunding by another method if it fails and Stripe returns the amount to the balance.\n- May specifies `Stripe Inc` on statements and excludes Mobile Payment Element. November says Stripe's name cannot be overridden and separately marks in-app payments supported. See [[stripe-ios-sdk]] for iOS `26.6.0` PaymentSheet evidence.\n- Checkout remains one-time, with no setup or subscription mode, future usage or off-session payments. November Billing/Invoicing supports `send_invoice` for separately authorized hosted invoices, including subscription invoices. Manual capture remains unsupported.\n- Connect platforms can use all charge types. Enable it through the applicable Dashboard or Capabilities API path, then verify the connected account's `mb_way_payments` capability is active in the account API or webhooks. See [[source-stripe-mb-way]] for the dated overview and version-specific notes.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "May raw lines 8-50, 101-115 and 135-177; November raw lines 9-45, 57-98, 104-147 and 149-177.",
+        "The May Mobile Payment Element exclusion and November in-app row are different labels; use the separate iOS concept entry for version-scoped PaymentSheet evidence.",
+        "May raw lines 8-10 document immediate notification of success or failure. November raw lines 9-14 and 159-171 distinguish confirmation timing, payout schedule, and pending app authorization."
+      ]
+    },
+    {
+      "update_id": "mb-way-wallet-overview-route",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-mb-way]] — MB WAY: Portugal phone-number wallet, 365-day refunds, 7-day dispute evidence, €1k daily limit, Stripe Inc descriptor",
+      "proposed_markdown": "- [[source-stripe-mb-way]] — May 7 and November 7, 2026 wallet overviews covering eligibility, app authorization, hosted invoice support, disputes and refunds.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": []
+    }
+  ]
+}

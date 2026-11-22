@@ -1,0 +1,73 @@
+---
+title: "Stripe: Accept a New Zealand BECS Direct Debit Payment"
+type: source
+date_ingested: 2026-05-03
+date_updated: 2026-11-22
+original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/nz-bank-account/accept-a-payment"
+raw_files:
+  - "stripe-payments-nz-bank-account-accept-a-payment-2026-11-07.md"
+  - "stripe-nz-becs-accept-payment-2025.md"
+tags: [stripe, nz-becs, becs, new-zealand, nzd, elements, payment-intents, mandates]
+---
+
+## Summary
+
+The May 3 and November 7, 2026 guides cover accepting NZD New Zealand BECS Direct Debit online with a server-created PaymentIntent, a browser Payment Element and a Direct Debit Authority (DDA). The separate [[source-stripe-nz-becs-debit|method overview]] describes approval and additional identity verification for New Zealand Stripe users accepting debits from New Zealand bank accounts.
+
+## PaymentIntent and customer setup
+
+- **November 7 guide.** Enable NZ bank account payments in Dashboard. Stripe presents eligible methods dynamically. Server-side PaymentIntent examples send the amount in NZD and `automatic_payment_methods[enabled]=true`, with `customer_account` for a customer-configured Accounts v2 Account or `customer` for a Customers v1 object. The guide describes Accounts v2 as generally available to Connect users and in public preview for other Stripe users. It directs preview users to enable **Reusable payment methods for Global Payouts** in Account previews and features. The Account creation example enables `configuration.customer` and uses `Stripe-Version: 2026-10-28.preview`. This Accounts v2 guidance is separate from payment-method approval.
+- **May 3 guide.** The initial NZD PaymentIntent examples support both customer identities and explicitly pass `payment_method_types: ['nz_bank_account']`. The later reuse example uses the same list with a Customers v1 `customer`.
+- **PaymentIntent Create version warning.** The [API changelog](https://docs.stripe.com/changelog/endive/2026-09-30/removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents) documents HTTP 400 with `payment_method_types_no_longer_supported` for the writable field on the linked `2026-09-30.endive` REST PaymentIntent Create endpoint. The computed response property remains readable. Use Dashboard-managed dynamic methods, optionally narrowed by `allowed_payment_method_types` or `excluded_payment_method_types`. An allowlist filters out incompatible methods and leaves method eligibility subject to account and transaction constraints. The changelog's Impact paragraph separately names `2026-08-26.preview`, while its REST table links `2026-09-30.endive`. These REST versions are separate from the Accounts v2 creation header and the browser script version.
+
+## Payment Element, mandate and confirmation
+
+1. The server passes the PaymentIntent client secret to the browser. Load Stripe.js directly from `js.stripe.com` and initialize it with a publishable key. The May example uses Dahlia and November uses Endive. The November guide also switches the server examples from Node.js to Ruby and cURL.
+2. Mount the Payment Element with the client secret. It collects the name, email and bank account number, presents the NZ BECS Direct Debit Service Terms and Conditions, and collects agreement. A custom UI must display those terms separately and confirm acceptance. Keep a mandate record and provide it promptly if Stripe requests it.
+3. Use `stripe.confirmPayment` to create and attach the PaymentMethod and submit the payment. For NZ BECS alone, the guide uses `redirect: 'if_required'` without `return_url`; provide a `return_url` when also offering a redirect-based method. Handle errors and `requires_payment_method`. Successful submission yields `processing`. Use independently verified success for fulfillment. Stripe recommends webhooks and also shows events in Dashboard. `payment_intent.processing` means submission, `payment_intent.succeeded` signals success, and `payment_intent.payment_failed` signals failure.
+
+## Customer notifications and timing
+
+- **Mandate and debit emails.** Send mandate confirmation and the collected bank account details after successful PaymentIntent confirmation. Send the date and amount of each debit no later than the day it occurs. Stripe sends these emails by default. Its November overview describes immediate default sending after successful confirmation, and separately gives the day-of-debit deadline. For custom emails, the overview directs merchants to Stripe Support.
+- **Dated mandate wording.** The May acceptance and [[source-stripe-nz-becs-set-up-payment|setup]] samples say no later than five business days after DDA confirmation. The November samples say five days, matching the five-day mandate deadline in both [[source-stripe-nz-becs-debit|method overview]] captures.
+- **Payment status and settlement.** The November acceptance guide says Stripe sends success or failure notification within three business days after it submits the debit. The May acceptance guide said within three business days “thereafter”; the May overview measured up to two business days from debit initiation. The November overview's standard T+2 payment-success and funds-available table uses business days after submission. A client submission, estimated debit date and available funds describe separate milestones.
+
+## Saved PaymentMethod and off-session scope
+
+Both acceptance guides say that an initial PaymentIntent with `setup_future_usage=off_session` attaches the generated PaymentMethod to the customer object after the Intent succeeds. For a later NZD PaymentIntent, the November guide illustrates `confirm=true` and `off_session=true` with the saved PaymentMethod and automatic payment methods for both Accounts v2 and Customers v1. The May reuse example covers Customers v1 only and uses its historical explicit list.
+
+The separate November [[source-stripe-nz-becs-debit|method overview]] marks Off-session payments unsupported, while it lists PaymentIntents with `setup_future_usage` and SetupIntents as supported. This conflicts with the acceptance guide's off-session examples and also qualifies the [[source-stripe-nz-becs-set-up-payment|save-for-future route]]. Effective account or integration eligibility remains unresolved. The overview's “Manually configure” link is navigation to the acceptance guide, whose November body documents dynamic selection.
+
+## Scheduled debit
+
+Both guides document `payment_method_options.nz_bank_account.target_date` as a best-effort date 3–15 days ahead. A non-business target date or a date fewer than three business days ahead rolls to the next available business day. The guide permits canceling the PaymentIntent up to three business days before the configured date. November adds that confirmation moves the scheduled Intent to `processing`; bank settlement leads to `succeeded`, and bank rejection to `requires_payment_method`. Follow `charge.updated` for the associated Charge's `payment_method_details.expected_debit_date`. It estimates when the bank debit may occur.
+
+## Sandbox simulations
+
+### Sandbox test accounts (bank code `11`, branch `0000`)
+
+| Account | Suffix | Behavior |
+| --- | --- | --- |
+| `0000000` | `010` | Succeeds; mandate stays active |
+| `2222222` | `027` | Fails — insufficient funds; mandate active |
+| `8888888` | `000` | Fails — refer to customer; mandate active |
+| `1111111` | `016` | Fails — no account; mandate inactive |
+| `5555555` | `059` | Fails — debit not authorized; mandate inactive |
+| `9999999` | `000` | Remains `processing` absent a separate API transition |
+
+### Sandbox PaymentMethod tokens
+
+`pm_nzBankAccount_success`, `pm_nzBankAccount_insufficientFunds`, `pm_nzBankAccount_referToCustomer`, `pm_nzBankAccount_noAccount`, `pm_nzBankAccount_debitNotAuthorized`, `pm_nzBankAccount_processing`
+
+Both captures say a separate API request can advance the processing-only test account or token. The pinned guides do not show that request.
+
+## Related
+
+- [[stripe]]
+- [[stripe-nz-becs-debit]]
+
+## Raw Sources
+
+- [[raw/stripe-payments-nz-bank-account-accept-a-payment-2026-11-07|November 7, 2026 full NZ BECS acceptance guide]] — 368 lines. See customer setup and dynamic selection at lines 31–108, browser flow and mandate at 161–267, notifications and payment outcome at 269–289, reuse at 291–321, sandbox at 323–353, and scheduled debit at 355–368.
+- [[raw/stripe-nz-becs-accept-payment-2025|May 3, 2026 full NZ BECS acceptance guide]] — 382 lines. Includes the explicit-list examples at lines 71–109 and 319–337, browser and DDA guidance at 184–257, and one appearance screenshot at `raw/assets/stripe-elements-appearance-example.png`.

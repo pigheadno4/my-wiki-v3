@@ -1,0 +1,172 @@
+{
+  "job_id": "payments-meal-vouchers-fr-meal-vouchers-checking-a-card-balance",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-checking-a-card-balance-2026-11-07.md",
+  "raw_sha256": "87a5b4a4693ed897ffb071f6b6814ea912ebd8b5e555a4696a88a149b9dd186a",
+  "prior_raw_path": "raw/stripe-fr-meal-vouchers-check-balance-2025.md",
+  "prior_raw_sha256": "a71252d3e70f9c9e3bcd47ce18e0ea7dc10986ac55bf442107b32d22fb9dfd9a",
+  "source_targets": [
+    "wiki/sources/source-stripe-fr-meal-vouchers-check-balance.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-fr-meal-vouchers-check-balance.md": "4a4102cd921c581ba262c717b27a010004fb4c841294e3d649e0f245a11981b6"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-checking-a-card-balance-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 118
+      }
+    ],
+    "raw/stripe-fr-meal-vouchers-check-balance-2025.md": [
+      {
+        "start": 1,
+        "end": 89
+      }
+    ],
+    "wiki/sources/source-stripe-fr-meal-vouchers-check-balance.md": [
+      {
+        "start": 1,
+        "end": 43
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/e5862d2fa3aaa7acc3c22c8a/content.diff": [
+      {
+        "start": 1,
+        "end": 81
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 4,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 315,
+        "end": 320
+      },
+      {
+        "start": 744,
+        "end": 747
+      }
+    ],
+    "wiki/concepts/stripe-fr-meal-vouchers.md": [
+      {
+        "start": 41,
+        "end": 90
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 307,
+        "end": 313
+      }
+    ],
+    "wiki/sources/source-stripe-fr-meal-vouchers.md": [
+      {
+        "start": 25,
+        "end": 39
+      }
+    ],
+    "raw/stripe-fr-meal-vouchers-2025.md": [
+      {
+        "start": 130,
+        "end": 147
+      }
+    ],
+    "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-2026-11-07.md": [
+      {
+        "start": 104,
+        "end": 160
+      }
+    ],
+    "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 24,
+        "end": 62
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Enter your email to request access.",
+      "location": "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-checking-a-card-balance-2026-11-07.md:15"
+    },
+    {
+      "text": "curl -X POST https://api.stripe.com/v1/payment_methods/{{PAYMENTMETHOD_ID}}/check_balance",
+      "location": "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-checking-a-card-balance-2026-11-07.md:54"
+    },
+    {
+      "text": "The `as_of` field indicates when the balance on the card was retrieved, but the balance can change at any point after this timestamp.",
+      "location": "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-checking-a-card-balance-2026-11-07.md:60"
+    },
+    {
+      "text": "Because you can\u2019t refund French meal vouchers, always process the secondary payment method first. Alternatively, use manual capture for French meal vouchers after confirming the secondary payment succeeded.",
+      "location": "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-checking-a-card-balance-2026-11-07.md:95"
+    },
+    {
+      "text": "[Create and confirm the Payment Intent for the French meal voucher] -- Payment succeeded --> [Create and confirm the Payment Intent for the secondary payment method]",
+      "location": "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-checking-a-card-balance-2026-11-07.md:110"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Balance checks don\u2019t hold any amount on the French meal vouchers. Authorizations can still decline if the available amount is used by a concurrent purchase.",
+      "location": "raw/stripe-fr-meal-vouchers-check-balance-2025.md:21"
+    },
+    {
+      "text": "curl -X POST https://api.stripe.com/v1/payment_methods/{{PAYMENTMETHOD_ID}}/check_balance",
+      "location": "raw/stripe-fr-meal-vouchers-check-balance-2025.md:42"
+    },
+    {
+      "text": "Because you can\u2019t refund French meal vouchers, always process the secondary payment method first. Alternatively, use manual capture for French meal vouchers after confirming the secondary payment succeeded.",
+      "location": "raw/stripe-fr-meal-vouchers-check-balance-2025.md:83"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The checked instrument is a previously saved Bimpli, Pluxee or Up D\u00e9jeuner voucher PaymentMethod. A restaurant or store SIRET must have been provisioned for acceptance, and the saved voucher could have been saved during an existing payment. The demonstrated balance request uses server-side secret-key authentication and the PaymentMethod ID, distinct from the store\u2019s SIRET and either of the later PaymentIntent IDs (old raw lines 12-44, new raw lines 25-56).",
+    "The `payment_method_balance` response gives benefit-keyed, currency-specific available amounts under `balance.fr_meal_voucher.available` and an `as_of` retrieval timestamp. A check can inform display, split allocation, or a pre-PaymentIntent sufficiency check. It places no hold and can become stale immediately, including through a concurrent purchase. Daily allowance and food-only restrictions still apply. Neither sample `livemode: true` nor the separate 10.00 EUR sandbox fixture establishes live funds or authorization (old raw lines 19-27,46-75, new raw lines 31-39,58-87).",
+    "Both captures keep the same split-tender prose: check, use separate PaymentIntents for voucher and secondary portions when insufficient, process secondary first or delay voucher manual capture until secondary succeeds, and handle a failed leg by reversing the other within the documented capture constraint. The November checkout diagram additionally shows restart and error paths and an apparently opposed confirmation order (old raw lines 77-85, new raw lines 89-114). Merchant orchestration here does not establish native or atomic split tender.",
+    "The only mapped source accurately summarizes old API method, response fields, sandbox fixture, non-binding timing and prose ordering. It leaves out the product's private preview status, the issuer set, the restaurant/store SIRET prerequisite, the retained save-during-payment route and the two-intent/failure scope. Add those supported qualifications along with the November waitlist and diagram conflict (source lines 13-39)."
+  ],
+  "substantive_changes": [
+    "November adds a private-preview waitlist email and request example to a May private-preview notice. This is a request for onboarding access with future contact when Stripe can onboard more users (old raw lines 8-17, new raw lines 9-29).",
+    "November captures the text of the split-tender flow diagram where May captured only a pointer. Its voucher-first confirmation order conflicts with the retained secondary-first prose and the reversal language requires the uncaptured/after-capture boundary (old raw lines 77-85, new raw lines 89-114). This addition is materially relevant to implementation risk without evidence of a product behavior change. Blockquote layout, nonbreaking space, trailing whitespace, and renumbering are presentational."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the May 5, 2026 private-preview scope and the historical prose ordering with the no-post-capture-refund boundary. Both dates document SIRET provisioning, a saved instrument, POST, a non-binding `as_of` balance snapshot, the 10.00 EUR sandbox fixture, and separate PaymentIntents for split tender. Do not attribute the added diagram text or waitlist form to May (old raw lines 8-85, new raw lines 9-114)."
+  ],
+  "conflicts": [
+    "The new text diagram creates and confirms the voucher PaymentIntent first, then creates and confirms the secondary PaymentIntent if the first succeeds. If the secondary fails, it tells the merchant to revert the voucher PaymentIntent. Both captures\u2019 prose says secondary first because captured vouchers cannot be refunded, or manual capture for the voucher after secondary success (old raw lines 77-85, new raw lines 89-114). The diagram does not specify capture mode or distinguish a successful authorization from capture. The related overview explicitly allows release of uncaptured authorizations and excludes refunds after capture (raw/stripe-payments-meal-vouchers-fr-meal-vouchers-2026-11-07.md:109-113). Preserve the prose and the conflicting diagram literally as dated evidence, flag the ambiguity reciprocally in the balance summary and concept at lines 45-47,64-68,88 and from any split-tender overview link, and do not treat the arrows as reversal instructions or as voucher-first automatic-capture guidance.",
+    "wiki/sources/source-stripe-fr-meal-vouchers.md:33 says GET, whereas both dedicated balance captures demonstrate POST for the saved PaymentMethod ID (old raw lines 37-44,68-75, new raw lines 49-56,80-87). The May and November overview captures give the endpoint path without specifying an HTTP verb (raw/stripe-fr-meal-vouchers-2025.md:136-146 and raw/stripe-payments-meal-vouchers-fr-meal-vouchers-2026-11-07.md:150-160). Correct the related overview's unsupported GET and link it to the dedicated balance source, which should point back to the overview and concept. This is neither a GET-to-POST capture change nor evidence of a second API method."
+  ],
+  "unresolved_questions": [
+    "The diagram does not disclose voucher capture mode or the exact operation used to revert either leg. The balance captures specify no API version header, no frontend endpoint, and no actual activation, successful authorization, capture, atomic rollback, refund or settlement. The separate November acceptance page has its own `2026-05-27.preview` or later requirement and active PaymentLocation capability for acceptance, which the balance capture does not specify as a request parameter or version gate (raw/stripe-payments-meal-vouchers-fr-meal-vouchers-accept-a-payment-2026-11-07.md:24-50)."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-fr-meal-vouchers.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-fr-meal-vouchers-check-balance.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "The only mapped source accurately summarizes old API method, response fields, sandbox fixture, non-binding timing and prose ordering. It leaves out the product's private preview status, the issuer set, the restaurant/store SIRET prerequisite, the retained save-during-payment route and the two-intent/failure scope. Add those supported qualifications along with the November waitlist and diagram conflict (source lines 13-39).",
+        "November captures the text of the split-tender flow diagram where May captured only a pointer. Its voucher-first confirmation order conflicts with the retained secondary-first prose and the reversal language requires the uncaptured/after-capture boundary (old raw lines 77-85, new raw lines 89-114). This addition is materially relevant to implementation risk without evidence of a product behavior change. Blockquote layout, nonbreaking space, trailing whitespace, and renumbering are presentational."
+      ],
+      "conflicts": [
+        "The new text diagram creates and confirms the voucher PaymentIntent first, then creates and confirms the secondary PaymentIntent if the first succeeds. If the secondary fails, it tells the merchant to revert the voucher PaymentIntent. Both captures\u2019 prose says secondary first because captured vouchers cannot be refunded, or manual capture for the voucher after secondary success (old raw lines 77-85, new raw lines 89-114). The diagram does not specify capture mode or distinguish a successful authorization from capture. The related overview explicitly allows release of uncaptured authorizations and excludes refunds after capture (raw/stripe-payments-meal-vouchers-fr-meal-vouchers-2026-11-07.md:109-113). Preserve the prose and the conflicting diagram literally as dated evidence, flag the ambiguity reciprocally in the balance summary and concept at lines 45-47,64-68,88 and from any split-tender overview link, and do not treat the arrows as reversal instructions or as voucher-first automatic-capture guidance.",
+        "wiki/sources/source-stripe-fr-meal-vouchers.md:33 says GET, whereas both dedicated balance captures demonstrate POST for the saved PaymentMethod ID (old raw lines 37-44,68-75, new raw lines 49-56,80-87). The May and November overview captures give the endpoint path without specifying an HTTP verb (raw/stripe-fr-meal-vouchers-2025.md:136-146 and raw/stripe-payments-meal-vouchers-fr-meal-vouchers-2026-11-07.md:150-160). Correct the related overview's unsupported GET and link it to the dedicated balance source, which should point back to the overview and concept. This is neither a GET-to-POST capture change nor evidence of a second API method."
+      ],
+      "reason": "The balance API itself stays the same. The expanded access instructions and materially conflicting documented checkout order require a dated update and reciprocal explanation. Add already-supported but omitted prerequisite and scope details."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/checking-a-card-balance, Stripe documents an optional pre-payment balance check for saved Bimpli, Pluxee and Up D\u00e9jeuner vouchers after restaurant or store SIRET provisioning. The voucher can have been saved during an earlier payment. A server using a secret key calls POST with the saved PaymentMethod ID. The response reports available amounts by benefit and currency with an as_of timestamp. It can support checkout display or separate payment allocation, but places no hold and concurrent purchases can still cause a decline. Food-only restrictions and daily allowances continue. The 10.00 EUR sandbox fixture is separate from the illustrative live-mode response and merchant outcomes (old raw lines 12-75, new raw lines 25-87). The May and November split-tender prose supports two PaymentIntents on insufficiency and secondary-first processing or delayed capture of the voucher leg. November adds explicit checkout diagram steps that place voucher confirmation first (old raw lines 77-85, new raw lines 89-114). source-stripe-fr-meal-vouchers-check-balance.md accurately captures POST, response timing, the fixture and May's written ordering, while omitting the listed issuer scope, SIRET provisioning, save-during-payment and the two-intent/failure boundary.",
+    "Q2": "For https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/checking-a-card-balance, the substantive additions are a private-preview waitlist request and captured split-tender diagram text. The diagram confirms the voucher first and then the secondary PaymentIntent, with a voucher revert on secondary failure. Both captures\u2019 written guidance says secondary first or manual voucher capture after secondary success. May includes only a diagram pointer. November\u2019s arrows do not specify capture mode or establish a captured-voucher refund. Preserve the written guidance, no-post-capture-refund scope and optional, non-binding check as dated in source-stripe-fr-meal-vouchers-check-balance.md, and link the diagram conflict reciprocally to the concept and split-tender overview (old raw lines 8-21, old raw lines 68-85, new raw lines 9-33, new raw lines 80-114). Likewise link the dedicated guide\u2019s unchanged POST to the separate overview source\u2019s unsupported GET claim. Blockquote cleanup, spacing and renumbering are presentational. The checkout diagram describes merchant orchestration and supplies no atomic operation, client-side balance endpoint or proof of successful payment, reversal or settlement. The separate preview payment-acceptance version and active location requirements do not establish a balance-request version or input (old raw lines 37-48, new raw lines 49-60)."
+  }
+}

@@ -43,42 +43,35 @@ The November 2026 overview includes an invite-request step. Requesting an invite
 
 ### Naira Card (`ng_card`)
 
-- **Amount limits**: 500–100,000,000 NGN
-- **Modes**: payment + setup + subscription (supports recurring, unlike bank transfer)
-- **Checkout**: add `ng_card` to `payment_method_types`; all line items in `ngn`
-- **Direct API**: create PaymentIntent with `ng_card` **and** `payment_method_data: { type: 'ng_card' }` at creation; then `stripe.confirmPayment()` with same `payment_method_data.type` + `return_url`
-- **Redirect params on return**: `payment_intent` + `payment_intent_client_secret`
-- **Testing**: success → `requires_action` → `succeeded`; fail → "Fail test payment" → `requires_payment_method`
-- **Post-payment**: `payment_intent.succeeded` webhook
+- **May 2026 Checkout compatibility** — US businesses accepting Nigerian-issued cards from Nigerian customers, all line items in `ngn`, and 500–100,000,000 NGN per Checkout transaction. The guide lists payment, setup and subscription compatibility. Both hosted and embedded samples use payment mode.
+- **May 2026 selection** — Stripe evaluates dynamic method applicability. The historical manual Checkout examples add `ng_card` to `payment_method_types`. For the separate Endive request contract, see [[source-stripe-ng-card-accept-payment]].
+- **May 2026 Direct API** — the server example includes amount, `ngn`, `ng_card` in `payment_method_types`, and `payment_method_data.type: 'ng_card'`. The browser sample uses the PaymentIntent client secret, `payment_method_data.type: 'ng_card'` and `return_url` in `stripe.confirmPayment`. The extra create field is example-specific.
+- **Version boundary** — Checkout Session Create and PaymentIntent Create in `2026-09-30.endive` reject writable `payment_method_types` with HTTP 400 and retain their computed response properties. The documented alternatives are dynamic methods with an optional exclusion or a compatibility-filtered allowlist. For each endpoint’s changelog and the separate PaymentIntent Impact preview label, see [[source-stripe-ng-card-accept-payment#API Version Boundary — Endive Create Requests|the Naira card guide’s Endive warning]].
+- **Return and verification** — the Nigerian partner handles authentication and authorization. Stripe returns `payment_intent` and `payment_intent_client_secret` for status lookup. A return or authentication alone does not verify payment. The guide recommends `payment_intent.succeeded` events for post-payment actions.
+- **Sandbox tests** — simulated authorization moves `requires_action` to `succeeded`, and a simulated failure moves it to `requires_payment_method`. Live payment and payout are separate outcomes.
 
 ### Naira Card — Save / Recurring (`ng_card`)
 
-**Two save paths**:
+The May 8, 2026 guide describes written opt-in for future use, including off-session terms where applicable. Its Checkout setup branch also requires the customer's authorization of the local merchant-of-record provider for future payments. See [[source-stripe-ng-card-set-up-future-payments]].
 
-- **SetupIntent**: `setupIntents.create({ payment_method_types: ['ng_card'], usage: 'off_session'|'on_session', customer })` → `stripe.confirmNgCardSetup()` with `return_url` + `mandate_data: { customer_acceptance: { type: 'online', online: { infer_from_client: true } } }`
-- **PaymentIntent with `setup_future_usage`**: `paymentIntents.create({ ..., setup_future_usage: 'off_session', confirm: true, return_url, mandate_data })` — mandate_data requires explicit `ip_address` + `user_agent`
+- **Checkout setup**: The May example creates a setup-mode Session for the Stripe Customer. In the successful test, authentication moves the SetupIntent from `requires_action` to `succeeded`.
+- **Direct API**: May's no-charge setup creates a Customer-linked SetupIntent and shows browser `stripe.confirmNgCardSetup()` with online `infer_from_client`. Stripe.js handles authorization navigation and the May guide uses `return_url` after SetupIntent success. Verify setup status separately from browser return and the outcome of any later payment. Its separate PaymentIntent charge-and-save example uses `setup_future_usage=off_session` and shows explicit IP address and user agent when supplying optional `mandate_data`. The November Billing subscription sample also shows explicit IP and user agent on a server-confirmed SetupIntent. Written permission remains separate from those API fields.
+- **Standalone manual redirect**: May's standalone PaymentIntent payment example shows no future-use attachment. Redirect only for `requires_action` plus `next_action.type=redirect_to_url`. Use server webhooks to verify payment status after browser return.
+- **Reuse and detach**: Confirm a new PaymentIntent for the Customer and saved PaymentMethod, with `off_session=true` when the customer is absent. Server detach deactivates the saved method and sends `mandate.updated` and `payment_method.detached`.
 
-**Using a saved PM**: new PaymentIntent with `payment_method: '{{ID}}'` + `off_session: true` + `confirm: true`
-
-**Checkout path**: `mode: 'setup'`, `ng_card` in `payment_method_types`; customer authenticates on redirect page → `requires_action` → `succeeded`
-
-**Manual redirect option**: server-side — create with `confirm: true`, check `next_action.type === 'redirect_to_url'`, redirect to `next_action.redirect_to_url.url`
-
-**Detach**: fires `mandate.updated` + `payment_method.detached`; mandate collection (written agreement) required before saving
+The May requests with writable `payment_method_types` are historical. The November-captured Endive changelogs warn of HTTP 400 at their linked `2026-09-30.endive` Checkout Session Create, SetupIntent Create and PaymentIntent Create endpoints while preserving readable response properties. The Intent changelog's Impact section names `2026-08-26.preview` separately. The November Naira setup index links two variants and supplies no migrated flow. See [[source-stripe-ng-card-set-up-future-payments#API version boundary for the May requests]].
 
 ### Naira Bank Transfer (`ng_bank_transfer`)
 
-- **Amount limits**: 500–100,000,000 NGN
-- **Checkout**: add `ng_bank_transfer` to `payment_method_types`; all line items in `ngn`; no setup/subscription mode
-- **Direct API**: create PaymentIntent with `ng_bank_transfer` **and** `payment_method_data: { type: 'ng_bank_transfer' }` at creation; then client-side `stripe.confirmPayment()` with same `payment_method_data.type` + `return_url`
-- **Redirect params on return**: `payment_intent` + `payment_intent_client_secret`
-- **Testing**: success → `requires_action` → `succeeded`; fail → click "Fail test payment" → `requires_payment_method`
-- **Post-payment**: `payment_intent.succeeded` webhook
+- **Checkout (May 2026)**: US businesses, 500–100,000,000 NGN, all line items in NGN and payment mode only. Use dynamic selection or the historical `ng_bank_transfer` list. The hosted example uses `success_url`; the embedded example uses `return_url` and `ui_mode: embedded_page`.
+- **Direct API (May 2026)**: The server creates an NGN PaymentIntent and passes its client secret to the browser. The creation example includes `payment_method_data.type`; the stated creation prerequisites list amount, currency and the historical method list. Browser `stripe.confirmPayment` uses the transfer type and `return_url`. The return identifiers let the merchant verify Intent status, and business actions follow verified `payment_intent.succeeded`. Test-key transitions describe sandbox outcomes.
+- **API version**: The separate Endive changelogs remove writable `payment_method_types` in the documented `2026-09-30.endive` Checkout Session create and PaymentIntent create/update/confirm endpoints. Dynamic methods and compatibility filters are distinct from the computed response property. See [[source-stripe-ng-bank-transfer-accept-payment]] for the endpoint version, example defect, test paths and November navigation boundary.
+- **Access and recurring**: The country overview's May “Coming soon” recurring cell is historical. The November bank-transfer row is Yes for one-time and No for recurring; the preview invite request leaves approval unverified. See [[source-stripe-nigeria-payment-methods]].
 
 ## Sources
 
 - [[source-stripe-local-payment-methods-by-country]] — hub page: Nigeria + South Korea local payment methods
 - [[source-stripe-nigeria-payment-methods]] — May and November 2026 Nigeria partner-MoR overview: card/bank-transfer matrix, unresolved wallet prose versus No/No table, invite request, conditional VAT, disputes and refunds
-- [[source-stripe-ng-bank-transfer-accept-payment]] — Naira bank transfer integration: ng_bank_transfer, 500–100M NGN limits, confirmPayment(), redirect flow, test modes
-- [[source-stripe-ng-card-accept-payment]] — Naira card integration: ng_card, setup+subscription mode, 500–100M NGN limits, confirmPayment(), same redirect flow
+- [[source-stripe-ng-bank-transfer-accept-payment]] — May Naira bank-transfer Checkout and Direct API guide, including dated request fields, Endive warning and verification after partner redirect. The November capture is variant navigation.
+- [[source-stripe-ng-card-accept-payment]] — May 2026 Checkout and Direct API guide, November variant index and separate Endive Create request warning.
 - [[source-stripe-ng-card-set-up-future-payments]] — Naira card save/recurring: SetupIntent + confirmNgCardSetup(), PaymentIntent setup_future_usage, off_session reuse, detach events

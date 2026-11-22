@@ -1,0 +1,111 @@
+--- raw/stripe-managed-payments-changelog-2026.md
++++ raw/stripe-payments-managed-payments-changelog-2026-11-07.md
+@@ -1,6 +1,29 @@
+ # Managed Payments changelog
+ 
+ Keep track of changes to Managed Payments.
++
++## October 5, 2026
++
++### Invoice pay support 
++
++You can now use the [Pay Invoice](https://docs.stripe.com/api/invoices/pay.md) endpoint to finalize and attempt payment on a Managed Payments invoice. The endpoint uses the payment method already associated with the invoice, so you can’t provide a different payment method or include other payment-related parameters in the request.
++
++## September 3, 2026
++
++### API changes 
++
++- You can use the [payment_intent_data.setup_future_usage](https://docs.stripe.com/api/checkout/sessions/create.md#create_checkout_session-payment_intent_data-setup_future_usage) parameter, and the [payment_method_options.{payment_method}.setup_future_usage](https://docs.stripe.com/api/checkout/sessions/create.md#create_checkout_session-payment_method_options) parameters specific to each payment method, when creating a Managed Payments Checkout Session.
++
++## June 2, 2026
++
++### API changes 
++
++Products with the following [product tax codes](https://docs.stripe.com/api/products/object.md#product_object-tax_code) are now eligible to use with Managed Payments:
++
++- `txcd_10105001`: Artificial Intelligence as a Service (AIaaS) - Cloud Based - Personal Use
++- `txcd_10105002`: Artificial Intelligence as a Service (AIaaS) - Cloud Based - Business Use
++- `txcd_10105003`: Artificial Intelligence as a Service (AIaaS) - Cloud Based & Downloaded - Personal Use
++- `txcd_10105004`: Artificial Intelligence as a Service (AIaaS) - Cloud Based & Downloaded - Business Use
+ 
+ ## April 22, 2026
+ 
+@@ -21,7 +44,7 @@
+ 
+ ### Invoice PDF enhancements
+ 
+-Your business name now shows on Managed Payments invoices along with the details of the products sold. Invoices are now issued by _Sold through Link_, aligning with customer branding at checkout.
++Your business name now shows on Managed Payments invoices along with the details of the products sold. Invoices are now issued by *Sold through Link*, aligning with customer branding at checkout.
+ 
+ ### Subscription confirmation email
+ 
+@@ -30,6 +53,10 @@
+ ### Increased product tax code eligibility
+ 
+ Several new product tax codes for digital products are now eligible for Managed Payments. See the full list of [supported tax codes](https://docs.stripe.com/payments/managed-payments/eligibility.md#product-tax-code-requirements).
++
++### Managed Payments data in Sigma
++
++The `payment_intents`, `setup_intents`, `checkout_session`, and `subscriptions` tables in Sigma now include a `managed_payments_enabled` field to identify Managed Payments transactions and subscriptions.
+ 
+ ## February 9, 2026
+ 
+@@ -49,7 +76,7 @@
+ 
+ [Adaptive Pricing](https://docs.stripe.com/payments/currencies/localize-prices/adaptive-pricing.md) is automatically enabled at checkout to localize pricing into the customer’s local currency.
+ 
+-### API changes
++### API changes 
+ 
+ - You can set the [payment_method_collection](https://docs.stripe.com/api/checkout/sessions/create.md#create_checkout_session-payment_method_collection) parameter to `if_required` to allow customers to sign up for a free trial without a payment method.
+ - You can use the [payment_behavior](https://docs.stripe.com/api/subscriptions/update.md#update_subscription-payment_behavior) parameter when updating Managed Payments subscriptions.
+@@ -64,7 +91,7 @@
+ 
+ ## October 7, 2025
+ 
+-### API changes
++### API changes 
+ 
+ - You can use the [saved_payment_method_options](https://docs.stripe.com/api/checkout/sessions/create.md#create_checkout_session-saved_payment_method_options) parameter when Managed Payments is enabled.
+ 
+@@ -80,9 +107,9 @@
+ 
+ ### Link account requirement removed
+ 
+-Customers don’t need to sign in or register for a [Link](https://docs.stripe.com/payments/link.md) account to check out with Managed Payments. Receipt emails contain a URL that allows customers to associate a specific transaction with their Link account, where they can manage their subscription. Customers also don’t need to provide a phone number during checkout.
++Customers don’t need to sign in or register for a [Link](https://docs.stripe.com/payments/link.md) account to check out with Managed Payments. Receipt emails contain a URL that allows customers to associate a specific  transaction with their Link account, where they can manage their subscription. Customers also don’t need to provide a phone number during checkout.
+ 
+-### API changes
++### API changes 
+ 
+ - You can set the [mode](https://docs.stripe.com/api/checkout/sessions/create.md#create_checkout_session-mode) parameter to `payment` when creating a Managed Payments Checkout Session.
+ - You can set the [origin_context](https://docs.stripe.com/api/checkout/sessions/create.md#create_checkout_session-origin_context) parameter to `mobile_app` to show a Managed Payments Checkout page for mobile.
+@@ -103,7 +130,6 @@
+   - `txcd_10505002`: Digital Finished Artwork - downloaded - subscription - with conditional rights
+   - `txcd_10701410`: Electronically Delivered Information Services - Business Use
+   - `txcd_10701411`: Electronically Delivered Information Services - Personal Use
+-  - `txcd_10701000`: Website Advertising
+   - `txcd_10804001`: Digital Audio Visual Works - bundle - downloaded with permanent rights and streamed - subscription - with conditional rights
+   - `txcd_10804002`: Digital Audio Visual Works - bundle - downloaded with limited rights and streamed - non subscription
+   - `txcd_10804003`: Digital Audio Visual Works - bundle - downloaded with permanent rights and streamed - non subscription
+@@ -111,13 +137,14 @@
+ 
+ ## August 22, 2025
+ 
+-### API changes
++### API changes 
+ 
+ - The [customer_update[address]](https://docs.stripe.com/api/checkout/sessions/create.md#create_checkout_session-customer_update-address) and [customer_update[name]](https://docs.stripe.com/api/checkout/sessions/create.md#create_checkout_session-customer_update-name) parameters are no longer available when [creating a Checkout Session](https://docs.stripe.com/api/checkout/sessions/create.md) with Managed Payments enabled.
+ 
+   Managed Payments requires that your customer has a name and a valid billing address in order to calculate sales tax, and always updates the [Customer](https://docs.stripe.com/api/customers/object.md) with the name and billing address collected during the Checkout Session.
+ 
+ - Products with the following [product tax codes](https://docs.stripe.com/api/products/object.md#product_object-tax_code) are now eligible to use with Managed Payments:
++
+   - `txcd_10701400`: Website Information Services - Business Use
+   - `txcd_10701401`: Website Information Services - Personal Use
+ 
+@@ -132,4 +159,4 @@
+ ### Refunding withheld sales tax
+ 
+ Stripe only keeps the original sales tax amount on refunded transactions where required. The **Payment breakdown** section of the transaction shows the refunded sales tax amount. Your customers aren’t affected by this behavior.
+-![The Payment breakdown of a transaction using Managed Payments, showing the sales tax withheld originally, and the amount of sales tax refunded, with currency conversion included as well.](assets/stripe-managed-payments-sales-tax-refund.png)+![The Payment breakdown of a transaction using Managed Payments, showing the sales tax withheld originally, and the amount of sales tax refunded, with currency conversion included as well.](https://b.stripecdn.com/docs-statics-srv/assets/changelog-sales-tax-refunds-payment-breakdown.12e65daa63d793db81bb8a7fe12e283c.png)

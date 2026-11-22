@@ -1,0 +1,87 @@
+<!-- Source URL: https://docs.stripe.com/payments/orchestration/rules -->
+<!-- Fetched: 2026-11-07 -->
+<!-- Discovery: reconciled llms.txt,sitemap.xml -->
+
+# Manage rules
+
+Learn how to create and manage rules for routing payments.
+
+> #### Want access to Orchestration?
+> 
+> Orchestration is in private preview. [Share your email address to request access.](https://docs.stripe.com/payments/orchestration/rules.md#orchestration_preview)
+
+### Want access to Orchestration?
+
+Enter your email to request access.
+
+```bash
+curl https://docs.stripe.com/preview/register \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -H "Referer: https://docs.stripe.com/payments/orchestration/rules" \
+  -d '{"email": "EMAIL", "preview": "orchestration_preview"}'
+```
+
+Use Orchestration to route payments across all of your processors. To test rules, open your sandbox before going to Orchestration.
+
+In the Dashboard, go to **Payments** > [Orchestration](https://dashboard.stripe.com/orchestration) to create rules based on payment conditions, such as card country or currency. Stripe executes the conditions in order, from left to right, and applies the first action that matches a payment’s condition.
+
+## Rule conditions and actions 
+
+When adding rules, you can specify a condition that a payment must meet for the rules to apply. For example, you can add a currency condition to route payments in EUR to one processor, and an action to route all other payments to Stripe. You can add multiple conditions.
+
+| Condition | Description |
+| --- | --- |
+| Amount | The value of the payment. To route based on amount, you must also specify a currency. |
+| Bank Identification Number (BIN) | The first 6 or 8 numbers on the payment card, which identifies the card issuer. |
+| Card country | The issuing country for the card used for payment. |
+| Card issuer | The financial institution that issued the card used for payment. |
+| Card type | The card type for the payment method. You can choose between `credit card`, `debit card`, and `prepaid card`. |
+| Currency | The currency that a customer pays in. You can choose from the [presentment currencies](https://docs.stripe.com/currencies.md#presentment-currencies) that Stripe supports. |
+| Metadata | The [information that you associate](https://docs.stripe.com/payments/payment-intents.md#storing-information-in-metadata) with common requests, such as processing payments. For example, you can attach a specific processor to a PaymentIntent for an order. |
+
+After adding conditions to your rules, you add the actions. You can select the main and retry processors to use for payments that match the conditions, as well as the main and retry processors to use if no conditions are met.
+
+## Override processor account logic 
+
+By default, Stripe uses the processor account logic configured during onboarding to determine which account processes a payment. For supported processors, you can override that logic by selecting a specific processor account for the main or retry processor in a rule action.
+
+To select a processor account:
+
+1. Select a supported processor in the rule action.
+2. Under **Processor account logic**, click **Override processor account**.
+3. In **Processor account**, select the account that you want to use.
+
+The selector only displays accounts configured for the selected processor. You can configure the main and retry processors independently. If you don’t select an account, Stripe continues to use your existing processor account logic. If the account that you need isn’t available, contact your Stripe representative.
+
+See [Supported Orchestration features](https://docs.stripe.com/payments/orchestration/feature-support.md) for processor compatibility.
+
+## Set the order 
+
+Stripe executes your conditions in order, from left to right, and applies the first action that matches a payment’s condition. From the [Orchestration rules](https://dashboard.stripe.com/orchestration/rules) page, click the overflow menu (⋯) next to any condition to move it left or right. Make sure you set the order correctly, or your payments won’t process as expected.
+
+## Save rules 
+
+If you want to continue modifying and testing your rules before activating them, click **Save changes**. Draft rules don’t affect payments until you activate them.
+
+## Test rules 
+
+Before activating rules in live mode, activate and test them in a [sandbox](https://docs.stripe.com/sandboxes.md). Open an existing sandbox or [create one](https://docs.stripe.com/sandboxes/dashboard/manage.md#create-a-sandbox), then create and activate your rules there. Follow the steps to [verify your test rules](https://docs.stripe.com/payments/orchestration/route-payments.md#verify-test-rules). Rules you create in a sandbox don’t affect your live integration. When your tests produce the expected results, switch to live mode, recreate the rules, and activate them.
+
+## Activate rules 
+
+To apply rules to payments in a sandbox, click **Activate test rules**. To apply rules to live payments, switch to live mode and click **Activate rules**.
+
+You can only have one active set of rules in each sandbox and in live mode. When you activate a new set of rules, Stripe deactivates the currently active set in that environment. You can reactivate a deactivated set of rules at any time.
+
+If you don’t have active rules, payments route to Stripe.
+
+## Duplicate rules 
+
+Active rules are read-only. To make changes, duplicate them and edit the draft.
+
+From the [Orchestration rules](https://dashboard.stripe.com/orchestration/rules) page, select the overflow menu (⋯) for the rules that you want to edit. Click **Duplicate test rules** in a sandbox or **Duplicate rules** in live mode. Confirm the action in the dialog, then edit the new draft.
+
+## Deactivate rules 
+
+You can deactivate rules from the [Orchestration rules](https://dashboard.stripe.com/orchestration/rules) page. Select the overflow menu (⋯) for the active set of rules, then click **Deactivate test rules** in a sandbox or **Deactivate rules** in live mode. Confirm the action in the dialog.

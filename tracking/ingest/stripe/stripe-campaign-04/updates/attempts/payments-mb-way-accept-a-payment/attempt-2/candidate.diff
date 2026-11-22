@@ -1,0 +1,68 @@
+--- wiki/sources/source-stripe-mb-way-accept-payment.md
++++ tracking/ingest/stripe/stripe-campaign-04/updates/attempts/payments-mb-way-accept-a-payment/attempt-2/candidate.md
+@@ -2,7 +2,9 @@
+ title: "Stripe: Accept a MB WAY Payment"
+ type: source
+ date_ingested: 2026-05-07
++date_updated: 2026-11-22
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/payments/mb-way/accept-a-payment"
+ raw_files:
+   - "stripe-mb-way-accept-payment-2025.md"
+ tags: [stripe, wallets, mb-way, portugal, eur, checkout, elements, direct-api, beta, phone-number, test-numbers]
+@@ -10,29 +12,45 @@
+ 
+ ## Summary
+ 
+-Integration guide for MB WAY via Checkout, Elements (beta), and Direct API. Elements requires beta flag. Direct API uses `stripe.confirmMbWayPayment()` with phone number required. 5 specific test phone numbers documented.
++The May 7, 2026 guide covers Checkout, web Elements using PaymentIntents, and the Direct API branch that uses Stripe.js in the browser. MB WAY is a Portuguese wallet. The May method overview lists Portugal as the customer location, while the acceptance guide allows international numbers linked to MB WAY. The November 7, 2026 acceptance capture is an index of the same three variants. Their full bodies were outside the capture.
+ 
+-## Key Details
++## May 7, 2026 integration paths
+ 
+-**Three integration paths**: Checkout, Elements (PaymentIntents), Direct API.
++- **Checkout.** The guide assumes an existing Checkout acceptance integration and lists merchant locations as Europe, US, CA, NZ, SG, HK, JP, AU and MX. The Session uses payment mode with EUR presentment and every line-item Price in EUR. Setup and subscription modes are unsupported. Stripe can select eligible payment methods dynamically, or the May manual examples add `mb_way` to `payment_method_types`. The hosted example sets `success_url`. The full embedded example sets `ui_mode: embedded_page` and `return_url`. Those URLs are Checkout Session settings.
++- **Web Payment Element with PaymentIntents.** The server creates an EUR PaymentIntent with the amount and `mb_way` in the historical request. The browser uses its client secret with the Payment Element and calls `stripe.confirmPayment` to send the buyer an authorization request. The May HTML/JS and React examples for this PaymentIntent route use `mb_way_pm_beta_1`. The May overview separately links an Elements quickstart using Checkout Sessions, and the November acceptance index leaves the current flag requirement unverified.
++- **Direct API branch.** The server creates the same type of EUR PaymentIntent and passes its client secret to the browser. The May new-PaymentMethod example calls `stripe.confirmMbWayPayment` with the phone linked to the buyer's MB WAY account in `payment_method.billing_details.phone`. In either PaymentIntent path, share the secret only with the relevant customer and keep it out of logs and URLs.
+ 
+-**Checkout**: `payment_method_types: ['mb_way']`, EUR only. No subscription/setup mode.
++**API version warning for the May requests.** The separate [Checkout Sessions changelog](https://docs.stripe.com/changelog/endive/2026-09-30/remove-payment-method-types-checkout-sessions) and [PaymentIntents changelog](https://docs.stripe.com/changelog/endive/2026-09-30/removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents) document HTTP 400 if the Checkout Session create or PaymentIntent create endpoint on `2026-09-30.endive` receives a writable `payment_method_types` field. The PaymentIntent error code is `payment_method_types_no_longer_supported`. Use Dashboard-managed dynamic methods or `allowed_payment_method_types` for a specified list that Stripe filters for compatibility. The computed `payment_method_types` remains readable in responses. The Intent changelog's Impact section says `2026-08-26.preview`; its linked endpoints and REST table identify `2026-09-30.endive`.
+ 
+-**Elements beta**: requires `Stripe(key, { betas: 'mb_way_pm_beta_1' })` — MB WAY in beta for Elements path.
++## Customer action and payment outcome
+ 
+-**Direct API**: `stripe.confirmMbWayPayment(clientSecret, { payment_method: { billing_details: { phone } } })`. Phone number required. Stripe.js polls automatically; `handleActions: false` to disable.
++- **Stripe.js confirmation.** The May Direct API guide says confirmation sends the buyer an authorization request, which they approve or decline in the app. The separate November 7 [Stripe.js reference](https://docs.stripe.com/js/payment_intents/confirm_mb_way_payment) requires a PaymentMethod for confirmation. It allows creating and attaching a new method from billing details, passing an existing PaymentMethod ID, or supplying no additional data when the method is already attached. The linked phone is the billing input in the new-method flow. The May Direct API guide says the default polling promise resolves at `succeeded` or, on failure, when the Intent returns to `requires_payment_method`. It describes retrieving the status through the PaymentIntents API with `handleActions: false`. The November Stripe.js reference also documents the default and manual polling option.
++- **Customer timing and return.** The separate November 7 [[source-stripe-mb-way|method overview]] gives the buyer four minutes to approve in the app. The merchant page stays open and polls. MB WAY itself uses no browser redirect or return URL, though a buyer can switch to the app and then return to the page. Immediate outcome notification follows the buyer step and is distinct from settlement, which the overview lists on the standard payout schedule.
++- **Fulfillment.** The May PaymentIntent guide points to `payment_intent.succeeded` for business actions, and the May Checkout branch links the Checkout fulfillment guide. Confirmed payment status or payment success events are the basis for business actions. Presentment, a submitted confirmation request and a return to the page can all precede payment success.
+ 
+-**Test phone numbers**:
++## May 7, 2026 sandbox simulations
++
++The test phone numbers simulate PaymentIntent outcomes from `requires_action`. The four errors move the Intent back to `requires_payment_method`. The success timing and “any other” fallback below likewise apply in the sandbox.
+ 
+ | Number | Behavior |
+ | --- | --- |
+-| `+351911111112` | Succeeds after ~30 seconds |
++| `+351911111112` | `succeeded` after approximately 30 seconds |
+ | `+351911111113` | `payment_method_not_available` |
+ | `+351911111114` | `payment_method_provider_decline` |
+ | `+351911111115` | `payment_intent_payment_attempt_expired` |
+ | `+351911111116` | `payment_method_customer_decline` |
+-| Any other | Succeeds immediately |
++| Any other sandbox phone number | `succeeded` immediately |
++
++## Related
++
++- [[stripe]]
++- [[stripe-wallets]]
++- [[source-stripe-mb-way]] — MB WAY method overview and eligibility
+ 
+ ## Raw Sources
+ 
+-- [[stripe-mb-way-accept-payment-2025]] — verbatim webpage content (732 lines); fixed `*sandbox*` ×1, `*Prices*` ×1, `*client secret*` ×2, `*webhook*` ×2
++- [[raw/stripe-mb-way-accept-payment-2025|May 7, 2026 full MB WAY acceptance guide]] — 732 lines. Checkout compatibility and Session examples at lines 14–108. Payment Element setup and confirmation at lines 236–498. Direct API server and browser flow at lines 550–701. Sandbox outcomes at lines 114–125, 519–530 and 703–714. The original capture preparation corrected markup for `*sandbox*` ×1, `*Prices*` ×1, `*client secret*` ×2 and `*webhook*` ×2.
++
++## Related raw API references
++
++- [[raw/stripe-payments-mb-way-accept-a-payment-2026-11-07|MB WAY acceptance variant index]] — November 7, 2026 navigation to Checkout, Elements and Direct API (lines 9–15).

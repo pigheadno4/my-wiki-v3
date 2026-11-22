@@ -1,0 +1,170 @@
+{
+  "job_id": "payments-mobile-collect-addresses",
+  "source_target": "wiki/sources/source-stripe-inapp-collect-addresses.md",
+  "source_before_sha256": "e68c3809ba6c7952f2843fbfe351ef41687e5be1a439b4da2eaf637d3dd6248c",
+  "contributions": [
+    {
+      "job_id": "payments-mobile-collect-addresses",
+      "canonical_url": "https://docs.stripe.com/payments/mobile/collect-addresses",
+      "attempt": 2,
+      "raw_path": "raw/stripe-payments-mobile-collect-addresses-2026-11-07.md",
+      "raw_sha256": "e369ef857882fb03e154e9ab04e1206117db10fa1d3f6984ef2df840d9b963f8",
+      "prior_raw_path": "raw/stripe-inapp-collect-addresses-2025.md",
+      "prior_raw_sha256": "32ec91279f896092ed85346be874ab364d8b67e56db5bdf4b1aef4d96d2428b8",
+      "new_capture_role": "navigation_only_variant_index",
+      "proposed_disposition": "raw_reference",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-mobile-collect-addresses/attempt-2/receipt.json",
+      "receipt_sha256": "73052b8ce2a784d056728a9eac34d10f561ce306924e2a5d1aa5162599b7d2da",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-mobile-collect-addresses/attempt-2/review.json",
+      "review_sha256": "94d43d4c5c0265ab132297d61c1de286ef79f3d1a038839a159fa38513e0aea4",
+      "source_assessments": [
+        {
+          "source_target": "wiki/sources/source-stripe-inapp-collect-addresses.md",
+          "proposed_disposition": "source_required_update",
+          "update_needed": true,
+          "findings": [
+            "Retain April 22, 2026 guidance and the four correct platform API routes. Restore correct billing address collection modes, scope the Google Places requirement to Android including React Native Android, and distinguish configured shipping prefill and confirmed PaymentIntent.shipping from PaymentMethod billing defaults and successful payment (old raw lines 140–184, 457–483, 526–583 and 644–764).",
+            "Label the required-phone snippets at source lines 31 and 97 as April examples. Preserve the April direction to collect phone numbers only when needed for the transaction (old raw lines 184-186, 389-391, 584-586 and 766-768)."
+          ],
+          "conflicts": [
+            "Source line 118 presents one uniform enum, contradicted by old raw lines 180–183, 385–388, 574–579 and 759–764. Source line 124 is ambiguous against line 112 and old raw lines 644–656. Line 126 omits the confirmation qualifier and React Native config-name distinction."
+          ],
+          "reason": "The November variants are navigation only. The existing summary's per-field enum assertion and platform and state qualifiers independently need correction to avoid wrong configuration choices."
+        }
+      ],
+      "affected_concepts": [
+        "wiki/concepts/stripe-inapp-payments.md",
+        "wiki/concepts/stripe-address-element.md"
+      ],
+      "unresolved_questions": [
+        "The linked November variants were not part of the capture, so their current SDK floors, lifecycle requirements and behavior are unverified."
+      ],
+      "mapped_source_assessment": {
+        "source_target": "wiki/sources/source-stripe-inapp-collect-addresses.md",
+        "proposed_disposition": "source_required_update",
+        "update_needed": true,
+        "findings": [
+          "Retain April 22, 2026 guidance and the four correct platform API routes. Restore correct billing address collection modes, scope the Google Places requirement to Android including React Native Android, and distinguish configured shipping prefill and confirmed PaymentIntent.shipping from PaymentMethod billing defaults and successful payment (old raw lines 140–184, 457–483, 526–583 and 644–764).",
+          "Label the required-phone snippets at source lines 31 and 97 as April examples. Preserve the April direction to collect phone numbers only when needed for the transaction (old raw lines 184-186, 389-391, 584-586 and 766-768)."
+        ],
+        "conflicts": [
+          "Source line 118 presents one uniform enum, contradicted by old raw lines 180–183, 385–388, 574–579 and 759–764. Source line 124 is ambiguous against line 112 and old raw lines 644–656. Line 126 omits the confirmation qualifier and React Native config-name distinction."
+        ],
+        "reason": "The November variants are navigation only. The existing summary's per-field enum assertion and platform and state qualifiers independently need correction to avoid wrong configuration choices."
+      },
+      "findings": [
+        "New raw lines 5–16 retain the purpose and four platform variants of the April 22, 2026 guide (old raw lines 2–10, 188–190, 393–395 and 588–590). Diff lines 7–12 and 769–772 replace the expanded instructions with variant links. This is a capture presentation and navigation change only.",
+        "Current source line 118 presents the generic name/email/phone collection modes as a uniform enum for address. April uses a different address option, including `.full` in UIKit and SwiftUI and `AddressCollectionMode.Full` / `FULL` on Android and React Native (old raw lines 177–184, 382–389, 570–583 and 753–765). A developer copying `always` for address from that statement would choose the wrong option. The source should distinguish the fields and platform representations without claiming an exhaustive enum list from the examples.",
+        "Source line 124 can be read as applying the Google Places dependency and API key to React Native on both mobile OSs, despite line 112 correctly naming default iOS autocomplete. April explicitly makes that extra dependency and key an Android autocomplete requirement, including React Native on Android (old raw lines 99–101, 279–281, 457–483 and 644–656). They are optional for collecting without autocomplete.",
+        "Source lines 119 and 126 should keep the PaymentMethod billing defaults versus PaymentIntent shipping distinction and make confirmation and platform options explicit. UIKit and Android show populated `shippingDetails`; React Native calls its option `defaultShippingDetails` (old raw lines 140–149, 526–535, 711–719). The SwiftUI section mentions the prefill capability at lines 194–200 but provides no matching configuration example in lines 293–391. React Native requires supplying omitted method-required values as `defaultBillingDetails` and opting into attachment (old raw lines 742–764).",
+        "Root index line 7 leads to Stripe index lines 116–117, 772 and 778, then the mobile concept reciprocal source route at line 103 and web concept route at line 136. The routes correctly identify the guide and the web concept distinguishes mobile APIs.",
+        "The April guide presents required-phone options in specific UIKit and React Native examples (old raw lines 107-113 and 662-684). Current source lines 31 and 97 copy the options without the guide's condition that phone numbers should be collected only when needed for the transaction (old raw lines 184-186, 389-391, 584-586 and 766-768)."
+      ],
+      "substantive_changes": [],
+      "historical_claims_to_preserve": [
+        "The April 22, 2026 capture documents the Stripe account, platform SDK, client publishable key and test/live key distinction. Keep iOS 13+ compatibility and Stripe Android 23.5.0 / Google Places 2.6.0 examples dated to this guide (old raw lines 23–35, 80–101, 203–215, 260–281, 408–469 and 603–656). The financial-connections sample dependency is for supporting US bank account payments (lines 425–432), not for collecting addresses.",
+        "April's UIKit `AddressViewController` yields optional address details through a delegate, SwiftUI `AddressElement` updates a binding on completion or cancellation, Android `AddressLauncher` uses a success/canceled result and must be instantiated in Activity/Fragment `onCreate` to avoid a crash, and React Native `AddressSheet` clears `visible` in both handlers (old raw lines 103–137, 283–356, 486–524 and 687–709).",
+        "Keep shipping prefill conditional on populated platform-specific configuration and confirmation for `PaymentIntent.shipping`. Address UI completion, autocomplete, billing field population, or presence of shipping details does not establish a completed charge or address ownership. The guide limits phone collection to transaction need (old raw lines 140–149, 186, 391, 526–535, 586, 711–719 and 768)."
+      ],
+      "conflicts": [
+        "Current source lines 118 and 124 overgeneralize the address enum and React Native autocomplete respectively. Lines 119 and 126 need field, configuration and confirmation scope. These are baseline issues; the November index does not change them.",
+        "The related Mobile Address Element overview summary says the guide is not yet ingested at line 13, says the feature set is identical at line 28, and uses broad automatic Elements pass-through wording at line 21. The April overview raw gives broad benefit/integration wording at lines 12–21, 32–41 and 52–61; the April detailed integration requires platform-specific collection and explicit prefill where documented, and lists differing autocomplete prerequisites. Repair the stale reciprocal route where the overview refers to this guide and defer platform specifics to the detailed capture. The separate web same-Elements-instance path (web concept lines 29–40, mobile route line 136) does not define mobile setup."
+      ],
+      "expected_read_files": [
+        {
+          "path": "raw/stripe-payments-mobile-collect-addresses-2026-11-07.md",
+          "sha256": "e369ef857882fb03e154e9ab04e1206117db10fa1d3f6984ef2df840d9b963f8",
+          "lines": 16
+        },
+        {
+          "path": "raw/stripe-inapp-collect-addresses-2025.md",
+          "sha256": "32ec91279f896092ed85346be874ab364d8b67e56db5bdf4b1aef4d96d2428b8",
+          "lines": 768
+        },
+        {
+          "path": "wiki/sources/source-stripe-inapp-collect-addresses.md",
+          "sha256": "e68c3809ba6c7952f2843fbfe351ef41687e5be1a439b4da2eaf637d3dd6248c",
+          "lines": 136
+        },
+        {
+          "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/8c4e8c5f080360ec173d0129/content.diff",
+          "sha256": "f97a5a5406677f6e694b85ab218ea04124f794ed04bff7f0d75a42bb233a8907",
+          "lines": 772
+        }
+      ],
+      "original_query_prompts_path": "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md",
+      "original_prompts": "New raw: `raw/stripe-payments-mobile-collect-addresses-2026-11-07.md`. Prior raw: `raw/stripe-inapp-collect-addresses-2025.md`. Current summaries: `wiki/sources/source-stripe-inapp-collect-addresses.md`.\n\n- Q1: For `https://docs.stripe.com/payments/mobile/collect-addresses`, what central documented behavior, prerequisites, identities and state boundaries does the complete new capture establish, and how does it compare with the matched old capture and every mapped current summary?\n\n- Q2: Which changes are substantive versus presentational or navigation-only? Which historical claims must remain dated, which conflicts need reciprocal warnings, and which API, UI, version, client/server or outcome qualifications prevent unsupported inferences?",
+      "reviewed_answers": {
+        "Q1": "The November 7, 2026 capture of https://docs.stripe.com/payments/mobile/collect-addresses describes collecting physical addresses and phone numbers via the mobile Address Element (new raw lines 5-7). Its four links route readers to UIKit, SwiftUI, Android and React Native variants (new raw lines 13-16). The April 22, 2026 guide documents Stripe account and SDK setup with a client publishable key, UIKit optional delegate results, SwiftUI bound address state, Android onCreate registration and Succeeded/Canceled, and React Native AddressSheet onSubmit/onError dismissal. It documents default iOS autocomplete and Google Places dependency and key for Android autocomplete, including React Native Android (old raw lines 23-149, old raw lines 203-356, old raw lines 408-535 and old raw lines 603-719). Optionally passing populated shipping details to the payment UI can prefill billing and set PaymentIntent.shipping upon confirmation in the documented paths. PaymentMethod billing defaults use separate configuration, and address capture is independent of payment completion (old raw lines 140-184, old raw lines 526-583 and old raw lines 711-764). source-stripe-inapp-collect-addresses.md preserves the four client integrations but overgeneralizes address collection modes and needs explicit OS and confirmation scope.",
+        "Q2": "For https://docs.stripe.com/payments/mobile/collect-addresses the four links are documentation navigation (new raw lines 9-16 compared with old raw lines 8-10, old raw lines 188-190, old raw lines 393-395 and old raw lines 588-590). The capture supplies no substantive change, renewed SDK minimum, or deprecation. In source-stripe-inapp-collect-addresses.md keep April 22, 2026 SDK compatibility, Android onCreate and React Native dismissal requirements, Android-only Google Places autocomplete setup, and the field-specific `Full` address example dated (old raw lines 23-35, old raw lines 414-513, old raw lines 562-583 and old raw lines 644-709). Preserve the distinction between PaymentSheet `shippingDetails` and React Native `defaultShippingDetails`, and between confirmation-time PaymentIntent.shipping and attached PaymentMethod billing defaults (old raw lines 140-184, old raw lines 526-583 and old raw lines 711-764). The required-phone options in the April UIKit and React Native examples are configuration examples. The guide directs readers to collect phone numbers only when needed for the transaction (old raw lines 184-186, old raw lines 389-391, old raw lines 584-586 and old raw lines 766-768). The reciprocal overview should point to the available detailed guide and avoid making broad automatic integration or equal-feature language a mobile API instruction. The separate same-instance web Elements flow does not establish mobile behavior. Address entry, prefill and even a confirmation-time shipping field do not prove a completed charge."
+      }
+    }
+  ],
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payments-mobile-collect-addresses-2026-11-07.md",
+      "sha256": "e369ef857882fb03e154e9ab04e1206117db10fa1d3f6984ef2df840d9b963f8",
+      "lines": 16
+    },
+    {
+      "path": "raw/stripe-inapp-collect-addresses-2025.md",
+      "sha256": "32ec91279f896092ed85346be874ab364d8b67e56db5bdf4b1aef4d96d2428b8",
+      "lines": 768
+    },
+    {
+      "path": "wiki/sources/source-stripe-inapp-collect-addresses.md",
+      "sha256": "e68c3809ba6c7952f2843fbfe351ef41687e5be1a439b4da2eaf637d3dd6248c",
+      "lines": 136
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/8c4e8c5f080360ec173d0129/content.diff",
+      "sha256": "f97a5a5406677f6e694b85ab218ea04124f794ed04bff7f0d75a42bb233a8907",
+      "lines": 772
+    }
+  ],
+  "concept_targets": [
+    {
+      "path": "wiki/concepts/stripe-address-element.md",
+      "before_sha256": "9b8514d6138836cb96e0cd1e25cab747b08f4ad2fd2af8a91126f6d38a2a26c4",
+      "contributing_jobs": [
+        "payments-link-add-link-elements-integration",
+        "payments-mobile-address-element",
+        "payments-mobile-collect-addresses"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    },
+    {
+      "path": "wiki/concepts/stripe-inapp-payments.md",
+      "before_sha256": "b7bd84adf1fa7638811b44823fafdc775f8ec99aae435193a4edde22ebf1dff9",
+      "contributing_jobs": [
+        "payments-managed-payments-set-up-mobile",
+        "payments-mobile",
+        "payments-mobile-accept-payment-embedded",
+        "payments-mobile-address-element",
+        "payments-mobile-collect-addresses",
+        "payments-mobile-custom-payment-methods",
+        "payments-mobile-display-bnpl-messaging",
+        "payments-mobile-embedded-custom-payment-methods",
+        "payments-mobile-embedded-filter-card-brands",
+        "payments-mobile-filter-card-brands",
+        "payments-mobile-finalize-payments-on-the-server",
+        "payments-mobile-migration-confirmation-tokens",
+        "payments-mobile-payment-method-messaging-element",
+        "payments-mobile-payment-sheet",
+        "payments-mobile-save-card-without-authentication",
+        "payments-mobile-save-during-payment",
+        "payments-mobile-upgrade-to-handle-actions",
+        "payments-mobile-without-card-authentication"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    }
+  ],
+  "state": "worker_running",
+  "attempt": 1,
+  "review_scope": "full",
+  "worker_agent": "/root/s04iw07",
+  "reviewer_agent": "/root/s04ir03",
+  "role_notes": "tracking/ingest/stripe/stripe-campaign-04/updates/role-notes.md",
+  "worker_output": "/tmp/stripe-s04-ingest/payments-mobile-collect-addresses-worker.json",
+  "reviewer_output": "/tmp/stripe-s04-ingest/payments-mobile-collect-addresses-reviewer.json"
+}

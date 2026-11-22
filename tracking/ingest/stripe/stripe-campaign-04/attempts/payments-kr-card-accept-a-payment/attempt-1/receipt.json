@@ -1,0 +1,158 @@
+{
+  "job_id": "payments-kr-card-accept-a-payment",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-kr-card-accept-a-payment-2026-11-07.md",
+  "raw_sha256": "bfcb888f9dab10cfeb9d6d17d0cd7c6ec5652e57216c1845c21593ababb3fc85",
+  "prior_raw_path": "raw/stripe-kr-card-accept-payment-2025.md",
+  "prior_raw_sha256": "bb192226fcaff85c2d20550d4b94106da31f76a412a5c21f4e36ff5bb69ff045",
+  "source_targets": [
+    "wiki/sources/source-stripe-kr-card-accept-payment.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-kr-card-accept-payment.md": "25fb5bd736fd5a7c115c7b649a8bb28b6d2af8ec445523b2706ff6a4b69d0ad4"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-kr-card-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-kr-card-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 301
+      }
+    ],
+    "wiki/sources/source-stripe-kr-card-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 55
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/83e90c6dfa3459e6a03d0252/content.diff": [
+      {
+        "start": 1,
+        "end": 303
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 4,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 425,
+        "end": 432
+      },
+      {
+        "start": 787,
+        "end": 792
+      }
+    ],
+    "wiki/concepts/stripe-korea-payment-methods.md": [
+      {
+        "start": 8,
+        "end": 38
+      },
+      {
+        "start": 49,
+        "end": 65
+      },
+      {
+        "start": 135,
+        "end": 150
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 11,
+        "end": 17
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Enable your users to pay using locally issued cards from South Korea.",
+      "location": "raw/stripe-payments-kr-card-accept-a-payment-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-kr-card-accept-a-payment-2026-11-07.md:11"
+    },
+    {
+      "text": "[Checkout](https://docs.stripe.com/payments/kr-card/accept-a-payment.md?payment-ui=checkout)",
+      "location": "raw/stripe-payments-kr-card-accept-a-payment-2026-11-07.md:13"
+    },
+    {
+      "text": "[Direct API](https://docs.stripe.com/payments/kr-card/accept-a-payment.md?payment-ui=direct-api)",
+      "location": "raw/stripe-payments-kr-card-accept-a-payment-2026-11-07.md:14"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Enable your users to pay using locally issued cards from South Korea.",
+      "location": "raw/stripe-kr-card-accept-payment-2025.md:6"
+    },
+    {
+      "text": "The minimum amount accepted is 100 KRW.",
+      "location": "raw/stripe-kr-card-accept-payment-2025.md:40"
+    },
+    {
+      "text": "On this page, the customer selects their issuer and authorizes the payment.",
+      "location": "raw/stripe-kr-card-accept-payment-2025.md:246"
+    },
+    {
+      "text": "Listen for these events rather than waiting on a callback from the client.",
+      "location": "raw/stripe-kr-card-accept-payment-2025.md:289"
+    }
+  ],
+  "proposed_disposition": "raw_reference",
+  "findings": [
+    "November repeats the same document identity and purpose and routes Checkout and Direct API (new raw lines 5-14). May gave the complete bodies for those same routes, including hosted and embedded Checkout examples and Direct API implementation (old raw lines 4-16,51-116). No changed product behavior is demonstrated by the index.",
+    "Source line 32 omits the difference between eligible dynamic methods and manual listing. In May Stripe evaluates currency and method restrictions for dynamic Checkout; for the manual path add `kr_card` to `payment_method_types` and price all line items in KRW. The May compatibility table lists payment, setup and subscription modes, but its hosted and full embedded Node examples use `mode: 'payment'` only. The hosted example uses `success_url`; the embedded example uses `ui_mode: 'embedded_page'` and `return_url` (old raw lines 8-16,23-49,51-102).",
+    "May describes payments by South Korea-based customers using locally issued issuer-branded cards, 28 listed supported merchant locations, KRW and a 100 KRW minimum in the compatibility section. The processor redirects for issuer selection/authentication and authorization, then back to the merchant (old raw lines 18-40,112-116,221-246).",
+    "The explicit NICEPAY merchant-page disclosure and terms link occur in May's Direct API client section (old raw lines 221-225); both May paths describe the local processor redirect (old raw lines 18-20 and 112-116). Existing source lines 22-26 and the Korea concept route at wiki/concepts/stripe-korea-payment-methods.md:139 should date and scope the May evidence. The Checkout variant's silence does not establish a disclosure requirement or exemption for hosted and embedded Checkout.",
+    "Source lines 33,37-41 need to distinguish the server PaymentIntent create and client secret, browser confirmation/redirect and return query identifiers, authoritative intent status, the two test-only transitions, and post-payment behavior. The May guide says `payment_intent.succeeded` is emitted on completion and recommends asynchronous events rather than client callbacks for post-payment actions, with Dashboard, custom webhook or partner-handling options (old raw lines 131-152,221-301). Browser return and query parameters alone do not establish approval, fulfillment, settlement or bank payout."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "Retain May 8, 2026 as the capture date despite the filename, the complete dated Checkout and Direct API evidence, KRW, the compatibility threshold and business locations, `kr_card`, disclosure scope, hosted versus embedded sample parameters, and sandbox versus live boundaries (old raw lines 2-40,46-116,131-152,221-301). Retain the separate November date for navigation (new raw lines 2-14).",
+    "The May Node create sample includes `payment_method_data.type='kr_card'` in addition to the server prose's amount, currency and method list, and the browser sample also passes it to `confirmPayment` (old raw lines 131-147,246-264). Keep that duplication scoped to the example, and distinguish the captured Dahlia script from a current version requirement (old raw lines 229-235)."
+  ],
+  "conflicts": [
+    "Source line 32 omits the difference between eligible dynamic methods and manual listing. In May Stripe evaluates currency and method restrictions for dynamic Checkout; for the manual path add `kr_card` to `payment_method_types` and price all line items in KRW. The May compatibility table lists payment, setup and subscription modes, but its hosted and full embedded Node examples use `mode: 'payment'` only. The hosted example uses `success_url`; the embedded example uses `ui_mode: 'embedded_page'` and `return_url` (old raw lines 8-16,23-49,51-102).",
+    "The explicit NICEPAY merchant-page disclosure and terms link occur in May's Direct API client section (old raw lines 221-225); both May paths describe the local processor redirect (old raw lines 18-20 and 112-116). Existing source lines 22-26 and the Korea concept route at wiki/concepts/stripe-korea-payment-methods.md:139 should date and scope the May evidence. The Checkout variant's silence does not establish a disclosure requirement or exemption for hosted and embedded Checkout.",
+    "Source lines 33,37-41 need to distinguish the server PaymentIntent create and client secret, browser confirmation/redirect and return query identifiers, authoritative intent status, the two test-only transitions, and post-payment behavior. The May guide says `payment_intent.succeeded` is emitted on completion and recommends asynchronous events rather than client callbacks for post-payment actions, with Dashboard, custom webhook or partner-handling options (old raw lines 131-152,221-301). Browser return and query parameters alone do not establish approval, fulfillment, settlement or bank payout.",
+    "Old raw lines 254-269 destructure `error` from `confirmPayment` but read `result.error.message` in the error branch. Preserve or avoid the example as a dated sample defect. The November index has no code that resolves it. This does not change the documented confirmation/redirect flow."
+  ],
+  "unresolved_questions": [
+    "No November variant bodies were established by the canonical capture, leaving current merchant-specific eligibility, UI implementation, disclosure applicability across other paths and live payment outcomes outside the captured evidence."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-korea-payment-methods.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-kr-card-accept-payment.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Existing source lines 13-41 preserve the central May identity, compatibility and paths. Retain May evidence at source lines 4-7 and 53-55 and add November as navigation only. Keep the Korea concept route reciprocal and date the details (old raw lines 2-40,108-116, new raw lines 2-14).",
+        "Source line 32 omits the difference between eligible dynamic methods and manual listing. In May Stripe evaluates currency and method restrictions for dynamic Checkout; for the manual path add `kr_card` to `payment_method_types` and price all line items in KRW. The May compatibility table lists payment, setup and subscription modes, but its hosted and full embedded Node examples use `mode: 'payment'` only. The hosted example uses `success_url`; the embedded example uses `ui_mode: 'embedded_page'` and `return_url` (old raw lines 8-16,23-49,51-102).",
+        "Source lines 33,37-41 need to distinguish the server PaymentIntent create and client secret, browser confirmation/redirect and return query identifiers, authoritative intent status, the two test-only transitions, and post-payment behavior. The May guide says `payment_intent.succeeded` is emitted on completion and recommends asynchronous events rather than client callbacks for post-payment actions, with Dashboard, custom webhook or partner-handling options (old raw lines 131-152,221-301). Browser return and query parameters alone do not establish approval, fulfillment, settlement or bank payout."
+      ],
+      "conflicts": [
+        "The explicit NICEPAY merchant-page disclosure and terms link occur in May's Direct API client section (old raw lines 221-225); both May paths describe the local processor redirect (old raw lines 18-20 and 112-116). Existing source lines 22-26 and the Korea concept route at wiki/concepts/stripe-korea-payment-methods.md:139 should date and scope the May evidence. The Checkout variant's silence does not establish a disclosure requirement or exemption for hosted and embedded Checkout.",
+        "Source line 37 treats the May example's create-time `payment_method_data` as part of a terse field recipe, while May's create prose names amount, KRW and `payment_method_types` and the create/confirm examples both pass type. Carry the example/prose boundary and the error-handler typo warning if routing to the snippet (old raw lines 131-147,246-271)."
+      ],
+      "reason": "The raw change is variant navigation. Existing source wording independently needs dynamic/manual listing, NICEPAY disclosure scope and explicit payment outcome boundaries."
+    }
+  ],
+  "answers": {
+    "Q1": "The November 7 capture of https://docs.stripe.com/payments/kr-card/accept-a-payment identifies locally issued South Korean card acceptance and provides Checkout and Direct API links (new raw lines 5-14). The May 8 full guide covers South Korea-based buyers, merchant locations, KRW and the 100 KRW minimum. It gives compatibility for payment, setup and subscription modes and shows payment-mode examples for hosted Checkout with success_url and full embedded Checkout with ui_mode=embedded_page and return_url. Stripe evaluates dynamic methods, while manual listing adds kr_card with all Checkout line items in KRW (old raw lines 8-49 and old raw lines 51-106). In Direct API the server creates a KRW PaymentIntent and passes its client secret to the browser. The browser calls stripe.confirmPayment with return_url, then the customer selects an issuer and authorizes with the local processor. The May Direct API client section explicitly requires the NICEPAY disclosure and terms link. The return gives PaymentIntent identifiers for status lookup, and a client callback or redirect does not verify payment. The test examples progress from requires_action to succeeded or requires_payment_method, and the guide recommends payment_intent.succeeded handling for post-payment actions (old raw lines 112-152 and old raw lines 221-301). source-stripe-kr-card-accept-payment.md retains the May flow but needs the dynamic/manual, disclosure-scope and outcome qualifications.",
+    "Q2": "For https://docs.stripe.com/payments/kr-card/accept-a-payment, the November capture supplies only navigation to the two variants already documented in May (new raw lines 5-14 and old raw lines 8-16 and old raw lines 108-116). No substantive operational change is established. Preserve the actual May 8, 2026 capture and its merchant/customer geography, 100 KRW compatibility minimum, KRW and mode statements as dated. Manual listing differs from dynamic eligibility, and the payment-mode hosted and embedded examples do not document the full setup/subscription flows (old raw lines 12-49 and old raw lines 51-106). In source-stripe-kr-card-accept-payment.md and the reciprocal Korea concept, scope the NICEPAY disclosure language and link to the May Direct API client section. Keep the server-created PaymentIntent and client-secret handoff separate from browser confirmation, returned query identifiers, and verified asynchronous payment outcome. The May Dahlia script, create/confirm method-data samples and error-handler inconsistency are dated example evidence, and the test status changes do not prove live success or payout (old raw lines 131-152 and old raw lines 221-301)."
+  }
+}

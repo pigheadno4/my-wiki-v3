@@ -1,0 +1,41 @@
+--- wiki/concepts/stripe-partial-authorization.md
++++ wiki/concepts/stripe-partial-authorization.md
+@@ -7,15 +7,15 @@
+ 
+ ## Overview
+ 
+-Partial authorization lets a card issuer approve a portion of the requested payment amount when the cardholder's available balance is insufficient. The customer can then pay the remaining balance with an alternative payment method. Primarily used with debit and prepaid cards. **IC+ pricing required; must contact sales/support to enable.**
++Partial authorization lets a supporting issuer approve less than the requested online card payment when the cardholder's available balance is insufficient. Before using partial authorization, decide whether to take another payment for the remainder, cancel the original Intent, or capture up to the partial approval. Explain the choice to the customer. IC+ pricing and Stripe sales or Support enablement apply.
+ 
+ ## Availability
+ 
+ - Online card payments only: Visa, Mastercard, Discover, Amex
+ - Issuer and card type determine actual eligibility at transaction time
+ - **AmEx (May 2024)**: debit/prepaid only; no recurring or cross-border transactions
+-- **Visa**: must implement across all card types
+-- **Incompatible with [[stripe-overcapture]]**
++- **Visa (May 2024 example)**: the guide says to use the feature across card types
++- [[stripe-overcapture]] cannot capture above the approved amount on a partially authorized transaction.
+ 
+ ## API
+ 
+@@ -35,7 +35,7 @@
+ 
+ **Manual (recommended)**: review the partial amount before deciding to capture, cancel, or create a new PI for the remainder.
+ 
+-**Auto-capture**: Stripe automatically captures whatever was partially authorized — proceed with caution.
++**Auto-capture**: This optional flow automatically captures a partial approval without a separate merchant capture decision and can capture less than the order needs. The samples capture only the 70 USD partially authorized on a 100 USD request. The May and November partial-authorization guides describe explicit `automatic` or omission, and the omitted-field examples show `automatic` in the response. The separate November Create PaymentIntent reference lists `automatic_async` as its general default. The examples do not establish which default applies across accounts or versions, or partial-authorization support under `automatic_async`. See [[source-stripe-partial-authorization]].
+ 
+ ## Key Restrictions
+ 
+@@ -46,8 +46,8 @@
+ 
+ ## Combining with Incremental Authorization
+ 
+-Can request partial authorization on increments by passing `request_partial_authorization: 'if_available'` on the `increment_authorization` endpoint. The opt-in persists from initial PI confirmation unless explicitly set to `never`. See [[stripe-incremental-authorization]].
++Confirm an uncaptured PaymentIntent with the separate incremental authorization request and check for `available` on the latest Charge. On the increment, send the desired total and `request_partial_authorization=if_available` to allow partial approval. The initial partial opt-in persists unless overridden with `never`. Capture remains separate. See [[stripe-incremental-authorization]].
+ 
+ ## Sources
+ 
+-- [[source-stripe-partial-authorization]] — full guide with API flow, manual vs auto-capture, partial + incremental combination, test cards
++- [[source-stripe-partial-authorization]] — May and November 2026 guides to issuer/card scope, manual and automatic capture, versioned request examples and partial increments.

@@ -1,0 +1,56 @@
+---
+title: "Stripe: MobilePay Payments"
+type: source
+date_ingested: 2026-05-07
+date_updated: 2026-11-22
+original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/mobilepay"
+raw_files:
+  - "stripe-payments-mobilepay-2026-11-07.md"
+  - "stripe-mobilepay-2025.md"
+tags: [stripe, wallets, mobilepay, denmark, finland, dkk, eur, card-wallet, 3ds, manual-capture, dankort, fees]
+---
+
+## Summary
+
+The May 7 and November 7, 2026 overviews describe MobilePay (`mobilepay`) as a single-use card wallet for Denmark and Finland customers, with DKK, EUR, NOK and SEK presentment. Stripe processes the underlying card transaction. Customers approve in the app following a mobile redirect or a desktop phone-number and push flow, and can retry with a different card before terminal failure. The overview lists immediate confirmation and standard payout timing separately. Returning to the merchant website or app alone does not prove payment success.
+
+## Eligibility and product scope
+
+- Both captures list **29 business locations**. November distinguishes business and customer location, supports domestic and crossborder flows, and lists merchant and Connect platform or marketplace accounts and B2B/B2C models. The minimum depends on the payout bank account's settlement currency after any conversion. The 2.50 DKK example is for DKK settlement.
+- Enable MobilePay in Dashboard **Payment methods** for Stripe front-end products. For manual integration, use the separate [[source-stripe-mobilepay-accept-payment|MobilePay acceptance guide]].
+- The November matrix lists hosted and embedded Checkout, Payment Links, Payment Element and in-app payments. It excludes Express Checkout Element and Payment Method Messaging Element. It lists Radar and Connect, and excludes Managed Payments, Billing, Invoicing, Customer Portal and Terminal. Checkout Sessions are recommended, Payment Intents are supported, and Setup Intents, Payment Intents with `setup_future_usage` and off-session payments are unsupported. The overview lists recurring payments as unsupported.
+- May lists Connect direct charges, destination charges, and separate charges and transfers. May says connected accounts with full Dashboard access can enable MobilePay in Payment methods. November explicitly directs platforms to request `mobilepay_payments` via the Capabilities API for connected accounts without full Dashboard access. Both captures say to verify `capabilities.mobilepay_payments` is `active` in the Accounts API or account webhooks. A capability request alone does not establish activation. November's omission of the May charge-type list does not settle whether the separate-charges route changed.
+
+## Capture, refunds and disputes
+
+- **Capture conflict.** The May product overview lists manual capture. The separate May [[source-stripe-mobilepay-accept-payment|acceptance guide]] specifies full-amount-only manual capture in Checkout, Elements and Direct API. It sets manual capture through `payment_intent_data.capture_method` on Checkout Sessions or `capture_method` on PaymentIntents and describes `requires_capture` and `payment_intent.amount_capturable_updated` after authorization. Its five-minute customer action limit concerns `requires_action`. The November product overview explicitly supports partial capture and says it is final. Stripe releases the uncaptured remainder, with no second capture and no overcapture. The November acceptance selector only indexes six variants. The captures leave the effective change date and exact route, SDK, API and account availability unverified. The authorization exclusions are listed in the November raw at lines 69–74.
+- **Refunds.** May and November support full and partial refunds, with total partial refunds capped at the original payment amount. November says card-network and regional rules determine the deadline. Refunds go to the original card, may appear as reversals, and typically take 5–10 business days depending on the issuer. Some refunds can be canceled shortly after creation if the Dashboard offers **Cancel refund**. Check the Refund object and `refund.updated` or `refund.failed`; inspect the failure reason and arrange another refund method where needed.
+- **Disputes.** The November matrix supports full disputes and excludes partial disputes. The customer disputes the underlying card payment with their issuer. Stripe notifies through Dashboard, email and `charge.dispute.created`. Use the standard card-dispute process and check `evidence_details.due_by` for the response deadline. The issuer decides and Stripe returns the disputed balance amount if the merchant wins.
+
+## Descriptors, 3DS and dated limitations
+
+- **Statement descriptors.** November describes `statement_descriptor_suffix` appended to the shortened account descriptor, up to 22 characters for the complete descriptor, with issuer display variation. The full `statement_descriptor` field follows separate rules and legacy fallback. For Connect direct charges Stripe uses the connected account descriptor. For destination charges Stripe uses the platform descriptor unless `on_behalf_of` selects the connected account. The May guide's connected-account name in the app and checkout is a separate display statement.
+- **3D Secure.** Both captures describe conditional issuer authentication in the app, handled without extra integration steps. Liability shift is conditional on 3DS having occurred, and merchants cannot force it on the underlying card payment. May estimates step-up at about 1% for Denmark Visa, 1.5% for Denmark Mastercard, 5% for Finland Visa and 7% for Finland Mastercard. November gives no updated rates.
+- **Dankort.** November says Stripe does not process these payments over Dankort and uses Visa for co-branded Visa/Dankort cards.
+- **Fees.** November describes standard Stripe card fees and taxes, a separately billed daily MobilePay surcharge, and a monthly membership fee for applicable active Danish merchants of record. Inactivity offboarding can stop the membership fee, and negotiated or platform-specific arrangements can differ. MobilePay fees appear separately on the monthly tax invoice. The fixed 35 DKK monthly amount is from May.
+- **Business categories.** May lists cryptocurrencies, stock trade, gambling, betting, bonds, money transfers, debt collection and MLM/pyramid schemes. November uses named categories and a prohibited MCC table. Omission of a May label does not establish new eligibility.
+- **Branding.** The app shows the icon from Branding settings or a default icon. The 250×250 recommendation is from May.
+
+## Detail locators
+
+- November raw lines 16–64 cover locations, eligibility, MCCs and settlement-currency minimum. Lines 66–122 cover capture, refunds and disputes. Lines 124–151 and 209–213 cover UI/API product support, enablement and active capability.
+- November raw lines 153–179 cover 3DS, limitations, fees and branding. Lines 181–207 cover customer flow and statement descriptors.
+- May raw lines 102–137 cover enablement, Connect, refunds and disputes. Lines 143–175 and 183–217 cover 3DS estimates, categories, fees and branding.
+- Separate May acceptance raw lines 155–217, 776–827 and 1027–1078 cover the older manual capture instructions and customer authentication timeout.
+
+## Related
+
+- [[stripe]] — Stripe company and source routes.
+- [[stripe-wallets]] — MobilePay and other Stripe wallets.
+- [[source-stripe-mobilepay-accept-payment]] — MobilePay acceptance guide and its separate navigation capture.
+
+## Raw Sources
+
+- [[raw/stripe-payments-mobilepay-2026-11-07|MobilePay overview captured 2026-11-07]] — full overview with eligibility, capture, refunds, disputes, capability, descriptors and dated limitations.
+- [[raw/stripe-mobilepay-2025|MobilePay overview captured 2026-05-07]] — verbatim webpage content (217 lines); fixed `*card authentication*` ×1, `*3D Secure challenge*` ×1, `*3D Secure authentication*` ×1; 1 PNG downloaded, 2 CloudFront .mp4 not downloaded

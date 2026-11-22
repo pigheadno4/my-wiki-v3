@@ -1,0 +1,133 @@
+--- raw/stripe-pix-on-link-2025.md
++++ raw/stripe-payments-link-pix-2026-11-07.md
+@@ -1,61 +1,98 @@
+ # Pix on Link
+ 
+-Learn about Pix, a popular payment method in Brazil, on Link.
++Use Link to accept Pix, a popular payment method in Brazil.
+ Available in: US
+-Pix is a popular real-time payment method in Brazil that works by transferring funds between two bank accounts. To pay with Pix, customers scan a QR code on a checkout page and complete the payment in their preferred banking app.
++Pix is a real-time payment method in Brazil that transfers funds directly between bank accounts. Customers pay with Pix by scanning a QR code on the checkout page and completing the payment in their preferred banking app.
+ 
+-Link allows customers to save personal details, allowing faster checkouts for future transactions across Link merchants. For businesses, Link it enables Pix acceptance without any additional integration changes or business logic.
++Link lets customers save their personal details for faster checkouts across businesses that support Link. With Link, businesses can accept Pix without additional integration changes or business logic.
+ 
+-## Get started
++## Eligibility 
+ 
+-Pix is automatically enabled when you turn on [Link](https://docs.stripe.com/payments/link.md), subject to [eligibility requirements](https://docs.stripe.com/payments/pix.md#prohibited-business-categories).
++Pix on Link supports:
+ 
+-> Only [Payment Links](https://docs.stripe.com/payment-links.md), [Stripe Checkout (Hosted)](https://docs.stripe.com/checkout/quickstart.md) and the [Payment Element](https://docs.stripe.com/payments/advanced.md) support Pix on Link. Link doesn’t offer Pix in other payment flows.
++- On-session payments
++- Payments presented in BRL
++- Transaction amounts equivalent to 0.50 to 3,000 USD, presented in BRL
++- Eligible US businesses that meet onboarding requirements and aren’t classified as restricted businesses
+ 
+-Pix in Link is currently supported for:
++[Payment Links](https://docs.stripe.com/payment-links.md), hosted [Stripe Checkout](https://docs.stripe.com/checkout/quickstart.md) pages, and the [Payment Element](https://docs.stripe.com/payments/advanced.md) support Pix on Link.
+ 
+-- One-time and on-session payments
+-- Payments presented in BRL
+-- Transaction amounts from 5 BRL to 3,000 USD equivalent in BRL
+-- Eligible US businesses, subject to onboarding and restricted-business exclusions
++### Prohibited business categories 
+ 
+-### Pix checkout for a new Link customer
++In addition to the industry and business categories listed in [Prohibited and Restricted Businesses](https://stripe.com/legal/restricted-businesses), the following categories can’t use Pix:
+ 
+-The following steps illustrate how a new Link customer checks out with Pix for the first time:
++- Crypto businesses
++- Insurance companies
++- Telehealth or medicine vendors
++- Non-profits and charities
+ 
+-1. The Customer selects **Pix** from your checkout page and enters the required buyer information (name, address, and a tax identifier).
+-1. After the buyer clicks **Pay**, they’re signed up to Link, and receive a QR code and a Pix code to scan from their phone.
+-1. The buyer opens up their banking app, scans the QR code or copies the Pix code. They then see details of the transaction and authorize the payment.
+-1. After the payment completes, they’re redirected back to your checkout page.
++For more information about Pix eligibility, go to your account’s [Payment methods settings](https://dashboard.stripe.com/settings/payment_methods).
+ 
+-### Pix experience for a returning Link customer
++## How Pix on Link works 
+ 
+-If a customer has previously paid through Pix on Link, their Pix details are already saved to their Link account:
++You can offer Pix through both Link and a direct Pix integration. Eligible customers can choose to pay with Pix using Link or without Link at checkout.
++
++Payments made through Link use the Link payment method and the customer’s saved Link details. Payments made through your direct Pix integration use the standard Pix payment flow.
++
++### New customers 
++
++The following steps show how a new Link customer checks out with Pix for the first time:
++
++1. The customer selects **Pix** on your checkout page and enters their name, address, and a tax identifier.
++2. They click **Pay**, sign up for Link, and a QR code is displayed.
++3. They open their banking app, scan the QR code, review the transaction details, and authorize the payment.
++4. After the payment succeeds, the customer sees a confirmation on your checkout page.
++
++### Returning customers 
++
++If a customer has previously paid with Pix on Link, they can use their saved details to pay:
+ 
+ 1. The customer selects **Pix**.
+-1. They click **Pay** and receive a QR code with their saved customer details automatically filled.
+-1. The buyer scans the QR code that redirects them to make a payment through bank apps or internet banking.
+-1. They complete the payment, receive a notification that the payment is complete, and are redirected back to your checkout page.
++2. They click **Pay**. Link automatically fills in their saved details and displays a QR code.
++3. They open their banking app, scan the QR code, review the transaction details, and authorize the payment.
++4. After the payment succeeds, the customer sees a confirmation on your checkout page.
+ 
+-### Statement descriptor
++## Statement descriptor 
+ 
+-The statement descriptor in the customer’s bank statement shows Stripe’s service provider “Ebanx” as the payment recipient. Your business name appears in the **Message to payor** field.
++The customer’s bank statement lists the Stripe service provider, Ebanx, as the payment recipient. Your business name appears in the `Message to payor` field.
+ 
+-### Brazilian consumer tax
++## Brazilian consumer tax 
+ 
+-IOF (“Imposto sobre Operações Financeiras”) is a Brazilian tax applicable to all transactions that involve a currency exchange (for example, from BRL to USD). The IOF is collected from Brazilian buyers paying international businesses outside of Brazil. The current rate is 3.5% of the transaction value.
++Imposto sobre Operações Financeiras (IOF) is a Brazilian tax that applies to transactions involving currency conversion, such as converting BRL to USD. Brazilian customers pay IOF when purchasing from international businesses outside Brazil. The IOF rate is 3.5% of the transaction amount (subject to change).
+ 
+-For payments using Pix on Link, your customer pays the IOF. Stripe handles the calculation of the tax through our partner. When your customer completes a payment in their banking app they pay a marked up amount, inclusive of the IOF.
++For Pix on Link payments, your customer pays the IOF. Stripe calculates the tax through its payment partner. When your customer completes the payment in their banking app, the total amount includes the IOF.
+ 
+-Stripe also handles all relevant customer disclosures on your behalf.
++Stripe also provides the required customer disclosures on your behalf.
+ 
+-### Receipts
++## Receipts 
+ 
+-In Brazil, businesses commonly send a receipt for each transaction and itemize the Brazilian consumer tax (IOF) amount. Our Pix service provider, Ebanx, sends customer receipts on your behalf.
++In Brazil, businesses commonly send a receipt for each transaction that itemizes the IOF amount. The Stripe Pix service provider, Ebanx, sends receipts to your customers on your behalf.
+ 
+-### Disputes
++## Disputes 
+ 
+-The risk of fraud or unrecognized payments on Pix is low because customers must authenticate each payment in their banking app. Disputes raised through Pix are handled in the same way as other payment methods on Link.
++Pix allows disputes in limited circumstances, such as fraud or account takeover. Customers must file disputes with their bank and provide evidence to support their claim. You can’t challenge these disputes.
++
++If Stripe receives notice that its payment partner accepted a request to return the customer’s funds, Stripe removes the funds from your account.
++
++## Refunds 
++
++You can refund a Pix payment within 90 days of the original payment date. The refund typically appears in your account within a few minutes.
++
++## Request access 
++
++Businesses in Australia, Canada, the [European Economic Area](https://en.wikipedia.org/wiki/European_Economic_Area) (EEA), Singapore, and the United Kingdom can request access to the private preview.
++
++### Interested in learning more about Pix on Link?
++
++Enter your email to request access.
++
++```bash
++curl https://docs.stripe.com/preview/register \
++  -X POST \
++  -H "Content-Type: application/json" \
++  -H "Referer: https://docs.stripe.com/payments/link/pix" \
++  -d '{"email": "EMAIL", "preview": "link_lpm_interest_preview"}'
++```
+ 
+ ## See also
+ 

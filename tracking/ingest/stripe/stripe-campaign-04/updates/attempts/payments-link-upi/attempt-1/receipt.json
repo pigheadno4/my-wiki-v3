@@ -1,0 +1,213 @@
+{
+  "job_id": "payments-link-upi",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Docs — UPI on Link\"\ntype: source\ndate_ingested: 2026-05-08\ndate_updated: 2026-11-22\ncanonical_url: \"https://docs.stripe.com/payments/link/upi\"\noriginal_format: webpage\nraw_files:\n  - \"stripe-payments-link-upi-2026-11-07.md\"\n  - \"stripe-upi-on-link-2025.md\"\ntags: [stripe, link, upi, india, inr, us-only, real-time-payments, qr-code]\n---\n\n## Overview and eligibility\n\nUPI is India’s real-time bank payment system. The May 8 and November 7, 2026 UPI on Link guides cover eligible US businesses subject to onboarding and restricted-business exclusions. They describe one-time, on-session payments presented in INR. Turning on Link automatically enables UPI where eligible, without a separate UPI integration. The documented surfaces are Payment Links, Stripe-hosted Checkout, and Elements. Eligibility still governs whether a given session displays UPI.\n\n| Capture | Minimum | Maximum |\n| --- | --- | --- |\n| May 8, 2026 | 1 INR | 100,000 INR |\n| November 7, 2026 | 0.50 USD equivalent in INR | 100,000 INR |\n\nThe November guide adds an email form to request access. Submitting the form leaves access and account activation unverified.\n\n## Market and product scope\n\nThe May general [[source-stripe-link|Link overview]] excludes India in its Stripe account business-location section. The November general overview says Link is unavailable in India without repeating the business-location qualifier. The dedicated UPI on Link guide specifies eligible US businesses and INR presentment. The captures leave an overall buyer geography rule for that route unresolved.\n\nThe separate [[source-stripe-upi|direct UPI guide]] specifies India as the customer location and retains a 1 INR minimum. It documents one-time payments and recurring UPI AutoPay using an e-mandate. Those limits and recurring terms belong to direct UPI. UPI on Link remains one-time and on-session in these captures. INR is the presentment currency. Merchant settlement currency and bank payout timing are outside the dedicated UPI on Link guides.\n\n## Buyer flow\n\nNew customers select UPI, enter their information, and click **Pay**. On desktop, they scan a QR code with their UPI app. On mobile, they choose an app and are redirected there. Customers authenticate and approve the payment in their banking or wallet app. After payment they return to checkout and receive the payment status. The guide describes Link sign-up and detail storage after completion of the first transaction. For returning customers, Link already has details such as name, address, and virtual payment address. A QR code, app return, or notification alone does not verify payment success or settlement.\n\n## Funding identification\n\nIn the separate November [[source-stripe-link-payment-methods|US Link payment-methods guide]], UPI and Pix share funding-source group `lfsg_002`. Dashboard representation follows the [[source-stripe-link-payment-integrations|Link integration route]].\n\n| Link integration | Dashboard representation | Charge field |\n| --- | --- | --- |\n| Standalone Link | `type=link` | `Charge.payment_method_details.link.funding_source_group` |\n| Card-specific Link | `type=card` with `brand=link` | `Charge.payment_method_details.card.wallet.link.funding_source_group` |\n\nThe Dashboard labels and shared group leave the exact underlying method and payment completion unverified.\n\n## Refunds\n\nRequest a refund within **60 days** of the original payment. Processing is asynchronous and can take up to **7 business days**. Stripe reports the final status through `refund.updated` or `refund.failed`. A `Refund` with status `succeeded` confirms the successful refund. If it reaches `failed`, Stripe returns the amount to the Stripe balance and the merchant needs another way to refund the customer.\n\n## Disputes\n\nBank authentication lowers fraud risk. Customers may still dispute a debit for a failed transaction or an issue with goods or services. If the customer’s bank or payment service provider accepts the return request, the merchant cannot contest it and Stripe immediately removes the funds from the merchant’s Stripe account.\n\n## Related Pages\n\n- [[stripe-link]] — Link integration and funding options\n- [[stripe]] — Stripe company page\n- [[source-stripe-upi]] — direct UPI and UPI AutoPay\n- [[source-stripe-link-payment-methods]] — US Link funding groups\n- [[source-stripe-link-payment-integrations]] — standalone and card-specific Link routes\n\n## Raw Sources\n\n- [[raw/stripe-payments-link-upi-2026-11-07|2026-11-07 UPI on Link guide]] — 74 lines\n- [[raw/stripe-upi-on-link-2025|2026-05-08 UPI on Link guide]] — verbatim webpage content, 61 lines\n",
+  "quotes": {
+    "payments-link-upi": [
+      {
+        "text": "Transaction amounts from 0.50 USD equivalent in INR to 100,000 INR",
+        "location": "raw/stripe-payments-link-upi-2026-11-07.md:37"
+      },
+      {
+        "text": "Eligible US businesses, subject to onboarding and restricted-business exclusions",
+        "location": "raw/stripe-payments-link-upi-2026-11-07.md:38"
+      },
+      {
+        "text": "Customers automatically sign up for Link when they complete the transaction, and store their details for future checkouts.",
+        "location": "raw/stripe-payments-link-upi-2026-11-07.md:50"
+      },
+      {
+        "text": "Refunds are asynchronous and can take up to 7 business days to complete.",
+        "location": "raw/stripe-payments-link-upi-2026-11-07.md:64"
+      },
+      {
+        "text": "If their bank or PSP accepts the request to return funds, you can’t contest the dispute and Stripe immediately removes funds from your Stripe account.",
+        "location": "raw/stripe-payments-link-upi-2026-11-07.md:68"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-link-upi": [
+      {
+        "text": "Transaction amounts from 1 INR to 100,000 INR",
+        "location": "raw/stripe-upi-on-link-2025.md:24"
+      },
+      {
+        "text": "UPI is automatically enabled when you turn on",
+        "location": "raw/stripe-upi-on-link-2025.md:16"
+      },
+      {
+        "text": "You can refund UPI payments up to 60 days after the original payment.",
+        "location": "raw/stripe-upi-on-link-2025.md:51"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-link-upi-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 74
+      }
+    ],
+    "raw/stripe-upi-on-link-2025.md": [
+      {
+        "start": 1,
+        "end": 61
+      }
+    ],
+    "wiki/sources/source-stripe-upi-on-link.md": [
+      {
+        "start": 1,
+        "end": 40
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/2c1ed33c64bdfb0e110b63bc/content.diff": [
+      {
+        "start": 1,
+        "end": 62
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-link-upi/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 204
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-link-upi/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 96
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 443,
+        "end": 447
+      },
+      {
+        "start": 733,
+        "end": 738
+      }
+    ],
+    "wiki/concepts/stripe-link.md": [
+      {
+        "start": 12,
+        "end": 29
+      },
+      {
+        "start": 44,
+        "end": 56
+      },
+      {
+        "start": 169,
+        "end": 175
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 163,
+        "end": 169
+      }
+    ],
+    "raw/stripe-payments-upi-2026-11-07.md": [
+      {
+        "start": 8,
+        "end": 25
+      },
+      {
+        "start": 113,
+        "end": 124
+      }
+    ],
+    "raw/stripe-payments-link-2026-11-07.md": [
+      {
+        "start": 8,
+        "end": 17
+      }
+    ],
+    "raw/stripe-link-2025.md": [
+      {
+        "start": 54,
+        "end": 59
+      }
+    ],
+    "raw/stripe-payments-link-link-payment-methods-2026-11-07.md": [
+      {
+        "start": 17,
+        "end": 42
+      }
+    ],
+    "wiki/sources/source-stripe-link-payment-methods.md": [
+      {
+        "start": 16,
+        "end": 24
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 648,
+        "end": 654
+      }
+    ]
+  },
+  "answers": {
+    "payments-link-upi": {
+      "Q1": "The November 7, 2026 capture at https://docs.stripe.com/payments/link/upi describes UPI on Link for eligible onboarded US businesses outside restricted categories, for one-time, on-session payments presented in INR. Turn on Link for automatic UPI enablement subject to eligibility, on Payment Links, hosted Checkout or Elements. November changes the minimum to 0.50 USD equivalent in INR, keeps the INR 100,000 maximum, and adds an email request route that does not establish granted access (new raw lines 15-38 and old raw lines 14-25). Desktop uses a QR; mobile lists UPI apps and redirects to the selected app. Banking or wallet app authorization is required. The illustrated new buyer supplies information and signs up once the transaction completes; returning buyers have saved name, address and virtual payment address. Return or notification alone does not establish merchant settlement (new raw lines 40-60 and old raw lines 27-47). The separate November Link payment-methods guide groups UPI with Pix as `lfsg_002`. The Dashboard shows the Link-as-payment-method representation as type `link`, with the group at `Charge.payment_method_details.link.funding_source_group`. It shows the card-specific representation as type `card` with `brand=link`, with the group at `Charge.payment_method_details.card.wallet.link.funding_source_group`. Neither Link branding nor the shared group identifies the underlying payment as UPI or proves payment completion (raw/stripe-payments-link-link-payment-methods-2026-11-07.md:17-42). Refund requests are allowed up to 60 days and complete asynchronously, up to seven business days. `refund.updated` or `refund.failed` report final `Refund` status. `succeeded` and `failed` differ; failure returns the amount to the Stripe balance and requires another refund method. If the customer's bank or PSP accepts their request to return funds, the merchant cannot contest and Stripe immediately removes funds (new raw lines 62-68 and old raw lines 49-55). source-stripe-upi-on-link.md preserves the main flow but its 1 INR minimum is May-specific. The revised mapped source dates the two limits and keeps refunds and Charge reporting separate from authorization and payout.",
+      "Q2": "For https://docs.stripe.com/payments/link/upi, the substantive changes are the documented floor from May's 1 INR to November's 0.50 USD equivalent in INR, and the new access-interest form. The 100,000 INR maximum, eligible US merchant scope, one-time on-session INR use and only three UI routes persist (old raw lines 14-25 and new raw lines 15-38). Rewording and numbering the customer steps and changing refund webhook formatting are presentational. Preserve the dated approved scope, saved details, 60-day submission and seven-business-day asynchronous completion, final Refund states and conditional bank/PSP dispute debit in source-stripe-upi-on-link.md (old raw lines 27-55 and new raw lines 40-68). Update the reciprocal Link concept/index and company navigation floor and distinguish the separate direct UPI 1 INR limit and AutoPay mandate from UPI on Link. May's general Link overview explicitly excludes India in its Stripe account business-location section (raw/stripe-link-2025.md:56-58). The November general Link overview says Link is unavailable in India without explicitly restating that account-location qualifier (raw/stripe-payments-link-2026-11-07.md:15-17). Keep those dated statements distinct from the dedicated UPI on Link route for eligible US businesses presenting in INR (new raw lines 27-38), and from direct UPI's India customer context (raw/stripe-payments-upi-2026-11-07.md:13-23). These captures do not settle a blanket geography rule for buyers on the dedicated Link route. The separate November Link payment-methods guide groups UPI with Pix as `lfsg_002`. The Dashboard shows the Link-as-payment-method representation as type `link`, with the group at `Charge.payment_method_details.link.funding_source_group`. It shows the card-specific representation as type `card` with `brand=link`, with the group at `Charge.payment_method_details.card.wallet.link.funding_source_group`. Neither Link branding nor the shared group identifies the underlying payment as UPI or proves payment completion (raw/stripe-payments-link-link-payment-methods-2026-11-07.md:17-42). Add the two Charge field paths and shared `lfsg_002` qualification reciprocally to wiki/sources/source-stripe-link-payment-methods.md lines 19-21 and wiki/concepts/stripe-link.md lines 14-28. This is separate companion evidence; it adds no substantive delta to the dedicated UPI on Link pair. The interest form, QR, return and refund submission do not themselves establish access, verified payment success, buyer bank credit or payout. INR is the presentment currency in the guide, without a separate merchant settlement currency or payout commitment. The revised source links the direct UPI guide and the separately captured US funding group reference."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-link-upi-dated-upi-amounts-and-route",
+      "target_path": "wiki/concepts/stripe-link.md",
+      "update_kind": "durable_fact",
+      "anchor": "**UPI on Link**: US businesses only; INR only; 1–100,000 INR; one-time + on-session only. Desktop: QR code; mobile: list of UPI apps → redirect. Saved details include virtual payment address. Refunds: up to 60 days, async, up to 7 business days. Disputes: cannot contest — funds removed immediately if bank/PSP accepts.",
+      "proposed_markdown": "**UPI on Link.** Eligible US businesses use INR presentment for one-time, on-session payments through Payment Links, hosted Checkout, or Elements. May 2026 lists a 1 INR minimum. November lists 0.50 USD equivalent in INR. Both cap payments at 100,000 INR. Desktop uses a QR code and mobile redirects to the selected UPI app. Link can store the virtual payment address. Refunds must be requested within 60 days and can take up to seven business days. Stripe removes funds immediately if the customer’s bank or PSP accepts a return request, which the merchant cannot contest. The separate direct UPI flow has its own minimum and AutoPay mandate. See [[source-stripe-upi-on-link]] for the dated Link geography and product boundaries.",
+      "quote_indexes": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "warnings": [
+        "May and November thresholds and scope: raw/stripe-upi-on-link-2025.md:14-25 and raw/stripe-payments-link-upi-2026-11-07.md:27-38. Refunds and disputes: raw/stripe-payments-link-upi-2026-11-07.md:62-68. Direct UPI: raw/stripe-payments-upi-2026-11-07.md:13-23,122-124."
+      ]
+    },
+    {
+      "update_id": "payments-link-upi-upi-dashboard-charge-funding-identity",
+      "target_path": "wiki/concepts/stripe-link.md",
+      "update_kind": "durable_fact",
+      "anchor": "Dashboard always shows payments as `link` regardless of underlying funding method.",
+      "proposed_markdown": "Dashboard denotes Link payments as `type=link` for the standalone integration or `type=card` with `brand=link` for the card-specific integration. In the November US [[source-stripe-link-payment-methods|funding guide]], the Charge group field is `payment_method_details.link.funding_source_group` for standalone Link or `payment_method_details.card.wallet.link.funding_source_group` for card-specific Link. UPI and Pix share `lfsg_002`. These two reporting signals leave the exact underlying method and payment success unverified.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "Companion November group and Dashboard evidence: raw/stripe-payments-link-link-payment-methods-2026-11-07.md:17-42. The dedicated November UPI capture does not add new Charge metadata."
+      ]
+    },
+    {
+      "update_id": "payments-link-upi-dated-upi-source-route",
+      "target_path": "wiki/concepts/stripe-link.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-upi-on-link]] — UPI on Link: US/INR only, 1–100K INR, QR code (desktop)/app redirect (mobile), virtual payment address saved, 60-day refunds, uncontestable disputes",
+      "proposed_markdown": "- [[source-stripe-upi-on-link]] — eligible US businesses, INR presentment, May and November minimums, 100,000 INR maximum, QR/app approval, saved address, and refund and dispute outcomes",
+      "quote_indexes": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "warnings": [
+        "Dated eligibility and minimum: raw/stripe-upi-on-link-2025.md:14-25 and raw/stripe-payments-link-upi-2026-11-07.md:27-38."
+      ]
+    }
+  ]
+}

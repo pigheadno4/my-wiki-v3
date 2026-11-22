@@ -1,0 +1,95 @@
+--- wiki/sources/source-stripe-express-checkout-link.md
++++ wiki/sources/source-stripe-express-checkout-link.md
+@@ -2,33 +2,81 @@
+ title: "Stripe Docs — Link in the Express Checkout Element"
+ type: source
+ date_ingested: 2026-05-08
++date_updated: 2026-11-22
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/payments/link/express-checkout-element-link"
+ raw_files:
++  - "stripe-payments-link-express-checkout-element-link-2026-11-07.md"
+   - "stripe-express-checkout-link-2025.md"
+ tags: [stripe, link, express-checkout-element, apple-pay, google-pay, paypal, klarna, amazon-pay, one-click]
+ ---
+ 
+ ## Summary
+ 
+-Thin overview of Link in the Express Checkout Element — a one-click payment button integration supporting Link, Apple Pay, Google Pay, PayPal, Klarna, and Amazon Pay.
++The May 8 and November 7, 2026 guides describe a browser-side Express Checkout Element mount for one-click payment buttons. Both name six built-ins: Link, Apple Pay, Google Pay, PayPal, Klarna and Amazon Pay. Stripe sorts eligible buttons based on customer location, can add supported buttons without frontend code changes, and documents reusing an existing Elements instance. The broader November Express Checkout Element guide separately documents custom buttons through `customPaymentMethods`, with private-preview scope described by the separate product overview. See [[stripe-express-checkout-element]] and [[source-stripe-payment-element-custom-payment-methods]].
+ 
+-## Key Facts
++## Link Display and Browser Eligibility
+ 
+-- **6 supported PMs**: Link, Apple Pay, Google Pay, PayPal, Klarna, Amazon Pay
+-- **Dynamic button sorting** by customer location — no frontend changes needed to add new buttons
+-- **Reuses existing Elements instance** — minimal overhead if already using Elements
+-- **Setup**: `stripe.elements({ mode, amount, currency })` → `create('expressCheckout', options)` → `mount('#express-checkout-element')`
++The separate Link integration guide requires enabling Link under **Wallets** and integrating it for the relevant use case. Link appears for eligible transactions. The broader November Element guide conditions display on method activation and support, browser, currency, customer setup where applicable, and domain registration in both sandbox and live mode.
+ 
+-## CDN Assets
++The November browser matrix lists Link as unsupported on desktop Firefox and in in-app webviews. Ordinary mobile browsers have their own platform rows. It lists Link as supported on Firefox for iOS 16+ and unsupported on Edge for iOS 16+. These are dated browser-matrix examples, subject to the remaining eligibility conditions. See [[stripe-express-checkout-element#Browser Support]] and [[source-stripe-link-payment-integrations]].
+ 
+-- `raw/assets/stripe-link-express-checkout-element.png` — Express Checkout Element UI with Link (181 KB)
++The separately listed Klarna button has its own checkout route. The US Klarna on Link guide limits Klarna funding inside Link to Payment Links, hosted Stripe Checkout and Payment Element. See [[source-stripe-klarna-on-link]].
++
++## Browser Mount Example
++
++With Stripe.js initialized and `#express-checkout-element` present in the page, both dated samples use the same operations:
++
++```js
++const appearance = { /* appearance */ };
++const options = { /* options */ };
++const elements = stripe.elements({
++  mode: 'payment',
++  amount: 1099,
++  currency: 'usd',
++  appearance
++});
++const expressCheckoutElement = elements.create('expressCheckout', options);
++expressCheckoutElement.mount('#express-checkout-element');
++```
++
++The April 21 acceptance guide uses `ready` with `availablePaymentMethods` to identify displayed buttons. The broader November overview uses `availablepaymentmethodschange` with `paymentMethods` and a fallback payment option when none are available. The mount and availability event describe UI setup and button availability. Authentication, server-side creation, confirmation and settlement are separate integration states.
++
++## Acceptance and Versioned Method Lists
++
++The November acceptance base capture links Checkout Sessions and Payment Intents variants. It leaves their implementation bodies to those destinations. In the April 21, 2026 acceptance guide, explicit method lists are optional overrides to Dashboard settings. Its Link mapping uses `link` plus `card` when an explicit list is used. Klarna appears in the Payment Intents table and is absent from that guide's Checkout Sessions table. Treat these as dated examples. See [[source-stripe-express-checkout-element-accept-payment]].
++
++The linked changelogs give separate method-list guidance:
++
++- **Checkout Sessions API.** At `2026-09-30.endive`, Checkout Session Create returns HTTP 400 for writable `payment_method_types`. The response retains it as a computed compatible list. Use dynamic payment methods or the server field `allowed_payment_method_types` for an explicit set.
++- **PaymentIntents and SetupIntents API.** The Intent note applies at `2026-09-30.endive` to PaymentIntent Create, Update and Confirm and SetupIntent Create and Update. Writable `payment_method_types` returns HTTP 400 with `payment_method_types_no_longer_supported`. The response retains the computed read-only field. The note documents `allowed_payment_method_types` for an explicit server list and separately names `2026-08-26.preview` in its Impact guidance.
++- **Deferred standard Elements client.** The Endive Stripe.js note says that passing `paymentMethodTypes` when creating Elements without a PaymentIntent or SetupIntent, or on `elements.update()`, raises an integration error. Use the client option `allowedPaymentMethodTypes` or manage methods in Dashboard.
++
++The Link mount sample specifies no explicit list or API revision.
++
++## Dated Navigation and Assets
++
++The May capture links [Link Authentication Element](https://docs.stripe.com/payments/elements/link-authentication-element.md). The May 27 Dahlia rename documents unchanged contact collection and Link authentication, retaining standard Elements creation strings `linkAuthentication` and `contactDetails`. November links [Contact Details Element](https://docs.stripe.com/payments/elements/contact-details-element.md) and [Accept a payment with the Express Checkout Element](https://docs.stripe.com/elements/express-checkout-element/accept-a-payment.md). Both retain [Stripe Web Elements](https://docs.stripe.com/payments/elements.md) and [Address Element](https://docs.stripe.com/elements/address-element.md). The contact field is separate from the Express Checkout mount example. See [[stripe-link-authentication-element]].
++
++- `raw/assets/stripe-link-express-checkout-element.png` — May 8 local image of Link in Express Checkout Element (181 KB)
++- [November 7 Express Checkout Element image](https://b.stripecdn.com/docs-statics-srv/assets/link-in-express-checkout-element.67be6745e5a37c1c09074b0f43763cff.png) — CDN reference with the same caption
+ 
+ ## Related Pages
+ 
+-- [[stripe-link]] — Link concept page (Express Checkout Element section)
+-- [[stripe-express-checkout-element]] — broader Express Checkout Element concept (if exists)
++- [[stripe-link]] — Link concept and eligible integration routes
++- [[stripe-express-checkout-element]] — broader Element concept and browser support
++- [[source-stripe-express-checkout-element-accept-payment]] — dated Checkout Sessions and Payment Intents variants
+ - [[stripe]] — Stripe company page
++
++## Related raw API references
++
++- [[raw/stripe-elements-express-checkout-element-accept-a-payment-2026-11-07|November 7 acceptance variant index]] — Checkout Sessions and Payment Intents navigation
++- [[raw/stripe-changelog-dahlia-2026-05-27-link-authentication-element-rename-2026-11-07|May 27 Dahlia rename]] — Contact Details and standard Stripe.js aliases
++- [[raw/stripe-changelog-endive-2026-09-30-remove-payment-method-types-checkout-sessions-2026-11-07|September 30 Endive Checkout Sessions change]] — versioned server request and response fields
++- [[raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07|September 30 Endive Intents change]] — versioned request operations and read-only response
++- [[raw/stripe-changelog-endive-2026-09-30-remove-elements-deferred-intent-payment-method-types-2026-11-07|September 30 Endive deferred Elements change]] — client method-list options
+ 
+ ## Raw Sources
+ 
+-- [[stripe-express-checkout-link-2025]] — verbatim webpage content (44 lines)
++- [[raw/stripe-payments-link-express-checkout-element-link-2026-11-07|November 7, 2026 Link in Express Checkout Element guide]] — full capture
++- [[raw/stripe-express-checkout-link-2025|May 8, 2026 Link in Express Checkout Element guide]] — verbatim webpage content (44 lines)

@@ -2,7 +2,9 @@
 title: "Add Custom Payment Methods to the EmbeddedPaymentElement"
 type: source
 date_ingested: 2026-04-22
+date_updated: 2026-11-22
 original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/mobile/embedded-custom-payment-methods"
 raw_files:
   - "stripe-inapp-embedded-custom-payment-methods-2025.md"
 tags: [stripe, mobile, ios, android, react-native, embedded-payment-element, custom-payment-methods, cpmt, payment-records]
@@ -10,88 +12,46 @@ tags: [stripe, mobile, ios, android, react-native, embedded-payment-element, cus
 
 ## Summary
 
-EmbeddedPaymentElement-specific guide for Custom Payment Methods (`cpmt_` IDs). Same Dashboard setup as PaymentSheet CPMs — parallel page for the `EmbeddedPaymentElement` UI. Handler signatures differ from PaymentSheet (`EmbeddedPaymentElement.Configuration` vs `PaymentSheet.Configuration`; `EmbeddedPaymentElementResult` vs `PaymentSheetResult`).
+The 2026-04-22 guide documents custom payment methods in the mobile `EmbeddedPaymentElement` for iOS, Android and React Native. The 2026-11-07 capture indexes the same three variants. The setup and handler details below are from April. See [[source-stripe-inapp-custom-payment-methods]] for the separate PaymentSheet and FlowController guide.
 
-> See also [[source-stripe-inapp-custom-payment-methods]] for the PaymentSheet/FlowController variant.
+## April setup and payment boundary
 
-## Shared Facts (All Platforms)
+Start with a Stripe account and an existing embedded payment integration. Create the custom method in Dashboard Settings → Payments → Custom Payment Methods, with its display name and logo. The Dashboard offers over 50 presets in this capture and supplies a method-type ID beginning with `cpmt_` for the embedded configuration. The merchant remains responsible for its processor agreement and applicable laws.
 
-- `cpmt_` IDs created in Dashboard → Settings → Payments → Custom Payment Methods; 50+ presets available
-- CPMs appear after Stripe PMs by default — override with `paymentMethodOrder: ["card", "cpmt_..."]`
-- Billing details disabled on CPMs by default — enable with `disableBillingDetailCollection = false`
-- Recording: `paymentMethods.create({ type: 'custom' })` + `paymentRecords.reportPayment()` (server-side optional)
-- Legal: merchant responsible for PSP agreement compliance
+When the customer confirms with a custom method selected, the handler receives the selected method and any collected billing details. The merchant completes the payment through its provider outside Stripe and then reports the observed completion, failure or cancellation to the embedded UI. The example callbacks demonstrate result handling and establish neither external payment success nor settlement.
 
-## iOS (Swift)
+- By default, custom methods appear after Stripe-supported methods. Use `paymentMethodOrder` to place them explicitly. Stripe still ranks the Stripe-supported methods that follow the custom method.
+- Billing details collection is disabled by default for a custom method. Set `disableBillingDetailCollection = false` to opt in. The iOS and Android sections route to `billingDetailsCollectionConfiguration`. The React Native section refers to `defaultBillingDetails` and retains the opt-in flag.
 
-```swift
-// Beta import required
-@_spi(CustomPaymentMethodsBeta) import StripePaymentSheet
+## April handler examples
 
-// Configuration
-var configuration = EmbeddedPaymentElement.Configuration()
-let customPaymentMethod = EmbeddedPaymentElement.CustomPaymentMethodConfiguration.CustomPaymentMethod(
-    id: "cpmt_...", subtitle: "Optional subtitle"
-)
-configuration.customPaymentMethodConfiguration = .init(
-    customPaymentMethods: [customPaymentMethod],
-    customPaymentMethodConfirmHandler: handleCustomPaymentMethod(_:_:)
-)
+- **iOS (Swift).** The sample uses `@_spi(CustomPaymentMethodsBeta) import StripePaymentSheet`, configures `EmbeddedPaymentElement.Configuration.customPaymentMethodConfiguration` and returns `EmbeddedPaymentElementResult` from its async confirmation handler. The prose calls the failure result `failure(error:)`. The example deliberately returns `.failed(error:)`. The separate iOS PaymentSheet and FlowController route uses `PaymentSheetResult`.
+- **Android (Kotlin/Compose).** The builder wires `ConfirmCustomPaymentMethodCallback`. The custom handler passes a `CustomPaymentMethodResult` to `CustomPaymentMethodResultHandler.handleCustomPaymentMethodResult()` and must send a canceled result if the flow can exit without confirming. The embedded UI observes the separate `EmbeddedPaymentElement.Result` channel. The April handler demonstrates a failure result.
+- **React Native.** The embedded configuration wires `confirmCustomPaymentMethodCallback`. Its handler calls the supplied `resultHandler` with `Completed`, `Canceled` or `Failed` according to the external result. The April sample uses a demonstration alert to choose among the three outcomes. If the handler passes a failure message, the embedded element displays it.
 
-// Handler returns EmbeddedPaymentElementResult (not PaymentSheetResult)
-func handleCustomPaymentMethod(
-    _ type: EmbeddedPaymentElement.CustomPaymentMethodConfiguration.CustomPaymentMethod,
-    _ billingDetails: STPPaymentMethodBillingDetails
-) async -> EmbeddedPaymentElementResult {
-    return .failed(error: myError)  // or .completed / .canceled
-}
-```
+## Optional server-side reporting
 
-## Android (Kotlin/Compose)
+The April samples use `2026-03-25.dahlia; invoice_partial_payments_beta=v3`. They create a Stripe PaymentMethod of `type: 'custom'` using the Dashboard `cpmt_` type ID as `custom.type`, then pass the generated PaymentMethod ID as `payment_method_details.payment_method` to `paymentRecords.reportPayment()`. The provider's own payment reference is passed separately at `processor_details.custom.payment_reference`. The sample's `outcome: 'guaranteed'` records an externally completed payment for reporting, receipts or other back-office workflows. The reporting operation initiates no Stripe charge and provides no independent settlement evidence.
 
-```kotlin
-EmbeddedPaymentElement.Builder(
-    createIntentCallback = { ... },
-    resultCallback = { result -> ... }
-).apply {
-    confirmCustomPaymentMethodCallback(viewModel.customPaymentMethodHandler)
-}
+The separate 2026-11-07 Report a payment API example uses `POST /v1/payment_records/report_payment` with Stripe-Version `2026-10-28.endive` and inline `payment_method_details[custom][display_name]`. Its request supplies no PaymentMethod ID and the response shows `payment_method: null`. This example omits the April beta suffix. Both examples are dated. Current embedded SDK compatibility, merchant access and live results remain unverified.
 
-class CheckoutCustomPaymentMethodHandler : ConfirmCustomPaymentMethodCallback {
-    override fun onConfirmCustomPaymentMethod(
-        customPaymentMethod: PaymentSheet.CustomPaymentMethod,
-        billingDetails: PaymentMethod.BillingDetails,
-    ) {
-        CustomPaymentMethodResultHandler.handleCustomPaymentMethodResult(
-            context,
-            CustomPaymentMethodResult.failed(displayMessage = "Error shown to user")
-        )
-    }
-}
-```
+## Detail locators
 
-- If implementation might exit without confirming: must still call `handleCustomPaymentMethodResult` with `.canceled`
-
-## React Native
-
-```javascript
-const handleCustomPaymentMethod = (
-    customPaymentMethod: CustomPaymentMethod,
-    billingDetails: BillingDetails | null,
-    resultHandler: (result: CustomPaymentMethodResult) => void
-) => {
-    resultHandler({ status: CustomPaymentMethodResultStatus.Completed });
-    // or: { status: Failed, error: 'Message shown to user' }
-    // or: { status: Canceled }
-};
-```
+- April raw lines 8–38, 174–193 and 360–379 cover prerequisites and setup. Lines 37–108, 193–294 and 378–511 cover the three handler, ordering and billing examples.
+- April raw lines 116–168, 302–354 and 520–572 show the optional server reporting examples. The separate November API example is at `raw/stripe-api-payment-record-report-2026-11-07.md` lines 7–23 and 59–87.
 
 ## Related Pages
 
-- [[stripe-inapp-payments]] — in-app payments concept page
-- [[source-stripe-inapp-custom-payment-methods]] — PaymentSheet/FlowController CPM variant
-- [[source-stripe-inapp-accept-payment-embedded]] — EmbeddedPaymentElement integration guide
+- [[stripe]] — Stripe company and source routes.
+- [[stripe-inapp-payments]] — in-app payments concept.
+- [[stripe-custom-payment-methods]] — custom methods and external payment reporting.
+- [[source-stripe-inapp-custom-payment-methods]] — PaymentSheet and FlowController custom payment methods.
+- [[source-stripe-inapp-accept-payment-embedded]] — EmbeddedPaymentElement integration guide.
 
 ## Raw Sources
 
-- [[stripe-inapp-embedded-custom-payment-methods-2025]] — verbatim guide (573 lines, iOS+Android+React Native, 1 image)
+- [[raw/stripe-inapp-embedded-custom-payment-methods-2025|Embedded custom payment methods guide captured 2026-04-22]] — verbatim guide (572 numbered lines, iOS, Android and React Native, 1 linked image).
+
+## Related raw API references
+
+- [[raw/stripe-payments-mobile-embedded-custom-payment-methods-2026-11-07|Embedded custom payment methods variant index]] — 2026-11-07 navigation for iOS, Android and React Native.

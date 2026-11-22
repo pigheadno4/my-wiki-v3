@@ -1,0 +1,215 @@
+{
+  "job_id": "payments-mobile-filter-card-brands",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Filter Card Brands — Mobile\"\ntype: source\ndate_ingested: 2026-04-22\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/mobile/filter-card-brands\"\nraw_files:\n  - \"stripe-inapp-filter-card-brands-2025.md\"\ntags: [stripe, mobile, ios, android, react-native, card-brand-filtering, payment-sheet, apple-pay, google-pay]\n---\n\n## Summary\n\nThe April 22, 2026 guide shows how to filter card brands in the mobile PaymentSheet UI, after creating or signing in to a Stripe account and integrating the Mobile Payment Element. The November 7 base capture retains the purpose and routes to iOS, Android, and React Native variants. The configuration and test instructions below come from April or the separately identified SDK declarations.\n\n## Brand and wallet scope\n\nThe April guide uses `allowed` to admit only listed card brands and `disallowed` to exclude listed brands. It lists Visa, Mastercard, Amex, and Discover as supported brand categories. The worked allowlist uses Visa and Mastercard. The Swift fragment below separately illustrates disallowing Amex. The Discover category includes the entire Discover Global Network group named in the guide: Discover, Diners Club, JCB, UnionPay, and Elo.\n\nThe April PaymentSheet guide describes the card form on all three platforms, Apple Pay on iOS and React Native, and Google Pay on Android. The distinct [[source-stripe-inapp-embedded-filter-card-brands]] guide uses `EmbeddedPaymentElement.Configuration.CardBrandAcceptance.BrandCategory` on iOS. Its April Android prose names Apple Pay, while the April PaymentSheet Android variant names Google Pay. That wording is scoped to its own capture and establishes no Android Apple Pay behavior. Both November base pages are navigation indexes.\n\n## Client and confirmation boundary\n\nThe retained iOS `2026-09-30-3410ff0` `PaymentSheetConfiguration.swift` lines 230–235, Android `2026-10-27-b792b5d` `PaymentSheet.kt` lines 1185–1196, and React Native 0.76.0 `2026-10-04-ee6e868` `src/types/PaymentSheet.ts` lines 81–87 describe the filter as client-side and say it does not support Link in those snapshots. The React Native declaration also has an `All` default, separate from the explicitly configured `Allowed` and `Disallowed` modes (lines 758–789).\n\nThe filter governs the documented client UI. In the separate [[source-stripe-inapp-finalize-payments-server]] flow, the PaymentSheet client sends the ConfirmationToken ID (`confirmationToken.stripeId` in the iOS example) to the server. The server creates and attempts to confirm a PaymentIntent, then returns the client secret so the SDK can handle any next actions. The client handles failures instead of continuing with a client secret. UI eligibility and a client secret establish neither server-side brand enforcement nor successful authorization or capture.\n\n## April platform configuration fragments\n\n\n### iOS (Swift)\n\nSet `cardBrandAcceptance` on `PaymentSheet.Configuration`. The Swift capture joins the configuration declaration and assignment on raw line 48. This fragment isolates the assignment.\n\n```swift\nconfiguration.cardBrandAcceptance = .allowed(brands: [.visa, .mastercard])\n// or: .disallowed(brands: [.amex])\n```\n\n### Android (Kotlin)\n\nThe April variant shows the builder and passes the built configuration to `presentWithPaymentIntent(paymentIntentClientSecret, configuration)`.\n\n```kotlin\nPaymentSheet.Configuration.Builder(\"Example, Inc.\")\n  .cardBrandAcceptance(\n    PaymentSheet.CardBrandAcceptance.allowed(\n      listOf(\n        PaymentSheet.CardBrandAcceptance.BrandCategory.Visa,\n        PaymentSheet.CardBrandAcceptance.BrandCategory.Mastercard\n      )\n    )\n  )\n  .build()\n```\n\n### React Native\n\nPass this property inside `initPaymentSheet`. The April raw joins `cardBrandAcceptance` to the preceding comment and its shown import omits the `PaymentSheet` enum namespace (raw lines 155–175). The retained 0.76.0 `PaymentSheetDeferredIntentScreen.tsx` imports `PaymentSheet` at lines 3–11 and shows the option inside initialization at lines 91–106. These fragments illustrate the configuration and do not establish execution.\n\n```javascript\ncardBrandAcceptance: {\n  filter: PaymentSheet.CardBrandAcceptanceFilter.Allowed, // or Disallowed\n  brands: [PaymentSheet.CardBrandCategory.Visa, PaymentSheet.CardBrandCategory.Mastercard],\n}\n```\n\n## Historical tests and screenshots\n\nThe April guide uses Stripe's test cards to check whether the Mobile Payment Element accepts or blocks the intended brands in the UI. See its iOS lines 54–57, Android lines 118–121, and React Native lines 177–180. The screenshots show the historical disallowed-card presentation. The captured React Native block references the same screenshot asset as iOS.\n\n![iOS card brand filtering](../raw/assets/stripe-inapp-filter-card-brands-ios.png)\n![Android card brand filtering](../raw/assets/stripe-inapp-filter-card-brands-android.png)\n\n## Related Pages\n\n- [[stripe]] — provider and source catalog\n- [[stripe-inapp-payments]] — mobile PaymentSheet and embedded surface boundaries\n- [[source-stripe-inapp-payment-sheet]] — PaymentSheet configuration\n- [[source-stripe-inapp-embedded-filter-card-brands]] — parallel EmbeddedPaymentElement guide\n- [[source-stripe-inapp-finalize-payments-server]] — separate ConfirmationToken and PaymentIntent flow\n\n## Related raw API references\n\n- [[raw/stripe-payments-mobile-filter-card-brands-2026-11-07]] — navigation index, November 7, 2026, linking to iOS, Android, and React Native variants\n- [[raw/stripe-payments-mobile-embedded-filter-card-brands-2026-11-07]] — separate EmbeddedPaymentElement navigation index, November 7, 2026\n\n## Raw Sources\n\n- [[raw/stripe-inapp-filter-card-brands-2025]] — complete April 22, 2026 PaymentSheet card-brand filter capture across iOS, Android, and React Native\n",
+  "quotes": {
+    "payments-mobile-filter-card-brands": [
+      {
+        "text": "Choose which card brands to accept",
+        "location": "raw/stripe-payments-mobile-filter-card-brands-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-mobile-filter-card-brands-2026-11-07.md:11"
+      },
+      {
+        "text": "- [iOS](https://docs.stripe.com/payments/mobile/filter-card-brands.md?platform=ios)",
+        "location": "raw/stripe-payments-mobile-filter-card-brands-2026-11-07.md:13"
+      },
+      {
+        "text": "- [Android](https://docs.stripe.com/payments/mobile/filter-card-brands.md?platform=android)",
+        "location": "raw/stripe-payments-mobile-filter-card-brands-2026-11-07.md:14"
+      },
+      {
+        "text": "- [React Native](https://docs.stripe.com/payments/mobile/filter-card-brands.md?platform=react-native)",
+        "location": "raw/stripe-payments-mobile-filter-card-brands-2026-11-07.md:15"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-mobile-filter-card-brands": [
+      {
+        "text": "- `allowed`: Accept only the card brands you specify.",
+        "location": "raw/stripe-inapp-filter-card-brands-2025.md:19"
+      },
+      {
+        "text": "- The cards buyers can use with Google Pay.",
+        "location": "raw/stripe-inapp-filter-card-brands-2025.md:66"
+      },
+      {
+        "text": "The `discover` value encompasses all of the cards that are part of the Discover Global Network, including Discover, Diners Club, JCB, UnionPay, and Elo.",
+        "location": "raw/stripe-inapp-filter-card-brands-2025.md:29"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-mobile-filter-card-brands-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-inapp-filter-card-brands-2025.md": [
+      {
+        "start": 1,
+        "end": 180
+      }
+    ],
+    "wiki/sources/source-stripe-inapp-filter-card-brands.md": [
+      {
+        "start": 1,
+        "end": 66
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/c68759b856f8e0dc58cfdb88/content.diff": [
+      {
+        "start": 1,
+        "end": 183
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-mobile-filter-card-brands/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 216
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-mobile-filter-card-brands/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 144
+      }
+    ],
+    "wiki/concepts/stripe-inapp-payments.md": [
+      {
+        "start": 69,
+        "end": 101
+      }
+    ],
+    "wiki/sources/source-stripe-inapp-embedded-filter-card-brands.md": [
+      {
+        "start": 11,
+        "end": 31
+      }
+    ],
+    "raw/stripe-payments-mobile-embedded-filter-card-brands-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-inapp-embedded-filter-card-brands-2025.md": [
+      {
+        "start": 1,
+        "end": 40
+      },
+      {
+        "start": 59,
+        "end": 86
+      },
+      {
+        "start": 136,
+        "end": 159
+      }
+    ],
+    "raw/stripe-inapp-finalize-payments-server-2025.md": [
+      {
+        "start": 219,
+        "end": 240
+      }
+    ],
+    "raw/github/stripe/stripe-ios/snapshots/2026-09-30-3410ff0/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetConfiguration.swift": [
+      {
+        "start": 222,
+        "end": 242
+      }
+    ],
+    "raw/github/stripe/stripe-android/snapshots/2026-10-27-b792b5d/files/paymentsheet/src/main/java/com/stripe/android/paymentsheet/PaymentSheet.kt": [
+      {
+        "start": 1177,
+        "end": 1200
+      }
+    ],
+    "raw/github/stripe/stripe-react-native/snapshots/2026-10-04-ee6e868/files/src/types/PaymentSheet.ts": [
+      {
+        "start": 78,
+        "end": 91
+      },
+      {
+        "start": 740,
+        "end": 792
+      }
+    ],
+    "raw/github/stripe/stripe-react-native/snapshots/2026-10-04-ee6e868/files/example/src/screens/PaymentSheetDeferredIntentScreen.tsx": [
+      {
+        "start": 1,
+        "end": 19
+      },
+      {
+        "start": 83,
+        "end": 115
+      }
+    ],
+    "raw/github/stripe/stripe-react-native/snapshots/2026-10-04-ee6e868/files/package.json": [
+      {
+        "start": 1,
+        "end": 13
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 403,
+        "end": 409
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/updates/attempts/payments-mobile-filter-card-brands/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 203
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/updates/attempts/payments-mobile-filter-card-brands/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 176
+      }
+    ]
+  },
+  "answers": {
+    "payments-mobile-filter-card-brands": {
+      "Q1": "At https://docs.stripe.com/payments/mobile/filter-card-brands, the November capture establishes the card-brand filtering purpose and routes to iOS, Android and React Native (new raw lines 5-15). The mapped source-stripe-inapp-filter-card-brands.md summarizes the April full guide. That guide assumes a Stripe account and Mobile Payment Element integration. PaymentSheet cardBrandAcceptance can allow only listed brands or exclude listed brands through platform-specific configuration. It covers the card form on all three platforms, Apple Pay in the iOS and React Native variants, and Google Pay in the Android variant. Visa, Mastercard, Amex and Discover are categories, with Discover covering Discover, Diners Club, JCB, UnionPay and Elo. Android sets the configuration when presenting with a PaymentIntent client secret. React Native uses initPaymentSheet and the filter and brands properties. This is client UI selection evidence, distinct from creating or confirming a payment, and the suggested test card checks concern acceptance or blocking in the UI (old raw lines 12-57, old raw lines 63-121 and old raw lines 127-180). The revised summary preserves the core choices and shapes and dates the platform, client, and Link scope.",
+      "Q2": "At https://docs.stripe.com/payments/mobile/filter-card-brands, the November change is navigation-only. The purpose remains and the three variant URLs take the place of the April variant bodies (new raw lines 5-15). The revised source preserves the dated allow and disallow example shapes, Discover Global Network grouping, platform wallet coverage, prerequisites and test references in source-stripe-inapp-filter-card-brands.md (old raw lines 12-57, old raw lines 63-121 and old raw lines 127-180). The source explains that the Swift source joins two statements and the React Native fragment joins a comment and omits an enum namespace import. The candidate distinguishes the configured client filter from the separate server ConfirmationToken/PaymentIntent flow. The separately retained exact SDK declarations call this client-side and exclude Link within their version scope, with a separate default All in the React Native contract. The neighboring EmbeddedPaymentElement route uses a different iOS configuration namespace and has Android wallet prose inconsistent with this PaymentSheet guide. The revised source and proposed concept wording keep that surface distinction and apply neither the embedded Apple Pay prose to PaymentSheet nor to Android runtime. The November index does not verify current SDK ranges, wallet behavior, server-side enforcement or any live payment outcome."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-mobile-filter-card-brands-client-boundary",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Card brand filtering**: restrict which card brands you accept",
+      "proposed_markdown": "- **Card brand filtering**. April PaymentSheet guidance describes client-side filtering of the card form, Apple Pay on iOS and React Native, and Google Pay on Android. Retained SDK declarations exclude Link from this filter. Server Intent confirmation and the EmbeddedPaymentElement configuration are separate. See [[source-stripe-inapp-filter-card-brands]] for version and wallet wording qualifications, including the separate embedded Android wording.",
+      "quote_indexes": [
+        0,
+        1,
+        3
+      ],
+      "warnings": [
+        "April PaymentSheet Android raw lines 63–80 name Google Pay. The separate April EmbeddedPaymentElement Android prose names Apple Pay and establishes no runtime support. The November indexes cover navigation."
+      ]
+    },
+    {
+      "update_id": "payments-mobile-filter-card-brands-source-route",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "- [[source-stripe-inapp-filter-card-brands]] — Card brand filtering: allowed/disallowed, 4 brands (discover=entire Global Network inc. JCB/UnionPay/Elo), filters card form + Apple Pay/Google Pay",
+      "proposed_markdown": "- [[source-stripe-inapp-filter-card-brands]] — April 2026 client-side PaymentSheet filter for iOS, Android, and React Native, including Discover Global Network, dated wallet scope, Link exclusion in retained SDKs, and a November variant index",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ]
+}

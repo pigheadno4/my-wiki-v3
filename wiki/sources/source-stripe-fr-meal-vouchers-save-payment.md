@@ -2,39 +2,57 @@
 title: "Stripe: Save a French Meal Voucher Payment Method"
 type: source
 date_ingested: 2026-05-05
+date_updated: 2026-11-22
+canonical_url: "https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/saving-payment-details"
 original_format: webpage
 raw_files:
+  - "stripe-payments-meal-vouchers-fr-meal-vouchers-saving-payment-details-2026-11-07.md"
   - "stripe-fr-meal-vouchers-save-payment-2025.md"
 tags: [stripe, meal-vouchers, france, titres-restaurant, setup-intent, save-payment]
 ---
 
 ## Summary
 
-How to save a French meal vouchers card using SetupIntent for future on-session charging. Covers the SetupIntent API shape, subsequent PaymentIntent creation with saved card, temporary auth charge behavior, and test data.
+The May 5 and November 7, 2026 guides cover saving a French meal voucher without making a purchase, then separately charging the saved method on-session. Both describe private preview for Bimpli, Pluxee, and Up Déjeuner. The November capture documents an email waitlist as a way to request private-preview access. Stripe contacts applicants when it can onboard additional users. Admission is separate from requesting access. The November request examples use a Payment Location ID in each intent.
 
-## Key Details
+## November preview prerequisites
 
-**SetupIntent creation**:
-```js
-stripe.setupIntents.create({
-  customer: CUSTOMER_ID,
-  setup_details: {
-    benefit: { fr_meal_voucher: { siret: '42424242424242' } }
-  }
-})
-```
+Use Stripe API version `2026-05-27.preview` or a later supported preview version. Onboard each restaurant or store using the Payment Locations API and verify its `fr_meal_vouchers_conecs_payments` capability is `active` before saving. The physical branch’s SIRET is recorded in `business_registration[siret]` on the Payment Location. See the [[source-stripe-fr-meal-vouchers-setup-restaurant|restaurant onboarding summary]] for the separate Dashboard route. That guide keeps the restaurant’s name and SIRET immutable after creation. The preview API blocks sensitive changes by default. Acknowledging a change to onboarding data with `onboarding_data_update_acknowledged=true` triggers review and returns the capability to `pending`. Voucher acceptance pauses until onboarding completes and the capability is active again.
 
-**Charging saved card** (on-session, EUR only):
-```
-POST /v1/payment_intents
-  customer, payment_method, confirm=true
-  payment_details[benefit][fr_meal_voucher][siret]=42424242424242
-```
+The November cURL examples omit `Stripe-Version`. For these raw HTTP requests, omitting the header uses the account’s default API version. If that default does not meet the requirement, set `Stripe-Version: 2026-05-27.preview` or explicitly select a later supported preview version. API version selection, SDK support, preview admission, location activation, and payment method eligibility are separate checks.
 
-**Temporary auth charge**: Stripe may send a 0.30 EUR authorization when saving to verify the card. Reversed almost immediately — restored to customer's daily balance.
+## Save without making a payment
 
-**Test data**: card `4000002501000002` (Bimpli with Conecs). Test SIRETs: `42424242424242` (valid), `00000000000000` (invalid).
+1. On the server, use the secret key to create a SetupIntent with `POST /v1/setup_intents`, the Customer ID in `customer`, the Payment Location ID in `setup_details[location]`, and `setup_details[benefit][fr_meal_voucher][enabled]=if_payment_method_is_eligible`.
+2. Send the SetupIntent client secret to the client. Collect details with Payment Element and call `stripe.confirmSetup` with a `return_url`.
+3. Before reuse, verify that the SetupIntent reached `succeeded` and identify the saved `payment_method` associated with the Customer. The companion [[source-stripe-save-and-reuse-elements|general Elements save guide]] uses `stripe.retrieveSetupIntent` with the client secret to retrieve the status. Arrival at the return URL can precede a successful setup. Verify the status independently of the redirect.
+
+## Charge the saved method on-session
+
+When the customer is present and able to authenticate, create a separate PaymentIntent on the server with `POST /v1/payment_intents`. Include the amount, `currency=eur`, the `customer` and saved `payment_method` IDs, `payment_details[location]`, and `payment_details[benefit][fr_meal_voucher][enabled]=if_payment_method_is_eligible`. The guide’s example sends `confirm=true` to request confirmation. Saving, confirmation, capture, and settlement are distinct outcomes. This guide covers on-session reuse.
+
+The separate [[source-stripe-fr-meal-vouchers-accept-payment|accept-payment guide]] describes first-payment CVC for saving during a PaymentIntent payment. That guide says Stripe resolves the existing location’s SIRET at PaymentIntent confirmation and shows the SIRET in the expanded latest Charge. Both statements concern that guide’s payment path. The saved method does not remove the November location fields from the request.
+
+## Dated test and authorization details
+
+- **Both captures.** Bimpli with Conecs test card `4000002501000002`, any three-digit CVC, and any future expiration. The issuer may perform a temporary 0.30 EUR card verification while Stripe saves the method. Stripe reverses the temporary authorization almost immediately, restoring that amount to the customer’s daily balance. This is verification before a purchase.
+- **November sandbox.** Use the Payment Location ID from onboarding in the same sandbox as the SetupIntent. The preview onboarding API has separate SIRET and postal-code fixtures for activating a location or simulating outstanding requirements.
+- **May intent inputs.** The May guide pre-provisioned the branch SIRET and passed it directly as `setup_details[benefit][fr_meal_voucher][siret]` on the SetupIntent and `payment_details[benefit][fr_meal_voucher][siret]` on the later PaymentIntent. For the May setup field, `42424242424242` was the provisioned SIRET fixture and `00000000000000` was invalid. The November inputs in this guide are a location ID and the conditional eligibility flag.
+
+## Related Pages
+
+- [[stripe]] — payment provider
+- [[stripe-fr-meal-vouchers]] — voucher capabilities and dated integration routes
+- [[source-stripe-fr-meal-vouchers-setup-restaurant]] — restaurant onboarding
+- [[source-stripe-fr-meal-vouchers-accept-payment]] — voucher payment flow and saving during payment
 
 ## Raw Sources
 
-- [[stripe-fr-meal-vouchers-save-payment-2025]] — verbatim webpage content (92 lines); fixed `_on-session_` → `*on-session*`
+- [[raw/stripe-payments-meal-vouchers-fr-meal-vouchers-saving-payment-details-2026-11-07|2026-11-07 French meal voucher save guide]] — 85 lines
+- [[raw/stripe-fr-meal-vouchers-save-payment-2025|2026-05-05 French meal voucher save guide]] — verbatim webpage content, 92 lines, with `_on-session_` changed to `*on-session*`
+
+## Related raw API references
+
+- [[raw/stripe-payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant-api-2026-11-07|2026-11-07 preview Payment Locations onboarding API]] — branch registration, capability and sandbox fixtures
+- [[raw/stripe-js-setup-intents-retrieve-setup-intent-2026-11-07|2026-11-07 Stripe.js SetupIntent retrieval reference]] — client-secret lookup
+- [[raw/stripe-sdks-set-version-2026-11-07|2026-11-07 API version reference]] — account default and HTTP version header

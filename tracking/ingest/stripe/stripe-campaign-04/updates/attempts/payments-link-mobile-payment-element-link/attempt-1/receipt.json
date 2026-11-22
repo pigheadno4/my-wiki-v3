@@ -1,0 +1,202 @@
+{
+  "job_id": "payments-link-mobile-payment-element-link",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Docs — Link in the Mobile Payment Element\"\ntype: source\ndate_ingested: 2026-05-08\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/link/mobile-payment-element-link\"\nraw_files:\n  - \"stripe-payments-link-mobile-payment-element-link-2026-11-07.md\"\n  - \"stripe-mobile-payment-element-link-2025.md\"\ntags: [stripe, link, mobile, ios, android, react-native, payment-element, defaultBillingDetails]\n---\n\n## Summary\n\nBoth the May 8 and November 7, 2026 captures describe Link in the native iOS, Android, and React Native Mobile Payment Element. The default integration includes a Link prompt in the card form. Link can autofill existing customers' saved details even if they enrolled through a different business. Link authenticates customers using their email address and phone number. Optional billing prefill supplies customer details, and authentication and confirmed payment remain separate steps.\n\n## Enablement\n\n1. Integrate the Mobile Payment Element using what both captures call the latest Stripe Mobile SDK.\n2. Enable Link in Dashboard **Payment Method settings**.\n3. Enable dynamic payment methods on the PaymentIntent. The captures describe two routes: use an API version with dynamic methods enabled by default, described in the captures as the latest API, or explicitly add `automatic_payment_methods` at PaymentIntent creation.\n4. Optionally prefill the customer's email and phone and any available name.\n\nThe separately captured automatic payment methods changelog describes the default in its linked `2024-06-20` PaymentIntent and SetupIntent references. It describes the earlier behavior as card-only when neither `payment_method_types` nor `automatic_payment_methods` was supplied. The November PaymentIntent create reference says explicitly enabled automatic methods are limited to Dashboard-enabled methods compatible with the Intent's other parameters. This is server API behavior, separate from the native SDK prerequisite and Dashboard Link setting. The mobile captures do not give a numeric current SDK or API minimum.\n\n## Optional prefill\n\nSupply the customer's name, email address, and phone number using the platform-specific `defaultBillingDetails` hook.\n\n| Platform | Captured configuration |\n| --- | --- |\n| iOS | Set `configuration.defaultBillingDetails.name`, `.email`, and `.phone` after initializing `PaymentSheet.Configuration`. |\n| Android | Supply `PaymentSheet.BillingDetails(name, email, phone)` as `defaultBillingDetails` when initializing `PaymentSheet.Configuration`. |\n| React Native | Pass `defaultBillingDetails: { name, email, phone }` in `initPaymentSheet`. |\n\nBoth Android snippets begin with `let configuration` (May raw lines 39–54 and November raw lines 40–55), which is invalid as a Kotlin declaration. Use the excerpts for the parameter shape. The separate version-qualified `PaymentSheet.LinkConfiguration.Display.WalletButtonHidden` evidence in [[stripe-link]] describes the configured Android wallet entry, distinct from the mobile guide's default card-form prompt. Neither guide verifies how a particular device or session renders Link.\n\n## Sandbox authentication\n\nCreate a sandbox Link account with a valid email address. Both mobile captures say to enter `000000` when prompted for the one-time passcode. They do not give a broader mobile passcode table.\n\nThe separate [[source-stripe-payment-element-link]] web Payment Element sandbox table reserves `000001` for invalid code, `000002` for expired code, and `000003` for maximum attempts exceeded. Other six-digit values, including `000000`, succeed in that web table. Keep those outcomes scoped to that web sandbox. Prefill and sandbox authentication do not establish live eligibility, payment, or settlement.\n\n## Capture and image history\n\nThe May capture links to the iOS-specific Mobile Payment Element route and retains `raw/assets/stripe-link-in-ios.png` (248 KB). Its guide already names all three platforms. November links to the general mobile route and adds a build-an-app link. The iOS illustration uses a CDN URL with the same caption. These are navigation and presentation changes.\n\n## Related Pages\n\n- [[stripe-link]] — Link concept, mobile configuration, and Android wallet-entry evidence\n- [[source-stripe-payment-element-link]] — separate web Payment Element and sandbox test table\n- [[source-stripe-link-payment-integrations]] — Link payment integration paths\n- [[source-stripe-payment-intents]] — server PaymentIntent behavior\n- [[stripe]] — Stripe company page\n\n## Related raw API references\n\n- [[raw/stripe-changelog-2023-08-16-automatic-payment-methods-2026-11-07]] — changelog for the default behavior, captured November 7, 2026\n- [[raw/stripe-api-payment-intents-create-2026-11-07]] — PaymentIntent create and compatibility, November 7, 2026\n\n## Raw Sources\n\n- [[raw/stripe-payments-link-mobile-payment-element-link-2026-11-07]] — complete November 7, 2026 mobile Link capture\n- [[raw/stripe-mobile-payment-element-link-2025]] — verbatim May 8, 2026 mobile Link capture (77 lines), with original iOS image\n",
+  "quotes": {
+    "payments-link-mobile-payment-element-link": [
+      {
+        "text": "The default Mobile Payment Element integration includes a Link prompt in the card form.",
+        "location": "raw/stripe-payments-link-mobile-payment-element-link-2026-11-07.md:9"
+      },
+      {
+        "text": "Link authenticates a customer using their email address and phone number.",
+        "location": "raw/stripe-payments-link-mobile-payment-element-link-2026-11-07.md:27"
+      },
+      {
+        "text": "supply `defaultBillingDetails` with your customer information to `initPaymentSheet`.",
+        "location": "raw/stripe-payments-link-mobile-payment-element-link-2026-11-07.md:59"
+      },
+      {
+        "text": "When prompted for a one-time passcode, enter `000000`.",
+        "location": "raw/stripe-payments-link-mobile-payment-element-link-2026-11-07.md:74"
+      },
+      {
+        "text": "or by adding the [automatic_payment_methods](https://docs.stripe.com/api/payment_intents/object.md#payment_intent_object-automatic_payment_methods) parameter when creating your PaymentIntent.",
+        "location": "raw/stripe-payments-link-mobile-payment-element-link-2026-11-07.md:20"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-link-mobile-payment-element-link": [
+      {
+        "text": "The default Mobile Payment Element integration includes a Link prompt in the card form.",
+        "location": "raw/stripe-mobile-payment-element-link-2025.md:8"
+      },
+      {
+        "text": "When prompted for a one-time passcode, enter `000000`.",
+        "location": "raw/stripe-mobile-payment-element-link-2025.md:73"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-link-mobile-payment-element-link-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 79
+      }
+    ],
+    "raw/stripe-mobile-payment-element-link-2025.md": [
+      {
+        "start": 1,
+        "end": 77
+      }
+    ],
+    "wiki/sources/source-stripe-mobile-payment-element-link.md": [
+      {
+        "start": 1,
+        "end": 41
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/3d008b96658c78cc912773d6/content.diff": [
+      {
+        "start": 1,
+        "end": 42
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-link-mobile-payment-element-link/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 183
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-link-mobile-payment-element-link/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 114
+      }
+    ],
+    "wiki/concepts/stripe-link.md": [
+      {
+        "start": 101,
+        "end": 125
+      },
+      {
+        "start": 174,
+        "end": 186
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 8
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 446,
+        "end": 456
+      },
+      {
+        "start": 734,
+        "end": 738
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 656,
+        "end": 662
+      }
+    ],
+    "wiki/sources/source-stripe-payment-element-link.md": [
+      {
+        "start": 10,
+        "end": 61
+      }
+    ],
+    "raw/stripe-payments-link-payment-element-link-2026-11-07.md": [
+      {
+        "start": 8,
+        "end": 31
+      },
+      {
+        "start": 97,
+        "end": 108
+      }
+    ],
+    "raw/stripe-payment-element-link-2025.md": [
+      {
+        "start": 97,
+        "end": 108
+      }
+    ],
+    "raw/stripe-changelog-2023-08-16-automatic-payment-methods-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 21
+      }
+    ],
+    "raw/stripe-api-payment-intents-create-2026-11-07.md": [
+      {
+        "start": 392,
+        "end": 402
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 115,
+        "end": 121
+      }
+    ]
+  },
+  "answers": {
+    "payments-link-mobile-payment-element-link": {
+      "Q1": "At https://docs.stripe.com/payments/link/mobile-payment-element-link, both captures describe Link in the default card form of Mobile Payment Element for native iOS, Android and React Native. It can autofill for existing Link customers even if they originally stored information with a different merchant. The guide calls for a Mobile Payment Element integration using what it calls the latest Stripe Mobile SDK, enabling Link in Dashboard, and activating dynamic payment methods with the latest API or automatic_payment_methods at PaymentIntent creation (old raw lines 6-22 and new raw lines 7-23). Link authenticates using email and phone. Optional defaultBillingDetails passes name, email and phone into iOS or Android PaymentSheet configuration or the React Native initPaymentSheet call. Prefill is separate from authentication and establishes no payment outcome. Sandbox Link accounts use a valid email, and the mobile guide says to enter 000000 when prompted (old raw lines 24-73 and new raw lines 25-74). The prior source-stripe-mobile-payment-element-link.md recapped the platform hooks. The revised source keeps both dynamic-method alternatives and scopes the separate web and mobile sandbox outcomes.",
+      "Q2": "For https://docs.stripe.com/payments/link/mobile-payment-element-link, the move from the iOS-targeted link to general mobile navigation, extra build-an-app link, iOS screenshot CDN reference, heading spacing and list numbering are presentational or navigational. They establish no new platform support or behavior (old raw lines 6-22 and 71-77, new raw lines 7-23 and 72-79). The revised source preserves both dates, the default card-form Link prompt and optional platform-specific prefill, and qualifies the Android sample's malformed let declaration (old raw lines 39-54, new raw lines 40-55). The revised source-stripe-mobile-payment-element-link.md and proposed reciprocal Link concept preserve the latest-API or explicit PaymentIntent automatic_payment_methods alternatives and distinguish the separate API-default and compatibility evidence from the mobile SDK prerequisite. They retain 000000 as the documented mobile sandbox instruction and explain that the separate web Payment Element sandbox table reserves 000001 invalid, 000002 expired and 000003 maximum attempts, with other six-digit codes succeeding. Web reserved outcomes do not establish mobile or live acceptance. Default card-form prompting, optional prefill and a customer authentication step alone provide no guarantee of Link eligibility, successful payment or settlement."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-link-mobile-payment-element-link-mobile-setup",
+      "target_path": "wiki/concepts/stripe-link.md",
+      "update_kind": "durable_fact",
+      "anchor": "Enable via: latest Stripe Mobile SDK + Link in Dashboard + dynamic PMs (`automatic_payment_methods`). Prefill via `defaultBillingDetails` (name, email, phone):",
+      "proposed_markdown": "The May and November 2026 guides describe a default Link prompt in the card form and autofill for existing users who enrolled at any Link-enabled business. Integrate the Mobile Payment Element with the guide's latest Stripe Mobile SDK, enable Link in the Dashboard, then use an API version with dynamic payment methods on by default or explicitly add `automatic_payment_methods` when creating the PaymentIntent. Optional `defaultBillingDetails` can prefill name, email, and phone. Link authenticates using email and phone. Prefill and authentication are separate from payment confirmation. See [[source-stripe-mobile-payment-element-link]] for the dated default, compatibility, and Android wallet-entry scope.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "warnings": [
+        "The API default is separately documented in the automatic-methods changelog's 2024-06-20 Intent references. The mobile guide supplies no numeric SDK floor."
+      ]
+    },
+    {
+      "update_id": "payments-link-mobile-payment-element-link-sandbox",
+      "target_path": "wiki/concepts/stripe-link.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Sandbox OTP**: `000000` (differs from web — web accepts any 6 digits)",
+      "proposed_markdown": "**Sandbox OTP**. The mobile guide says to enter `000000` when prompted. The separate web Payment Element sandbox table reserves `000001` for invalid, `000002` for expired, and `000003` for maximum attempts. Other six-digit web sandbox values succeed, including `000000`. See [[source-stripe-mobile-payment-element-link]] and [[source-stripe-payment-element-link]] for the separate scopes.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Web table locators are lines 99–106 of both dated web Payment Element captures. Their reserved outcomes establish no other mobile or live OTP behavior."
+      ]
+    },
+    {
+      "update_id": "payments-link-mobile-payment-element-link-source-route",
+      "target_path": "wiki/concepts/stripe-link.md",
+      "update_kind": "durable_fact",
+      "anchor": "- [[source-stripe-mobile-payment-element-link]] — Link in Mobile PE: iOS/Android/React Native, defaultBillingDetails prefill syntax, sandbox OTP 000000",
+      "proposed_markdown": "- [[source-stripe-mobile-payment-element-link]] — May and November 2026 native Link card-form prompt, Android/iOS/React Native optional prefill, dynamic-method enablement choices, and the separate mobile and web sandbox scopes",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ]
+}

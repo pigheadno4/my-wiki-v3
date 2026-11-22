@@ -1,0 +1,473 @@
+# Build a Checkout integration with Managed Payments
+
+Learn how to accept a payment using Managed Payments.
+
+Use Managed Payments to sell digital products such as SaaS, software, or digital content and downloads. The Stripe merchant of record solution handles [indirect tax compliance](https://docs.stripe.com/payments/managed-payments/tax-compliance.md) in more than 80 countries, along with fraud prevention, dispute management, and transaction-level customer support. Learn more about [how Managed Payments works](https://docs.stripe.com/payments/managed-payments/how-it-works.md).
+
+## Before you begin
+
+- Make sure your products meet the [eligibility requirements](https://docs.stripe.com/payments/managed-payments/eligibility.md) before processing a payment with Managed Payments.
+- Activate Managed Payments in your [Dashboard](https://dashboard.stripe.com/settings/managed-payments).
+- Set up your [development environment](https://docs.stripe.com/get-started/development-environment.md).
+- Use an API version of `2025-03-31.basil` or [later](https://docs.stripe.com/changelog.md).
+
+## Create products and prices
+
+Stripe uses [Products](https://docs.stripe.com/api/products.md) to represent the different goods or services you’re selling. For example, if you have multiple subscription tiers, such as Basic and Premium, create a separate product for each tier. If you sell e-books, create a separate product for each e-book.
+
+[Prices](https://docs.stripe.com/api/prices.md) represent the amount you charge your customer for a product. For subscriptions, prices also represent how frequently you charge your customer. A product can have multiple prices. For example, a Basic subscription could have two prices: 10 USD per month or 100 USD per year. You can also define different currency options for each price, such as 10 USD and 15 CAD.
+
+#### Subscriptions
+
+You can accept subscriptions using either the Dashboard or the API to create products and prices for each of the products you sell.
+
+#### Dashboard
+
+### Create a new product and price
+
+To create a new product and assign a price:
+
+1. Go to the [Product catalog](https://dashboard.stripe.com/test/products) in the Dashboard.
+
+2. Click **Create product**.
+
+3. Enter the **Product name** and **Description**, and select a **Product tax code**.
+
+   You must select a tax code that’s [eligible for Managed Payments](https://docs.stripe.com/payments/managed-payments/eligibility.md#eligible-tax-codes). Eligible tax codes are labeled `Eligible for Managed Payments`.
+
+4. For the price, enter the **Amount** and **Currency**.
+
+5. Set the **Billing period** based on how frequently you want to charge your customer for the subscription.
+
+6. In the preview pane, you can see how much tax customers will pay based on their location.
+
+7. Click **Add product**.
+
+8. Repeat these steps for every product you sell.
+
+### Add a price to an existing product
+
+To add another price to an existing product:
+
+1. Go to the [Product catalog](https://dashboard.stripe.com/test/products) in the Dashboard.
+2. Select the product you want to add a price to.
+3. In the **Pricing** section, click the plus (**+**) symbol.
+4. Configure the price as described above.
+5. Click **Create price**.
+
+#### API
+
+### Create a new product and price
+
+To create a new product and assign a price:
+
+```curl
+curl https://api.stripe.com/v1/products \
+  -u "<<YOUR_SECRET_KEY>>:" \
+  -d "name=Basic subscription" \
+  -d "description=A basic subscription to our service" \
+  -d tax_code={{TAX_CODE}} \
+  -d "default_price_data[unit_amount]=1000" \
+  -d "default_price_data[currency]=usd" \
+  -d "default_price_data[recurring][interval]=month"
+```
+
+You must use a tax code that’s [eligible for Managed Payments](https://docs.stripe.com/payments/managed-payments/eligibility.md#product-eligibility).
+
+Repeat this step for every product you sell.
+
+### Add a price to an existing product
+
+To add another price to an existing product:
+
+```curl
+curl https://api.stripe.com/v1/prices \
+  -u "<<YOUR_SECRET_KEY>>:" \
+  -d product={{BASIC_PRODUCT_ID}} \
+  -d unit_amount=10000 \
+  -d currency=usd \
+  -d "recurring[interval]=year"
+```
+
+#### One-time payments
+
+You can accept one-time payments using either the Dashboard or the API to create products and prices for each of the products you sell.
+
+#### Dashboard
+
+### Create a new product and price
+
+To create a new product and assign a price:
+
+1. Go to the [Product catalog](https://dashboard.stripe.com/test/products) in the Dashboard.
+
+2. Click **Create product**.
+
+3. Enter the **Product name** and **Description**, and select a **Product tax code**.
+
+   You must select a tax code that’s [eligible for Managed Payments](https://docs.stripe.com/payments/managed-payments/eligibility.md#product-eligibility). Eligible tax codes are labeled `Eligible for Managed Payments`.
+
+4. For the price, enter the **Amount** and **Currency**.
+
+5. In the preview pane, you can see how much tax customers will pay based on their location.
+
+6. Click **Add product**.
+
+7. Repeat these steps for every product you sell.
+
+### Add a price to an existing product
+
+To add another price to an existing product:
+
+1. Go to the [Product catalog](https://dashboard.stripe.com/test/products) in the Dashboard.
+2. Select the product you want to add a price to.
+3. In the **Pricing** section, click the plus symbol (+).
+4. Configure the price as described above.
+5. Click **Create price**.
+
+#### API
+
+### Create a new product and price
+
+To create a new product and assign a price:
+
+```curl
+curl https://api.stripe.com/v1/products \
+  -u "<<YOUR_SECRET_KEY>>:" \
+  --data-urlencode "name=Hamlet (e-book)" \
+  -d "description=A Shakespearean tragedy" \
+  -d tax_code={{TAX_CODE}} \
+  -d "default_price_data[unit_amount]=1000" \
+  -d "default_price_data[currency]=usd"
+```
+
+You must use a tax code that’s [eligible for Managed Payments](https://docs.stripe.com/payments/managed-payments/eligibility.md#product-eligibility).
+
+Repeat this step for every product you sell.
+
+### Add a price to an existing product
+
+To add another price to an existing product:
+
+```curl
+curl https://api.stripe.com/v1/prices \
+  -u "<<YOUR_SECRET_KEY>>:" \
+  -d product={{PRODUCT_ID}} \
+  -d unit_amount=1000 \
+  -d currency=usd
+```
+
+## Build your checkout [Client-side]
+
+[Stripe Checkout](https://docs.stripe.com/payments/checkout.md) lets you accept payments from your customers through a Stripe-hosted payment page. You’re responsible for redirecting your customer to the payment page, and Stripe redirects your customer back to your website after they complete the payment. Learn more about [how Checkout works](https://docs.stripe.com/payments/checkout/how-checkout-works.md?payment-ui=stripe-hosted).
+
+To build your checkout, add a checkout button and a success page to your site.
+
+### Add a checkout button
+
+Add a checkout button to your website that calls an endpoint on your server. For example:
+
+#### Subscriptions
+
+```html
+<html>
+  <head>
+    <title>Subscribe to our cool new service</title>
+  </head>
+  <body>
+    <!-- Use action="/create-checkout-session.php" if your server is PHP based. -->
+    <form action="/create-checkout-session" method="POST">
+      <button type="submit">Subscribe</button>
+    </form>
+  </body>
+</html>
+```
+
+#### One-time payments
+
+```html
+<html>
+  <head>
+    <title>Buy Hamlet</title>
+  </head>
+  <body>
+    <!-- Use action="/create-checkout-session.php" if your server is PHP based. -->
+    <form action="/create-checkout-session" method="POST">
+      <button type="submit">Purchase</button>
+    </form>
+  </body>
+</html>
+```
+
+When your customer clicks this button, they’re redirected to the Stripe-hosted payment page.
+
+### Add a success page
+
+Next, create a success page for your customer to see after they successfully check out. Host this success page on your website. For example:
+
+#### Subscriptions
+
+```html
+<html>
+  <head><title>Thanks for subscribing!</title></head>
+  <body>
+    <h1>Thanks for subscribing!</h1>
+    <p>
+      We appreciate your business!
+      If you have any questions, please email us at
+      <a href="mailto:orders@example.com">orders@example.com</a>.
+    </p>
+  </body>
+</html>
+```
+
+#### One-time payments
+
+```html
+<html>
+  <head><title>Thanks for purchasing!</title></head>
+  <body>
+    <h1>Thanks for purchasing!</h1>
+    <p>
+      We appreciate your business!
+      If you have any questions, please email us at
+      <a href="mailto:orders@example.com">orders@example.com</a>.
+    </p>
+  </body>
+</html>
+```
+
+Stripe redirects your customer to this page after they complete an authorized payment.
+
+### Add a cancel page (optional) 
+
+You can also create a cancel page for your customer to see if they terminate the checkout process. For example:
+
+#### Subscriptions
+
+```html
+<html>
+  <head>
+    <title>Checkout canceled</title>
+  </head>
+  <body>
+    <p>Not ready to subscribe yet? No problem, we'll be here when you are!</p>
+  </body>
+</html>
+```
+
+#### One-time payments
+
+```html
+<html>
+  <head>
+    <title>Checkout canceled</title>
+  </head>
+  <body>
+    <p>Not ready to purchase yet? No problem, we'll be here when you are!</p>
+  </body>
+</html>
+```
+
+Stripe redirects your customer to this page if they click the back button on the payment page.
+
+## Set up your server [Server-side]
+
+Stripe uses [Checkout Sessions](https://docs.stripe.com/api/checkout/sessions.md) to represent what your customer sees when they’re redirected to the payment form. You can configure Checkout Sessions with options such as [line items](https://docs.stripe.com/api/checkout/sessions/create.md#create_checkout_session-line_items) to charge or currencies to accept.
+
+### Create a Checkout Session
+
+Create a Checkout Session using one of the [prices you created](https://docs.stripe.com/payments/managed-payments/set-up.md#create-product) as a line item. Set the `success_url` to the URLs of your success page and cancel page, if applicable. To enable Managed Payments, set [managed_payments[enabled]](https://docs.stripe.com/api/checkout/sessions/create.md#create_checkout_session-managed_payments-enabled) to `true`.
+
+#### Subscriptions
+
+To create a Checkout Session for your subscription, set the `mode` to `subscription`.
+
+```curl
+curl https://api.stripe.com/v1/checkout/sessions \
+  -u "<<YOUR_SECRET_KEY>>:" \
+  -d "line_items[0][price]={{PRICE_ID}}" \
+  -d "line_items[0][quantity]=1" \
+  -d "managed_payments[enabled]=true" \
+  -d mode=subscription \
+  --data-urlencode "success_url=https://localhost:4242/success"
+```
+
+To disable Managed Payments for a specific Checkout Session, set [managed_payments[enabled]](https://docs.stripe.com/api/checkout/sessions/create.md#create_checkout_session-managed_payments-enabled) to `false`.
+
+#### One-time payments
+
+To create a Checkout Session to accept a one-time payment, set the `mode` to `payment`.
+
+```curl
+curl https://api.stripe.com/v1/checkout/sessions \
+  -u "<<YOUR_SECRET_KEY>>:" \
+  -d "line_items[0][price]={{PRICE_ID}}" \
+  -d "line_items[0][quantity]=1" \
+  -d "managed_payments[enabled]=true" \
+  -d mode=payment \
+  --data-urlencode "success_url=https://localhost:4242/success"
+```
+
+### Create an endpoint
+
+Add an endpoint to your server that creates a [Checkout Session](https://docs.stripe.com/api/checkout/sessions/create.md). The endpoint path must match the `action` attribute of [your checkout button](https://docs.stripe.com/payments/managed-payments/set-up.md#add-a-checkout-button).
+
+After you create a Checkout Session, redirect your customer to the [URL](https://docs.stripe.com/api/checkout/sessions/object.md#checkout_session_object-url) returned in the response.
+
+#### Subscriptions
+
+#### Ruby
+
+```ruby
+# This example sets up an endpoint using the Sinatra framework.
+
+require 'json'
+require 'sinatra'
+require 'stripe'
+
+# Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+# Find your keys at https://dashboard.stripe.com/apikeys.
+client = Stripe::StripeClient.new('<<YOUR_SECRET_KEY>>')
+
+post '/create-checkout-session' do
+  session = client.v1.checkout.sessions.create({
+    line_items: [{
+      price: '{{PRICE_ID}}',
+      quantity: 1
+    }],
+    mode: 'subscription',
+    managed_payments: {enabled: true},
+    success_url: 'http://localhost:4242/success'
+  })
+
+  redirect session.url, 303
+end
+```
+
+#### One-time payments
+
+#### Ruby
+
+```ruby
+# This example sets up an endpoint using the Sinatra framework.
+
+require 'json'
+require 'sinatra'
+require 'stripe'
+
+# Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+# Find your keys at https://dashboard.stripe.com/apikeys.
+client = Stripe::StripeClient.new('<<YOUR_SECRET_KEY>>')
+
+post '/create-checkout-session' do
+  session = client.v1.checkout.sessions.create({
+    line_items: [{
+      price: '{{PRICE_ID}}',
+      quantity: 1
+    }],
+    mode: 'payment',
+    managed_payments: {enabled: true},
+    success_url: 'http://localhost:4242/success'
+  })
+
+  redirect session.url, 303
+end
+```
+
+### Test your endpoint
+
+Confirm your endpoint is accessible by starting your web server (for example, `localhost:4242`) and running the following command:
+
+```bash
+curl -X POST -is "http://localhost:4242/create-checkout-session" -d ""
+```
+
+The response in your terminal looks like:
+
+```bash
+HTTP/1.1 303 See Other
+Location: https://checkout.stripe.com/c/pay/cs_test_...
+...
+```
+
+## Handle post-payment events
+
+Stripe sends the following events when collecting payments with Checkout:
+
+| Event | Description |
+| --- | --- |
+| [checkout.session.completed](https://docs.stripe.com/api/events/types.md#event_types-checkout.session.completed) | Sent when a customer successfully completes a Checkout Session. |
+| [checkout.session.async_payment_succeeded](https://docs.stripe.com/api/events/types.md#event_types-checkout.session.async_payment_succeeded) | Sent when a payment made with a delayed payment method, such as ACH Direct Debit, succeeds. |
+| [checkout.session.async_payment_failed](https://docs.stripe.com/api/events/types.md#event_types-checkout.session.async_payment_failed) | Sent when a payment made with a delayed payment method, such as ACH Direct Debit, fails. |
+
+To receive and handle these events, use the [Dashboard webhook tool](https://dashboard.stripe.com/webhooks) or follow the [webhook guide](https://docs.stripe.com/webhooks/quickstart.md). Avoid only using your success page to trigger post-checkout actions.
+
+Set up your integration to listen for asynchronous events to properly handle [different types of payment methods](https://stripe.com/payments/payment-methods-guide) that might be delayed. Learn more about [fulfilling orders for Checkout](https://docs.stripe.com/checkout/fulfillment.md).
+
+## Testing
+
+Test that your integration works correctly for your customers. For additional information, see [Testing](https://docs.stripe.com/testing.md).
+
+### Checkout
+
+1. Start your server and go to your checkout page (for example, <http://localhost:4242/checkout.html> from [Build your checkout](https://docs.stripe.com/payments/managed-payments/set-up.md#build-your-checkout)).
+2. Click the checkout button to be redirected to the Managed Payments checkout page.
+3. On the checkout page, enter different billing addresses to see how Managed Payments calculates tax for customers in different locations.
+4. To process the payment, enter your email address, phone number, and the test card number `4242 4242 4242 4242` with any CVC and an expiration date in the future.
+
+### Payment details
+
+#### Subscriptions
+
+1. After you confirm the test payment, go to the [Transactions](https://dashboard.stripe.com/test/payments) page in the Dashboard.
+2. Click your test payment to view the payment details. This page shows the:
+   - Product that was purchased
+   - [Subscription](https://docs.stripe.com/api/subscriptions.md) that was created
+   - [Invoice](https://docs.stripe.com/api/invoices.md) that was created
+   - Amount of tax calculated and withheld through Managed Payments
+   - Statement descriptor that displays on your customer’s statements
+
+> #### Customer authorization
+> 
+> When a customer purchases a subscription through Managed Payments, it only authorizes Managed Payments to charge their payment method. Make sure you obtain the appropriate consent from your customer to charge this payment method for any transactions outside of Managed Payments.
+
+#### One-time payments
+
+1. After you confirm the test payment, go to the [Transactions](https://dashboard.stripe.com/test/payments) page in the Dashboard.
+2. Click your test payment to view the payment details. This page shows the:
+   - Product that was purchased
+   - [Subscription](https://docs.stripe.com/api/subscriptions.md) that was created (if purchased)
+   - [Invoice](https://docs.stripe.com/api/invoices.md) that was created
+   - Amount of tax calculated and withheld through Managed Payments
+   - Statement descriptor that displays on your customer’s statements
+
+#### Preview the receipt
+
+1. Under **Receipt history**, click **View receipt**.
+2. Click **Send receipt** to preview the receipt email sent to your customer.
+
+> In sandbox mode, you won’t receive receipt emails automatically after purchase, but you can manually send them using the instructions above.
+
+### Link
+
+[Link](https://docs.stripe.com/payments/link.md) acts as the merchant of record at checkout and provides subscription management and transaction support on the [Link website](https://link.com).
+
+You can test how Link works during checkout by creating a Link account during an initial Checkout Session. After you create the Link account, attempt another session using the same email address. To authenticate, use the test passcode `000000`.
+
+Test purchases won’t appear in the Link app. You can test the order management tools in the Link app by creating a Link account during a live mode Checkout Session.
+
+## Optional: Configure the tax behavior of your prices
+
+The [tax_behavior](https://docs.stripe.com/tax/products-prices-tax-codes-tax-behavior.md#tax-behavior) of a price specifies whether tax is added on top of the price you set (`tax_behavior: exclusive`) or already included in the price (`tax_behavior: inclusive`).
+
+Managed Payments uses the [tax behavior specified on your price](https://docs.stripe.com/tax/products-prices-tax-codes-tax-behavior.md#set-tax-behavior-on-price). If you don’t specify the price’s tax behavior, Managed Payments adds tax on top of the price you set, by default.
+
+To change the default, go to the [Tax settings](https://dashboard.stripe.com/settings/tax) page in the Dashboard, and update the **Include tax in prices** setting.
+
+## See also
+
+- [How Managed Payments works](https://docs.stripe.com/payments/managed-payments/how-it-works.md)
+- [Update a Checkout integration](https://docs.stripe.com/payments/managed-payments/update-checkout.md)
+- [Eligibility requirements](https://docs.stripe.com/payments/managed-payments/eligibility.md)
+- [Tax compliance](https://docs.stripe.com/payments/managed-payments/tax-compliance.md)

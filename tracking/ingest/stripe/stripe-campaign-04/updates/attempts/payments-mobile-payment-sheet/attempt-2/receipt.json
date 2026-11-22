@@ -1,0 +1,308 @@
+{
+  "job_id": "payments-mobile-payment-sheet",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Payment Sheet\"\ntype: source\ndate_ingested: 2026-04-22\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/mobile/payment-sheet\"\nraw_files:\n  - \"stripe-payments-mobile-payment-sheet-2026-11-07.md\"\n  - \"stripe-inapp-payment-sheet-2025.md\"\ntags: [stripe, mobile, ios, android, react-native, payment-sheet, appearance-api, saved-payment-methods, wallets, card-brand-filtering]\n---\n\n## Summary\n\n[[stripe]]’s April 22 and November 7, 2026 guides describe Payment Sheet as the recommended prebuilt mobile payment UI for most iOS, Android and React Native apps. The sheet displays methods, collects details and confirms in the UI. Supplementary to [[source-stripe-inapp-payments-overview]].\n\n## Customer Identity and Scope\n\nThe November guide says that when the native Payment Sheet uses a Stripe customer identity, it accepts a `Customer` object. Customer-configured Accounts are unsupported in this route. The retained iOS StripePaymentSheet 26.11.0 snapshot declares optional customer configuration (`PaymentSheetConfiguration.swift`, lines 129-131). React Native 0.84.0 makes `customerId` optional and has a setup parameter branch with neither CustomerSession secret nor ephemeral key (`src/types/PaymentSheet.ts`, lines 19-26 and 115-132). These declarations describe optional configuration fields in the retained SDK versions. Saving methods for a customer has its own identity and access requirements.\n\nThe April iOS Embedded Payment Element [[source-stripe-inapp-save-during-payment|save-during-payment guide]] separately documents a server-side customer-configured Account or Customer and temporary scoped CustomerSession access. Accounts v2 documentation and the [[source-stripe-inapp-digital-goods-checkout|hosted iOS Checkout route]] cover their own APIs, versions and eligibility. They do not extend customer-configured Account support to native Payment Sheet.\n\n## US Digital Goods and Android Tap to Add\n\nBoth dated overviews describe using Payment Sheet for US Android digital-goods purchases and point iOS digital-goods apps to an app-to-web Checkout example. That note describes the captured routes and leaves current storefront policy and merchant eligibility unverified.\n\nNovember adds a private-preview access request for Tap to Add. The nearby sentence about all supported platforms has an unspecified subject. The separate [Payment Sheet Tap to Add guide](https://docs.stripe.com/payments/mobile/tap-to-add.md) scopes the preview to Android, a compatible NFC-equipped device and a physical card, with a separate request for access and an existing Payment Sheet integration. The standard SDK platform list and the iOS demo are separate from preview eligibility.\n\n## Layout Options\n\nThe April 22, 2026 guide uses the labels `.automatic`, `.vertical` and `horizontal`. The November 7 guide describes automatic layout, where Stripe selects the appropriate layout, or a vertical or horizontal layout. The change is in how the choices are documented.\n\n![Layout options](../raw/assets/stripe-inapp-ps-layout.png)\n\n## Appearance API\n\nThe Appearance API controls colors, fonts, borders and shadows while keeping the overall layout consistent. The broader April and November In-App Payments overviews list more than 50 appearance customizations.\n\n![Appearance examples](../raw/assets/stripe-inapp-ps-appearance.png)\n\n## Payment Methods\n\nBoth Payment Sheet captures describe catalog access to more than 100 payment methods, localized collection forms, dynamic ordering and display, and A/B testing. Enable methods via Dashboard or [Custom Payment Methods](https://docs.stripe.com/payments/payment-methods/custom-payment-methods.md). The [[source-stripe-inapp-payments-overview|mobile overview]] separately describes 40+ dynamically displayable methods. Method visibility depends on the checkout and account.\n\n![Payment methods examples](../raw/assets/stripe-inapp-ps-payment-methods.png)\n\n## Wallets\n\nPayment Sheet can display eligible wallets such as Apple Pay and Link with express buttons.\n\n![Wallets example](../raw/assets/stripe-inapp-ps-wallets.png)\n\n## Saved Payment Methods\n\nThe sheet can save, display and manage eligible cards, US bank accounts and SEPA Debit. CustomerSessions API controls whether the save-consent checkbox appears, whether saved methods appear, whether the customer may remove saved methods, and whether removal of the last saved method is prevented.\n\nThe guides describe automatic consent collection in the UI. The separate April iOS [[source-stripe-inapp-save-during-payment|save-during-payment guide]] assigns the merchant responsibility for the applicable requirements and consent for the intended use. Customer identity, scoped SDK access via CustomerSession, payment via PaymentIntent, and no-charge setup via SetupIntent each have a separate purpose. A UI result, displayed method or setup does not establish completed payment, fulfillment or settlement.\n\n![Saved payment methods](../raw/assets/stripe-inapp-saved-payment-methods.png)\n\n## Address Collection\n\nPayment Sheet can collect name, email, phone and a full or partial billing address regardless of payment method. The November guide adds Stripe-provided autocomplete for full address collection in supported countries with no additional setup. The Google Maps Platform Acceptable Use Policy applies, and Stripe may disable autocomplete or take other action for violations. See November raw lines 93-99.\n\n![Address collection example](../raw/assets/stripe-inapp-ps-address-collection.png)\n\n## Additional Features\n\n- **CVC recollection:** Both Payment Sheet guides use “saved payment method” for this optional setting. The separately documented April Mobile Payment Element server-confirmation implementation collects details before creating a PaymentIntent and uses the card-specific `payment_method_options.card.require_cvc_recollection` for a saved card. See [[source-stripe-inapp-finalize-payments-server]] and its April raw lines 774-791, 808-819 and 2875-2894.\n- **Card brand filtering**: Configure which card brands you accept\n\n## Dated Navigation\n\nNovember links [Payment Sheet address collection](https://docs.stripe.com/payments/mobile/save-during-payment.md?mobile-ui=payment-sheet#collect-payment-details), [accept a payment and enable saved cards](https://docs.stripe.com/payments/mobile/accept-payment.md?type=payment#enable-saved-cards), and [set up a payment method without a charge](https://docs.stripe.com/payments/mobile/accept-payment.md?type=setup). See November raw lines 38-46.\n\nApril linked [iOS Payment Element address collection](https://docs.stripe.com/payments/mobile/save-during-payment.md?platform=ios&mobile-ui=payment-element#collect-payment-details), [iOS saved payment methods](https://docs.stripe.com/payments/mobile/accept-payment.md?platform=ios&type=payment#enable-saved-cards), and [the standalone setup guide](https://docs.stripe.com/payments/mobile/set-up-future-payments.md). The April demo was an [App Store download](https://apps.apple.com/us/app/stripe-payments-showcase/id6450683352). November provides an [iOS App Clip](https://apps.apple.com/demo/id6450683352?app-clip-bundle-id=com.stripe.PaymentSheetDemo.Clip). The guide links and local or CDN images are dated presentation and navigation.\n\n## Related Pages\n\n- [[stripe-inapp-payments]] — concept page\n- [[source-stripe-inapp-payments-overview]] — overview source\n- [[stripe]] — company page\n\n## Raw Sources\n\n- [[raw/stripe-payments-mobile-payment-sheet-2026-11-07|Stripe’s November 7, 2026 Payment Sheet reference]]\n- [[raw/stripe-inapp-payment-sheet-2025|Stripe’s April 22, 2026 Payment Sheet reference]] — verbatim Payment Sheet reference (92 lines, 8 images).\n\n## Related raw API references\n\n- [[raw/stripe-payments-mobile-tap-to-add-2026-11-07|Payment Sheet Tap to Add guide]] — November 7, 2026 capture, access request and Android scope, lines 5-35.\n",
+  "quotes": {
+    "payments-mobile-payment-sheet": [
+      {
+        "text": "It only supports `Customer` objects.",
+        "location": "raw/stripe-payments-mobile-payment-sheet-2026-11-07.md:13"
+      },
+      {
+        "text": "The tap to add your card feature is in private preview.",
+        "location": "raw/stripe-payments-mobile-payment-sheet-2026-11-07.md:25"
+      },
+      {
+        "text": "Preventing customers from removing the last saved payment method",
+        "location": "raw/stripe-payments-mobile-payment-sheet-2026-11-07.md:88"
+      },
+      {
+        "text": "Full address collection includes Stripe-provided autocomplete for supported countries, with no additional setup required.",
+        "location": "raw/stripe-payments-mobile-payment-sheet-2026-11-07.md:97"
+      },
+      {
+        "text": "If you violate this policy, Stripe might disable autocomplete or take other necessary action.",
+        "location": "raw/stripe-payments-mobile-payment-sheet-2026-11-07.md:99"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-mobile-payment-sheet": [
+      {
+        "text": "Android apps in the US that sell digital goods can now process payments in-app using the Payment Sheet.",
+        "location": "raw/stripe-inapp-payment-sheet-2025.md:12"
+      },
+      {
+        "text": "Saved payment methods supports cards, US bank accounts, and SEPA debit accounts.",
+        "location": "raw/stripe-inapp-payment-sheet-2025.md:68"
+      },
+      {
+        "text": "Set the layout to `.automatic` for Stripe to provide the appropriate payment method layout. You can also select `.vertical` or `horizontal` layout.",
+        "location": "raw/stripe-inapp-payment-sheet-2025.md:36"
+      },
+      {
+        "text": "Configure whether CVC re-collection is required when users pay with a saved payment method.",
+        "location": "raw/stripe-inapp-payment-sheet-2025.md:91"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-mobile-payment-sheet-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 109
+      }
+    ],
+    "raw/stripe-inapp-payment-sheet-2025.md": [
+      {
+        "start": 1,
+        "end": 92
+      }
+    ],
+    "wiki/sources/source-stripe-inapp-payment-sheet.md": [
+      {
+        "start": 1,
+        "end": 65
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/9c5bfbb5321807da0781bd04/content.diff": [
+      {
+        "start": 1,
+        "end": 107
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-mobile-payment-sheet/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 279
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-mobile-payment-sheet/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 98
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/updates/attempts/payments-mobile-payment-sheet/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 185
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/updates/attempts/payments-mobile-payment-sheet/attempt-1/candidate.md": [
+      {
+        "start": 1,
+        "end": 93
+      }
+    ],
+    "wiki/concepts/stripe-inapp-payments.md": [
+      {
+        "start": 8,
+        "end": 108
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 4,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 103,
+        "end": 108
+      },
+      {
+        "start": 778,
+        "end": 778
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 373,
+        "end": 373
+      }
+    ],
+    "raw/stripe-inapp-payments-overview-2025.md": [
+      {
+        "start": 11,
+        "end": 15
+      },
+      {
+        "start": 29,
+        "end": 35
+      }
+    ],
+    "raw/stripe-payments-mobile-2026-11-07.md": [
+      {
+        "start": 19,
+        "end": 23
+      },
+      {
+        "start": 37,
+        "end": 42
+      }
+    ],
+    "raw/stripe-payments-mobile-tap-to-add-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 35
+      }
+    ],
+    "raw/stripe-inapp-save-during-payment-2025.md": [
+      {
+        "start": 8,
+        "end": 12
+      },
+      {
+        "start": 20,
+        "end": 33
+      },
+      {
+        "start": 109,
+        "end": 132
+      },
+      {
+        "start": 621,
+        "end": 632
+      }
+    ],
+    "raw/stripe-inapp-finalize-payments-server-2025.md": [
+      {
+        "start": 1,
+        "end": 12
+      },
+      {
+        "start": 774,
+        "end": 791
+      },
+      {
+        "start": 808,
+        "end": 819
+      },
+      {
+        "start": 2875,
+        "end": 2894
+      }
+    ],
+    "raw/stripe-accounts-v2-use-accounts-as-customers-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 13
+      },
+      {
+        "start": 67,
+        "end": 82
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 435,
+        "end": 441
+      }
+    ],
+    "raw/github/stripe/stripe-ios/snapshots/2026-09-30-7037819/files/StripePaymentSheet.podspec": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "raw/github/stripe/stripe-ios/snapshots/2026-09-30-7037819/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetConfiguration.swift": [
+      {
+        "start": 129,
+        "end": 131
+      }
+    ],
+    "raw/github/stripe/stripe-react-native/snapshots/2026-10-29-33ef1ee/files/package.json": [
+      {
+        "start": 1,
+        "end": 7
+      }
+    ],
+    "raw/github/stripe/stripe-react-native/snapshots/2026-10-29-33ef1ee/files/src/types/PaymentSheet.ts": [
+      {
+        "start": 19,
+        "end": 26
+      },
+      {
+        "start": 115,
+        "end": 132
+      }
+    ]
+  },
+  "answers": {
+    "payments-mobile-payment-sheet": {
+      "Q1": "At https://docs.stripe.com/payments/mobile/payment-sheet, both the April 22 capture (old raw lines 4-39 and 41-92) and the November 7 capture (new raw lines 5-52 and 54-109) describe Stripe’s recommended prebuilt, customizable Payment Sheet for most iOS, Android and React Native apps. The in-app UI provides automatic, vertical or horizontal layout, Appearance API styling, localized forms, dynamic method display/order and A/B testing, Dashboard or Custom Payment Methods, and possible Apple Pay and Link express buttons. Access to over 100 methods is catalog access. Both document saving cards, US bank and SEPA debit, automatic UI consent collection and card-brand filtering. Both dated captures use ‘saved payment method’ for optional CVC recollection (old raw line 91 and new raw line 108). The verified implementation concerns a saved card: the April 22, 2026 Mobile Payment Element deferred server-confirmation route collects details before creating a PaymentIntent and uses the card-specific require_cvc_recollection option (raw/stripe-inapp-finalize-payments-server-2025.md lines 774-791, 808-819 and 2875-2894). That supports the mapped source’s saved-card scope at line 55 without extending the capability to US bank or SEPA debit. CustomerSessions API controls the save checkbox, saved-list visibility and method removal, including protecting the last method. When a Stripe customer identity is supplied, native Payment Sheet supports Customer objects and excludes customer-configured Accounts (new raw lines 9-13). The capture does not require a Customer or CustomerSession for every payment. The retained iOS StripePaymentSheet 26.11.0 snapshot declares optional customer configuration (StripePaymentSheet.podspec line 6 and PaymentSheetConfiguration.swift lines 129-131). The retained React Native 0.84.0 snapshot makes customerId optional and includes a SetupParamsBase branch without a CustomerSession secret or ephemeral key (package.json line 3 and src/types/PaymentSheet.ts lines 19-26 and 115-132). These are versioned SDK declarations, separate from April’s customer-bound save-for-reuse flow and from production payment outcomes. Customer identity and CustomerSession access are distinct from PaymentIntent payment or SetupIntent without an initial charge. The US Android digital-goods note allows in-app Payment Sheet and points iOS to app-to-web Checkout. Tap to Add is a separate access-request private preview, explicitly Android-only with compatible NFC hardware in its dedicated November guide. Both captures allow configurable billing name, email, phone and address; November adds supported-country full-address autocomplete with no additional setup and Google Maps policy conditions. source-stripe-inapp-payment-sheet.md captures most of April’s stable behavior and uses a separately supported appearance count. It omits November’s identity, preview and autocomplete boundaries and compresses saved-method controls. Its saved-card CVC scope has the dated implementation support above. The revised source retains the April details and adds those three boundaries and all four CustomerSession controls.",
+      "Q2": "For https://docs.stripe.com/payments/mobile/payment-sheet, compare old raw lines 8-39 and 64-92 with new raw lines 9-52 and 77-109 when updating source-stripe-inapp-payment-sheet.md. Substantive November clarifications are native Payment Sheet’s Customer-only identity compatibility when an identity is supplied, disclosure of the access-request Tap to Add private preview, and Stripe autocomplete for full billing addresses in supported countries with no extra setup. Google Maps Platform Acceptable Use Policy applies, with possible disablement or other action. Carry reciprocal route warnings for the ambiguous “This feature is available across all supported platforms” and the contemporaneous dedicated guide’s explicit Android-only compatible-NFC-device private preview, and for that native Payment Sheet identity boundary versus the dated Embedded Payment Element Account-or-Customer server route and general Accounts v2 or hosted Checkout guidance. Keep the separately scoped 100+ Payment Sheet catalog and 40+ mobile dynamic display counts and the automatic consent UI alongside merchant compliance obligations. Date April’s US Android/iOS app-to-web note, demo and legacy links, and preserve its raw provenance. App Clip versus download QR is demo navigation, the address link changes from an iOS payment-element route to payment-sheet, the saved-method link drops the iOS qualifier and setup moves to accept-payment type=setup. CDN assets, wording and generic layout labels establish neither an SDK version change nor deprecated integrations. The retained iOS and React Native SDK declarations support optional customer configuration within their snapshot scope. Neither a Customer nor a CustomerSession is required for every payment. Preserve the April and November ‘saved payment method’ CVC wording alongside the dated saved-card server-confirmation implementation. Keep Customer, CustomerSession, PaymentIntent and SetupIntent separate, and scope integration version/secret/event details to linked implementation authority. Method visibility, customer consent, setup and a UI result cannot establish completed payment or settlement. The revised source preserves the old and new link destinations and carries these route-specific qualifications to the In-App Payments concept."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "s04-payment-sheet-identity",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Payment Sheet** is recommended for most use cases — single prebuilt sheet handles display, collection, and confirmation. Supports 50+ appearance customizations.",
+      "proposed_markdown": "**Payment Sheet** is recommended for most use cases. The single prebuilt sheet handles display, collection and confirmation and supports more than 50 appearance customizations. In the November 2026 guide, native Payment Sheet accepts only `Customer` objects when a Stripe customer identity is supplied. Customer-configured Accounts are unsupported in this route. The retained iOS 26.11.0 and React Native 0.84.0 SDK declarations make customer configuration optional within those snapshots. The April iOS Embedded Payment Element save-during-payment guide separately documents the server-side Account-or-Customer path. See [[source-stripe-inapp-payment-sheet]] and [[source-stripe-inapp-save-during-payment]].",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "November Payment Sheet raw lines 9-13; April save-during-payment raw lines 8-12 and 109-132; iOS 26.11.0 PaymentSheetConfiguration.swift lines 129-131; React Native 0.84.0 PaymentSheet.ts lines 19-26 and 115-132."
+      ]
+    },
+    {
+      "update_id": "s04-payment-sheet-address",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Address collection**: name, email, phone, full billing address — configurable per transaction",
+      "proposed_markdown": "- **Billing details** — name, email, phone and full or partial billing address are configurable. The November 2026 Payment Sheet guide adds Stripe-provided autocomplete for full addresses in supported countries, subject to the Google Maps Platform Acceptable Use Policy.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "November Payment Sheet raw lines 38-40 and 93-99."
+      ]
+    },
+    {
+      "update_id": "s04-payment-sheet-source",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-inapp-payment-sheet]] — Payment Sheet detail: layout, Appearance API, wallets, address collection, CVC recollection, card brand filtering",
+      "proposed_markdown": "- [[source-stripe-inapp-payment-sheet]] — April and November 2026 Payment Sheet guides for layout, appearance, saved methods, customer identity and billing address collection. The linked Tap to Add guide describes the separate request-access Android NFC private preview.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "November Payment Sheet raw lines 9-25 and 77-109; separate Tap to Add raw lines 5-35."
+      ]
+    },
+    {
+      "update_id": "s04-payment-sheet-consent-ui",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "CustomerSessions API controls:",
+      "proposed_markdown": "The April and November 2026 native Payment Sheet guides describe automatic saving-consent UI. The merchant remains responsible for applicable rules, terms and purpose-specific consent, as scoped in the separate April iOS Payment Element save guide. CustomerSessions API controls:",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "April Payment Sheet raw lines 64-75 and November raw lines 77-88 document the UI. The companion April iOS save guide raw lines 22-33 supplies the separate merchant obligations. The sibling save-during-payment suggestion handles the original blanket compliance sentence after the control list."
+      ]
+    },
+    {
+      "update_id": "s04-payment-sheet-layout-wording",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Layout**: `.automatic` (Stripe picks), `.vertical`, or `.horizontal`",
+      "proposed_markdown": "- **Layout** — the April 2026 guide writes `.automatic`, `.vertical` and `horizontal`. The November guide describes automatic layout (Stripe selects), vertical or horizontal in plain language.",
+      "quote_indexes": [],
+      "warnings": [
+        "April Payment Sheet raw line 36 and November raw line 49 document wording, with no cross-SDK enum claim."
+      ]
+    }
+  ]
+}

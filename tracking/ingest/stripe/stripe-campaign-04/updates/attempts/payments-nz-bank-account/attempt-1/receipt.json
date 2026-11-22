@@ -1,0 +1,294 @@
+{
+  "job_id": "payments-nz-bank-account",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: New Zealand BECS Direct Debit Payments\"\ntype: source\ndate_ingested: 2026-05-03\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/nz-bank-account\"\nraw_files:\n  - \"stripe-payments-nz-bank-account-2026-11-07.md\"\n  - \"stripe-nz-becs-debit-2025.md\"\ntags: [stripe, nz-becs, becs, new-zealand, nzd, bank-debit, mandates, disputes]\n---\n\n## Summary\n\nThe May 3 and November 7, 2026 overviews describe a reusable, business-initiated, delayed NZD bank debit for New Zealand bank accounts. The payment method is `nz_bank_account`. A customer's Direct Debit Authority (DDA) authorizes Stripe to make debits. Submission, final payment outcome, and funds availability are distinct.\n\n## Eligibility and limits\n\nThe November overview describes domestic NZD payments for New Zealand customers and New Zealand Stripe accounts, including merchants and Connect platforms or marketplaces, for B2B or B2C. Access requires approval. Request access in Payment methods settings and complete the additional identity checks when prompted. Prohibited merchant category codes (MCCs) are ineligible. A business with a restricted MCC may qualify and must provide additional information when creating the account. The separate list of prohibited or restricted business categories is at lines 309–324.\n\nThe minimum is **NZD 0.50** and the scheme maximum is **NZD 999,999,999.99**. The default per-transaction account limit and initial weekly volume limit are **NZD 10,000 each**. Both applicable account limits apply. They can differ with approval or increases. See November lines 18–69 for category and limit details.\n\n## Product support and off-session scope\n\nThe May overview listed Connect, Checkout, Payment Links, Subscriptions, Invoicing, and Elements generally. The November overview specifies:\n\n| Area | Listed support in November |\n| --- | --- |\n| Checkout UI | Full page (recommended), Payment Links, embedded form, and Payment Element. Express Checkout Element, Payment Method Messaging Element, and in-app payments are excluded. |\n| Products | Billing, Invoicing, Customer Portal, and Connect. Managed Payments, Radar, and Terminal are excluded. |\n| APIs and capabilities | Checkout Sessions (recommended), PaymentIntents, PaymentIntents with `setup_future_usage`, SetupIntents, and recurring payments. The API grid marks off-session payments unsupported. |\n| Authorization and capture | Extended, flexible extended, incremental and decremental authorizations and reauthorizations are excluded. Manual, partial, multi-, and over-capture are excluded. |\n\nThe same-date [[source-stripe-nz-becs-accept-payment|acceptance guide]] shows `setup_future_usage=off_session` when saving after a successful PaymentIntent. That guide and the [[source-stripe-nz-becs-set-up-payment|setup guide]] show separate, confirmed NZD PaymentIntents with `off_session=true` and the saved PaymentMethod for both a customer-configured Accounts v2 Account and a Customers v1 Customer. The setup route attaches the PaymentMethod after SetupIntent success. Both May integration guides have earlier Customers v1 examples. The November examples and the overview's **Off-session payments unsupported** cell leave product scope and account eligibility unresolved. A saved method or a request example establishes neither a successful debit nor off-session availability.\n\n## Debit submission, outcome, and settlement\n\n| Dated statement | Time and reference point |\n| --- | --- |\n| May overview result notification | Up to two business days after initiating the debit. |\n| Both overviews' standard settlement table | T+2 business days after submission at 00:00 UTC for payment success and availability in the Stripe balance. The cutoff is 18:20 Pacific/Auckland. |\n| November acceptance guide result notification | Within three business days after Stripe submits the debit, for PaymentIntent success or failure. |\n\nBoth overviews say payments are generally submitted the day they are created, with next-business-day handling when created after cutoff or on a non-business day. The November checkout flow confirms submission for processing first. Wait for success or failure as a separate outcome. See the acceptance guide's `payment_intent.processing`, `payment_intent.succeeded`, and `payment_intent.payment_failed` routes. A Charge's `payment_method_details.expected_debit_date` is an estimate. It can appear in the API and Charge update, success, and failure events when Stripe can determine it.\n\n## Mandates and customer emails\n\nCheckout and Payment Element collect the account holder name, email, bank account details, and agreement to the NZ BECS Direct Debit Service Terms and Conditions. If using other collection, display the terms and confirm acceptance. For a mandate created by SetupIntent, read `SetupIntent.mandate` and retrieve it via `GET /v1/mandates/{id}`. The Dashboard also displays mandate details.\n\nCustomers can cancel via their bank or the merchant. Detach the PaymentMethod to inactivate the mandate in Stripe, and establish a new DDA before further authorized debits. `mandate.updated` can signal inactivation when the customer cancels or after a permanent debit failure.\n\n- **Mandate confirmation.** The May overview says within five days of establishing the mandate. The May acceptance and setup samples say five business days after the customer's DDA confirmation. The November overview and both November samples say five days. The November overview describes Stripe's default immediate email after mandate collection, including successful PaymentIntent confirmation or SetupIntent success when used to collect the mandate. The email includes mandate date, Stripe New Zealand Limited's authorization code 3143978 and role, applicable terms, bank and account details, any distinct authorized signatory, and merchant contact information.\n- **Debit notification.** The May overview says on the day of each debit. November says **no later than the day of each debit**. Both distinguish Stripe's default immediate send after every successful PaymentIntent confirmation. The email contains the amount, debit date, Stripe New Zealand Limited debit and statement notices, and merchant contact details. Contact Stripe Support to disable Stripe emails and send custom notices.\n\n## Disputes and refunds\n\n- **Disputes.** A customer can dispute whether the DDA authorizes a debit for up to nine months from the first payment. Missing or mismatched notice permits a dispute for up to 120 days from the individual payment. November limits disputes to the full payment amount. `charge.dispute.created` identifies dispute creation. Stripe immediately removes funds if the customer's bank rules for the customer and requests their return.\n- **Refunds.** Both overviews describe full or partial refunds within 90 days of the original payment, typically processed in three to five business days, and warn that a concurrent bank dispute can result in a double credit. A refund appears as a bank statement credit referencing the original descriptor.\n- **Dated refund states.** May says a refund requested before payment completion begins when the PaymentIntent reaches `succeeded`, and is marked canceled if the payment fails and the Intent enters `requires_payment_method`. November says a refund request before debit submission cancels the payment. After submission, the refund remains pending until payment succeeds and is marked failed if the payment fails. Retrieve the Refund to check its status. The two descriptions give distinct scopes and status wording.\n\n## Billing retries and statement descriptors\n\nThe May guide labeled automatic insufficient-funds retries private preview. November documents settings for recurring subscription invoices, one-off invoices, or both. Stripe can automatically retry each failed payment once and no more than 30 days after the original attempt. Stripe charges no debit failure fee for attempts it initiates automatically. The capture leaves the feature's general availability undetermined.\n\nThe November descriptor rules use the payment-level descriptor before the account-level default, use the first 12 characters, and fall back to the business name and then Stripe. For Connect direct charges, use the connected account's default. For destination charges and separate charges and transfers, use the platform's default even with `on_behalf_of`. The actual statement may instead say “Stripe New Zealand Limited.”\n\n## Related Pages\n\n- [[stripe-nz-becs-debit]] — NZ BECS Direct Debit concept and dated integration scopes\n- [[source-stripe-nz-becs-migrate-from-processor]] — separate route for migrating existing mandates\n\n## Raw Sources\n\n- [[raw/stripe-payments-nz-bank-account-2026-11-07|2026-11-07 NZ BECS Direct Debit overview]]\n- [[raw/stripe-nz-becs-debit-2025|2026-05-03 NZ BECS Direct Debit overview]] — reuses three flow illustrations from `raw/assets/stripe-acss-debit-*.svg`\n",
+  "quotes": {
+    "payments-nz-bank-account": [
+      {
+        "text": "The maximum transaction amount in the Payment support table is the scheme maximum, not your account’s processing limit.",
+        "location": "raw/stripe-payments-nz-bank-account-2026-11-07.md:64"
+      },
+      {
+        "text": "If the payment fails, Stripe marks the pending refund as failed.",
+        "location": "raw/stripe-payments-nz-bank-account-2026-11-07.md:102"
+      },
+      {
+        "text": "✗ Off-session payments",
+        "location": "raw/stripe-payments-nz-bank-account-2026-11-07.md:196"
+      },
+      {
+        "text": "You must notify your customer by email within 5 days after collecting a mandate, and notify your customer of each debit no later than the day it occurs.",
+        "location": "raw/stripe-payments-nz-bank-account-2026-11-07.md:226"
+      },
+      {
+        "text": "Stripe can automatically retry each failed NZ BECS Direct Debit payment a maximum of 1 time, no more than 30 days after the original payment attempt.",
+        "location": "raw/stripe-payments-nz-bank-account-2026-11-07.md:261"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-nz-bank-account": [
+      {
+        "text": "- Elements",
+        "location": "raw/stripe-nz-becs-debit-2025.md:69"
+      },
+      {
+        "text": "T+2 at 00:00 UTC",
+        "location": "raw/stripe-nz-becs-debit-2025.md:119"
+      },
+      {
+        "text": "and on the day of the debit each time you debit their account.",
+        "location": "raw/stripe-nz-becs-debit-2025.md:137"
+      },
+      {
+        "text": "If the customer’s bank rules in favor of the customer and requests a return of funds, Stripe immediately removes the funds from your Stripe account.",
+        "location": "raw/stripe-nz-becs-debit-2025.md:177"
+      },
+      {
+        "text": "the full or partial refund is marked as canceled",
+        "location": "raw/stripe-nz-becs-debit-2025.md:187"
+      },
+      {
+        "text": "## Billing Retries (Private preview)",
+        "location": "raw/stripe-nz-becs-debit-2025.md:195"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-nz-bank-account-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 324
+      }
+    ],
+    "raw/stripe-nz-becs-debit-2025.md": [
+      {
+        "start": 1,
+        "end": 197
+      }
+    ],
+    "wiki/sources/source-stripe-nz-becs-debit.md": [
+      {
+        "start": 1,
+        "end": 42
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/15e10578b083ab107045e72f/content.diff": [
+      {
+        "start": 1,
+        "end": 469
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-nz-bank-account/attempt-3/receipt.json": [
+      {
+        "start": 1,
+        "end": 246
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-nz-bank-account/attempt-3/review.json": [
+      {
+        "start": 1,
+        "end": 68
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 11
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 259,
+        "end": 262
+      },
+      {
+        "start": 742,
+        "end": 742
+      }
+    ],
+    "wiki/concepts/stripe-nz-becs-debit.md": [
+      {
+        "start": 1,
+        "end": 85
+      }
+    ],
+    "raw/stripe-payments-nz-bank-account-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 76,
+        "end": 105
+      },
+      {
+        "start": 215,
+        "end": 232
+      },
+      {
+        "start": 275,
+        "end": 320
+      }
+    ],
+    "raw/stripe-payments-nz-bank-account-set-up-payment-2026-11-07.md": [
+      {
+        "start": 211,
+        "end": 224
+      },
+      {
+        "start": 259,
+        "end": 296
+      }
+    ],
+    "raw/stripe-nz-becs-accept-payment-2025.md": [
+      {
+        "start": 244,
+        "end": 257
+      },
+      {
+        "start": 319,
+        "end": 337
+      }
+    ],
+    "raw/stripe-nz-becs-set-up-payment-2025.md": [
+      {
+        "start": 200,
+        "end": 212
+      },
+      {
+        "start": 258,
+        "end": 276
+      }
+    ],
+    "wiki/sources/source-stripe-nz-becs-accept-payment.md": [
+      {
+        "start": 11,
+        "end": 57
+      }
+    ],
+    "wiki/sources/source-stripe-nz-becs-set-up-payment.md": [
+      {
+        "start": 1,
+        "end": 43
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 579,
+        "end": 585
+      }
+    ]
+  },
+  "answers": {
+    "payments-nz-bank-account": {
+      "Q1": "The November 7 capture of https://docs.stripe.com/payments/nz-bank-account documents a reusable, delayed domestic NZD bank debit for approved NZ accounts and customers with NZ bank accounts. It covers NZ-based merchants and Connect platforms or marketplaces serving NZ customers in B2B or B2C, for domestic payments only. Access requires approval and additional identity verification. Businesses with prohibited merchant category codes (MCCs) cannot use the method. A business with a restricted MCC may be able to use it and must provide additional information when creating the account (new raw lines 29-45). The separate business-category list identifies additional prohibited or restricted categories (new raw lines 309-324). The NZD 0.50 minimum and NZD 999,999,999.99 scheme ceiling are separate from the default NZD 10,000 per-transaction limit and initial NZD 10,000 weekly volume limit. Payments must satisfy both actual account limits, which can differ by approval status and subsequent increases. A customer Direct Debit Authority must authorize Stripe to debit (new raw lines 9-16, 18-69 and 309-324). Checkout and Payment Element collect terms acceptance. Other collection paths require displaying the terms and confirming acceptance. A SetupIntent can identify the mandate, and detaching the PaymentMethod inactivates the Stripe mandate after cancellation. Customer debit submission takes place before final payment success or failure. Standard success and balance availability are T+2 business days from submission at 00:00 UTC, with an 18:20 Pacific/Auckland cutoff and an estimated Charge debit date (new raw lines 140-170, 210-222 and 265-281). The overview supports recurring payments and saving via Payment Intents or Setup Intents yet marks off-session payments unsupported. The separate November acceptance and setup guides document later server off_session=true PaymentIntents using attached payment methods, so the support boundary remains unresolved (new raw lines 172-208). The May overview establishes the same DDA, domestic NZD, delayed payment, standard timing, support-assisted email override and dispute/refund basics (old raw lines 8-73 and 109-193). source-stripe-nz-becs-debit.md preserves many of those details but omits November's precise scope and conflates the debit notice deadline with Stripe's send trigger and dispute creation with balance removal. The candidate adds the dated eligibility, states, and support boundaries.",
+      "Q2": "For https://docs.stripe.com/payments/nz-bank-account, substantive November documentation changes include the approval and account-versus-scheme limit detail, explicit UI/product/API exclusions, mandate retrieval/inactivation, new pre-submission cancellation and post-submission Refund tracking, retry limits, and Connect descriptor rules (new raw lines 14-69, 87-122, 140-196 and 257-301). Reordered sections, table layout, replacement of illustrations and guide links are presentational or navigational. The revised flow's distinction between submission and final success is meaningful (old raw lines 75-107 and new raw lines 197-208 and 265-281). In source-stripe-nz-becs-debit.md keep May's day-of-debit requirement, private-preview label and failed-payment refund described as canceled dated (old raw lines 135-167 and 183-197). November says no later than debit day, describes Stripe's separate immediate pre-debit send after successful confirmation, and says a post-submission pending refund is failed if the debit fails (new raw lines 96-106 and 224-255). Preserve the separate dated mandate sample wording. The May overview says within five days of establishing the mandate (old raw lines 135-143), while the May acceptance and setup samples say no later than five business days after the customer confirms the DDA (acceptance lines 244-257 and setup lines 200-212). The November overview and both November samples use five days (new raw lines 224-245, November acceptance lines 215-232 and November setup lines 211-224). Add reciprocal warnings for this earlier discrepancy to the overview, acceptance, setup and concept routes. The mandate confirmation window is separate from the per-debit notice deadline and Stripe's immediate pre-debit send after successful PaymentIntent confirmation. The May overview describes up to two business days from debit initiation to receive a result (old raw lines 8-12). The November overview's standard settlement table shows payment success and availability in the Stripe balance at T+2 from submission at 00:00 UTC (new raw lines 210-222). The separate November acceptance guide lines 275-289 describes notification of the PaymentIntent's success or failure within three business days after Stripe submits the debit. Keep these time bases and outcomes explicit on both linked routes. A dispute-created event and a bank ruling that triggers fund removal are distinct. The 9-month and 120-day windows have separate starting dates (old raw lines 169-181 and new raw lines 124-138). Add reciprocal warnings across the overview, acceptance, setup, NZ BECS concept and index. The November overview flags off-session payments as unsupported despite listed future-use and recurring capabilities (new raw lines 172-208). The separately dated November acceptance guide lines 291-320 and setup guide lines 259-296 show a new server PaymentIntent with confirm=true and off_session=true after a PaymentMethod attaches to a customer-configured Account or Customer. The older guides show dated Customers v1 examples. A saved or recurring payment method, an accepted request and a submitted debit establish distinct states. The documentation conflict provides no general off-session availability or payment-success conclusion. The candidate records all three timing reference points and links the acceptance and setup routes."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-nz-bank-account-submission-timing",
+      "target_path": "wiki/concepts/stripe-nz-becs-debit.md",
+      "update_kind": "durable_fact",
+      "anchor": "| Standard | T+2 at 00:00 UTC | T+2 at 00:00 UTC | 18:20 Pacific/Auckland |",
+      "proposed_markdown": "| Standard (May and November 2026) | T+2 business days after submission at 00:00 UTC | T+2 business days after submission at 00:00 UTC | 18:20 Pacific/Auckland |",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Settlement table: raw/stripe-nz-becs-debit-2025.md:109-119 and raw/stripe-payments-nz-bank-account-2026-11-07.md:210-222. Day zero is submission."
+      ]
+    },
+    {
+      "update_id": "payments-nz-bank-account-result-timing",
+      "target_path": "wiki/concepts/stripe-nz-becs-debit.md",
+      "update_kind": "durable_fact",
+      "anchor": "`expected_debit_date` available on `payment_method_details` for Charges (estimated, not guaranteed).",
+      "proposed_markdown": "The Charge's `payment_method_details.expected_debit_date` estimates when funds may be debited. The May overview separately describes up to two business days from initiation to receive a payment result. The November [[source-stripe-nz-becs-accept-payment|acceptance guide]] says the PaymentIntent success or failure notification comes within three business days after submission. Submission confirmation indicates processing.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "May timing: raw/stripe-nz-becs-debit-2025.md:8-12,109-119. November overview: raw/stripe-payments-nz-bank-account-2026-11-07.md:210-222,265-281. Acceptance result: raw/stripe-payments-nz-bank-account-accept-a-payment-2026-11-07.md:275-289."
+      ]
+    },
+    {
+      "update_id": "payments-nz-bank-account-dispute-state",
+      "target_path": "wiki/concepts/stripe-nz-becs-debit.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **9 months** from first payment: if customer isn't satisfied the DDA authorizes the debit\n- **120 days** from payment: if pre-debit notification wasn't sent, or amount/date differs from notification\n- `charge.dispute.created` event fired; Stripe immediately removes funds\n- Risk of double-credit if refund issued while dispute in flight",
+      "proposed_markdown": "- **9 months from the first payment** for a dispute about whether the DDA authorizes the debit.\n- **120 days from the individual payment** for missing or mismatched notice.\n- The November overview limits disputes to the full amount. `charge.dispute.created` marks creation. Stripe removes funds immediately when the customer's bank rules for the customer and requests the return.\n- A refund issued while a dispute is in flight can cause a double credit.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "Disputes: raw/stripe-nz-becs-debit-2025.md:169-181 and raw/stripe-payments-nz-bank-account-2026-11-07.md:124-138."
+      ]
+    },
+    {
+      "update_id": "payments-nz-bank-account-dated-ui-support",
+      "target_path": "wiki/concepts/stripe-nz-becs-debit.md",
+      "update_kind": "durable_fact",
+      "anchor": "Connect, Checkout, Payment Links, Subscriptions, Invoicing, Elements (full product support, no ECE restriction mentioned).",
+      "proposed_markdown": "The May overview lists Connect, Checkout, Payment Links, Subscriptions, Invoicing, and Elements generally. The November grid lists the full page, embedded form, Payment Links, and Payment Element. It excludes Express Checkout Element, Payment Method Messaging Element, and in-app payments. See [[source-stripe-nz-becs-debit]] for the dated products, APIs, and off-session conflict.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "Product scope: raw/stripe-nz-becs-debit-2025.md:62-69 and raw/stripe-payments-nz-bank-account-2026-11-07.md:172-196."
+      ]
+    },
+    {
+      "update_id": "payments-nz-bank-account-retry-scope",
+      "target_path": "wiki/concepts/stripe-nz-becs-debit.md",
+      "update_kind": "durable_fact",
+      "anchor": "Private preview. Auto-retry for insufficient funds on subscription or one-off invoices.",
+      "proposed_markdown": "The May 2026 overview labeled the insufficient-funds retry feature private preview. The November guide describes settings for recurring subscription and one-off invoices, one automatic retry per failed payment within 30 days of the initial attempt, and no debit failure fee for Stripe's automatic retries. General availability remains undetermined.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "May preview: raw/stripe-nz-becs-debit-2025.md:195-197. November limits and fee scope: raw/stripe-payments-nz-bank-account-2026-11-07.md:257-263."
+      ]
+    },
+    {
+      "update_id": "payments-nz-bank-account-comparison-debit-day",
+      "target_path": "wiki/concepts/stripe-nz-becs-debit.md",
+      "update_kind": "durable_fact",
+      "anchor": "| Pre-debit email | Day of debit | Day before debit |",
+      "proposed_markdown": "| Pre-debit email | No later than the day of the debit (November 2026 NZ overview) | Day before debit |",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "May NZ wording: raw/stripe-nz-becs-debit-2025.md:135-143. November NZ deadline: raw/stripe-payments-nz-bank-account-2026-11-07.md:224-228."
+      ]
+    },
+    {
+      "update_id": "payments-nz-bank-account-overview-route",
+      "target_path": "wiki/concepts/stripe-nz-becs-debit.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-nz-becs-debit]] — primary source: settlement, mandates, DDA emails, disputes, refunds",
+      "proposed_markdown": "- [[source-stripe-nz-becs-debit]] — May and November 2026 overview of approval, account limits, submission-relative settlement, notices, disputes, and refunds. November's off-session Unsupported cell conflicts with dated acceptance and setup examples, and the May overview's five-day mandate wording differs from the May samples' five business days.",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "Off-session grid: raw/stripe-payments-nz-bank-account-2026-11-07.md:191-207. Acceptance and setup examples: raw/stripe-payments-nz-bank-account-accept-a-payment-2026-11-07.md:291-320 and raw/stripe-payments-nz-bank-account-set-up-payment-2026-11-07.md:259-296. Mandate wording: raw/stripe-nz-becs-debit-2025.md:135-143, raw/stripe-payments-nz-bank-account-accept-a-payment-2026-11-07.md:215-232 and raw/stripe-payments-nz-bank-account-set-up-payment-2026-11-07.md:211-224."
+      ]
+    },
+    {
+      "update_id": "payments-nz-bank-account-acceptance-route",
+      "target_path": "wiki/concepts/stripe-nz-becs-debit.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-nz-becs-accept-payment]] — integration guide: PaymentIntent + Payment Element, DDA mandate text, off-session charging, 6 test accounts, target_date",
+      "proposed_markdown": "- [[source-stripe-nz-becs-accept-payment]] — PaymentIntent and Payment Element acceptance guide, mandate, target date, and sandbox tests. Its November PaymentIntent result notification is measured from submission. Its later `off_session=true` examples conflict with the same-date overview's Unsupported cell. May mandate sample says five business days and November says five days.",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": [
+        "Acceptance result and examples: raw/stripe-payments-nz-bank-account-accept-a-payment-2026-11-07.md:275-320. Overview cell: raw/stripe-payments-nz-bank-account-2026-11-07.md:196. Acceptance DDA samples: raw/stripe-nz-becs-accept-payment-2025.md:244-257 and raw/stripe-payments-nz-bank-account-accept-a-payment-2026-11-07.md:215-232."
+      ]
+    }
+  ]
+}

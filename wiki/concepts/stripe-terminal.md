@@ -9,6 +9,8 @@ tags: [stripe, terminal, in-person, point-of-sale, card-reader, tap-to-pay, offl
 
 Stripe's in-person payment product. Enables businesses to accept card payments using physical card readers and unifies in-person payments with online payments in a single Stripe Dashboard. Works with Stripe Connect platforms.
 
+The November 2026 [[source-stripe-mx-installments|Mexico installments overview]] lists Terminal for Stripe Mexico accounts. The separate [[source-stripe-mx-installments-accept-payment|Mexico acceptance guide]] provides variant navigation. SDK, reader, and account-specific availability must be established for the integration in use.
+
 ## Architecture
 
 Every Terminal deployment has four components:

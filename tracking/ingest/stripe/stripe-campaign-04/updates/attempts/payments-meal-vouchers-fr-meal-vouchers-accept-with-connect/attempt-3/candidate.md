@@ -1,0 +1,61 @@
+---
+title: "Stripe: Accept Titres-Restaurant Payments with Connect"
+type: source
+date_ingested: 2026-05-05
+date_updated: 2026-11-22
+original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/accept-with-connect"
+raw_files:
+  - "stripe-payments-meal-vouchers-fr-meal-vouchers-accept-with-connect-2026-11-07.md"
+  - "stripe-fr-meal-vouchers-connect-2025.md"
+tags: [stripe, meal-vouchers, france, titres-restaurant, connect, charges, platform]
+---
+
+## Summary
+
+The May 5 and November 7, 2026 Connect guides cover French meal voucher acceptance using direct or platform charges. Both describe private preview. November adds a waitlist email request and requires preview Stripe version `2026-05-27.preview` or later for this flow. An access request precedes any approval or onboarding.
+
+## Onboard the merchant of record's payment location
+
+The May guide provisions the establishment's SIRET on the merchant of record and passes that SIRET on the PaymentIntent. The November Connect guide uses a Payment Location instead. The separate November preview API setup guide requires a CNTR license and an agreement with each issuer the merchant wants to accept. Create the Payment Location and request its `fr_meal_vouchers_conecs_payments` capability on behalf of the merchant of record. Use `Stripe-Account` when the connected account is the merchant of record. Accept vouchers only once the location capability is **active**. Location creation, a pending request, and a list of supported issuers can precede activation.
+
+The separate November [[source-stripe-fr-meal-vouchers-setup-restaurant|Dashboard setup guide]] keeps restaurant name and SIRET immutable after creation. Its onboarding drawer shows the Payment Location ID once onboarding is verified. In the November preview API, Stripe blocks changes to onboarding-sensitive fields such as SIRET and address by default. A change with `onboarding_data_update_acknowledged=true` triggers re-onboarding and returns the location capability to `pending`. Voucher acceptance is paused until the capability becomes active again.
+
+## Charge types and request fields
+
+| Charge type | Scope in both Connect captures |
+| --- | --- |
+| Direct charge | Supported. Use the connected account's `Stripe-Account` header. |
+| Platform charge | Supported. Create the PaymentIntent on the platform. |
+| Destination charge | Unsupported for voucher payments. |
+| Separate charges and transfers | Unsupported for voucher payments. |
+
+The November direct and platform examples set EUR, `payment_details[location]` to the Payment Location ID, and `payment_details[benefit][fr_meal_voucher][enabled]` to `if_payment_method_is_eligible`. The November platform examples keep `on_behalf_of` for the connected account and omit `transfer_data`, `application_fee_amount`, and `transfer_group`. They omit a voucher proceeds transfer to the connected account. Their Before/After sections illustrate converting existing card charge flows. The destination Before prose names `transfer_data[destination]`, while its example shows only `on_behalf_of`. The separate API setup guide cites destination charges with `on_behalf_of` to illustrate merchant-of-record provisioning. Voucher charge support is governed by the Connect payment guide's matrix above.
+
+The November [[source-stripe-fr-meal-vouchers-accept-payment|acceptance guide]] explains that Stripe resolves the existing location's stored SIRET at **PaymentIntent confirmation**. If that location's SIRET changes between creation and confirmation, Stripe uses the updated value at confirmation. Already-confirmed payments retain their original SIRET. Both May Connect examples passed a literal, pre-provisioned SIRET via `payment_details[benefit][fr_meal_voucher][siret]`. The separate November [[source-stripe-fr-meal-vouchers|product overview]] still describes this literal-SIRET route. Consult the version and route before choosing the request shape.
+
+## Identify a voucher payment method
+
+- **Set up and save without charging.** After SetupIntent setup, look at `PaymentMethod.card.benefits` for the issuer and voucher program. The May Connect capture shows `programs` as a scalar. The November Connect capture shows `["fr_meal_voucher"]`, while the November product overview still shows the scalar. That discrepancy leaves the general PaymentMethod response schema undetermined.
+- **Accept a payment.** With the Payment Element flow, inspect `ConfirmationToken.payment_method_preview.card.benefits` before creating the server PaymentIntent. Both Connect captures show a scalar `programs` in that preview. Identification, confirmation or capture, and issuer settlement are distinct.
+
+## Platform fee collection and issuer settlement
+
+In the platform flow the voucher charge lives on the platform, but the platform's Stripe balance receives no voucher proceeds. Stripe separately debits processing fees from the platform. The issuer settles voucher proceeds directly with the connected account outside Stripe.
+
+After capture, collect the platform application fee by debiting the **connected account's Stripe balance** using `POST /v1/transfers` on that account. Authenticate with its `Stripe-Account` header and set the platform as the transfer destination. The linked Account Debits guide conditions this on platform responsibility for connected-account negative balances, legally binding connected-account consent, matching the connected account's default currency, applicable balance and reserve conditions, and supported regions or corridors. The guide also lists an extra cost and an amount cap. The transfer can be linked to the original PaymentIntent with metadata. A reversal on the connected account refunds the application fee only. Captured meal voucher payments remain nonrefundable.
+
+## Related Pages
+
+- [[stripe]] — payment provider
+- [[stripe-fr-meal-vouchers]] — voucher concepts and dated integration routes
+
+## Raw Sources
+
+- [[raw/stripe-payments-meal-vouchers-fr-meal-vouchers-accept-with-connect-2026-11-07|2026-11-07 French meal vouchers Connect guide]]
+- [[raw/stripe-fr-meal-vouchers-connect-2025|2026-05-05 French meal vouchers Connect guide]] — verbatim webpage content (218 lines), with three `_italic_` spans changed to `*italic*`
+
+## Related raw API references
+
+- [[raw/stripe-payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant-api-2026-11-07|2026-11-07 preview Payment Location onboarding guide]] — capability request, activation, and re-onboarding
+- [[raw/stripe-connect-account-debits-2026-11-07|2026-11-07 Account Debits guide]] — application fee debit requirements

@@ -1,0 +1,162 @@
+# OXXO payments
+
+Learn about OXXO, a voucher-based payment method in Latin America.
+
+> OXXO is available to Stripe accounts in Mexico, the United States, Canada, and Singapore. It’s available in private preview for accounts in the European Economic Area and the United Kingdom.
+
+OXXO is a Mexican chain of convenience stores in Latin America. OXXO allows customers to pay bills and pay for online purchases in person with cash.
+
+When a customer initiates a transaction, they receive a voucher with a reference number. They then bring their voucher to an OXXO store to make a cash payment. Vouchers expire after 5 days by default. You can set a custom expiration from 1 to 7 days with [payment_method_options[oxxo][expires_after_days]](https://docs.stripe.com/api/payment_intents/create.md#create_payment_intent-payment_method_options-oxxo-expires_after_days) on the PaymentIntent.
+
+After the customer makes the payment, you receive confirmation by the next business day. Stripe sends a [payment_intent.requires_action](https://docs.stripe.com/api/events/types.md#event_types-payment_intent.requires_action) event when the voucher is issued and a [payment_intent.succeeded](https://docs.stripe.com/api/events/types.md#event_types-payment_intent.succeeded) event after the cash payment is processed at the store. Funds settle as follows:
+
+- Payments made Tuesday through Thursday settle on the following Monday.
+- Payments made Friday through Monday settle on the following Wednesday.
+Payment method family: Vouchers
+Usability: Single-use
+Access type: Instant provisional access
+Payment confirmation timing: Delayed
+Settlement timing: Up to 4 business days (T+4)
+Pricing: https://stripe.com/es-mx/pricing/local-payment-methods#oxxo
+## Eligibility and availability 
+
+### Account eligibility
+Business location: CA, MX, SG, US
+Private preview business location: AT, BE, BG, CH, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GR, HR, HU, IE, IT, LI, LT, LU, LV, MT, NL, NO, PL, PT, RO, SE, SI, SK
+Account type: ✓ Merchant, ✓ Platform or marketplace (Connect)
+Business model: ✓ B2B, ✓ B2C
+Business category: View list of prohibited and restricted business categories
+Your account might be reviewed after activation to confirm eligibility. While OXXO doesn’t enforce any additional website requirements, make sure that you provide a website that meets the [Stripe account activation requirements](https://support.stripe.com/questions/business-website-for-account-activation-faq). You can contact [Stripe support](https://support.stripe.com/) to appeal any OXXO capability restrictions.
+
+Review the list of *merchant category codes* (A Merchant Category Code (MCC) is a four-digit number that classifies the type of goods or services a business offers) that are prohibited or restricted for OXXO.
+
+- **Prohibited** MCCs are not supported by this payment method.
+- **Restricted** MCCs may be supported, but require additional information at account creation.
+
+| MCC | Description | Type |
+| --- | --- | --- |
+| 4814 | Telecommunication Services | Prohibited |
+| 5541 | Service Stations | Prohibited |
+| 5966 | Direct Marketing - Outbound Telemarketing | Prohibited |
+| 5967 | Adult Content and Services | Prohibited |
+| 5969 | Direct Marketing - Other | Prohibited |
+| 5968 | Direct Marketing - Subscription | Prohibited |
+| 5947 | Gift, Card, Novelty, and Souvenir Shops | Prohibited |
+| 5552 | Electric Vehicle Charging | Prohibited |
+| 5122 | Drugs, Drug Proprietaries, and Druggist Sundries | Prohibited |
+| 5912 | Drug Stores and Pharmacies | Prohibited |
+| 5993 | Cigar Stores and Stands | Prohibited |
+| 7273 | Dating/Escort Services | Prohibited |
+| 6211 | Security Brokers/Dealers | Prohibited |
+| 6538 | Software | Prohibited |
+| 6051 | Cryptocurrency exchanges and wallets | Prohibited |
+| 6012 | Financial Institutions | Prohibited |
+| 7322 | Financial Service | Prohibited |
+| 9406 | Government-Owned Lotteries (Non-US region) | Prohibited |
+| 7994 | Video Game Arcades | Restricted |
+| 7841 | Video Tape Rental Stores | Restricted |
+
+Stripe accounts in the following countries can accept OXXO payments with local currency settlement.
+
+AMER: CA, MX, US
+
+EMEA: [Preview] AT, [Preview] BE, [Preview] BG, [Preview] CH, [Preview] CY, [Preview] CZ, [Preview] DE, [Preview] DK, [Preview] EE, [Preview] ES, [Preview] FI, [Preview] FR, [Preview] GB, [Preview] GR, [Preview] HR, [Preview] HU, [Preview] IE, [Preview] IT, [Preview] LI, [Preview] LT, [Preview] LU, [Preview] LV, [Preview] MT, [Preview] NL, [Preview] NO, [Preview] PL, [Preview] PT, [Preview] RO, [Preview] SE, [Preview] SI, [Preview] SK
+
+APAC: SG
+
+Customers in the following countries can use OXXO.
+
+AMER: MX
+
+### Payment support
+Customer location: MX
+Presentment currency: MXN
+Geographic coverage: ✓ Domestic, ✓ Crossborder
+Transaction limits: Minimum amount: 10.00 MXN
+
+Maximum amount: 10,000.00 MXN
+## Capabilities 
+Recurring payments: ✗ Not supported
+
+Payment authorizations:
+  ✗ Extended authorizations
+  ✗ Flexible extended authorizations
+  ✗ Incremental authorizations
+  ✗ Decremental authorizations
+  ✗ Re-authorizations
+
+Payment captures:
+  ✗ Manual capture
+  ✗ Partial capture
+  ✗ Multi-capture
+  ✗ Over-capture
+
+Refunds:
+  ✗ Partial refunds
+  ✗ Full refunds
+
+Disputes:
+  ✗ Partial disputes
+  ✗ Full disputes
+### Disputes 
+
+OXXO doesn’t support the standard dispute process—customers can’t file a chargeback, and funds are never withdrawn from your Stripe balance because of a dispute.
+
+If a customer has a concern about a OXXO payment, they need to contact you directly.
+
+### Refunds 
+
+OXXO payments can’t be refunded. If you want to allow refunds of OXXO payments, create a separate process to credit your customers.
+
+## Stripe product support 
+Checkout UIs:
+  ✓ Full page (Recommended)
+  ✓ Payment Links
+  ✓ Embedded form
+  ✓ Payment Element
+  ✗ Express Checkout Element
+  ✓ In-app payments
+
+Products:
+  ✗ Managed Payments
+  ✗ Billing
+  ✗ Invoicing
+  ✗ Customer Portal
+  ✗ Radar
+  ✗ Terminal
+  ✓ Connect
+
+APIs:
+  ✓ Checkout Sessions (Recommended)
+  ✓ Payment Intents
+  ✗ Payment Intents with setup_future_usage
+  ✗ Setup Intents
+## Customer experience 
+
+#### 1. Select OXXO at checkout
+
+The customer selects OXXO and provides their name and email address.
+
+#### 2. Receive voucher
+
+The customer receives a voucher containing a 32-digit transaction reference number. On desktop, this appears in a modal on the checkout page or on a separate Stripe-hosted page based on your integration. On mobile, the voucher opens in an in-app webview using the hosted voucher URL.
+
+#### 3. Pay at OXXO store
+
+The customer presents the voucher and makes a cash payment at any OXXO convenience store.
+
+#### 4. Payment complete
+
+The OXXO cashier provides the customer a receipt as immediate proof of payment.
+
+### Transaction identifiers 
+
+When a customer initiates an OXXO payment, Checkout redirects them to a Stripe-hosted page containing an OXXO voucher with a 32-digit transaction reference number. Optionally, you can email them payment instructions containing a link to the voucher page.
+
+The Stripe-hosted voucher page and payment instruction email don’t include [statement descriptors](https://docs.stripe.com/get-started/account/statement-descriptors.md). Instead, they display the OXXO transaction number and the business name of the *merchant of record* (The legal entity responsible for facilitating the sale of products to a customer that handles any applicable regulations and liabilities, including sales taxes. In a Connect integration, it can be the platform or a connected account).
+
+## Enable OXXO 
+
+If you use our front-end products, you can enable OXXO directly from your [payment method settings](https://dashboard.stripe.com/settings/payment_methods). Stripe then automatically determines the most relevant payment methods to display to your customers.
+
+If your integration requires manually listing payment methods, learn how to [manually configure OXXO as a payment](https://docs.stripe.com/payments/oxxo/accept-a-payment.md).

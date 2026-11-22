@@ -1,0 +1,56 @@
+--- raw/stripe-link-payment-integrations-2025.md
++++ raw/stripe-payments-link-link-payment-integrations-2026-11-07.md
+@@ -11,25 +11,28 @@
+ 
+ Both Link integrations accept all types of payment methods supported by Link, including credit cards, debit cards, [Instant Bank Payments](https://docs.stripe.com/payments/link/instant-bank-payments.md), and [Klarna](https://docs.stripe.com/payments/link/klarna.md).
+ 
+-## Link integrations
++## Link integrations 
+ 
+ #### Link as a payment method
+ 
+ All Link transactions have a [PaymentMethod object](https://docs.stripe.com/api/payment_methods/object.md) with a [type](https://docs.stripe.com/api/payment_methods/object.md#payment_method_object-type) of `link`.
+ 
+-To integrate Link as a payment method, use [dynamic payment methods](https://docs.stripe.com/payments/payment-methods/dynamic-payment-methods.md) or pass `link` in the `payment_method_types` parameter. Because all Link transactions use the `link` payment method type, the objects associated with them don’t expose details about how the customer paid. If you require access to card details, such as the brand or last 4 digits, integrate with Link as described in the [Link with card integrations](https://docs.stripe.com/payments/link/link-payment-integrations.md?link-integrations=link-card-integrations) tab.
++To integrate Link as a payment method, use [dynamic payment methods](https://docs.stripe.com/payments/payment-methods/dynamic-payment-methods.md) or pass `link` in the `allowed_payment_method_types` parameter. Because all Link transactions use the `link` payment method type, the objects associated with them don’t expose details about how the customer paid. If you require access to card details, such as the brand or last 4 digits, integrate with Link as described in the [Link with card integrations](https://docs.stripe.com/payments/link/link-payment-integrations.md?link-integrations=link-card-integrations) tab.
+ 
+ This integration increases Link authorization rates by letting customers select a backup payment source. At checkout, if the customer’s Link account contains multiple eligible saved payment sources, Link suggests a backup. If the customer approves the backup, and the initial payment attempt fails, Link automatically retries the payment using the backup.
+ 
+-> Link as a payment method doesn’t support [Interchange+ (IC+) pricing](https://support.stripe.com/questions/understanding-blended-interchange-pricing). Stripe bills all such Link transactions at a single blended rate. If you’re on IC+ pricing, integrate with Link as described in the [Link with card integrations](https://docs.stripe.com/payments/link/link-payment-integrations.md?link-integrations=link-card-integrations) tab.
++> Link as a payment method has the following limitations. If these affect your integration, use a [Link with card integration](https://docs.stripe.com/payments/link/link-payment-integrations.md?link-integrations=link-card-integrations) instead.
++> 
++> - It doesn’t support [Interchange+ (IC+) pricing](https://support.stripe.com/questions/understanding-blended-interchange-pricing). Stripe bills all such Link transactions at a single blended rate.
++> - It doesn’t support advanced acquiring features such as [extended authorization](https://docs.stripe.com/payments/extended-authorization.md), [incremental authorization](https://docs.stripe.com/payments/incremental-authorization.md), and [overcapture](https://docs.stripe.com/payments/overcapture.md).
+ 
+ #### Link with card integrations
+ 
+ All Link transactions have a [PaymentMethod object](https://docs.stripe.com/api/payment_methods/object.md) with a [type](https://docs.stripe.com/api/payment_methods/object.md#payment_method_object-type) of `card` and a [wallet type](https://docs.stripe.com/api/payment_methods/object.md#payment_method_object-card-wallet-type) of `link`. For Link transactions using a credit or debit card, the associated objects include the same card details as for other card payments, such as the brand and last 4 digits. Your integration can handle them the same way it handles other card payments, which aren’t affected by including Link.
+ 
+-To include Link in a card integration, pass `card` in the `payment_method_types` parameter.
++To include Link in a card integration, pass `card` in the `allowed_payment_method_types` parameter.
+ 
+-> Passing `link` in the `payment_method_types` parameter always treats Link as a payment method, even if you also pass `card`. If you want to handle Link payments as card payments, don’t pass `link` in `payment_method_types`.
++> Passing `link` in the `allowed_payment_method_types` parameter always treats Link as a payment method, even if you also pass `card`. If you want to handle Link payments as card payments, don’t pass `link` in `allowed_payment_method_types`.
+ 
+ Non-card Link payments, such as Instant Bank Payments, function similarly to card payments. The associated `PaymentMethod` objects have a [type](https://docs.stripe.com/api/payment_methods/object.md#payment_method_object-type)of `card` and a [card brand](https://docs.stripe.com/api/payment_methods/object.md#payment_method_object-card-brand) of `link`. Because non-card payment methods don’t have concepts like expiration dates or card networks, Stripe assigns fixed values to certain API object properties that card payment methods normally include. For example:
+ 
+@@ -48,7 +51,8 @@
+   "id": "pm_12HA3WGPaV5rx8y34duNXgUp",
+   "object": "payment_method",
+   "type": "card",
+-  "card": {"brand": "link",
++  "card": {
++    "brand": "link",
+     "display_brand": "other",
+     "exp_month": 12,
+     "exp_year": 2040,
+@@ -60,7 +64,8 @@
+       "cvc_check": null
+     },
+     "country": "US",
+-    "networks": {"available": ["link"],
++    "networks": {
++      "available": ["link"],
+       "preferred": null
+     },
+     "generated_from": null,

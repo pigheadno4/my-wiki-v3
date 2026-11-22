@@ -1,0 +1,150 @@
+{
+  "job_id": "payments-multibanco",
+  "source_target": "wiki/sources/source-stripe-multibanco.md",
+  "source_before_sha256": "398f14713abe41aec85608700189cc9bb2a2b523f3d1670c525a17861fceebcc",
+  "contributions": [
+    {
+      "job_id": "payments-multibanco",
+      "canonical_url": "https://docs.stripe.com/payments/multibanco",
+      "attempt": 2,
+      "raw_path": "raw/stripe-payments-multibanco-2026-11-07.md",
+      "raw_sha256": "f501b6164ce9cf6a63be40721bbecf55c0e462230cab567444c71a2208d6acce",
+      "prior_raw_path": "raw/stripe-multibanco-2025.md",
+      "prior_raw_sha256": "68cd673fa368cc7a5e9a8efbc0f084edf2455ae05f947265676318aa31f3e077",
+      "new_capture_role": "full_captured_page",
+      "proposed_disposition": "source_required_update",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-multibanco/attempt-2/receipt.json",
+      "receipt_sha256": "57a35106ba1300515ebdfc4058775ef8c91746f6cea4f060d7229896cd0a2c73",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-multibanco/attempt-2/review.json",
+      "review_sha256": "fbfbdaf18ad2912905afbf6f6d5f941f8cdea3e36e53a30df2cd1a4ba1eb5a19",
+      "source_assessments": [
+        {
+          "source_target": "wiki/sources/source-stripe-multibanco.md",
+          "proposed_disposition": "source_required_update",
+          "update_needed": true,
+          "findings": [
+            "Retain both captures, date refund windows, state noncancelability and final status/reference conditions, and restore voucher expiry/processing/paid outcomes, provisional review and active Connect capability. Distinguish payment and refund completion from customer notification, delayed processing and payout.",
+            "Scope current line 29 to the absence of a Multibanco dispute process that can result in a chargeback withdrawing funds from the Stripe account (old raw line 171, new raw line 88). Refund submission is noncancelable and separate from the Refund object's `succeeded` or `failed` outcome, verified in the Dashboard, through API retrieval, or from signature-verified `refund.updated`/`refund.failed` events. A successful refund reference may be shared if available; on failure the amount returns to the Stripe balance and another refund method is required (new raw lines 70-84)."
+          ],
+          "conflicts": [
+            "Current lines 13 and 27 present May's 365 days as undated; November has 456. Link no post-payment return separately from voucher-display and legacy Sources redirects. Retain `send_invoice` scope without implying automatic recurring debits."
+          ],
+          "reason": "The November overview materially revises refund rules and documents operational lifecycle, eligibility, UI and Connect details that the May summary does not cover."
+        }
+      ],
+      "affected_concepts": [
+        "wiki/concepts/stripe-vouchers.md"
+      ],
+      "unresolved_questions": [
+        "Effective-date or retroactive rules for the longer refund window, current account access and supported route/version behavior are not independently established by the snapshots."
+      ],
+      "mapped_source_assessment": {
+        "source_target": "wiki/sources/source-stripe-multibanco.md",
+        "proposed_disposition": "source_required_update",
+        "update_needed": true,
+        "findings": [
+          "Retain both captures, date refund windows, state noncancelability and final status/reference conditions, and restore voucher expiry/processing/paid outcomes, provisional review and active Connect capability. Distinguish payment and refund completion from customer notification, delayed processing and payout.",
+          "Scope current line 29 to the absence of a Multibanco dispute process that can result in a chargeback withdrawing funds from the Stripe account (old raw line 171, new raw line 88). Refund submission is noncancelable and separate from the Refund object's `succeeded` or `failed` outcome, verified in the Dashboard, through API retrieval, or from signature-verified `refund.updated`/`refund.failed` events. A successful refund reference may be shared if available; on failure the amount returns to the Stripe balance and another refund method is required (new raw lines 70-84)."
+        ],
+        "conflicts": [
+          "Current lines 13 and 27 present May's 365 days as undated; November has 456. Link no post-payment return separately from voucher-display and legacy Sources redirects. Retain `send_invoice` scope without implying automatic recurring debits."
+        ],
+        "reason": "The November overview materially revises refund rules and documents operational lifecycle, eligibility, UI and Connect details that the May summary does not cover."
+      },
+      "findings": [
+        "Both captures describe a Portugal-customer, EUR, out-of-checkout bank-transfer voucher paid via online banking or ATM. EUR 0.50–99,999, 33 merchant locations, no manual capture or recurring payment, delayed confirmation and standard payout remain documented (old lines 8-64, 66-115; new lines 9-67). Current source lines 13-25 get these fundamentals apart from stale refund window, an incomplete voucher identity and unqualified timing shorthand.",
+        "November adds explicit provisional access and possible post-activation review, no extra Multibanco website requirements beyond Stripe activation, and appeal route. The merchant's geography and account type differ from the Portuguese customer market. Connected accounts with Express or no Stripe-hosted Dashboard must request `multibanco_payments` and verify `active`; May already described the request and regular Dashboard enablement (old 185-199; new 14-24, 145-151). Current source line 33 should scope standard setup and retain the distinct active/preapproval concepts.",
+        "November overview explicitly documents entity/reference/amount/expiry, seven days, `requires_action`, no post-payment redirect, up to four days of `processing` following expiry and asynchronous `succeeded` before fulfillment (new 117-137). May overview only gave diagram flows plus possible multi-day notification delays (old 14, 117-150); dated May acceptance sections already gave expiry state and post-buffer behavior (raw/stripe-multibanco-accept-payment-2025.md:168-172, 594-598).",
+        "November sets 456 days from the original payment, against May 365, and adds a noncancelability warning and final-state mechanics (old 173-179; new 59-84). Current source lines 13 and 27, Stripe index line 380 and voucher concept lines 85 and 120 need dated reciprocal corrections. The conditional succeeded-refund reference is available only when present.",
+        "Root index line 7 routes via Stripe index lines 372-381 to voucher concept lines 18, 75-93 and 120-121. Route the updated overview and separate historical integration details reciprocally."
+      ],
+      "substantive_changes": [
+        "Refund window increases from 365 days to 456 days in these published snapshots. November documents irreversible submission, status retrieval, final events, failure balance return and alternate refund requirement (new 59-84 vs old 173-179). Typical one-day bank credit remains variable.",
+        "November makes customer voucher and confirmation state explicit in the product overview, with optional Checkout instruction email and documented collection of a customer email address (new 117-137), and provides product/API supported and excluded routes (90-116). These additions to the overview are not evidence of first runtime availability.",
+        "November documents provisional activation with possible follow-up review (new 14-24), an active Connect capability check (145-151), and descriptor fallback and charge-type selection (139-143). Direct and `on_behalf_of` use the connected account descriptor; destination and separate charges/transfers without `on_behalf_of` use the platform, and bank display varies."
+      ],
+      "historical_claims_to_preserve": [
+        "May's 365-day refund policy and successful refund reference wording remain dated (old 173-179); no assumption about retroactive application. Both captures retain variable one-day timing and no chargeback process for this voucher flow (old 169-179; new 63-88).",
+        "May identifies direct, destination and separate charges/transfers and regular Dashboard versus Express/external Dashboard enablement (old 185-199). November's descriptor context and capability requirement are specifically about the named charge/account route.",
+        "May acceptance Checkout/Direct API sections describe voucher expiry, processing webhook, failed state and automatic initiation of a refund for late funds after the buffer (raw/stripe-multibanco-accept-payment-2025.md:168-172, 594-598). November overview attests the four-day processing bound, but not the detailed failure branch. November's separate acceptance selector lists four routes only (raw/stripe-payments-multibanco-accept-a-payment-2026-11-07.md:9-17)."
+      ],
+      "conflicts": [
+        "Preserve the dated 365→456-day refund change across source, Stripe index and vouchers concept. November adds cancellation and status boundaries; source line 27 and concept line 85 conflate presence of the reference with its successful/available condition.",
+        "Voucher display redirect and a post-payment return are different. The November overview says no redirect back after online/ATM payment, whereas the deprecated Sources API page documents `redirect[return_url]` even if funds weren't sent (raw/stripe-sources-multibanco-2026-11-07.md:5-12 and 109-125); the voucher concept line 93 uses a hosted voucher redirect label. Keep PaymentIntent versus Source states and UI transitions distinct.",
+        "November standalone `send_invoice` footnote (new 102-116) and no recurring or off-session (44, 112-114) should be clarified with archived May Billing detail (old 111-115, 181-183) and November voucher hub's explicit Invoice/Subscription matrix footnote (raw/stripe-payments-vouchers-2026-11-07.md:28-43). No automatic recurring debit follows from invoice or subscription support."
+      ],
+      "expected_read_files": [
+        {
+          "path": "raw/stripe-payments-multibanco-2026-11-07.md",
+          "sha256": "f501b6164ce9cf6a63be40721bbecf55c0e462230cab567444c71a2208d6acce",
+          "lines": 151
+        },
+        {
+          "path": "raw/stripe-multibanco-2025.md",
+          "sha256": "68cd673fa368cc7a5e9a8efbc0f084edf2455ae05f947265676318aa31f3e077",
+          "lines": 199
+        },
+        {
+          "path": "wiki/sources/source-stripe-multibanco.md",
+          "sha256": "398f14713abe41aec85608700189cc9bb2a2b523f3d1670c525a17861fceebcc",
+          "lines": 37
+        },
+        {
+          "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/a7e01e2d37a078c89e76e66a/content.diff",
+          "sha256": "b28627cdae6e3636024cc4aaf55ed0c13c93e448ecf6f46bb2d34f2a4d067fb4",
+          "lines": 305
+        }
+      ],
+      "original_query_prompts_path": "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md",
+      "original_prompts": "New raw: `raw/stripe-payments-multibanco-2026-11-07.md`. Prior raw: `raw/stripe-multibanco-2025.md`. Current summaries: `wiki/sources/source-stripe-multibanco.md`.\n\n- Q1: For `https://docs.stripe.com/payments/multibanco`, what central documented behavior, prerequisites, identities and state boundaries does the complete new capture establish, and how does it compare with the matched old capture and every mapped current summary?\n\n- Q2: Which changes are substantive versus presentational or navigation-only? Which historical claims must remain dated, which conflicts need reciprocal warnings, and which API, UI, version, client/server or outcome qualifications prevent unsupported inferences?",
+      "reviewed_answers": {
+        "Q1": "The November 7, 2026 overview at https://docs.stripe.com/payments/multibanco documents a single-use Portuguese-customer EUR voucher, accepted by eligible Europe/US merchants, with EUR 0.50–99,999 limits and provisional access that may be reviewed. Express or external-Dashboard connected accounts request `multibanco_payments` and check it is active (new raw lines 9-67 and new raw lines 145-151). For Stripe front-end products, enable the method in Dashboard Payment methods. November lists Payment Element, Checkout Sessions and PaymentIntents support, with Express Checkout Element, Payment Method Messaging Element, SetupIntents, `setup_future_usage` and off-session payments excluded (new raw lines 90-116 and new raw lines 145-149). The customer supplies email, receives entity, reference, amount and an expiry seven days from creation, and pays outside checkout via online banking or ATM. `requires_action` while awaiting payment can be followed after expiry by up to four days of `processing`; Stripe confirms asynchronously as `succeeded` before fulfillment. There is no return redirect after payment, and verified success and standard payouts are different states (new raw lines 119-137). November changes May's 365-day refund window to 456 days. Full or partial refunds to the bank cannot be canceled once submitted, typically take one bank-dependent day, with final status checked in the Dashboard, by retrieving the Refund object through the API, or through signature-verified `refund.updated` or `refund.failed` webhook events. When the Refund status is `succeeded`, share `destination_details.multibanco.reference` if available. If it is `failed`, Stripe returns the amount to your Stripe balance and you must refund the customer using another method (old raw lines 173-179 and new raw lines 59-84). source-stripe-multibanco.md preserves May's portable fundamentals and delayed confirmation (old raw lines 8-64 and old raw lines 117-150), but needs both dates and newer payment/refund and activation qualifiers.",
+        "Q2": "For https://docs.stripe.com/payments/multibanco, consolidation of the diagrams and navigation into the customer walkthrough is largely presentational (old raw lines 117-167 and new raw lines 117-149). The 365-to-456 day refund change, noncancelability, final-status tracking and failure recovery, provisional eligibility, active capability check and descriptor rules are substantive documented changes or clarifications (old raw lines 173-199, new raw lines 14-24, new raw lines 59-84 and new raw lines 139-151). When a payment-level `statement_descriptor` is unset, Stripe uses the account-level statement descriptor. For Connect, direct charges and charges using `on_behalf_of` select the connected account’s statement descriptor. Destination charges and separate charges and transfers without `on_behalf_of` use the platform’s statement descriptor. The customer’s bank determines how the descriptor is displayed (new raw lines 139-143). Date the old refund rule in source-stripe-multibanco.md and the voucher concept/index. Distinguish a refund submission from successful refund/reference availability, and a voucher or delayed transfer from a succeeded PaymentIntent. May's separate acceptance guide records post-buffer failure and late-funds refund initiation; the November overview documents the seven-day expiry and processing bound, while the acceptance selector is navigation. Historical Sources return URLs do not define modern payment completion. Keep May invoice and subscription collection restricted to `send_invoice`, supported by the November voucher hub, alongside the November overview's no recurring/off-session limits (old raw lines 104-115, old raw lines 181-183 and new raw lines 90-116)."
+      }
+    }
+  ],
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payments-multibanco-2026-11-07.md",
+      "sha256": "f501b6164ce9cf6a63be40721bbecf55c0e462230cab567444c71a2208d6acce",
+      "lines": 151
+    },
+    {
+      "path": "raw/stripe-multibanco-2025.md",
+      "sha256": "68cd673fa368cc7a5e9a8efbc0f084edf2455ae05f947265676318aa31f3e077",
+      "lines": 199
+    },
+    {
+      "path": "wiki/sources/source-stripe-multibanco.md",
+      "sha256": "398f14713abe41aec85608700189cc9bb2a2b523f3d1670c525a17861fceebcc",
+      "lines": 37
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/a7e01e2d37a078c89e76e66a/content.diff",
+      "sha256": "b28627cdae6e3636024cc4aaf55ed0c13c93e448ecf6f46bb2d34f2a4d067fb4",
+      "lines": 305
+    }
+  ],
+  "concept_targets": [
+    {
+      "path": "wiki/concepts/stripe-vouchers.md",
+      "before_sha256": "f10916a9ada09cac9bfb0a01ebb20f72050ec443d7bcccf328f2850a8b125628",
+      "contributing_jobs": [
+        "payments-konbini-accept-a-payment",
+        "payments-multibanco",
+        "payments-multibanco-accept-a-payment",
+        "payments-oxxo",
+        "payments-oxxo-accept-a-payment"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    }
+  ],
+  "state": "worker_running",
+  "attempt": 1,
+  "review_scope": "full",
+  "worker_agent": "/root/s04iw10",
+  "reviewer_agent": "/root/s04ir07",
+  "role_notes": "tracking/ingest/stripe/stripe-campaign-04/updates/role-notes.md",
+  "worker_output": "/tmp/stripe-s04-ingest/payments-multibanco-worker.json",
+  "reviewer_output": "/tmp/stripe-s04-ingest/payments-multibanco-reviewer.json"
+}

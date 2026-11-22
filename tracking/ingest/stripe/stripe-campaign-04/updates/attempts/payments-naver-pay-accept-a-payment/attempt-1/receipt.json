@@ -1,0 +1,185 @@
+{
+  "job_id": "payments-naver-pay-accept-a-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Docs — Accept a payment using Naver Pay in South Korea\"\ntype: source\ndate_ingested: 2026-05-08\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/naver-pay/accept-a-payment\"\nraw_files:\n  - \"stripe-naver-pay-accept-payment-2025.md\"\ntags: [stripe, south-korea, krw, naver-pay, local-payment-methods, nicepay, payment-intents, checkout]\n---\n\n## Summary\n\nThe 2026-05-08 guide describes accepting `naver_pay` from customers in South Korea via Checkout and Direct API. The buyer authenticates and authorizes through Stripe's local processor partner and returns to the merchant. The 2026-11-07 capture indexes the same two variants. The implementation below comes from May.\n\n## May Checkout\n\n- The compatibility table lists KRW presentment and 28 business locations including Singapore. All Session line items must use KRW. The May minimum is 100 KRW. The 2,000,000 KRW limit applies to Naver Pay stored-value top-up. The guide states no maximum for card passthrough.\n- The table lists Checkout payment, setup and subscription modes. The shown Sessions use payment mode. The separate [[source-stripe-naver-pay-set-up-future-payments|future payments guide]] gives setup and reuse prerequisites, including customer consent and `confirmNaverPaySetup` for a SetupIntent. Its two historical `ngn` charge-and-save examples conflict with the KRW instructions here. That guide requires automatic capture for recurring payments. The currency anomaly and recurring constraint are separate from the one-time route.\n- The guide describes dynamic methods and a May manual route that adds `naver_pay` to `payment_method_types`. The Stripe-hosted example uses `success_url`. The full embedded example sets `return_url` and `ui_mode: embedded_page`. See the Endive request warning below before using a manual example.\n\n## May Direct API\n\n- The merchant creates a KRW PaymentIntent server-side. The dated example lists `naver_pay` and shows `payment_method_data.naver_pay.funding` at method creation. The documented default is `card` for a linked Naver Pay card, with `points` available for a Naver Pay Points balance. Funding selection is separate from saving for later.\n- The Direct API client section requires the merchant to put the NICEPAY disclosure and [terms link](https://start.nicepay.co.kr/homepage/terms/bill.do) on its checkout page. The exact May text is at raw lines 229–233. If using Naver Pay branding, follow the [overseas brand guidelines](https://developers.pay.naver.com/design/brand/overseas).\n- The browser uses the PaymentIntent client secret and `stripe.confirmPayment` with `payment_method_data.type: 'naver_pay'` and `return_url`. The buyer chooses an issuer and authorizes on the local processor page. The May snippet loads Stripe.js Dahlia and destructures `error`, then refers to the undefined `result.error.message` in its display block. The browser request supplies only the method type, leaving propagation of the server example's funding choice unverified.\n- The May Naver Pay server and confirm request examples omit buyer email. This does not establish a general email rule. The separate [[source-stripe-kakao-pay-accept-payment|May Kakao Pay Direct API]] section explicitly requires it and its Checkout compatibility list excludes Singapore.\n- Stripe appends `payment_intent` and `payment_intent_client_secret` to `return_url`. Use the actual PaymentIntent status to display the result. The guide describes optional post-payment handling using Dashboard, a webhook or a partner solution, and says to use `payment_intent.succeeded` for actions instead of relying on the client callback. Authorization and browser return do not verify payment success or settlement. The May Checkout and Direct API sandbox examples transition from `requires_action` to `succeeded` on simulated authorization or `requires_payment_method` on failure.\n\n## Versioned request qualifications\n\n- **Endive manual selection.** The May manual Checkout and Direct API creation examples use writable `payment_method_types`. The separate Endive changelogs say Checkout Session and PaymentIntent create reject that request field with HTTP 400 on `2026-09-30.endive`. The PaymentIntent error code is `payment_method_types_no_longer_supported`. The alternatives are dynamic payment methods or a request-level `allowed_payment_method_types` list with compatibility filtering. The computed `payment_method_types` remains in the response. The Intent changelog's Impact paragraph names `2026-08-26.preview`, while its versioned endpoint links and REST table identify the Endive endpoints. Generic filtering gives no account-specific Naver Pay eligibility.\n- **Basil funding.** The separate `2025-03-31.basil` changelog says Naver Pay parameters are set only at PaymentMethod creation. `PaymentMethod#update` cannot modify them on an existing instrument.\n\n## Detail locators\n\n- May raw lines 12–50 cover dynamic/manual selection and Checkout eligibility. Lines 52–107 cover hosted and embedded requests and sandbox outcomes.\n- May raw lines 134–160 cover server creation and funding. Lines 229–290 cover NICEPAY, the browser sample and status retrieval. Lines 291–313 cover sandbox outcomes, optional event handling and branding.\n- The [Endive Checkout Session changelog](https://docs.stripe.com/changelog/endive/2026-09-30/remove-payment-method-types-checkout-sessions) lines 5–23 and [Endive Intent changelog](https://docs.stripe.com/changelog/endive/2026-09-30/removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents) lines 5–36 describe writable field removal and the computed response. The [Basil Naver Pay PaymentMethod changelog](https://docs.stripe.com/changelog/basil/2025-03-31/naver-pay-payment-method) lines 5–25 covers creation-time parameters.\n\n## Related Pages\n\n- [[stripe-korea-payment-methods]] — South Korea payment methods concept page\n- [[source-stripe-korea-payment-methods]] — South Korea overview\n- [[source-stripe-kakao-pay-accept-payment]] — Kakao Pay integration for comparison\n- [[source-stripe-naver-pay-set-up-future-payments]] — Naver Pay setup and reuse\n- [[stripe]] — Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-naver-pay-accept-payment-2025|Naver Pay acceptance guide captured 2026-05-08]] — verbatim webpage content\n\n## Related raw API references\n\n- [[raw/stripe-payments-naver-pay-accept-a-payment-2026-11-07|Naver Pay acceptance variant index]] — 2026-11-07 navigation for Checkout and Direct API.\n",
+  "quotes": {
+    "payments-naver-pay-accept-a-payment": [
+      {
+        "text": "Accept a payment using Naver Pay in South Korea",
+        "location": "raw/stripe-payments-naver-pay-accept-a-payment-2026-11-07.md:5"
+      },
+      {
+        "text": "Learn how to accept payments from Naver Pay users.",
+        "location": "raw/stripe-payments-naver-pay-accept-a-payment-2026-11-07.md:7"
+      },
+      {
+        "text": "[Checkout](https://docs.stripe.com/payments/naver-pay/accept-a-payment.md?payment-ui=checkout)",
+        "location": "raw/stripe-payments-naver-pay-accept-a-payment-2026-11-07.md:13"
+      },
+      {
+        "text": "[Direct API](https://docs.stripe.com/payments/naver-pay/accept-a-payment.md?payment-ui=direct-api)",
+        "location": "raw/stripe-payments-naver-pay-accept-a-payment-2026-11-07.md:14"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-naver-pay-accept-a-payment": [
+      {
+        "text": "If omitted, `card` will be used.",
+        "location": "raw/stripe-naver-pay-accept-payment-2025.md:138"
+      },
+      {
+        "text": "You can determine what to display by",
+        "location": "raw/stripe-naver-pay-accept-payment-2025.md:282"
+      },
+      {
+        "text": "event when the payment completes.",
+        "location": "raw/stripe-naver-pay-accept-payment-2025.md:295"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-naver-pay-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-naver-pay-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 313
+      }
+    ],
+    "wiki/sources/source-stripe-naver-pay-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 58
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/e2f7329a33ac90d782e0f9d8/content.diff": [
+      {
+        "start": 1,
+        "end": 315
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-naver-pay-accept-a-payment/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 216
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-naver-pay-accept-a-payment/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 80
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 425,
+        "end": 433
+      },
+      {
+        "start": 790,
+        "end": 790
+      }
+    ],
+    "wiki/concepts/stripe-korea-payment-methods.md": [
+      {
+        "start": 24,
+        "end": 33
+      },
+      {
+        "start": 90,
+        "end": 111
+      },
+      {
+        "start": 145,
+        "end": 151
+      }
+    ],
+    "raw/stripe-kakao-pay-accept-payment-2025.md": [
+      {
+        "start": 18,
+        "end": 29
+      },
+      {
+        "start": 134,
+        "end": 143
+      }
+    ],
+    "raw/stripe-naver-pay-set-up-future-payments-2025.md": [
+      {
+        "start": 352,
+        "end": 367
+      },
+      {
+        "start": 463,
+        "end": 528
+      }
+    ],
+    "raw/stripe-changelog-endive-2026-09-30-remove-payment-method-types-checkout-sessions-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 23
+      }
+    ],
+    "raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 36
+      }
+    ],
+    "raw/stripe-changelog-basil-2025-03-31-naver-pay-payment-method-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 25
+      }
+    ]
+  },
+  "answers": {
+    "payments-naver-pay-accept-a-payment": {
+      "Q1": "At https://docs.stripe.com/payments/naver-pay/accept-a-payment, new raw lines 5-14 identify South Korean Naver Pay acceptance and link to Checkout and Direct API. The May 8, 2026 detail scopes Checkout to South Korean customers and 28 merchant locations including Singapore, KRW line items, a 100 KRW minimum and a 2,000,000 KRW stored-value top-up limit distinct from card passthrough. It lists Checkout payment, setup and subscription modes; the shown Sessions are payment mode (old raw lines 18-103). In Direct API, the merchant server creates a KRW PaymentIntent for `naver_pay`, with `card` the funding default and `points` available. The merchant includes the required NICEPAY disclosure text and terms link on its own checkout page (old raw lines 229-234). Stripe.js confirms with the client secret and `return_url` and initiates the local processor redirect, where the buyer selects an issuer and authorizes (old raw lines 235-255). The return provides `payment_intent` and `payment_intent_client_secret` for status verification. In test mode `requires_action` becomes `succeeded` on authorization or `requires_payment_method` on failure. The dated guide uses `payment_intent.succeeded` for post-payment actions (old raw lines 282-297). The revised source-stripe-naver-pay-accept-payment.md retains the routes and funding choices with dated email, mode and payment-state qualifications.",
+      "Q2": "At https://docs.stripe.com/payments/naver-pay/accept-a-payment, new raw lines 5-14 replace full detail with two variant links. Old raw lines 8-10 and 109-111 show matching routes, so these captures establish navigation change only. Keep the May 8, 2026 KRW and location terms, Checkout mode matrix and URL examples, and Direct API client/server and NICEPAY disclosure scope dated (old raw lines 24-103 and 134-160, 229-282). In source-stripe-naver-pay-accept-payment.md and the reciprocal Korea concept, Naver sample requests omit email; they do not establish a general no-email rule. The May Kakao guide expressly requires email in Direct API (raw/stripe-kakao-pay-accept-payment-2025.md:134-143). The separate May Naver future-payments guide’s `ngn` saving snippets conflict with this guide’s `krw` payment examples, and its automatic capture requirement is scoped to recurring payments (raw/stripe-naver-pay-set-up-future-payments-2025.md:463-528). Keep authorization, browser return, verified payment status and settlement distinct; May tests and event guidance describe payment states and the sample contains a separate `result.error` reference after destructuring `error` (old raw lines 257-309). Keep the May manual `payment_method_types` examples dated and warn reciprocally that the `2026-09-30.endive` Checkout Session and PaymentIntent create endpoints reject this request field with HTTP 400. The Intent error code is `payment_method_types_no_longer_supported`. Dynamic methods or `allowed_payment_method_types` filter for compatibility and `payment_method_types` is the computed response field. The Endive links and REST table control despite the Intent Impact paragraph's different preview label. This version rule gives no account-specific Naver Pay eligibility (raw/stripe-changelog-endive-2026-09-30-remove-payment-method-types-checkout-sessions-2026-11-07.md:5-23; raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07.md:5-36). The May server creation example documents `card` as default and `points` as an alternative, while browser confirmation sends only the type (old raw lines 134-156 and 254-273). On `2025-03-31.basil`, Naver Pay parameters can be set only at PaymentMethod creation; `PaymentMethod#update` cannot modify them on an existing instrument (raw/stripe-changelog-basil-2025-03-31-naver-pay-payment-method-2026-11-07.md:5-25). Whether the server setting carries through the shown browser call remains unverified, and funding selection is a separate concern from payment-method saving."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "naver-pay-acceptance-one-time-and-request-scope",
+      "target_path": "wiki/concepts/stripe-korea-payment-methods.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **28 business locations** — includes Singapore (unlike Kakao Pay)\n- **Minimum**: 100 KRW; stored value top-up max: 2,000,000 KRW (no max for card passthrough)\n- **Modes**: payment + setup + subscription (recurring supported)\n- **No buyer email required** — unlike Kakao Pay\n- **Funding source**: `payment_method_data.naver_pay.funding` = `'card'` (default, linked Naver Pay card) or `'points'` (Naver Pay Points balance)\n- **NICEPAY disclosure required** — same as other KR methods\n- **Branding**: must comply with Naver Pay [overseas brand guidelines](https://developers.pay.naver.com/design/brand/overseas)\n- **Checkout**: add `naver_pay` to `payment_method_types`; all line items in `krw`\n- **Direct API**: `stripe.confirmPayment()` with `payment_method_data.type: 'naver_pay'` + `return_url`",
+      "proposed_markdown": "- **May Checkout**. 28 business locations including Singapore, KRW line items and a 100 KRW minimum. The 2,000,000 KRW cap is for stored-value top-up. The guide states no maximum for card passthrough. The compatibility table lists payment, setup and subscription modes, while the examples use payment mode. The separate [[source-stripe-naver-pay-set-up-future-payments|setup guide]] covers consent, capture for recurring payments and the historical NGN discrepancy.\n- **May Direct API**. Naver server and confirm examples omit email. The separate Kakao Direct API guide requires it. The Naver creation example offers `card` (default) or `points` funding. The Basil changelog makes those parameters creation-only. The client sample supplies only the type. The Direct API merchant page carries the NICEPAY disclosure and terms, and `stripe.confirmPayment` uses the `return_url` before PaymentIntent status verification. Follow Naver Pay's [overseas brand guidelines](https://developers.pay.naver.com/design/brand/overseas) if using its branding.\n- **Endive request scope**. The May manual Checkout and PaymentIntent examples use `payment_method_types`. The `2026-09-30.endive` create endpoints reject this writable field with HTTP 400. Use the separate compatibility-filtered alternatives and outcome qualifications in [[source-stripe-naver-pay-accept-payment]].",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "May acceptance raw lines 24–103, 134–156 and 229–313, May Kakao accept raw 134–143, and separate Endive/Basil changelogs named in the source."
+      ]
+    },
+    {
+      "update_id": "naver-pay-acceptance-acceptance-route",
+      "target_path": "wiki/concepts/stripe-korea-payment-methods.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-naver-pay-accept-payment]] — Naver Pay integration: naver_pay, funding source card/points, 28 countries (incl. SG), NICEPAY disclosure, branding guidelines",
+      "proposed_markdown": "- [[source-stripe-naver-pay-accept-payment]] — May 2026 Checkout and Direct API guide for KRW acceptance, creation-time card/points funding, NICEPAY disclosure and Stripe payment status. Includes versioned request warnings. November indexes the two variants.",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "May raw lines 24–50, 134–156 and 229–313. November raw lines 9–14 are navigation."
+      ]
+    }
+  ]
+}

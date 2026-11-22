@@ -1,0 +1,209 @@
+{
+  "job_id": "payments-payment-intents-migration",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-payment-intents-migration-2026-11-07.md",
+  "raw_sha256": "3832c2edf2a4d00c9bf22d5e56a26a42b53195770fbff4fcdeabc9358c21acac",
+  "prior_raw_path": "raw/stripe-payment-intents-migration-2025.md",
+  "prior_raw_sha256": "15b7259ecf8926c2d136c43b25411cbe6a2e103890e662f2e3612b8ea39b979f",
+  "source_targets": [
+    "wiki/sources/source-stripe-legacy-apis.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-legacy-apis.md": "7721203237bcc81fe7768e450d1ab3cf23c975ece42ab816086090969d2739f5"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-payment-intents-migration-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 197
+      }
+    ],
+    "raw/stripe-payment-intents-migration-2025.md": [
+      {
+        "start": 1,
+        "end": 196
+      }
+    ],
+    "wiki/sources/source-stripe-legacy-apis.md": [
+      {
+        "start": 1,
+        "end": 146
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/2ff92203d19aa85fa5a5398f/content.diff": [
+      {
+        "start": 1,
+        "end": 178
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 13
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 18,
+        "end": 28
+      },
+      {
+        "start": 724,
+        "end": 733
+      }
+    ],
+    "wiki/concepts/stripe-payment-intents.md": [
+      {
+        "start": 8,
+        "end": 46
+      },
+      {
+        "start": 83,
+        "end": 102
+      },
+      {
+        "start": 132,
+        "end": 152
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 787,
+        "end": 794
+      }
+    ],
+    "raw/stripe-payments-charges-api-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 29
+      }
+    ],
+    "raw/stripe-api-payment-intents-create-2026-11-07.md": [
+      {
+        "start": 428,
+        "end": 447
+      },
+      {
+        "start": 644,
+        "end": 692
+      }
+    ],
+    "raw/stripe-api-payment-intents-confirm-2026-11-07.md": [
+      {
+        "start": 615,
+        "end": 658
+      }
+    ],
+    "raw/stripe-api-payment-methods-attach-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 18
+      }
+    ],
+    "raw/stripe-payments-quickstart-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "raw/stripe-api-setup-intents-create-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 12
+      },
+      {
+        "start": 377,
+        "end": 387
+      }
+    ],
+    "raw/stripe-api-setup-intents-confirm-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 15
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "It\u2019s safe to incrementally adopt the Payment Intents API and use it in parallel with the Charges API.",
+      "location": "raw/stripe-payments-payment-intents-migration-2026-11-07.md:13"
+    },
+    {
+      "text": "Subscribe to the `payment_intent.succeeded` webhook and fulfill in the webhook handler.",
+      "location": "raw/stripe-payments-payment-intents-migration-2026-11-07.md:63"
+    },
+    {
+      "text": "Finally, attach the payment method (`paymentIntent.payment_method`) to the customer.",
+      "location": "raw/stripe-payments-payment-intents-migration-2026-11-07.md:139"
+    },
+    {
+      "text": "A SetupIntent authenticates the card without making an initial payment.",
+      "location": "raw/stripe-payments-payment-intents-migration-2026-11-07.md:161"
+    },
+    {
+      "text": "You must now explicitly pass in the desired payment method.",
+      "location": "raw/stripe-payments-payment-intents-migration-2026-11-07.md:173"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "It\u2019s safe to incrementally adopt the Payment Intents API and use it in parallel with the Charges API.",
+      "location": "raw/stripe-payment-intents-migration-2025.md:12"
+    },
+    {
+      "text": "You must now explicitly pass in the desired payment method.",
+      "location": "raw/stripe-payment-intents-migration-2025.md:172"
+    },
+    {
+      "text": "Finally, attach the payment method (`paymentIntent.payment_method`) to the customer.",
+      "location": "raw/stripe-payment-intents-migration-2025.md:138"
+    }
+  ],
+  "proposed_disposition": "raw_reference",
+  "findings": [
+    "Both full guides document staged adoption for an existing cards/Charges integration, including compatible Charge-property readers where applicable, version/client SDK review, web and separate iOS/Android routes, saved-card migration, and sandbox authentication validation (old lines 10\u201327; new lines 11\u201328). November replaces the Payment Element quickstart URL and removes the API-upgrade fragment, with ordered-list, wording and formatting cleanup (old lines 6\u201327; new lines 7\u201328; diff lines 3\u201335). No underlying behavior changes are established by these two captures.",
+    "For automatic confirmation in the card Elements migration, create a PaymentIntent on the server, make its client secret available to the client, use Stripe.js `confirmCardPayment` to submit billing instrument details and initiate Charge creation, then use server-side `payment_intent.succeeded` for fulfillment. In the Payment Request Button path the client passes the token ID into `confirmCardPayment` and invokes the completion callback when its promise resolves. A token, callback and confirmation attempt lack payment-finality evidence (old lines 29\u2013106; new lines 30\u2013106). Express Checkout Element was already an alternative. Legacy Checkout can upgrade to Checkout or switch to Elements, and Stripe.js v2 first moves card collection to Elements (old lines 107\u2013117; new lines 108\u2013118).",
+    "Saving during payment uses `setup_future_usage` with a Customer ID and PaymentIntent confirmation/customer actions. `on_session` is for future in-app use only, `off_session` for outside the app or both, and the latter is distinct from flagging a later payment `off_session` (old lines 119\u2013156 and 170\u2013174; new lines 120\u2013157 and 171\u2013175). The guide repeats an attach instruction even after describing automatic attachment. The November PaymentIntent create/confirm references corroborate automatic attachment after required conditions, distinguish `customer_account` and `customer`, and document separate attachment where no Customer was supplied (create lines 432\u2013444 and 672\u2013685, confirm lines 639\u2013654). This is a documentation distinction, without a mandatory duplicate attach or proof of successful, authorized future debits.",
+    "Saving with no initial charge uses separate SetupIntent and client secret, `confirmCardSetup` instead of `createToken`/`createSource`, possible authentication, then its PaymentMethod ID and server-side Payment Methods API attachment to Customer where needed. A separate SetupIntent create reference documents automatic attachment on successful setup when the customer identity was supplied; confirmation may still need action or fail (old lines 158\u2013168; new lines 159\u2013169; related SetupIntent create lines 378\u2013386 and confirm lines 5\u201311). The attach API says bare attach without either setup mechanism does not optimize future use (related attach lines 5\u201311).",
+    "The saved-card instructions ask for both Customer and desired Card/Source/PaymentMethod IDs, explicit off-session flag where applicable, and Payment Methods API listing because new PaymentMethods are not duplicated in `customer.sources` (old lines 170\u2013178; new lines 171\u2013179). The separately captured create API documents legacy `customer.default_source` fallback when `payment_method` is omitted with `confirm=true`; the migration instruction remains to provide the chosen ID explicitly (related create lines 647\u2013650).",
+    "Main retrieval route: wiki/index.md line 7 \u2192 wiki/stripe-index.md lines 23\u201324 and 729 \u2192 wiki/concepts/stripe-payment-intents.md lines 12\u201328, 86\u201394 and 134\u2013152. The current legacy summary lines 126\u2013135 compress or omit the key attachment, dual-ID and saved-card conditions. Its Charges deprecation warning at lines 22 and 28 should qualify its separate parallel-migration bullet, rather than presenting a new permission."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "Preserve the April 20 and November 7 full migration snapshots and link changes as dated. The new quickstart link resolves in the separate captured guide to Checkout Sessions with Payment Element (related quickstart lines 5\u201313). The feature callout describes this separate route and does not convert the legacy-card `confirmCardPayment` migration into the Checkout Sessions client flow.",
+    "Version boundary: the migration guide says Payment Intents works across API versions while recommending upgrade; earlier than 2019-02-11 uses `requires_source` and `requires_source_action` where modern examples use `requires_payment_method` and `requires_action`. Upgrade client SDK if using one; no universal minimum SDK number or feature parity is stated (old lines 20\u201327; new lines 21\u201328).",
+    "Both full guides document four sandbox fixtures for auth on setup or first use, always required, authentication followed by `insufficient_funds`, and optional 3DS2 unless sandbox Radar requests auth. These are simulator outcomes, not live card rules, actual payment clearance or compliance certification (old lines 180\u2013191; new lines 181\u2013192).",
+    "Keep one-time confirmation/fulfillment, in-payment card setup, separate SetupIntent setup, and later charge/listing as distinct paths (old lines 29\u2013178; new lines 30\u2013179). The April and November mobile references remain navigation. The Payment Request Button migration still has separate token and callback mechanics and an Express Checkout Element alternative (new lines 67\u2013106)."
+  ],
+  "conflicts": [
+    "Current summary line 133 states \u2018no default source fallback\u2019. Both migration guides direct explicit saved instrument and Customer IDs, but the November create API documents a narrow `customer.default_source` fallback when `payment_method` is omitted with `confirm=true` (raw/stripe-api-payment-intents-create-2026-11-07.md lines 647\u2013650; old raw lines 170\u2013174, new raw lines 171\u2013175). Correct the blanket statement and use the narrower migration instruction reciprocally.",
+    "Both guides say a Customer plus `setup_future_usage` saves after confirmation and required actions, then say to attach `paymentIntent.payment_method` (old lines 132\u2013138; new lines 133\u2013139). The separate create and confirm API references explicitly describe automatic Customer attachment with the qualifying setup and allow separate attachment when no Customer was provided. Flag the tension and avoid mandating duplicate attachment (create lines 432\u2013444 and 672\u2013685; confirm lines 639\u2013654). SetupIntent customer attachment has its own success condition and saved-ID route (new lines 159\u2013169; related SetupIntent creation lines 378\u2013386).",
+    "Both migration captures limit incremental parallel operation to an existing cards/Charges integration transitioning to Payment Intents (old lines 10\u201318, new lines 11\u201319). The separate November Charges page lines 15\u201325 deprecates creating card payments, plans to remove support without giving a date, and bars new integrations from creating payments using Charges. Cross-link the dated scope warning in legacy and Payment Intents routes; existing read compatibility does not authorize new Charges payment creation or establish that retrieval/refunds are shutting down.",
+    "The source\u2019s generic Elements migration label at line 130 and general upgrade map at lines 97\u2013104 can conflate different UI/API routes. The separate new quickstart uses Checkout Sessions + Payment Element and its own client confirmation while the pinned automatic-confirmation card migration uses server-created PaymentIntent and `confirmCardPayment` (new lines 7\u20139 and 30\u201355; related quickstart lines 5\u201313). Neither a changed link nor the card guide establishes new capabilities for other UIs or APIs."
+  ],
+  "unresolved_questions": [
+    "No account-specific continuation of legacy write access, removal date, successful runtime migration, live SCA behavior or mobile variant implementation follows from the pinned migration guides. Related references were checked only for the reported specific conflicts."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-payment-intents.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-legacy-apis.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Retain source lines 126\u2013135's central April-backed guidance but route the November full capture and qualify parallel migration against the dated Charges warning. Distinguish card confirmation, completed attachment, saved method IDs, webhook success and sandbox simulation as separate states and actions.",
+        "Route the specific late-charge migration rule to the November create reference, and preserve the separate SetupIntent no-charge/setup success boundary and the Checkout Sessions quickstart scope."
+      ],
+      "conflicts": [
+        "Source line 133's blanket \u2018no default source fallback\u2019 is inaccurate against the narrow legacy `confirm=true` plus omitted `payment_method` behavior in the November create API lines 647\u2013650. Lines 131\u2013132 omit the attached Customer and required actions, and the two paired guides contain both automatic attach language and a separate attach instruction (old lines 132\u2013138, new lines 133\u2013139). Line 128\u2019s parallel operation needs the existing-migration scope and reciprocal Charges deprecation warning already in source lines 22 and 28."
+      ],
+      "reason": "A reader asking whether omission always rejects or defaults a payment instrument could mispredict the actual create request or charge an unintended default. A reader following the raw save route sees both automatic and explicit attachment in one flow and could act twice. The summary needs to state the narrow create exception and qualifying attachment behavior directly rather than leaving a conflict between linked passages."
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/payment-intents/migration, the November and April 20, 2026 guides describe staged migration of an existing cards/Charges integration. Update the API/client library as applicable, use compatible Charge-property readers where needed, migrate web or the separately linked mobile flow, migrate saved cards, and test authentication in a sandbox. The guide recommends the latest API and library, with pre-2019-02-11 `requires_source` and `requires_source_action` corresponding to `requires_payment_method` and `requires_action` (old raw lines 10-27, new raw lines 11-28). The server creates a PaymentIntent and exposes its client secret to the client. Stripe.js `confirmCardPayment` initiates Charge creation; the Payment Request Button passes the token ID and separately invokes its callback when the confirmation promise resolves. With automatic confirmation, fulfill server-side after `payment_intent.succeeded` (old raw lines 29-106, new raw lines 30-106). To save during checkout, supply a Customer and `setup_future_usage` for on-session only or off-session/both. The resulting PaymentMethod saves after confirmation and required actions. To save without an initial charge, create a SetupIntent, use its client secret with `confirmCardSetup`, and use the resulting PaymentMethod ID for Customer attachment where needed (old raw lines 119-168, new raw lines 120-169). For a later charge, explicitly pass both the Customer and desired Card, Source or PaymentMethod IDs and flag off-session when applicable. List saved methods via the Payment Methods API since new PaymentMethods are absent from `customer.sources` (old raw lines 170-178, new raw lines 171-179). `source-stripe-legacy-apis.md` lines 126-135 captures the main steps but needs the conditional attachment and distinct create API fallback made explicit.",
+    "Q2": "For https://docs.stripe.com/payments/payment-intents/migration, the underlying April and November migration flow is unchanged. November changes the Payment Element quickstart URL, removes the API upgrade fragment, and tidies numbering, headings and tables (old raw lines 6-27, new raw lines 7-28, old raw lines 180-191 and new raw lines 181-192). The separately captured linked quickstart describes Checkout Sessions with Payment Element, while the dated card Elements procedures use `confirmCardPayment` with a PaymentIntent. Preserve the old version status names, server/client and webhook boundaries, and sandbox-only test outcomes. In `source-stripe-legacy-apis.md` and the Payment Intents route, scope parallel Charges operation to migrating an existing integration. The separate November Charges page lines 15-25 deprecates card payment creation and bars new integrations from creating payments through Charges without giving a removal date. Preserve the guide\u2019s explicit saved instrument choice and separately warn that the November create API lines 647-650 documents legacy `customer.default_source` fallback specifically when `payment_method` is omitted with `confirm=true`. Both dated guides describe automatic attachment with a Customer and `setup_future_usage` after confirmation and required actions, then include an attach instruction. Use the create and confirm API conditions to avoid implying a required second attach. Separate no-payment SetupIntent success, later off-session PaymentIntent confirmation and actual paid fulfillment (old raw lines 132-178 and new raw lines 133-179)."
+  }
+}

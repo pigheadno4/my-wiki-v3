@@ -1,0 +1,15 @@
+<!-- Source URL: https://docs.stripe.com/payments/overcapture -->
+<!-- Fetched: 2026-11-07 -->
+<!-- Discovery: reconciled llms.txt,sitemap.xml -->
+
+# Capture more than the authorized amount on a payment
+
+Use overcapture to capture more than the authorized amount for a PaymentIntent.
+
+## Index
+
+This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:
+
+- [Stripe-hosted page](https://docs.stripe.com/payments/overcapture.md?platform=web&ui=stripe-hosted)
+- [Full embedded page](https://docs.stripe.com/payments/overcapture.md?platform=web&ui=embedded-page)
+- [Advanced integration](https://docs.stripe.com/payments/overcapture.md?platform=web&ui=elements)

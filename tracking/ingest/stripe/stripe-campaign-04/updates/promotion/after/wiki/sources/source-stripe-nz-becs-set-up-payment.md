@@ -1,0 +1,82 @@
+---
+title: "Stripe: Save New Zealand BECS Direct Debit Details for Future Payments"
+type: source
+date_ingested: 2026-05-03
+date_updated: 2026-11-22
+original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/nz-bank-account/set-up-payment"
+raw_files:
+  - "stripe-payments-nz-bank-account-set-up-payment-2026-11-07.md"
+  - "stripe-nz-becs-set-up-payment-2025.md"
+tags: [stripe, nz-becs, becs, new-zealand, nzd, setup-intents, elements, mandates, save-payment-method]
+---
+
+## Summary
+
+The May 3 and November 7, 2026 guides use a SetupIntent and the web Payment Element to collect New Zealand BECS Direct Debit details and a Direct Debit Authority (DDA) before a later payment. The November guide adds concrete Accounts v2 examples alongside Customers v1 and uses Dashboard-enabled dynamic payment methods. Saving a PaymentMethod and collecting a debit are separate steps.
+
+## Customer identity and SetupIntent
+
+The November guide requires a Stripe account and says to enable **NZ bank account** in the Dashboard. Stripe displays eligible methods dynamically. Create the SetupIntent on the server with `automatic_payment_methods[enabled]=true` and the identifier for the selected customer model.
+
+| November customer model | Server-side identity |
+| --- | --- |
+| Customer-configured Accounts v2 `Account` | Set `configuration.customer: {}` when creating the Account at `/v2/core/accounts`. Associate its ID with the merchant's customer record and send `customer_account` to SetupIntent and later PaymentIntent create. |
+| Customers v1 `Customer` | Create or retrieve the Customer, associate the ID with the merchant's customer record, and send `customer` to the Intent create calls. |
+
+Both captures describe Accounts v2 as generally available for Connect users and in public preview for other Stripe users. November says preview participants specify a preview API version and opt in under **Account previews and features → Reusable payment methods for Global Payouts**. The Account creation example sends `Stripe-Version: 2026-10-28.preview` on the Accounts v2 request. The v1 Intent examples are shown separately.
+
+## Client confirmation and mandate
+
+Send the **SetupIntent client secret** to the browser through an SPA endpoint or server-rendered form. Initialize Elements with that secret and mount Payment Element. The May secret tooltip describes a PaymentIntent by mistake. November correctly names the SetupIntent secret in its retrieval instructions and still links to PaymentIntent references in the Elements and redirect descriptions. The client uses the SetupIntent secret and calls `stripe.confirmSetup`.
+
+The Payment Element collects the customer's name, email, bank account number, and agreement to NZ BECS Direct Debit Service Terms and Conditions. If you omit it, display those terms separately and confirm acceptance. Provide mandate records promptly upon Stripe's request.
+
+Use `stripe.confirmSetup({ elements, redirect: 'if_required' })` for the documented nonredirect NZ BECS setup. This path can omit `return_url`. Supply a return URL if adding a redirect-based method. Confirmation can return an error or `requires_payment_method`, in which case a different method can be tried. When the SetupIntent reaches `succeeded`, the saved PaymentMethod is attached to the selected customer identity.
+
+## Mandate and debit emails
+
+The May setup sample promises a mandate confirmation email within **5 business days** of confirming the DDA. The November setup sample says **5 days**, matching the May and November method overview wording. These are dated sample and overview statements.
+
+Both setup captures require the merchant to send an email confirming the mandate and collected bank account details after successful SetupIntent confirmation. For each debit, send an email giving the debit date and amount **no later than the day of the debit**. Stripe sends these emails on the merchant's behalf by default. The November [[source-stripe-nz-becs-debit|method overview]] says Stripe sends the mandate email immediately after SetupIntent success and the debit email immediately after every successful PaymentIntent confirmation. Contact Stripe Support to turn off Stripe's emails and send custom notices.
+
+## Later PaymentIntent and off-session scope
+
+After setup succeeds, the November guide shows separate NZD PaymentIntent Create examples using the saved PaymentMethod ID, dynamic payment methods, `confirm=true`, and `off_session=true`. The Accounts v2 example uses `customer_account`; the Customers v1 example uses `customer`.
+
+The November method overview marks **Off-session payments unsupported**, while marking recurring payments, SetupIntents, and PaymentIntents with `setup_future_usage` supported. These same-date statements leave route and account eligibility unresolved. A saved PaymentMethod, an example request, and a later `processing` state give no proof of an off-session debit, successful collection, or funds availability. See the setup capture lines 259–297 and the method overview lines 71–73 and 191–207.
+
+## May examples and API version boundary
+
+The May Node.js examples show Customers v1 and explicitly write `payment_method_types: ['nz_bank_account']` on SetupIntent Create and later PaymentIntent Create. The May browser example uses Stripe.js Dahlia. November shows Ruby/ERB and cURL and loads the Stripe.js Endive browser script. These choices document dated examples.
+
+```js
+// May 3, 2026 Customers v1 example. See the API version warning below.
+stripe.paymentIntents.create({
+  payment_method_types: ['nz_bank_account'],
+  customer: '{{CUSTOMER_ID}}',
+  payment_method: '{{PAYMENTMETHOD_ID}}',
+  confirm: true, off_session: true,
+  amount: 100, currency: 'nzd',
+})
+```
+
+The separate Endive changelog's named endpoints and REST table document that `2026-09-30.endive` rejects writable `payment_method_types` with HTTP 400 and `payment_method_types_no_longer_supported` on PaymentIntent create, update, and confirm and SetupIntent create and update. The response property remains read-only. Use Dashboard-managed dynamic methods, optionally with `excluded_payment_method_types`, or use `allowed_payment_method_types` to filter to dynamically compatible methods. The changelog's separate Impact text advises removing the write before upgrading to `2026-08-26.preview`. These server API labels, the Accounts v2 creation example's `2026-10-28.preview` header, and the browser Stripe.js Endive script have distinct scope. See the changelog lines 9–24, 28, and 34–36.
+
+## Sandbox fixtures
+
+The capture lists bank code `11`, branch `0000`, six account/suffix combinations, and six PaymentMethod tokens. Confirming PaymentIntents with the resulting methods can simulate a success with an active mandate, failures that leave it active (`insufficient_funds` and `refer_to_customer`), and failures that make it inactive (`no_account` and `debit_not_authorized`). One fixture stays in `processing`. The captures end before the referenced transition request appears. See November lines 299–329 and the [[source-stripe-nz-becs-accept-payment|accept-a-payment guide]] for the separately documented collection route.
+
+## Related Pages
+
+- [[stripe]] — payment provider
+- [[stripe-nz-becs-debit]] — method capabilities, mandate notices, and source routes
+
+## Raw Sources
+
+- [[raw/stripe-payments-nz-bank-account-set-up-payment-2026-11-07|2026-11-07 NZ BECS future payment setup guide]]
+- [[raw/stripe-nz-becs-set-up-payment-2025|2026-05-03 NZ BECS future payment setup guide]] — reuses `raw/assets/stripe-elements-appearance-example.png`
+
+## Related raw API references
+
+- [[raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07|2026-11-07 Endive changelog capture]] — request-field and API version reference

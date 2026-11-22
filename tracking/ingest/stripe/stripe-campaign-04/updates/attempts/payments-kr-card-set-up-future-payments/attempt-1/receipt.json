@@ -1,0 +1,196 @@
+{
+  "job_id": "payments-kr-card-set-up-future-payments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Docs — Set up future payments with South Korean cards\"\ntype: source\ndate_ingested: 2026-05-08\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/kr-card/set-up-future-payments\"\nraw_files:\n  - \"stripe-kr-card-set-up-future-payments-2025.md\"\ntags: [stripe, south-korea, krw, kr-card, recurring, setup-intents, mandate, accounts-v2]\n---\n\n## Summary\n\nThe 2026-05-08 [[stripe|Stripe]] guide describes saving South Korean cards (`kr_card`) for future charges through hosted Checkout or the Direct API. It distinguishes setup without a charge, saving during a payment, and later charging. The 2026-11-07 capture retains the purpose and links to Checkout and Direct API variant pages. Those variant bodies are outside the November capture.\n\n## Consent and Customer Identity\n\nThe May guide calls for permission before saving a payment method and a retained record of the customer's written opt-in. For off-session use, the terms cover authorized transactions, expected frequency and timing, how amounts are determined, and the cancellation policy for a subscription. Submit charges only within the agreed terms.\n\nThe merchant links its customer record to a customer-configured Accounts v2 Account or a Customers v1 Customer. The May guide shows the `customer_account` and `customer` alternatives in its setup and charging examples. It describes Accounts v2 at that date as generally available for Connect users and in public preview for other Stripe users. Preview participants need a preview API version. The captured preview-access instruction is incomplete and leaves enrollment unresolved.\n\n## Save Paths\n\n### Hosted Checkout without an initial charge\n\nThe server creates a Checkout Session in `setup` mode using the appropriate customer identity and `payment_method_types: ['card', 'kr_card']` in both May examples. Redirect to the returned hosted Session URL. The May sandbox test selects **Local card**, then **Continue to Local card**, and offers authorization or failure of payment setup.\n\n### Direct API without an initial charge\n\nThe server creates a SetupIntent with `kr_card` and the relevant customer identity. The prose permits `usage: 'on_session'` or `'off_session'`, and both examples use `'off_session'` and show `payment_method_data.type: 'kr_card'`. The server provides the **SetupIntent** client secret. The May browser example loads the Dahlia Stripe.js train with a publishable key, then calls `stripe.confirmKrCardSetup` with that secret, a `return_url`, and online `mandate_data` using `infer_from_client: true`. The May parenthetical describes a PaymentIntent, but the displayed retrieval and client confirmation use a SetupIntent secret.\n\n### Direct API saving during a payment\n\nThe server creates a different object, a PaymentIntent, with `kr_card`, the matching customer identity, `confirm: true`, `setup_future_usage: 'off_session'`, and a `return_url`. The prose calls for `mandate_data` if a mandate must be created. Both shown examples include online customer acceptance with IP address and user agent. This PaymentIntent returns its own client secret for continuing the payment. See the currency discrepancy below before using the examples.\n\n### Standalone manual redirect\n\nIn its optional return example, the server creates and confirms a KRW PaymentIntent. Redirect to `next_action.redirect_to_url.url` when **both** `status === 'requires_action'` and `next_action.type === 'redirect_to_url'` hold. The browser return carries `payment_intent` and `payment_intent_client_secret`. Stripe recommends a webhook endpoint to verify payment status. The sample omits the customer identity, `setup_future_usage`, and `mandate_data`. It shows payment redirection only and supplies no saving or SetupIntent confirmation behavior. The separate Direct API sandbox paragraph describes `requires_action` becoming `succeeded` when authorized or `requires_payment_method` when the test payment fails.\n\n## Using and Detaching a Saved Payment Method\n\nThe server creates and confirms a new KRW PaymentIntent using the saved PaymentMethod ID and matching customer identity. Set `off_session: true` when the customer is absent from the current checkout. The May guide separately requires `capture_method: 'automatic'` for recurring `kr_card` payments, regardless of that flag. The [[source-stripe-korea-payment-methods|November Korea overview]] lists manual capture for the payment-method group. That broader property does not extend to recurring `kr_card` under the dedicated guidance.\n\nDetach the PaymentMethod server-side to deactivate it. The May guide documents `mandate.updated` and `payment_method.detached`. Setup, browser return, payment status, and settlement are separate outcomes.\n\n## Archived Currency Discrepancy\n\nBoth May save-during-payment examples literally use `currency: \"ngn\"` with `kr_card` (May raw lines 484 and 513). The same guide's standalone redirect and later-charge examples use `krw`. The separate [[source-stripe-kr-card-accept-payment|May acceptance guide]] lists KRW as supported and presentment currency. The [[source-stripe-subscriptions-kr-card|May subscription guide]] instructs KRW pricing, and the [[source-stripe-korea-payment-methods|November Korea overview]] lists KRW presentment. The captured examples conflict. The November variant index leaves both a provider correction and execution of a corrected request unverified.\n\n## Related Pages\n\n- [[stripe-korea-payment-methods]] — South Korea payment methods concept page\n- [[source-stripe-kr-card-accept-payment]] — KR card acceptance\n- [[source-stripe-korea-payment-methods]] — South Korea overview\n- [[source-stripe-subscriptions-kr-card]] — KR card subscriptions\n- [[stripe]] — Stripe company page\n\n## Detail Locators\n\n- May raw lines 29–86 and 155–219 cover consent and the customer identity alternatives.\n- May raw lines 88–139 cover Checkout setup and its sandbox test. Lines 221–380 cover SetupIntent creation, client secret and browser confirmation.\n- May raw lines 382–440 cover the standalone redirect. Lines 449–520 cover saving during a payment.\n- May raw lines 522–574 cover reuse, recurring capture, detachment, and the Direct API payment test.\n\n## Raw Sources\n\n- [[raw/stripe-kr-card-set-up-future-payments-2025|2026-05-08 detailed Checkout and Direct API guide]]\n\n## Related raw API references\n\n- [[raw/stripe-payments-kr-card-set-up-future-payments-2026-11-07|2026-11-07 variant index]] — navigation to Checkout and Direct API\n",
+  "quotes": {
+    "payments-kr-card-set-up-future-payments": [
+      {
+        "text": "Learn how to save local South Korean cards to charge your customers later.",
+        "location": "raw/stripe-payments-kr-card-set-up-future-payments-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-kr-card-set-up-future-payments-2026-11-07.md:11"
+      },
+      {
+        "text": "- [Checkout](https://docs.stripe.com/payments/kr-card/set-up-future-payments.md?payment-ui=checkout)",
+        "location": "raw/stripe-payments-kr-card-set-up-future-payments-2026-11-07.md:13"
+      },
+      {
+        "text": "- [Direct API](https://docs.stripe.com/payments/kr-card/set-up-future-payments.md?payment-ui=direct-api)",
+        "location": "raw/stripe-payments-kr-card-set-up-future-payments-2026-11-07.md:14"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-kr-card-set-up-future-payments": [
+      {
+        "text": "Make sure that you keep a record of your customer’s written agreement to these terms, and only submit charges in accordance with the agreed terms.",
+        "location": "raw/stripe-kr-card-set-up-future-payments-2025.md:40"
+      },
+      {
+        "text": "payment_method_types: [\"card\", \"kr_card\"],",
+        "location": "raw/stripe-kr-card-set-up-future-payments-2025.md:117"
+      },
+      {
+        "text": "currency: \"ngn\",",
+        "location": "raw/stripe-kr-card-set-up-future-payments-2025.md:484"
+      },
+      {
+        "text": "Recurring payments must be made with `capture_method: \"automatic\"`. Manual capture isn’t supported.",
+        "location": "raw/stripe-kr-card-set-up-future-payments-2025.md:526"
+      },
+      {
+        "text": "has a status of `requires_action` and the type for `next_action` is `redirect_to_url`.",
+        "location": "raw/stripe-kr-card-set-up-future-payments-2025.md:407"
+      },
+      {
+        "text": "If you need to create a mandate, set",
+        "location": "raw/stripe-kr-card-set-up-future-payments-2025.md:460"
+      },
+      {
+        "text": "currency: \"ngn\",",
+        "location": "raw/stripe-kr-card-set-up-future-payments-2025.md:513"
+      },
+      {
+        "text": "If the customer isn’t in a checkout flow for the current `PaymentIntent`, you must also set the `off_session` value to true.",
+        "location": "raw/stripe-kr-card-set-up-future-payments-2025.md:524"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-kr-card-set-up-future-payments-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-kr-card-set-up-future-payments-2025.md": [
+      {
+        "start": 1,
+        "end": 574
+      }
+    ],
+    "wiki/sources/source-stripe-kr-card-set-up-future-payments.md": [
+      {
+        "start": 1,
+        "end": 62
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/99e226cee8147b4310632b1f/content.diff": [
+      {
+        "start": 1,
+        "end": 576
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 11
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 425,
+        "end": 429
+      },
+      {
+        "start": 788,
+        "end": 792
+      }
+    ],
+    "wiki/concepts/stripe-korea-payment-methods.md": [
+      {
+        "start": 1,
+        "end": 151
+      }
+    ],
+    "raw/stripe-kr-card-accept-payment-2025.md": [
+      {
+        "start": 23,
+        "end": 40
+      }
+    ],
+    "raw/stripe-subscriptions-kr-card-2026.md": [
+      {
+        "start": 14,
+        "end": 32
+      }
+    ],
+    "raw/stripe-payments-countries-korea-2026-11-07.md": [
+      {
+        "start": 50,
+        "end": 92
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-kr-card-set-up-future-payments/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 185
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-kr-card-set-up-future-payments/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 110
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 19,
+        "end": 25
+      }
+    ]
+  },
+  "answers": {
+    "payments-kr-card-set-up-future-payments": {
+      "Q1": "The November 7 capture at https://docs.stripe.com/payments/kr-card/set-up-future-payments states that a merchant can save local South Korean cards for later charges and points to Checkout and Direct API variants (new raw lines 5-14). The mapped source-stripe-kr-card-set-up-future-payments.md summarizes the May 8 mechanics. May requires permission and a written agreement record and attaches the method to a customer-configured Account through customer_account or to a Customer through customer. It describes Accounts v2 as generally available for Connect and in public preview with preview versioning for other users. Hosted Checkout creates a setup-mode session with card and kr_card in the May examples and redirects to the returned hosted URL. Direct API no-charge setup creates a SetupIntent server-side and uses its client secret with browser confirmKrCardSetup and mandate data. A distinct PaymentIntent can save during a payment using setup_future_usage=off_session and conditional mandate data. The later PaymentIntent uses the saved PaymentMethod and the corresponding customer identity, sets off_session=true when the customer is absent from checkout, and uses automatic capture for recurring payments. Server-side detachment deactivates the method and emits mandate.updated and payment_method.detached. The revised mapped summary retains the main flow and ngn discrepancy, restores the preview-version condition, and adds the requires_action and redirect_to_url guard and server status verification for the separate manual redirect PaymentIntent. Setup and browser return are separate from charging and payment-status verification (old raw lines 29-139, old raw lines 155-380, old raw lines 382-440 and old raw lines 449-574).",
+      "Q2": "At https://docs.stripe.com/payments/kr-card/set-up-future-payments, the November change is navigation. The two variant URLs replace detailed Checkout and Direct API bodies while retaining the save-for-later purpose (new raw lines 5-14). The revised summary keeps the May 8 behavior in source-stripe-kr-card-set-up-future-payments.md dated, including customer consent, the two distinct customer identifiers and preview versioning, server intent creation, browser confirmation on the Dahlia example, redirect and status checks, and deactivation events (old raw lines 29-139, old raw lines 155-380 and old raw lines 382-574). The reciprocal Korea concept warning records ngn in both May kr_card save-during-payment examples versus krw in the manual redirect and reuse examples, supported by separately dated Korean acceptance and subscription currency guidance (old raw lines 395-404, old raw lines 469-517 and old raw lines 535-565). The suggested concept changes preserve the group-level manual capture property and the separate automatic capture requirement for recurring kr_card. They distinguish the optional manual PaymentIntent redirect from saving and keep the SetupIntent client secret distinct from PaymentIntent client secrets despite the parenthetical at old raw lines 259-261. The dated PaymentIntent test transitions from requires_action to succeeded or requires_payment_method. The separate hosted Checkout test authorizes or fails payment setup (old raw lines 137-139 and old raw lines 572-574). Current variant parameters, account eligibility, end-to-end setup, payment success and settlement remain unverified."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-kr-card-set-up-future-payments-manual-capture-scope",
+      "target_path": "wiki/concepts/stripe-korea-payment-methods.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Manual capture**: Yes; **Partial capture**: No",
+      "proposed_markdown": "- **Capture**: The November 2026 Korea overview lists manual capture and no partial capture for the payment-method group. The May 2026 [[source-stripe-kr-card-set-up-future-payments|dedicated KR card guide]] requires automatic capture for recurring `kr_card` payments.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "raw/stripe-kr-card-set-up-future-payments-2025.md:522-565 scopes recurring capture separately from off_session. raw/stripe-payments-countries-korea-2026-11-07.md:68-92 is group-level."
+      ]
+    },
+    {
+      "update_id": "payments-kr-card-set-up-future-payments-kr-card-flow",
+      "target_path": "wiki/concepts/stripe-korea-payment-methods.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Accounts v2 supported**: both `customer_account` (Accounts v2, GA for Connect / preview otherwise) and `customer` (v1) variants available throughout\n- **SetupIntent path**: `setupIntents.create({ payment_method_types: ['kr_card'], payment_method_data: { type: 'kr_card' }, usage: 'off_session'|'on_session', customer|customer_account })` → `stripe.confirmKrCardSetup()` with `return_url` + `mandate_data: { customer_acceptance: { type: 'online', online: { infer_from_client: true } } }`\n- **PaymentIntent `setup_future_usage` path**: `setup_future_usage: 'off_session'`, `confirm: true`, `mandate_data` with explicit `ip_address` + `user_agent`\n- **Recurring payments**: `capture_method: 'automatic'` required — manual capture not supported for off-session recurring\n- **Checkout setup mode**: `mode: 'setup'`, `kr_card` in `payment_method_types`; testing: select \"Local card\" → \"Continue to Local card\"\n- **Detach**: fires `mandate.updated` + `payment_method.detached`\n- **Source bug**: Stripe docs use `currency: 'ngn'` in the `setup_future_usage` PaymentIntent examples — should be `krw`",
+      "proposed_markdown": "The 2026-05-08 [[source-stripe-kr-card-set-up-future-payments|dedicated guide]] calls for customer permission and a written agreement record. It shows a customer-configured Accounts v2 Account via `customer_account` or a Customers v1 Customer via `customer`. It describes Accounts v2 as generally available for Connect and in public preview for other users, with a preview API version for participants.\n\n- Hosted Checkout uses `mode: 'setup'` and includes `card` and `kr_card` in both examples. Direct API setup creates a server SetupIntent and the browser passes the SetupIntent secret, return URL, and online mandate data to `stripe.confirmKrCardSetup()`.\n- Saving during payment uses a separate PaymentIntent with `setup_future_usage: 'off_session'` and `confirm: true`. Supply `mandate_data` when a new mandate is needed. The optional manual redirect sample is a separate PaymentIntent example and omits the saving fields. It checks `requires_action` and `redirect_to_url` before redirecting. Use server events to verify payment status.\n- A later charge uses the saved PaymentMethod ID and matching customer identity. The May guide requires automatic capture for recurring charges and `off_session: true` when the customer is outside the current checkout. Server-side detach deactivates the method and triggers `mandate.updated` and `payment_method.detached`.\n- **Archived currency discrepancy**: Both May save-during-payment examples show `ngn`, while the standalone redirect and reuse examples use `krw`, consistent with the dated Korea presentment and subscription pricing guidance. The November index leaves the examples unresolved.",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "raw/stripe-kr-card-set-up-future-payments-2025.md:29-139,155-380,382-440,449-570 grounds the different objects and states, conditional flags, and currency mismatch. Related currency authorities are raw/stripe-kr-card-accept-payment-2025.md:23-40, raw/stripe-subscriptions-kr-card-2026.md:14-32, and raw/stripe-payments-countries-korea-2026-11-07.md:50-62."
+      ]
+    },
+    {
+      "update_id": "payments-kr-card-set-up-future-payments-source-route",
+      "target_path": "wiki/concepts/stripe-korea-payment-methods.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-kr-card-set-up-future-payments]] — KR card save/recurring: Accounts v2 + v1, confirmKrCardSetup(), setup_future_usage, automatic capture only for recurring",
+      "proposed_markdown": "- [[source-stripe-kr-card-set-up-future-payments]] — May 2026 Checkout setup and Direct API guide for consent, customer identity, separate setup and charging paths, recurring capture, and the archived currency discrepancy. November 2026 is variant navigation.",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "raw/stripe-kr-card-set-up-future-payments-2025.md:29-139,155-380,449-570 grounds the dated route. November new raw lines 5-14 give only variant navigation."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+--- wiki/sources/source-stripe-payco-accept-payment.md
++++ tracking/ingest/stripe/stripe-campaign-04/updates/attempts/payments-payco-accept-a-payment/attempt-1/candidate.md
+@@ -2,7 +2,9 @@
+ title: "Stripe Docs — Accept a payment using PAYCO in South Korea"
+ type: source
+ date_ingested: 2026-05-08
++date_updated: 2026-11-22
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/payments/payco/accept-a-payment"
+ raw_files:
+   - "stripe-payco-accept-payment-2025.md"
+ tags: [stripe, south-korea, krw, payco, local-payment-methods, nicepay, payment-intents, checkout]
+@@ -10,38 +12,38 @@
+ 
+ ## Summary
+ 
+-Integration guide for PAYCO (`payco`) in South Korea via Stripe's local processor partner (NICEPAY). Payment mode only — no setup or subscription mode (no recurring). Simpler integration than Naver Pay (no funding source parameter, no buyer email required).
++The May 8, 2026 [[stripe|Stripe]] guide documents accepting PAYCO (`payco`) in South Korea through Checkout and Direct API. The November 7, 2026 base capture is a two-link variant selector. See [[stripe-korea-payment-methods]] and the separate [[source-stripe-korea-payment-methods|Korea overview]] for the broader method matrix. The May and November Korea matrices list PAYCO for one-time payments only.
+ 
+-## Key Facts
++## May Checkout route
+ 
+-- **PM type**: `payco`
+-- **Currency**: KRW only; **28 business locations** (all 28 including Singapore)
+-- **Minimum**: 100 KRW; stored value top-up max: 2,000,000 KRW (no max for card passthrough)
+-- **Modes**: payment only — setup ✗, subscription ✗ (no recurring)
+-- **No buyer email required**, no funding source parameter
+-- **NICEPAY disclosure required** — same text as all other KR methods
++The May compatibility section lists South Korean buyers, 28 business locations including Singapore, and KRW presentment and line items. Checkout supports payment mode and excludes setup and subscription modes. Its minimum is 100 KRW. The guide lists no maximum for card passthrough and a distinct 2,000,000 KRW limit on topping up PAYCO stored value.
+ 
+-## Integration Paths
++Use dynamic payment methods or follow the May manual example, which sends `payco` in `payment_method_types` with KRW line items. The May Stripe-hosted example uses `success_url`. The full embedded example uses `return_url` and `ui_mode: embedded_page`. The dated test redirects to a Stripe-hosted page to authorize or fail the payment. In the test, the PaymentIntent goes from `requires_action` to `succeeded` or `requires_payment_method`, respectively. See May raw lines 10–103 and the API version boundary below.
+ 
+-### Checkout
++## May Direct API route
+ 
+-- Add `payco` to `payment_method_types`; all line items in `krw`
+-- Testing: select "PAYCO" → Stripe-hosted redirect page → authorize or fail
++The May guide requires a Stripe account. Create a PaymentIntent on the server for the amount in `krw` with `payco` in historical `payment_method_types`. The example also supplies `payment_method_data.type: 'payco'`. Pass the client secret to the browser. Use `stripe.confirmPayment` with that client secret, `payment_method_data.type: 'payco'` and a `return_url` to handle the local processor redirect. This Direct API client section requires the merchant page to name NICEPAY and link to its terms. See May raw lines 115–149 and 218–269.
+ 
+-### Direct API
++The illustrated server and browser requests omit buyer email and a funding selector. Field requirements for all PAYCO requests cannot be inferred from their omission. The separate May [[source-stripe-naver-pay-accept-payment|Naver Pay Direct API guide]] describes an optional card/points funding selector, and the [[source-stripe-kakao-pay-accept-payment|Kakao Pay Direct API guide]] explicitly requires buyer email.
+ 
+-1. Create PaymentIntent: `payment_method_types: ['payco']` + `payment_method_data: { type: 'payco' }`
+-2. Client: `stripe.confirmPayment()` with `payment_method_data.type: 'payco'` + `return_url`
+-3. NICEPAY disclosure required on checkout page
+-4. Post-payment: `payment_intent.succeeded` webhook
++Local authentication and authorization precede browser return. Use `payment_intent` and `payment_intent_client_secret` from the redirect to verify the PaymentIntent status. The May browser snippet destructures `error` at line 252 and uses `result.error.message` at line 266 without a shown `result` binding. Direct API tests use test keys and show the same two state transitions as Checkout. For optional post-payment actions, the guide describes `payment_intent.succeeded` via Dashboard, webhook or partner integration and advises against relying on the client callback. A redirect or sandbox transition alone leaves a live outcome or settlement unverified. See May raw lines 243–298.
++
++## API version and no-save boundaries
++
++- The separate [[raw/stripe-changelog-dahlia-2026-07-29-samsung-pay-and-payco-setup-future-usage-none-only-2026-11-07|2026-07-29.dahlia changelog]] adds `payment_method_options.payco.setup_future_usage=none` on applicable Checkout Session and PaymentIntent surfaces to indicate the method will not be saved. This is consistent with the one-time PAYCO matrix and establishes no reuse, Checkout setup or subscription mode.
++- At the separate `2026-09-30.endive` endpoints linked by the [[raw/stripe-changelog-endive-2026-09-30-remove-payment-method-types-checkout-sessions-2026-11-07|Checkout changelog]] and [[raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07|Intent changelog]], submitting the historical writable `payment_method_types` to Checkout Session Create or PaymentIntent Create returns HTTP 400. The Intent error is `payment_method_types_no_longer_supported`. Dynamic payment methods or `allowed_payment_method_types` filter candidates for compatibility. The computed `payment_method_types` remains in the response. Endpoint links and the Intent REST table cite Endive, while the Intent Impact paragraph separately names `2026-08-26.preview`. This general filtering does not establish PAYCO eligibility. The November PAYCO selector supplies no migrated request examples.
+ 
+ ## Related Pages
+ 
+-- [[stripe-korea-payment-methods]] — South Korea payment methods concept page
+-- [[source-stripe-korea-payment-methods]] — South Korea overview
+-- [[source-stripe-naver-pay-accept-payment]] — Naver Pay integration (has funding source + points)
++- [[stripe-korea-payment-methods]] — South Korea payment methods
++- [[source-stripe-korea-payment-methods]] — South Korea overview and method matrix
++- [[source-stripe-naver-pay-accept-payment]] — Naver Pay integration
+ - [[stripe]] — Stripe company page
+ 
+ ## Raw Sources
+ 
+-- [[stripe-payco-accept-payment-2025]] — verbatim webpage content
++- [[raw/stripe-payco-accept-payment-2025|PAYCO acceptance, May 8, 2026 full Checkout and Direct API capture]]
++
++## Related raw API references
++
++- [[raw/stripe-payments-payco-accept-a-payment-2026-11-07|PAYCO acceptance variant selector]] — November 7, 2026. Links Checkout and Direct API.

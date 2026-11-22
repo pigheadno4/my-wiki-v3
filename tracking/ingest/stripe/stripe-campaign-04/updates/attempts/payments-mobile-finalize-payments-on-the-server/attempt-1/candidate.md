@@ -1,0 +1,142 @@
+---
+title: "Finalize Payments on the Server — Mobile"
+type: source
+date_ingested: 2026-04-22
+date_updated: 2026-11-22
+original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/mobile/finalize-payments-on-the-server"
+raw_files:
+  - "stripe-inapp-finalize-payments-server-2025.md"
+tags: [stripe, mobile, ios, android, react-native, payment-sheet, flow-controller, confirmation-token, server-confirmation, apple-pay, saved-cards, customer-session]
+---
+
+## Summary
+
+Stripe's **2026-04-22** guide documents deferred Intent creation for iOS, Android, and React Native. The app renders PaymentSheet and collects payment details before the merchant server creates and confirms the Intent. Use a **PaymentIntent** to take a payment. Use a **SetupIntent** to save a payment method for future use without creating a charge, attaching it to a customer-configured Accounts v2 `Account` or a Customers v1 `Customer`. A later off-session charge uses a separate PaymentIntent and can still fail if authentication is required and an exemption does not apply.
+
+The April setup variants describe Accounts v2 as generally available for Connect users and in public preview for other Stripe users. Preview users need to specify a preview API version. Customers v1 is the alternative documented in those variants.
+
+The **2026-11-07** capture of the same URL retains the render-before-creation and server-confirmation sequence. It replaces the inline guide with six links for payment and setup on iOS, Android, and React Native. The linked variant bodies are outside the capture. Platform requirements, compatibility, and eligibility below come from April unless otherwise dated.
+
+## ConfirmationToken flow
+
+The April guide uses a Stripe SDK initialized with a publishable key, at least one enabled payment method, and a merchant server endpoint that talks to Stripe. Configure the sheet for the intended payment or setup. The client callback sends a ConfirmationToken ID to that endpoint. The April Swift examples read `confirmationToken.stripeId`, while the Android and React Native examples read `confirmationToken.id`.
+
+The merchant server supplies the trusted amount and currency for a PaymentIntent and creates and confirms it with the token. The following is the April PaymentIntent example shape.
+
+```js
+stripe.paymentIntents.create({
+  confirm: true,
+  confirmation_token: req.body.confirmation_token_id,
+  amount: 1099, currency: 'usd',
+  automatic_payment_methods: { enabled: true },
+})
+```
+
+For setup, the server creates and confirms the SetupIntent with the token and the appropriate customer identity, using `customer_account` or `customer`. In both branches, the server returns the corresponding Intent's client secret after a successful API call. PaymentSheet uses that secret for any required next actions. Match configured Intent properties to the actual Intent, such as amount, currency, and `setup_future_usage` for payment, or `usage` for setup.
+
+| April flow | What triggers the token callback |
+| --- | --- |
+| Default PaymentSheet | The customer taps the sheet's **Pay** or **Set up** action |
+| iOS or Android FlowController | The sheet collects a selection and the app's own button calls `confirm()` |
+| React Native custom flow | Initialize with `customFlow: true`, collect the selection, and call `confirmPaymentSheetPayment` from the app's own button |
+
+## FlowController updates
+
+The April native iOS guide calls `update(intentConfiguration:)` with the revised configuration when payment details change. Keep selection and confirmation unavailable during the update, refresh the selected option on success, and retry on failure.
+
+```swift
+paymentSheetFlowController.update(intentConfiguration: newConfig) { error in
+  if error != nil { /* Retry the update before enabling selection or payment */ }
+  else { /* Refresh the selected option and re-enable the available actions */ }
+}
+```
+
+The April Android guide calls `configureWithIntentConfiguration()` again on the existing FlowController, avoids `presentPaymentOptions()` and `confirm()` during reconfiguration, refreshes the UI from the resulting selection, and retries failed updates. The React Native guide documents its own `customFlow` trigger above. The Swift update example applies to native iOS.
+
+## React Native SetupIntent routes in April
+
+The deferred server-confirmation PaymentSheet variant names **cards and PayPal**. PaymentSheet renders before Intent creation, and the merchant server receives the ConfirmationToken ID before creating and confirming the SetupIntent. See the April raw lines 5100–5103, 5174–5180, and 5467–5473.
+
+The separately captured [[source-stripe-inapp-set-up-future-payments]] route initializes React Native PaymentSheet with an **already-created SetupIntent client secret** and lists **cards, Link, and US bank accounts**. Its Android variant lists the same three. Its seven-method list (cards, Bancontact, iDEAL, Link, SEPA Direct Debit, Sofort, and US bank accounts) is from its iOS variant. See that guide's April raw lines 8–12, 110–120, 958–963, 1029–1044, 1716–1725, 1818–1842, and 1998–2017. The dated route statements leave current support, SDK/API version conditions, account eligibility, and overlap undetermined.
+
+## Apple Pay setup
+
+In the April native iOS example, register an Apple Merchant ID, create the certificate through Stripe Dashboard's iOS Certificate Settings, and enable the Apple Pay capability for that merchant ID in Xcode.
+
+```swift
+configuration.applePay = .init(
+  merchantId: "merchant.com.your_app_name",
+  merchantCountryCode: "US"
+)
+```
+
+For recurring payments, the native example sets the intended billing details in `PKPaymentRequest.paymentSummaryItems` through `paymentRequestHandler`. Merchant tokens are optional through `recurringPaymentRequest` or `automaticReloadPaymentRequest`. The Swift example guards `PKRecurringPaymentSummaryItem` at iOS 15+ and its `recurringPaymentRequest` at iOS 16+. For order tracking on iOS 16+, the native example uses `authorizationResultHandler` to add `PKPaymentOrderDetails` from the merchant server before the wallet sheet dismisses. The April React Native guide uses a distinct `applePay` configuration with recurring cart items, an optional recurring request, and `setOrderTracking` for order data on iOS 16+.
+
+## Saved cards and CustomerSession
+
+The April guide requires an associated customer-configured Account or Customer for optional saved cards. To show the checkbox for saving a card, enable `payment_method_save` on a CustomerSession. PaymentSheet's component is `mobile_payment_element`, distinct from the web component `payment_element`. The following is the April **Customers v1 iOS** example shape. The customer-configured Accounts v2 sample uses `customer_account` in place of `customer`.
+
+```js
+const customerSession = await stripe.customerSessions.create({
+  customer: customer.id,
+  components: {
+    mobile_payment_element: {
+      enabled: true,
+      features: {
+        payment_method_save: 'enabled',
+        payment_method_redisplay: 'enabled',
+        payment_method_remove: 'enabled',
+      },
+    },
+  },
+});
+```
+
+```swift
+// April native iOS example
+@_spi(CustomerSessionBetaAccess) import StripePaymentSheet
+configuration.customer = .init(id: customerId, customerSessionClientSecret: csSecret)
+```
+
+The client receives a customer identity and a **CustomerSession client secret** for this configuration, separate from the **Intent client secret** used for next actions. The April iOS and Android server examples nest `mobile_payment_element` under `components`, while the historical React Native server examples put it at the top level. The captures leave the discrepancy unresolved as an API request shape. The merchant remains responsible for applicable laws, regulations, and network rules. Redisplay requires the customer's consent for that specific future use. The guide points to `allow_redisplay` to distinguish methods eligible for display.
+
+## Configuration and payment outcomes
+
+| April option | Description |
+| --- | --- |
+| `returnURL` | The native iOS and React Native PaymentSheet examples use a custom app URL scheme and forward the return to the SDK. Universal Links are outside this PaymentSheet return route. The React Native guide says methods requiring a return URL cannot be displayed without one. |
+| `allowsDelayedPaymentMethods` | Opt in to display eligible supported delayed methods, hidden by default. Enable the methods separately. The April iOS and React Native variants explicitly identify OXXO as unsupported by PaymentSheet at capture. |
+| `paymentMethodLayout` | The native iOS example has `.automatic`, `.vertical`, and `.horizontal` options. |
+| `style` | In the iOS configuration use `.alwaysLight`, `.alwaysDark`, or the system appearance. |
+| `merchantDisplayName` | Name shown in the payment UI, defaulting to the app's name. |
+| `defaultBillingDetails` | Pre-populate billing fields. |
+| `billingDetailsCollectionConfiguration` | Control which billing fields are collected. |
+
+The client sheet can report completion while a delayed payment is still pending. For successful fulfillment decisions, the April payment guide uses the server webhook `payment_intent.succeeded`. Handle `payment_intent.processing` as pending and `payment_intent.payment_failed` separately. Browser return, wallet-sheet dismissal, and SetupIntent completion each describe their own flow state. The test-card and bank examples describe test scenarios.
+
+## SDK installation, wallets, and card scanning
+
+The April iOS installation example adds the **StripePaymentSheet** product through `https://github.com/stripe/stripe-ios-spm` and also documents CocoaPods, Carthage, and a manual framework path. Its React Native iOS instructions include historical `pod install` steps. The October 2026 [[source-github-stripe-ios|stripe-ios 26.15.1 migration]] identifies **26.15.0** as the last native CocoaPods release. Later fixes and features are distributed through Swift Package Manager or XCFrameworks. The migration also directs React Native users to its separate SPM migration.
+
+The April Android Gradle example uses `stripe-android:23.5.0` and shows `financial-connections:23.5.0` for US bank account support. The April React Native guide installs `@stripe/stripe-react-native` and initializes it with `StripeProvider` or `initStripe`. These are dated examples. The Google Pay examples distinguish test and production configuration and call for a physical Android device for testing. Native iOS card scanning uses `NSCameraUsageDescription` in `Info.plist`. Android scanning has Google Pay production access, device eligibility, and signing-key conditions in the April examples.
+
+## Detail locators
+
+- April iOS payment and setup guide variants, lines 8–1751. Payment confirmation and outcomes at 219–437 and 556–569. Setup identity, confirmation, consent, and later charging at 1028–1373.
+- April Android payment and setup variants, lines 1752–4190. FlowController reconfiguration at 2162–2205 and 2369–2407. Google Pay and scanning at 2729–2778.
+- April React Native payment and setup variants, lines 4191–6106. CustomerSession sample discrepancy at 4747–4760, 4791–4804, 5755–5768, and 5799–5812, compared with native examples at 481–496 and 2620–2635. Apple Pay at 4842–4982.
+
+## Related Pages
+
+- [[stripe-inapp-payments]] — mobile integration patterns
+- [[source-stripe-inapp-payment-sheet]] — PaymentSheet UI details
+- [[stripe-saved-payment-methods]] — saved payment method patterns
+
+## Raw Sources
+
+- [[raw/stripe-inapp-finalize-payments-server-2025|2026-04-22 server confirmation guide]] — 6,106 lines, six iOS, Android, and React Native variants with seven reused images
+
+## Related raw API references
+
+- [[raw/stripe-payments-mobile-finalize-payments-on-the-server-2026-11-07|2026-11-07 payment and setup variant index]]

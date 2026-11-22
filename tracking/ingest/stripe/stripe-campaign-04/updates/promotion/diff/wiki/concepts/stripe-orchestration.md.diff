@@ -1,0 +1,109 @@
+--- wiki/concepts/stripe-orchestration.md
++++ wiki/concepts/stripe-orchestration.md
+@@ -7,7 +7,7 @@
+ 
+ ## Overview
+ 
+-Stripe Orchestration (private preview) is a rule-based payment routing layer that lets merchants route card payments across multiple external processors. Stripe acts as the orchestration layer; third-party processors remain the processor of record for routed transactions — their fees and liability terms continue to apply.
++Stripe Orchestration is a private-preview layer for routing card payments across supported processors. The November 2026 overview adds an email request form. Requesting access, representative-led onboarding, testing rules in a sandbox, and activating rules in the live account are separate steps. Third parties remain the processors for payments routed to them, with fees and liability under their own terms. See [[source-stripe-orchestration]].
+ 
+ ## Features
+ 
+@@ -29,14 +29,17 @@
+ | --- | --- | --- | --- |
+ | Auto/manual capture, refunds, 3DS, statement descriptors, wallets, recurring | ✓ | ✓ | ✓ |
+ | Network tokens | ✓ | ✓ | ✗ |
++| Processor account overrides (November 7, 2026 matrix) | ✓ | ✗ | ✓ |
+ 
+ Key exceptions: multicapture unsupported; `statement_descriptor_suffix_kanji` unsupported; `statement_descriptor_suffix_kana` Adyen only; 3DS + Apple Pay/Google Pay DPAN unsupported; Google Pay FPAN unsupported on Adyen.
+ 
+-Unsupported feature → HTTP 400 `orchestration_unsupported`.
++Unsupported processor features return HTTP 400 `orchestration_unsupported` by default, naming the first unsupported feature. An onboarding opt-in for error protection can trigger a Stripe fallback attempt. See [[source-stripe-orchestration-feature-support]].
+ 
+ ## Explicitly Not Supported
+ 
+-Non-card payments, Link, Capital, Connect, Terminal, Organizations, Radar (for third-party routed payments), Sigma, disputes, settlement-related activity.
++The November 7, 2026 overview excludes non-card payments, Link, Capital, Connect, Terminal, Organizations, disputes and settlement-related activity. The November routing guide explains that Link credentials cannot transfer between processors. Stripe processes Link outside the configured routing rules. Apple Pay and Google Pay have separate wallet and processor conditions.
++
++The May 11 overview also lists Radar for third-party routed payments and Sigma as exclusions. November omits both names, leaving their support undetermined. The separate retry guide says a Stripe-main payment blocked by Stripe, for example through Radar, is treated as a decline and can be retried on the selected processor under documented conditions. See [[source-stripe-orchestration]] and [[source-stripe-orchestration-retries]].
+ 
+ ## Rule Conditions (7)
+ 
+@@ -50,9 +53,9 @@
+ | Currency | Presentment currency |
+ | Metadata | PaymentIntent metadata fields |
+ 
+-Conditions evaluated **left to right**; first match wins. Default action applies if no condition matches. No active rules → payments route to Stripe.
++Conditions are evaluated left to right and the first match wins. Choose a main processor and an optional retry processor for matching actions and for the separately configured no-match action. In the November rules guide, a supported processor action can override onboarding account logic with a configured account of that processor. Main and retry account selections are independent. Unset selections use the onboarding logic. The November matrix supports this override for Adyen and Worldpay WPG and marks it unsupported for Braintree. See [[source-stripe-orchestration-rules]] and [[source-stripe-orchestration-feature-support]].
+ 
+-**Rule lifecycle**: Draft → Activate (one active set at a time; activating new auto-deactivates current) → Deactivate. **Cannot edit active rules** — must duplicate, edit draft, then re-activate.
++**Rule lifecycle.** Save drafts without changing active routing. In a sandbox, create and activate test rules, then verify the test result. Recreate the rules in live mode before choosing **Activate rules** for live payments. The November guide scopes the limit to one active set per sandbox and one in live mode. Activation replaces the active set in that environment and a deactivated set can be reactivated. Active rules are read-only. Use **Duplicate test rules** or **Duplicate rules**, confirm, then edit the duplicate. Use **Deactivate test rules** or **Deactivate rules** and confirm when removing the active set. Payments in that environment route to Stripe when it has no active set. See [[source-stripe-orchestration-rules]].
+ 
+ ## Cross-Processor Retry Behavior
+ 
+@@ -60,8 +63,8 @@
+ 
+ | Scenario | Behavior |
+ | --- | --- |
+-| 3DS fails (auth or post-auth payment failure) on main processor | **No retry** → `payment_intent.payment_failed` |
+-| Retry processor doesn't support a payment feature (e.g., Connect `on_behalf_of`) | No retry |
++| 3DS on the first main-processor attempt, with failed authentication or a failed payment after successful authentication | Skip the cross-processor retry and send `payment_intent.payment_failed`. |
++| The configured retry processor lacks a required feature, such as Connect `on_behalf_of` | Skip the incompatible processor. A compatible configured processor can receive an otherwise eligible retry. Evaluate opt-in error protection and the original-Stripe failover exception separately. See [[source-stripe-orchestration-retries#Unsupported-feature validation and error protection|retry and fallback scope]]. |
+ | Stripe Radar blocks transaction (main = Stripe) | Treated as decline → **retried on retry processor** |
+ | Adaptive Acceptance + Stripe is main processor | Stripe may internally retry before cross-processor retry triggers |
+ | Stripe is retry processor + Adaptive Acceptance enabled | Potentially 2 retries (1 cross-processor + 1 Adaptive Acceptance) |
+@@ -74,7 +77,7 @@
+ 
+ ## New API Objects (Breaking Change)
+ 
+-For payments routed to third-party processors, Stripe creates **Payment Records** and **Payment Attempt Records** instead of Charges:
++For payments with Orchestration enabled, the Payment Record contains execution history. The guide’s example keeps `payment_record` stable through the PaymentIntent lifecycle and generates a new attempt record at confirmation. For payments routed to third-party processors, Stripe creates **Payment Records** and **Payment Attempt Records** instead of Charges. Retrieve using the Payment Record ID:
+ 
+ ```js
+ stripe.paymentRecords.retrieve('{{PAYMENT_RECORD_ID}}')
+@@ -86,13 +89,13 @@
+ 
+ **Reporting breaks**:
+ 
+-- No Charges for third-party routed payments → switch to Payment Attempt Records
++- Third-party routed payments have no Stripe Charges. If reporting or reconciliation relies on Charges, use Payment Attempt Records across all Stripe volume.
+ - No Balance Transactions for third-party volume (funds don't flow through Stripe)
+ 
+ **Webhook changes** for third-party routed payments:
+ 
+ - New `processing` status + `payment_intent.processing` event (useful for inventory holds)
+-- Then `succeeded` + `payment_intent.succeeded` (no change needed if already handling)
++- After the external processor reports capture, Stripe transitions the PaymentIntent to `succeeded` and sends `payment_intent.succeeded`. Existing fulfillment handlers based on that event need no change according to the routing guide.
+ 
+ ## Integration Limitations
+ 
+@@ -103,22 +106,22 @@
+ 
+ ## Error Prevention Mode
+ 
+-When enabled: if the chosen processor doesn't support a required feature, Stripe auto-falls back. If Stripe also fails, retry processor is not attempted.
++When onboarding error protection is enabled, Orchestration can try Stripe if the selected main or retry processor lacks a required feature. If Stripe was already tried, failover ignores error protection to avoid a duplicate Stripe attempt. An otherwise eligible payment can still use a compatible configured retry processor. When Stripe was main and its attempt fails, Orchestration checks whether the selected retry processor can handle the payment and skips it if incompatible. An attempted Stripe fallback can also fail. Without applicable fallback, unsupported-feature request validation can return HTTP 400 `orchestration_unsupported` and name the first unsupported feature. See [[source-stripe-orchestration-feature-support]], [[source-stripe-orchestration-route-payments]] and [[source-stripe-orchestration-retries]].
+ 
+ ## Wallet Payments (Apple Pay / Google Pay)
+ 
+-Supported for routing to all three processors. Key constraint: **saved mobile wallet payment methods require `off_session=true`** during PaymentIntent confirmation. If the customer is present in the checkout flow, cannot reuse a saved wallet PM — must re-prompt using native Apple Pay/Google Pay integrations.
++The November [[source-stripe-orchestration-feature-support|feature matrix]] lists Apple Pay and Google Pay on Adyen, Braintree and Worldpay WPG, subject to wallet-token and processor limits. 3DS is unsupported for Apple Pay or Google Pay DPANs, and Adyen does not support Google Pay FPAN. To attempt a charge with a saved mobile-wallet method, pass `off_session=true` during PaymentIntent confirmation. When the customer is present at checkout, re-prompt through the applicable wallet integration. See [[source-stripe-orchestration-wallet-payments]] for processor setup and sandbox test routing.
+ 
+ ## Relationship to Other Products
+ 
+ - [[stripe-vault-and-forward]]: Forwards card data (PANs) to external processors. Orchestration routes *transactions*; Vault and Forward routes *card data*. Complementary.
+-- [[stripe-off-session-payments]]: Off-Session Payments API also supports multi-processor routing for recurring payments.
++- [[stripe-off-session-payments]] and [[source-stripe-off-session-payments-api]] describe a separate API for off-session payments. Its November routing companion documents card-only opt-in to Orchestration with access to both private previews, an onboarded processor, and an active routing configuration. It excludes Connect, raw card data, and Smart Retries for this combined path. An optional routing-rule retry processor is a separate control.
+ 
+ ## Sources
+ 
+-- [[source-stripe-orchestration]] — overview: features, supported products, exclusions, processor-of-record rule
+-- [[source-stripe-orchestration-route-payments]] — implementation: API param, Payment Records, reporting/webhook changes, error prevention
++- [[source-stripe-orchestration]] — May and November 2026 overview: private-preview request, processor responsibilities and refunds, dated Radar and Sigma exclusions, and the distinct Link, wallet, and Off-Session Payments routes
++- [[source-stripe-orchestration-route-payments]] — May and November 2026 implementation guides for private-preview onboarding, sandbox rules, Payment Records, capture webhooks and error prevention.
+ - [[source-stripe-orchestration-rules]] — rule conditions (7), execution order, rule lifecycle
+-- [[source-stripe-orchestration-retries]] — cross-processor retry edge cases: 3DS, ineligible features, Radar blocks, Adaptive Acceptance
++- [[source-stripe-orchestration-retries]] — private-preview rule setup, first-attempt 3DS, incompatible processor skips, Stripe-main blocks and Adaptive Acceptance ordering
+ - [[source-stripe-orchestration-feature-support]] — feature matrix (Adyen/Braintree/Worldpay WPG), error code orchestration_unsupported, error protection opt-in
+-- [[source-stripe-orchestration-wallet-payments]] — Apple Pay/Google Pay routing; off_session=true for saved wallets; re-prompt required if customer present
++- [[source-stripe-orchestration-wallet-payments]] — Apple Pay and Google Pay routing, processor and token limits, saved versus customer-present attempts, and November private-preview request context

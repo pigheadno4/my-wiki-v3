@@ -1,0 +1,62 @@
+--- raw/stripe-upi-on-link-2025.md
++++ raw/stripe-payments-link-upi-2026-11-07.md
+@@ -7,6 +7,18 @@
+ Customers use their preferred banking or wallet app to authenticate and approve payments. On desktop, customers scan a QR code using their preferred UPI app. On mobile, customers are redirected to their UPI app to complete the payment.
+ 
+ Link allows customers to save personal details, allowing faster checkouts for future transactions. For your business, Link enables UPI acceptance without any additional integration changes or business logic.
++
++### Interested in learning more about UPI on Link?
++
++Enter your email to request access.
++
++```bash
++curl https://docs.stripe.com/preview/register \
++  -X POST \
++  -H "Content-Type: application/json" \
++  -H "Referer: https://docs.stripe.com/payments/link/upi" \
++  -d '{"email": "EMAIL", "preview": "link_lpm_interest_preview"}'
++```
+ 
+ ## Get started
+ 
+@@ -18,18 +30,18 @@
+ 
+ - One-time and on-session payments
+ - Payments presented in INR
+-- Transaction amounts from 1 INR to 100,000 INR
++- Transaction amounts from 0.50 USD equivalent in INR to 100,000 INR
+ - Eligible US businesses, subject to onboarding and restricted-business exclusions
+ 
+ ### UPI checkout for a new Link customer
+ 
+ The following steps describe how a new Link customer checks out with UPI for the first time.
+ 
+-1. The customer selects **UPI** and enters buyer information.
+-1. They click **Pay**, and depending on their device type:
++1. The customer selects **UPI** and enters customer information.
++2. They click **Pay**, and depending on their device type:
+    - On desktop, they see a QR code that they scan with their preferred UPI app to complete the transaction.
+    - On mobile, customers see a list of UPI apps. After selecting their preferred one, they’re redirected to that app to complete the payment.
+-1. After completing the payment, buyers are redirected to your checkout page and are notified of payment status.
++3. After completing the payment, customers are redirected to your checkout page and are notified of payment status.
+ 
+ Customers automatically sign up for Link when they complete the transaction, and store their details for future checkouts.
+ 
+@@ -38,14 +50,14 @@
+ If a customer has previously paid with UPI on Link, their payment details (for example, name, address, and virtual payment address) have already been saved to their Link account:
+ 
+ 1. The customer selects **UPI**.
+-1. They click **Pay**, and depending on their device type:
++2. They click **Pay**, and depending on their device type:
+    - On desktop, they receive a QR code to scan that redirects them to choose a banking app on their smartphone to complete the transaction.
+    - On mobile, they’re redirected to a list of UPI-supported banking apps that they can pay with.
+-1. They authorize and complete the payment and receive a notification that their payment is complete.
++3. They authorize and complete the payment and receive a notification that their payment is complete.
+ 
+ ### Refunds
+ 
+-You can refund UPI payments up to 60 days after the original payment. Refunds are asynchronous and can take up to 7 business days to complete. Stripe notifies you of the final refund status using the `refund.updated` or `refund.failed` _webhook_ (A webhook is a real-time push notification sent to your application as a JSON payload through HTTPS requests) event. When a refund succeeds, the [Refund](https://docs.stripe.com/api/refunds/object.md) object’s status transitions to `succeeded`. In the rare instance that a refund fails, the `Refund` object’s status transitions to `failed` and Stripe returns the amount to your balance. You’ll need to arrange an alternative way to refund your customer.
++You can refund UPI payments up to 60 days after the original payment. Refunds are asynchronous and can take up to 7 business days to complete. Stripe notifies you of the final refund status using the `refund.updated` or `refund.failed` *webhook* (A webhook is a real-time push notification sent to your application as a JSON payload through HTTPS requests) event. When a refund succeeds, the [Refund](https://docs.stripe.com/api/refunds/object.md) object’s status transitions to `succeeded`. In the rare instance that a refund fails, the `Refund` object’s status transitions to `failed` and Stripe returns the amount to your balance. You’ll need to arrange an alternative way to refund your customer.
+ 
+ ### Disputes
+ 

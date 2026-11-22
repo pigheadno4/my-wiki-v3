@@ -1,0 +1,212 @@
+{
+  "job_id": "payments-orchestration-retries",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Stripe — Orchestration: Cross-Processor Retries\"\ntype: source\ndate_ingested: 2026-05-11\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/orchestration/retries\"\nraw_files:\n  - \"stripe-payments-orchestration-retries-2026-11-07.md\"\n  - \"stripe-orchestration-retries-2026.md\"\ntags: [stripe, orchestration, retries, multi-processor, 3d-secure, adaptive-acceptance, radar, private-preview]\n---\n\n## Summary\n\nThe May 11 and November 7, 2026 guides describe private-preview rules that can retry eligible failed payments on a processor different from the one that made the original attempt. November adds an email request path and a registration example for `orchestration_preview` in lines 38–54 of the November capture. Submitting the form does not grant access. Rule activation is a separate step. [November preview request form](https://docs.stripe.com/payments/orchestration/retries.md#orchestration_preview)\n\n## Set up the retry rule\n\nOpen **Payments → Orchestration → Rules** in the Dashboard. In the rule builder add an **Action** with **Main processor** for the original attempt and **Retry processor** for the cross-processor attempt after an eligible failure. Duplicate an existing rule and edit the resulting draft. The Rules guide specifies that drafts only affect payments after activation, sandbox rules do not affect live payments, and each environment can have one active set. [[source-stripe-orchestration-rules]]\n\n## Cross-processor retry behavior\n\nThese cases are described in both captures.\n\n| Scenario | Documented behavior |\n| --- | --- |\n| 3DS was attempted on the first attempt on the main processor | If authentication fails, or succeeds but that payment attempt still fails, Orchestration skips cross-processor retry and sends `payment_intent.payment_failed`. |\n| The configured retry processor lacks a required payment feature, such as Connect `on_behalf_of` | Orchestration skips that incompatible retry processor after the original attempt fails. |\n| Stripe is the main processor and blocks the payment, for example through Radar | Orchestration treats the block as a decline and retries on the configured alternate, subject to retry eligibility. |\n| Adaptive Acceptance enabled with Stripe as main processor | Stripe may make an additional Stripe-side attempt before the cross-processor retry. |\n| Adaptive Acceptance enabled with Stripe as retry processor | Stripe may make a cross-processor retry followed by a separate Adaptive Acceptance attempt on Stripe. |\n\nAdaptive Acceptance attempts are conditional. These branches describe retry decisions, separate from the final payment and settlement outcomes.\n\n## Unsupported-feature validation and error protection\n\nThe feature-support guides document HTTP 400 with code `orchestration_unsupported` when the request uses an unsupported feature. The message identifies the first unsupported feature. This request validation is distinct from the `payment_intent.payment_failed` webhook in the first-attempt 3DS branch.\n\nWith opt-in error protection, Stripe can route a payment requiring an unsupported feature to Stripe instead of the otherwise selected processor. When the original processor was Stripe and the payment enters cross-processor failover, the guides say Stripe ignores error protection to avoid a duplicate Stripe attempt. The November routing guide separately checks the configured alternate for compatibility. An otherwise eligible retry can use a compatible alternate. An alternate that lacks a required feature is skipped. [[source-stripe-orchestration-feature-support]] · [[source-stripe-orchestration-route-payments]]\n\n## Related Pages\n\n- [[stripe-orchestration]] — Orchestration and retry decision scope\n- [[source-stripe-orchestration-rules]] — Rule actions, draft and activation workflow\n- [[source-stripe-orchestration-feature-support]] — Compatibility, validation errors and optional error protection\n- [[source-stripe-orchestration-route-payments]] — Routing and fallback guide\n- [[stripe]] — Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-payments-orchestration-retries-2026-11-07]] — 2026-11-07 full webpage capture (54 lines)\n- [[raw/stripe-orchestration-retries-2026]] — 2026-05-11 full webpage capture (40 lines)\n",
+  "quotes": {
+    "payments-orchestration-retries": [
+      {
+        "text": "The processor to use for the initial payment attempt.",
+        "location": "raw/stripe-payments-orchestration-retries-2026-11-07.md:21"
+      },
+      {
+        "text": "Orchestration doesn’t retry the transaction on the retry processor.",
+        "location": "raw/stripe-payments-orchestration-retries-2026-11-07.md:30"
+      },
+      {
+        "text": "If Stripe is your main processor and we block a transaction",
+        "location": "raw/stripe-payments-orchestration-retries-2026-11-07.md:34"
+      },
+      {
+        "text": "Share your email address to request access.",
+        "location": "raw/stripe-payments-orchestration-retries-2026-11-07.md:42"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-orchestration-retries": [
+      {
+        "text": "Orchestration is in private preview.",
+        "location": "raw/stripe-orchestration-retries-2026.md:40"
+      },
+      {
+        "text": "The processor to use if the initial attempt fails.",
+        "location": "raw/stripe-orchestration-retries-2026.md:20"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-orchestration-retries-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 54
+      }
+    ],
+    "raw/stripe-orchestration-retries-2026.md": [
+      {
+        "start": 1,
+        "end": 40
+      }
+    ],
+    "wiki/sources/source-stripe-orchestration-retries.md": [
+      {
+        "start": 1,
+        "end": 36
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/343967698d561efc14855349/content.diff": [
+      {
+        "start": 1,
+        "end": 52
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-orchestration-retries/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 185
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-orchestration-retries/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 64
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 651,
+        "end": 657
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 8
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 575,
+        "end": 582
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 770,
+        "end": 777
+      }
+    ],
+    "wiki/concepts/stripe-orchestration.md": [
+      {
+        "start": 43,
+        "end": 124
+      }
+    ],
+    "wiki/sources/source-stripe-orchestration-feature-support.md": [
+      {
+        "start": 38,
+        "end": 46
+      }
+    ],
+    "raw/stripe-payments-orchestration-rules-2026-11-07.md": [
+      {
+        "start": 59,
+        "end": 83
+      }
+    ],
+    "raw/stripe-payments-orchestration-feature-support-2026-11-07.md": [
+      {
+        "start": 22,
+        "end": 47
+      }
+    ],
+    "raw/stripe-orchestration-feature-support-2026.md": [
+      {
+        "start": 5,
+        "end": 23
+      }
+    ],
+    "raw/stripe-payments-orchestration-route-payments-2026-11-07.md": [
+      {
+        "start": 218,
+        "end": 226
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/updates/attempts/payments-orchestration-retries/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 115
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/updates/attempts/payments-orchestration-retries/attempt-1/candidate.md": [
+      {
+        "start": 14,
+        "end": 20
+      }
+    ]
+  },
+  "answers": {
+    "payments-orchestration-retries": {
+      "Q1": "At https://docs.stripe.com/payments/orchestration/retries, November describes private-preview cross-processor retries with distinct Main and Retry processor roles. An entitled user opens Dashboard Payments > Orchestration > Rules and sets the processors in an Action. To change an existing rule, duplicate it and edit the draft. The separate Rules guide explains that draft edits take effect only after activation in the relevant environment. November adds an email-request path for access to the preview. Requesting access does not grant it (old raw lines 10-22 and 36-40, new raw lines 11-24 and 38-54). If 3DS is attempted on the first main-processor attempt and authentication fails, or it succeeds but that payment still fails, Orchestration skips the alternate processor and sends payment_intent.payment_failed. A feature missing on the retry processor also makes it ineligible. A Stripe-main block such as a Radar block is treated as a decline for retry. Adaptive Acceptance enabled on Stripe can add a Stripe-side attempt before cross-processor retry when Stripe is main, or a possible additional attempt after the cross-processor retry when Stripe is retry processor (old raw lines 24-34, new raw lines 26-36). The revised source-stripe-orchestration-retries.md preserves the four branches and adds the draft and access boundaries and Stripe-main block qualifier. Attempt or configuration is distinct from payment success.",
+      "Q2": "At https://docs.stripe.com/payments/orchestration/retries, the only substantive addition to the guide is a documented email request and registration example for the existing private preview (old raw lines 36-40, new raw lines 38-54). The new anchor navigates to the request. Heading spacing and list numbering are presentational. The revision preserves the dated May main/retry roles, duplicate-and-edit draft requirement, 3DS and compatibility exclusions, Stripe-main block example and optional Adaptive Acceptance order. None changes in November (old raw lines 10-34, new raw lines 11-36). The revised source-stripe-orchestration-retries.md qualifies the incompatible-feature branch as skipping the configured alternate and links to the concept and feature-support routes. The May and November feature-support guides say opt-in error protection may route a payment requesting an unsupported feature to Stripe. In cross-processor failover following an original Stripe attempt, Stripe ignores the error-protection configuration to avoid a second attempt on Stripe. A compatible configured alternate can still receive an otherwise eligible cross-processor retry. The November routing guide says Stripe checks that alternate and skips it if it lacks the required feature (raw/stripe-orchestration-feature-support-2026.md lines 12–16; raw/stripe-payments-orchestration-feature-support-2026-11-07.md lines 25–29; raw/stripe-payments-orchestration-route-payments-2026-11-07.md lines 222–226). Separate the documented HTTP 400 orchestration_unsupported request validation, whose message names the first unsupported feature, from the payment_intent.payment_failed webhook after first-attempt 3DS on the main processor when authentication fails or the payment fails after successful authentication (November retry raw line 30). A normal cross-processor retry uses the configured alternate. When Adaptive Acceptance is enabled, it can add a separate Stripe-side attempt before the cross-processor retry with Stripe as main, or after Stripe receives a cross-processor retry as the retry processor (November retry raw lines 28–36). These qualifications come from the companion guides and the unchanged retry cases. Rule edits, sandbox activation and preview-access requests supply no evidence of live activation. A fallback or Adaptive Acceptance attempt does not establish any successful payment or settlement."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-orchestration-retries-3ds",
+      "target_path": "wiki/concepts/stripe-orchestration.md",
+      "update_kind": "durable_fact",
+      "anchor": "| 3DS fails (auth or post-auth payment failure) on main processor | **No retry** → `payment_intent.payment_failed` |",
+      "proposed_markdown": "| 3DS on the first main-processor attempt, with failed authentication or a failed payment after successful authentication | Skip the cross-processor retry and send `payment_intent.payment_failed`. |",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "Old retry raw line 28 and new retry raw line 30 scope the webhook and failure outcomes to first-attempt 3DS on the main processor."
+      ]
+    },
+    {
+      "update_id": "payments-orchestration-retries-alternate-eligibility",
+      "target_path": "wiki/concepts/stripe-orchestration.md",
+      "update_kind": "durable_fact",
+      "anchor": "| Retry processor doesn't support a payment feature (e.g., Connect `on_behalf_of`) | No retry |",
+      "proposed_markdown": "| The configured retry processor lacks a required feature (for example, Connect `on_behalf_of`) | Skip the incompatible alternate. A compatible configured alternate can receive an otherwise eligible retry. See [[source-stripe-orchestration-retries#Unsupported-feature validation and error protection|retry and fallback scope]]. |",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "Old retry raw line 30 and new retry raw line 32 limit the skip to the incompatible processor. The route-payments November raw lines 222–226 establish the compatible-alternate check."
+      ]
+    },
+    {
+      "update_id": "payments-orchestration-retries-fallback",
+      "target_path": "wiki/concepts/stripe-orchestration.md",
+      "update_kind": "durable_fact",
+      "anchor": "When enabled: if the chosen processor doesn't support a required feature, Stripe auto-falls back. If Stripe also fails, retry processor is not attempted.",
+      "proposed_markdown": "Opt-in error protection can send a payment with an unsupported feature to Stripe instead of the selected processor. During failover after an original Stripe attempt, error protection is ignored to avoid a duplicate attempt on Stripe. Stripe can still use a compatible configured retry processor when the retry is otherwise eligible. Without applicable fallback, unsupported-feature request validation can return HTTP 400 `orchestration_unsupported` and name the first unsupported feature. See [[source-stripe-orchestration-feature-support]] and [[source-stripe-orchestration-retries]].",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "May and November feature-support raw lines 12–16 and 25–29 describe validation, opt-in fallback and duplicate prevention. November routing raw lines 222–226 scopes the skip to an incompatible configured alternate."
+      ]
+    },
+    {
+      "update_id": "payments-orchestration-retries-route",
+      "target_path": "wiki/concepts/stripe-orchestration.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-orchestration-retries]] — cross-processor retry edge cases: 3DS, ineligible features, Radar blocks, Adaptive Acceptance",
+      "proposed_markdown": "- [[source-stripe-orchestration-retries]] — private-preview rule setup, first-attempt 3DS, incompatible processor skips, Stripe-main blocks and Adaptive Acceptance ordering",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "May and November retry captures retain the same rule and behavior cases. November raw lines 38–54 adds a preview access request."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+--- wiki/sources/source-stripe-inapp-payment-method-messaging-element.md
++++ tracking/ingest/stripe/stripe-campaign-04/updates/attempts/payments-mobile-payment-method-messaging-element/attempt-1/candidate.md
+@@ -2,33 +2,54 @@
+ title: "Payment Method Messaging Element — Mobile Overview"
+ type: source
+ date_ingested: 2026-04-22
++date_updated: 2026-11-22
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/payments/mobile/payment-method-messaging-element"
+ raw_files:
+   - "stripe-inapp-payment-method-messaging-element-2025.md"
+-tags: [stripe, mobile, ios, android, bnpl, buy-now-pay-later, payment-method-messaging-element]
++tags: [stripe, mobile, ios, android, react-native, bnpl, buy-now-pay-later, payment-method-messaging-element]
+ ---
+ 
+ ## Summary
+ 
+-Thin overview page for the mobile Payment Method Messaging Element — iOS and Android only (no React Native section). Auto-determines available BNPL plans, generates localized messaging, displays in-app. Implementation detail is in the "Display BNPL messaging" guide (not yet ingested).
++The April 22, 2026 iOS and Android overview describes a customizable drop-in UI that determines available buy now, pay later (BNPL) plans and conditions, generates localized text, and displays it in the app. Both April platform sections use the same example image. The element presents potential terms. Rendering a message establishes neither financing approval nor payment confirmation, capture, or settlement.
+ 
+-> See also [[source-stripe-payment-method-messaging-element]] for the web variant.
++![April 2026 mobile Payment Method Messaging Element example](../raw/assets/stripe-inapp-payment-method-messaging-element.png)
+ 
+-## Key Facts
++## November 2026 platform navigation
+ 
+-- Drop-in UI component: auto-determines available BNPL plans + conditions
+-- Generates localized description automatically
+-- iOS and Android only (no React Native on this page)
+-- Implementation guide: `display-bnpl-messaging` (not yet ingested)
++The November 7 base page keeps the same purpose and repeats an index with these three destinations:
+ 
+-![Payment Method Messaging Element example](../raw/assets/stripe-inapp-payment-method-messaging-element.png)
++- [iOS](https://docs.stripe.com/payments/mobile/payment-method-messaging-element.md?platform=ios)
++- [Android](https://docs.stripe.com/payments/mobile/payment-method-messaging-element.md?platform=android)
++- [React Native](https://docs.stripe.com/payments/mobile/payment-method-messaging-element.md?platform=react-native)
++
++The index supplies routes. It gives no platform prerequisites, minimum dependencies, provider list, variant implementation, or general availability statement.
++
++## Companion implementation and SDK scopes
++
++The April overview linked to the separate [iOS Display BNPL messaging guide](https://docs.stripe.com/payments/mobile/display-bnpl-messaging.md?payment-ui=mobile&platform=ios) and [Android Display BNPL messaging guide](https://docs.stripe.com/payments/mobile/display-bnpl-messaging.md?payment-ui=mobile&platform=android). The retained [[source-stripe-inapp-display-bnpl-messaging]] source covers the April UIKit, SwiftUI, and Android examples. Its November index separately routes to those variants and React Native.
++
++The April implementation examples use an existing Stripe account, a mobile SDK configured with a publishable key, a preview import on iOS, and a preview opt-in and separate `payment-method-messaging` dependency on Android. UIKit handles success with messaging content, no content, or failure. SwiftUI uses a view and phase-based display. Android uses a configuration result and Compose content. Those are messaging states, separate from authorizing a purchase.
++
++The retained React Native 0.76.0 changelog records the April 29, 2026 announcement of **Public Preview** in 0.65.0. Independently, the retained `@stripe/stripe-react-native` 0.82.0 snapshot (`2026-10-21-6c2020d`) shows a root `PaymentMethodMessagingElement` export, a `configuration` prop, and an optional `onStateChange` handler for `loaded`, `loading`, `no_content`, or `failed`. Its component labels the feature Public Preview. These versioned records are separate from the November index and do not demonstrate general availability or device operation. See [[source-github-stripe-react-native]] and the companion implementation source for the exact typed configuration and the separately scoped Android font fix.
++
++## Relation to Web Elements
++
++The separate [[source-stripe-payment-method-messaging-element]] guide shows a Web Elements initialization with no `clientSecret`, lists Affirm, Afterpay/Clearpay, and Klarna within the captured web eligibility scope, and documents the web terms modal. These examples establish the captured Web Elements behavior. They do not supply native SDK or API floors, server credential requirements, a cross-platform provider list, or a universal PaymentIntent requirement.
+ 
+ ## Related Pages
+ 
+-- [[stripe-inapp-payments]] — in-app payments concept page
+-- [[stripe-payment-method-messaging-element]] — web BNPL messaging concept page
+-- [[source-stripe-payment-method-messaging-element]] — web variant (no clientSecret needed, Affirm/Afterpay/Klarna, info modal)
++- [[stripe]] — Stripe company page
++- [[stripe-inapp-payments]] — native payment and messaging routes
++- [[stripe-payment-method-messaging-element]] — web and native evidence and version scope
++- [[source-stripe-inapp-display-bnpl-messaging]] — separate native implementation and November variant index
++- [[source-stripe-payment-method-messaging-element]] — separate Web Elements guide
++
++## Related raw API references
++
++- [[raw/stripe-payments-mobile-payment-method-messaging-element-2026-11-07]] — November 7, 2026 navigation index with three unique platform destinations
+ 
+ ## Raw Sources
+ 
+-- [[stripe-inapp-payment-method-messaging-element-2025]] — verbatim overview page (28 lines, 1 image × 2 platforms)
++- [[raw/stripe-inapp-payment-method-messaging-element-2025]] — verbatim April 22, 2026 overview (28 lines, one illustration repeated across iOS and Android)

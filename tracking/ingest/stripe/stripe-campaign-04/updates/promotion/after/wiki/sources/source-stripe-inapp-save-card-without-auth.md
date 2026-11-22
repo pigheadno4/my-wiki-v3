@@ -1,0 +1,110 @@
+---
+title: "Save a Card Without Bank Authentication — Mobile"
+type: source
+date_ingested: 2026-04-23
+date_updated: 2026-11-22
+original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/mobile/save-card-without-authentication"
+raw_files:
+  - "stripe-inapp-save-card-without-auth-2025.md"
+tags: [stripe, mobile, ios, android, react-native, save-card, error-on-requires-action, legacy, us-canada, setup-future-usage, cvc-recollection]
+---
+
+## Summary
+
+The 2026-04-23 [[stripe]] guide describes a simpler iOS, Android, and React Native integration to collect and save cards for later charging. It presents the approach for merchants doing business primarily in the US and Canada and warns against using it where card saving requires authentication, giving India as an example. The 2026-11-07 capture at the same URL provides navigation to the three platform variants. The implementation below is from the April capture.
+
+> See also [[source-stripe-inapp-without-card-auth]] for the simpler one-time charge variant (same `error_on_requires_action` approach).
+
+## Flow
+
+The April examples use mobile Stripe SDKs initialized with a publishable key and merchant-server endpoints that call Stripe. See the dated iOS 13+ compatibility statement (April raw lines 44–54), Android SDK 23.5.0 example (369–396), and React Native SDK setup (659–715). The guide separates sandbox test keys from live keys (116, 414, 714).
+
+1. Collect card details with `STPPaymentCardTextField`, `CardInputWidget`, or `CardField`. Create a PaymentMethod in the app and send its ID to your server (April raw lines 118–148, 416–460, 716–777).
+2. Associate the PaymentMethod on the server with a new Customer using `stripe.customers.create({ payment_method })` or with an existing Customer using `paymentMethods.attach(pmId, { customer })`. The separate 2026-11-07 Attach PaymentMethod API reference recommends a SetupIntent or PaymentIntent with `setup_future_usage` for future payments because direct attachment alone lacks future-use optimization (`raw/stripe-api-payment-methods-attach-2026-11-07.md:5-11`).
+3. If you maintain an internal customer record, you can map the Stripe IDs to it. At charge time, use stored Customer and PaymentMethod IDs or list saved methods by known customer identity (April raw lines 150–209, 491–521, 807–837).
+4. To attempt the later payment, create a PaymentIntent on the server with `customer`, `payment_method`, `error_on_requires_action: true`, and `confirm: true` (April raw lines 211–227).
+
+### Authentication failure and recovery
+
+With `confirm: true`, `error_on_requires_action: true` fails the attempt if the PaymentIntent transitions to `requires_action`. The April guide describes HTTP 402 and checking the API error code or `last_payment_error.decline_code`. Notify the customer to return to the app, collect a replacement card if appropriate, attach its new PaymentMethod, and retry. For payments that need customer authentication, see [[source-stripe-inapp-upgrade-to-handle-actions|the integration that handles customer actions]]. The April sandbox illustrates success, insufficient funds, and `authentication_required` declines (April raw lines 211–233, 257–264, 329–331 and `raw/stripe-api-payment-intents-create-2026-11-07.md:449-450`).
+
+## Combined Charge + Save
+
+With an existing Customer, the April guide shows a single charge-and-save attempt (April raw lines 235–254).
+
+```javascript
+// Attempt the charge and set up reuse in one call
+stripe.paymentIntents.create({
+    amount: 1099, currency: 'usd',
+    payment_method_types: ['card'],
+    customer: customerId, payment_method: paymentMethodId,
+    error_on_requires_action: true, confirm: true,
+    setup_future_usage: 'on_session',
+})
+```
+
+For this card example, Stripe attaches the PaymentMethod to the Customer after successful confirmation and completion of any required customer actions. Treat a failed confirmation as insufficient evidence that the card was newly saved. `setup_future_usage: 'on_session'` expresses intended reuse with the customer present. The current attempt's separate `off_session` flag describes whether the customer is absent for that attempt. The separate November references document these conditions (`raw/stripe-api-payment-intents-create-2026-11-07.md:432-450,635-639,672-685` and `raw/stripe-payments-payment-intents-migration-2026-11-07.md:131-133`).
+
+## Compliance Requirements
+
+The April guide calls for disclosing intended saving and reuse, providing customer opt-in, and keeping a record of the customer's written agreement. It says merchants are responsible for applicable laws, regulations, and network rules. For offline charging, its terms cover:
+
+- Agreement to initiate payments on customer's behalf
+- Timing and frequency of charges
+- How the payment amount is determined
+- Cancellation policy (for subscriptions)
+
+The guide warns that the simpler approach is unsuitable where card saving requires authentication (April raw lines 12–25, 337–350, 631–644).
+
+## CVC Re-collection (Optional, All Platforms)
+
+For this separate client-confirmation route, the server creates a PaymentIntent with amount, currency, and Customer ID. List the Customer's saved methods, re-collect the CVC for the selected method, and use the platform SDK to confirm with the client secret (April raw lines 266–327, 578–621, 894–926).
+
+### iOS
+```swift
+let cardOptions = STPConfirmCardOptions()
+cardOptions.cvc = cvc
+let paymentMethodOptions = STPConfirmPaymentMethodOptions()
+paymentMethodOptions.cardOptions = cardOptions
+paymentIntentParams.paymentMethodOptions = paymentMethodOptions
+STPPaymentHandler.shared().confirmPayment(paymentIntentParams, with: self)
+```
+
+### Android
+```kotlin
+ConfirmPaymentIntentParams.createWithPaymentMethodId(
+    paymentMethodId = pmId,
+    paymentMethodOptions = PaymentMethodOptionsParams.Card(cvc = cvc),
+    clientSecret = clientSecret
+)
+stripe.confirmPayment(this, params)
+```
+
+### React Native
+```javascript
+await confirmPayment(clientSecret, {
+    paymentMethodType: 'Card',
+    paymentMethodData: { cvc, paymentMethodId },
+})
+```
+
+**CVC warning**: payment can succeed even with failed CVC check. Configure Radar rules to block when CVC verification fails.
+
+## Accounts v2 Note
+
+The April listing samples use `customer_account` for Accounts v2 and `customer` for Customers v1. The direct-attachment and later-charge samples in this guide use the Customers v1 `customer` identity (April raw lines 150–227, 491–521, 807–837).
+
+## Related Pages
+
+- [[stripe-inapp-payments]] — in-app payments concept page
+- [[stripe-saved-payment-methods]] — saved payment methods concept page
+- [[source-stripe-inapp-without-card-auth]] — one-time charge variant (same error_on_requires_action pattern)
+
+## Raw Sources
+
+- [[raw/stripe-inapp-save-card-without-auth-2025|2026-04-23 detailed guide]] — 929 lines covering iOS, Android, and React Native, with two reused video assets
+
+## Related raw API references
+
+- [[raw/stripe-payments-mobile-save-card-without-authentication-2026-11-07|2026-11-07 navigation index]] — iOS, Android, and React Native variant links

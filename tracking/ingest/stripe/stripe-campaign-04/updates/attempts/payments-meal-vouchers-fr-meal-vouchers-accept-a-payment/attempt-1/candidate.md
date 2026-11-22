@@ -1,0 +1,59 @@
+---
+title: "Stripe: Accept Titres-Restaurant Payments"
+type: source
+date_ingested: 2026-05-05
+date_updated: 2026-11-22
+original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/accept-a-payment"
+raw_files:
+  - "stripe-payments-meal-vouchers-fr-meal-vouchers-accept-a-payment-2026-11-07.md"
+  - "stripe-fr-meal-vouchers-accept-payment-2025.md"
+tags: [stripe, meal-vouchers, france, titres-restaurant, payment-intents, elements]
+---
+
+## Summary
+
+[[stripe]]’s May 5 and November 7, 2026 guides describe accepting [[stripe-fr-meal-vouchers|French meal vouchers]] in EUR using the Payment Element for Bimpli, Pluxee and Up Déjeuner. The separate [[source-stripe-fr-meal-vouchers|overview]] describes Swile through its eligible Mastercard route. November keeps private preview and adds an email waitlist. An access request is separate from onboarding and acceptance.
+
+## November 7, 2026 — Preview PaymentLocation Route
+
+The guide requires Stripe version `2026-05-27.preview` or later and a branch PaymentLocation with `fr_meal_vouchers_conecs_payments` status `active`. The separate setup API guide requires CNTR licensing and a contract with each issuer the merchant wants to support. Each location maps to one physical branch SIRET. Creating a location, requesting capability, or receiving an updated list of issuers does not establish active status.
+
+On the server, create an EUR PaymentIntent with `payment_details[location]` set to the branch’s PaymentLocation ID and `payment_details[benefit][fr_meal_voucher][enabled]=if_payment_method_is_eligible`. Return its client secret to the client. The November overview separately continues to show a successfully provisioned literal branch SIRET. Keep the guides’ dated request paths separate. The overview says Stripe does not retry a meal voucher payment as a regular card payment or vice versa. Conditional enablement does not establish an automatic retry.
+
+## Confirmation, Branch Updates and Charge Inspection
+
+The client calls `confirmPayment` with the Payment Element and `return_url`. Stripe directs the customer to that URL after payment completion. A return or confirmation attempt is separate from verified payment status, capture and issuer settlement.
+
+For the PaymentLocation route, Stripe resolves the stored SIRET when confirming the PaymentIntent. A change between creation and confirmation applies to the later confirmation. Changes leave already-confirmed payments unaffected. The [[source-stripe-fr-meal-vouchers-setup-restaurant|Dashboard onboarding guide]] says the restaurant name and SIRET cannot be edited after creation in that workflow and shows the Payment Location ID after onboarding. The separate preview API blocks sensitive edits such as SIRET or address by default. An accepted edit with `onboarding_data_update_acknowledged=true` triggers re-onboarding, reverts capability to pending and pauses acceptance until it returns to active.
+
+To inspect the SIRET on the most recent Charge, retrieve the PaymentIntent server-side with `latest_charge` expanded and inspect `latest_charge.payment_method_details.card.benefits.fr_meal_voucher.siret`. The PaymentIntent object reference says `latest_charge` is null before confirmation is attempted. Confirmation can still require action or fail. This lookup identifies the branch SIRET recorded on a relevant Charge. See November lines 50-99.
+
+## Saving for Future Use
+
+Both acceptance guides require CVC on the first payment before later reuse without CVC. The optional save-during-payment route uses a PaymentIntent. The separate November [[source-stripe-fr-meal-vouchers-save-payment|save-without-payment guide]] uses `setup_details[location]` and conditional voucher enablement on a SetupIntent, then confirms with `stripe.confirmSetup`. Its later EUR payment example is on-session and uses the Customer and PaymentMethod IDs with PaymentIntent `payment_details`.
+
+## Sandbox and Historical May 5, 2026 Guide
+
+- **November sandbox:** Test with the Bimpli with Conecs card, `4000002501000002`, any three-digit CVC and a future expiry. Pass the onboarded `loc_` ID from the same sandbox when creating the PaymentIntent (lines 101-109). The setup API guide’s simulated active onboarding fixture is SIRET `42424242842427` plus postal code `75009`. Those are onboarding inputs. The Intent uses the resulting location ID.
+- **May Elements route:** First provision the branch SIRET, then pass it directly as `payment_details[benefit][fr_meal_voucher][siret]` when creating the EUR PaymentIntent. The May test uses the same card with literal SIRETs `42424242424242` for provisioned and `00000000000000` for invalid (lines 19-43 and 57-70). The two November guides document different request wording and leave compatibility with the older request unresolved.
+
+November consolidates the Elements heading, changes the Payment Element quickstart link and reformats the test table.
+
+## Related Pages
+
+- [[stripe-fr-meal-vouchers]] — product scope, issuer settlement and integration paths.
+- [[source-stripe-fr-meal-vouchers]] — broader overview and literal-SIRET wording.
+- [[source-stripe-fr-meal-vouchers-setup-restaurant]] — Dashboard onboarding and edit boundaries.
+- [[source-stripe-fr-meal-vouchers-save-payment]] — the separate save-without-payment flow.
+
+## Raw Sources
+
+- [[raw/stripe-payments-meal-vouchers-fr-meal-vouchers-accept-a-payment-2026-11-07|Stripe’s November 7, 2026 titres-restaurant acceptance guide]]
+- [[raw/stripe-fr-meal-vouchers-accept-payment-2025|Stripe’s May 5, 2026 titres-restaurant acceptance guide]] — verbatim webpage content (70 lines).
+
+## Related raw API references
+
+- [[raw/stripe-payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant-api-2026-11-07|Preview PaymentLocation onboarding API guide]] — November 7, 2026 capture, location and activation, acknowledged edits and sandbox fixtures.
+- [[raw/stripe-api-payment-intents-object-2026-11-07|PaymentIntent object reference]] — November 7, 2026 capture, latest Charge field at lines 641-642.
+- [[raw/stripe-api-payment-intents-confirm-2026-11-07|PaymentIntent confirmation reference]] — November 7, 2026 capture, lines 5-15.

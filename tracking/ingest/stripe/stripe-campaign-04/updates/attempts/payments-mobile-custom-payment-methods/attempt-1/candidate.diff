@@ -1,0 +1,97 @@
+--- wiki/sources/source-stripe-inapp-custom-payment-methods.md
++++ tracking/ingest/stripe/stripe-campaign-04/updates/attempts/payments-mobile-custom-payment-methods/attempt-1/candidate.md
+@@ -2,7 +2,9 @@
+ title: "Add Custom Payment Methods to Mobile Payment Element"
+ type: source
+ date_ingested: 2026-04-22
++date_updated: 2026-11-22
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/payments/mobile/custom-payment-methods"
+ raw_files:
+   - "stripe-inapp-custom-payment-methods-2025.md"
+ tags: [stripe, mobile, ios, android, react-native, custom-payment-methods, cpmt, payment-sheet, payment-records]
+@@ -10,20 +12,21 @@
+ 
+ ## Summary
+ 
+-Mobile-specific integration for Custom Payment Methods (`cpmt_` IDs) across iOS, Android, and React Native. Same Dashboard setup as web CPMs, but platform-specific SDK integration. Transactions processed outside Stripe; optional recording via `paymentRecords.reportPayment()`.
++The April 22, 2026 guide covers custom payment methods in PaymentSheet on iOS, Android and React Native, including the iOS and Android FlowController paths. The merchant completes the transaction outside Stripe and reports the external result to the mobile UI. Recording the transaction in Stripe is optional.
+ 
+-## Shared Facts (All Platforms)
++The separate embedded guide uses its own configuration and result types, including `EmbeddedPaymentElement.Configuration` and `EmbeddedPaymentElementResult` in its April Swift example. [[source-stripe-inapp-embedded-custom-payment-methods]]
+ 
+-- `cpmt_` IDs created in Dashboard → Settings → Payments → Custom Payment Methods; 50+ presets available
+-- CPMs appear after Stripe PMs by default — override with `paymentMethodOrder: ["card", "cpmt_..."]`
+-- Billing details disabled on CPMs by default — enable with `disableBillingDetailCollection = false`
+-- Recording: `paymentMethods.create({ type: 'custom' })` + `paymentRecords.reportPayment()` (beta API version required)
+-- Legal: merchant responsible for PSP agreement compliance
++## April Prerequisites and Shared Setup
+ 
+-## iOS (Swift)
++- Start with a Stripe account and a working Payment Sheet payment integration for the relevant platform (April raw lines 18–25, 211–218 and 421–428).
++- In Dashboard, open **Settings → Payments → Custom Payment Methods** and give the method a display name and logo. The April guide lists over 50 presets. Use the resulting `cpmt_` type ID in the mobile configuration (April raw lines 8–12, 23–54, 217–230 and 427–476).
++- Custom methods follow Stripe-supported methods by default. Use `paymentMethodOrder` to position them, for example `["card", "cpmt_..."]`. Billing details are opt-in through `disableBillingDetailCollection = false`. The examples refer to platform-specific PaymentSheet billing configurations (April raw lines 129–145, 336–355 and 554–578).
++- The client handler receives the selected custom method and any billing details that were collected. Merchant code processes and finalizes the payment with the external payment service provider, then relays completion, cancellation or failure to the relevant UI. The merchant is responsible for applicable laws and its payment service provider agreement (April raw lines 8–12, 60–124, 274–331 and 480–550).
++
++## April iOS Example
+ 
+ ```swift
+-// Beta import required
++// SPI import used in the April Swift sample
+ @_spi(CustomPaymentMethodsBeta) import StripePaymentSheet
+ 
+ // Handler signature
+@@ -35,10 +38,9 @@
+ }
+ ```
+ 
+-- Error displayed via `errorDescription` (Swift) or `localizedDescription` (NSError)
+-- FlowController: same handler pattern; can `presentedViewController` to show UI on top
++The April PaymentSheet and FlowController prose calls the error result `failure(error:)`. The Swift snippets use `.failed(error:)` and return `PaymentSheetResult`. The guide describes displaying Swift `errorDescription` or NSError `localizedDescription`. Its PaymentSheet example notes that `presentedViewController` can present UI over the sheet (April raw lines 60–128).
+ 
+-## Android (Kotlin)
++## April Android Example
+ 
+ ```kotlin
+ // Implement ConfirmCustomPaymentMethodCallback
+@@ -56,10 +58,9 @@
+ }
+ ```
+ 
+-- FlowController: **must** call handler even on cancel — otherwise UI hangs
+-- `displayMessage` shown directly to customer on failure
++The April PaymentSheet prose names `CustomPaymentMethodResultHandler.onCustomPaymentMethodResult()`. The Kotlin snippets and the FlowController prose use `handleCustomPaymentMethodResult()`. The Android FlowController guidance explicitly says to report a canceled result if the implementation exits without confirming payment. The guide says PaymentSheet displays the failure's `displayMessage` (April raw lines 274–335).
+ 
+-## React Native
++## April React Native Example
+ 
+ ```javascript
+ const handleCustomPaymentMethod: ConfirmCustomPaymentMethodCallback = (
+@@ -71,12 +72,25 @@
+ };
+ ```
+ 
++The April example passes a `resultHandler` into the callback and uses `CustomPaymentMethodResultStatus` to report completion, failure or cancellation. The demo alert illustrates result handling (April raw lines 438–550).
++
++## Optional Server-Side Reporting
++
++The April mobile examples initialize the server SDK with `2026-03-25.dahlia` and `invoice_partial_payments_beta=v3`. They create a separate `type: 'custom'` PaymentMethod keyed by the Dashboard `cpmt_` identifier, then call `paymentRecords.reportPayment()` with its ID and the external processor's payment reference. The sample uses `outcome: 'guaranteed'` after an externally successful payment (April raw lines 153–205, 363–415 and 586–638).
++
++The separate November 7, 2026 API reference illustrates `POST /v1/payment_records/report_payment` with `2026-10-28.endive`, a version header without a beta suffix, and inline custom payment method details. These are dated request examples. The API reference leaves current mobile SDK compatibility and account availability unverified. The UI handler reports the external result, and the Payment Record stores the supplied account of that payment. Neither establishes Stripe processing, settlement or an independent guarantee of the external funds. [Report a payment API reference](https://docs.stripe.com/api/payment-record/report)
++
+ ## Related Pages
+ 
+-- [[stripe-custom-payment-methods]] — web CPM concept page (same cpmt_ IDs, same recording pattern)
++- [[stripe]]
++- [[stripe-custom-payment-methods]] — custom method identifiers, integration patterns and optional reporting
+ - [[stripe-inapp-payments]] — in-app payments concept page
+ - [[source-stripe-inapp-payments-overview]] — in-app payments overview
+ 
+ ## Raw Sources
+ 
+-- [[stripe-inapp-custom-payment-methods-2025]] — verbatim mobile CPM guide (638 lines, iOS+Android+React Native)
++- [[raw/stripe-inapp-custom-payment-methods-2025|April 22, 2026 mobile custom payment methods guide]] — iOS, Android and React Native PaymentSheet guidance.
++
++## Related raw API references
++
++- [[raw/stripe-payments-mobile-custom-payment-methods-2026-11-07|November 7, 2026 mobile platform index]] — navigation for iOS, Android and React Native. The linked platform bodies were outside the capture.

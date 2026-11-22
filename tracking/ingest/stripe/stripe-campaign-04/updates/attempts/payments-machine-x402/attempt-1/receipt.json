@@ -1,0 +1,242 @@
+{
+  "job_id": "payments-machine-x402",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe — x402 Payment Endpoint Builder (Quickstart)\"\ntype: source\ndate_ingested: 2026-05-12\ndate_updated: 2026-11-22\noriginal_format: notes\ncanonical_url: \"https://docs.stripe.com/payments/machine/x402\"\nraw_files:\n  - \"stripe-payments-machine-x402-2026-11-07.md\"\n  - \"stripe-machine-payments-x402-quickstart-2026.md\"\ntags: [stripe, machine-payments, x402, base, usdc, facilitator, hono, quickstart, node]\n---\n\n## Summary\n\nThe November 7, 2026 x402 guide covers Base USDC acceptance using a precreated Stripe deposit address and recording a crypto PaymentIntent after on-chain settlement. The May 12, 2026 structured Hono/TypeScript quickstart used an upfront deposit-mode PaymentIntent and dynamic recipient selection. These are distinct workflows for the same documentation URL.\n\n## November 7, 2026 guide\n\n- **Eligibility.** The guide requires an approved **Stablecoins and Crypto** payment method requested in Stripe Dashboard. It suggests a separate payment method configuration when limiting stablecoins or crypto to machine payments. The guide and the November Machine Payments overview describe US availability except New York and an access-request route for businesses in 30+ countries outside the US. The request route leaves account approval unverified. The May Machine Payments overview excluded New York and Texas, and the May historical x402 webpage described US-only acceptance.\n- **Recipient and facilitator.** The live example uses `POST /v1/crypto/deposit_addresses` with `network=base` and `2026-05-27.preview`. It creates the address ahead of time, outside the core request path, and uses it as static `payTo`. The Hono `GET /paid` example uses the `exact` payment scheme, an authenticated Coinbase Developer Platform (CDP) facilitator and Base mainnet (`eip155:8453)). It charges 0.01 USD in USDC per request. The guide routes card acceptance to MPP.\n- **Challenge, settlement and recording.** The intended diagram shows an HTTP 402 challenge with payment requirements, a retry with a payment credential, facilitator verification and on-chain settlement, then Stripe returning a confirmed PaymentIntent before resource delivery. The worked route is protected by facilitator verification and settlement. The separate `onAfterSettle` hook requires `result.success` and a transaction hash. It submits a crypto PaymentIntent in `transaction_verification` mode with `confirm: true`, `allowed_payment_method_types: [\"crypto\"]`, the Base network and transaction hash. It uses the hash as its idempotency key and logs the returned Intent ID. The shown hook has no explicit Stripe status or recovery check, so the sample leaves an independently verified Stripe recording gate, exactly-once delivery, balance availability and payout unproven.\n- **Amount conversion.** The hook divides atomic USDC units by 10,000, rounds to integer USD cents and skips recording below one rounded cent. Some positive sub-cent values round to one cent. This conversion and the route's fixed 0.01 USD price describe the example.\n- **Live versus sandbox.** The guide warns that live `purl` testing moves real funds. Its separate Stripe sandbox route uses Base Sepolia (`eip155:84532`), test USDC and the public x402 facilitator without CDP signup. The payment is recorded through the transaction-verification flow. The guide specifies `2026-05-27.preview` for the transaction-verification client and shows `2026-07-29.preview` for sandbox address creation. It gives no separate sandbox PaymentIntent API version.\n\n## Token and API operation scope\n\nThe November guide's USDC table covers crypto PaymentIntents in `transaction_verification` mode and lists Tempo, Base and Solana. The May historical webpage shows the same three contracts for `deposit` mode. The November Machine Payments protocol table lists Tempo with MPP / USDC.e, Solana with MPP / USDC, and Base with x402 / USDC. The worked x402 route here uses Base USDC.\n\nThe November transaction-verification table labels the Tempo contract `0x20c000000000000000000000b9537d11c60e8b50` as USDC. The separate [Create a Crypto Deposit Address reference](https://docs.stripe.com/api/crypto/deposit-address/create) describes addresses reusable across PaymentIntents. It shows a Tempo create request with `2026-10-28.endive` and an example response with `livemode: false`, `token_currency: usdc` and contract `0x20c0000000000000000000009e8d7eb59b783726`. The examples differ in operation, version and example scope. They leave token migration, interchangeability and support in other environments unverified.\n\n## May 12, 2026 structured quickstart\n\nThe May structured quickstart documents Hono middleware with crypto payins enabled and a `2026-03-04.preview` Stripe client. Its worked middleware example uses Base Sepolia, a test facilitator and `purl`. Its production guidance allows a self-run or trusted third-party facilitator.\n\n### May quickstart comparison with MPP\n\n| | MPP (Tempo) | x402 (Base) |\n| --- | --- | --- |\n| Network | Tempo (`tempo`) | Base Sepolia (`eip155:84532`) |\n| Packages | `mppx/server` | `@x402/hono`, `@x402/evm/exact/server`, `@x402/core/server` |\n| Middleware | `Mppx.create` + `mppx.charge` | `paymentMiddleware` + `x402ResourceServer` |\n| Facilitator | Not needed | Required (`FACILITATOR_URL`); verifies proofs on-chain |\n| Payment header | `Authorization` header | Base64-encoded `paymentHeader` → `decoded.payload.authorization.to` |\n| Test tool | `npx mppx http://...` | `purl http://...` |\n\n### May facilitator\n\nExternal service that verifies x402 payment proofs and settles transactions on-chain. For testing: x402.org testnet. For production: run your own or use a trusted third-party.\n\n### May middleware configuration\n\n```js\npaymentMiddleware(\n  {\n    \"GET /paid\": {\n      accepts: [{\n        scheme: \"exact\",         // exact-amount payment\n        price: \"$0.01\",\n        network: \"eip155:84532\", // Base Sepolia testnet\n        payTo: createPayToAddress,\n      }],\n    },\n  },\n  new x402ResourceServer(facilitatorClient).register(\"eip155:84532\", new ExactEvmScheme())\n)\n```\n\n### May deposit address flow\n\nThe TypeScript example extracts the recipient from the base64 retry `paymentHeader` and rejects addresses missing from its cache. Otherwise, it creates a crypto PaymentIntent in `deposit` mode with `deposit_options.networks: [\"base\"]` and gets a fresh address from `next_action.crypto_display_details.deposit_addresses.base.address`. The NodeCache example uses a five-minute TTL and recommends a distributed cache for production. The May overview's per-payment address privacy claim belongs to this dated dynamic-address context.\n\nThe separate May [[source-stripe-machine-payments-x402|same-URL x402 webpage]] describes Stripe automatically capturing a deposit-mode PaymentIntent when it observes on-chain settlement. It points to CDP for mainnet and says sandbox deposit-mode PaymentIntents do not monitor testnets. For that historical path the page refers to `simulate_crypto_deposit`. The November public-facilitator test instead uses Base Sepolia payments and transaction-verification recording.\n\n## Related Pages\n\n- [[stripe]]\n- [[stripe-machine-payments]] — protocol, network and eligibility scope\n- [[source-stripe-machine-payments-mpp-quickstart]] — MPP Tempo variant\n- [[source-stripe-machine-payments-x402]] — distinct May webpage with deposit-mode automatic capture and simulator guidance\n\n## Raw Sources\n\n- [[raw/stripe-payments-machine-x402-2026-11-07|November 7, 2026 full x402 guide]] — lifecycle at lines 24–39, Base address and middleware at 54–136, recording and amount guard at 141–189, live exercise at 192–214, transaction-verification token table at 216–224, and sandbox at 226–281.\n- [[raw/stripe-machine-payments-x402-quickstart-2026|May 12, 2026 structured x402 quickstart]] — original source formatted from the quickstart UI, including the full Hono server code.\n- [[raw/stripe-machine-payments-x402-2026|May 12, 2026 historical x402 webpage]] — separate corroborating capture, including deposit-mode automatic capture at line 8 and distinct simulator, mainnet facilitator and token guidance at lines 188–231.\n",
+  "quotes": {
+    "payments-machine-x402": [
+      {
+        "text": "After the facilitator settles the payment on-chain, Stripe records it as a [PaymentIntent](https://docs.stripe.com/api/payment_intents.md).",
+        "location": "raw/stripe-payments-machine-x402-2026-11-07.md:9"
+      },
+      {
+        "text": "Use the deposit address from the previous step as the static `payTo` recipient.",
+        "location": "raw/stripe-payments-machine-x402-2026-11-07.md:85"
+      },
+      {
+        "text": "This feature requires the `2026-05-27.preview` API version.",
+        "location": "raw/stripe-payments-machine-x402-2026-11-07.md:147"
+      },
+      {
+        "text": "Because you created the deposit address in live mode, this request moves real funds.",
+        "location": "raw/stripe-payments-machine-x402-2026-11-07.md:208"
+      },
+      {
+        "text": "You can test your integration without moving real money by using a Stripe [sandbox](https://docs.stripe.com/sandboxes.md) and Base Sepolia, the testnet for Base.",
+        "location": "raw/stripe-payments-machine-x402-2026-11-07.md:228"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-machine-x402": [
+      {
+        "text": "Set up the Stripe client with your secret key and set the API version to `2026-03-04.preview`.",
+        "location": "raw/stripe-machine-payments-x402-quickstart-2026.md:20"
+      },
+      {
+        "text": "Either extract the address from an existing payment header for retries or verification, or create a new PaymentIntent to generate a new deposit address.",
+        "location": "raw/stripe-machine-payments-x402-quickstart-2026.md:32"
+      },
+      {
+        "text": "// In-memory cache for deposit addresses (TTL: 5 minutes)",
+        "location": "raw/stripe-machine-payments-x402-quickstart-2026.md:112"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-machine-x402-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 281
+      }
+    ],
+    "raw/stripe-machine-payments-x402-quickstart-2026.md": [
+      {
+        "start": 1,
+        "end": 225
+      }
+    ],
+    "wiki/sources/source-stripe-machine-payments-x402-quickstart.md": [
+      {
+        "start": 1,
+        "end": 59
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/534e20208eb2039a93b17e11/content.diff": [
+      {
+        "start": 1,
+        "end": 475
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-machine-x402/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 192
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-machine-x402/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 74
+      }
+    ],
+    "wiki/concepts/stripe-machine-payments.md": [
+      {
+        "start": 1,
+        "end": 69
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 595,
+        "end": 600
+      },
+      {
+        "start": 701,
+        "end": 705
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 179,
+        "end": 185
+      }
+    ],
+    "raw/stripe-payments-machine-2026-11-07.md": [
+      {
+        "start": 41,
+        "end": 56
+      }
+    ],
+    "raw/stripe-machine-payments-2026.md": [
+      {
+        "start": 22,
+        "end": 28
+      }
+    ],
+    "raw/stripe-api-crypto-deposit-address-create-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 60
+      }
+    ],
+    "raw/stripe-machine-payments-x402-2026.md": [
+      {
+        "start": 1,
+        "end": 231
+      }
+    ],
+    "wiki/sources/source-stripe-machine-payments-x402.md": [
+      {
+        "start": 1,
+        "end": 40
+      }
+    ]
+  },
+  "answers": {
+    "payments-machine-x402": {
+      "Q1": "At https://docs.stripe.com/payments/machine/x402, the November guide describes HTTP 402 with a Stripe deposit address, an authorized client retry, and facilitator verification and on-chain settlement. Its intended lifecycle diagram places Stripe’s confirmed PaymentIntent response before resource delivery (new raw lines 24-39). The worked Base mainnet route charges a fixed 0.01 USD in USDC, uses an authenticated CDP facilitator and a precreated Stripe deposit address as static payTo, and protects delivery with facilitator verification and settlement (new raw lines 54-87, new raw lines 103-136). The separate onAfterSettle hook requires result.success and a transaction hash, requests confirmation of a crypto transaction_verification PaymentIntent with the hash as its idempotency key, and logs its ID without an explicit Stripe status or recovery check. The example does not establish an independently verified successful recording gate, delivery or exactly-once outcome (new raw lines 151-189). The guide requires approved Stablecoins and Crypto access and documents the New York exception and a request path in 30+ countries outside the US (new raw lines 13-22). The May quickstart used 2026-03-04.preview to create an upfront deposit-mode PaymentIntent, reused validated cached retry addresses and illustrated Base Sepolia (old raw lines 18-51, old raw lines 103-183, old raw lines 186-210). The revised source-stripe-machine-payments-x402-quickstart.md distinguishes both dated workflows, and explains that the hook skips amounts below one rounded cent after converting atomic USDC to integer USD cents. A positive sub-cent amount can round to one cent (new raw lines 159-166).",
+      "Q2": "At https://docs.stripe.com/payments/machine/x402, substantive changes are the precreated static Base recipient, post-settlement transaction_verification record, CDP Base mainnet walkthrough, access wording and separate sandbox versus live test paths. The coding-agent prompt, links and formatting are guidance and presentation. The revised source-stripe-machine-payments-x402-quickstart.md and its concept route preserve the May 2026-03-04.preview dynamic deposit-mode quickstart and the May sibling's deposit-mode simulator and auto-capture guidance as dated. In November, 2026-05-27.preview appears for live address creation and is stated for recording, while sandbox address creation shows 2026-07-29.preview. Live purl moves real funds. Sandbox uses Base Sepolia test USDC and a public facilitator without CDP signup. The transaction_verification PaymentIntent table lists Tempo, Base and Solana. Its Tempo USDC row shows 0x20c000000000000000000000b9537d11c60e8b50 (new raw lines 216-224). The separate Tempo create-deposit-address reference shows 0x20c0000000000000000000009e8d7eb59b783726 with token_currency usdc in a livemode:false example (raw/stripe-api-crypto-deposit-address-create-2026-11-07.md:11-15,18-34). The reciprocal concept route distinguishes the operations and example environments. The Machine Payments protocol table lists Tempo MPP USDC.e, while the x402 walkthrough is Base USDC and directs card acceptance to MPP (raw/stripe-payments-machine-2026-11-07.md:41-49, new raw lines 9-11, new raw lines 107-123). The captures do not establish token migration, interchangeable contracts or availability in an uninspected environment. The old New York and Texas/US-only availability claims should stay with their May authorities, and the later request route does not prove account approval. A chain settlement and recording response do not establish balance availability, payout or exact-once delivery (old raw lines 18-51, old raw lines 53-71, old raw lines 112-183, new raw lines 9-22, new raw lines 24-39, new raw lines 54-74, new raw lines 141-189, new raw lines 192-281)."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-machine-x402-x402-operation",
+      "target_path": "wiki/concepts/stripe-machine-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "**x402**: HTTP-based payment protocol for Base/USDC payments. Uses `@x402/hono` middleware + external **facilitator** (verifies payment proofs on-chain; testnet: x402.org; env: `FACILITATOR_URL`; mainnet: CDP Facilitator). Test with `purl` CLI. Network: `eip155:84532` (Base Sepolia testnet).",
+      "proposed_markdown": "**x402**: The November 2026 guide uses Base mainnet (`eip155:8453`), USDC, an authenticated CDP facilitator and an upfront Stripe address resource as static `payTo`. It records the settled transaction on a `transaction_verification` PaymentIntent. Its separate sandbox uses Base Sepolia (`eip155:84532`) and the public x402 facilitator. Live `purl` testing moves real funds. The May Hono quickstart used a dynamic deposit-mode Intent and cache-validated retry addresses. See [[source-stripe-machine-payments-x402-quickstart]].",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "May quickstart raw lines 18–51 and 103–210; November guide raw lines 54–136, 141–189 and 192–281."
+      ]
+    },
+    {
+      "update_id": "payments-machine-x402-tempo-contract",
+      "target_path": "wiki/concepts/stripe-machine-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "**USDC contract addresses**:",
+      "proposed_markdown": "**USDC contract addresses for November 2026 crypto PaymentIntent `transaction_verification`:** The May same-URL historical guide lists the same addresses for `deposit` mode. The November Machine Payments protocol table labels Tempo MPP as USDC.e and routes Base USDC to x402. A separate `2026-10-28.endive` Tempo deposit-address creation example shows `livemode: false` and `token_currency: usdc` with contract `0x20c0000000000000000000009e8d7eb59b783726`. These scoped examples leave interoperability and migration unverified. See [[source-stripe-machine-payments-x402-quickstart]].",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "November x402 raw lines 216–224, historical x402 webpage lines 223–231, November Machine Payments overview lines 41–49, separate crypto deposit address creation reference lines 5–34."
+      ]
+    },
+    {
+      "update_id": "payments-machine-x402-privacy",
+      "target_path": "wiki/concepts/stripe-machine-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Privacy**: unique deposit address per payment (reduces on-chain visibility of processing volume)",
+      "proposed_markdown": "- **Privacy (May 2026 overview)**: the May deposit-mode path describes a unique address per payment and reduced on-chain visibility. The November x402 walkthrough uses a precreated static Base recipient. See [[source-stripe-machine-payments-x402-quickstart]].",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "May Machine Payments overview raw lines 22–28 and historical Quickstart lines 30–51 and 112–183. November x402 raw lines 60–87."
+      ]
+    },
+    {
+      "update_id": "payments-machine-x402-eligibility",
+      "target_path": "wiki/concepts/stripe-machine-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **US only**: SPT card payments nationwide (US legal entity); stablecoin: all states except **New York and Texas**",
+      "proposed_markdown": "- **Eligibility**: The May 2026 overview describes nationwide SPT card and wallet acceptance for developers with a US legal entity and excludes New York and Texas for stablecoins. The May x402 webpage says US-only stablecoin acceptance. The November x402 guide and Machine Payments overview describe stablecoin availability across US states except New York, an outside-US access-request route covering 30+ countries, and Stripe approval. See [[source-stripe-machine-payments-x402-quickstart]].",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "May overview raw lines 22–28, May same-URL historical x402 webpage lines 12–23, November x402 guide raw lines 13–22, November Machine Payments overview raw lines 41–56."
+      ]
+    },
+    {
+      "update_id": "payments-machine-x402-x402-dated-route",
+      "target_path": "wiki/concepts/stripe-machine-payments.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-machine-payments-x402-quickstart]] — x402 Hono quickstart: Base network, @x402/hono middleware, facilitator (FACILITATOR_URL), purl testing tool",
+      "proposed_markdown": "- [[source-stripe-machine-payments-x402-quickstart]] — November x402 full guide for static Base USDC receipt, transaction-verification recording and live/sandbox testing, alongside the May dynamic deposit-mode quickstart. Distinguishes Tempo verification-table and non-live deposit-address examples.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "May raw lines 18–71 and 112–210; November raw lines 54–189 and 192–281; separate Tempo address example lines 11–34."
+      ]
+    },
+    {
+      "update_id": "payments-machine-x402-historical-x402-route",
+      "target_path": "wiki/concepts/stripe-machine-payments.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-machine-payments-x402]] — x402 integration guide: USDC contract addresses (Tempo/Base/Solana), CDP mainnet facilitator",
+      "proposed_markdown": "- [[source-stripe-machine-payments-x402]] — May 2026 x402 webpage on deposit-mode capture, simulator testing, token contracts and CDP mainnet. For the separate November Base Sepolia public-facilitator test and transaction verification, see [[source-stripe-machine-payments-x402-quickstart]].",
+      "quote_indexes": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "warnings": [
+        "May historical x402 webpage raw lines 4–8, 188–231; November x402 raw lines 141–189 and 226–281."
+      ]
+    }
+  ]
+}

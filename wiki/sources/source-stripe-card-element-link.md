@@ -2,57 +2,83 @@
 title: "Stripe Docs — Link in the Card Element"
 type: source
 date_ingested: 2026-05-08
+date_updated: 2026-11-22
 original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/link/card-element-link"
 raw_files:
+  - "stripe-payments-link-card-element-link-2026-11-07.md"
   - "stripe-card-element-link-2025.md"
-tags: [stripe, link, card-element, deprecated, connect, disablelink]
+tags: [stripe, link, card-element, connect, disablelink]
 ---
 
 ## Summary
 
-Overview of Link in the Card Element — a **deprecated integration path**. Stripe no longer recommends Card Element for Web Elements; use Link Authentication Element, Express Checkout Element, or Payment Element instead.
+The May 8 and November 7, 2026 captures document Link in existing single-line and split Card Element integrations. Stripe no longer recommends Card Element for Web Elements. November recommends Contact Details Element, Express Checkout Element, or Payment Element for Link. The May guide used the earlier Link Authentication Element name and recommendation link.
 
-## Deprecation Notice
+The May 27, 2026 Dahlia changelog identifies Contact Details Element as the rename for the same Web Elements contact collection and Link authentication flows. The two November Contact Details guides corroborate the identity. The changelog retains both `elements.create('linkAuthentication')` and `elements.create('contactDetails')` for these flows, with no existing-integration change required.
 
-Use instead: Link Authentication Element, Express Checkout Element, or Payment Element.
+## Sign-up, authentication, and autofill
 
-## Key Facts (for existing integrations)
+The documented Link flow applies to single-line Card Element and split Card Number, Expiry, and CVC Elements. When Link appears, customers can click the Link button. New users supply their email address, phone number, and payment method, or can enter a card first and save it to Link. Returning users who need to authenticate can receive an SMS or email code. Once authenticated, they can autofill saved details. The guides describe a 90-day authentication window across Link-enabled businesses. Sign-up, authentication, and autofill are checkout stages. Check the payment result separately.
 
-- **Two forms**: single-line Card Element and split Elements (Card Number/Expiry/CVC) — Link behavior identical in both
-- **90-day auth window**: same as Payment Request Button; any Link-enabled site
-- **Automatically enabled**; disable via Dashboard OR `disableLink: true` parameter (one control sufficient)
-- **Not supported in India**; requires granted access
+## Enablement and visibility
 
-## Display Requirements
+The captures date availability of the single-line form to 2023 and the split forms to late 2023 and early 2024. Stripe automatically enables Link for Card Element accounts with granted access. The guides exclude Stripe accounts based in India. For businesses granted access, adding Link to their Card Element requires no additional Link fee or code change. Granted access is required for Dashboard, production, and sandbox use. Stripe can selectively show Link in production.
 
-Link NOT visible if:
-- Container < 350px wide or < 28px tall (other factors: font size, locale, placeholders)
-- Browser doesn't support popups (in-app browsers excluded)
-- `Cross-Origin-Opener-Policy: same-origin` — Link popup must communicate back to parent page
+Disable Link in both forms through **Payment Method settings › Link › Link in Card Element**, or set `disableLink: true`. Either control is sufficient to hide it for its scope.
 
-**Supported browsers**: Chrome, Chrome Mobile, Edge; Safari desktop/iOS (last 3 major versions)
+- The guides give a typical container minimum of 350 px wide and 28 px high. Font size, locale, placeholder text, and icon visibility can change the space needed.
+- The browser must support pop-ups and allow the pop-up to communicate with its opener. `Cross-Origin-Opener-Policy: same-origin` blocks that communication, and in-app browsers without pop-up support cannot show the flow.
+- The captured browser list includes Chrome, Chrome Mobile, Microsoft Edge, and Safari on desktop and iOS (last three major versions for Safari).
 
-## Connect Eligibility
+## Separate Payment Request Button integration
 
-**Connected accounts CAN manage their own Link settings** if platform uses:
-- Direct charges + payment methods on connected accounts + connected accounts have full Dashboard access
+The May capture described independent Link behavior in the two surfaces without a version limit. The November capture explicitly deprecates Payment Request Button and says it is unsupported on Stripe.js `endive` or later. Existing integrations continue to work on earlier Stripe.js releases for as long as those releases are supported. If used alongside Card Element on a supported earlier release, the two Link surfaces operate independently and may both appear. November directs that integration to Express Checkout Element. See [[source-stripe-payment-request-button-link]] for the Button-specific route.
 
-**Platform controls Link** (connected accounts cannot customize) if:
-- Payment methods cloned from platform, OR destination/separate charges, OR no full Dashboard access
-- `disableLink` param can target specific accounts in this case
+The retained Stripe.js v10 package summary records removal of Payment Request Button Element declarations and creation overloads, with the lower-level `stripe.paymentRequest(options)` API still represented in the package. The November Card Element guide describes a recommendation against using Card Element, and gives the version boundary specifically for Payment Request Button.
 
-## CDN Assets
+## Connect settings
 
-- `raw/assets/stripe-link-card-element-returning.png` — Link autofilling returning customer (98 KB)
-- `raw/assets/stripe-link-card-element-new-user.png` — Link sign-up for new customer (98 KB)
-- `raw/assets/stripe-link-card-element-dialog.png` — Link authentication dialog (161 KB)
+The Connect section describes availability for connected accounts that access Card Element through the integration. This operates within the granted-access, geography, and display conditions above. A connected account can manage its own settings if the platform uses direct charges, creates and charges payment methods on the connected account, and the account has full Dashboard access. If customization is available for platform payments, select the platform in Payment Method settings to manage those settings.
+
+Cloned platform payment methods, destination charges, separate charges and transfers, or lack of full Dashboard access leave settings control for platform-processed payments with the platform. A platform that controls settings can selectively set `disableLink` for specific accounts. For payments conducted without a platform, a connected account can select **no platform** to manage its own settings. The platform-level default is configured under **Your connected accounts**. Settings for the platform itself are under **Your Account**.
+
+## Sandbox tests
+
+An enabled sandbox shows Link in Card Element sessions that meet the enablement requirements. Production can selectively show it by session. Sandbox Link accounts use any valid email address and are associated with the publishable key. Treat those accounts as publicly available and keep real user data out of them.
+
+| Sandbox passcode | Expected authentication result |
+| --- | --- |
+| `000001` | Invalid code |
+| `000002` | Expired code |
+| `000003` | Maximum attempts exceeded |
+| Other six-digit values | Success |
+
+Sample authentication outcomes establish the documented sandbox test behavior. They give no assurance of production rendering or payment completion.
+
+## Checkout images
+
+The May capture retains local copies. The November source uses Stripe CDN paths for the corresponding illustrations.
+
+- `raw/assets/stripe-link-card-element-returning.png` — returning customer autofill
+- `raw/assets/stripe-link-card-element-new-user.png` — new customer sign-up
+- `raw/assets/stripe-link-card-element-dialog.png` — Link authentication dialog
 
 ## Related Pages
 
-- [[stripe-link]] — Link concept page (Card Element deprecated section)
-- [[source-stripe-payment-request-button-link]] — Payment Request Button (also deprecated)
-- [[stripe]] — Stripe company page
+- [[stripe-link]] — Web Elements and Card Element Link routes
+- [[source-stripe-link-authentication-element]] — earlier Link Authentication and Contact Details terminology
+- [[source-stripe-payment-request-button-link]] — separate Endive limit and migration
+- [[source-github-stripe-js]] — retained npm package and release train evidence
+- [[stripe]] — provider and source catalog
+
+## Related raw API references
+
+- [[raw/stripe-changelog-dahlia-2026-05-27-link-authentication-element-rename-2026-11-07]] — May 27, 2026 rename and retained Web Elements creation aliases, captured November 7
+- [[raw/stripe-payments-link-contact-details-element-2026-11-07]] — Link Contact Details Element guide, November 7, 2026
+- [[raw/stripe-payments-elements-contact-details-element-2026-11-07]] — Web Elements Contact Details Element guide, November 7, 2026
 
 ## Raw Sources
 
-- [[stripe-card-element-link-2025]] — verbatim webpage content (134 lines)
+- [[raw/stripe-payments-link-card-element-link-2026-11-07]] — complete November 7, 2026 Card Element capture
+- [[raw/stripe-card-element-link-2025]] — complete May 8, 2026 Card Element capture

@@ -1,0 +1,60 @@
+---
+title: "Stripe: Accept a Konbini Payment"
+type: source
+date_ingested: 2026-05-07
+date_updated: 2026-11-22
+original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/konbini/accept-a-payment"
+raw_files:
+  - "stripe-konbini-accept-payment-2025.md"
+tags: [stripe, vouchers, konbini, japan, jpy, checkout, direct-api, confirmation-number, product-description, expires-after-days]
+---
+
+## Summary
+
+The full 2026-05-07 Stripe guide documents two ways to accept single-use Konbini cash vouchers in Japan using JPY. The customer receives a payment code and confirmation number, pays at a convenience store, and Stripe reports the payment asynchronously. The 2026-11-07 capture of the acceptance page retains the opening description and links to Checkout and Direct API variants.
+
+The separate 2026-11-07 [[source-stripe-konbini|Konbini payment method overview]] lists Payment Element as supported and Express Checkout Element as unsupported. It lists Checkout Sessions and Payment Intents independently of its UI list. The acceptance selector covers Checkout and Direct API routes, leaving the Payment Element implementation and specific UI/API pairing outside its coverage.
+
+## Checkout in the May 2026 guide
+
+Japan-based businesses can use Stripe-hosted or embedded Checkout in payment mode with one-time JPY line items. The guide covers dynamic payment methods and manual configuration of `konbini`. The customer can supply a phone number as their confirmation number. Stripe generates a random confirmation number when the customer leaves it blank and blocks all-zero phone numbers.
+
+Checkout sends the customer to the `hosted_voucher_url` after form submission and bypasses the configured `success_url` for that redirect. Stripe emits `payment_intent.requires_action` when it creates the voucher. `checkout.session.completed` records completed form submission and a generated voucher. Wait for `checkout.session.async_payment_succeeded` to fulfill after store payment. `checkout.session.async_payment_failed` reports expiry or another failure and the PaymentIntent returns to `requires_payment_method`.
+
+The Checkout request option documented in May is `expires_after_days`, from 1 to 60 calendar days and defaulting to 3, with a cutoff at 23:59:59 JST. The testing section's `expires_at` examples describe test-mode voucher output.
+
+## Direct API in the May 2026 guide
+
+- The server creates a JPY PaymentIntent with `konbini` for the Japan-domestic flow. The client collects the customer's billing name and email and uses the PaymentIntent client secret with `stripe.confirmKonbiniPayment()`. Stripe.js shows a voucher modal by default. The captured HTML example loads the Dahlia Stripe.js script.
+- The merchant can use `handleActions: false` and render the instructions from `next_action.konbini_display_details`, including `expires_at`, the hosted voucher URL and per-store `payment_code` and `confirmation_number` in `stores`. Optional server-side confirmation with `payment_method_data` requires billing name and email and creates and uses a PaymentMethod with the PaymentIntent. The documented result is `requires_action` with voucher instructions and a `hosted_voucher_url` for redirecting the customer.
+- `payment_intent.succeeded` follows successful store payment. `payment_intent.payment_failed` follows once Stripe determines the voucher went unpaid, typically about an hour after expiry according to the guide. Treat instruction creation as the pending state.
+- The Direct API documents `expires_after_days` or the mutually exclusive Unix-second `expires_at`. The timestamp table specifies more than 30 minutes of lead time and less than 60 days from when the option is set. The prose describes an error when less than 30 minutes remains at setting or at confirmation. If neither option is provided, the guide says expiry defaults to three days after PaymentIntent creation at 23:59 JST.
+- The optional `product_description` takes up to 22 Shift JIS characters and appears at the convenience store, with a generic fallback. The optional `confirmation_number` is a 10–11 digit string with a random fallback. Stripe blocks all-zero numbers at creation, update and confirmation. A number that is too common among ongoing store transactions may be rejected on confirmation as `payment_intent_konbini_rejected_confirmation_number`.
+
+## Expiry, Cancellation and Refunds in the May 2026 guide
+
+- New kiosk payment initiation stops at `expires_at`. A customer who obtained a valid slip before the cutoff might still be able to pay at the register afterward. If the voucher remains unpaid after the buffer, the PaymentIntent returns to `requires_payment_method`.
+- Updating the PaymentIntent or confirming it with a different method implicitly requests cancellation of the pending Konbini voucher. Cancellation fails while the customer is actively paying, and temporary availability problems can affect cancellation requests. A successful cancellation invalidates the original instructions. Successful reconfirmation while in `requires_action` generates new instructions and a new voucher URL that the customer needs.
+- Stripe emails the customer for bank details. The refund is `requires_action` while waiting, `pending` once the customer submits details and processing begins, and `succeeded` when it is expected to reach the bank. Bank-returned funds move the refund back to `requires_action`. A refund still in `requires_action` 45 days after creation becomes `failed`, triggering `refund.failed` and requiring the merchant to return funds outside Stripe. Each refund, including each partial refund, may incur a fee.
+- Instruction and reminder emails are optional Dashboard settings. In testing they only go to emails linked to the Stripe account. Special confirmation-number and email-pattern timing overrides are test-only.
+
+## Detail Locators
+
+- May lines 12–115 cover Checkout eligibility, configuration and expiry. Lines 180–212 cover confirmation numbers, voucher issuance and fulfillment events. Lines 247–286 cover cancellation and refunds.
+- May lines 320–365 and 434–516 cover the Direct API server/client split, expiry options and customer billing fields. Lines 555–731 cover confirmation numbers, manual display and server confirmation. Lines 744–768 and 784–865 cover emails, payment events, test timing, the expiry buffer, cancellation and refunds.
+- The separate November Konbini overview's lines 157–181 cover UI and API support. Lines 9–17 and 192–214 cover store payment and asynchronous confirmation. The overview's four-business-day funds availability statement concerns payout availability.
+
+## Related
+
+- [[stripe]]
+- [[stripe-vouchers]] — Konbini voucher lifecycle and product scope
+- [[source-stripe-konbini]] — Konbini payment method overview
+
+## Raw Sources
+
+- [[raw/stripe-konbini-accept-payment-2025|2026-05-07 full Checkout and Direct API guide]] — 892 lines
+
+## Related raw API references
+
+- [[raw/stripe-payments-konbini-accept-a-payment-2026-11-07|Checkout and Direct API variant selector]] — 2026-11-07 navigation

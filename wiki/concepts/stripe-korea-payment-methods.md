@@ -27,7 +27,7 @@ Customers select their card issuer and authenticate via their card/bank's app ra
 - **Business locations**: 28 countries (AT, BE, CY, DE, DK, EE, ES, FI, FR, GB, GR, HK, HR, HU, IE, IT, JP, LT, LU, LV, MT, NL, PT, SE, SG, SI, SK, US)
 - **Payout timing**: T+4 (US), T+7 (outside US)
 - **Recurring**: Yes (cards, Kakao Pay, Naver Pay); No (Samsung Pay, PAYCO)
-- **Manual capture**: Yes; **Partial capture**: No
+- **Capture**: The November 2026 Korea overview lists manual capture and no partial capture for the payment-method group. The May 2026 [[source-stripe-kr-card-set-up-future-payments|dedicated KR card guide]] requires automatic capture for recurring `kr_card` payments.
 - **Connect**: Yes
 - **Disputes**: Yes — customer has 365 days to file; merchant has **7 days** to respond; 45-day decision; final outcome
 - **Refunds**: Full + partial, 365-day window
@@ -61,22 +61,19 @@ Dashboard-driven: enable South Korean payment methods → auto-surfaced in Check
 
 ### PAYCO (`payco`)
 
-- **Payment mode only** — no setup/subscription mode, no recurring
-- **28 business locations** (all 28 including SG); 100 KRW min; 2M KRW stored value max
-- **No buyer email required**, no funding source parameter — simpler than Naver Pay
-- **NICEPAY disclosure required** — same text as all other KR methods
-- **Checkout**: add `payco` to `payment_method_types`; all line items in `krw`
-- **Direct API**: `stripe.confirmPayment()` with `payment_method_data.type: 'payco'` + `return_url`
+- The May 8, 2026 Checkout guide lists 28 business locations including Singapore, KRW line items and payment mode only. It distinguishes the 100 KRW minimum and 2,000,000 KRW stored-value top-up limit from card passthrough, for which it gives no maximum.
+- The May Direct API browser example calls `stripe.confirmPayment` with `payment_method_data.type: 'payco'` and `return_url`. Its examples omit email and a funding selector without establishing universal PAYCO field rules. The explicit NICEPAY disclosure and terms link belong to its Direct API client section. Verify the PaymentIntent status separately from browser return.
+- The May manual Checkout Session and PaymentIntent creation examples include `payco` in the writable `payment_method_types` list. The separate `2026-09-30.endive` Create endpoint references document HTTP 400 for that request field and retain the computed response property. The PaymentIntent error is `payment_method_types_no_longer_supported`. The Intent changelog Impact paragraph separately names `2026-08-26.preview`.
+- The separate `2026-07-29.dahlia` `payment_method_options.payco.setup_future_usage=none` option means no saving. The November Korea overview lists PAYCO as one-time only, and the November PAYCO acceptance capture is only Checkout/Direct API navigation. See [[source-stripe-payco-accept-payment]] for the dated request and status boundaries.
 
 ### KR Card — Save / Recurring (`kr_card`)
 
-- **Accounts v2 supported**: both `customer_account` (Accounts v2, GA for Connect / preview otherwise) and `customer` (v1) variants available throughout
-- **SetupIntent path**: `setupIntents.create({ payment_method_types: ['kr_card'], payment_method_data: { type: 'kr_card' }, usage: 'off_session'|'on_session', customer|customer_account })` → `stripe.confirmKrCardSetup()` with `return_url` + `mandate_data: { customer_acceptance: { type: 'online', online: { infer_from_client: true } } }`
-- **PaymentIntent `setup_future_usage` path**: `setup_future_usage: 'off_session'`, `confirm: true`, `mandate_data` with explicit `ip_address` + `user_agent`
-- **Recurring payments**: `capture_method: 'automatic'` required — manual capture not supported for off-session recurring
-- **Checkout setup mode**: `mode: 'setup'`, `kr_card` in `payment_method_types`; testing: select "Local card" → "Continue to Local card"
-- **Detach**: fires `mandate.updated` + `payment_method.detached`
-- **Source bug**: Stripe docs use `currency: 'ngn'` in the `setup_future_usage` PaymentIntent examples — should be `krw`
+The 2026-05-08 [[source-stripe-kr-card-set-up-future-payments|dedicated guide]] calls for customer permission and a written agreement record. It shows a customer-configured Accounts v2 Account via `customer_account` or a Customers v1 Customer via `customer`. It describes Accounts v2 as generally available for Connect and in public preview for other users, with a preview API version for participants.
+
+- Hosted Checkout uses `mode: 'setup'` and includes `card` and `kr_card` in both examples. Direct API setup creates a server SetupIntent and the browser passes the SetupIntent secret, return URL, and online mandate data to `stripe.confirmKrCardSetup()`.
+- Saving during payment uses a separate PaymentIntent with `setup_future_usage: 'off_session'` and `confirm: true`. Supply `mandate_data` when a new mandate is needed. The optional manual redirect sample is a separate PaymentIntent example and omits the saving fields. It checks `requires_action` and `redirect_to_url` before redirecting. Use server events to verify payment status.
+- A later charge uses the saved PaymentMethod ID and matching customer identity. The May guide requires automatic capture for recurring charges and `off_session: true` when the customer is outside the current checkout. Server-side detach deactivates the method and triggers `mandate.updated` and `payment_method.detached`.
+- **Archived currency discrepancy**: Both May save-during-payment examples show `ngn`, while the standalone redirect and reuse examples use `krw`, consistent with the dated Korea presentment and subscription pricing guidance. The November index leaves the examples unresolved.
 
 ### Kakao Pay — Save / Recurring (`kakao_pay`)
 
@@ -89,23 +86,17 @@ Dashboard-driven: enable South Korean payment methods → auto-surfaced in Check
 
 ### Naver Pay — Save / Recurring (`naver_pay`)
 
-- **Accounts v2 + v1 dual-path** — same structure as kr_card and kakao_pay save guides
-- **`stripe.confirmNaverPaySetup()`** — client-side setup confirmation; `mandate_data: { customer_acceptance: { type: 'online', online: { infer_from_client: true } } }`
-- **Recurring caveat**: `capture_method: 'automatic'` required — manual capture not supported
-- **Detach**: fires `mandate.updated` + `payment_method.detached`
-- **Source bug**: `currency: 'ngn'` in `setup_future_usage` PaymentIntent examples — same copy-paste error as kr_card and kakao_pay guides
+- **May customer identity**. The guide shows `customer_account` for a customer-configured Accounts v2 Account and `customer` for Customers v1. It describes Accounts v2 as generally available for Connect users and version-qualified public preview for other users.
+- **Setup**. The browser uses `stripe.confirmNaverPaySetup()` with a SetupIntent secret, return URL and online `mandate_data` using `infer_from_client` in the example. The separate charge-and-save route includes `mandate_data` if a mandate needs to be created.
+- **Reuse and capture**. Set `off_session: true` when the customer is outside this checkout flow. The May guide requires automatic capture for recurring payments. This recurring constraint is separate from the general manual capture property.
+- **Detach**. Server detachment deactivates reuse and sends `mandate.updated` and `payment_method.detached`.
+- **Currency discrepancy**. The two May charge-and-save examples use `ngn`, in conflict with the `krw` redirect and reuse examples and the separate Naver Pay acceptance guide. The capture establishes no NGN support. See [[source-stripe-naver-pay-set-up-future-payments]] for dated details.
 
 ### Naver Pay (`naver_pay`)
 
-- **28 business locations** — includes Singapore (unlike Kakao Pay)
-- **Minimum**: 100 KRW; stored value top-up max: 2,000,000 KRW (no max for card passthrough)
-- **Modes**: payment + setup + subscription (recurring supported)
-- **No buyer email required** — unlike Kakao Pay
-- **Funding source**: `payment_method_data.naver_pay.funding` = `'card'` (default, linked Naver Pay card) or `'points'` (Naver Pay Points balance)
-- **NICEPAY disclosure required** — same as other KR methods
-- **Branding**: must comply with Naver Pay [overseas brand guidelines](https://developers.pay.naver.com/design/brand/overseas)
-- **Checkout**: add `naver_pay` to `payment_method_types`; all line items in `krw`
-- **Direct API**: `stripe.confirmPayment()` with `payment_method_data.type: 'naver_pay'` + `return_url`
+- **May Checkout**. 28 business locations including Singapore, KRW line items and a 100 KRW minimum. The 2,000,000 KRW cap is for stored-value top-up. The guide states no maximum for card passthrough. The compatibility table lists payment, setup and subscription modes, while the examples use payment mode. The separate [[source-stripe-naver-pay-set-up-future-payments|setup guide]] covers consent, capture for recurring payments and the historical NGN discrepancy.
+- **May Direct API**. Naver server and confirm examples omit email. The separate Kakao Direct API guide requires it. The Naver creation example offers `card` (default) or `points` funding. The Basil changelog makes those parameters creation-only. The client sample supplies only the type. The Direct API merchant page carries the NICEPAY disclosure and terms, and `stripe.confirmPayment` uses the `return_url` before PaymentIntent status verification. Follow Naver Pay's [overseas brand guidelines](https://developers.pay.naver.com/design/brand/overseas) if using its branding.
+- **Endive request scope**. The May manual Checkout and PaymentIntent examples use `payment_method_types`. The `2026-09-30.endive` create endpoints reject this writable field with HTTP 400. Use the separate compatibility-filtered alternatives and outcome qualifications in [[source-stripe-naver-pay-accept-payment]].
 
 ### Kakao Pay (`kakao_pay`)
 
@@ -120,11 +111,10 @@ Dashboard-driven: enable South Korean payment methods → auto-surfaced in Check
 
 ### KR Card (`kr_card`)
 
-- **Minimum**: 100 KRW; all three modes (payment/setup/subscription)
-- **NICEPAY disclosure required**: must display on checkout page — *"This transaction is processed through NICEPAY in accordance with NICEPAY's terms of use"* (link to `start.nicepay.co.kr`)
-- **Checkout**: add `kr_card` to `payment_method_types`; all line items in `krw`; testing: select "Local cards" → Stripe-hosted redirect page
-- **Direct API**: create PaymentIntent with `kr_card` + `payment_method_data: { type: 'kr_card' }`; `stripe.confirmPayment()` client-side with `return_url`
-- **Post-payment**: `payment_intent.succeeded` webhook
+- **May 2026 Checkout compatibility**: KRW line items, 100 KRW minimum, and payment/setup/subscription modes. The hosted and embedded examples show payment mode. Dynamic display uses eligibility checks. The May manual examples add `kr_card` to `payment_method_types`.
+- **May 2026 Direct API**: the merchant page identifies NICEPAY and links its terms. This is the dated Direct API disclosure. The browser calls `stripe.confirmPayment` using the server-created PaymentIntent's secret and returns to the merchant after the processor flow.
+- **Outcome**: consult the PaymentIntent's state and handle `payment_intent.succeeded` for post-payment actions. A return or test transition does not establish a live payment.
+- **API version warning**: the separately captured `2026-09-30.endive` Checkout Session Create and PaymentIntent Create references reject the historical writable `payment_method_types` field. See [[source-stripe-kr-card-accept-payment]].
 
 ## Android SDK `23.18.0` Evidence
 
@@ -136,8 +126,8 @@ PaymentSheet release notes announce PAYCO, Korean cards, Naver Pay and Kakao Pay
 
 - [[source-stripe-local-payment-methods-by-country]] — hub page: Nigeria + South Korea local payment methods
 - [[source-stripe-korea-payment-methods]] — May 8 and November 7, 2026 full South Korea overviews: local processor partner, Dashboard enablement, KRW method matrix, redirect/approval/balance/payout stages, conditional refunds, disputes, and 30-day notice-plus-consent subscription rule. November adds only an interest-registration preview for descriptive decline codes; enrollment and returned codes are unverified.
-- [[source-stripe-kr-card-accept-payment]] — KR card integration: kr_card, 100 KRW minimum, NICEPAY disclosure required, confirmPayment(), redirect flow
-- [[source-stripe-kr-card-set-up-future-payments]] — KR card save/recurring: Accounts v2 + v1, confirmKrCardSetup(), setup_future_usage, automatic capture only for recurring
+- [[source-stripe-kr-card-accept-payment]] — May 2026 Checkout and Direct API guide, including the dated NICEPAY disclosure for Direct API, payment-state boundaries, and versioned Endive request-field warnings. November capture is a variant index.
+- [[source-stripe-kr-card-set-up-future-payments]] — May 2026 Checkout setup and Direct API guide for consent, customer identity, separate setup and charging paths, recurring capture, and the archived currency discrepancy. November 2026 is variant navigation.
 - [[source-stripe-subscriptions-kr-card]] — KR card subscriptions (May 2026 detailed variants; November 2026 variant index): KRW pricing, SetupIntents, direct Subscriptions API, and hosted Checkout paths; path-specific mandate and off-session examples
 
 > [!warning] Contradiction
@@ -146,6 +136,6 @@ PaymentSheet release notes announce PAYCO, Korean cards, Naver Pay and Kakao Pay
 - [[source-stripe-subscriptions-naver-pay]] — Naver Pay subscription: 2026-05-13 full guide with SetupIntents, Subscriptions API, and Checkout variants plus a dated KRW instruction; 2026-11-07 capture is a three-link variant index only. Comparison with the other Korean guides here is limited to three-path organization.
 - [[source-stripe-kakao-pay-accept-payment]] — May 2026 full Kakao Pay Checkout and Direct API acceptance guide: dated KRW, buyer email, location and amount conditions; explicit NICEPAY merchant-page text/link belongs to its Direct API client section. November 2026 capture is a two-route variant index only; redirect and browser return are not payment-success evidence.
 - [[source-stripe-kakao-pay-set-up-future-payments]] — May 2026 full Kakao Pay save/recurring guide: dated Accounts v2 eligibility and v1 identity, Checkout NICEPAY authorization, Direct API `confirmKakaoPaySetup()`, and automatic capture for later recurring charges; November 2026 capture is a Checkout/Direct API variant index only. The May guide's `ngn` saving examples conflict with its `krw` payment examples, and its optional manual redirect PaymentIntent does not contain the fields for future saving.
-- [[source-stripe-naver-pay-accept-payment]] — Naver Pay integration: naver_pay, funding source card/points, 28 countries (incl. SG), NICEPAY disclosure, branding guidelines
-- [[source-stripe-naver-pay-set-up-future-payments]] — Naver Pay save/recurring: Accounts v2 + v1, confirmNaverPaySetup(), automatic capture only, same ngn currency bug
-- [[source-stripe-payco-accept-payment]] — PAYCO integration: payco, payment mode only (no recurring), 28 countries, NICEPAY disclosure, simpler than Naver Pay
+- [[source-stripe-naver-pay-accept-payment]] — May 2026 Checkout and Direct API guide for KRW acceptance, creation-time card/points funding, NICEPAY disclosure and Stripe payment status. Includes versioned request warnings. November indexes the two variants.
+- [[source-stripe-naver-pay-set-up-future-payments]] — May 2026 hosted Checkout setup and Direct API guide with dated customer identity, recurring automatic capture and conflicting currency examples. The November capture indexes the two variants.
+- [[source-stripe-payco-accept-payment]] — May 8, 2026 PAYCO Checkout and Direct API guide with dated one-time mode, Direct API NICEPAY scope and no-save/API-version qualifications. The November 7, 2026 capture is a two-variant selector.

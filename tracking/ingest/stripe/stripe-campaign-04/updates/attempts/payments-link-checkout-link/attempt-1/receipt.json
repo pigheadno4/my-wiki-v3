@@ -1,0 +1,272 @@
+{
+  "job_id": "payments-link-checkout-link",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Docs — Link with Checkout\"\ntype: source\ndate_ingested: 2026-05-08\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/link/checkout-link\"\nraw_files:\n  - \"stripe-payments-link-checkout-link-2026-11-07.md\"\n  - \"stripe-checkout-link-2025.md\"\ntags: [stripe, link, checkout, dynamic-payment-methods, setup-intents, connect, otp]\n---\n\n## Summary\n\nThe May 8 and November 7, 2026 guides cover Link in Stripe-hosted and embedded prebuilt Checkout and point separately to Payment Links. Link lets customers save and reuse payment information, and it autofills for logged-in Link customers even when they originally saved it with another business. The described Link-as-payment-method Checkout flow returns `payment_method.type=link` for a received payment.\n\n## Existing Checkout integrations\n\n- **Dynamic methods.** Both guides direct an existing Checkout integration to enable Link in Dashboard and remove its historical manual list. Currency restricts which methods appear. The two guides make a manual-listing exception for collecting cards for future use with Setup Intents. Scope any historical request syntax to its API version and request object.\n- **Historical manual examples.** Both guides' prose asks for `link` and `card` in `payment_method_types`, with all line items in the same currency. The May Node.js sample includes both. The November Ruby sample omits `payment_method_types` despite appearing under manual listing. The November dynamic example uses cURL.\n- **Checkout Session Create on Endive.** The separate [Checkout changelog](https://docs.stripe.com/changelog/endive/2026-09-30/remove-payment-method-types-checkout-sessions) says `2026-09-30.endive` rejects writable `payment_method_types` with HTTP 400. Use Dashboard-managed dynamic methods, a compatibility-filtered `allowed_payment_method_types` list or `excluded_payment_method_types` to omit specific methods. The Session's computed `payment_method_types` response shows the compatible subset. Configuration and eligibility determine display.\n- **Intents on Endive.** The separate [Intents changelog](https://docs.stripe.com/changelog/endive/2026-09-30/removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents) separately identifies PaymentIntent create/update/confirm and SetupIntent create/update in `2026-09-30.endive` as rejecting the writable field with HTTP 400 and `payment_method_types_no_longer_supported`. The computed property remains read-only. The changelog's Impact text names `2026-08-26.preview`; its linked endpoints and REST table identify Endive. The Setup Intents exception in the Checkout guide does not establish current literal field syntax on those endpoints.\n- **Explicit Link route selection.** The November [[source-stripe-link-payment-integrations|Link integrations guide]] says an allowlist containing `link`, even alongside `card`, selects the Link-as-payment-method route with `PaymentMethod.type=link`. A list containing `card` without `link` selects the card-specific route with `PaymentMethod.type=card` and `card.wallet.type=link` for an eligible Link transaction. This route selection leaves specific Link display and payment outcomes unverified.\n\n## Hosted and embedded scope\n\nThe dated server-side Session examples use USD, `mode=payment` and `success_url` and omit `ui_mode`. The separate November [Session create reference](https://docs.stripe.com/api/checkout/sessions/create) defaults omitted `ui_mode` to `hosted_page`, disallows `success_url` with `embedded_page` or `elements`, and requires `return_url` for those UIs when redirect-based methods are enabled. A return alone does not establish payment completion.\n\nMay's Checkout guide says Link requires domain registration without distinguishing UIs. November omits that sentence. The separate [[source-stripe-pmd-registration|domain registration guide]] identifies Link in Elements and Checkout's embeddable form. Its May capture covers domains and subdomains where the method is shown. Its November capture retains the UI scope and links Dashboard and API instructions. That evidence supplies no universal hosted Checkout domain-registration requirement.\n\n## Funding, pricing and settlement\n\nBoth Checkout guides say Link carries no additional Checkout fee compared with other card payments. The May guide limits the named support to credit cards, debit cards and qualified US bank-account purchases. November lists those same funding methods without “only.” The separate [[source-stripe-link-payment-methods|Link funding groups guide]] documents additional groups, business and transaction eligibility, and fees according to the merchant's pricing agreement. The separate Link integrations guide documents a blended rate and IC+ limitation for Link as a payment method. Checkout card pricing does not establish fees for every funding group.\n\nMay describes additional funding sources using the same settlement time and guarantees, with no integration changes. November retains the same settlement time and no integration changes, and describes the same processing behavior. The separate Link integrations guide speaks of successful payments reaching the Stripe balance on the card timeline. Bank payout is a separate event.\n\n## Sandbox Link authentication\n\nBoth guides permit any valid email for a sandbox Link account. These accounts are tied to a publishable key. Treat them as if publicly available and keep real user data out. OTP outcomes below are for authentication in the sandbox.\n\n| Code | Outcome |\n| --- | --- |\n| Any 6 digits (not below) | Sandbox authentication succeeds |\n| `000001` | Error: code invalid |\n| `000002` | Error: code expired |\n| `000003` | Error: max attempts exceeded |\n\n## Connect and disable\n\nBoth guides describe Link as automatically available to connected accounts using Checkout through a Connect platform. Platform and connected-account Dashboard settings are managed separately. The connected account can manage payments processed through and outside its platform in its own Link settings. Account availability and a particular session displaying Link are separate.\n\nDisable Link in Dashboard Payment methods individually per payment method configuration. The change might take a few minutes to take effect.\n\n## May 8, 2026 capture assets\n\n- `raw/assets/stripe-link-in-checkout.png` — Link in Checkout UI (599 KB)\n- `raw/assets/stripe-link-enable-dashboard.png` — Link enabled in Dashboard (196 KB)\n\n## Related Pages\n\n- [[stripe-link]]\n- [[stripe-checkout]]\n- [[source-stripe-pmd-registration]]\n- [[source-stripe-link]] — broader Link overview\n- [[stripe]]\n\n## Raw Sources\n\n- [[raw/stripe-payments-link-checkout-link-2026-11-07|November 7, 2026 full Link with Checkout guide]] — 114 lines. See Checkout enablement at lines 9–38, server-side examples at 40–76, sandbox and funding at 78–95, and Connect/disable at 97–108.\n- [[raw/stripe-checkout-link-2025|May 8, 2026 full Link with Checkout guide]] — verbatim webpage content, 128 lines, including May Node.js examples and local capture images.\n",
+  "quotes": {
+    "payments-link-checkout-link": [
+      {
+        "text": "the `payment_method.type` listed for the payment is `link`.",
+        "location": "raw/stripe-payments-link-checkout-link-2026-11-07.md:24"
+      },
+      {
+        "text": "Make sure `card` is also included in the list of `payment_method_types`.",
+        "location": "raw/stripe-payments-link-checkout-link-2026-11-07.md:56"
+      },
+      {
+        "text": "Link supports credit cards, debit cards, and qualified US bank account purchases.",
+        "location": "raw/stripe-payments-link-checkout-link-2026-11-07.md:82"
+      },
+      {
+        "text": "They use the same transaction settlement time and processing behavior as card and bank account payments.",
+        "location": "raw/stripe-payments-link-checkout-link-2026-11-07.md:95"
+      },
+      {
+        "text": "You must change the settings for Link individually for each [payment method configuration](https://docs.stripe.com/payments/payment-method-configurations.md).",
+        "location": "raw/stripe-payments-link-checkout-link-2026-11-07.md:106"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-link-checkout-link": [
+      {
+        "text": "payment_method_types: [\"card\", \"link\"],",
+        "location": "raw/stripe-checkout-link-2025.md:74"
+      },
+      {
+        "text": "Currently, Link only works with credit cards, debit cards, and qualified US bank account purchases.",
+        "location": "raw/stripe-checkout-link-2025.md:96"
+      },
+      {
+        "text": "Link requires [domain registration](https://docs.stripe.com/payments/payment-methods/pmd-registration.md).",
+        "location": "raw/stripe-checkout-link-2025.md:96"
+      },
+      {
+        "text": "with the same transaction settlement time and guarantees as card and bank account payments.",
+        "location": "raw/stripe-checkout-link-2025.md:109"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-link-checkout-link-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 114
+      }
+    ],
+    "raw/stripe-checkout-link-2025.md": [
+      {
+        "start": 1,
+        "end": 128
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-link.md": [
+      {
+        "start": 1,
+        "end": 64
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/8ba5cc1ac5417999c356e0df/content.diff": [
+      {
+        "start": 1,
+        "end": 143
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-link-checkout-link/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 230
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-link-checkout-link/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 60
+      }
+    ],
+    "wiki/concepts/stripe-link.md": [
+      {
+        "start": 73,
+        "end": 98
+      },
+      {
+        "start": 169,
+        "end": 179
+      }
+    ],
+    "wiki/concepts/stripe-checkout.md": [
+      {
+        "start": 1,
+        "end": 49
+      },
+      {
+        "start": 120,
+        "end": 141
+      },
+      {
+        "start": 247,
+        "end": 286
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 436,
+        "end": 449
+      },
+      {
+        "start": 736,
+        "end": 736
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 59,
+        "end": 67
+      }
+    ],
+    "raw/stripe-pmd-registration-2025.md": [
+      {
+        "start": 1,
+        "end": 27
+      }
+    ],
+    "raw/stripe-payments-payment-methods-pmd-registration-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "wiki/sources/source-stripe-pmd-registration.md": [
+      {
+        "start": 12,
+        "end": 34
+      }
+    ],
+    "raw/stripe-api-checkout-sessions-create-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 3
+      },
+      {
+        "start": 476,
+        "end": 477
+      },
+      {
+        "start": 512,
+        "end": 531
+      }
+    ],
+    "raw/stripe-payments-link-link-payment-methods-2026-11-07.md": [
+      {
+        "start": 9,
+        "end": 56
+      }
+    ],
+    "raw/stripe-payments-link-link-payment-integrations-2026-11-07.md": [
+      {
+        "start": 9,
+        "end": 39
+      },
+      {
+        "start": 87,
+        "end": 93
+      }
+    ],
+    "raw/stripe-changelog-endive-2026-09-30-remove-payment-method-types-checkout-sessions-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 32
+      }
+    ],
+    "raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 36
+      }
+    ]
+  },
+  "answers": {
+    "payments-link-checkout-link": {
+      "Q1": "For https://docs.stripe.com/payments/link/checkout-link, both captures describe hosted or embedded prebuilt Checkout, Link autofill for logged-in returning Link customers even across businesses, and Link-as-payment-method payments of type `link`, with pricing described as the same as other card payments (old raw lines 8-23 and new raw lines 9-24). With dynamic methods the existing Checkout integration enables Link in Dashboard and removes its manual `payment_method_types` request list. Currency restricts displayed methods, and both guides contain a manual-listing exception when collecting cards for future use with Setup Intents. The dated manual Checkout prose asks for `link` plus `card` and common-currency line items, while November’s Ruby example omits that request field (old raw lines 25-90 and new raw lines 26-76). The examples are server-side Checkout Session creation; neither creating a Session nor returning to a URL establishes payment. Separate Endive authority removes writable manual lists from Checkout Session creation. The November guide names credit cards, debit cards, and qualified U.S. bank-account purchases as supported in a nonexclusive list. May used ‘only’ with those same three funding types. Sandbox Link accounts are tied to a publishable key and should contain no real user data. For sandbox authentication, `000001` is invalid, `000002` is expired, `000003` exceeds the maximum attempts, and any other six-digit passcode authenticates successfully (old raw lines 92-105 and new raw lines 78-91). These test authentication outcomes do not prove a payment. Connect availability for connected Checkout accounts coexists with separately managed platform and connected-account settings. Dashboard disable applies individually per payment method configuration and might take a few minutes (old raw lines 92-122 and new raw lines 78-108). The revised `source-stripe-checkout-link.md` dates both manual examples and covers the Endive and UI-specific registration boundaries.",
+      "Q2": "For https://docs.stripe.com/payments/link/checkout-link, November removes the blanket domain registration sentence and the ‘only’ funding qualifier, and replaces additional funding source ‘guarantees’ with ‘processing behavior’ while retaining same settlement timing and no integration changes (old raw lines 94-109 and new raw lines 80-95). A separate domain registration guide still identifies Link for Elements and embedded Checkout, so the revised `source-stripe-checkout-link.md` dates the May sentence and routes the UI qualification through Stripe Link, Checkout and the domain-registration guide. Funding availability, fee groups, successful payments settling to Stripe balance and payout to a bank are separate. cURL and Ruby replacing Node and image/table changes are presentation. The Ruby manual example omits the list despite unchanged prose (old raw lines 62-90 and new raw lines 51-76). The separate Checkout changelog documents that `2026-09-30.endive` Checkout Session create returns HTTP 400 if `payment_method_types` is passed. Dashboard-managed dynamic methods, `allowed_payment_method_types` as a request filter and `excluded_payment_method_types` are alternatives. The Session’s response `payment_method_types` reports the compatible subset. Eligibility and actual display remain distinct from the request and response lists (Checkout changelog lines 9-19). Separately, the `2026-09-30.endive` Intents changelog scopes writable-field removal to PaymentIntent create, update, and confirm and SetupIntent create and update. Those requests return HTTP 400 `payment_method_types_no_longer_supported` while their response field remains read-only (Intents changelog lines 9-16). The older manual syntax and Setup Intents wording carry those version and resource qualifications. The Link integrations guide says `link` in `allowed_payment_method_types` selects the Link-as-payment-method path, with PaymentMethod type `link` even alongside `card`. Passing `card` without `link` selects the card-wallet integration, with PaymentMethod type `card` and `card.wallet.type=link` for eligible Link transactions. Neither choice guarantees display (Link integrations guide lines 9-24 and 33-39). The pinned success_url examples omit ui_mode. The separate Session create reference prohibits success_url in embedded_page or elements and conditionally requires return_url when redirect methods are enabled. No code example, test OTP, funding method label or eligibility rule demonstrates a completed payment (old raw lines 39-59 and new raw lines 40-49, old raw lines 92-109 and new raw lines 78-95)."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-link-checkout-link-link-checkout-fields",
+      "target_path": "wiki/concepts/stripe-link.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Checkout Integration (Hosted Checkout Product)\n\n**Dynamic PMs** (recommended): enable Link in Dashboard → remove `payment_method_types` from code. Note: if using Setup Intents for future card storage, must list manually instead.\n\n**Manual listing**: `payment_method_types: ['card', 'link']` — `card` must be included.",
+      "proposed_markdown": "## Link in Hosted and Embedded Checkout\n\n**Dynamic methods**: The May and November guides enable Link in Dashboard and remove the historical manual list. Both describe manual listing for Setup Intents that save cards for future use. The May Node.js example includes `card` and `link`; the November Ruby example omits `payment_method_types` despite the surrounding manual prose. The `2026-09-30.endive` Checkout Session Create and affected PaymentIntent/SetupIntent requests reject writable `payment_method_types`. See [[source-stripe-checkout-link]] for request options and response, UI and API version boundaries.\n\n**Domain registration**: The separate [[source-stripe-pmd-registration|registration guide]] covers Link in Elements and the embeddable Checkout form. The November Link with Checkout guide omits May's unqualified registration sentence.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "May checkout raw lines 8–90 and 94–96; November checkout raw lines 9–76 and 78–82. Registration raws May lines 4–19 and November lines 5–14. Separate Endive changelogs identify Checkout Session Create and affected Intent endpoints."
+      ]
+    },
+    {
+      "update_id": "payments-link-checkout-link-sandbox",
+      "target_path": "wiki/concepts/stripe-link.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Sandbox OTP codes**: any 6 digits = success; `000001` = invalid; `000002` = expired; `000003` = max attempts exceeded. Treat sandbox Link accounts as public (tied to publishable key).",
+      "proposed_markdown": "**Sandbox Link authentication**: `000001` is invalid, `000002` is expired, `000003` exceeds maximum attempts, and every other six-digit code authenticates. Treat accounts tied to publishable keys as if publicly available, and keep real data out. Authentication leaves payment completion unverified.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "May checkout raw lines 92–105 and November lines 78–91."
+      ]
+    },
+    {
+      "update_id": "payments-link-checkout-link-disable",
+      "target_path": "wiki/concepts/stripe-link.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Disable**: per payment method configuration in Dashboard; takes a few minutes to propagate.",
+      "proposed_markdown": "**Disable**: Change Link individually for each payment method configuration in Dashboard. The change might take a few minutes to take effect.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "May checkout raw lines 118–122 and November lines 104–108."
+      ]
+    },
+    {
+      "update_id": "payments-link-checkout-link-link-checkout-route",
+      "target_path": "wiki/concepts/stripe-link.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-checkout-link]] — Link with Checkout: dynamic vs manual listing, card required, OTP test codes, sandbox warning, Connect, disable per PMC",
+      "proposed_markdown": "- [[source-stripe-checkout-link]] — May and November 2026 Link with Checkout guides covering hosted and embedded scope, Endive request fields, sandbox authentication and Connect configuration.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "May checkout raw lines 8–122 and November lines 9–108."
+      ]
+    },
+    {
+      "update_id": "payments-link-checkout-link-checkout-domain",
+      "target_path": "wiki/concepts/stripe-checkout.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Custom domains**: paid feature; applies to Checkout (hosted page only), **Payment Links**, and the **customer portal**",
+      "proposed_markdown": "- **Custom domains**: paid feature; applies to Checkout (hosted page only), **Payment Links**, and the **customer portal**\n- **Link payment-method domains**: The separate [[source-stripe-pmd-registration|registration guide]] covers Link in Elements and the embedded Checkout form. The May [[source-stripe-checkout-link|Link with Checkout guide]] gave unqualified registration wording, which the November capture omits. The archived Checkout Session examples use a hosted success URL; the dedicated source explains the separate embedded return condition.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "May checkout raw lines 39–59 and 94–96, November checkout lines 40–49 and 78–82, registration raws May lines 4–19 and November lines 5–14, and Session Create reference lines 476–477 and 512–531."
+      ]
+    }
+  ]
+}

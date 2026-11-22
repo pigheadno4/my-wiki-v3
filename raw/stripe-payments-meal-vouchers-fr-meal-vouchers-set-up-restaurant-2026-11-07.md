@@ -1,0 +1,106 @@
+<!-- Source URL: https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/set-up-restaurant -->
+<!-- Fetched: 2026-11-07 -->
+<!-- Discovery: reconciled llms.txt,sitemap.xml -->
+
+# Set up a restaurant for titres-restaurant payments
+
+Learn how to onboard a restaurant or store to accept Bimpli, Pluxee, and Up Déjeuner French meal vouchers payments.
+
+> #### Want to accept France titres-restaurant payments?
+> 
+> France titres-restaurant is in private preview. Enter your email address to [join the waitlist](https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/set-up-restaurant.md#fr_meal_voucher_preview). Stripe will contact you when we can onboard additional users.
+
+### Want to accept France titres-restaurant payments?
+
+Enter your email to request access.
+
+```bash
+curl https://docs.stripe.com/preview/register \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -H "Referer: https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/set-up-restaurant" \
+  -d '{"email": "EMAIL", "preview": "fr_meal_voucher_preview"}'
+```
+
+Meal vouchers in France require a restaurant to complete an onboarding process before it can [accept French meal vouchers payments](https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/accept-a-payment.md). This guide shows how to onboard a restaurant using the Stripe Dashboard. To set up a restaurant using the API instead, see [Set up a restaurant for titres-restaurant payments with the API](https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/set-up-restaurant-api.md).
+
+Before you set up a restaurant on Stripe, you must obtain a license from [Commission Nationale des Titres-Restaurant](https://www.cntr.fr/) (CNTR) and contract with each of the French meal vouchers issuers you want to support.
+
+> Stripe currently only supports Bimpli, Pluxee, and Up Déjeuner French meal vouchers.
+
+## Onboard the restaurant
+
+1. Go to the [French meal vouchers SIRETs page](https://dashboard.stripe.com/settings/payment_methods/fr_meal_vouchers_sirets).
+2. Click **Add SIRET**.
+3. Enter a SIRET, postal code, and store name. The SIRET and postal code you provide must match for the restaurant to be onboarded successfully.
+4. Click **Confirm**.
+
+The SIRET is a French tax identifier used with the postal code to find the restaurant’s license.
+
+After you submit your onboarding request, it takes 1–2 business days to validate your details and confirm the issuers you can accept payments from.
+
+You can’t modify the restaurant’s name and SIRET after creation.
+
+## Confirm the restaurant is onboarded
+
+Before you begin processing French meal vouchers payments, confirm the restaurant has been successfully onboarded.
+
+1. Go to the [French meal vouchers SIRETs page](https://dashboard.stripe.com/settings/payment_methods/fr_meal_vouchers_sirets).
+2. Click the restaurant.
+
+The open drawer displays the restaurant’s status, the supported card issuers, and the Payment Location ID. Use the Payment Location ID to [accept payments](https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/accept-a-payment.md).
+
+## Check supported issuers
+
+1. Go to the [French meal vouchers SIRETs page](https://dashboard.stripe.com/settings/payment_methods/fr_meal_vouchers_sirets).
+2. Click the restaurant. The open drawer shows the status for each issuer.
+
+## Optional: Handle errors and changes to onboarding status
+
+In some cases a restaurant’s onboarding attempt might not be successful, or a previously onboarded restaurant’s status changes.
+
+## Ineligible
+
+A restaurant displays an `Ineligible` status when Conecs (the French meal voucher network) rejects the restaurant’s SIRET during onboarding validation. This can happen for the following reasons:
+
+- The SIRET doesn’t exist or the restaurant hasn’t obtained approval from CNTR to accept meal vouchers in France.
+- The SIRET has been disentitled, meaning the restaurant’s CNTR approval to accept meal vouchers has been revoked.
+
+To resolve an `Ineligible` status:
+
+1. Verify that the SIRET you provided is correct.
+2. Obtain or re-obtain a valid license from the CNTR for this SIRET to accept meal vouchers. See [requirements](https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers.md#requirements) for more information.
+
+If the SIRET is incorrect, create a new onboarding request with the correct SIRET after resolving the issue. If the SIRET is correct but CNTR registration is still pending, no action is required—Stripe automatically resumes onboarding after Conecs processes the registration.
+
+## Invalid postal code
+
+The restaurant’s postal code must match the SIRET licensed with CNTR. The onboarding process for a restaurant might fail if you provide an incorrect postal code.
+
+1. Go to the [French meal vouchers SIRETs page](https://dashboard.stripe.com/settings/payment_methods/fr_meal_vouchers_sirets).
+2. Click the restaurant marked `Requires Action`.
+3. Click **Update Details**.
+4. Enter the correct postal code.
+5. Click **Confirm**.
+
+After you update the postal code, the restaurant’s status updates within 1–2 business days.
+
+## Set up a restaurant with Connect
+
+1. Go to the [Connected Accounts page](https://dashboard.stripe.com/connect/accounts).
+2. Click the account to set up a restaurant for.
+3. Click **Payment methods**.
+4. Click **French Meal Voucher Conecs**.
+5. Click **Configure SIRETs** in the open drawer.
+
+You can use the open French meal vouchers SIRETs page for the current connected account to set up and manage restaurants for this connected account.
+
+## Test your integration 
+
+You can use the following SIRETs and associated postal codes to test your integration:
+
+| SIRET | Postal code | Scenario |
+| --- | --- | --- |
+| `42424242424242` | `42424` | A valid onboarded restaurant |
+| `11111111111111` | `11111` | Awaiting an onboarding outcome |
+| `42424242424242` | Any postal code other than `42424` | Postal code doesn’t match the restaurant’s SIRET |

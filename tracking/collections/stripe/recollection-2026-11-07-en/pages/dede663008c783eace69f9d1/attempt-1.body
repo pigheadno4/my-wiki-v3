@@ -1,0 +1,209 @@
+# MobilePay payments
+
+Learn about MobilePay, a popular payment method in Denmark and Finland.
+
+MobilePay is a single-use card wallet payment method used in Denmark and Finland. It allows customers to authenticate and approve payments using the MobilePay app. When a customer pays with MobilePay, Stripe processes the underlying card transaction using card data received from MobilePay.
+Payment method family: Wallets
+Usability: Single-use
+Access type: Instant access
+Payment confirmation timing: Immediate
+Settlement timing: Standard payout schedule
+Pricing: https://stripe.com/en-us/pricing/local-payment-methods#mobilepay
+## Eligibility and availability 
+
+### Account eligibility
+Business location: AT, BE, BG, CY, CZ, DE, DK, EE, ES, FI, FR, GR, HR, HU, IE, IT, LI, LT, LU, LV, MT, NL, NO, PL, PT, RO, SE, SI, SK
+Account type: ✓ Merchant, ✓ Platform or marketplace (Connect)
+Business model: ✓ B2B, ✓ B2C
+Business category: View list of prohibited and restricted business categories
+### Unsupported businesses
+
+In addition to the industry and business categories listed in [Prohibited and restricted businesses](https://stripe.com/restricted-businesses), MobilePay prohibits the following categories:
+
+- Bonds
+- Debt collection
+- Multi-level marketing and pyramid schemes
+
+Review the list of *merchant category codes* (A Merchant Category Code (MCC) is a four-digit number that classifies the type of goods or services a business offers) that are prohibited or restricted for MobilePay.
+
+- **Prohibited**: You can’t use this payment method with these MCCs.
+- **Restricted**: You might be able to use this payment method with these MCCs, but you must provide additional information when you create the account.
+
+| MCC | Description | Type |
+| --- | --- | --- |
+| 4829 | Money Orders - Wire Transfers | Prohibited |
+| 6050 | Description unavailable | Prohibited |
+| 6051 | Cryptocurrency exchanges and wallets | Prohibited |
+| 6211 | Security Brokers and Dealers | Prohibited |
+| 6529–6530 | Description unavailable | Prohibited |
+| 6534 | Description unavailable | Prohibited |
+| 7321 | Credit Reporting Agencies | Prohibited |
+| 7801 | Government Licensed On-line Casinos (On-Line Gambling) | Prohibited |
+| 7995 | Betting and Casino Gambling | Prohibited |
+| 9222 | Fines - Government Administrative Entities | Prohibited |
+| 9223 | Bail and Bond Payments | Prohibited |
+| 9754 | Gambling - Horse and Dog Racing, State Lottery | Prohibited |
+
+Stripe accounts in the following countries can accept MobilePay payments that settle in a supported currency.
+
+EMEA: AT, BE, BG, CY, CZ, DE, DK, EE, ES, FI, FR, GR, HR, HU, IE, IT, LI, LT, LU, LV, MT, NL, NO, PL, PT, RO, SE, SI, SK
+
+Customers in the following countries can use MobilePay.
+
+EMEA: DK, FI
+
+### Payment support
+Customer location: DK, FI
+Presentment currency: DKK, EUR, NOK, SEK
+Geographic coverage: ✓ Domestic, ✓ Crossborder
+Transaction limits: Minimum amount depends on the settlement currency.
+The minimum charge amount depends on your payout bank account’s settlement currency. For example, payments that settle in DKK must be at least 2.50 DKK. If Stripe converts the payment, the converted amount must meet the settlement currency’s minimum. See [minimum and maximum charge amounts](https://docs.stripe.com/currencies.md#minimum-and-maximum-charge-amounts).
+
+## Capabilities 
+Recurring payments: ✗ Not supported
+
+Payment authorizations:
+  ✗ Extended authorizations
+  ✗ Flexible extended authorizations
+  ✗ Incremental authorizations
+  ✗ Decremental authorizations
+  ✗ Re-authorizations
+
+Payment captures:
+  ✓ Manual capture
+  ✓ Partial capture
+  ✗ Multi-capture
+  ✗ Over-capture
+
+Refunds:
+  ✓ Partial refunds
+  ✓ Full refunds
+  Processing time: Typically 5–10 business days, depending on the issuer
+
+Disputes:
+  ✗ Partial disputes
+  ✓ Full disputes
+### Capture behavior 
+
+MobilePay supports manual and partial capture. A partial capture is final: Stripe releases the uncaptured remainder, and you can’t make a second capture for it.
+
+### Refunds 
+
+MobilePay doesn’t impose a single payment-method-specific refund deadline. Standard card-network and regional rules determine how long after a payment you can submit a refund. You can issue full or partial refunds through the [Dashboard](https://dashboard.stripe.com/payments) or [Refunds API](https://docs.stripe.com/api/refunds/create.md), and you can issue multiple partial refunds provided that their total doesn’t exceed the original payment amount. Funds typically appear within 5–10 business days, depending on the issuer. Shortly after creation, some card refunds can be canceled when the Dashboard offers the **Cancel refund** action.
+
+#### Refund process 
+
+MobilePay refunds are processed through the card used for the original payment. Stripe submits the refund to the card issuer. A refund issued shortly after payment can appear as a reversal, where the original charge disappears rather than a separate credit appearing.
+
+#### Tracking refunds 
+
+Track refunds in the Dashboard or retrieve the [Refund object](https://docs.stripe.com/api/refunds/retrieve.md) through the API. Listen for `refund.updated` and `refund.failed`. [Verify webhook signatures](https://docs.stripe.com/webhooks.md#verify-events) to confirm that events came from Stripe. If you use IP allowlisting, allow Stripe’s [public IP addresses](https://docs.stripe.com/ips.md). Allow approximately 5–10 business days for a credit to appear, depending on the issuer. If the refund fails, inspect its failure reason and arrange another refund method where necessary.
+
+### Disputes 
+
+#### Dispute process 
+
+MobilePay payments are processed using Visa or Mastercard card transactions. Customers can dispute the underlying card payment with their card issuer. There is no separate MobilePay-specific dispute workflow.
+
+#### Dispute notifications 
+
+Stripe notifies you of a dispute by email, in the Dashboard, and through a `charge.dispute.created` webhook event. The dispute reason and response deadline are available in the Dashboard and on the Dispute object.
+
+#### Responding to disputes 
+
+Respond and submit evidence through Stripe’s [standard card-dispute process](https://docs.stripe.com/disputes/responding.md). The applicable response deadline appears in the Dashboard and in `evidence_details.due_by` on the Dispute object.
+
+#### Dispute outcomes 
+
+The card issuer reviews the evidence and decides the outcome. If you win, Stripe returns the disputed amount to your balance. If you lose, the balance debit becomes permanent.
+
+## Stripe product support 
+Checkout UIs:
+  ✓ Full page (Recommended)
+  ✓ Payment Links
+  ✓ Embedded form
+  ✓ Payment Element
+  ✗ Express Checkout Element
+  ✗ Payment Method Messaging Element
+  ✓ In-app payments
+
+Products:
+  ✗ Managed Payments
+  ✗ Billing
+  ✗ Invoicing
+  ✗ Customer Portal
+  ✓ Radar
+  ✗ Terminal
+  ✓ Connect
+
+APIs:
+  ✓ Checkout Sessions (Recommended)
+  ✓ Payment Intents
+  ✗ Payment Intents with setup_future_usage
+  ✗ Setup Intents
+  ✗ Off-session payments
+### Connect 
+
+To check whether a connected account has enabled MobilePay, inspect `capabilities.mobilepay_payments` in the [Accounts API or webhooks](https://docs.stripe.com/api/accounts/object.md#account_object-capabilities-mobilepay_payments) and confirm that it’s `active`. For connected accounts without full Stripe Dashboard access, request the `mobilepay_payments` capability using the [Capabilities API](https://docs.stripe.com/api/capabilities.md). Learn more about [enabling payment methods for connected accounts](https://docs.stripe.com/connect/account-capabilities.md).
+
+## 3D Secure authentication
+
+Certain cards or banks might require an additional *card authentication* (A bank might require the customer to authenticate a card payment before processing. Implementation varies by bank but commonly consists of a customer entering in a security code sent to their phone) step to process a MobilePay transaction. When this occurs, the MobilePay app presents a WebView that prompts the customer to authorize the payment. The *3D Secure challenge* (3D Secure (3DS) provides an additional layer of authentication for credit card transactions that protects businesses from liability for fraudulent card payments) is invisible to your integration, and you don’t need to handle additional integration steps.
+
+### Liability shift
+
+[Liability shift](https://docs.stripe.com/payments/3d-secure/authentication-flow.md#disputed-payments) applies to a MobilePay payment only when *3D Secure authentication* (3D Secure (3DS) provides an additional layer of authentication for credit card transactions that protects businesses from liability for fraudulent card payments) occurred. You can’t force 3D Secure authentication on the underlying card payment.
+
+## Current limitations 
+
+### Dankort support
+
+Stripe doesn’t process these payments over the Dankort network. For co-branded Visa/Dankort cards, Stripe uses Visa.
+
+## Fees 
+
+Because MobilePay payments use underlying card transactions, you pay Stripe’s standard card-processing fees and applicable taxes. Stripe deducts those amounts from each successful transaction.
+
+The MobilePay transaction surcharge isn’t deducted from the individual payment. Stripe aggregates these surcharges, bills them daily, and deducts the amount from your [Stripe balance](https://dashboard.stripe.com/balance).
+
+Applicable Danish merchants of record also pay a monthly MobilePay membership fee while active. See [Pricing](https://stripe.com/pricing) for fee details. Stripe bills the fee monthly and deducts it from your Stripe balance. Automatic inactivity offboarding can stop the membership fee, and negotiated or platform-specific arrangements can differ.
+
+MobilePay fees appear as a separate entry on your monthly tax invoice. You can find monthly invoices in the [Dashboard](https://dashboard.stripe.com/settings/documents).
+
+## Branding 
+
+Your customer’s MobilePay app displays the icon configured in your [Branding settings](https://docs.stripe.com/get-started/account/branding.md). If you haven’t configured an icon, the app displays a default icon instead.
+
+## Customer experience 
+
+#### 1. Choose MobilePay
+
+Select MobilePay at checkout.
+
+#### 2. Continue to MobilePay
+
+On desktop, continue to MobilePay's payment page and enter the phone number linked to your MobilePay account. On mobile, continue to the MobilePay app.
+
+#### 3. Approve the payment
+
+On desktop, open the notification and approve in MobilePay. On mobile, review the payment in the app and select a card. Choose another card if needed, and complete additional issuer authentication if prompted.
+
+#### 4. Return to the business
+
+Return to the business's website or app to view the payment result. Returning doesn't by itself prove that the payment succeeded.
+
+### Card transaction retries 
+
+MobilePay lets customers retry a card payment in the app before the payment reaches a terminal failure. If a card transaction fails, the customer can choose another card and retry the payment.
+
+### Statement descriptors 
+
+MobilePay payments use the standard card statement-descriptor path. For card payments, use `statement_descriptor_suffix` to combine your account’s shortened descriptor with a payment-specific suffix. Setting the full `statement_descriptor` follows separate full-descriptor and legacy fallback behavior and doesn’t append in the same way as a suffix. The complete card descriptor can contain up to 22 characters, and issuers can truncate, reformat, or display merchant information differently.
+
+For Connect direct charges, Stripe uses the connected account’s descriptor. For destination charges, Stripe uses the platform’s descriptor unless you set `on_behalf_of`, in which case Stripe uses the connected account’s descriptor. Learn more about [statement descriptors](https://docs.stripe.com/get-started/account/statement-descriptors.md) and [statement descriptors with Connect](https://docs.stripe.com/connect/statement-descriptors.md).
+
+## Enable MobilePay 
+
+If you use Stripe front-end products, enable MobilePay in your [payment method settings](https://dashboard.stripe.com/settings/payment_methods). Stripe automatically determines which payment methods are most relevant to each customer.
+
+If your integration lists payment methods manually, learn how to [configure MobilePay as a payment method](https://docs.stripe.com/payments/mobilepay/accept-a-payment.md).

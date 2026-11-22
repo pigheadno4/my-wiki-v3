@@ -1,0 +1,49 @@
+---
+title: "Stripe — Orchestration: Wallet Payments"
+type: source
+date_ingested: 2026-05-11
+date_updated: 2026-11-22
+original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/orchestration/wallet-payments"
+raw_files:
+  - "stripe-payments-orchestration-wallet-payments-2026-11-07.md"
+  - "stripe-orchestration-wallet-payments-2026.md"
+tags: [stripe, orchestration, apple-pay, google-pay, wallets, off-session, private-preview]
+---
+
+## Summary
+
+The May 11 and November 7, 2026 wallet guides describe routing Apple Pay and Google Pay with Stripe Orchestration. The separately captured May Orchestration overview already identifies the product as private preview. The November wallet guide adds an email request and a registration example for `orchestration_preview`. This requests access. Approval, processor and wallet setup, and rule activation are separate.
+
+## Wallet and processor compatibility
+
+The November feature-support matrix lists general Apple Pay and Google Pay support for Adyen, Braintree and Worldpay WPG. Its wallet footnote specifies that 3DS is unsupported with Apple Pay or Google Pay DPANs, and Google Pay FPAN is unsupported on Adyen. The wallet guide describes the general routing capability. Consult the matrix for the processor and token combination. [[source-stripe-orchestration-feature-support]]
+
+## Set up and test routing
+
+1. Enable the applicable wallet on the third-party processor according to that processor’s requirements.
+2. Configure Stripe through its Apple Pay or Google Pay integration.
+3. Configure test routing under **Payments → Orchestration → Rules** in the Dashboard.
+4. Test wallet routing. Both captures suggest Payment Links as an optional way to test Apple Pay or Google Pay quickly.
+
+The separate Rules guide scopes activated test rules to their sandbox. Live rules require their own activation. A test configuration supplies no evidence of authorization, capture or settlement. [[source-stripe-orchestration-rules]]
+
+## Saved and customer-present wallet payments
+
+- **Saved mobile-wallet payment method:** Pass `off_session=true` during PaymentIntent confirmation when attempting a charge.
+- **Customer present at checkout:** Re-prompt for payment method presentment through the applicable Apple Pay or Google Pay integration. The guide excludes reuse of the saved method in that flow.
+
+The call flags and wallet presentment describe attempt and collection behavior. The preview registration request supplies no payment API version or wallet configuration.
+
+## Related Pages
+
+- [[stripe-orchestration]] — Orchestration concept and wallet routing
+- [[source-stripe-orchestration]] — Orchestration overview and private-preview context
+- [[source-stripe-orchestration-feature-support]] — Processor and wallet compatibility
+- [[source-stripe-orchestration-rules]] — Sandbox and live rules
+- [[stripe]] — Stripe company page
+
+## Raw Sources
+
+- [[raw/stripe-payments-orchestration-wallet-payments-2026-11-07]] — 2026-11-07 full wallet payments guide (38 lines)
+- [[raw/stripe-orchestration-wallet-payments-2026]] — 2026-05-11 verbatim wallet payments guide (21 lines)

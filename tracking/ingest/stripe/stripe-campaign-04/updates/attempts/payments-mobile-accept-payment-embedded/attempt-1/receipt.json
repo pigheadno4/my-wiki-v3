@@ -1,0 +1,228 @@
+{
+  "job_id": "payments-mobile-accept-payment-embedded",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Accept In-App Payments with the Embedded Payment Element\"\ntype: source\ndate_ingested: 2026-04-22\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/mobile/accept-payment-embedded\"\nraw_files:\n  - \"stripe-inapp-accept-payment-embedded-2025.md\"\ntags: [stripe, mobile, ios, android, react-native, embedded-payment-element, embedded, scrollview, height-changes, mandate, formsheet]\n---\n\n## Summary\n\nThe April 22, 2026 guide describes embedding Stripe's Mobile Payment Element in native checkout. It renders a list of payment methods and opens detail sheets for methods that need them. The Swift examples below cover UIKit and SwiftUI. Use the April capture's platform and intent routes to find the Android and React Native examples.\n\n## April 22, 2026 Platform and Intent Routes\n\nThese line ranges point into the April capture under Raw Sources.\n\n| Platform | Accept a payment (`payment`) | Set up a payment method (`setup`) | Pay and save (`paymentsfu`) |\n| --- | --- | --- | --- |\n| iOS | 10–1188 | 1189–2379 | 2380–3788 |\n| Android | 3789–4640 | 4641–5484 | 5485–6461 |\n| React Native | 6462–7452 | 7453–8539 | 8540–9657 |\n\n## Key Integration Requirements\n\n- **SDK and server.** The April paths set up the platform SDK with a publishable key, enable payment methods and use merchant server endpoints that call Stripe.\n- **iOS.** Place the changing-height Element in a scrollable container such as `UIScrollView` in UIKit or `ScrollView` in SwiftUI. Set `presentingViewController` and `delegate` after UIKit `create()`. The SwiftUI example loads `EmbeddedPaymentElementViewModel` as a `@StateObject` and renders `EmbeddedPaymentElementView` (lines 110–146 and 333–406).\n- **Android.** Render Jetpack Compose `Content` inside a scrollable container. Classic Android views wrap the Element in `ComposeView` (lines 3870–4006).\n- **React Native.** Use `useEmbeddedPaymentElement` and render `embeddedPaymentElementView`. Keep the native Android view mounted so initialization can finish. The example controls visibility with opacity (lines 6544–6650).\n\n## iOS UIKit Pattern\n\n```swift\n// 1. Create async\nlet embeddedPaymentElement = try await EmbeddedPaymentElement.create(\n  intentConfiguration: intentConfig, configuration: configuration\n)\nembeddedPaymentElement.presentingViewController = self\nembeddedPaymentElement.delegate = self\n\n// 2. Add to UIScrollView\nscrollView.addSubview(embeddedPaymentElement.view)\n\n// 3. Confirm\nlet result = await embeddedPaymentElement.confirm()\n```\n\n## Handle Height Changes (UIKit)\n\n```swift\nextension MyVC: EmbeddedPaymentElementDelegate {\n  func embeddedPaymentElementDidUpdateHeight(embeddedPaymentElement: EmbeddedPaymentElement) {\n    self.view.setNeedsLayout()\n    self.view.layoutIfNeeded()\n  }\n}\n```\n\nTest: call `embeddedPaymentElement?.testHeightChange()` in DEBUG.\n\n## `paymentOption` — Selected PM Details\n\n- `.label`: e.g. \"····4242\"\n- `.image`: e.g. Visa logo\n- Billing details and `.mandateText`\n\nDelegate: `embeddedPaymentElementDidUpdatePaymentOption` — fires when PM selection changes.\n\n## Cart Changes\n\n```swift\nlet result = await embeddedPaymentElement?.update(intentConfiguration: updatedIntentConfig)\n// .succeeded | .failed | .canceled (when subsequent update cancels this one)\n```\n\nThe Swift UIKit and SwiftUI examples use `update()`. React Native also uses `update()` and awaits it to sequence loading states. The Android cart example calls `configure()` again, which updates the content and selected option. Refresh the displayed total and selection after the change, and let the customer retry a failed Swift update (lines 264–292, 458–484, 4009–4036 and 6683–6690).\n\n## Checkout Button and In-Sheet Confirmation\n\n```swift\nconfiguration.formSheetAction = .confirm(completion: { result in\n  // .completed | .failed | .canceled\n})\n```\n\nIn the April iOS and Android guides, **Continue** normally dismisses the detail sheet so the customer can finish in the app checkout. The optional `formSheetAction` configuration confirms the selected flow when the customer taps the action in the sheet. In the Swift example above the result callback runs after dismissal, and the embedded UI cannot be reused after completion. In setup mode the action confirms setup without a charge. Android shows its own builder configuration (lines 100–106, 579–602, 1794–1815, 3861–3868, 4155–4179 and 5027–5049).\n\n## Intent Creation, Confirmation and Payment Outcomes\n\n- **Charge or save.** Use a server-created `PaymentIntent` for a charge, a `SetupIntent` to save without charging, or a `PaymentIntent` with the intended future-use setting for pay-and-save. The server determines the charge amount in a trusted environment and the client `IntentConfiguration` needs to match the intent's applicable properties, such as amount and currency for payment or `usage` for setup (lines 604–610, 1189–1199, 1817–1889 and 3035–3104).\n- **Confirm the selected intent.** The documented deferred SDK flow calls the merchant backend from the confirmation callback and returns the matching intent's client secret or an error. The SDK confirms with that secret in the client-confirmed flow. The April iOS callback example also directs the integrator to pass the ConfirmationToken ID to the backend when using server-side confirmation (lines 293–330, 4067–4115 and 6822–6874).\n- **Historical setup wording.** The iOS setup callbacks correctly ask the server for a `SetupIntent`, then call the object being confirmed a `PaymentIntent`. Follow the setup-mode configuration and server `SetupIntent` in that same variant. Android and React Native explicitly confirm the `SetupIntent`. The Android setup example's payment wording in the button label and completion comment still accompanies a setup flow (lines 1189–1199, 1336–1347, 1535–1537, 1724–1726, 1817–1889, 4939–4975 and 7833–7835).\n- **Payment outcomes.** Delayed methods are hidden by default. `allowsDelayedPaymentMethods` lets the SDK show eligible enabled methods without activating them. The app can report completion while payment is pending. Use server-side payment events for fulfillment decisions. `payment_intent.processing` is pending and may later be followed by `payment_intent.succeeded` or `payment_intent.payment_failed`. Setup completion records payment-method setup. An authentication return or client result alone cannot establish payment success or funds availability (lines 747–759, 905–929, 4409–4422 and 7028–7040).\n\n## iOS Authentication Returns\n\nThe April native iOS and React Native-on-iOS SDK guides use a custom URL scheme forwarded to Stripe for returns from Safari or a banking app. The native guide sets `returnURL` on the Element configuration. Universal Links belong to the separate app-to-web flows linked in [[stripe-inapp-payments]]. In the React Native iOS examples, enabled methods that require a return URL are unavailable without one (lines 680–745, 6890–6950, 7900–7910 and 8992–9002).\n\n## Saving Payment Methods and Consent\n\n- **Customer identity.** Attach the payment method for future payments to a customer-configured Accounts v2 `Account` (`customer_account`) or a Customers v1 `Customer` (`customer`). The April guide describes Accounts v2 as generally available for Connect users and in public preview with a preview API version for other Stripe users (lines 1277–1311, 1817–1889, 2489–2524 and 7537–7548).\n- **CustomerSession.** The saved-card examples pass the customer ID and CustomerSession client secret separately from the intent's secret. `payment_method_save` enables the save checkbox in the documented path, and the examples show redisplay and removal controls (lines 794–902 and 4299–4408).\n- **Merchant obligations.** The April pay-and-save guidance calls for use-specific terms, explicit consent and a record of the customer's written agreement. The merchant is responsible for compliance. `allow_redisplay` distinguishes attached methods that can be shown for future purchases. A later off-session charge uses a new server-side `PaymentIntent`, and an authentication request can still cause it to fail (lines 1958–2008, 2395–2405, 3198–3247 and 8554–8565).\n- **Global future use and per-method preview.** In the standard April global pay-and-save example the server sets `setup_future_usage` on the `PaymentIntent` and matches the client `IntentConfiguration`. In the separate April Embedded Mobile Payment Element per-method SDK preview, leave both `setup_future_usage` and `payment_method_options[X][setup_future_usage]` unset on the server-created `PaymentIntent`. The SDK supplies them from `IntentConfiguration` (lines 3035–3104, 3320–3354, 6046–6084 and 9196–9258).\n\n## Mandate Display\n\nThe April guide says the Element displays mandates by default. If you display the mandate yourself, keep the text close to the Buy button and make its links work. The Swift examples read mandate text from the selected payment option.\n\n**April Swift example conflict.** The UIKit and SwiftUI manual-render snippets set `embeddedViewDisplaysMandateText = true` even though the accompanying prose says to disable built-in display. The Android builder example passes `false`. The April capture leaves the appropriate Swift flag setting unresolved (iOS lines 548–576, 1763–1792 and 2979–3008 and Android lines 4136–4154).\n\n## `clearPaymentOption()` — Deselect PM\n\n```swift\nembeddedPaymentElement?.clearPaymentOption()\n// or: embeddedViewModel.clearPaymentOption()\n```\n\nUseful when you have external payment options (e.g. Apple Pay button) and need to deselect.\n\n## Additional April Examples\n\n- iOS SDK installation and dated platform compatibility (lines 29–90). The Android Gradle sample uses Stripe Android SDK `23.5.0` and includes Financial Connections for US bank accounts (lines 3810–3853). React Native setup and test/live key guidance are at lines 6481–6536.\n- Native Apple Pay merchant ID, certificate, Xcode capability, and one-time and recurring configuration (lines 930–1022). Native Android Google Pay manifest, environment and physical-device testing, including the supported-country and test-account prerequisites (lines 4423–4462).\n- Payment testing, appearance and CVC recollection examples (iOS lines 761–788 and 1058–1187 and Android lines 4270–4297 and 4472–4640).\n\n## Images\n\n![iOS embedded example](../raw/assets/stripe-inapp-ios-embedded.png)\n![Android embedded example](../raw/assets/stripe-inapp-android-embedded.png)\n![Embedded pay immediately](../raw/assets/stripe-inapp-embedded-pay-immediate.png)\n\n## Related Pages\n\n- [[stripe]]\n- [[stripe-inapp-payments]] — mobile UI and intent patterns\n- [[source-stripe-inapp-payment-element]] — Payment Element overview\n\n## Raw Sources\n\n- [[raw/stripe-inapp-accept-payment-embedded-2025|Embedded Mobile Payment Element integration guide]] — captured 2026-04-22. Covers nine iOS, Android and React Native variants.\n\n## Related raw API references\n\n- [[raw/stripe-payments-mobile-accept-payment-embedded-2026-11-07|2026-11-07 platform and intent variant index]] — navigation for iOS, Android and React Native payment, setup and pay-and-save guides. The linked November variant bodies were outside the capture.\n",
+  "quotes": {
+    "payments-mobile-accept-payment-embedded": [
+      {
+        "text": "Build a customized payments integration in your iOS, Android, or React Native app using the Payment Element.",
+        "location": "raw/stripe-payments-mobile-accept-payment-embedded-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-mobile-accept-payment-embedded-2026-11-07.md:11"
+      },
+      {
+        "text": "[Accept a payment](https://docs.stripe.com/payments/mobile/accept-payment-embedded.md?platform=ios&type=payment)",
+        "location": "raw/stripe-payments-mobile-accept-payment-embedded-2026-11-07.md:14"
+      },
+      {
+        "text": "[Set up a payment method](https://docs.stripe.com/payments/mobile/accept-payment-embedded.md?platform=android&type=setup)",
+        "location": "raw/stripe-payments-mobile-accept-payment-embedded-2026-11-07.md:19"
+      },
+      {
+        "text": "[Accept and set up a payment](https://docs.stripe.com/payments/mobile/accept-payment-embedded.md?platform=react-native&type=paymentsfu)",
+        "location": "raw/stripe-payments-mobile-accept-payment-embedded-2026-11-07.md:24"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-mobile-accept-payment-embedded": [
+      {
+        "text": "The Payment Element is a customizable component that renders a list of payment methods that you can add into any screen in your app.",
+        "location": "raw/stripe-inapp-accept-payment-embedded-2025.md:8"
+      },
+      {
+        "text": "The view must be contained within a scrollable view such as UIScrollView",
+        "location": "raw/stripe-inapp-accept-payment-embedded-2025.md:145"
+      },
+      {
+        "text": "or billing details to display in your UI",
+        "location": "raw/stripe-inapp-accept-payment-embedded-2025.md:251"
+      },
+      {
+        "text": "If necessary, disable its display in the view and display it yourself instead.",
+        "location": "raw/stripe-inapp-accept-payment-embedded-2025.md:550"
+      },
+      {
+        "text": "configuration.embeddedViewDisplaysMandateText = true",
+        "location": "raw/stripe-inapp-accept-payment-embedded-2025.md:558"
+      },
+      {
+        "text": "The completion block executes with the result of the payment after the sheet dismisses.",
+        "location": "raw/stripe-inapp-accept-payment-embedded-2025.md:585"
+      },
+      {
+        "text": "Verify that all IntentConfiguration properties match your PaymentIntent",
+        "location": "raw/stripe-inapp-accept-payment-embedded-2025.md:610"
+      },
+      {
+        "text": "Listen for these events rather than waiting on a callback from the client.",
+        "location": "raw/stripe-inapp-accept-payment-embedded-2025.md:751"
+      },
+      {
+        "text": "the payment result returned is `.completed`.",
+        "location": "raw/stripe-inapp-accept-payment-embedded-2025.md:928"
+      },
+      {
+        "text": "A SetupIntent flow allows you to save payment methods for future payments without creating a charge.",
+        "location": "raw/stripe-inapp-accept-payment-embedded-2025.md:1193"
+      },
+      {
+        "text": "To set up a payment method for future payments, you must attach it to an object that represents your customer.",
+        "location": "raw/stripe-inapp-accept-payment-embedded-2025.md:1279"
+      },
+      {
+        "text": "The EmbeddedPaymentElement confirms the PaymentIntent using the client secret",
+        "location": "raw/stripe-inapp-accept-payment-embedded-2025.md:1537"
+      },
+      {
+        "text": "To configure the button in the form sheet to immediately confirm setup",
+        "location": "raw/stripe-inapp-accept-payment-embedded-2025.md:1796"
+      },
+      {
+        "text": "Use the [Payment Intents API](https://docs.stripe.com/api/payment_intents.md) to save payment details from a purchase.",
+        "location": "raw/stripe-inapp-accept-payment-embedded-2025.md:2384"
+      },
+      {
+        "text": "Keep a record of your customer’s written agreement to your terms.",
+        "location": "raw/stripe-inapp-accept-payment-embedded-2025.md:2405"
+      },
+      {
+        "text": "setup_future_usage: 'off_session'",
+        "location": "raw/stripe-inapp-accept-payment-embedded-2025.md:3062"
+      },
+      {
+        "text": "You’re responsible for your compliance with all applicable laws, regulations, and network rules when saving a customer’s payment details.",
+        "location": "raw/stripe-inapp-accept-payment-embedded-2025.md:3204"
+      },
+      {
+        "text": "Next, make sure your server doesn’t set `setup_future_usage` or `payment_method_options[X][setup_future_usage]` on the PaymentIntent.",
+        "location": "raw/stripe-inapp-accept-payment-embedded-2025.md:3354"
+      },
+      {
+        "text": "On Android, the native view must be mounted for initialization to complete.",
+        "location": "raw/stripe-inapp-accept-payment-embedded-2025.md:6616"
+      },
+      {
+        "text": "If you don’t provide one, we can’t present payment methods that require a return URL to your users, even if you’ve enabled them.",
+        "location": "raw/stripe-inapp-accept-payment-embedded-2025.md:6892"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-mobile-accept-payment-embedded-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 24
+      }
+    ],
+    "raw/stripe-inapp-accept-payment-embedded-2025.md": [
+      {
+        "start": 1,
+        "end": 9657
+      }
+    ],
+    "wiki/sources/source-stripe-inapp-accept-payment-embedded.md": [
+      {
+        "start": 1,
+        "end": 111
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/96620639dbc71ff4b2621883/content.diff": [
+      {
+        "start": 1,
+        "end": 9669
+      }
+    ],
+    "wiki/concepts/stripe-inapp-payments.md": [
+      {
+        "start": 1,
+        "end": 116
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-mobile-accept-payment-embedded/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 160
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-mobile-accept-payment-embedded/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 112
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 11
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 103,
+        "end": 115
+      },
+      {
+        "start": 774,
+        "end": 781
+      }
+    ]
+  },
+  "answers": {
+    "payments-mobile-accept-payment-embedded": {
+      "Q1": "At https://docs.stripe.com/payments/mobile/accept-payment-embedded, new raw lines 5-24 describe the native Mobile Payment Element and route iOS, Android and React Native to payment, setup and pay-and-save variants. The index gives the platform and use-case destinations. Implementation prerequisites and outcome boundaries come from the April 22 capture. It describes native checkout rows and detail sheets, the platform SDK with a publishable key, enabled methods, a trusted server amount for charges, a matching IntentConfiguration and a mode-appropriate intent client secret (old raw lines 8-114, 293-330, 604-610, 1189-1199, 1817-1889 and 3035-3104). Payment uses PaymentIntent, setup uses SetupIntent without a charge, and pay-and-save uses PaymentIntent with the intended future-use setting and consent. Setup and pay-and-save require attachment to a customer-configured Accounts v2 Account or Customers v1 Customer, identified by customer_account or customer in the relevant server example. April describes Accounts v2 as GA for Connect and public preview with a preview version for other Stripe users. CustomerSession identity and secret for saved-card UI are separate from the intent (old raw lines 794-902, 1277-1311, 1817-1889 and 2489-2524). In React Native iOS, even enabled methods that require a return URL are unavailable without one. The documented native iOS SDK path forwards the custom-scheme URL to Stripe (old raw lines 680-745, 6890-6950, 7900-7910 and 8992-9002). Payment processing, success and failure are server-side event states that can outlast client completion (old raw lines 747-759 and 905-929). The baseline source-stripe-inapp-accept-payment-embedded.md emphasized Swift and lacked targeted platform and mode routes, the attachment and return-URL prerequisites and the asynchronous outcome boundary. The revision retains the Swift examples and makes those April boundaries and the nine dated routes discoverable.",
+      "Q2": "At https://docs.stripe.com/payments/mobile/accept-payment-embedded, new raw lines 5-24 replace the inline guide surface with a platform and use-case index. The November capture establishes a navigation change and leaves the destination bodies, SDK/API changes, current eligibility and runtime behavior unverified. source-stripe-inapp-accept-payment-embedded.md keeps the April capture as implementation evidence and lists the November capture under Related raw API references. The April account, SDK and intent qualifications still apply to the quoted examples. Default Continue returns to app checkout in the documented iOS and Android paths, and optional in-sheet confirmation follows a customer action. The iOS callback runs after dismissal, the Element cannot be reused after completion, and setup completion saves without charging. The setup-mode configuration and server SetupIntent evidence resolve the intended object despite April's stray iOS PaymentIntent wording (old raw lines 100-106, 579-602, 1336-1347, 1535-1537, 1724-1726, 1794-1889, 4136-4179, 4939-4975 and 7833-7835). The April Swift mandate snippets use true while the guide instructs disabling built-in display when rendering the text manually. Android's false builder example applies to Android. Keep the mandate near Buy with working links (old raw lines 548-576, 1763-1792, 2979-3008 and 4136-4154). The concept route qualifies confirmation control, the mandate conflict, the native iOS SDK's custom scheme, use-specific merchant consent and redisplay, and the per-method preview. For standard global pay-and-save the server sets setup_future_usage and matches the client IntentConfiguration. For the separate embedded SDK preview, leave both setup_future_usage and payment_method_options[X][setup_future_usage] unset on the server PaymentIntent so the SDK can populate them (old raw lines 2395-2405, 3035-3104, 3198-3206, 3320-3354, 6046-6084, 6890-6950 and 9196-9258). The delayed-method setting is an opt-in for display of qualifying enabled methods. Use server events for fulfillment and distinguish pending, success and failure from an app result or browser return (old raw lines 747-759 and 905-929)."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-mobile-accept-payment-embedded-confirmation-control",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "| **Payment Element** | Moderate | Embeddable view | You control |",
+      "proposed_markdown": "| **Payment Element** | Moderate | Embeddable view | App checkout by default. April 2026 iOS and Android guides also describe optional in-sheet confirmation. |",
+      "quote_indexes": [],
+      "warnings": [
+        "April raw lines 100-106, 579-602, 1794-1815, 3861-3868, 4155-4179 and 5027-5049."
+      ]
+    },
+    {
+      "update_id": "payments-mobile-accept-payment-embedded-per-method-preview",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "Charge now AND save the PM for future.",
+      "proposed_markdown": "Charge now and save the payment method for future use. The examples below show generic server-side settings. In the standard April 2026 embedded pay-and-save flow, the server's global `setup_future_usage` matches the client `IntentConfiguration`. The separate April embedded per-method SDK preview leaves both `setup_future_usage` and `payment_method_options[X][setup_future_usage]` unset on the server `PaymentIntent` so the SDK can supply the settings. See [[source-stripe-inapp-accept-payment-embedded#Saving Payment Methods and Consent]].",
+      "quote_indexes": [],
+      "warnings": [
+        "The server-side per-method example below falls outside the dated embedded preview. April raw lines 3035-3104, 3320-3354, 6046-6084 and 9196-9258."
+      ]
+    },
+    {
+      "update_id": "payments-mobile-accept-payment-embedded-consent",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "Consent collection is automatic — handles global compliance requirements.",
+      "proposed_markdown": "CustomerSession features control the saved-method UI. In the April 2026 embedded pay-and-save guide, the merchant is responsible for compliance, use-specific terms and explicit consent, and a record of the customer's written agreement. Use `allow_redisplay` to distinguish attached methods that can be shown for future purchases. See [[source-stripe-inapp-accept-payment-embedded#Saving Payment Methods and Consent]].",
+      "quote_indexes": [],
+      "warnings": [
+        "April raw lines 794-828, 1962-1966, 2395-2405, 3198-3206 and 8554-8565."
+      ]
+    },
+    {
+      "update_id": "payments-mobile-accept-payment-embedded-source-route",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-inapp-accept-payment-embedded]] — EmbeddedPaymentElement integration: UIScrollView required, height delegate, update(), formSheetAction=confirm, mandate display, clearPaymentOption",
+      "proposed_markdown": "- [[source-stripe-inapp-accept-payment-embedded]] — April 2026 embedded integration by platform and intent, plus November variant navigation. See the [[source-stripe-inapp-accept-payment-embedded#Mandate Display|Swift mandate flag conflict]], [[source-stripe-inapp-accept-payment-embedded#iOS Authentication Returns|native iOS SDK custom-scheme return]] and [[source-stripe-inapp-accept-payment-embedded#Saving Payment Methods and Consent|embedded per-method preview and merchant consent]].",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "April raw lines 548-576, 680-745, 2395-2405, 3320-3354, 4136-4154 and 6890-6950. The native embedded SDK custom scheme and the concept's separate app-to-web Universal Link routes serve different integrations. November raw lines 5-24 establish navigation."
+      ]
+    }
+  ]
+}

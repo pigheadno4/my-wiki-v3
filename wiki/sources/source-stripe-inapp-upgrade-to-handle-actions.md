@@ -2,7 +2,9 @@
 title: "Migrate Basic Card Integration to Handle Bank Authentication — Mobile"
 type: source
 date_ingested: 2026-04-23
+date_updated: 2026-11-22
 original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/mobile/upgrade-to-handle-actions"
 raw_files:
   - "stripe-inapp-upgrade-to-handle-actions-2025.md"
 tags: [stripe, mobile, ios, android, react-native, card-payments, requires-action, handle-next-action, confirmation-method-manual, migration]
@@ -10,82 +12,77 @@ tags: [stripe, mobile, ios, android, react-native, card-payments, requires-actio
 
 ## Summary
 
-Upgrade guide from the legacy `error_on_requires_action` integration to one that handles 2FA bank requests. Triggered when seeing `requires_action_not_handled` errors or many `Failed` payments in Dashboard. Covers iOS, Android, and React Native.
+The April 23, 2026 guide starts from the legacy [[source-stripe-inapp-without-card-auth|mobile card integration without bank authentication]]. It modifies the merchant server's PaymentIntent endpoint and the mobile client to handle an issuer's authentication request. The introduction uses `requires_action_not_handled` as diagnosis wording for failures and points to the failed payment in the Dashboard. Treat this as April guide wording. The predecessor's actual example identifies the API error and decline code separately.
 
-> Pairs with [[source-stripe-inapp-without-card-auth]] (what you're upgrading from).
+The November 7, 2026 capture repeats the migration purpose and supplies navigation for iOS, Android, and React Native. The linked implementation bodies are outside the capture.
 
-## 3 Server Changes
+## April server changes
 
-1. **Remove** `error_on_requires_action`
-2. **Add** `confirmation_method: 'manual'` — enables explicit server re-confirmation
-3. **Add** `use_stripe_sdk: true` — enables mobile client to handle additional auth steps
+1. Remove `error_on_requires_action` so an authentication requirement can produce `requires_action`.
+2. Set `confirmation_method: 'manual'` for explicit server reconfirmation after the action.
+3. Set `use_stripe_sdk: true` to let the mobile SDK handle authentication.
 
 ```javascript
+// Abbreviated April example. The original card list has a later API version caveat.
 stripe.paymentIntents.create({
     amount: 1099, currency: 'usd',
     confirm: true,
     payment_method: pmId,
-    confirmation_method: 'manual',  // NEW
-    use_stripe_sdk: true,            // NEW
-    // NO error_on_requires_action
+    confirmation_method: 'manual',
+    use_stripe_sdk: true,
 })
 ```
 
-## New Server Response States
+## Manual confirmation and fulfillment
 
-```javascript
-function generateResponse(response, intent) {
-    if (intent.status === 'succeeded') {
-        return response.send({ success: true });
-    } else if (intent.status === 'requires_action') {
-        return response.send({ requiresAction: true, clientSecret: intent.client_secret });
-    }
-    // other = error
-}
-```
+The client first sends a `payment_method_id`. The server creates and confirms the PaymentIntent. A server-returned `succeeded` on that first attempt can trigger fulfillment immediately. If the Intent is `requires_action`, the example returns `requiresAction: true` and the **PaymentIntent client secret** so the app can launch the SDK authentication modal.
 
-## Two-Round-Trip Pattern
+When the required action is successfully handled in this manual flow, the PaymentIntent enters `requires_confirmation`. The client sends the **same PaymentIntent's ID** as `payment_intent_id` and the server calls `paymentIntents.confirm(payment_intent_id)`. Fulfill on server-side `succeeded`. Client action success, cancellation, timeout, and failure describe outcomes at a different boundary. The April guide says the attempt fails back to `requires_payment_method` unless reconfirmed within **one hour**.
 
-1. Client POSTs `payment_method_id` → server creates+confirms PI
-2. If `requiresAction`: client shows auth modal
-3. Client POSTs `payment_intent_id` → server re-confirms: `paymentIntents.confirm(payment_intent_id)`
-4. If `requires_action` again: loop
+The November Confirm API describes a variable upper limit on confirmations, after which another confirm call transitions the Intent to `canceled`. It also says automatic confirmation ordinarily needs no additional confirmation after the SDK handles `next_action`. Manual capture is a distinct setting. With `capture_method: 'manual'`, a successful authorization leads to `requires_capture`.
 
-**Confirm window**: must re-confirm within **1 hour** or PI reverts to `requires_payment_method`.
-
-## Platform Client Code
+## April platform examples and later SDK snapshots
 
 ### iOS (Objective-C)
-```objc
-STPPaymentHandler *handler = [STPPaymentHandler sharedHandler];
-[handler handleNextActionForPayment:clientSecret
-         withAuthenticationContext:self
-                         returnURL:nil
-                        completion:^(status, paymentIntent, error) {
-    // STPPaymentHandlerActionStatusSucceeded → send PI ID to server to re-confirm
-}];
-// Must implement STPAuthenticationContext
-```
+
+The historical Objective-C example calls `STPPaymentHandler` with an `STPAuthenticationContext` and the PaymentIntent client secret. Send the same Intent's ID to the server only after `STPPaymentHandlerActionStatusSucceeded`. See April raw lines 106–126 for the original `handleNextActionForPayment:withAuthenticationContext:returnURL:completion:` call, typed callback, and status guards.
+
+The retained `stripe-ios` **26.11.0** snapshot `2026-09-30-7037819` deprecates that exact selector, `handleNextActionForPayment:withAuthenticationContext:returnURL:completion:`. The wrapper forwards to the newer `handleNextActionForPaymentIntent:authenticationContext:returnURL:completion:` path. See `STPPaymentHandler.swift` lines 398–411 and 2770–2779.
 
 ### Android (Java)
-```java
-stripe.handleNextActionForPayment(activity, clientSecret);
-// Result via onActivityResult → stripe.onPaymentResult(requestCode, data, callback)
-// callback.onSuccess(result) → result.getOutcome() == SUCCEEDED → re-confirm
-```
+
+The April sample uses `stripe.handleNextActionForPayment(activity, clientSecret)`, followed by `onActivityResult` and `stripe.onPaymentResult(requestCode, data, callback)`. It sends the Intent ID for server reconfirmation when the returned result's action outcome is `SUCCEEDED`.
+
+The retained `stripe-android` **23.25.1** snapshot `2026-10-27-bb0d8d0` keeps `handleNextActionForPayment` and `onPaymentResult`. Its activity overload accepts an AndroidX `ComponentActivity`, and it has a separate `Fragment` overload. The enclosing plain `Activity` in the April example is historical. See `Stripe.kt` lines 280–329 and 344–368.
 
 ### React Native
-```javascript
-const { handleCardAction } = useStripe();
-const { error, paymentIntent } = await handleCardAction(clientSecret);
-// success → POST { payment_intent_id: paymentIntent.id } to server
-```
+
+The historical example uses `useStripe().handleCardAction(clientSecret)` and sends `paymentIntent.id` as `payment_intent_id` upon action success. The retained React Native changelog records removal of `handleCardAction` in **0.7.0** in favor of `handleNextAction`. The **0.84.0** snapshot `2026-10-29-33ef1ee` exposes `useStripe().handleNextAction(paymentIntentClientSecret, returnURL?)`. See `CHANGELOG.md` lines 1138–1146, `src/hooks/useStripe.tsx` lines 114–122 and 330–367, and `src/functions.ts` lines 173–201.
+
+## Sandbox test wording
+
+The April variants describe a fake sandbox modal that can simulate successful and failed authentication. In live mode the issuing bank controls the modal content. The April test table nevertheless labels test card `4000002500003155` as failing with decline code `authentication_not_handled` in this integration. This repeats the no-action predecessor's test row. In that predecessor the API example uses `error.code: authentication_required` and `error.decline_code: authentication_not_handled`. The upgrade introduction's `requires_action_not_handled` wording is a separate diagnostic label.
+
+The November Testing guide classifies the same test card as always requiring authentication on-session and requiring it off-session unless set up for future use. See April upgrade lines 184–192, 382–390, and 555–563 and November Testing lines 805–818. The November migration index leaves the April mismatch unresolved. These are documented test cases.
 
 ## Related Pages
 
-- [[stripe-inapp-payments]] — in-app payments concept page
-- [[source-stripe-inapp-without-card-auth]] — the integration this guide upgrades from
+- [[stripe]] — payment provider
+- [[stripe-inapp-payments]] — mobile payments concepts
+- [[stripe-payment-intents]] — PaymentIntent lifecycle and server outcomes
+- [[source-stripe-inapp-without-card-auth]] — April predecessor and decline example
+- [[source-github-stripe-ios]] — captured iOS SDK versions
+- [[source-github-stripe-android]] — captured Android SDK versions
+- [[source-github-stripe-react-native]] — captured React Native SDK versions
 
 ## Raw Sources
 
-- [[stripe-inapp-upgrade-to-handle-actions-2025]] — verbatim migration guide (~563 lines, iOS + Android + React Native, 1 image × 3)
+- [[raw/stripe-inapp-upgrade-to-handle-actions-2025|2026-04-23 full mobile migration guide]] — 563 lines, iOS, Android, and React Native, with a shared Dashboard image
+  - **Endive API caveat.** The April create-and-confirm examples send `payment_method_types: ["card"]`. The changelog's named `2026-09-30.endive` endpoint links and REST table document that PaymentIntent create rejects this writable field with HTTP 400 and `payment_method_types_no_longer_supported`. The response property remains readable. The changelog describes dynamic payment methods and optional `excluded_payment_method_types` or `allowed_payment_method_types` controls. Its Impact prose names `2026-08-26.preview`; use the named endpoint and table for the Endive boundary.
+
+## Related raw API references
+
+- [[raw/stripe-payments-mobile-upgrade-to-handle-actions-2026-11-07|2026-11-07 mobile migration variant index]]
+- [[raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07|2026-11-07 Endive changelog capture]] — versioned endpoint links and REST table, lines 5–36
+- [[raw/stripe-api-payment-intents-confirm-2026-11-07|2026-11-07 PaymentIntent Confirm reference]] — manual and automatic confirmation, lines 7–17
+- [[raw/stripe-testing-2026-11-07|2026-11-07 testing reference]] — on-session authentication and off-session setup, lines 805–818

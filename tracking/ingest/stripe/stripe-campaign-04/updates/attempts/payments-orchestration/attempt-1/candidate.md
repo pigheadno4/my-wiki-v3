@@ -1,0 +1,54 @@
+---
+title: "Stripe — Orchestration"
+type: source
+date_ingested: 2026-05-11
+date_updated: 2026-11-22
+original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/orchestration"
+raw_files:
+  - "stripe-payments-orchestration-2026-11-07.md"
+  - "stripe-orchestration-2026.md"
+tags: [stripe, orchestration, multi-processor, routing, retries, payment-routing, private-preview]
+---
+
+## Summary
+
+The May 11 and November 7, 2026 overviews describe private-preview, rule-based card payment routing across Stripe-supported processors. Stripe operates the routing layer. The third party remains the processor for payments routed to it, with contractual fees and liability for transaction losses governed by that processor's terms.
+
+## Requesting access
+
+The November overview adds an [email request form for the private preview](https://docs.stripe.com/payments/orchestration.md#orchestration_preview). Its example submits a JSON email and `orchestration_preview` key to the documentation site's `/preview/register` endpoint. This requests access. Representative-led onboarding, processor and integration checks, destination credentials, and activating routing rules are separate steps. Neither capture gives a new API or SDK version requirement.
+
+## Routing, retries, and reporting
+
+- **Integration.** The overview lists Payments, Billing, and Dashboard payments for card processing. The separate [[source-stripe-orchestration-route-payments]] guide describes onboarding the Stripe account, verifying the processor and integration, and supplying destination processor credentials in the Dashboard. Server-created PaymentIntents can opt in with `payments_orchestration[enabled]=true`. Billing, Checkout, Payment Links, and Dashboard payments create PaymentIntents automatically and require representative configuration for those intents to use routing.
+- **Rules.** Use the Dashboard to test rules in a sandbox. After testing, separately create and activate rules in the live account. A rule can specify a main processor and a retry processor for eligible failed payments. Use Dashboard analytics to monitor processor performance. See [[source-stripe-orchestration-rules]] and [[source-stripe-orchestration-retries]].
+- **Retry boundaries.** The November retry guide says that when Stripe is the main processor, a Stripe block such as a high-risk Radar decision is treated as a decline and retried on the chosen retry processor under the documented conditions. A failed main-processor 3DS path or a feature ineligible on the retry processor can prevent retry. This describes retry handling of the Stripe decision and supplies no evidence of Radar operating on a third-party attempt.
+- **Reporting.** A PaymentIntent still represents payment state. The Payment Record and Payment Attempt Records show execution history. For externally processed volume Stripe creates those records instead of Charges and does not create Stripe Balance Transactions for funds handled by the other processor.
+
+## Refunds, disputes, and settlement
+
+Use the Stripe Dashboard or Refunds API to initiate and manage refunds. The third-party processor administers refunds for payments it processed. For a preemptive refund on an Intent in `processing`, the feature guide says Stripe submits the refund to the corresponding processor after payment succeeds, or fails the refund request if payment fails. See [[source-stripe-orchestration-feature-support]].
+
+Orchestration does not handle disputes or settlement-related activity. Use the third-party processor's dashboard for those activities. Preview access, live rule activation, individual processor attempts, or refund initiation do not establish successful payment, refund completion, or settlement.
+
+## Dated product and wallet scope
+
+The November overview excludes non-card payments, Link, Capital, Connect, Terminal, and Organizations. The routing guide says Link credentials cannot transfer between processors, so Link payments stay on Stripe outside configured routing rules.
+
+Apple Pay and Google Pay have separate routing guidance and require compatible configuration with both Stripe and the destination processor. The November matrix excludes 3DS with Apple Pay or Google Pay DPAN and excludes Google Pay FPAN on Adyen. To charge a saved mobile wallet method, the wallet guide specifies `off_session=true` during PaymentIntent confirmation. If the customer is present, re-prompt using the wallet integration. See [[source-stripe-orchestration-wallet-payments]] and [[source-stripe-orchestration-feature-support]] for the complete qualifications.
+
+The May overview additionally listed Radar for payments routed to third parties and Sigma among its exclusions. The November overview omits those names. The dated captures give no affirmative Radar support for third-party attempts or Sigma support. Check feature compatibility with the Stripe representative for the integration.
+
+## Related Pages
+
+- [[stripe]] — Stripe company page
+- [[stripe-orchestration]] — product, routing, and processor boundaries
+- [[stripe-vault-and-forward]] — separate card-data forwarding to external processors
+- [[stripe-off-session-payments]] — separate off-session payment flow
+- [[source-stripe-off-session-payments-api]] — the November companion guide documents a separate card-only path to opt an Off-Session Payments API request into Orchestration rules for multiple supported processors. It requires access to both private previews and an activated routing configuration, excludes Connect and raw card data, and does not support Smart Retries in that combined path. Its optional routing-rule retry processor is separate.
+
+## Raw Sources
+
+- [[raw/stripe-payments-orchestration-2026-11-07]] — complete November 7, 2026 Orchestration overview and preview request instructions
+- [[raw/stripe-orchestration-2026]] — verbatim May 11, 2026 Orchestration overview (39 lines)

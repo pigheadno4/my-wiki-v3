@@ -1,0 +1,167 @@
+{
+  "job_id": "payments-meses-sin-intereses-accept-a-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Accept Meses Sin Intereses Card Payments\"\ntype: source\ndate_ingested: 2026-05-01\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/meses-sin-intereses/accept-a-payment\"\nraw_files:\n  - \"stripe-mx-installments-accept-payment-2025.md\"\ntags: [stripe, mexico, installments, meses-sin-intereses, checkout, payment-element, payment-intents, invoices, payment-links]\n---\n\n## Summary\n\nThe May 1, 2026 guide covers Checkout, Payment Element, Direct API, Invoices and no-code Payment Links. Mexican consumer credit card customers pay across billing statements. The issuer collects the installments, and the merchant receives payment on the ordinary card payout schedule with fees deducted. Installments add a fee to the standard credit card fee. The separate Mexico overview documents eligibility for Stripe Mexico accounts, MXN transactions and supported Mexican-issued consumer credit cards, subject to issuer support and plan-specific amounts (May integration raw lines 16–22). [[source-stripe-mx-installments]]\n\n## Key Integration Details\n\n### Checkout\n\nWith dynamic payment methods, installments appear when eligible. For manual configuration, the May Checkout Sessions example enables `payment_method_options.card.installments.enabled`. This route supports Checkout `payment` mode only. The sample redirects customers to the Checkout Session URL (May raw lines 24–77).\n\n### Payment Element\n\nThe May Elements guide also lets eligible installments appear with dynamic payment methods. Its manual PaymentIntent example sets `payment_method_options.card.installments.enabled` to `true`. With dynamic methods, leave that parameter unset. The guide warns that setting it to `false` can cause errors. The browser initializes Elements with the PaymentIntent client secret and calls `confirmPayment` with a `return_url`. The guide says `processing_error` and `transaction_not_allowed` may indicate the issuer does not support the selected plan. It directs the customer to retry with a different plan or without installments (May raw lines 78–133).\n\n### Direct API\n\n1. The browser collects card details with Stripe.js and Elements and creates a card `PaymentMethod`. The May sample loads `https://js.stripe.com/dahlia/stripe.js` directly from Stripe and sends the PaymentMethod ID to the server (May raw lines 138–208).\n2. The server creates an MXN `PaymentIntent` with that ID and installments enabled, leaving it unconfirmed during plan lookup. It sends the intent ID and `payment_method_options.card.installments.available_plans` to the client (May raw lines 210–261).\n3. The customer chooses an available plan or immediate payment. The client sends that choice and the intent ID, then the server confirms the same intent. The sample endpoint returns `success: true` alongside the actual intent status when the confirmation call returns. The sample UI treats only `succeeded` as payment success (May raw lines 314–436).\n\nA plan persists on the intent until cleared. When reconfirming without installments, explicitly unset `payment_method_options[card][installments][plan]`, including when a customer switches to a card that does not support installments. Plan availability, plan selection and a confirmation response are distinct from a successful payment. A Checkout return alone does not establish payment success (May raw lines 68–70 and 370–497).\n\n### Invoices\n\nThe May guide enables installments for individual invoices using `collection_method: 'send_invoice'`. It excludes subscriptions and automatic invoice collection. The server examples first create an `InvoiceItem` with the Price in `pricing.price`, then separately create an `Invoice` that includes pending invoice items with `pending_invoice_items_behavior: 'include'` and enables card installments in `payment_settings`. Both calls use `customer_account` for a customer-configured Accounts v2 Account or `customer` for a Customers v1 Customer. May describes Accounts v2 as generally available for Connect users and in public preview for other Stripe users, with a preview API version required for participants (May raw lines 8–14 and 511–610).\n\nOn the hosted invoice page the card must support installments and the total must be at least 300 MXN for plans to appear. Which plans appear depends on the issuer, transaction and plan settings. The May Dashboard workflow enables cards and **Allow payment with card installments** for the invoice (May raw lines 612–622 and 695–724).\n\n### Payment Links and Dashboard Settings\n\nThe May no-code path enables installments for Payment Links in Dashboard payment method settings. Those settings also control enablement for no-code Checkout. The Dashboard lets the merchant select monthly plans and configure per-plan minimum and maximum amounts across compatible existing installments integrations (May raw lines 695–701 and 725–750).\n\n## API Version Notes for Plan Lookups\n\n- The historical May Direct API and Invoicing response examples show selected plans under `PaymentIntent.charges.data` and on the PaymentIntent. The API version change dated `2022-11-15` removes `PaymentIntent.charges` and instructs integrations to use `latest_charge` for the most recent charge (May raw lines 443–489 and 624–693). [PaymentIntent changelog](https://docs.stripe.com/changelog/2022-11-15/removes-charges-attribute-paymentintent)\n- The May Invoicing sample retrieves a PaymentIntent ID directly from the Invoice after payment. The separate `2025-03-31.basil` change removes `Invoice.payment_intent` and documents the Invoice Payment relationship. An invoice can have multiple payments. The changelog shows inspection of `invoice.payments` and expansion of `payments.data.payment.payment_intent` for Stripe payments of that type (May raw lines 624–693). [Invoicing changelog](https://docs.stripe.com/changelog/basil/2025-03-31/add-support-for-multiple-partial-payments-on-invoices)\n\nThe separate May and November Mexico product overviews list recurring payments as **Yes**. The overviews leave recurring implementation and eligibility unspecified. The May limits on Checkout mode and individual invoices still apply. [[source-stripe-mx-installments]]\n\n## May Sandbox Test Cards\n\n| Number | Test result |\n| --- | --- |\n| 4000004840000008 | Offers 3, 6, 9, 12, 18 and 24 months |\n| 4242424242424242 | Offers no installment plans |\n\nThe test examples cover plan display in the sandbox (May raw lines 751–758).\n\n## Related Pages\n\n- [[stripe]]\n- [[stripe-installments]] — installment products and market scope\n- [[source-stripe-mx-installments]] — Mexico eligibility, plan thresholds and fees\n\n## Raw Sources\n\n- [[raw/stripe-mx-installments-accept-payment-2025|May 1, 2026 Mexico installments integration guide]] — Checkout, Elements, Direct API, Invoices, Payment Links, settings and test cards.\n\n## Related raw API references\n\n- [[raw/stripe-payments-meses-sin-intereses-accept-a-payment-2026-11-07|November 7, 2026 integration variant index]] — navigation to Checkout, Elements, Direct API, Invoices, No code (Payment Links) and Terminal. The Terminal implementation body was outside the capture.\n",
+  "quotes": {
+    "payments-meses-sin-intereses-accept-a-payment": [
+      {
+        "text": "Learn how to accept credit card payments using meses sin intereses across a variety of Stripe products.",
+        "location": "raw/stripe-payments-meses-sin-intereses-accept-a-payment-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-meses-sin-intereses-accept-a-payment-2026-11-07.md:11"
+      },
+      {
+        "text": "[No code](https://docs.stripe.com/payments/meses-sin-intereses/accept-a-payment.md?payment-ui=payment-links)",
+        "location": "raw/stripe-payments-meses-sin-intereses-accept-a-payment-2026-11-07.md:17"
+      },
+      {
+        "text": "[Terminal](https://docs.stripe.com/payments/meses-sin-intereses/accept-a-payment.md?payment-ui=terminal)",
+        "location": "raw/stripe-payments-meses-sin-intereses-accept-a-payment-2026-11-07.md:18"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-meses-sin-intereses-accept-a-payment": [
+      {
+        "text": "Learn how to accept credit card payments using meses sin intereses across a variety of Stripe products.",
+        "location": "raw/stripe-mx-installments-accept-payment-2025.md:6"
+      },
+      {
+        "text": "Installments only works with `payment` mode, not `setup` or `subscription` mode.",
+        "location": "raw/stripe-mx-installments-accept-payment-2025.md:42"
+      },
+      {
+        "text": "After an installment plan is set on a PaymentIntent, it remains until you remove it.",
+        "location": "raw/stripe-mx-installments-accept-payment-2025.md:493"
+      },
+      {
+        "text": "You can enable installments for individual invoices but not for subscriptions.",
+        "location": "raw/stripe-mx-installments-accept-payment-2025.md:517"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-meses-sin-intereses-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 18
+      }
+    ],
+    "raw/stripe-mx-installments-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 758
+      }
+    ],
+    "wiki/sources/source-stripe-mx-installments-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 38
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/10d55886023bc00f456344eb/content.diff": [
+      {
+        "start": 1,
+        "end": 764
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-meses-sin-intereses-accept-a-payment/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 212
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-meses-sin-intereses-accept-a-payment/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 42
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 4,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 229,
+        "end": 238
+      },
+      {
+        "start": 754,
+        "end": 763
+      }
+    ],
+    "wiki/concepts/stripe-installments.md": [
+      {
+        "start": 1,
+        "end": 49
+      }
+    ],
+    "wiki/sources/source-stripe-mx-installments.md": [
+      {
+        "start": 1,
+        "end": 38
+      }
+    ],
+    "raw/stripe-changelog-2022-11-15-removes-charges-attribute-paymentintent-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 24
+      }
+    ],
+    "raw/stripe-changelog-basil-2025-03-31-add-support-for-multiple-partial-payments-on-invoices-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 66
+      }
+    ],
+    "raw/stripe-api-payment-intents-object-2026-11-07.md": [
+      {
+        "start": 715,
+        "end": 737
+      }
+    ],
+    "raw/stripe-mx-installments-2025.md": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ],
+    "raw/stripe-payments-mx-installments-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 41
+      },
+      {
+        "start": 78,
+        "end": 101
+      }
+    ]
+  },
+  "answers": {
+    "payments-meses-sin-intereses-accept-a-payment": {
+      "Q1": "The November capture of https://docs.stripe.com/payments/meses-sin-intereses/accept-a-payment identifies acceptance of meses sin intereses credit card payments and lists Checkout, Elements, Direct API, Invoices, No code (Payment Links) and Terminal. It supplies routes only (new raw lines 5-18). The May 1 guide documents a Mexico consumer credit card purchase split over billing statements, with issuer collection and normal merchant charge treatment after fees. It describes payment-mode Checkout and Payment Element with dynamic or manual configuration, and a Direct API flow where the client creates a PaymentMethod, the server retrieves available plans on an unconfirmed MXN PaymentIntent, the client chooses a plan or immediate payment, then the server confirms the same Intent. Plan lookup, card choice and the confirmation endpoint's response wrapper are distinct from the PaymentIntent status used to determine success in the example. For individual invoices the May server examples first create an `InvoiceItem` with the Price in `pricing.price`, then separately create the `Invoice` with `pending_invoice_items_behavior: 'include'` and `collection_method: 'send_invoice'`. Both calls use `customer_account` for an Accounts v2 customer-configured Account or `customer` for a Customers v1 Customer. The hosted UI only shows plans on eligible cards for totals at least 300 MXN, subject to plan configuration. Payment Links uses Dashboard enablement. See old raw lines 8-22, old raw lines 38-126, old raw lines 138-261, old raw lines 370-497, old raw lines 511-622 and old raw lines 695-758. The prior source-stripe-mx-installments-accept-payment.md summarized the five May variants with abbreviated prerequisites. The candidate retains all five, adds the issuer and transaction eligibility, distinguishes the Accounts v2 version conditions, and makes the dynamic-method and plan-reset details explicit.",
+      "Q2": "For https://docs.stripe.com/payments/meses-sin-intereses/accept-a-payment, new raw lines 5-18 repeat the purpose and provide navigation, adding a Terminal route beyond May's five documented sections. The separate November Mexico overview lists Terminal as a product-level route. No reviewed Terminal body establishes the SDK steps or a launch date. The revised source-stripe-mx-installments-accept-payment.md retains the May 1, 2026 behavior, including payment-mode Checkout, dynamic versus manual flags, direct client PaymentMethod/server PaymentIntent timing, explicit unsetting of a persistent plan, Invoicing's eligible-card and amount restrictions, Accounts v2 preview/version boundaries, and sandbox examples (old raw lines 8-14, old raw lines 38-126, old raw lines 138-261, old raw lines 409-497, old raw lines 511-622 and old raw lines 725-758). The reciprocal Stripe Installments route scopes the overview's recurring property and retains the May Checkout and individual invoice limits. Old raw lines 443-489 and old raw lines 624-693 have legacy lookup examples. Separate dated changelogs identify latest_charge in place of PaymentIntent.charges and the 2025-03-31.basil Invoice Payment relationship in place of the old Invoice.payment_intent field. A redirect, an available plan, the illustrative response wrapper, and sandbox card results cannot establish live payment success, access or settlement."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-meses-sin-intereses-accept-a-payment-recurring-scope",
+      "target_path": "wiki/concepts/stripe-installments.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-mx-installments-accept-payment]] — Mexico meses sin intereses integration: Checkout/Elements/Direct API/Invoices/Payment Links, custom settings, test cards",
+      "proposed_markdown": "- [[source-stripe-mx-installments-accept-payment]] — May 2026 Mexico integration for Checkout, Elements, Direct API, Invoices and Payment Links, with a November variant index. Both Mexico product overviews list recurring payments as **Yes**. The May guide scopes Checkout to `payment` mode and Invoicing to individual `send_invoice` invoices. The overview property does not specify an eligible recurring integration or support for the excluded subscription and automatic collection routes.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "May integration raw lines 38-42 and 511-536 establish the mode restrictions. May overview raw lines 26-36 and November overview raw lines 27-37 show the product-level recurring property. November integration raw lines 5-18 establish navigation only."
+      ]
+    }
+  ]
+}

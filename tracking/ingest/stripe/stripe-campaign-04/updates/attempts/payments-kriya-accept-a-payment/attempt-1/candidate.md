@@ -1,0 +1,37 @@
+---
+title: "Stripe: Accept a Payment with Kriya"
+type: source
+date_ingested: 2026-05-06
+date_updated: 2026-11-22
+original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/kriya/accept-a-payment"
+raw_files:
+  - "stripe-kriya-accept-payment-2025.md"
+tags: [stripe, bnpl, kriya, buy-now-pay-later, b2b, uk, checkout, payment-intents, elements]
+---
+
+## Summary
+
+The May 6, 2026 Stripe guide documents four routes for accepting single-use B2B Kriya payments: hosted Checkout, Elements with the Checkout Sessions API, Elements with the Payment Intents API, and Direct API. The November 7, 2026 capture lists the same four variants as navigation links. Their bodies are outside that capture, so eligibility, SDK requirements and API behavior below come from the May guide.
+
+## May 6, 2026 integration guide
+
+- **Checkout eligibility.** Hosted Checkout and Checkout Sessions with Elements list UK business locations, GBP presentment, and payment mode. Setup and subscription mode are unsupported. Line-item prices must share a currency within each Checkout Session. When listing payment methods explicitly, the API examples use `kriya` in `payment_method_types`.
+- **Hosted Checkout.** The manual Checkout Session example uses `success_url`.
+- **Elements with Checkout Sessions.** The server creates the Session and returns its client secret. The client initializes the Checkout SDK or React provider, collects details in the Payment Element and confirms the Session. The Session creation examples use `ui_mode: elements` and `return_url`. The May setup lists Dahlia Stripe.js, a `@stripe/stripe-js` npm floor of 7.0.0 for HTML + JS, and floors of 5.0.0 for `@stripe/react-stripe-js` and 8.0.0 for `@stripe/stripe-js` in the React setup.
+- **Elements with Payment Intents and Direct API.** The server creates the PaymentIntent with the amount and currency and provides its client secret for client-side confirmation. The Elements examples distinguish Accounts v2 `customer_account` from Customers v1 `customer`. Both paths document `return_url` for redirect confirmation. In the optional Direct API server-side flow, `requires_action` with `next_action.type=redirect_to_url` means the buyer still needs to act. On return, the Direct API guide uses `payment_intent` and `payment_intent_client_secret` to look up and verify status. The guide recommends listening for `payment_intent.succeeded` for PaymentIntent completion because a buyer's browser return alone cannot establish success. The two Elements sections describe sandbox approve/decline controls and a live redirect to Kriya.
+- **Optional PaymentIntent manual capture.** In the Elements Payment Intents section, `capture_method=manual` authorizes first. Successful authorization moves the Intent to `requires_capture`. A separate capture request takes the full authorized amount by default or an explicitly specified amount up to that total. Stripe cancels an uncaptured Intent and sends `payment_intent.canceled` when the seven-day window expires. Authorization, capture, payment completion and payout are separate stages.
+
+## Related
+
+- [[stripe]]
+- [[stripe-bnpl]] and [[source-stripe-bnpl-overview]] — The May and November BNPL API tables mark PaymentIntent `setup_future_usage` Supported for Kriya, with a footnote that non-card and non-bank-debit methods either lack parameter support or support only `off_session`. Both tables mark SetupIntents Unsupported. This parameter entry does not establish Checkout setup or subscription mode, or override the May Kriya method overview's Recurring payments No.
+- [[source-stripe-kriya]] — The May Kriya method overview says Connect No. The May and November BNPL product matrices say Supported for Kriya. The Connect scope conflict is unresolved.
+
+## Raw Sources
+
+- [[raw/stripe-kriya-accept-payment-2025|May 6, 2026 full Kriya integration guide]] — 1,390 lines. Hosted Checkout eligibility and example at lines 12–69. Elements with Checkout Sessions at lines 87–568, including eligibility at 95–112, Session creation at 125–196, SDK setup at 204–235 and confirmation at 488–527. Elements with Payment Intents at lines 570–1158, including redirect at 927–933, completion at 1076–1088 and manual capture at 1094–1140. Direct API starts at line 1160, with return and completion at lines 1287–1362. PaymentIntent error tables at 1148–1158 and 1380–1390 include `payment_intent_invalid_currency`, `payment_intent_authentication_failure` and `payment_intent_redirect_confirmation_without_return_url`. The historical raw preserves the formatted Prices, sandbox, PaymentIntent, client secret and webhook terms and the Checkout image under `raw/assets/`.
+
+## Related raw API references
+
+- [[raw/stripe-payments-kriya-accept-a-payment-2026-11-07|Kriya integration variant index]] — November 7, 2026 navigation to hosted Checkout, Elements with Checkout Sessions or Payment Intents, and Direct API (lines 9–17).

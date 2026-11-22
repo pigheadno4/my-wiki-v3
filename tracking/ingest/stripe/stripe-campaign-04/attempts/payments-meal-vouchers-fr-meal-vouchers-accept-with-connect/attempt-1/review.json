@@ -1,0 +1,139 @@
+{
+  "job_id": "payments-meal-vouchers-fr-meal-vouchers-accept-with-connect",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "All four pins and nine quotes verify. The comparison correctly identifies the substantive November version and request change, the charge-type restrictions, the conflicting benefits examples, and the separate fee and issuer flows. The actual Q2 uses imprecise confirmation-time location wording and misses the linked API's consequential re-onboarding restriction and Dashboard-versus-API edit difference. Q1 also omits already-verified prerequisites and one part of the fee and balance boundary.",
+  "required_changes": [
+    "In the findings, mapped-source assessment and Q2, state exactly what changes between PaymentIntent creation and confirmation: Stripe resolves the existing Payment Location's SIRET at confirmation, so if that location's SIRET was updated beforehand the new SIRET is used, while already-confirmed payments are unaffected (new raw lines 183-185; related November accept-a-payment raw lines 58-74). Avoid 'if the location changes,' which could mean substituting a location ID. Contrast the November Dashboard's immutable name/SIRET (related set-up-restaurant raw lines 38-51) with the November API's acknowledged changes to onboarding-sensitive fields such as SIRET/address, which are blocked by default, trigger re-onboarding and pause acceptance until the capability is active again (related set-up-restaurant-api raw lines 285-310). This is a reciprocal workflow qualification for the voucher concept's blanket SIRET immutability and the confirmation-time note, and should not imply uninterrupted payment acceptance after an update. Record the actual additional related read range.",
+    "Complete Q1's actual prerequisites and platform funds boundary. The already-cited setup API requires CNTR licensing and an agreement with each issuer the merchant wants to support, and acceptance is gated by an active per-location capability rather than merchant account or issuer-list existence (related setup API raw lines 9-13, 96-112, 165-172 and 192-198). Distinguish the platform charge's unchanged voucher-proceeds balance, Stripe processing fees debited from the platform, the separate post-capture connected-to-platform application-fee debit, and issuer settlement directly with the connected account (new raw lines 62-68 and 187-235). Preserve charge-type prohibitions and the fee-reversal versus voucher-refund distinction."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "read_ranges": {
+    "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-accept-with-connect-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 121
+      },
+      {
+        "start": 122,
+        "end": 235
+      }
+    ],
+    "raw/stripe-fr-meal-vouchers-connect-2025.md": [
+      {
+        "start": 1,
+        "end": 109
+      },
+      {
+        "start": 110,
+        "end": 218
+      }
+    ],
+    "wiki/sources/source-stripe-fr-meal-vouchers-connect.md": [
+      {
+        "start": 1,
+        "end": 42
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/97676b7c83aa6cac9ef39fad/content.diff": [
+      {
+        "start": 1,
+        "end": 117
+      },
+      {
+        "start": 118,
+        "end": 265
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 12
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 310,
+        "end": 323
+      },
+      {
+        "start": 742,
+        "end": 750
+      }
+    ],
+    "wiki/concepts/stripe-fr-meal-vouchers.md": [
+      {
+        "start": 1,
+        "end": 90
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 299,
+        "end": 305
+      }
+    ],
+    "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant-api-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      },
+      {
+        "start": 37,
+        "end": 53
+      },
+      {
+        "start": 96,
+        "end": 113
+      },
+      {
+        "start": 137,
+        "end": 172
+      },
+      {
+        "start": 192,
+        "end": 200
+      },
+      {
+        "start": 270,
+        "end": 310
+      },
+      {
+        "start": 311,
+        "end": 348
+      }
+    ],
+    "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 33,
+        "end": 95
+      }
+    ],
+    "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-set-up-restaurant-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 80
+      }
+    ],
+    "raw/stripe-payments-meal-vouchers-fr-meal-vouchers-2026-11-07.md": [
+      {
+        "start": 95,
+        "end": 149
+      }
+    ],
+    "raw/stripe-connect-account-debits-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 59
+      }
+    ]
+  },
+  "source_assessment_decisions": [
+    {
+      "source_target": "wiki/sources/source-stripe-fr-meal-vouchers-connect.md",
+      "verdict": "changes_requested",
+      "reason": "The substantive source update is supported. Scope SIRET changes to the location's stored field and preserve re-onboarding and paused acceptance for the API route alongside the Dashboard restriction. Keep each Stripe fee and issuer settlement in its documented direction."
+    }
+  ]
+}

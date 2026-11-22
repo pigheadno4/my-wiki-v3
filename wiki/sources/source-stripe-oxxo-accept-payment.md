@@ -2,30 +2,55 @@
 title: "Stripe: Accept an OXXO Payment"
 type: source
 date_ingested: 2026-05-07
+date_updated: 2026-11-22
 original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/oxxo/accept-a-payment"
 raw_files:
   - "stripe-oxxo-accept-payment-2025.md"
-tags: [stripe, vouchers, oxxo, mexico, mxn, checkout, elements, direct-api, ios, android, expires-after-days]
+tags: [stripe, vouchers, oxxo, mexico, mxn, checkout, elements, direct-api, ios, android, react-native, expires-after-days]
 ---
 
 ## Summary
 
-Integration guide for OXXO via Checkout, Checkout Sessions API, Payment Intents API, Direct API (web), iOS, and Android. `hosted_voucher_url` redirect. `expires_after_days`: 1–7 days, default 3. `stripe.confirmOxxoPayment()` for Direct API. `next_action.oxxo_display_details.expires_after` (not `expires_at`). Legacy section marked deprecated.
+The 2026-05-07 acceptance guide describes creating an OXXO voucher that the customer pays in cash at an OXXO store in Mexico. It contains seven integration variants: Checkout, Elements with the Checkout Sessions API, Elements with the Payment Intents API, Direct API, iOS, Android and React Native. The 2026-11-07 base capture is a directory for those seven variants. Consult the dated May guide for the integration behavior below. The November directory leaves individual variant eligibility, defaults, SDK requirements and Direct API support status unresolved.
 
-## Key Details
+## Integration details from 2026-05-07
 
-**Four web integration paths + iOS + Android** — broadest coverage of any voucher method.
+- **Checkout and Elements with Checkout Sessions** use `payment` mode with single-currency, one-time MXN line items for an MX business. For manually listed payment methods, add `oxxo` to `payment_method_types`. The guide separately documents dynamic payment methods.
+- **Checkout voucher redirect and fulfillment** are described in the May Checkout variant. After successful submission of its Checkout form, Stripe generates the voucher and redirects the customer to `hosted_voucher_url`, where they can find the barcode or print it. `checkout.session.completed` signals form submission and voucher creation. Fulfill after `checkout.session.async_payment_succeeded`, which corresponds to the associated PaymentIntent succeeding. `checkout.session.async_payment_failed` covers expiry or another failure and the associated PaymentIntent returns to `requires_payment_method`.
+- **Elements API choice** changes which server-created object supplies the client secret. The Checkout Sessions path sends the Checkout Session client secret to the client. Session completion requires a valid email. At Session creation `customer_account` refers to a customer-configured `Account`, while `customer` refers to a `Customer`. The guide also describes `customer_email` and email supplied on confirmation. The Payment Intents path uses a separately server-created MXN PaymentIntent and its client secret with `stripe.confirmPayment` in the client example.
+- **Mobile** uses client confirmation of a server-created MXN PaymentIntent to display the voucher in a webview. The iOS `.succeeded` and Android `PaymentResult.Completed` callbacks in the examples indicate voucher display. React Native calls `confirmPayment` with full name and email and treats `RequiresAction` as voucher creation while awaiting payment.
+- **Direct API** is a supported Legacy integration in the May guide, which recommends the newer acceptance path and says support might end if Legacy is deprecated. The documented path is for Stripe users and customers in Mexico. The browser collects full name and email, with at least two characters each for the first and last names, and submits both with `stripe.confirmOxxoPayment()` using a server-created MXN PaymentIntent's client secret. Stripe.js opens a voucher modal by default. `requires_action` indicates the voucher was created and awaits cash payment. The optional `handleActions: false` route leaves voucher display to the integration.
+- **Mobile and Direct API payment outcomes** are asynchronous. The May guides describe `payment_intent.succeeded` on the next business day for a paid voucher, excluding Mexican holidays, with funds unavailable immediately. Use the server-observed payment outcome for fulfillment.
 
-**Checkout**: `payment_method_types: ['oxxo']`, MXN only, MX only. No subscription mode. `hosted_voucher_url` redirect. Same 3 async webhook events. `expires_after_days`: 1–7 days, default 3, expiry at 23:59 America/Mexico_City (UTC-6).
+## Expiry and testing in the May guide
 
-**`next_action.oxxo_display_details`**: `hosted_voucher_url`, `expires_after` (note: field name is `expires_after`, not `expires_at` as with Multibanco/Konbini).
+- **Voucher expiry** in the May Checkout, mobile and Direct API options uses optional `expires_after_days` from 1 to 7 calendar days, with a 3-day default and a 23:59 America/Mexico_City (UTC−6) cutoff on the expiry date. `next_action.oxxo_display_details.expires_after` is the voucher's Unix timestamp. The same object carries `hosted_voucher_url`.
+- **Processing and cancellation** in the May mobile and Direct API event sections are distinct from the expiry cutoff. An expired voucher can no longer be paid, and the PaymentIntent can be in `processing` awaiting an outcome. For an unpaid voucher, these sections describe `payment_intent.payment_failed` within 10 calendar days after expiry, usually within 7. The expiry sections describe confirming with another method or canceling when the PaymentIntent reaches `requires_payment_method`. The voucher itself cannot be canceled before expiry.
+- **`fill_never`** gives a `payment_intent.payment_failed` webhook arrival interval of 1 business day plus 2 calendar days, with the same timing in test and production for that scenario. Use the separate expiry and post-expiry sections for the general voucher lifetime and event window.
 
-**Direct API**: `stripe.confirmOxxoPayment()` — OXXO-specific method. Email only required in `billing_details`.
+## Product overview and variant scope
 
-**`fill_never` test**: expires after 1 business day + 2 calendar days.
+The May Checkout and Direct API sections document MX business scope and a 3-day expiry default. The separate November [[source-stripe-oxxo|OXXO product overview]] lists availability for Stripe accounts in Mexico, the United States, Canada and Singapore, with EEA and UK private preview. It gives a 5-day product default and a 1–7-day PaymentIntent override. Use the acceptance directory to locate the specific variant for eligibility and defaults.
 
-**Legacy section**: present in the guide; marked deprecated — not the recommended integration path.
+The May product overview pairs next-business-day confirmation with settled funds. The November product overview describes confirmation by the next business day and a separate settlement schedule. Tuesday through Thursday payments settle the following Monday and Friday through Monday payments settle the following Wednesday. The November matrix lists settlement up to four business days (T+4).
+
+## Detail locators
+
+- May raw lines 8–232 cover Checkout, including voucher display, fulfillment and test email scenarios.
+- May raw lines 233–726 cover Elements with Checkout Sessions, including variant-specific Stripe.js packages at 350–381 and email at 475–527. Lines 727–1270 cover Elements with Payment Intents, including server creation and client submission at 958–1088.
+- May raw lines 1271–1533, 1535–1791 and 1793–2075 cover iOS, Android and React Native respectively, including platform-specific SDK setup and callbacks.
+- May raw lines 2077–2513 cover Direct API, including billing details at 2195–2221, test email scenarios at 2323–2347 and custom voucher display at 2349–2407.
+
+## Related
+
+- [[stripe]]
+- [[stripe-vouchers]]
 
 ## Raw Sources
 
-- [[stripe-oxxo-accept-payment-2025]] — verbatim webpage content (2,513 lines); fixed `*Customers*` ×2, `*Prices*` ×1, `*subscription*` ×1, `*webhooks*` ×1, `*fulfillment*` ×1, `*sandbox*` ×2, `*PaymentIntent*` ×2, `*client secret*` ×4, `*webhook*` ×1, `*Legacy*` ×1
+- [[raw/stripe-oxxo-accept-payment-2025|2026-05-07 OXXO acceptance guide]] — verbatim webpage content (2,513 lines); fixed `*Customers*` ×2, `*Prices*` ×1, `*subscription*` ×1, `*webhooks*` ×1, `*fulfillment*` ×1, `*sandbox*` ×2, `*PaymentIntent*` ×2, `*client secret*` ×4, `*webhook*` ×1, `*Legacy*` ×1.
+
+## Related raw API references
+
+- [[raw/stripe-payments-oxxo-accept-a-payment-2026-11-07|OXXO acceptance variant directory]] — 2026-11-07 navigation for Checkout, Elements, Direct API and mobile.

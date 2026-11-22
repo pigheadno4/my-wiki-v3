@@ -1,0 +1,230 @@
+{
+  "job_id": "payments-pay-by-bank",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Pay by Bank Payments\"\ntype: source\ndate_ingested: 2026-05-06\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/pay-by-bank\"\nraw_files:\n  - \"stripe-payments-pay-by-bank-2026-11-07.md\"\n  - \"stripe-pay-by-bank-2025.md\"\ntags: [stripe, real-time-payments, pay-by-bank, open-banking, uk, europe, eur, gbp, connect]\n---\n\n## Summary\n\nThe May 6 and November 7, 2026 method overviews describe Pay by Bank (`pay_by_bank`) as a single-use open-banking payment. Customers choose their bank and authorize in its app or web portal before returning to the merchant. The regular one-off path lists GBP and EUR presentment, no manual capture and standard payout timing. The default GBP range is £0.50–£10,000. Stripe directs merchants to contact support for larger amounts.\n\n## Bank-account and business eligibility\n\n- **May customer scope.** The overview lists Finland, France, Germany, Ireland and the UK, with France, Germany and Ireland in private preview.\n- **November customer scope.** Bank accounts in Finland, Ireland and the UK are generally available. Belgium, France and Germany require private-preview access. UK bank accounts pay in GBP and accounts in the listed European countries pay in EUR. Availability depends on where the account is held and which banks the checkout provides. An account at the same bank in a different country does not qualify under that listing. The November interest-form heading names France and Germany, leaving Belgium's request route unresolved.\n- **Merchant scope.** Both snapshots list the same 35 Stripe business locations (AT, AU, BE, BG, CA, CH, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GR, HR, HU, IE, IT, LI, LT, LU, LV, MT, NL, NO, PL, PT, RO, SE, SG, SI, SK, US). This product list is separate from customer bank location, Checkout route eligibility and account activation.\n- Enable Pay by Bank in Dashboard **Payment methods** for front-end products. Stripe dynamically selects relevant methods. The separate [[source-stripe-pay-by-bank-accept-payment|acceptance guide]] covers manual configuration with date and route qualifications.\n\n## Product, API and recurring scope\n\n- The product overviews list Connect, Payment Links, Checkout and Elements. Both exclude Checkout subscription mode and Express Checkout Element. The May method overview also excludes Mobile Payment Element. The November method overview omits that exclusion. The separate [[source-stripe-real-time-payments|real-time methods matrix]] changes the Mobile Payment Element cell from unsupported in May to supported in November. Neither the matrix nor the [[source-stripe-pay-by-bank-accept-payment|November acceptance selector]] establishes an SDK version or individual account eligibility.\n- The May method overview lists recurring payments as unsupported. The November overview separately describes a request-access **private preview** for Elements with the Payment Intents API. It combines an initial Pay by Bank payment with a Bacs Direct Debit mandate for subsequent payments. The immediate first confirmation, within-three-business-day initial payout, first-payment dispute and bank-verification claims appear in that preview context. They do not generalize to the one-off path or subsequent Bacs debits.\n- In the separate November real-time matrix, Pay by Bank supports Invoicing and Subscriptions via `send_invoice` and does not support Setup Intents or Payment Intents `setup_future_usage`. The [Clover Billing changelog](https://docs.stripe.com/changelog/clover/2026-02-25/billing-api-pay-by-bank) adds the `pay_by_bank` enum to Billing operations, with REST examples on `2026-02-25.clover` and a separate preview reference for quotes. Enum availability establishes neither automatic collection on a one-off Pay by Bank method nor access to the Bacs-backed preview.\n\n## Notification, transfer and refund outcomes\n\n- **Timing disagreement.** The May 6 [[source-stripe-pay-by-bank-accept-payment|acceptance guide]] describes immediate notification of Pay by Bank success or failure. The April 20 [[source-stripe-checkout-dashboard-payment-methods|Dashboard-managed Checkout migration guide]] lists Pay by Bank among delayed notifications and advises waiting for success or failure when Checkout completion records authorization. Its 2–14 day illustration is generic. Keep bank authorization, browser return, verified success, available funds and merchant payout separate.\n- **Late bank funds.** November says an authorized payment can fail with `payment_method_provider_timeout` if the bank funds miss the expected settlement window. Stripe automatically returns funds that arrive after the failure. That return is separate from a merchant-initiated refund or payout.\n- **Refunds.** Both captures allow full or partial refunds to the original bank account for up to 730 days. Stripe charges no refund fee and does not return the original processing fee. Check the Refund object and `refund.updated` or `refund.failed` for `succeeded` or `failed`. Failure returns the amount to the Stripe balance and requires arranging an alternative refund.\n- **Disputes.** May broadly describes no chargeback process. November specifies that ordinary inadequate-goods or services claims do not lead to a chargeback debiting the Stripe account through this process. The wording gives no general guarantee against all recourse and does not scope later Bacs debits.\n\n## Connect\n\nBoth overviews list direct charges, destination charges, and separate charges and transfers. Connected accounts using the Stripe Dashboard can enable the method in Payment methods. For Express or non-Stripe-hosted dashboards, request `pay_by_bank_payments` through the Capabilities API. Check the Accounts API or account webhooks for `capabilities.pay_by_bank_payments` set to `active`. A capability request is separate from approval and activation.\n\n## Detail locators\n\n- November raw lines 17–27, 61–117 and 119–217 cover geography, business locations, preview and the country-specific bank directory. Lines 219–246 cover the customer flow and front-end enablement.\n- November raw lines 248–277 cover the Refund object, dispute scope, late transfer and the separate Bacs-backed preview. Lines 279–293 cover Connect charge types and capability.\n- May raw lines 14–54, 56–108 and 131–166 cover the historical availability, mobile and recurring exclusions, enablement, refunds and Connect.\n- The April Dashboard-managed Checkout raw lines 66–84 and May acceptance raw lines 12 and 139 give the different notification statements. The separate November real-time matrix lines 25–40 and Clover Billing changelog lines 7–23 and 63–74 give product, API and version scope.\n\n## Related\n\n- [[stripe]] — Stripe company and source routes.\n- [[stripe-real-time-payments]] — Pay by Bank and other real-time methods.\n- [[source-stripe-pay-by-bank-accept-payment]] — May implementation and November variant selector.\n\n## Raw Sources\n\n- [[raw/stripe-payments-pay-by-bank-2026-11-07|Pay by Bank overview captured 2026-11-07]] — full overview with country-specific bank list, timeout, recurring preview and Connect.\n- [[raw/stripe-pay-by-bank-2025|Pay by Bank overview captured 2026-05-06]] — verbatim webpage content (166 lines); fixed `*webhook*` ×1; 6 SVG flow diagrams downloaded to assets/\n",
+  "quotes": {
+    "payments-pay-by-bank": [
+      {
+        "text": "(Generally available) Finland, Ireland, United Kingdom",
+        "location": "raw/stripe-payments-pay-by-bank-2026-11-07.md:19"
+      },
+      {
+        "text": "(Private preview) Belgium, France, Germany",
+        "location": "raw/stripe-payments-pay-by-bank-2026-11-07.md:21"
+      },
+      {
+        "text": "Customer location refers to the country where the customer’s bank account is held.",
+        "location": "raw/stripe-payments-pay-by-bank-2026-11-07.md:117"
+      },
+      {
+        "text": "the payment fails with the error code `payment_method_provider_timeout`.",
+        "location": "raw/stripe-payments-pay-by-bank-2026-11-07.md:262"
+      },
+      {
+        "text": "It combines an initial Pay by Bank payment with a [Bacs Direct Debit](https://docs.stripe.com/payments/bacs-debit.md) mandate for recurring payments.",
+        "location": "raw/stripe-payments-pay-by-bank-2026-11-07.md:268"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-pay-by-bank": [
+      {
+        "text": "Pay by Bank for customers in France, Germany, and Ireland is in private preview.",
+        "location": "raw/stripe-pay-by-bank-2025.md:58"
+      },
+      {
+        "text": "Standard payout timing applies",
+        "location": "raw/stripe-pay-by-bank-2025.md:38"
+      },
+      {
+        "text": "Express Checkout Element and Mobile Payment Element don’t support Pay by Bank.",
+        "location": "raw/stripe-pay-by-bank-2025.md:108"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-pay-by-bank-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 293
+      }
+    ],
+    "raw/stripe-pay-by-bank-2025.md": [
+      {
+        "start": 1,
+        "end": 166
+      }
+    ],
+    "wiki/sources/source-stripe-pay-by-bank.md": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/6503ab4eba48895b25fc758f/content.diff": [
+      {
+        "start": 1,
+        "end": 245
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-pay-by-bank/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 215
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-pay-by-bank/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 130
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 350,
+        "end": 355
+      },
+      {
+        "start": 748,
+        "end": 748
+      }
+    ],
+    "wiki/concepts/stripe-real-time-payments.md": [
+      {
+        "start": 14,
+        "end": 38
+      },
+      {
+        "start": 87,
+        "end": 102
+      },
+      {
+        "start": 215,
+        "end": 220
+      }
+    ],
+    "wiki/sources/source-stripe-checkout-dashboard-payment-methods.md": [
+      {
+        "start": 12,
+        "end": 32
+      }
+    ],
+    "raw/stripe-pay-by-bank-accept-payment-2025.md": [
+      {
+        "start": 12,
+        "end": 12
+      },
+      {
+        "start": 139,
+        "end": 139
+      }
+    ],
+    "raw/stripe-checkout-dashboard-payment-methods-2025.md": [
+      {
+        "start": 1,
+        "end": 5
+      },
+      {
+        "start": 66,
+        "end": 84
+      }
+    ],
+    "raw/stripe-real-time-payments-2025.md": [
+      {
+        "start": 24,
+        "end": 26
+      }
+    ],
+    "raw/stripe-payments-real-time-2026-11-07.md": [
+      {
+        "start": 25,
+        "end": 40
+      }
+    ],
+    "raw/stripe-changelog-clover-2026-02-25-billing-api-pay-by-bank-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 23
+      },
+      {
+        "start": 63,
+        "end": 74
+      }
+    ]
+  },
+  "answers": {
+    "payments-pay-by-bank": {
+      "Q1": "The November capture for https://docs.stripe.com/payments/pay-by-bank describes customer-initiated, single-use open-banking payments approved in the customer's bank app or portal. Bank accounts in Finland, Ireland and the UK are generally available, while Belgium, France and Germany require preview access; UK accounts pay GBP and listed European accounts EUR. This differs from the May customer locations and preview list; eligible Stripe business locations remain separate (new raw lines 9-67, new raw lines 105-217, old raw lines 8-62 and old raw lines 64-98). There is no manual capture, and standard payout timing applies. A bank authorization can still fail with `payment_method_provider_timeout`; after failure late funds are automatically returned, separately from the 730-day merchant refund route and its final states. The Elements/PaymentIntents private preview uses an initial Pay by Bank payment and a Bacs Direct Debit mandate for subsequent payments (new raw lines 37-59 and new raw lines 248-277). Connect charge routes persist, and Dashboards or the Capabilities API are used according to account access. Check the capability is active via Accounts API or webhooks (old raw lines 152-166 and new raw lines 279-293). The revised source-stripe-pay-by-bank.md preserves the May evidence and adds the dated country, mobile, recurring and outcome qualifications.",
+      "Q2": "For https://docs.stripe.com/payments/pay-by-bank, the redesigned asset links and Elements quickstart are presentation or navigation (old raw lines 110-138 and new raw lines 219-246). November substantively adds Belgium preview, Ireland general availability, bank-account-specific supported banks, the authorized-but-failed timeout and late-funds return, and a Bacs-backed Elements/PaymentIntents recurring private preview (old raw lines 14-34, old raw lines 56-62, new raw lines 17-27, new raw lines 115-217 and new raw lines 260-277). Preserve May no recurring and mobile exclusion as dated in source-stripe-pay-by-bank.md (old raw lines 30-34 and old raw lines 100-108). November's method overview omits the mobile exclusion, while the separate real-time matrix affirmatively lists mobile support. That evidence does not specify all SDK versions or merchant availability. Keep Checkout subscription mode excluded, Billing API `2026-02-25.clover` enum support and the matrix's `send_invoice` scope separate from the Bacs mandate preview. Reciprocally warn that April's Dashboard migration guide lists delayed notification while the May acceptance guide describes immediate notification. The November timeout shows why bank authorization, user return, verified success, funds availability and payout differ; neither source guarantees a universal immediate outcome or a method-specific 2–14 day window."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "pay-by-bank-overview-table-scope",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "| Pay by Bank (UK/Europe) | `pay_by_bank` | UK, Finland, France, Germany, Ireland | Yes | No | No | No |",
+      "proposed_markdown": "| Pay by Bank (UK/Europe) | `pay_by_bank` | UK, Finland and Ireland generally available. Belgium, France and Germany private preview (2026-11-07 customer bank-account scope) | Yes | No | No | May matrix: No. November matrix: Yes |",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "November method overview raw lines 17–27 and 115–117, May and November matrix lines 24–26 and 25–40 respectively."
+      ]
+    },
+    {
+      "update_id": "pay-by-bank-overview-billing-qualification",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Subscriptions/Invoicing**: Pay by Bank, PayNow, PromptPay, and Swish support subscriptions/invoicing only via `send_invoice` (not `charge_automatically`). **Pix** supports automatic recurring via **Pix Automático** (mandate-based, charge_automatically). **PayTo** also lists Billing=Yes and Recurring=Yes — whether it supports `charge_automatically` requires verification against the PayTo accept-a-payment guide.",
+      "proposed_markdown": "**Subscriptions/Invoicing**: Pay by Bank, PayNow, PromptPay, and Swish support subscriptions/invoicing only via `send_invoice` (not `charge_automatically`). For Pay by Bank, this Billing scope is separate from the Bacs-backed Elements/Payment Intents private preview described below. **Pix** supports automatic recurring via **Pix Automático** (mandate-based, charge_automatically). **PayTo** also lists Billing=Yes and Recurring=Yes — whether it supports `charge_automatically` requires verification against the PayTo accept-a-payment guide.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "November real-time matrix raw lines 25–40 and method overview lines 266–277 document separately scoped Billing and Bacs mandate paths."
+      ]
+    },
+    {
+      "update_id": "pay-by-bank-overview-product-and-outcome",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Open banking** real-time payment — UK, Finland, France, Germany, Ireland. France/Germany/Ireland in **private preview**. EUR and GBP only.\n\n**Transaction limits**: £0.50–£10,000 default. Higher amounts require contacting Stripe.\n\n**No disputes** — customer authenticates in banking app; no chargeback process.\n\n**Refunds**: **730-day (2-year)** window. Partial refunds supported. Free; processing fees non-refundable.\n\n**Connect**: Yes — Direct, Destination, Separate charges and transfers. Capability: `pay_by_bank_payments`. 35 merchant countries (US, AU, SG, most of Europe).\n\n**Product support**: Connect, Payment Links, Checkout (not subscription mode), Elements — Express Checkout Element and Mobile Payment Element **not** supported.",
+      "proposed_markdown": "**Open banking availability**. The November overview lists UK, Finland and Ireland bank accounts as generally available and Belgium, France and Germany in private preview. May listed France, Germany and Ireland in private preview. Merchant eligibility is separate, with 35 Stripe account locations in both overviews. UK accounts use GBP and listed European accounts use EUR.\n\n**Transaction limits and payout**. £0.50–£10,000 default GBP range. Higher amounts require contacting Stripe. The one-off method lists standard payout. November states that an authorized payment can fail with `payment_method_provider_timeout` and Stripe returns funds arriving after failure.\n\n**Disputes and refunds**. November scopes the no-chargeback description to inadequate-goods or services complaints. Both captures describe full or partial refunds to the original account within 730 days, with no refund fee and the original processing fee retained. Follow the Refund status to its outcome.\n\n**Connect**. Direct charges, destination charges, and separate charges and transfers. Use Dashboard Payment methods where available or request `pay_by_bank_payments` for Express and non-Stripe dashboards. Check `active` through Accounts API or webhooks.\n\n**Product support**. The overviews list Connect, Payment Links, Checkout and Elements, with Checkout subscription mode and Express Checkout Element excluded. The separate May real-time matrix excludes Mobile Payment Element and the November matrix lists it, while the November method overview drops the original mobile exclusion. The Bacs-backed recurring flow is a separate Elements and Payment Intents private preview. See [[source-stripe-pay-by-bank]].",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Method overview November raw lines 17–27, 105–117 and 248–293 and May raw lines 56–62 and 100–108. Compare the separate real-time matrices for the mobile cell."
+      ]
+    },
+    {
+      "update_id": "pay-by-bank-overview-product-source-route",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-pay-by-bank]] — Pay by Bank (UK/Europe): open banking, 730-day refunds, no disputes, Connect support, 35 merchant countries",
+      "proposed_markdown": "- [[source-stripe-pay-by-bank]] — May and November 2026 Pay by Bank overviews for bank-account eligibility, authorized-transfer timeout, refunds, Connect activation and the Bacs-backed recurring private preview.",
+      "quote_indexes": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "warnings": [
+        "November overview raw lines 17–27 and 248–293. Separate acceptance route retains the timing conflict and the variant scope."
+      ]
+    }
+  ]
+}

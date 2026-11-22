@@ -1,0 +1,64 @@
+--- raw/stripe-orchestration-feature-support-2026.md
++++ raw/stripe-payments-orchestration-feature-support-2026-11-07.md
+@@ -3,31 +3,44 @@
+ Learn about the features that Orchestration supports.
+ 
+ > #### Want access to Orchestration?
+->
+-> Orchestration is in private preview.
++> 
++> Orchestration is in private preview. [Share your email address to request access.](https://docs.stripe.com/payments/orchestration/feature-support.md#orchestration_preview)
++
++### Want access to Orchestration?
++
++Enter your email to request access.
++
++```bash
++curl https://docs.stripe.com/preview/register \
++  -X POST \
++  -H "Content-Type: application/json" \
++  -H "Referer: https://docs.stripe.com/payments/orchestration/feature-support" \
++  -d '{"email": "EMAIL", "preview": "orchestration_preview"}'
++```
+ 
+ When using Orchestration with different payment processors, you might encounter payment features that don’t work that you would normally expect to work with Stripe. In these cases, the request fails with a `400` error code `orchestration_unsupported`. The first unsupported feature found is also included in the error message.
+ 
+-## Error protection
++## Error protection 
+ 
+-During the onboarding process, you can opt into error protection, which automatically handles these cases. If we see a payment requesting an unsupported feature, we route the payment to Stripe instead of the originally determined payment processor. This avoids returning these validation errors. We also consider error protection during [cross-processor retries](https://docs.stripe.com/payments/orchestration/retries.md). However, if there was a failover and the original processor was Stripe, we ignore the error protection configuration. We do so to avoid a duplicate attempt on Stripe. Contact your Stripe representative to enable this configuration.
++During the onboarding process, you can opt in to error protection, which automatically handles these cases. If we see a payment requesting an unsupported feature, we route the payment to Stripe instead of the originally determined payment processor. This avoids returning these validation errors. We also consider error protection during [cross-processor retries](https://docs.stripe.com/payments/orchestration/retries.md). However, if there was a failover and the original processor was Stripe, we ignore the error protection configuration. We do so to avoid a duplicate attempt on Stripe. Contact your Stripe representative to enable this configuration.
+ 
+-## Supported features
++## Supported features 
+ 
+ Orchestration currently supports the following features for each payment service provider.
+ 
+-| Processor:                                                                                             | Adyen       | Braintree   | Worldpay WPG  |
+-| ------------------------------------------------------------------------------------------------------ | ----------- | ----------- | ------------- |
+-| Automatic confirmation                                                                                 | ✓ Supported | ✓ Supported | ✓ Supported   |
+-| Automatic capture                                                                                      | ✓ Supported | ✓ Supported | ✓ Supported   |
+-| [Manual capture](https://docs.stripe.com/payments/place-a-hold-on-a-payment-method.md) 1               | ✓ Supported | ✓ Supported | ✓ Supported   |
+-| Full refunds 4                                                                                         | ✓ Supported | ✓ Supported | ✓ Supported   |
+-| Partial refunds 4                                                                                      | ✓ Supported | ✓ Supported | ✓ Supported   |
+-| 3DS                                                                                                    | ✓ Supported | ✓ Supported | ✓ Supported   |
+-| [Statement descriptors](https://docs.stripe.com/get-started/account/statement-descriptors.md) 2        | ✓ Supported | ✓ Supported | ✓ Supported   |
+-| [Wallets](https://docs.stripe.com/payments/orchestration/wallet-payments.md) (Apple Pay, Google Pay) 3 | ✓ Supported | ✓ Supported | ✓ Supported   |
+-| Network tokens                                                                                         | ✓ Supported | ✓ Supported | - Unsupported |
+-| Recurring transactions                                                                                 | ✓ Supported | ✓ Supported | ✓ Supported   |
++| Processor: | Adyen | Braintree | Worldpay WPG |
++| --- | --- | --- | --- |
++| Automatic confirmation | ✓ Supported | ✓ Supported | ✓ Supported |
++| Automatic capture | ✓ Supported | ✓ Supported | ✓ Supported |
++| [Manual capture](https://docs.stripe.com/payments/place-a-hold-on-a-payment-method.md) 1 | ✓ Supported | ✓ Supported | ✓ Supported |
++| Full refunds 4 | ✓ Supported | ✓ Supported | ✓ Supported |
++| Partial refunds 4 | ✓ Supported | ✓ Supported | ✓ Supported |
++| 3DS | ✓ Supported | ✓ Supported | ✓ Supported |
++| [Statement descriptors](https://docs.stripe.com/get-started/account/statement-descriptors.md) 2 | ✓ Supported | ✓ Supported | ✓ Supported |
++| [Wallets](https://docs.stripe.com/payments/orchestration/wallet-payments.md) (Apple Pay, Google Pay) 3 | ✓ Supported | ✓ Supported | ✓ Supported |
++| Network tokens | ✓ Supported | ✓ Supported | - Unsupported |
++| Recurring transactions | ✓ Supported | ✓ Supported | ✓ Supported |
++| [Processor account overrides](https://docs.stripe.com/payments/orchestration/rules.md#processor-account-overrides) | ✓ Supported | - Unsupported | ✓ Supported |
+ 
+ 1 Multicapture is currently unsupported.
+ 

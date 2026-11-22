@@ -2,32 +2,59 @@
 title: "Stripe Docs — Link with Invoicing"
 type: source
 date_ingested: 2026-05-08
+date_updated: 2026-11-22
 original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/link/invoicing"
 raw_files:
+  - "stripe-payments-link-invoicing-2026-11-07.md"
   - "stripe-invoicing-link-2025.md"
 tags: [stripe, link, invoicing, hosted-invoice-page, subscriptions, no-code]
 ---
 
 ## Summary
 
-Thin guide for enabling Link on the Hosted Invoice Page. Dashboard-only setup — no implementation code required. Compatible with Invoices and Subscriptions APIs.
+The May 8 and November 7, 2026 captures describe Link autofill on Stripe's hosted invoice page. Stripe provides a private URL where the recipient can view, pay and download an invoice. Enabling Link on this hosted page requires no extra implementation code. The guides document compatibility with the Invoices and Subscriptions APIs.
 
-## Key Facts
+## Enable Link on the Hosted Invoice Page
 
-- **No code required** — zero implementation changes
-- **Setup**: Dashboard → Invoice template → Payment methods → Manage → toggle Link on → Save
-- **Compatible with**: Invoices API and Subscriptions API
-- **Hosted Invoice Page**: secure private URL per invoice; customers view, pay, and download
+1. Open the [Invoice template](https://dashboard.stripe.com/settings/billing/invoice) in Dashboard.
+2. Under **Payment methods**, choose **Manage**.
+3. Toggle Link on and choose **Save**.
+
+Both captures say “all of your customers” can pay faster after enabling Link. The separate November Invoicing payment methods table lists Link in most currencies and business locations. The Link integration guide limits display to eligible transactions. Funding eligibility can further depend on the business, presentment currency, amount, customer location and recurring or off-session support. See [[source-stripe-link-payment-integrations]] and [[source-stripe-link-payment-methods]].
+
+## Invoice-Specific Payment Methods
+
+- **Hosted page and Dashboard.** Account defaults apply to newly created invoices. A merchant can choose methods for an individual invoice in Dashboard. The November hosted invoice guide says the customer can still use an existing default payment method on the hosted page when it is absent from that invoice's configuration.
+- **Invoicing API.** The separate November payment methods guide says that if you override payment methods through the API, include the configured default method type in `payment_method_types` when a default exists on the customer-configured Account, Customer or associated Subscription. The guide says payment fails if the override excludes that default.
+
+The hosted enablement and API compatibility describe these integration surfaces. They leave API version, PaymentMethod representation, automatic renewal and outcomes to separate evidence.
+
+## Hosted URL and Invoice Status
+
+The November Invoice object reference says `Invoice.hosted_invoice_url` is null before finalization. The November hosted invoice guide says an issued URL expires 30 days after the due date or, without a due date, 30 days after finalization. The expiration window is at most 120 days. The guide separately guarantees at least 10 days of validity for URLs displayed in Dashboard or retrieved through the API, including after expiration.
+
+The Invoice object has a separate `status` field with `draft`, `open`, `paid`, `uncollectible` and `void`. A reachable hosted URL, Link display, autofill or a payment attempt leaves paid status and settlement to their own evidence. See the hosted invoice and Invoice object references below.
 
 ## CDN Assets
 
-- `raw/assets/stripe-link-in-hosted-invoice.png` — Link in Hosted Invoice Page UI
+- `raw/assets/stripe-link-in-hosted-invoice.png` — May 8 local reference for Link on the hosted invoice page
+- [November 7 hosted invoice screenshot](https://b.stripecdn.com/docs-statics-srv/assets/link-in-hip.a98a2864a383c265c375109b168d62ab.png) — replacement CDN reference
 
 ## Related Pages
 
-- [[stripe-link]] — Link concept page (Invoicing section)
+- [[stripe-link]] — Link concept and hosted invoice eligibility
+- [[source-stripe-link-payment-integrations]] — Wallets enablement, integration scope and eligible display
+- [[source-stripe-link-payment-methods]] — transaction and funding eligibility
 - [[stripe]] — Stripe company page
+
+## Related raw API references
+
+- [[raw/stripe-invoicing-hosted-invoice-page-2026-11-07|November 7 hosted invoice page guide]] — URL lifecycle, defaults and Dashboard per-invoice selection
+- [[raw/stripe-invoicing-payment-methods-2026-11-07|November 7 Invoicing payment methods guide]] — Link support and API override requirements
+- [[raw/stripe-api-invoices-object-2026-11-07|November 7 Invoice object reference]] — hosted URL and separate Invoice status
 
 ## Raw Sources
 
-- [[stripe-invoicing-link-2025]] — verbatim webpage content (24 lines)
+- [[raw/stripe-payments-link-invoicing-2026-11-07|November 7, 2026 Link with Invoicing guide]] — full capture
+- [[raw/stripe-invoicing-link-2025|May 8, 2026 Link with Invoicing guide]] — verbatim webpage content (24 lines)

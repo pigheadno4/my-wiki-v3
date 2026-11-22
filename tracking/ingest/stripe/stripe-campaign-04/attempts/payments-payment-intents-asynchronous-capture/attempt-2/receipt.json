@@ -1,0 +1,177 @@
+{
+  "job_id": "payments-payment-intents-asynchronous-capture",
+  "attempt": 2,
+  "raw_path": "raw/stripe-payments-payment-intents-asynchronous-capture-2026-11-07.md",
+  "raw_sha256": "5e91499cc032e6d17e39ee80f40fe332c603688207f8c3bb40f379e48033be50",
+  "prior_raw_path": "raw/stripe-async-capture-2025.md",
+  "prior_raw_sha256": "8723b0b292e6dbe7b01ae855216f4a7040297cb2a83d726f2c7b842cf200db8f",
+  "source_targets": [
+    "wiki/sources/source-stripe-payment-intents.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-payment-intents.md": "e319b3efd7df3e67549b7ef39a270640849bb557547f1500a82725d8d8f5a87f"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-payment-intents-asynchronous-capture-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 135
+      }
+    ],
+    "raw/stripe-async-capture-2025.md": [
+      {
+        "start": 1,
+        "end": 121
+      }
+    ],
+    "wiki/sources/source-stripe-payment-intents.md": [
+      {
+        "start": 1,
+        "end": 86
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/dabc8d0e6bb4651232886ea4/content.diff": [
+      {
+        "start": 1,
+        "end": 115
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 18,
+        "end": 27
+      },
+      {
+        "start": 725,
+        "end": 733
+      }
+    ],
+    "wiki/concepts/stripe-payment-intents.md": [
+      {
+        "start": 8,
+        "end": 66
+      },
+      {
+        "start": 126,
+        "end": 142
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 779,
+        "end": 785
+      }
+    ],
+    "raw/stripe-changelog-2024-04-10-automatic-sync-default-paymentintents-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 25
+      }
+    ],
+    "raw/stripe-payment-setup-intents-2025.md": [
+      {
+        "start": 24,
+        "end": 58
+      }
+    ],
+    "raw/stripe-payment-intents-api-2025.md": [
+      {
+        "start": 50,
+        "end": 60
+      },
+      {
+        "start": 121,
+        "end": 126
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "If you expand `balance_transaction` or `latest_charge.balance_transaction`, it might not be available in the response.",
+      "location": "raw/stripe-payments-payment-intents-asynchronous-capture-2026-11-07.md:14"
+    },
+    {
+      "text": "Your integration must handle the possibility that the balance transaction might not be immediately available.",
+      "location": "raw/stripe-payments-payment-intents-asynchronous-capture-2026-11-07.md:17"
+    },
+    {
+      "text": "use `automatic_async` as the capture method when creating a PaymentIntent.",
+      "location": "raw/stripe-payments-payment-intents-asynchronous-capture-2026-11-07.md:21"
+    },
+    {
+      "text": "Our SLA for the charge.updated webhook is 1 hour after the successful PaymentIntent confirmation.",
+      "location": "raw/stripe-payments-payment-intents-asynchronous-capture-2026-11-07.md:80"
+    },
+    {
+      "text": "# applicable to destination charge only.",
+      "location": "raw/stripe-payments-payment-intents-asynchronous-capture-2026-11-07.md:99"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "set the `capture_method=automatic_async` parameter when confirming a PaymentIntent.",
+      "location": "raw/stripe-async-capture-2025.md:8"
+    },
+    {
+      "text": "#### API version 2022-11-15 or later",
+      "location": "raw/stripe-async-capture-2025.md:56"
+    },
+    {
+      "text": "[charge.updated](https://docs.stripe.com/api/events/types.md#event_types-charge.created)",
+      "location": "raw/stripe-async-capture-2025.md:74"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "November is a detailed guide and retains the April background-capture model, explicit create-time `automatic_async`, latest-version default wording, initial null fields, events and one-hour `charge.updated` SLA (old lines 8-12, 30-36, 54-76; new lines 9-23, 38-44, 63-86). It adds an explicit operational warning that neither direct nor nested expansion forces deferred data to exist and corrects the event link. No new runtime capture transition is established.",
+    "Source line 84 compresses all three fields into a single rule and hides the expanded-field case, webhook destination-charge example and API version boundary. `balance_transaction` applies for asynchronous-capture Charges generally, while `transfer` and `application_fee` are Connect-related. Their appearance in `charge.updated` is specifically annotated for destination charges, rather than a universal Connect charge expectation (new lines 40-61, 84-108; old lines 32-52, 74-97).",
+    "Source lines 17 and 22 say PaymentIntent creates an immediate charge without adequate qualification. Source lines 24 and 35 describe manual authorization/capture and asynchronous payment-method states. Preserve them as distinct from `automatic_async`, which can show `PaymentIntent.status=succeeded`, `Charge.captured=true` and a null balance transaction together (new lines 40-76). Response, status and bookkeeping availability do not by themselves establish payout or availability of funds for payout.",
+    "Root index line 7 routes via Stripe index lines 23 and 729 to `wiki/concepts/stripe-payment-intents.md`. Its core flow at lines 50-55 and source routes at 134-142 lack a reciprocal async-capture reference.",
+    "Adjacent baseline wording is independently compressed: `requires_action` is any further action such as 3DS, not 3DS alone (summary lines 23, 34 and historical lifecycle raw 32-34); source line 86 labels the PaymentIntent client secret server-only despite documented scoped client handoff (raw/stripe-payment-intents-api-2025.md:50-60, 121-125). Keep the merchant API secret server-side and the PaymentIntent client secret customer-scoped."
+  ],
+  "substantive_changes": [
+    "New lines 11-17 explicitly cover expanded `balance_transaction` and `latest_charge.balance_transaction` unavailability and make handling missing balance data mandatory. The old guide showed nulls and recommended later events without addressing these explicit expansion requests (old lines 30-52, 68-76). This is added operational guidance, not a newly observed API behavior.",
+    "Old raw line 74 displayed `charge.updated` but targeted `charge.created`. New raw line 84 corrects the destination to `charge.updated`, a material navigation correction affecting which event an integrator discovers. The intended event was already evident from old SLA and payload headings (old 68-86); no webhook rename occurred."
+  ],
+  "historical_claims_to_preserve": [
+    "April describes faster responses with capture completed in the background and points to explicit `automatic_async` on creation, including create-and-confirm in the example. The standalone opening mentions confirmation (old lines 8-12 and 20-27), but does not by itself establish any confirm-endpoint schema. November centers creation (new 19-36).",
+    "The displayed `latest_charge` payment response/webhook shape remains scoped to API version 2022-11-15 or later (old 54-66; new 63-76). That sample cutoff is not the default-capture cutoff. Companion 2024-04-10 changelog gives versioned creation default evidence and includes a 2024-06-20 API reference link (raw/stripe-changelog-2024-04-10-automatic-sync-default-paymentintents-2026-11-07.md:1-22); preserve the guide's 'latest' wording as capture-dated rather than claiming every API or SDK uses this default.",
+    "Both captures keep the stated one-hour SLA specifically for `charge.updated` after successful PaymentIntent confirmation, not for payment success, fee/transfer events, settlement or payouts (old 68-76; new 78-86). Preserve additional Connect data handling as applicable to the charge and event."
+  ],
+  "conflicts": [
+    "Old event link text and href conflict (old line 74); new line 84 aligns them. Preserve old provenance and warn readers opening the old raw to follow `charge.updated`, not `charge.created`.",
+    "The summary's broad immediate-charge shorthand and compressed null-field locator (lines 17, 22 and 84) can mislead state/ledger queries. Add a reciprocal route with the `captured=true`/initial-null coexistence, key Connect qualifiers, and the API-version boundaries. The adjacent April lifecycle paragraph saying funds are now in the account (raw/stripe-payment-setup-intents-2025.md:46-48) is not a promise of populated ledger properties or bank payout.",
+    "April Node example explicitly lists `payment_method_types`, while November cURL uses `return_url` and omits that array (old 14-28; new 25-36). This example substitution does not establish a universal `return_url` rule, array prohibition, SDK change, or endpoint removal."
+  ],
+  "unresolved_questions": [
+    "No runtime execution, account-specific settlement timing, or support for older unshown webhook shapes is established by the captures."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-payment-intents.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-payment-intents.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Give asynchronous capture a discoverable route and preserve both dated captures. Scope creation/default and sample versions separately, retain the expansion constraint and `captured=true`/null coexistence, and list the correct webhook for each applicable deferred field with the stated SLA scope.",
+        "Clarify the operation left implicit at source line 84. The April opening says to set `capture_method=automatic_async` when confirming (old raw line 8), while the opt-in text and example put the parameter on PaymentIntent creation with `confirm=true` (old raw lines 10-28). November likewise puts it on creation, including the form-encoded `POST /v1/payment_intents` create-and-confirm example (new raw lines 19-36). These captures do not establish support for the parameter on the standalone confirm endpoint or prove its removal."
+      ],
+      "conflicts": [
+        "Source lines 17, 22, 35 and 84 need accurate state and field qualifiers. Cross-link the April `charge.updated` label/`charge.created` href discrepancy to the corrected November target. Independently qualify the old 3DS-only `requires_action` and server-only PaymentIntent client-secret shorthand at lines 23, 34 and 86 using the companion captures."
+      ],
+      "reason": "The materially clarified missing-data behavior and corrected event route merit an update, and the existing merged summary needs an independent correction for field, version and payment-state scope."
+    }
+  ],
+  "answers": {
+    "Q1": "The November 7, 2026 guide at https://docs.stripe.com/payments/payment-intents/asynchronous-capture says `automatic_async` during PaymentIntent creation allows faster confirmation by completing capture in the background. The captured guide calls it the latest API default, so explicit selection is optional there (new raw lines 9-36 and old raw lines 8-28). The pictured succeeded PaymentIntent and captured Charge can precede Charge `balance_transaction` availability even when expanded. The initial attached Charge in the API response and the `charge.succeeded` and `payment_intent.succeeded` events can lack that data. Connect transfer and application fee data may also be deferred, with the later `charge.updated` sample annotating these two fields for destination charges. The example PaymentIntent response and webhook `latest_charge` shape is scoped to version 2022-11-15 or later (new raw lines 38-76 and new raw lines 90-108). Use `charge.updated` for balance transaction and `application_fee.created` and `transfer.created` for applicable Connect objects. The one-hour SLA is for `charge.updated` after successful confirmation (new raw lines 78-86 and old raw lines 68-97). source-stripe-payment-intents.md names the core events but compresses field and version qualifications. Faster response and populated ledger fields are separate, and neither establishes payout.",
+    "Q2": "For https://docs.stripe.com/payments/payment-intents/asynchronous-capture, November adds explicit nullable expansion-handling instructions and fixes the old `charge.updated` text pointing to `charge.created` (old raw lines 30-52, old raw lines 68-81, new raw lines 11-17 and new raw lines 78-86). This updates integration guidance and navigation without proving a new event or capture transition. The Node-to-cURL example change, example `return_url` and reformatted payloads do not establish new API/SDK requirements (old raw lines 14-28 and new raw lines 25-36). The April opening says to set `capture_method=automatic_async` when confirming (old raw line 8), while the opt-in text and example put the parameter on PaymentIntent creation with `confirm=true` (old raw lines 10-28). November likewise puts it on creation, including the form-encoded `POST /v1/payment_intents` create-and-confirm example (new raw lines 19-36). These captures do not establish support for the parameter on the standalone confirm endpoint or prove its removal. Keep the dated older evidence in source-stripe-payment-intents.md, route to the corrected event, and distinguish latest-API default wording, the separate `2024-04-10` creation-default changelog, and 2022-11-15-or-later sample response coverage (old raw lines 54-66 and new raw lines 63-76). Warn that manual capture and delayed payment-method processing are separate from asynchronous background capture, and that the one-hour availability SLA is stated only for `charge.updated` after successful confirmation (old raw lines 68-76 and new raw lines 78-108). Connect fee/transfer field availability, funds availability, settlement and payout have separate boundaries."
+  }
+}

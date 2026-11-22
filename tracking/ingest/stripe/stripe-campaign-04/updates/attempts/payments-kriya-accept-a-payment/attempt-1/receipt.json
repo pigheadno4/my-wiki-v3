@@ -1,0 +1,230 @@
+{
+  "job_id": "payments-kriya-accept-a-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Accept a Payment with Kriya\"\ntype: source\ndate_ingested: 2026-05-06\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/kriya/accept-a-payment\"\nraw_files:\n  - \"stripe-kriya-accept-payment-2025.md\"\ntags: [stripe, bnpl, kriya, buy-now-pay-later, b2b, uk, checkout, payment-intents, elements]\n---\n\n## Summary\n\nThe May 6, 2026 Stripe guide documents four routes for accepting single-use B2B Kriya payments: hosted Checkout, Elements with the Checkout Sessions API, Elements with the Payment Intents API, and Direct API. The November 7, 2026 capture lists the same four variants as navigation links. Their bodies are outside that capture, so eligibility, SDK requirements and API behavior below come from the May guide.\n\n## May 6, 2026 integration guide\n\n- **Checkout eligibility.** Hosted Checkout and Checkout Sessions with Elements list UK business locations, GBP presentment, and payment mode. Setup and subscription mode are unsupported. Line-item prices must share a currency within each Checkout Session. When listing payment methods explicitly, the API examples use `kriya` in `payment_method_types`.\n- **Hosted Checkout.** The manual Checkout Session example uses `success_url`.\n- **Elements with Checkout Sessions.** The server creates the Session and returns its client secret. The client initializes the Checkout SDK or React provider, collects details in the Payment Element and confirms the Session. The Session creation examples use `ui_mode: elements` and `return_url`. The May setup lists Dahlia Stripe.js, a `@stripe/stripe-js` npm floor of 7.0.0 for HTML + JS, and floors of 5.0.0 for `@stripe/react-stripe-js` and 8.0.0 for `@stripe/stripe-js` in the React setup.\n- **Elements with Payment Intents and Direct API.** The server creates the PaymentIntent with the amount and currency and provides its client secret for client-side confirmation. The Elements examples distinguish Accounts v2 `customer_account` from Customers v1 `customer`. Both paths document `return_url` for redirect confirmation. In the optional Direct API server-side flow, `requires_action` with `next_action.type=redirect_to_url` means the buyer still needs to act. On return, the Direct API guide uses `payment_intent` and `payment_intent_client_secret` to look up and verify status. The guide recommends listening for `payment_intent.succeeded` for PaymentIntent completion because a buyer's browser return alone cannot establish success. The two Elements sections describe sandbox approve/decline controls and a live redirect to Kriya.\n- **Optional PaymentIntent manual capture.** In the Elements Payment Intents section, `capture_method=manual` authorizes first. Successful authorization moves the Intent to `requires_capture`. A separate capture request takes the full authorized amount by default or an explicitly specified amount up to that total. Stripe cancels an uncaptured Intent and sends `payment_intent.canceled` when the seven-day window expires. Authorization, capture, payment completion and payout are separate stages.\n\n## Related\n\n- [[stripe]]\n- [[stripe-bnpl]] and [[source-stripe-bnpl-overview]] — The May and November BNPL API tables mark PaymentIntent `setup_future_usage` Supported for Kriya, with a footnote that non-card and non-bank-debit methods either lack parameter support or support only `off_session`. Both tables mark SetupIntents Unsupported. This parameter entry does not establish Checkout setup or subscription mode, or override the May Kriya method overview's Recurring payments No.\n- [[source-stripe-kriya]] — The May Kriya method overview says Connect No. The May and November BNPL product matrices say Supported for Kriya. The Connect scope conflict is unresolved.\n\n## Raw Sources\n\n- [[raw/stripe-kriya-accept-payment-2025|May 6, 2026 full Kriya integration guide]] — 1,390 lines. Hosted Checkout eligibility and example at lines 12–69. Elements with Checkout Sessions at lines 87–568, including eligibility at 95–112, Session creation at 125–196, SDK setup at 204–235 and confirmation at 488–527. Elements with Payment Intents at lines 570–1158, including redirect at 927–933, completion at 1076–1088 and manual capture at 1094–1140. Direct API starts at line 1160, with return and completion at lines 1287–1362. PaymentIntent error tables at 1148–1158 and 1380–1390 include `payment_intent_invalid_currency`, `payment_intent_authentication_failure` and `payment_intent_redirect_confirmation_without_return_url`. The historical raw preserves the formatted Prices, sandbox, PaymentIntent, client secret and webhook terms and the Checkout image under `raw/assets/`.\n\n## Related raw API references\n\n- [[raw/stripe-payments-kriya-accept-a-payment-2026-11-07|Kriya integration variant index]] — November 7, 2026 navigation to hosted Checkout, Elements with Checkout Sessions or Payment Intents, and Direct API (lines 9–17).\n",
+  "quotes": {
+    "payments-kriya-accept-a-payment": [
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-kriya-accept-a-payment-2026-11-07.md:11"
+      },
+      {
+        "text": "[Checkout](https://docs.stripe.com/payments/kriya/accept-a-payment.md?payment-ui=checkout)",
+        "location": "raw/stripe-payments-kriya-accept-a-payment-2026-11-07.md:13"
+      },
+      {
+        "text": "[Checkout Sessions API](https://docs.stripe.com/payments/kriya/accept-a-payment.md?payment-ui=elements&api-integration=checkout)",
+        "location": "raw/stripe-payments-kriya-accept-a-payment-2026-11-07.md:15"
+      },
+      {
+        "text": "[Payment Intents API](https://docs.stripe.com/payments/kriya/accept-a-payment.md?payment-ui=elements&api-integration=paymentintents)",
+        "location": "raw/stripe-payments-kriya-accept-a-payment-2026-11-07.md:16"
+      },
+      {
+        "text": "[Direct API](https://docs.stripe.com/payments/kriya/accept-a-payment.md?payment-ui=direct-api)",
+        "location": "raw/stripe-payments-kriya-accept-a-payment-2026-11-07.md:17"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-kriya-accept-a-payment": [
+      {
+        "text": "**Supported business locations**: UK",
+        "location": "raw/stripe-kriya-accept-payment-2025.md:20"
+      },
+      {
+        "text": "**Setup mode**: No",
+        "location": "raw/stripe-kriya-accept-payment-2025.md:28"
+      },
+      {
+        "text": "**Subscription mode**: No",
+        "location": "raw/stripe-kriya-accept-payment-2025.md:30"
+      },
+      {
+        "text": "for all line items must be in the same currency.",
+        "location": "raw/stripe-kriya-accept-payment-2025.md:34"
+      },
+      {
+        "text": "success_url: \"https://example.com/success\",",
+        "location": "raw/stripe-kriya-accept-payment-2025.md:68"
+      },
+      {
+        "text": "ui_mode: 'elements',",
+        "location": "raw/stripe-kriya-accept-payment-2025.md:155"
+      },
+      {
+        "text": "You need at least version 5.0.0 for React Stripe.js and version 8.0.0 for the Stripe.js loader.",
+        "location": "raw/stripe-kriya-accept-payment-2025.md:231"
+      },
+      {
+        "text": "Provide a `return_url` when confirming a PaymentIntent.",
+        "location": "raw/stripe-kriya-accept-payment-2025.md:1158"
+      },
+      {
+        "text": "if the payment isn’t captured during the 7-day window.",
+        "location": "raw/stripe-kriya-accept-payment-2025.md:1096"
+      },
+      {
+        "text": "transitions to `requires_capture`.",
+        "location": "raw/stripe-kriya-accept-payment-2025.md:1124"
+      },
+      {
+        "text": "Stripe captures the total authorized amount by default.",
+        "location": "raw/stripe-kriya-accept-payment-2025.md:1136"
+      },
+      {
+        "text": "Confirm the `PaymentIntent` has a status of `requires_action`. The type for the `next_action` will be `redirect_to_url`.",
+        "location": "raw/stripe-kriya-accept-payment-2025.md:1342"
+      },
+      {
+        "text": "Listen for these events rather than waiting on a callback from the client.",
+        "location": "raw/stripe-kriya-accept-payment-2025.md:1362"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-kriya-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "raw/stripe-kriya-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 1390
+      }
+    ],
+    "wiki/sources/source-stripe-kriya-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 25
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/29c8a148318325e7eb4890ab/content.diff": [
+      {
+        "start": 1,
+        "end": 1395
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-kriya-accept-a-payment/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 221
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-kriya-accept-a-payment/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 58
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 335,
+        "end": 342
+      },
+      {
+        "start": 745,
+        "end": 749
+      }
+    ],
+    "wiki/concepts/stripe-bnpl.md": [
+      {
+        "start": 1,
+        "end": 45
+      },
+      {
+        "start": 88,
+        "end": 115
+      },
+      {
+        "start": 248,
+        "end": 266
+      }
+    ],
+    "raw/stripe-kriya-2025.md": [
+      {
+        "start": 1,
+        "end": 42
+      }
+    ],
+    "raw/stripe-bnpl-overview-2025.md": [
+      {
+        "start": 40,
+        "end": 71
+      }
+    ],
+    "raw/stripe-payments-buy-now-pay-later-2026-11-07.md": [
+      {
+        "start": 41,
+        "end": 72
+      }
+    ],
+    "wiki/sources/source-stripe-bnpl-overview.md": [
+      {
+        "start": 17,
+        "end": 26
+      }
+    ],
+    "wiki/sources/source-stripe-kriya.md": [
+      {
+        "start": 11,
+        "end": 22
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 35,
+        "end": 41
+      }
+    ]
+  },
+  "answers": {
+    "payments-kriya-accept-a-payment": {
+      "Q1": "The November 7, 2026 capture for https://docs.stripe.com/payments/kriya/accept-a-payment lists hosted Checkout, Elements with Checkout Sessions API, Elements with Payment Intents API, and Direct API (new raw lines 5-17). It supplies route selection. The May 6, 2026 full guide documents single-use business payments and lists UK business locations, GBP presentment, payment mode only, and same-currency line items for the two Checkout variants (old raw lines 12-48 and old raw lines 95-112). The hosted Checkout example uses `success_url`. The Elements Checkout Session is created on the server, passes its client secret to the client, and uses `return_url` with `ui_mode: elements` in the example (old raw lines 50-69 and old raw lines 125-196). The PaymentIntent paths create the Intent and determine its amount server-side, with client-side confirmation and redirect using its secret and `return_url`. Accounts v2 and Customers v1 use `customer_account` and `customer` respectively in the Elements examples. In the optional Direct API server-side redirect flow, `requires_action` and `redirect_to_url` signal pending buyer action. The return identifiers are used to verify status, and the guide recommends completion events over browser callbacks. Optional manual capture separates authorization (`requires_capture`) from capture and cancellation after expiry (old raw lines 799-933, old raw lines 1076-1140 and old raw lines 1179-1362). The revised source-stripe-kriya-accept-payment.md replaces the universal `return_url` shorthand and scopes manual capture to the documented PaymentIntent flow.",
+      "Q2": "For https://docs.stripe.com/payments/kriya/accept-a-payment, the expanded May guide and November variant index share four route identities (new raw lines 9-17; old raw lines 8-10, old raw lines 87-89, old raw lines 570-572 and old raw lines 1160-1162). This is a navigation and capture change. The uncollected November bodies leave current eligibility, SDK and API details unverified. Revised source-stripe-kriya-accept-payment.md keeps the May eligibility and setup/subscription limitations, the Dahlia Stripe.js and package floors, and path-specific return fields: hosted Checkout `success_url`, Elements Checkout Sessions `return_url`, and PaymentIntent confirmation `return_url` (old raw lines 16-69, old raw lines 95-112, old raw lines 140-235 and old raw lines 927-933). Seven-day expiry and cancellation are part of optional manual PaymentIntent capture. Buyer return, authorization, `requires_action`, `requires_capture` and sandbox approval controls cannot establish a successful captured payment or payout. Status verification and asynchronous events cover the completion boundary (old raw lines 1076-1158 and old raw lines 1287-1362). The May Kriya overview's Connect No and May/November BNPL matrix Supported remain an unresolved dated conflict. The PaymentIntent `setup_future_usage` matrix cell and its non-card footnote are separate from Checkout setup/subscription mode, SetupIntents and recurring support. The BNPL concept routes should preserve the May path distinctions, and the Stripe index route should drop its universal `return_url` shorthand."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-kriya-accept-a-payment-concept-integration",
+      "target_path": "wiki/concepts/stripe-bnpl.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Integration notes**: `return_url` required. Manual capture: 7-day window.\n\n## Zip Details",
+      "proposed_markdown": "**Integration notes (May 2026 guide)**: Hosted Checkout's example uses `success_url`. Checkout Sessions with Elements examples use `return_url`, and PaymentIntent redirect confirmation uses `return_url`. The optional PaymentIntent manual-capture window is seven days. See [[source-stripe-kriya-accept-payment]] for the detailed guide and November 2026 variant index.\n\n## Zip Details",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The November index establishes route names only. May full guide lines 50-69, 140-159, 176-196, 927-933, 1094-1140 and 1287-1356 ground the historical correction."
+      ]
+    },
+    {
+      "update_id": "payments-kriya-accept-a-payment-concept-route",
+      "target_path": "wiki/concepts/stripe-bnpl.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-kriya-accept-payment]] — Kriya integration: return_url required, 7-day manual capture",
+      "proposed_markdown": "- [[source-stripe-kriya-accept-payment]] — May 2026 Kriya integration guide with path-specific return fields and optional seven-day PaymentIntent capture. The November 2026 variant index provides navigation.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "May raw lines 50-69, 140-159, 927-933 and 1094-1140 support the dated route label."
+      ]
+    }
+  ]
+}

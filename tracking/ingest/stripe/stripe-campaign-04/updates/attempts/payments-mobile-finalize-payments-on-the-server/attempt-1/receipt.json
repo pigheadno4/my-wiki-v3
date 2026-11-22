@@ -1,0 +1,251 @@
+{
+  "job_id": "payments-mobile-finalize-payments-on-the-server",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Finalize Payments on the Server — Mobile\"\ntype: source\ndate_ingested: 2026-04-22\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/mobile/finalize-payments-on-the-server\"\nraw_files:\n  - \"stripe-inapp-finalize-payments-server-2025.md\"\ntags: [stripe, mobile, ios, android, react-native, payment-sheet, flow-controller, confirmation-token, server-confirmation, apple-pay, saved-cards, customer-session]\n---\n\n## Summary\n\nStripe's **2026-04-22** guide documents deferred Intent creation for iOS, Android, and React Native. The app renders PaymentSheet and collects payment details before the merchant server creates and confirms the Intent. Use a **PaymentIntent** to take a payment. Use a **SetupIntent** to save a payment method for future use without creating a charge, attaching it to a customer-configured Accounts v2 `Account` or a Customers v1 `Customer`. A later off-session charge uses a separate PaymentIntent and can still fail if authentication is required and an exemption does not apply.\n\nThe April setup variants describe Accounts v2 as generally available for Connect users and in public preview for other Stripe users. Preview users need to specify a preview API version. Customers v1 is the alternative documented in those variants.\n\nThe **2026-11-07** capture of the same URL retains the render-before-creation and server-confirmation sequence. It replaces the inline guide with six links for payment and setup on iOS, Android, and React Native. The linked variant bodies are outside the capture. Platform requirements, compatibility, and eligibility below come from April unless otherwise dated.\n\n## ConfirmationToken flow\n\nThe April guide uses a Stripe SDK initialized with a publishable key, at least one enabled payment method, and a merchant server endpoint that talks to Stripe. Configure the sheet for the intended payment or setup. The client callback sends a ConfirmationToken ID to that endpoint. The April Swift examples read `confirmationToken.stripeId`, while the Android and React Native examples read `confirmationToken.id`.\n\nThe merchant server supplies the trusted amount and currency for a PaymentIntent and creates and confirms it with the token. The following is the April PaymentIntent example shape.\n\n```js\nstripe.paymentIntents.create({\n  confirm: true,\n  confirmation_token: req.body.confirmation_token_id,\n  amount: 1099, currency: 'usd',\n  automatic_payment_methods: { enabled: true },\n})\n```\n\nFor setup, the server creates and confirms the SetupIntent with the token and the appropriate customer identity, using `customer_account` or `customer`. In both branches, the server returns the corresponding Intent's client secret after a successful API call. PaymentSheet uses that secret for any required next actions. Match configured Intent properties to the actual Intent, such as amount, currency, and `setup_future_usage` for payment, or `usage` for setup.\n\n| April flow | What triggers the token callback |\n| --- | --- |\n| Default PaymentSheet | The customer taps the sheet's **Pay** or **Set up** action |\n| iOS or Android FlowController | The sheet collects a selection and the app's own button calls `confirm()` |\n| React Native custom flow | Initialize with `customFlow: true`, collect the selection, and call `confirmPaymentSheetPayment` from the app's own button |\n\n## FlowController updates\n\nThe April native iOS guide calls `update(intentConfiguration:)` with the revised configuration when payment details change. Keep selection and confirmation unavailable during the update, refresh the selected option on success, and retry on failure.\n\n```swift\npaymentSheetFlowController.update(intentConfiguration: newConfig) { error in\n  if error != nil { /* Retry the update before enabling selection or payment */ }\n  else { /* Refresh the selected option and re-enable the available actions */ }\n}\n```\n\nThe April Android guide calls `configureWithIntentConfiguration()` again on the existing FlowController, avoids `presentPaymentOptions()` and `confirm()` during reconfiguration, refreshes the UI from the resulting selection, and retries failed updates. The React Native guide documents its own `customFlow` trigger above. The Swift update example applies to native iOS.\n\n## React Native SetupIntent routes in April\n\nThe deferred server-confirmation PaymentSheet variant names **cards and PayPal**. PaymentSheet renders before Intent creation, and the merchant server receives the ConfirmationToken ID before creating and confirming the SetupIntent. See the April raw lines 5100–5103, 5174–5180, and 5467–5473.\n\nThe separately captured [[source-stripe-inapp-set-up-future-payments]] route initializes React Native PaymentSheet with an **already-created SetupIntent client secret** and lists **cards, Link, and US bank accounts**. Its Android variant lists the same three. Its seven-method list (cards, Bancontact, iDEAL, Link, SEPA Direct Debit, Sofort, and US bank accounts) is from its iOS variant. See that guide's April raw lines 8–12, 110–120, 958–963, 1029–1044, 1716–1725, 1818–1842, and 1998–2017. The dated route statements leave current support, SDK/API version conditions, account eligibility, and overlap undetermined.\n\n## Apple Pay setup\n\nIn the April native iOS example, register an Apple Merchant ID, create the certificate through Stripe Dashboard's iOS Certificate Settings, and enable the Apple Pay capability for that merchant ID in Xcode.\n\n```swift\nconfiguration.applePay = .init(\n  merchantId: \"merchant.com.your_app_name\",\n  merchantCountryCode: \"US\"\n)\n```\n\nFor recurring payments, the native example sets the intended billing details in `PKPaymentRequest.paymentSummaryItems` through `paymentRequestHandler`. Merchant tokens are optional through `recurringPaymentRequest` or `automaticReloadPaymentRequest`. The Swift example guards `PKRecurringPaymentSummaryItem` at iOS 15+ and its `recurringPaymentRequest` at iOS 16+. For order tracking on iOS 16+, the native example uses `authorizationResultHandler` to add `PKPaymentOrderDetails` from the merchant server before the wallet sheet dismisses. The April React Native guide uses a distinct `applePay` configuration with recurring cart items, an optional recurring request, and `setOrderTracking` for order data on iOS 16+.\n\n## Saved cards and CustomerSession\n\nThe April guide requires an associated customer-configured Account or Customer for optional saved cards. To show the checkbox for saving a card, enable `payment_method_save` on a CustomerSession. PaymentSheet's component is `mobile_payment_element`, distinct from the web component `payment_element`. The following is the April **Customers v1 iOS** example shape. The customer-configured Accounts v2 sample uses `customer_account` in place of `customer`.\n\n```js\nconst customerSession = await stripe.customerSessions.create({\n  customer: customer.id,\n  components: {\n    mobile_payment_element: {\n      enabled: true,\n      features: {\n        payment_method_save: 'enabled',\n        payment_method_redisplay: 'enabled',\n        payment_method_remove: 'enabled',\n      },\n    },\n  },\n});\n```\n\n```swift\n// April native iOS example\n@_spi(CustomerSessionBetaAccess) import StripePaymentSheet\nconfiguration.customer = .init(id: customerId, customerSessionClientSecret: csSecret)\n```\n\nThe client receives a customer identity and a **CustomerSession client secret** for this configuration, separate from the **Intent client secret** used for next actions. The April iOS and Android server examples nest `mobile_payment_element` under `components`, while the historical React Native server examples put it at the top level. The captures leave the discrepancy unresolved as an API request shape. The merchant remains responsible for applicable laws, regulations, and network rules. Redisplay requires the customer's consent for that specific future use. The guide points to `allow_redisplay` to distinguish methods eligible for display.\n\n## Configuration and payment outcomes\n\n| April option | Description |\n| --- | --- |\n| `returnURL` | The native iOS and React Native PaymentSheet examples use a custom app URL scheme and forward the return to the SDK. Universal Links are outside this PaymentSheet return route. The React Native guide says methods requiring a return URL cannot be displayed without one. |\n| `allowsDelayedPaymentMethods` | Opt in to display eligible supported delayed methods, hidden by default. Enable the methods separately. The April iOS and React Native variants explicitly identify OXXO as unsupported by PaymentSheet at capture. |\n| `paymentMethodLayout` | The native iOS example has `.automatic`, `.vertical`, and `.horizontal` options. |\n| `style` | In the iOS configuration use `.alwaysLight`, `.alwaysDark`, or the system appearance. |\n| `merchantDisplayName` | Name shown in the payment UI, defaulting to the app's name. |\n| `defaultBillingDetails` | Pre-populate billing fields. |\n| `billingDetailsCollectionConfiguration` | Control which billing fields are collected. |\n\nThe client sheet can report completion while a delayed payment is still pending. For successful fulfillment decisions, the April payment guide uses the server webhook `payment_intent.succeeded`. Handle `payment_intent.processing` as pending and `payment_intent.payment_failed` separately. Browser return, wallet-sheet dismissal, and SetupIntent completion each describe their own flow state. The test-card and bank examples describe test scenarios.\n\n## SDK installation, wallets, and card scanning\n\nThe April iOS installation example adds the **StripePaymentSheet** product through `https://github.com/stripe/stripe-ios-spm` and also documents CocoaPods, Carthage, and a manual framework path. Its React Native iOS instructions include historical `pod install` steps. The October 2026 [[source-github-stripe-ios|stripe-ios 26.15.1 migration]] identifies **26.15.0** as the last native CocoaPods release. Later fixes and features are distributed through Swift Package Manager or XCFrameworks. The migration also directs React Native users to its separate SPM migration.\n\nThe April Android Gradle example uses `stripe-android:23.5.0` and shows `financial-connections:23.5.0` for US bank account support. The April React Native guide installs `@stripe/stripe-react-native` and initializes it with `StripeProvider` or `initStripe`. These are dated examples. The Google Pay examples distinguish test and production configuration and call for a physical Android device for testing. Native iOS card scanning uses `NSCameraUsageDescription` in `Info.plist`. Android scanning has Google Pay production access, device eligibility, and signing-key conditions in the April examples.\n\n## Detail locators\n\n- April iOS payment and setup guide variants, lines 8–1751. Payment confirmation and outcomes at 219–437 and 556–569. Setup identity, confirmation, consent, and later charging at 1028–1373.\n- April Android payment and setup variants, lines 1752–4190. FlowController reconfiguration at 2162–2205 and 2369–2407. Google Pay and scanning at 2729–2778.\n- April React Native payment and setup variants, lines 4191–6106. CustomerSession sample discrepancy at 4747–4760, 4791–4804, 5755–5768, and 5799–5812, compared with native examples at 481–496 and 2620–2635. Apple Pay at 4842–4982.\n\n## Related Pages\n\n- [[stripe-inapp-payments]] — mobile integration patterns\n- [[source-stripe-inapp-payment-sheet]] — PaymentSheet UI details\n- [[stripe-saved-payment-methods]] — saved payment method patterns\n\n## Raw Sources\n\n- [[raw/stripe-inapp-finalize-payments-server-2025|2026-04-22 server confirmation guide]] — 6,106 lines, six iOS, Android, and React Native variants with seven reused images\n\n## Related raw API references\n\n- [[raw/stripe-payments-mobile-finalize-payments-on-the-server-2026-11-07|2026-11-07 payment and setup variant index]]\n",
+  "quotes": {
+    "payments-mobile-finalize-payments-on-the-server": [
+      {
+        "text": "Build an integration where you render the Mobile Payment Element before you create a PaymentIntent or SetupIntent, then confirm the Intent from your server.",
+        "location": "raw/stripe-payments-mobile-finalize-payments-on-the-server-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-mobile-finalize-payments-on-the-server-2026-11-07.md:11"
+      },
+      {
+        "text": "[Accept a payment](https://docs.stripe.com/payments/mobile/finalize-payments-on-the-server.md?platform=ios&type=payment)",
+        "location": "raw/stripe-payments-mobile-finalize-payments-on-the-server-2026-11-07.md:14"
+      },
+      {
+        "text": "[Set up a payment method](https://docs.stripe.com/payments/mobile/finalize-payments-on-the-server.md?platform=android&type=setup)",
+        "location": "raw/stripe-payments-mobile-finalize-payments-on-the-server-2026-11-07.md:18"
+      },
+      {
+        "text": "[Set up a payment method](https://docs.stripe.com/payments/mobile/finalize-payments-on-the-server.md?platform=react-native&type=setup)",
+        "location": "raw/stripe-payments-mobile-finalize-payments-on-the-server-2026-11-07.md:21"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-mobile-finalize-payments-on-the-server": [
+      {
+        "text": "Build an integration where you render the Mobile Payment Element before you create a PaymentIntent or SetupIntent, then confirm the Intent from your server.",
+        "location": "raw/stripe-inapp-finalize-payments-server-2025.md:6"
+      },
+      {
+        "text": "A SetupIntent flow allows you to collect payment method details and save them for future payments without creating a charge.",
+        "location": "raw/stripe-inapp-finalize-payments-server-2025.md:877"
+      },
+      {
+        "text": "Your server creates and confirms a PaymentIntent and returns its client secret.",
+        "location": "raw/stripe-inapp-finalize-payments-server-2025.md:223"
+      },
+      {
+        "text": "Your server creates and confirms a SetupIntent and returns its client secret.",
+        "location": "raw/stripe-inapp-finalize-payments-server-2025.md:1124"
+      },
+      {
+        "text": "For example, although OXXO isn’t supported by PaymentSheet",
+        "location": "raw/stripe-inapp-finalize-payments-server-2025.md:560"
+      },
+      {
+        "text": "The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users.",
+        "location": "raw/stripe-inapp-finalize-payments-server-2025.md:1034"
+      },
+      {
+        "text": "You’re responsible for your compliance with all applicable laws, regulations, and network rules when saving a customer’s payment details.",
+        "location": "raw/stripe-inapp-finalize-payments-server-2025.md:1330"
+      },
+      {
+        "text": "Your server creates and confirms a SetupIntent and returns its client secret.",
+        "location": "raw/stripe-inapp-finalize-payments-server-2025.md:5471"
+      },
+      {
+        "text": "When used with a SetupIntent, PaymentSheet supports cards and PayPal.",
+        "location": "raw/stripe-inapp-finalize-payments-server-2025.md:5176"
+      },
+      {
+        "text": "make sure you’re listing payment methods where you’ve collected consent from the customer to save the payment method details for this specific future use.",
+        "location": "raw/stripe-inapp-finalize-payments-server-2025.md:5607"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-mobile-finalize-payments-on-the-server-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 21
+      }
+    ],
+    "raw/stripe-inapp-finalize-payments-server-2025.md": [
+      {
+        "start": 1,
+        "end": 6106
+      }
+    ],
+    "wiki/sources/source-stripe-inapp-finalize-payments-server.md": [
+      {
+        "start": 1,
+        "end": 127
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/b9ffc39d929509293e723526/content.diff": [
+      {
+        "start": 1,
+        "end": 6115
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-mobile-finalize-payments-on-the-server/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 226
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-mobile-finalize-payments-on-the-server/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 146
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 13
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 97,
+        "end": 111
+      },
+      {
+        "start": 770,
+        "end": 780
+      }
+    ],
+    "wiki/concepts/stripe-inapp-payments.md": [
+      {
+        "start": 1,
+        "end": 116
+      }
+    ],
+    "wiki/concepts/stripe-saved-payment-methods.md": [
+      {
+        "start": 15,
+        "end": 33
+      },
+      {
+        "start": 78,
+        "end": 89
+      },
+      {
+        "start": 147,
+        "end": 160
+      }
+    ],
+    "wiki/sources/stripe/github/source-github-stripe-ios.md": [
+      {
+        "start": 711,
+        "end": 756
+      }
+    ],
+    "raw/github/stripe/stripe-ios/supplements/2026-10-29-2f45476-65a4022e/files/MIGRATING-COCOAPODS.md": [
+      {
+        "start": 1,
+        "end": 59
+      }
+    ],
+    "wiki/sources/source-stripe-inapp-set-up-future-payments.md": [
+      {
+        "start": 1,
+        "end": 53
+      }
+    ],
+    "raw/stripe-inapp-set-up-future-payments-2025.md": [
+      {
+        "start": 1,
+        "end": 12
+      },
+      {
+        "start": 96,
+        "end": 126
+      },
+      {
+        "start": 958,
+        "end": 963
+      },
+      {
+        "start": 1029,
+        "end": 1044
+      },
+      {
+        "start": 1716,
+        "end": 1725
+      },
+      {
+        "start": 1818,
+        "end": 1842
+      },
+      {
+        "start": 1998,
+        "end": 2017
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 411,
+        "end": 417
+      }
+    ]
+  },
+  "answers": {
+    "payments-mobile-finalize-payments-on-the-server": {
+      "Q1": "The November 7, 2026 capture of https://docs.stripe.com/payments/mobile/finalize-payments-on-the-server states that the Mobile Payment Element renders before the app's server creates the PaymentIntent or SetupIntent and confirms it from the server. New raw lines 5-21 give payment and setup routes for iOS, Android, and React Native. The six linked variant bodies and their platform prerequisites are outside that capture. The April 22 guide documents the merchant server endpoint, enabled payment methods, SDK initialization, the client IntentConfiguration and ConfirmationToken ID, the server-chosen payment amount and currency, server create-and-confirm, and the Intent client secret consumed for next actions (old raw lines 14-94, 219-225, 341-423). The SetupIntent branch saves a method without charging and attaches it to a customer-configured Accounts v2 Account or Customers v1 Customer. April names Connect general availability and public preview for other Accounts v2 users, with a preview API version for preview participants. The server returns the SetupIntent secret after create-and-confirm, and an off-session charge uses a separate PaymentIntent with possible authentication failure (old raw lines 873-877, 1028-1038, 1120-1126, 1242-1373). The baseline source-stripe-inapp-finalize-payments-server.md summarized PaymentIntent without covering setup and lacked the delayed-method webhook boundary. The candidate restores both branches and identifies payment_intent.succeeded for successful fulfillment, with processing and failure handled separately. A completed sheet can coexist with a pending payment (old raw lines 425-437, 556-569).",
+      "Q2": "For https://docs.stripe.com/payments/mobile/finalize-payments-on-the-server, new raw lines 5-21 retain the title and render-before-create-and-confirm order and replace the inline guide with six navigation links. The delta establishes a change in capture coverage, with platform and SDK behavior still sourced from April. The candidate source-stripe-inapp-finalize-payments-server.md preserves the April distinction between PaymentIntent and SetupIntent, Accounts v2 general availability for Connect and preview-version requirements for other preview users, and the Customers v1 alternative (old raw lines 341-423, 873-877, 1028-1038, 1242-1373). The April Swift examples use stripeId and FlowController update(), Android uses id and reconfiguration through configureWithIntentConfiguration(), and React Native uses id and a separate customFlow trigger. Default payment/setup triggers are in-sheet, custom triggers are app-owned, and in both the server confirms the Intent (old raw lines 219-225, 285-351, 1877-1883, 2162-2171, 4431-4437, 4472-4542, 5362-5368, 5467-5473). The guide excludes OXXO in the dated iOS and React Native examples, limits the opt-in to display of supported delayed methods, and separates client completion from successful payment, processing and failure (old raw lines 425-437, 556-569, 4824-4840). It preserves the separate CustomerSession secret and example discrepancy (old raw lines 472-554, 2620-2635, 4747-4804), purpose-specific redisplay consent, platform return schemes, and Apple Pay version limits (old raw lines 96-98, 614-691, 1328-1330, 4271-4282, 4899-4952). April's CocoaPods directions remain historical, with the reciprocal stripe-ios 26.15.1 migration qualification that 26.15.0 was the last CocoaPods release. The deferred April React Native SetupIntent route names cards and PayPal and creates/confirms the SetupIntent after receiving the token (old raw lines 5100-5103, 5174-5180, 5467-5473). The reciprocal warning links source-stripe-inapp-set-up-future-payments.md, whose separate precreated-SetupIntent React Native variant initializes from the SetupIntent client secret and lists cards, Link, and US bank accounts. Its Android variant lists those same three and its seven-method list is iOS-specific (raw/stripe-inapp-set-up-future-payments-2025.md lines 8-12, 110-120, 958-963, 1029-1044, 1716-1725, 1818-1842, 1998-2017). Current support, availability, eligibility, and a unified method matrix remain undetermined."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-mobile-finalize-payments-on-the-server-consent-responsibility",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "Consent collection is automatic — handles global compliance requirements.",
+      "proposed_markdown": "In the April 2026 mobile guide, merchants remain responsible for applicable laws, regulations, and network rules when saving payment details. Redisplay requires consent for the specific future use. See [[source-stripe-inapp-finalize-payments-server]].",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The prior automatic-compliance sentence conflicts with the April source. Ground the correction in raw/stripe-inapp-finalize-payments-server-2025.md:1328-1330,3803-3805,5605-5607 and old_evidence indexes 6 and 9. The November variant index supplies navigation only for this claim."
+      ]
+    },
+    {
+      "update_id": "payments-mobile-finalize-payments-on-the-server-dated-source-route",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-inapp-finalize-payments-server]] — Server confirmation: ConfirmationToken flow, FlowController update() retry, Apple Pay setup, mobile_payment_element CustomerSession",
+      "proposed_markdown": "- [[source-stripe-inapp-finalize-payments-server]] — April 2026 deferred PaymentIntent and SetupIntent guide with ConfirmationToken, platform-specific FlowController reconfiguration, and server outcome handling. November 2026 variant navigation index.",
+      "quote_indexes": [
+        0,
+        1,
+        4
+      ],
+      "warnings": [
+        "April native iOS update and Android reconfiguration are separate APIs. See raw/stripe-inapp-finalize-payments-server-2025.md:285-315,2162-2171. November links to variant bodies outside the capture."
+      ]
+    },
+    {
+      "update_id": "payments-mobile-finalize-payments-on-the-server-scope-companion-setup-methods",
+      "target_path": "wiki/concepts/stripe-saved-payment-methods.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-inapp-set-up-future-payments]] — Mobile setup without charge: SetupIntent supports card/Bancontact/iDEAL/Link/SEPA/Sofort/US bank (more than setup_future_usage), setupIntentClientSecret",
+      "proposed_markdown": "- [[source-stripe-inapp-set-up-future-payments]] — April 2026 mobile setup without charge using a precreated SetupIntent. The seven-method list applies to iOS. The Android and React Native variants list cards, Link, and US bank accounts. The separately documented React Native deferred server-confirmation route names cards and PayPal. See [[source-stripe-inapp-finalize-payments-server]].",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": [
+        "The support statements belong to distinct dated routes. See raw/stripe-inapp-finalize-payments-server-2025.md:5174-5180,5467-5473 and raw/stripe-inapp-set-up-future-payments-2025.md:110-120,1029-1044,1818-1842,1998-2017. Current support and an overlapping method matrix are undetermined."
+      ]
+    }
+  ]
+}

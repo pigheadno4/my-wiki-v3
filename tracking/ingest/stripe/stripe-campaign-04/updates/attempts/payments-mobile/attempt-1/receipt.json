@@ -1,0 +1,326 @@
+{
+  "job_id": "payments-mobile",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Build an In-App Payments Integration\"\ntype: source\ndate_ingested: 2026-04-22\ndate_updated: 2026-11-22\noriginal_format: notes\ncanonical_url: \"https://docs.stripe.com/payments/mobile\"\nraw_files:\n  - \"stripe-payments-mobile-2026-11-07.md\"\n  - \"stripe-inapp-payments-overview-2025.md\"\ntags: [stripe, mobile, ios, android, react-native, payment-sheet, flow-controller, payment-element, in-app-payments, setup-future-usage]\n---\n\n## Summary\n\n[[stripe]]’s April 22 and November 7, 2026 overviews cover native [[stripe-inapp-payments]] on iOS, Android and React Native. They describe dynamic display of 40+ payment methods alongside eligible saved methods, collection of payment and billing details, and handling 3DS2 authentication or a banking-app redirect where applicable. Authentication and app or browser return are steps in the flow. A successful payment is a separate server-side outcome.\n\nBoth overviews include a dated US digital-goods note. Android apps in the US can use the in-app route described by Stripe. For iOS, Stripe points to an app-to-web Checkout example with US storefront and device checks. See [[source-stripe-inapp-digital-goods-checkout]]. The captured note describes these routes within its scope and leaves current store policy and merchant eligibility unverified.\n\n## Three UI Options\n\n| UI | November integration effort | Integration choice |\n| --- | --- | --- |\n| **Payment Sheet** | 2/5 | Recommended for most integrations. The all-in-one sheet displays methods, collects details and confirms payment. |\n| **Flow Controller** | 3/5 | The prebuilt sheet handles selection and collection. Your app controls confirmation, such as after updating a total or applying a discount. |\n| **Payment Element** | 3/5 | Place customizable payment method rows inline or on a dedicated screen. Stripe shows a detail sheet when the method needs more information. |\n\nPayment Sheet and Flow Controller use the same Appearance API controls, with more than 50 customizable aspects. The November overview describes merchant-controlled confirmation for the Payment Element’s standard pattern. The April native iOS embedded guide documents a default **Continue** action and optional in-sheet confirmation through `formSheetAction`. See [[source-stripe-inapp-accept-payment-embedded]].\n\nNovember’s UI sections are at lines 25-82. Its nine **Get started** links cover accept, setup, and accept-and-setup for each UI. See lines 86-127 for Payment Sheet, 131-172 for Flow Controller, and 176-217 for Payment Element. November adds selection guidance, numeric complexity, images and App Clip demos. The three UI choices were already present in April.\n\n## November 2026 Private Preview — Tap to Add Your Card\n\nThe November overview introduces access requests for two preview variants, [Payment Sheet](https://docs.stripe.com/payments/mobile/tap-to-add) and [Payment Element](https://docs.stripe.com/payments/mobile/embedded-tap-to-add). Each separately captured guide requires requesting preview access, an existing integration for the named UI, a physical card and a compatible NFC-equipped Android device. The server retrieves the Customer, creates a Customer-bound SetupIntent for `card_present` and returns its client secret to the app. The overview’s nearby all-supported-platforms sentence has an unspecified subject. The linked preview guides explicitly scope tap to add to Android.\n\nBoth November child examples send writable `payment_method_types` with `card_present`. The separate API changelog’s `2026-09-30.endive` REST endpoints and change table document HTTP 400 for using that writable field on SetupIntent create and keep the computed object property readable. The Impact paragraph names `2026-08-26.preview`. Another Endive entry lists `card_present` under SetupIntent create’s `allowed_payment_method_types`. Use the capture’s endpoint version when interpreting the request example. The enum change establishes request syntax for that version and leaves private-preview enrollment unverified.\n\n## Intent and Outcome Boundaries\n\n- **Accept a payment.** A PaymentIntent targets an immediate charge, with single-use and reusable methods available where eligible. Saving via a checkbox depends on configuration. For example, the April embedded guide enables `payment_method_save` on a CustomerSession for the save-card checkbox.\n- **Save without charging.** A SetupIntent targets reusable methods without an immediate charge. The April setup guide creates it on the server with the Customer ID and returns its client secret. The example also passes an optional Customer Ephemeral Key for temporary SDK access. The guide routes customer-configured Accounts to the equivalent Accounts v2 references.\n- **Accept a payment and set future usage.** The April pay-and-save guide creates a PaymentIntent with `setup_future_usage` for a customer-configured Account or Customer, creates a CustomerSession for temporary scoped access, and returns both client secrets. The overviews describe top-level `setup_future_usage` as excluding one-time methods such as most BNPLs. Method-specific settings such as `payment_method_options[card][setup_future_usage]` can mix one-time and reusable methods. The April mobile Payment Element pay-and-save guide scopes its `setup_future_usage` route to cards and US bank accounts. A distinct April embedded SDK preview leaves both future-usage fields unset on the server PaymentIntent and derives them from SDK `IntentConfiguration`.\n\nFor delayed methods, the April embedded guide can return client `.completed` while payment is pending. Stripe’s server-side guides use `payment_intent.processing`, `payment_intent.succeeded`, and `payment_intent.payment_failed` to distinguish pending, successful and failed outcomes for fulfillment. See [[source-stripe-inapp-save-during-payment]], [[source-stripe-inapp-set-up-future-payments]] and [[source-stripe-inapp-accept-payment-embedded]].\n\n## Saved Methods, Consent and Wallets\n\nThe overview lists cards, US bank accounts and SEPA Debit for eligible saved-method presentation and management. CustomerSession controls whether the save-consent checkbox and saved methods appear and whether customers can remove saved methods, including the last one. Both dated overviews describe automatic consent collection. The April save-during-payment guide assigns the merchant responsibility for applicable requirements, consent for the specific future use, consent records and eligible redisplay via `allow_redisplay`. A configured checkbox or SDK session alone leaves actual attachment and redisplay dependent on the flow and the method.\n\nBoth captures separately list a 100+ payment-method feature/catalog figure, including wallets and custom methods. The figure is broader than the 40+ dynamic display statement and the choices shown depend on eligibility. The overview’s wallet footnote points to web domain registration for Elements and embeddable Checkout. The April native guide separately covers Apple Merchant ID, certificate and Xcode capability and Android Google Pay API and SDK configuration. See [[source-stripe-inapp-save-during-payment]].\n\n![April 2026 Payment Sheet overview](../raw/assets/stripe-inapp-payment-sheet-overview.png)\n![April 2026 saved payment methods](../raw/assets/stripe-inapp-saved-payment-methods.png)\n\n## Related Pages\n\n- [[stripe-inapp-payments]] — UI patterns, Intent boundaries and mobile implementation routes.\n- [[stripe-saved-payment-methods]] — saved-method patterns and consent.\n- [[source-stripe-inapp-payment-sheet]] — native Payment Sheet configuration.\n\n## Raw Sources\n\n- [[raw/stripe-payments-mobile-2026-11-07|Stripe’s November 7, 2026 In-App Payments overview]]\n- [[raw/stripe-inapp-payments-overview-2025|Stripe’s April 22, 2026 In-App Payments overview]]\n\n## Related raw API references\n\n- [[raw/stripe-payments-mobile-tap-to-add-2026-11-07|Payment Sheet tap-to-add preview guide]] — November 7, 2026 capture, lines 9-35 and 71-105.\n- [[raw/stripe-payments-mobile-embedded-tap-to-add-2026-11-07|Payment Element tap-to-add preview guide]] — November 7, 2026 capture, lines 9-35 and 71-105.\n- [[raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07|Endive removal of writable payment method types]] — November 7, 2026 capture, lines 5-36.\n- [[raw/stripe-changelog-endive-2026-09-30-card-present-and-interac-present-enum-values-for-allowed-payment-method-types-2026-11-07|Endive card-present enum changes]] — November 7, 2026 capture, lines 5-28.\n",
+  "quotes": {
+    "payments-mobile": [
+      {
+        "text": "Use Stripe’s In-app Payments to build a customized payments integration and checkout flows for your iOS, Android, and React Native apps.",
+        "location": "raw/stripe-payments-mobile-2026-11-07.md:7"
+      },
+      {
+        "text": "The tap to add your card feature is in private preview.",
+        "location": "raw/stripe-payments-mobile-2026-11-07.md:17"
+      },
+      {
+        "text": "Stripe offers three UI integrations. We recommend Payment Sheet for most integrations because it requires the least integration effort.",
+        "location": "raw/stripe-payments-mobile-2026-11-07.md:27"
+      },
+      {
+        "text": "Collect and save a payment method for future payments *without* charging the customer.",
+        "location": "raw/stripe-payments-mobile-2026-11-07.md:108"
+      },
+      {
+        "text": "- Preventing customers from removing the last saved payment method",
+        "location": "raw/stripe-payments-mobile-2026-11-07.md:243"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-mobile": [
+      {
+        "text": "Dynamically display 40+ payment methods, including Apple Pay, Google Pay, and Link, as well as saved payment methods.",
+        "location": "raw/stripe-inapp-payments-overview-2025.md:13"
+      },
+      {
+        "text": "Collect and save a payment method for future payments without charging the customer.",
+        "location": "raw/stripe-inapp-payments-overview-2025.md:66"
+      },
+      {
+        "text": "Consent collection is handled automatically, ensuring global compliance.",
+        "location": "raw/stripe-inapp-payments-overview-2025.md:83"
+      },
+      {
+        "text": "100+ (dynamic payment methods, Link, Apple Pay, Google Pay, Amazon Pay, custom)",
+        "location": "raw/stripe-inapp-payments-overview-2025.md:99"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-mobile-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 279
+      }
+    ],
+    "raw/stripe-inapp-payments-overview-2025.md": [
+      {
+        "start": 1,
+        "end": 105
+      }
+    ],
+    "wiki/sources/source-stripe-inapp-payments-overview.md": [
+      {
+        "start": 1,
+        "end": 81
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/53078b70597a58631bfa767c/content.diff": [
+      {
+        "start": 1,
+        "end": 345
+      }
+    ],
+    "raw/stripe-payments-mobile-tap-to-add-2026-11-07.md": [
+      {
+        "start": 9,
+        "end": 35
+      },
+      {
+        "start": 71,
+        "end": 105
+      }
+    ],
+    "raw/stripe-payments-mobile-embedded-tap-to-add-2026-11-07.md": [
+      {
+        "start": 9,
+        "end": 35
+      },
+      {
+        "start": 71,
+        "end": 105
+      }
+    ],
+    "raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 36
+      }
+    ],
+    "raw/stripe-changelog-endive-2026-09-30-card-present-and-interac-present-enum-values-for-allowed-payment-method-types-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 28
+      }
+    ],
+    "raw/stripe-inapp-save-during-payment-2025.md": [
+      {
+        "start": 22,
+        "end": 33
+      },
+      {
+        "start": 109,
+        "end": 130
+      },
+      {
+        "start": 620,
+        "end": 640
+      },
+      {
+        "start": 736,
+        "end": 767
+      },
+      {
+        "start": 1685,
+        "end": 1720
+      }
+    ],
+    "raw/stripe-inapp-set-up-future-payments-2025.md": [
+      {
+        "start": 110,
+        "end": 131
+      }
+    ],
+    "raw/stripe-inapp-accept-payment-embedded-2025.md": [
+      {
+        "start": 98,
+        "end": 106
+      },
+      {
+        "start": 579,
+        "end": 601
+      },
+      {
+        "start": 747,
+        "end": 759
+      },
+      {
+        "start": 794,
+        "end": 828
+      },
+      {
+        "start": 905,
+        "end": 929
+      },
+      {
+        "start": 3320,
+        "end": 3354
+      }
+    ],
+    "raw/stripe-inapp-digital-goods-checkout-2025.md": [
+      {
+        "start": 1,
+        "end": 16
+      },
+      {
+        "start": 339,
+        "end": 365
+      }
+    ],
+    "raw/stripe-payments-payment-methods-pmd-registration-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 14
+      }
+    ],
+    "raw/stripe-pmd-registration-2025.md": [
+      {
+        "start": 4,
+        "end": 23
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 7,
+        "end": 7
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 101,
+        "end": 108
+      },
+      {
+        "start": 778,
+        "end": 778
+      }
+    ],
+    "wiki/concepts/stripe-inapp-payments.md": [
+      {
+        "start": 1,
+        "end": 105
+      }
+    ],
+    "wiki/sources/source-stripe-inapp-accept-payment-embedded.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-mobile/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 282
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-mobile/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 90
+      }
+    ]
+  },
+  "answers": {
+    "payments-mobile": {
+      "Q1": "At https://docs.stripe.com/payments/mobile, new raw lines 5-23 describe native iOS, Android and React Native checkout. Both captures describe dynamic display of 40+ payment methods alongside eligible saved methods, collection of payment and billing details, and 3DS2 authentication or banking-app redirects as applicable (old raw lines 11-15, new raw lines 19-23). November adds an access-request route for the private preview of tap to add your card. The separate preview guides require requesting access, a compatible NFC Android device, a physical card and an existing Payment Sheet or Payment Element integration. The server retrieves the Customer, creates a Customer-bound card_present SetupIntent and returns its client secret for the client SDK (raw/stripe-payments-mobile-tap-to-add-2026-11-07.md:9-35,71-105 and raw/stripe-payments-mobile-embedded-tap-to-add-2026-11-07.md:9-35,71-105). The overview recommends the all-in-one Payment Sheet, gives the app confirmation control in Flow Controller, and describes embeddable method rows with Payment Element (new raw lines 25-82). The two Intent types support charging, reusable-method setup without a charge, and paying while setting future usage. The overview distinguishes global future usage, which excludes one-time methods such as most BNPLs, from method-specific future usage that can retain both categories. CustomerSession controls the consent box, display and removal of eligible saved card, US bank and SEPA methods (new raw lines 86-243). The April pay-and-save guide creates a PaymentIntent with setup_future_usage and a scoped CustomerSession for a customer-configured Account or Customer. The separate no-charge guide creates a Customer-bound SetupIntent on the server and describes an optional Customer Ephemeral Key for temporary access. The server-side events distinguish processing, succeeded and failed from client completion (raw/stripe-inapp-save-during-payment-2025.md:115-130,620-640 and raw/stripe-inapp-set-up-future-payments-2025.md:110-131). The April overview already explained the core native flow, UI and Intent choices (old raw lines 17-45, old raw lines 47-92). source-stripe-inapp-payments-overview.md reflects those UI and Intent choices but omits the native authentication path at lines 13–23 and 63–69, the preview prerequisites, and the dated trust-boundary distinctions. The revised source restores those details, adds November UI selection and all nine guide routes, and distinguishes the documented preview prerequisites, dedicated endpoint contract and payment outcome.",
+      "Q2": "At https://docs.stripe.com/payments/mobile, the private-preview access disclosure is substantive; App Clip demos, illustrations, numeric complexity labels, repeated API tables and concrete links across the three UIs expand presentation and navigation. The US digital-goods note stays dated, with Android in-app and an iOS app-to-web Checkout route; further app-store or merchant eligibility requires its own evidence. The unqualified platform sentence cannot broaden the linked Android-only NFC preview (new raw lines 9-17, new raw lines 25-82, new raw lines 86-217). Preserve the old UI, API and saved-method baseline (old raw lines 17-45, old raw lines 47-92). The revised source-stripe-inapp-payments-overview.md and its proposed reciprocal In-App Payments concept updates carry those qualifications. The mobile save checkbox visibility depends on applicable settings and merchant responsibility for consent and redisplay remains. Global future usage excludes one-time methods such as most BNPLs, with dated mobile-specific limits and a separate SDK preview in which the SDK supplies per-method settings from IntentConfiguration rather than the server setting the fields (raw/stripe-inapp-save-during-payment-2025.md:22-33,115-130,634-640 and raw/stripe-inapp-accept-payment-embedded-2025.md:3320-3354). The tap-to-add samples use writable payment_method_types for card_present. The separate 2026-09-30.endive changelogs document HTTP 400 for that request field on SetupIntent create and the card_present enum under allowed_payment_method_types. Scope this to the versioned endpoints and preserve the child samples as dated, since the removal changelog has a mismatched Impact version label. Distinguish 40+ dynamic choices from the separate 100+ catalog claim, and the web domain registration footnote from native wallet setup (old raw lines 11-15, old raw lines 94-105, new raw lines 19-23, new raw lines 245-279). A client completion, saved setting, or app-to-web return does not prove a successful payment, settlement or compliance."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "s04-mobile-overview-iOS-confirm",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Payment Element** embeds payment method selection anywhere in your app — most flexible, most code. Three layout options: radio buttons, checkmarks, floating buttons. Wallets (Apple Pay, Link) shown inline as options (not in a separate section).",
+      "proposed_markdown": "**Payment Element** embeds payment method selection in your app. Three layout options include radio buttons, checkmarks and floating buttons. Wallets such as Apple Pay and Link are shown inline where eligible. The overview describes merchant-controlled confirmation as the standard pattern. The dated native iOS embedded guide defaults to **Continue** in the details sheet and supports optional in-sheet confirmation with `formSheetAction`. See [[source-stripe-inapp-accept-payment-embedded]].",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "November overview raw lines 25-35 and 65-75 and April embedded guide raw lines 98-106 and 579-601."
+      ]
+    },
+    {
+      "update_id": "s04-mobile-overview-charge-result",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "Collect payment and charge immediately. Stripe auto-shows \"Save my info\" checkbox.",
+      "proposed_markdown": "A PaymentIntent targets a charge during checkout. The save checkbox depends on the UI’s configuration, such as `payment_method_save` for the embedded card flow. A delayed method can return client `.completed` while payment is pending. Use server-side payment events to distinguish processing, success and failure. See [[source-stripe-inapp-accept-payment-embedded]].",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": [
+        "November overview raw lines 90-101 and 219-243; April embedded raw lines 747-759, 794-828 and 905-929."
+      ]
+    },
+    {
+      "update_id": "s04-mobile-overview-future-use",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "Charge now AND save the PM for future.",
+      "proposed_markdown": "A PaymentIntent with future usage targets a charge and saves an eligible method. Top-level future usage excludes one-time methods such as most BNPLs. The April mobile Payment Element pay-and-save guide scopes `setup_future_usage` to cards and US bank accounts. The separate embedded SDK preview supplies per-method settings through `IntentConfiguration` and leaves both server-side future-usage fields unset. The examples below show the overview’s generic API patterns.",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": [
+        "November overview raw lines 116-127, 161-172 and 206-217. April pay-and-save raw lines 109-130 and April embedded raw lines 3320-3354 qualify the mobile route and distinct SDK preview."
+      ]
+    },
+    {
+      "update_id": "s04-mobile-overview-consent",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "Consent collection is automatic — handles global compliance requirements.",
+      "proposed_markdown": "Stripe provides configurable consent and redisplay controls. The merchant remains responsible for applicable requirements, obtaining and recording consent for the specific future use, and scoping redisplay via `allow_redisplay`. See [[source-stripe-inapp-save-during-payment]].",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "November overview raw lines 219-243; April save-during-payment raw lines 22-33 and 634-640."
+      ]
+    },
+    {
+      "update_id": "s04-mobile-overview-methods",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "- 100+ payment methods including Apple Pay, Google Pay, Link, Amazon Pay, custom PMs",
+      "proposed_markdown": "- The April and November overviews list 40+ dynamically displayed methods alongside eligible saved methods and a separate 100+ catalog figure, including wallets and custom methods. Available methods depend on the checkout.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "April overview raw lines 11-15 and 94-105; November overview raw lines 19-23 and 245-279."
+      ]
+    },
+    {
+      "update_id": "s04-mobile-overview-wallets",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "- Wallet PMs (Apple Pay, Google Pay) require domain registration",
+      "proposed_markdown": "- The overview’s wallet-domain footnote links to web Elements and embeddable Checkout. Native iOS Apple Pay uses Apple Merchant ID, certificate and Xcode configuration. Native Android Google Pay uses Android API and SDK configuration. See [[source-stripe-inapp-save-during-payment]].",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "November overview raw lines 245-279; web domain guide raw lines 5-14; April native save-during-payment raw lines 736-767 and 1685-1720."
+      ]
+    },
+    {
+      "update_id": "s04-mobile-overview-preview-route",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-inapp-payments-overview]] — primary reference: UI options, API patterns, saved PM controls, features table",
+      "proposed_markdown": "- [[source-stripe-inapp-payments-overview]] — April and November 2026 native overview. The November tap-to-add private preview has separate Payment Sheet and Payment Element routes for compatible NFC Android devices, with access-request and versioned SetupIntent details.",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "November overview raw lines 5-23 and 25-82. The two tap-to-add guides raw lines 9-35 and 71-105 scope Android, physical card, existing integration and Customer-bound server SetupIntent."
+      ]
+    }
+  ]
+}

@@ -2,26 +2,46 @@
 title: "Stripe: Kriya Payments"
 type: source
 date_ingested: 2026-05-06
+date_updated: 2026-11-22
 original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/kriya"
 raw_files:
+  - "stripe-payments-kriya-2026-11-07.md"
   - "stripe-kriya-2025.md"
 tags: [stripe, bnpl, kriya, buy-now-pay-later, b2b, uk, disputes, refunds]
 ---
 
 ## Summary
 
-Deep-dive on Kriya as a Stripe B2B BNPL payment method. UK-only, GBP-only, no Connect support. Notable for the most extensive prohibited category list of any BNPL method.
+The May 6 and November 7, 2026 captures describe Kriya as buy now, pay later for businesses. They list UK customers, GB Stripe accounts, and GBP presentment and settlement for GB. Confirmation is customer-initiated. The headline advertises instant merchant payment, while the payment-method property gives **Standard** payout timing. The captures leave the timing of individual external payouts undetermined.
 
-## Key Details
+## Connect and early access
 
-**B2B only** — UK only, GBP only. **No Connect support** — only BNPL method on Stripe without it.
+The May 6 Kriya method page says **Connect No**, while the May 6 [[source-stripe-bnpl-overview|Stripe BNPL overview]] lists Kriya as supported. The November 7 method page changes to **Connect Yes**, matching the November BNPL overview. This documents a change in the method page's support label. Connect activation timing, supported charge types, capability IDs, and individual account eligibility remain undetermined.
 
-**Disputes**: 12-day evidence window. Types: fraud, double payments, amount discrepancy.
+The November page separately invites users to submit an email to request early access. Submitting the request is separate from account approval and Dashboard enablement. The page leaves any Connect-specific access requirement undetermined.
 
-**Refunds**: 180-day window; async (up to 5 min). `refund.updated`/`refund.failed` webhooks.
+## Product and API scope
 
-**Prohibited categories** (~36, most extensive of any BNPL): advertising, airlines, gambling, car rentals, charities, courier services, cruise lines, adult content, drugs/pharmacies, financial institutions, hotels, insurance underwriting, massage parlors, crypto, pawn shops, petroleum, political/religious organizations, security brokers, travel agencies, timeshares, trailer parks, video arcades, and more.
+Both captures list Payment Links, Checkout, and Elements, manual capture, and full and partial refunds. They exclude recurring payments, Checkout setup and subscription modes, and Express Checkout Element. For supported front-end products, enable Kriya in Dashboard and Stripe selects relevant methods for display. For manually listed methods, see [[source-stripe-kriya-accept-payment]]. Its November capture indexes Checkout, Elements with Checkout Sessions or Payment Intents, and Direct API. The variant bodies fall outside that capture.
+
+Both dated [[source-stripe-bnpl-overview|BNPL API matrices]] list `kriya` with PaymentIntents, manual capture, required redirect, and a supported `setup_future_usage` cell. They mark SetupIntents unsupported. The parameter cell leaves payment-method reusability and successful off-session charging undetermined. The method pages independently mark recurring payments unsupported.
+
+## Disputes and refunds
+
+- **Disputes.** Kriya accepts claims including suspected fraud, double payments, and discrepancies between order and transaction amounts. Stripe withholds the disputed amount pending Kriya's decision. Submit evidence within **12 calendar days**. Stripe returns the amount to the merchant’s Stripe balance if Kriya rules for the merchant. If Kriya rules for the customer, the amount stays with the customer.
+- **Refunds.** The captures describe full and partial refunds up to **180 days after purchase**, processed asynchronously in up to **five minutes**. The Refund object reaches `succeeded` or `failed`. Stripe reports the final status with `refund.updated` or `refund.failed`. A failed refund returns the amount to the Stripe balance and requires the merchant to arrange another way to refund the customer.
+
+## Prohibited categories
+
+Kriya's dated list applies in addition to Stripe's overall restrictions. It includes advertising, airlines, gambling, car rentals, fundraising for charities and social-service organizations, courier services, cruise lines, adult content, drug stores and pharmacies, financial institutions, hotels, insurance underwriting, massage parlors, cryptocurrency exchanges and wallets, pawn shops, petroleum, political and religious organizations, security brokers, travel agencies, timeshares, trailer parks, and video arcades. Kriya also lists other categories at its discretion. The November capture adds **Remote Stored Value Load — Merchant** as a separate entry alongside the retained **Non-FI, Stored Value Card Purchase/Load**. See May raw lines 88–132 and November raw lines 100–145 for the complete lists.
+
+## Related Pages
+
+- [[stripe]] — payment provider
+- [[stripe-bnpl]] — Stripe BNPL concept and dated cross-method comparison
 
 ## Raw Sources
 
-- [[stripe-kriya-2025]] — verbatim webpage content (171 lines); fixed `_webhook_` → `*webhook*`; MP4 video URL left as-is
+- [[raw/stripe-payments-kriya-2026-11-07|2026-11-07 Kriya payment method capture]]
+- [[raw/stripe-kriya-2025|2026-05-06 Kriya payment method capture]] — 171 lines, with the webhook term formatting corrected and the MP4 URL retained

@@ -1,0 +1,220 @@
+{
+  "job_id": "payments-ng-card-accept-a-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Docs — Accept a payment using local cards in Nigeria\"\ntype: source\ndate_ingested: 2026-05-08\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/ng-card/accept-a-payment\"\nraw_files:\n  - \"stripe-ng-card-accept-payment-2025.md\"\ntags: [stripe, nigeria, naira, ng-card, local-payment-methods, merchant-of-record, payment-intents, checkout, recurring]\n---\n\n## Summary\n\n[[stripe]]’s May 8, 2026 guide describes Checkout and Direct API acceptance of Nigerian-issued cards (`ng_card`) for Nigerian customers. The November 7 capture keeps the local-card title and links the Checkout and Direct API variants. It provides navigation. The implementation below describes the full May guide.\n\nThe separate [[source-stripe-nigeria-payment-methods|November Nigeria overview]] describes the Nigerian partner as merchant of record and lists US Stripe accounts with USD settlement and NGN presentment. It provides an invitation request and describes Dashboard settings for Stripe front ends. An invitation request or a front-end payment-method display gives no approval evidence. Its recurring matrix lists cards as supported and bank transfers as unsupported. The separate May [[source-stripe-ng-bank-transfer-accept-payment|bank-transfer guide]] lists Checkout payment mode and excludes setup and subscriptions.\n\n## May 8, 2026 — Checkout\n\nThe guide lists US businesses, NGN presentment, all Checkout line items in `ngn`, and a Checkout transaction range of 500–100,000,000 NGN. Checkout compatibility covers `payment`, `setup` and `subscription`. The hosted and embedded examples both use `payment` mode. The hosted sample sets `success_url`, and the embedded sample sets `return_url` and `ui_mode: 'embedded_page'`.\n\nWith dynamic payment methods, Stripe describes evaluating currency, payment method restrictions and other parameters to determine relevant methods. The historical manual alternative lists `ng_card` in the Checkout Session creation request’s `payment_method_types`. Check the Endive version warning below before reusing either create sample. The May test selects **Naira payment methods** and proceeds through the test checkout. See May lines 8-103.\n\n## May 8, 2026 — Direct API and Payment Verification\n\n1. The server creates a PaymentIntent with amount, `ngn` and, in the historical manual request, `ng_card` in `payment_method_types`. The server example additionally sets `payment_method_data.type` to `ng_card`. This is documented example placement.\n2. The server passes the PaymentIntent client secret to the browser. The guide describes a server endpoint for a single-page app or passing the secret with a server-rendered form.\n3. The browser sample loads the Dahlia Stripe.js script and calls `stripe.confirmPayment` with the client secret, `confirmParams.payment_method_data.type: 'ng_card'`, and `return_url`. Its error handler destructures `error` but reads undeclared `result.error.message`.\n4. Stripe redirects to the Nigerian merchant-of-record provider for authentication and authorization. Stripe returns the customer to the merchant’s page with `payment_intent` and `payment_intent_client_secret` for status verification. A redirect or authentication alone gives no evidence of a successful payment, fulfillment, merchant balance or payout.\n5. With test API keys, simulated authorization moves `requires_action` to `succeeded`. Choosing **Fail test payment** moves it to `requires_payment_method`. The guide recommends asynchronous `payment_intent.succeeded` handling through Dashboard, a webhook or a partner integration for post-payment actions. A live `succeeded` status establishes payment completion within that PaymentIntent’s lifecycle. Payout is separate.\n\nSee May lines 105-153 for the server sample, lines 151-220 for client-secret handoff and lines 222-296 for confirmation, error handling, verification, sandbox tests and events.\n\n## API Version Boundary — Endive Create Requests\n\nThe historical Checkout and Direct API samples write `payment_method_types` on server Create requests. The two separate `2026-09-30.endive` REST changelogs document HTTP 400 when sending that field to Checkout Session Create or PaymentIntent Create. The Checkout Session response can still show the computed compatible subset in `payment_method_types`. PaymentIntent Create documents `payment_method_types_no_longer_supported`, and the PaymentIntent object retains a computed read-only list. The PaymentIntent changelog’s Impact paragraph separately names `2026-08-26.preview`, while the REST table and upgrade header identify Endive.\n\nBoth endpoint changelogs document Dashboard-managed dynamic methods, `excluded_payment_method_types` to exclude specific dynamic results, and `allowed_payment_method_types` to submit a set that Stripe filters for compatibility. These are request and response contracts. Eligibility, `ng_card` compatibility, appearance in the returned list and buyer display depend on the account and checkout configuration. The change concerns writing `payment_method_types` on the named server endpoints. The browser’s historical Dahlia Stripe.js URL supplies no evidence of the account’s API version.\n\n## Related Pages\n\n- [[stripe-nigeria-payment-methods]] — Nigerian payment methods, partner merchant of record and dated endpoint qualifications.\n- [[source-stripe-nigeria-payment-methods]] — Nigeria overview including access requests, card and bank-transfer matrix, settlement and VAT.\n- [[source-stripe-ng-bank-transfer-accept-payment]] — the separate Naira bank-transfer acceptance flow.\n- [[source-stripe-ng-card-set-up-future-payments]] — the separate local-card setup and future payment guide.\n- [[stripe]] — provider.\n\n## Raw Sources\n\n- [[raw/stripe-ng-card-accept-payment-2025|Stripe’s May 8, 2026 local Nigerian card guide with both full variants]]\n\n## Related raw API references\n\n- [[raw/stripe-payments-ng-card-accept-a-payment-2026-11-07|Nigerian card acceptance variant index]] — November 7, 2026 capture, Checkout and Direct API navigation.\n- [[raw/stripe-changelog-endive-2026-09-30-remove-payment-method-types-checkout-sessions-2026-11-07|Endive Checkout Session Create parameter changelog]] — November 7, 2026 capture, lines 9-23, 27-32 and 83-92.\n- [[raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07|Endive PaymentIntent and SetupIntent parameter changelog]] — November 7, 2026 capture, lines 9-24, 28, 32-36 and 80-89.\n",
+  "quotes": {
+    "payments-ng-card-accept-a-payment": [
+      {
+        "text": "# Accept a payment using local cards in Nigeria",
+        "location": "raw/stripe-payments-ng-card-accept-a-payment-2026-11-07.md:5"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-ng-card-accept-a-payment-2026-11-07.md:9"
+      },
+      {
+        "text": "[Checkout](https://docs.stripe.com/payments/ng-card/accept-a-payment.md?payment-ui=checkout)",
+        "location": "raw/stripe-payments-ng-card-accept-a-payment-2026-11-07.md:11"
+      },
+      {
+        "text": "[Direct API](https://docs.stripe.com/payments/ng-card/accept-a-payment.md?payment-ui=direct-api)",
+        "location": "raw/stripe-payments-ng-card-accept-a-payment-2026-11-07.md:12"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-ng-card-accept-a-payment": [
+      {
+        "text": "Integrating with Naira card enables Nigerian customers to pay using Nigerian-issued cards.",
+        "location": "raw/stripe-ng-card-accept-payment-2025.md:16"
+      },
+      {
+        "text": "The minimum amount accepted is 500 NGN, and the maximum amount accepted is 100,000,000 NGN.",
+        "location": "raw/stripe-ng-card-accept-payment-2025.md:37"
+      },
+      {
+        "text": "Listen for these events rather than waiting on a callback from the client.",
+        "location": "raw/stripe-ng-card-accept-payment-2025.md:284"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-ng-card-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 12
+      }
+    ],
+    "raw/stripe-ng-card-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 296
+      }
+    ],
+    "wiki/sources/source-stripe-ng-card-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 48
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/c4d1b729051e463d9ed13d44/content.diff": [
+      {
+        "start": 1,
+        "end": 299
+      }
+    ],
+    "raw/stripe-payments-countries-nigeria-2026-11-07.md": [
+      {
+        "start": 7,
+        "end": 15
+      },
+      {
+        "start": 27,
+        "end": 42
+      },
+      {
+        "start": 63,
+        "end": 90
+      },
+      {
+        "start": 109,
+        "end": 117
+      }
+    ],
+    "raw/stripe-ng-bank-transfer-accept-payment-2025.md": [
+      {
+        "start": 16,
+        "end": 44
+      }
+    ],
+    "raw/stripe-changelog-endive-2026-09-30-remove-payment-method-types-checkout-sessions-2026-11-07.md": [
+      {
+        "start": 9,
+        "end": 23
+      },
+      {
+        "start": 27,
+        "end": 32
+      },
+      {
+        "start": 83,
+        "end": 92
+      }
+    ],
+    "raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07.md": [
+      {
+        "start": 9,
+        "end": 24
+      },
+      {
+        "start": 28,
+        "end": 28
+      },
+      {
+        "start": 32,
+        "end": 36
+      },
+      {
+        "start": 80,
+        "end": 89
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 7,
+        "end": 7
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 423,
+        "end": 423
+      },
+      {
+        "start": 789,
+        "end": 789
+      }
+    ],
+    "wiki/concepts/stripe-nigeria-payment-methods.md": [
+      {
+        "start": 8,
+        "end": 84
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-ng-card-accept-a-payment/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 203
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-ng-card-accept-a-payment/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 110
+      }
+    ]
+  },
+  "answers": {
+    "payments-ng-card-accept-a-payment": {
+      "Q1": "The November 7 capture of https://docs.stripe.com/payments/ng-card/accept-a-payment identifies acceptance of locally issued Nigerian cards and links Checkout and Direct API (new raw lines 5-12). The May 8 guide describes Nigerian customers using Nigerian-issued cards, US merchants, NGN presentment and Checkout limits of 500–100,000,000 NGN, with all Checkout line items in NGN. It lists compatibility for payment, setup and subscription modes and shows payment-only examples for hosted Checkout with success_url and embedded Checkout with return_url and ui_mode=embedded_page. Stripe evaluates eligible dynamic methods, while manual selection lists ng_card (old raw lines 8-46 and old raw lines 48-103). In Direct API, the server creates a PaymentIntent and passes the client secret. The browser calls stripe.confirmPayment with a return URL, the local merchant-of-record provider handles authentication and authorization, and Stripe returns PaymentIntent identifiers for a status lookup. The Direct API sandbox example transitions from requires_action to succeeded on simulated authorization or to requires_payment_method on simulated failure. The post-payment guidance recommends listening for payment_intent.succeeded rather than relying on a browser callback (old raw lines 105-153 and old raw lines 222-296). source-stripe-ng-card-accept-payment.md preserves the principal May flow but needs separate treatment of manual listing, create-time example fields and status verification. The revised page keeps only May as full guide evidence, links the November variant index and restores the supported scope and completion boundary.",
+      "Q2": "At https://docs.stripe.com/payments/ng-card/accept-a-payment, new raw lines 5-12 retain the guide's identity and replace the May Checkout and Direct API bodies with navigation. The November family overview separately shows a Nigerian partner merchant-of-record arrangement, US accounts with USD settlement and an invitation request, which neither validates account approval nor changes the acceptance index's evidence scope. Keep the May 8, 2026 NGN and amount restrictions, supported Checkout modes, hosted and embedded payment samples and test descriptions dated (old raw lines 2-46 and old raw lines 48-103). The reciprocal Nigeria concept and source-stripe-ng-card-accept-payment.md should distinguish dynamic selection from manual listing, the server example's payment_method_data from prose requirements, the historical Dahlia and confirmation snippet, and the server-to-client PaymentIntent secret handoff (old raw lines 128-189 and old raw lines 222-267). Preserve the dated callback example's error-handler mismatch. Authentication or a return URL does not verify outcome. Sandbox transitions do not prove live payment, and a live PaymentIntent's succeeded status concerns payment completion without establishing merchant payout (old raw lines 269-296). The May Checkout and Direct API samples explicitly write payment_method_types when creating a Checkout Session or PaymentIntent (old raw lines 38-72 and old raw lines 79-102 and old raw lines 128-153). Separate 2026-09-30.endive REST contracts document HTTP 400 for sending that field to either Create endpoint. Checkout Session still exposes the computed compatible subset in the response's payment_method_types. PaymentIntent Create documents error code payment_method_types_no_longer_supported and the PaymentIntent object retains a computed read-only payment_method_types list. The PaymentIntent changelog's Impact paragraph separately names 2026-08-26.preview. Keep that Impact label distinct from the 2026-09-30.endive REST table and upgrade header. For each of these Create endpoints, the respective changelog documents Dashboard-managed dynamic payment methods, optional excluded_payment_method_types to exclude specific types from dynamic results, or allowed_payment_method_types to submit a set filtered for compatibility. These request and response properties give no assurance of account eligibility or that ng_card is compatible, appears in the returned list or is displayed in a particular checkout (raw/stripe-changelog-endive-2026-09-30-remove-payment-method-types-checkout-sessions-2026-11-07.md:9-23,27-32,83-92 and raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07.md:9-24,28,32-36,80-89). Cross-reference this warning between the mapped Naira acceptance source and the Nigeria payment methods concept. This separate version evidence concerns the server-side Create requests. The November Naira index supplies navigation, and the May browser script keeps its historical Stripe.js label. The revised source and proposed concept corrections retain the two Create endpoint changelog routes and dated May and November scopes."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "s04-ngcard-accept-checkout",
+      "target_path": "wiki/concepts/stripe-nigeria-payment-methods.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Amount limits**: 500–100,000,000 NGN\n- **Modes**: payment + setup + subscription (supports recurring, unlike bank transfer)\n- **Checkout**: add `ng_card` to `payment_method_types`; all line items in `ngn`",
+      "proposed_markdown": "- **May 2026 Checkout compatibility** — US businesses accepting Nigerian-issued cards from Nigerian customers, all line items in `ngn`, and 500–100,000,000 NGN per Checkout transaction. The guide lists payment, setup and subscription compatibility. Both hosted and embedded samples use payment mode.\n- **May 2026 selection** — Stripe evaluates dynamic method applicability. The historical manual Checkout examples add `ng_card` to `payment_method_types`. For the separate Endive request contract, see [[source-stripe-ng-card-accept-payment]].",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": [
+        "May acceptance raw lines 8-103 supply the dated behavior. November acceptance raw lines 5-12 only identify and link variants; the access and recurring comparison comes from the November country overview raw lines 63-90 and 109-117."
+      ]
+    },
+    {
+      "update_id": "s04-ngcard-accept-direct",
+      "target_path": "wiki/concepts/stripe-nigeria-payment-methods.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Direct API**: create PaymentIntent with `ng_card` **and** `payment_method_data: { type: 'ng_card' }` at creation; then `stripe.confirmPayment()` with same `payment_method_data.type` + `return_url`",
+      "proposed_markdown": "- **May 2026 Direct API** — the server example includes amount, `ngn`, `ng_card` in `payment_method_types`, and `payment_method_data.type: 'ng_card'`. The browser sample uses the PaymentIntent client secret, `payment_method_data.type: 'ng_card'` and `return_url` in `stripe.confirmPayment`. The extra create field is example-specific.\n- **Version boundary** — Checkout Session Create and PaymentIntent Create in `2026-09-30.endive` reject writable `payment_method_types` with HTTP 400 and retain their computed response properties. The documented alternatives are dynamic methods with an optional exclusion or a compatibility-filtered allowlist. For each endpoint’s changelog and the separate PaymentIntent Impact preview label, see [[source-stripe-ng-card-accept-payment#API Version Boundary — Endive Create Requests|the Naira card guide’s Endive warning]].",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": [
+        "May acceptance raw lines 38-102, 128-153 and 241-259. November acceptance raw lines 9-12 are navigation. Checkout Endive changelog raw lines 9-23, 27-32 and 83-92; PaymentIntent and SetupIntent Endive changelog raw lines 9-24, 28, 32-36 and 80-89."
+      ]
+    },
+    {
+      "update_id": "s04-ngcard-accept-outcome",
+      "target_path": "wiki/concepts/stripe-nigeria-payment-methods.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Redirect params on return**: `payment_intent` + `payment_intent_client_secret`\n- **Testing**: success → `requires_action` → `succeeded`; fail → \"Fail test payment\" → `requires_payment_method`\n- **Post-payment**: `payment_intent.succeeded` webhook",
+      "proposed_markdown": "- **Return and verification** — the Nigerian partner handles authentication and authorization. Stripe returns `payment_intent` and `payment_intent_client_secret` for status lookup. A return or authentication alone does not verify payment. The guide recommends `payment_intent.succeeded` events for post-payment actions.\n- **Sandbox tests** — simulated authorization moves `requires_action` to `succeeded`, and a simulated failure moves it to `requires_payment_method`. Live payment and payout are separate outcomes.",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": [
+        "May acceptance raw lines 109-113 and 241-284 support the authenticated redirect, state checks and sandbox boundaries. November acceptance raw lines 9-12 only route to variants."
+      ]
+    },
+    {
+      "update_id": "s04-ngcard-accept-source",
+      "target_path": "wiki/concepts/stripe-nigeria-payment-methods.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-ng-card-accept-payment]] — Naira card integration: ng_card, setup+subscription mode, 500–100M NGN limits, confirmPayment(), same redirect flow",
+      "proposed_markdown": "- [[source-stripe-ng-card-accept-payment]] — May 2026 Checkout and Direct API guide, November variant index and separate Endive Create request warning.",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": []
+    }
+  ]
+}

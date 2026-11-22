@@ -1,0 +1,67 @@
+---
+title: "Stripe Docs — Set up future payments with Naira card"
+type: source
+date_ingested: 2026-05-08
+date_updated: 2026-11-22
+original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/ng-card/set-up-future-payments"
+raw_files:
+  - "stripe-ng-card-set-up-future-payments-2025.md"
+tags: [stripe, nigeria, naira, ng-card, recurring, setup-intents, mandate, merchant-of-record]
+---
+
+## Summary
+
+The May 8, 2026 [[stripe|Stripe]] guide covers saving a Naira card (`ng_card`) for future use through Checkout setup mode or the Direct API. The Direct API separately documents setup without an initial charge and an attempted charge that also saves the method. The November 7 base capture is a navigation index for Checkout and Direct API. See [[stripe-nigeria-payment-methods]] and the separate [[source-stripe-nigeria-payment-methods|Nigeria rollout overview]] for the Nigerian partner merchant-of-record route, Naira card one-time/recurring matrix and invite-request context. This partner is distinct from Stripe acting as the merchant of record under [[stripe-managed-payments]].
+
+## Consent and customer identity
+
+The May Checkout branch requires upfront customer opt-in. Keep a record of the written agreement. For off-session use, explain which payments the business may initiate, expected frequency and timing, how the amount is determined and, for subscriptions, the cancellation policy. Checkout also requires the customer to authorize the local merchant-of-record provider for future payments. Those permissions are separate from the API's `mandate_data` and from the result of setup. Map the Stripe Customer ID to the merchant's customer record and use that Customer when saving the payment method. See May raw lines 29–94 and 110–151.
+
+## May 8, 2026 save paths
+
+### Checkout setup mode
+
+Create a Checkout Session on the server in `setup` mode for the Customer. The historical example passes `payment_method_types: ['card', 'ng_card']`. Redirect the customer to the Checkout Session URL. In the documented test the customer selects Naira card, continues to authentication and a successful SetupIntent moves from `requires_action` to `succeeded`. Verify setup status separately from browser navigation and any later charge. See May raw lines 60–94.
+
+### Direct API setup without an initial charge
+
+The server creates a Customer-linked SetupIntent with `ng_card` in historical `payment_method_types` and `usage` of `off_session` or `on_session`. Pass the SetupIntent client secret to browser Stripe.js. The May Dahlia Stripe.js example calls `confirmNgCardSetup` with the secret, `return_url` and an online customer acceptance sample using `infer_from_client: true`. See May raw lines 110–151 and 220–270.
+
+### Direct API attempt a charge and save
+
+The May guide creates a separate PaymentIntent on the server with historical `payment_method_types: ['ng_card']`, the Customer ID, `confirm=true`, `setup_future_usage=off_session` and `return_url`. The prose calls `mandate_data` optional. The example supplies online acceptance with explicit IP address and user agent, uses NGN and automatic capture, and the guide passes the PaymentIntent client secret to the client to continue. The separately captured November [[raw/stripe-api-payment-intents-create-2026-11-07|Create PaymentIntent reference]] also marks the object optional and usable with `confirm=true` (lines 627–630). See May raw lines 332–370.
+
+The separate November [[raw/stripe-billing-subscriptions-ng-card-variant-c8486b9656-2026-11-07|Billing SetupIntents subscription example]] confirms the SetupIntent server-side with explicit IP address and user agent, then passes the client secret to Stripe.js for the redirect and mandate authorization (lines 36–58). The acceptance fields follow the integration and confirmation route. An optional request payload leaves the May guide's written-permission requirement separate.
+
+## May standalone PaymentIntent redirect
+
+The optional server-side redirect example creates and confirms a PaymentIntent. Its `payment_method_data` creates and immediately uses a PaymentMethod. The request supplies `return_url` and historical `payment_method_types`, and omits the Customer, future-usage and optional mandate data used by the separate charge-and-save route. Only redirect to `next_action.redirect_to_url.url` when the PaymentIntent status is `requires_action` and `next_action.type` is `redirect_to_url`. The return can include `payment_intent` and `payment_intent_client_secret`. Stripe recommends a server webhook to verify payment status. This example is a payment path and establishes neither SetupIntent confirmation nor future-use attachment. See May raw lines 272–330.
+
+## Saved PaymentMethod reuse and detach
+
+May creates and confirms a new PaymentIntent on the server using the saved PaymentMethod ID from the preceding SetupIntent or PaymentIntent and its Customer. The example supplies historical `payment_method_types`. Set `off_session=true` if the customer is absent from the current checkout flow. A server-side PaymentMethod detach deactivates the reusable method and Stripe sends `mandate.updated` and `payment_method.detached`. Setup status, a later payment outcome, detach and subscription cancellation are separate. See May raw lines 372–396.
+
+## API version boundary for the May requests
+
+The May examples send `payment_method_types` in Checkout Session Create, SetupIntent Create and PaymentIntent Create, including the standalone redirect, charge-and-save and saved-use examples. Use the May snapshot as historical integration evidence.
+
+- The November-captured [[raw/stripe-changelog-endive-2026-09-30-remove-payment-method-types-checkout-sessions-2026-11-07|Checkout Session changelog]] documents HTTP 400 for this request parameter at its linked `2026-09-30.endive` Create endpoint. The computed `payment_method_types` remains readable in the response. See changelog lines 5–23.
+- The separate November-captured [[raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07|PaymentIntent and SetupIntent changelog]] documents HTTP 400 with `payment_method_types_no_longer_supported` for the writable parameter on affected endpoints, including both Create routes, and retains the read-only property on the objects. Its API links and REST table cite `2026-09-30.endive` while Impact names `2026-08-26.preview`. Keep both version references. See changelog lines 5–36.
+
+The November navigation index supplies neither a migrated `ng_card` flow nor an applicable Stripe API version for those variants. The dated evidence leaves account entitlement and actual setup, payment and funds outcomes unverified.
+
+## Related Pages
+
+- [[stripe-nigeria-payment-methods]] — Nigeria local payment methods and integration context
+- [[source-stripe-ng-card-accept-payment]] — one-time Naira card acceptance
+- [[source-stripe-nigeria-payment-methods]] — Nigeria overview
+- [[stripe]] — Stripe company page
+
+## Raw Sources
+
+- [[raw/stripe-ng-card-set-up-future-payments-2025|Set up future payments with Naira card, May 8, 2026 full capture]]
+
+## Related raw API references
+
+- [[raw/stripe-payments-ng-card-set-up-future-payments-2026-11-07|Naira card setup navigation index]] — November 7, 2026. Links Checkout and Direct API variants.

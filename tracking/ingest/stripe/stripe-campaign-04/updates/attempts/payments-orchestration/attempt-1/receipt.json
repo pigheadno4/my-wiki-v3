@@ -1,0 +1,254 @@
+{
+  "job_id": "payments-orchestration",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe — Orchestration\"\ntype: source\ndate_ingested: 2026-05-11\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/orchestration\"\nraw_files:\n  - \"stripe-payments-orchestration-2026-11-07.md\"\n  - \"stripe-orchestration-2026.md\"\ntags: [stripe, orchestration, multi-processor, routing, retries, payment-routing, private-preview]\n---\n\n## Summary\n\nThe May 11 and November 7, 2026 overviews describe private-preview, rule-based card payment routing across Stripe-supported processors. Stripe operates the routing layer. The third party remains the processor for payments routed to it, with contractual fees and liability for transaction losses governed by that processor's terms.\n\n## Requesting access\n\nThe November overview adds an [email request form for the private preview](https://docs.stripe.com/payments/orchestration.md#orchestration_preview). Its example submits a JSON email and `orchestration_preview` key to the documentation site's `/preview/register` endpoint. This requests access. Representative-led onboarding, processor and integration checks, destination credentials, and activating routing rules are separate steps. Neither capture gives a new API or SDK version requirement.\n\n## Routing, retries, and reporting\n\n- **Integration.** The overview lists Payments, Billing, and Dashboard payments for card processing. The separate [[source-stripe-orchestration-route-payments]] guide describes onboarding the Stripe account, verifying the processor and integration, and supplying destination processor credentials in the Dashboard. Server-created PaymentIntents can opt in with `payments_orchestration[enabled]=true`. Billing, Checkout, Payment Links, and Dashboard payments create PaymentIntents automatically and require representative configuration for those intents to use routing.\n- **Rules.** Use the Dashboard to test rules in a sandbox. After testing, separately create and activate rules in the live account. A rule can specify a main processor and a retry processor for eligible failed payments. Use Dashboard analytics to monitor processor performance. See [[source-stripe-orchestration-rules]] and [[source-stripe-orchestration-retries]].\n- **Retry boundaries.** The November retry guide says that when Stripe is the main processor, a Stripe block such as a high-risk Radar decision is treated as a decline and retried on the chosen retry processor under the documented conditions. A failed main-processor 3DS path or a feature ineligible on the retry processor can prevent retry. This describes retry handling of the Stripe decision and supplies no evidence of Radar operating on a third-party attempt.\n- **Reporting.** A PaymentIntent still represents payment state. The Payment Record and Payment Attempt Records show execution history. For externally processed volume Stripe creates those records instead of Charges and does not create Stripe Balance Transactions for funds handled by the other processor.\n\n## Refunds, disputes, and settlement\n\nUse the Stripe Dashboard or Refunds API to initiate and manage refunds. The third-party processor administers refunds for payments it processed. For a preemptive refund on an Intent in `processing`, the feature guide says Stripe submits the refund to the corresponding processor after payment succeeds, or fails the refund request if payment fails. See [[source-stripe-orchestration-feature-support]].\n\nOrchestration does not handle disputes or settlement-related activity. Use the third-party processor's dashboard for those activities. Preview access, live rule activation, individual processor attempts, or refund initiation do not establish successful payment, refund completion, or settlement.\n\n## Dated product and wallet scope\n\nThe November overview excludes non-card payments, Link, Capital, Connect, Terminal, and Organizations. The routing guide says Link credentials cannot transfer between processors, so Link payments stay on Stripe outside configured routing rules.\n\nApple Pay and Google Pay have separate routing guidance and require compatible configuration with both Stripe and the destination processor. The November matrix excludes 3DS with Apple Pay or Google Pay DPAN and excludes Google Pay FPAN on Adyen. To charge a saved mobile wallet method, the wallet guide specifies `off_session=true` during PaymentIntent confirmation. If the customer is present, re-prompt using the wallet integration. See [[source-stripe-orchestration-wallet-payments]] and [[source-stripe-orchestration-feature-support]] for the complete qualifications.\n\nThe May overview additionally listed Radar for payments routed to third parties and Sigma among its exclusions. The November overview omits those names. The dated captures give no affirmative Radar support for third-party attempts or Sigma support. Check feature compatibility with the Stripe representative for the integration.\n\n## Related Pages\n\n- [[stripe]] — Stripe company page\n- [[stripe-orchestration]] — product, routing, and processor boundaries\n- [[stripe-vault-and-forward]] — separate card-data forwarding to external processors\n- [[stripe-off-session-payments]] — separate off-session payment flow\n- [[source-stripe-off-session-payments-api]] — the November companion guide documents a separate card-only path to opt an Off-Session Payments API request into Orchestration rules for multiple supported processors. It requires access to both private previews and an activated routing configuration, excludes Connect and raw card data, and does not support Smart Retries in that combined path. Its optional routing-rule retry processor is separate.\n\n## Raw Sources\n\n- [[raw/stripe-payments-orchestration-2026-11-07]] — complete November 7, 2026 Orchestration overview and preview request instructions\n- [[raw/stripe-orchestration-2026]] — verbatim May 11, 2026 Orchestration overview (39 lines)\n",
+  "quotes": {
+    "payments-orchestration": [
+      {
+        "text": "Orchestration is in private preview. [Share your email address to request access.](https://docs.stripe.com/payments/orchestration.md#orchestration_preview)",
+        "location": "raw/stripe-payments-orchestration-2026-11-07.md:11"
+      },
+      {
+        "text": "-d '{\"email\": \"EMAIL\", \"preview\": \"orchestration_preview\"}'",
+        "location": "raw/stripe-payments-orchestration-2026-11-07.md:22"
+      },
+      {
+        "text": "For payments routed to third-party processors, those processors administer the refunds.",
+        "location": "raw/stripe-payments-orchestration-2026-11-07.md:37"
+      },
+      {
+        "text": "All related activity (including payment processing fees and liability for transaction losses) remain subject to the terms that you agreed to with that processor.",
+        "location": "raw/stripe-payments-orchestration-2026-11-07.md:41"
+      },
+      {
+        "text": "Orchestration also doesn’t support disputes or settlement-related activity.",
+        "location": "raw/stripe-payments-orchestration-2026-11-07.md:51"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-orchestration": [
+      {
+        "text": "Orchestration is in private preview.",
+        "location": "raw/stripe-orchestration-2026.md:10"
+      },
+      {
+        "text": "For payments routed to third-party processors, those processors administer the refunds.",
+        "location": "raw/stripe-orchestration-2026.md:25"
+      },
+      {
+        "text": "Radar (for payments routed to third-party processors), or Sigma.",
+        "location": "raw/stripe-orchestration-2026.md:39"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-orchestration-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 51
+      }
+    ],
+    "raw/stripe-orchestration-2026.md": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ],
+    "wiki/sources/source-stripe-orchestration.md": [
+      {
+        "start": 1,
+        "end": 43
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/11c106e208937d0e4b405bf8/content.diff": [
+      {
+        "start": 1,
+        "end": 47
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-orchestration/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 200
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-orchestration/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 118
+      }
+    ],
+    "wiki/concepts/stripe-orchestration.md": [
+      {
+        "start": 10,
+        "end": 106
+      },
+      {
+        "start": 108,
+        "end": 124
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 13
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 574,
+        "end": 582
+      },
+      {
+        "start": 704,
+        "end": 709
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 635,
+        "end": 642
+      }
+    ],
+    "raw/stripe-payments-orchestration-feature-support-2026-11-07.md": [
+      {
+        "start": 25,
+        "end": 57
+      }
+    ],
+    "raw/stripe-payments-orchestration-route-payments-2026-11-07.md": [
+      {
+        "start": 24,
+        "end": 54
+      },
+      {
+        "start": 74,
+        "end": 91
+      },
+      {
+        "start": 109,
+        "end": 132
+      },
+      {
+        "start": 206,
+        "end": 210
+      }
+    ],
+    "raw/stripe-payments-orchestration-retries-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 37
+      }
+    ],
+    "raw/stripe-payments-orchestration-wallet-payments-2026-11-07.md": [
+      {
+        "start": 23,
+        "end": 38
+      }
+    ],
+    "wiki/sources/source-stripe-orchestration-retries.md": [
+      {
+        "start": 11,
+        "end": 29
+      }
+    ],
+    "wiki/sources/source-stripe-orchestration-feature-support.md": [
+      {
+        "start": 13,
+        "end": 42
+      }
+    ],
+    "raw/stripe-payments-off-session-payments-orchestration-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 25
+      },
+      {
+        "start": 43,
+        "end": 51
+      }
+    ],
+    "raw/stripe-payments-off-session-payments-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 21
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/updates/attempts/payments-off-session-payments/attempt-1/candidate.md": [
+      {
+        "start": 26,
+        "end": 45
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 770,
+        "end": 775
+      }
+    ]
+  },
+  "answers": {
+    "payments-orchestration": {
+      "Q1": "For https://docs.stripe.com/payments/orchestration, both complete captures describe private-preview, rule-based card payment routing across Stripe-supported processors. November adds an email request form with the `orchestration_preview` registration key. It requests access. The separately documented implementation requires representative onboarding, supported processor and integration checks, destination credentials, configured rules and separate live activation. PaymentIntents can opt in server-side. Billing, Checkout, Payment Links and Dashboard can use configured auto-created PaymentIntents. Rules can retry eligible failures, and Dashboard monitoring and sandbox testing precede live activation (old raw lines 8-37 and new raw lines 9-49). The third-party processor still processes routed payments, retains contractual fees and liability, administers refunds initiated via the Stripe Dashboard or Refunds API, and handles disputes and settlement activity outside Orchestration. Non-card payments, Link, Capital, Connect, Terminal and Organizations are excluded. May also explicitly excluded Radar on third-party routed payments and Sigma. November omits those names (old raw lines 25-39 and new raw lines 37-51). The revised `source-stripe-orchestration.md` retains the May features and processor-of-record boundary, dates the exclusions, and adds November's request route. Access request, activated rule, processor attempt and refund initiation each have their own documented state. These states do not establish paid, refunded or settled status.",
+      "Q2": "For https://docs.stripe.com/payments/orchestration, the documented email-based private-preview request and the narrower exclusion wording are substantive documentation changes (old raw lines 8-10 and 31-39, new raw lines 9-23 and 43-51). Heading whitespace, collection metadata and anchor placement are presentational or navigational. The revised `source-stripe-orchestration.md` and proposed concept wording preserve the dated May Radar-on-third-party and Sigma exclusions. November’s omission establishes no support change. Separately, the retry guide says a Radar block when Stripe is main processor is treated as a decline subject to retry, alongside no retry after failed main-processor 3DS or for an ineligible retry feature. The candidate passes through the Stripe-main predicate and links the retries source. The separate index shorthand needs the same predicate. Link stays on Stripe outside routing rules. Separately, Apple Pay and Google Pay have processor and wallet qualifications, including `off_session=true` for saved mobile wallets and re-prompting present customers. The registration POST is a documentation access form. The separate implementation guide qualifies server-created `payments_orchestration` PaymentIntents, configuration for automatically created intents, sandbox versus live rule activation, and Payment Records and Stripe balance reporting by actual processor. The overview gives no changed API or SDK version requirement. Stripe’s refund entry points do not transfer third-party processor responsibilities or prove processing, refund or settlement outcomes (old raw lines 19-39 and new raw lines 31-51). The separate Off-Session Payments API companion requires both private previews for its card-only routing path. Its optional routing-rule retry processor is separate from Smart Retries, which is incompatible with that path."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-orchestration-access",
+      "target_path": "wiki/concepts/stripe-orchestration.md",
+      "update_kind": "durable_fact",
+      "anchor": "Stripe Orchestration (private preview) is a rule-based payment routing layer that lets merchants route card payments across multiple external processors. Stripe acts as the orchestration layer; third-party processors remain the processor of record for routed transactions — their fees and liability terms continue to apply.",
+      "proposed_markdown": "Stripe Orchestration is a private-preview layer for routing card payments across supported processors. The November 2026 overview adds an email request form. Requesting access, representative-led onboarding, testing rules in a sandbox, and activating rules in the live account are separate steps. Third parties remain the processors for payments routed to them, with fees and liability under their own terms. See [[source-stripe-orchestration]].",
+      "quote_indexes": [
+        0,
+        1,
+        3
+      ],
+      "warnings": [
+        "The documentation form requests access to a private preview and establishes no account approval or live activation."
+      ]
+    },
+    {
+      "update_id": "payments-orchestration-dated-exclusions",
+      "target_path": "wiki/concepts/stripe-orchestration.md",
+      "update_kind": "durable_fact",
+      "anchor": "Non-card payments, Link, Capital, Connect, Terminal, Organizations, Radar (for third-party routed payments), Sigma, disputes, settlement-related activity.",
+      "proposed_markdown": "The November 7, 2026 overview excludes non-card payments, Link, Capital, Connect, Terminal, Organizations, disputes, and settlement-related activity. The November routing guide specifies that Link stays on Stripe outside routing rules because Link credentials cannot transfer. Apple Pay and Google Pay have separate processor and wallet conditions.\n\nThe May 11, 2026 overview also listed Radar for third-party routed payments and Sigma as exclusions. November omits those names without establishing support. In the separate retry guide, when Stripe is the main processor and blocks a payment, such as through Radar, Orchestration treats it as a decline and can retry on the chosen processor under the documented conditions. That does not establish Radar on the third-party attempt. See [[source-stripe-orchestration]] and [[source-stripe-orchestration-retries]].",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "May overview raw line 39 and November overview raw line 51 give the dated exclusions. November routing lines 35–37 and retry line 34 give separate routing and retry predicates."
+      ]
+    },
+    {
+      "update_id": "payments-orchestration-off-session",
+      "target_path": "wiki/concepts/stripe-orchestration.md",
+      "update_kind": "durable_fact",
+      "anchor": "- [[stripe-off-session-payments]]: Off-Session Payments API also supports multi-processor routing for recurring payments.",
+      "proposed_markdown": "- [[stripe-off-session-payments]] and [[source-stripe-off-session-payments-api]] describe a separate API for off-session payments. Its November routing companion documents card-only opt-in to Orchestration with access to both private previews, an onboarded processor, and an active routing configuration. It excludes Connect, raw card data, and Smart Retries for this combined path. An optional routing-rule retry processor is a separate control.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Off-Session Payments Orchestration companion raw lines 5–25 and 43–51 document the two-preview and distinct retry rules."
+      ]
+    },
+    {
+      "update_id": "payments-orchestration-source-route",
+      "target_path": "wiki/concepts/stripe-orchestration.md",
+      "update_kind": "durable_fact",
+      "anchor": "- [[source-stripe-orchestration]] — overview: features, supported products, exclusions, processor-of-record rule",
+      "proposed_markdown": "- [[source-stripe-orchestration]] — May and November 2026 overview: private-preview request, processor responsibilities and refunds, dated Radar and Sigma exclusions, and the distinct Link, wallet, and Off-Session Payments routes",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ]
+}

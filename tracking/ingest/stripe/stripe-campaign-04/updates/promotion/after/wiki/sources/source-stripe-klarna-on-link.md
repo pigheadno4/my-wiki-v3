@@ -1,0 +1,69 @@
+---
+title: "Stripe Docs — Klarna on Link"
+type: source
+date_ingested: 2026-05-08
+date_updated: 2026-11-22
+original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/link/klarna"
+raw_files:
+  - "stripe-payments-link-klarna-2026-11-07.md"
+  - "stripe-klarna-on-link-2025.md"
+tags: [stripe, link, klarna, bnpl, us-only, buy-now-pay-later, installments]
+---
+
+## Summary
+
+The May 8 and November 7, 2026 captures document Klarna for US Link customers in Payment Links, Stripe-hosted Checkout and the Payment Element. Turning on Link automatically enables Klarna subject to eligibility. Link evaluates which methods to display for the business and transaction, and Klarna offers plans subject to its own criteria. Unselect **Pay later with Klarna** in Link settings to disable it.
+
+## Integration and identity
+
+Both generic Link API integration forms list Klarna as a possible funding method. The dedicated Klarna on Link guide limits its checkout availability to the three surfaces above. The Express Checkout Element guide lists separate Link and Klarna buttons, and neither that list nor standalone Klarna's geography and plan guidance extends the Klarna-on-Link surface list. [[source-stripe-link-payment-integrations]] · [[source-stripe-express-checkout-link]] · [[source-stripe-klarna]]
+
+The Link funding group reference lists Klarna as `lfsg_004`. On a Charge, the funding group appears under `payment_method_details.link.funding_source_group` for Link as a payment method or `payment_method_details.card.wallet.link.funding_source_group` for a card-specific Link integration. The code classifies the underlying funding group. The Charge ID and payment method type remain separate. [[source-stripe-link-payment-methods]]
+
+## Customer flows
+
+- **First Klarna use by an existing Link customer.** Choose **Pay later** and **Continue to payment plans**, confirm identity, create a Klarna account, select an offered plan, review and click **Pay**. General Link enrollment and authentication are separate.
+- **Returning Klarna on Link customer.** Klarna details are saved in Link. Choose **Pay later**, review the prefilled details and click **Pay**. The guide shows the customer returning to the merchant success page.
+
+Account creation, plan selection, saved details and return are customer flow steps. Verify payment separately. The April 20, 2026 Checkout fulfillment guide applies to Hosted Checkout and Payment Links. It uses server-side Checkout Session `payment_status` and webhooks to fulfill successful payments. The November canonical capture is a variant index. [[source-stripe-checkout-fulfillment]]
+
+## Merchant funding and payout
+
+Both Klarna on Link captures say Stripe immediately credits the full purchase amount minus Stripe fees to the merchant's Stripe account after the customer's payment method issuer authorizes the Klarna payment. The merchant does not wait for Klarna to collect installments. The guide's “Future payments” section describes Klarna collecting those installments.
+
+The separate November Link integrations guide describes successful payments settling to the Stripe balance on the card-payment timeline. The standalone Klarna overview describes accepted-payment net credit to the Stripe account and specifies standard payout timing. The guides leave open how the Link-specific Stripe-account credit relates in timing or sequence to the general Link settlement description. Neither Stripe-account statement establishes immediate payout to an external bank. These dated statements provide no particular transaction outcome or off-session charge workflow. [[source-stripe-link-payment-integrations]] · [[source-stripe-klarna]]
+
+## Sandbox test cards
+
+Use any three-digit CVC and any future expiry date with either sandbox fixture.
+
+| Card | Number | Usage |
+| --- | --- | --- |
+| Visa credit | `4242424242424242` | Installment plans |
+| Unbranded debit | `4687388888888881` | Financing plans |
+
+## May 8, 2026 screenshot assets
+
+- `raw/assets/stripe-klarna-link-pay-later.png` — pay later selection (138 KB)
+- `raw/assets/stripe-klarna-link-confirm-info.png` — identity confirmation (92 KB)
+- `raw/assets/stripe-klarna-link-select-plan.png` — plan selection (150 KB)
+- `raw/assets/stripe-klarna-link-pay.png` — confirm payment (129 KB)
+- `raw/assets/stripe-klarna-link-returning-pay-later.png` — returning pay later (92 KB)
+- `raw/assets/stripe-klarna-link-returning-confirm-info.png` — returning confirm (118 KB)
+- `raw/assets/stripe-klarna-link-returning-success.png` — success page (63 KB)
+
+November references seven corresponding CDN URLs, recorded in the November raw capture. The captions, configuration, sandbox instructions and payment wording are substantively unchanged.
+
+## Related Pages
+
+- [[stripe-link]] — Link concept and funding scope
+- [[stripe-klarna]] — Standalone Klarna product routes
+- [[stripe-bnpl]] — BNPL methods and Klarna payment boundaries
+- [[source-stripe-klarna]] — Standalone Klarna payment method and standard payout timing
+- [[stripe]] — Stripe company page
+
+## Raw Sources
+
+- [[raw/stripe-payments-link-klarna-2026-11-07]] — November 7, 2026 full webpage capture with CDN screenshot references (65 lines)
+- [[raw/stripe-klarna-on-link-2025]] — May 8, 2026 verbatim webpage content (64 lines), with seven local screenshot references

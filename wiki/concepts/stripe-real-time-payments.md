@@ -15,7 +15,7 @@ Real-time payment methods let customers directly transfer money from their bank 
 
 | Method | API enum | Customer region | Redirect | SetupIntents | setup_future_usage | Mobile |
 | --- | --- | --- | --- | --- | --- | --- |
-| Pay by Bank (UK/Europe) | `pay_by_bank` | UK, Finland, France, Germany, Ireland | Yes | No | No | No |
+| Pay by Bank (UK/Europe) | `pay_by_bank` | UK, Finland and Ireland generally available. Belgium, France and Germany private preview (2026-11-07 customer bank-account scope) | Yes | No | No | May matrix: No. November matrix: Yes |
 | PayNow | `paynow` | Singapore | No | No | No | Yes |
 | PayTo | `payto` | Australia | No | Yes | Yes | No |
 | Pix | `pix` | Brazil | No | No | No | Yes |
@@ -33,7 +33,7 @@ Real-time payment methods let customers directly transfer money from their bank 
 
 **Redirect required**: Pay by Bank (UK/Europe) and Swish only.
 
-**Subscriptions/Invoicing**: Pay by Bank, PayNow, PromptPay, and Swish support subscriptions/invoicing only via `send_invoice` (not `charge_automatically`). **Pix** supports automatic recurring via **Pix Automático** (mandate-based, charge_automatically). **PayTo** also lists Billing=Yes and Recurring=Yes — whether it supports `charge_automatically` requires verification against the PayTo accept-a-payment guide.
+**Subscriptions/Invoicing**: Pay by Bank, PayNow, PromptPay, and Swish support subscriptions/invoicing only via `send_invoice` (not `charge_automatically`). For Pay by Bank, this Billing scope is separate from the Bacs-backed Elements/Payment Intents private preview described below. **Pix** supports automatic recurring via **Pix Automático** (mandate-based, charge_automatically). **PayTo** also lists Billing=Yes and Recurring=Yes — whether it supports `charge_automatically` requires verification against the PayTo accept-a-payment guide.
 
 > [!info] Evolving
 > PayTo's billing collection method (`send_invoice` vs `charge_automatically`) is unconfirmed. Verify against the PayTo accept-a-payment guide.
@@ -86,19 +86,17 @@ Real-time payment methods let customers directly transfer money from their bank 
 
 ## Pay by Bank (UK/Europe) Details
 
-**Open banking** real-time payment — UK, Finland, France, Germany, Ireland. France/Germany/Ireland in **private preview**. EUR and GBP only.
+**Open banking availability**. The November overview lists UK, Finland and Ireland bank accounts as generally available and Belgium, France and Germany in private preview. May listed France, Germany and Ireland in private preview. Merchant eligibility is separate, with 35 Stripe account locations in both overviews. UK accounts use GBP and listed European accounts use EUR.
 
-**Transaction limits**: £0.50–£10,000 default. Higher amounts require contacting Stripe.
+**Transaction limits and payout**. £0.50–£10,000 default GBP range. Higher amounts require contacting Stripe. The one-off method lists standard payout. November states that an authorized payment can fail with `payment_method_provider_timeout` and Stripe returns funds arriving after failure.
 
-**No disputes** — customer authenticates in banking app; no chargeback process.
+**Disputes and refunds**. November scopes the no-chargeback description to inadequate-goods or services complaints. Both captures describe full or partial refunds to the original account within 730 days, with no refund fee and the original processing fee retained. Follow the Refund status to its outcome.
 
-**Refunds**: **730-day (2-year)** window. Partial refunds supported. Free; processing fees non-refundable.
+**Connect**. Direct charges, destination charges, and separate charges and transfers. Use Dashboard Payment methods where available or request `pay_by_bank_payments` for Express and non-Stripe dashboards. Check `active` through Accounts API or webhooks.
 
-**Connect**: Yes — Direct, Destination, Separate charges and transfers. Capability: `pay_by_bank_payments`. 35 merchant countries (US, AU, SG, most of Europe).
+**Product support**. The overviews list Connect, Payment Links, Checkout and Elements, with Checkout subscription mode and Express Checkout Element excluded. The separate May real-time matrix excludes Mobile Payment Element and the November matrix lists it, while the November method overview drops the original mobile exclusion. The Bacs-backed recurring flow is a separate Elements and Payment Intents private preview. See [[source-stripe-pay-by-bank]].
 
-**Product support**: Connect, Payment Links, Checkout (not subscription mode), Elements — Express Checkout Element and Mobile Payment Element **not** supported.
-
-**Integration**: Checkout and Elements (PaymentIntents) paths only — no Direct API. Checkout requires `payment_method_options.pay_by_bank.statement_descriptor` (business name shown on customer's bank statement). Checkout business locations: DE and GB only (EU private preview). Test: "Authorize test payment" → success; "Fail test payment" → failure.
+**Integration**. The 2026-05-06 [[source-stripe-pay-by-bank-accept-payment|acceptance guide]] details Checkout and web Elements with Payment Intents. Its manual Checkout flow specifies a statement descriptor. Its Checkout business location table and manual currency examples have dated qualifications. The 2026-11-07 acceptance capture indexes Checkout, both Elements API routes, iOS and Android. May describes immediate success/failure notification, while the April [[source-stripe-checkout-dashboard-payment-methods|Dashboard-managed Checkout guide]] lists Pay by Bank under delayed notification. Bank authorization and browser return are separate from verified payment success, available funds and payout. See the acceptance source for the scope of each statement.
 
 ## PayNow Details
 
@@ -214,8 +212,8 @@ Real-time payment methods let customers directly transfer money from their bank 
 - [[source-stripe-swish]] — Swish: SE-only mobile redirect + desktop QR, Stripe as MoR, 365-day refunds, no billing, extensive prohibited categories
 - [[source-stripe-swish-accept-payment]] — Swish integration: 3 paths + mobile SDK, Direct API legal notice required, next_action QR data, 20 QR refreshes, cancelable
 - [[source-stripe-payto]] — PayTo: Australia mandate-based, disputes (final), recurring, 44 banks, mandate field details
-- [[source-stripe-pay-by-bank]] — Pay by Bank (UK/Europe): open banking, 730-day refunds, no disputes, Connect support, 35 merchant countries
-- [[source-stripe-pay-by-bank-accept-payment]] — Pay by Bank integration: Checkout + Elements paths, statement_descriptor required, DE/GB only for Checkout
+- [[source-stripe-pay-by-bank]] — May and November 2026 Pay by Bank overviews for bank-account eligibility, authorized-transfer timeout, refunds, Connect activation and the Bacs-backed recurring private preview.
+- [[source-stripe-pay-by-bank-accept-payment]] — May 2026 Checkout and web Elements/Payment Intents guide with dated configuration and outcome qualifications. November 2026 selector indexes Checkout, both Elements API paths, iOS and Android.
 - [[source-stripe-paynow]] — PayNow: SG-only QR code, 1.3% pricing, T+1 payout, 90-day refunds, no statement descriptor, Terminal support
 - [[source-stripe-paynow-accept-payment]] — PayNow integration: Checkout + Direct API, confirmPayNowPayment(), inline QR (no redirect)
 - [[source-stripe-bizum]] — Bizum overview, May and November 2026 full captures: Spain customer/EUR scope, identity onboarding, disputes/refunds, and dated Connect No-to-Yes change with platform and connected-account `bizum_payments` capability and charge-type descriptor rules; pending capability is not active acceptance.

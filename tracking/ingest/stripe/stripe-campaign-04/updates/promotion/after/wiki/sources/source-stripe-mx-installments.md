@@ -1,0 +1,71 @@
+---
+title: "Stripe: Mexico Installments (Meses Sin Intereses)"
+type: source
+date_ingested: 2026-05-01
+date_updated: 2026-11-22
+canonical_url: "https://docs.stripe.com/payments/mx-installments"
+original_format: webpage
+raw_files:
+  - "stripe-payments-mx-installments-2026-11-07.md"
+  - "stripe-mx-installments-2025.md"
+tags: [stripe, mexico, installments, meses-sin-intereses, mxn, cards]
+---
+
+## Summary
+
+The May 1 and November 7, 2026 captures describe customer-initiated installments on Mexican consumer credit cards. The cardholder’s bank collects installments over multiple billing statements. The merchant receives the purchase proceeds net of fees as with a standard card charge, on standard payout timing.
+
+## Eligibility and installment fees
+
+Stripe determines eligibility after payment method setup. The merchant needs a Stripe Mexico account. The customer must pay in MXN above the applicable plan minimum with a Mexico-issued consumer credit card from a supported issuer. Corporate cards are excluded. May labels the property **Customer locations** and November labels it **Card issuing country**. Both captures expressly require a Mexico-issued card.
+
+Both captures give the same default minimums and fees. The installment fee is additional to the standard credit card transaction fee. In the Dashboard, select the plans to enable and configure custom minimum and maximum amounts for each plan.
+
+| Months | Default minimum | Additional fee |
+| --- | --- | --- |
+| 3 | 300 MXN | 5% |
+| 6 | 600 MXN | 7.5% |
+| 9 | 900 MXN | 10% |
+| 12 | 1,200 MXN | 12.5% |
+| 18 | 1,800 MXN | 17.5% |
+| 24 | 2,400 MXN | 22.5% |
+
+## Issuers by capture
+
+The May capture lists **32 issuers**. It limits Banamex to 3, 6, 9, and 12 months. The list comprises Afirme, American Express, Banamex, BanBajío, Banca Mifel, Banco Azteca, Banco Famsa, Banco Invex, Banco Multiva, Bancoppel, Banjercito, Banorte, Banregio, BBVA, Caja Morelia Valladolid, CrediClub, Didi, Efevoo Pay, Falabella, Hey Banco, Inbursa, Klar, Konfio, Liverpool, MercadoPago, NanoPay, Nubank, RappiCard, Santander, Scotiabank, Stori, and Suburbia.
+
+The November capture lists **35 distinct issuers** across 36 entries.
+
+| Listed plans in months | Issuers |
+| --- | --- |
+| 3, 6, 9, 12, 18, 24 | American Express, BBVA, Nubank |
+| 3, 6, 9, 12, 18 | Afirme, Banamex, BanBajío, Banca Mifel, Banco Azteca, Banco Invex, Banco Multiva, Banjercito, Banorte, Banregio, Caja Morelia Valladolid, CrediClub, Efevoo Pay, Falabella, Hey Banco, HSBC, Inbursa, Klar, Konfio, Liverpool, NanoPay, RappiCard, Santander, Scotiabank, Suburbia |
+| 3, 6, 9, 12 | Banco Plata, Bancoppel, Didi, Inbursa, MercadoPago, Revolut, Stori, Ualá |
+
+Banamex appears in the through-18-month group. Banco Plata, HSBC, Revolut, and Ualá are newly listed. The November list omits Banco Famsa. Inbursa appears in both the through-12-month and through-18-month groups, leaving its 18-month availability unresolved. An issuer’s listing alone leaves actual card and plan eligibility unverified.
+
+## Integration routes and payment states
+
+Both captures list the Payment Intents and Payment Methods APIs, Checkout, Invoicing, Payment Element, and Payment Links. November also lists [[stripe-terminal|Terminal]]. The separate November Mexico acceptance capture supplies a Terminal variant link. Reader support, SDK behavior, charge types, and account availability require evidence from the applicable product and SDK documentation.
+
+Stripe-hosted payments display eligible installment plans after the customer enters a supported card number. The overview recommends the same order for a custom payment UI. Card entry and plan display precede authorization, capture, and merchant payout. Both overview captures route their hosted UI and Direct API example links to Japan. Use the separate [[source-stripe-mx-installments-accept-payment|Mexico acceptance guide]] for Mexico integration and test cards. Its November variant index supplies navigation.
+
+Both overview captures list recurring payments, disputes, manual capture, and full and partial refunds as supported properties. The May Mexico acceptance guide limits hosted Checkout installments to `payment` mode, excluding `setup` and `subscription`. It limits Invoicing installments to individual invoices, excluding subscriptions. Apply those limits to their documented paths.
+
+Connect platforms can process installments on behalf of connected accounts and set the default installment configuration for accounts in Mexico. Standard connected accounts can override it in the Dashboard.
+
+## Related Pages
+
+- [[stripe]] — payment provider
+- [[stripe-installments]] — Mexico, Japan, and Mastercard installment products
+- [[source-stripe-mx-installments-accept-payment]] — Mexico payment integration and dated product limits
+- [[stripe-terminal]] — Terminal product and SDK coverage
+
+## Raw Sources
+
+- [[raw/stripe-payments-mx-installments-2026-11-07|2026-11-07 Mexico installments overview]]
+- [[raw/stripe-mx-installments-2025|2026-05-01 Mexico installments overview]] — verbatim webpage content with fees, requirements, and 32 listed issuers
+
+## Related raw API references
+
+- [[raw/stripe-payments-meses-sin-intereses-accept-a-payment-2026-11-07|2026-11-07 Mexico acceptance index]] — variant navigation, including Terminal

@@ -1,0 +1,85 @@
+<!-- Source URL: https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/saving-payment-details -->
+<!-- Fetched: 2026-11-07 -->
+<!-- Discovery: reconciled llms.txt,sitemap.xml -->
+
+# Save a customer's payment method without making a payment
+
+Learn how to save a customer's French meal vouchers payment method using a SetupIntent.
+
+> #### Want to accept France titres-restaurant payments?
+> 
+> France titres-restaurant is in private preview. Enter your email address to [join the waitlist](https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/saving-payment-details.md#fr_meal_voucher_preview). Stripe will contact you when we can onboard additional users.
+
+### Want to accept France titres-restaurant payments?
+
+Enter your email to request access.
+
+```bash
+curl https://docs.stripe.com/preview/register \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -H "Referer: https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/saving-payment-details" \
+  -d '{"email": "EMAIL", "preview": "fr_meal_voucher_preview"}'
+```
+
+> This guide is only for the following French meal vouchers issuers: Bimpli, Pluxee, and Up Déjeuner. It also requires preview [Stripe version](https://docs.stripe.com/sdks/set-version.md) `2026-05-27.preview` or later—see [Update the Stripe SDK](https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/set-up-restaurant-api.md#update-sdk) for setup instructions.
+
+## Before you begin
+
+[Set up your restaurant](https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/set-up-restaurant-api.md) using the Payment Locations API. Make sure the location’s `fr_meal_vouchers_conecs_payments` capability status is `active` before saving payment details.
+
+## Review the Saved Payment Methods documentation
+
+Before you start, review how to [save a customer’s payment method](https://docs.stripe.com/payments/save-and-reuse.md) without making a payment.
+
+## Create a SetupIntent
+
+To specify that the payment method is set up as a French meal vouchers payment, pass the ID of your [payment location](https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/set-up-restaurant-api.md#create-location) in [setup_details[location]](https://docs.stripe.com/api/setup_intents/create.md?api-version=2026-05-27.preview#create_setup_intent-setup_details-location) and set [setup_details[benefit][fr_meal_voucher][enabled]](https://docs.stripe.com/api/setup_intents/create.md?api-version=2026-05-27.preview#create_setup_intent-setup_details-benefit-fr_meal_voucher-enabled) to `if_payment_method_is_eligible`:
+
+```curl
+curl https://api.stripe.com/v1/setup_intents \
+  -u "<<YOUR_SECRET_KEY>>:" \
+  -d "customer={{CUSTOMER_ID}}" \
+  -d "setup_details[location]=loc_xxx" \
+  -d "setup_details[benefit][fr_meal_voucher][enabled]=if_payment_method_is_eligible"
+```
+
+After you create the `SetupIntent`, return its [client secret](https://docs.stripe.com/api/setup_intents/object.md#setup_intent_object-client_secret) to the client.
+
+## Submit the payment details to Stripe
+
+Use [stripe.confirmSetup](https://docs.stripe.com/js/setup_intents/confirm_setup) to complete the setup using details collected by the Payment Element. Provide a [return_url](https://docs.stripe.com/api/setup_intents/create.md#create_setup_intent-return_url) to indicate where Stripe redirects the user after they complete setup.
+
+## Charge the saved payment method later
+
+When you charge the saved payment method *on-session* (A payment is described as on-session if it occurs while the customer is actively in your checkout flow and able to authenticate the payment method), use the `Customer` and `PaymentMethod` IDs to create a `PaymentIntent`.
+
+Pass the ID of your payment location in [payment_details[location]](https://docs.stripe.com/api/payment_intents/create.md?api-version=2026-05-27.preview#create_payment_intent-payment_details-location) and set [payment_details[benefit][fr_meal_voucher][enabled]](https://docs.stripe.com/api/payment_intents/create.md?api-version=2026-05-27.preview#create_payment_intent-payment_details-benefit-fr_meal_voucher-enabled) to `if_payment_method_is_eligible`:
+
+French meal vouchers payments are in EUR only.
+
+```curl
+curl https://api.stripe.com/v1/payment_intents \
+  -u "<<YOUR_SECRET_KEY>>:" \
+  -d amount=1211 \
+  -d currency=eur \
+  -d "customer={{CUSTOMER_ID}}" \
+  -d "payment_method={{PAYMENTMETHOD_ID}}" \
+  -d confirm=true \
+  -d "payment_details[location]=loc_xxx" \
+  -d "payment_details[benefit][fr_meal_voucher][enabled]=if_payment_method_is_eligible"
+```
+
+### Test your integration 
+
+Use the following cards to test your integration in a *sandbox* (A sandbox is an isolated test environment that allows you to test Stripe functionality in your account without affecting your live integration. Use sandboxes to safely experiment with new features and changes):
+
+| French meal vouchers issuer | Number | CVC | Expiration date |
+| --- | --- | --- | --- |
+| Bimpli with Conecs | 4000002501000002 | Any 3 digits | Any future date |
+
+Use the PaymentLocation ID from your [sandbox onboarding setup](https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers/set-up-restaurant-api.md#testing). Pass this location ID in `setup_details[location]` when creating the SetupIntent in the same sandbox.
+
+## Temporary card authorization charge
+
+When storing customer details, Stripe might send a request to the issuer to verify the card. A customer might see a 0.30 EUR charge on their bank statement resulting from this card authorization process. Stripe reverses this temporary charge almost immediately, restoring the charge to the customer’s daily balance.

@@ -1,0 +1,234 @@
+{
+  "job_id": "payments-mobile-save-during-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Save Payment Details During an In-App Payment\"\ntype: source\ndate_ingested: 2026-04-22\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/mobile/save-during-payment\"\nraw_files:\n  - \"stripe-inapp-save-during-payment-2025.md\"\ntags: [stripe, mobile, ios, android, react-native, save-payment-method, setup-future-usage, off-session, customer-session, mobile-payment-element]\n---\n\n## Summary\n\nThe 2026-04-22 [[stripe|Stripe]] guide covers saving payment details during an initial in-app purchase using a server-created PaymentIntent across iOS, Android, and React Native. It labels those archived variants `mobile-ui=payment-element` and shows PaymentSheet examples. Card-present saving through Terminal uses its own flow. See [[source-stripe-inapp-set-up-future-payments]] for mobile SetupIntent collection without an initial charge.\n\nThe 2026-11-07 canonical capture states the same purpose and is a variant index linking to iOS, Android, and React Native with `mobile-ui=payment-sheet`. The linked bodies are absent from that capture. The route-label change leaves product migration and current SDK or API compatibility unverified.\n\n## Key Mobile Limitation\n\nThe April guide limits mobile Payment Element `setup_future_usage` to **cards and US bank accounts**. This is the limit for that save setting on the initial PaymentIntent. Delayed-method acceptance and collection with a SetupIntent have separate eligibility.\n\n## Server Endpoint Pattern\n\nThe April guide retrieves or creates the identity server-side. Its examples use `customer_account` for an Accounts v2 Account with the customer configuration or `customer` for a Customers v1 Customer. The method is attached to that customer identity for future use. The separate CustomerSession gives the SDK temporary, scoped access. The examples configure the `mobile_payment_element` component with save, redisplay, and removal features. The server creates the PaymentIntent with amount, currency, the matching identity, and `setup_future_usage`, then returns the two client secrets, the identity ID, and the publishable key. The guide describes Accounts v2 as generally available to Connect users and in public preview for other Stripe users at capture time. Preview participants need a preview API version.\n\nIllustrative Customers v1 excerpt from the April pattern, with an existing identity:\n\n```js\nconst customerSession = await stripe.customerSessions.create({\n  customer: customer.id,\n  components: {\n    mobile_payment_element: {\n      enabled: true,\n      features: {\n        payment_method_save: 'enabled',\n        payment_method_redisplay: 'enabled',\n        payment_method_remove: 'enabled',\n      },\n    },\n  },\n});\n\nconst paymentIntent = await stripe.paymentIntents.create({\n  amount: 1099,\n  currency: 'eur',\n  customer: customer.id,\n  setup_future_usage: 'off_session',\n  automatic_payment_methods: { enabled: true },\n});\n```\n\n## Merchant Consent and Redisplay\n\nThe April guide assigns compliance for the intended future use to the merchant. Before saving or charging, state that use in the terms, obtain explicit consent for it, and keep the customer's written agreement. Use the saved method only for the agreed purpose. For later customer-facing display, the guide uses `allow_redisplay` to distinguish attached methods that may be presented for future purchases. Display still calls for consent for that specific use.\n\n## iOS Client Setup\n\nThe April UIKit and SwiftUI examples show the `CustomerSessionBetaAccess` import and use a CustomerSession client secret in the PaymentSheet customer configuration. UIKit presents the sheet directly, while SwiftUI uses `PaymentSheet.PaymentButton` with `onCompletion`. When authentication takes the user out of the app, the dated native iOS guide configures a custom scheme, forwards the callback to the SDK, and sets `PaymentSheet.Configuration.returnURL`. This callback path supports custom schemes in the archive. The React Native return-URL instructions are explicitly iOS-only and also specify a custom scheme and SDK callback forwarding. The archived return paths do not support Universal Links. The React Native guide says methods that require a return URL are omitted if it is missing.\n\n```swift\n@_spi(CustomerSessionBetaAccess) import StripePaymentSheet\n\nvar configuration = PaymentSheet.Configuration()\nconfiguration.merchantDisplayName = \"Example, Inc.\"\nconfiguration.customer = .init(id: customerId, customerSessionClientSecret: customerSessionClientSecret)\nconfiguration.allowsDelayedPaymentMethods = true\nconfiguration.returnURL = \"your-app://stripe-redirect\"\n\nself.paymentSheet = PaymentSheet(paymentIntentClientSecret: paymentIntentClientSecret, configuration: configuration)\n```\n\n## Archived Identity and Credential Discrepancies\n\n- **Accounts v2 identity mapping.** The April iOS and Android server examples return `customer_account`. The displayed UIKit and SwiftUI clients read `json[\"customer\"]`. The ordinary Android PaymentSheet examples pass `networkResult.customer` from a backend adapter. The archive leaves the mapping from the Accounts v2 response to those client fields unshown and gives no current SDK compatibility evidence.\n- **Android client credentials.** The ordinary PaymentSheet examples call `createWithCustomerSession`. The optional FlowController example passes `ephemeralKeySecret`.\n- **React Native client credentials.** Both April server branches return `customerSessionClientSecret`. Both ordinary client branches expect `ephemeralKey` and pass it as `customerEphemeralKeySecret`. The optional custom flow also passes an ephemeral-key secret. These samples give distinct credentials, and the November index provides no reconciliation.\n\n## Off-Session Charging (After Save)\n\nThe April guide lists methods associated with the same Accounts v2 Account or Customers v1 Customer, using cards as the listing example. To attempt a later server-side charge while the customer is away, it creates a new PaymentIntent with that identity, the saved PaymentMethod ID, amount, and currency. It sets `off_session: true` and `confirm: true`; the examples also show a `return_url`. If authentication is requested and the conditions for an exemption are unmet, the attempt can error.\n\n## `allowsDelayedPaymentMethods`\n\nThe April guide enables delayed-notification methods, such as US bank accounts, when the business can handle delayed outcomes. Method selection, client Sheet completion, and the server's payment outcome are separate stages. A completed Sheet can support an order acknowledgement while payment remains pending.\n\nUse the server-side PaymentIntent events to determine payment status. `payment_intent.processing` indicates pending, followed later by either `payment_intent.succeeded` or `payment_intent.payment_failed`. The guide ties normal fulfillment to success and suggests offering another payment attempt after failure. Its event table gives optional early fulfillment for digital goods during processing, which leaves payment pending. A client completion or return URL alone cannot establish payment success or settlement.\n\n## Detail Locators\n\n- 2026-04-22 raw lines 22–33 and 634–648 cover consent, redisplay, and the Accounts v2 preview.\n- 2026-04-22 raw lines 109–231, 330–552, and 553–632 cover the endpoint, iOS client examples, return URL, and events.\n- 2026-04-22 raw lines 1198–1203, 1368–1521, and 1846–1924 cover Android identity fields, ordinary PaymentSheet, and optional FlowController.\n- 2026-04-22 raw lines 2070–2152, 2248–2355, 2414–2482, and 2884–2918 cover React Native credentials, iOS return handling, and the optional custom flow. The server events are at lines 2486–2498.\n- 2026-04-22 raw lines 640–724 cover the later off-session attempt for both identity models.\n\n## Related Pages\n\n- [[stripe-saved-payment-methods]] — saved PM concept page\n- [[stripe-inapp-payments]] — in-app payments concept page\n- [[source-stripe-inapp-finalize-payments-server]] — full server confirmation guide\n\n## Raw Sources\n\n- [[raw/stripe-inapp-save-during-payment-2025|2026-04-22 detailed mobile save-during-payment guide for iOS, Android, and React Native]]\n\n## Related raw API references\n\n- [[raw/stripe-payments-mobile-save-during-payment-2026-11-07|2026-11-07 platform variant index]] — navigation to iOS, Android, and React Native Payment Sheet guides\n",
+  "quotes": {
+    "payments-mobile-save-during-payment": [
+      {
+        "text": "Save payment details during a payment in your mobile app.",
+        "location": "raw/stripe-payments-mobile-save-during-payment-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-mobile-save-during-payment-2026-11-07.md:11"
+      },
+      {
+        "text": "[iOS](https://docs.stripe.com/payments/mobile/save-during-payment.md?platform=ios&mobile-ui=payment-sheet)",
+        "location": "raw/stripe-payments-mobile-save-during-payment-2026-11-07.md:13"
+      },
+      {
+        "text": "[Android](https://docs.stripe.com/payments/mobile/save-during-payment.md?platform=android&mobile-ui=payment-sheet)",
+        "location": "raw/stripe-payments-mobile-save-during-payment-2026-11-07.md:14"
+      },
+      {
+        "text": "[React Native](https://docs.stripe.com/payments/mobile/save-during-payment.md?platform=react-native&mobile-ui=payment-sheet)",
+        "location": "raw/stripe-payments-mobile-save-during-payment-2026-11-07.md:15"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-mobile-save-during-payment": [
+      {
+        "text": "The mobile Payment Element only supports `setup_future_usage` with cards and US bank accounts.",
+        "location": "raw/stripe-inapp-save-during-payment-2025.md:130"
+      },
+      {
+        "text": "For these payment methods, the final payment status isn’t known when the `PaymentSheet` completes, and instead succeeds or fails later.",
+        "location": "raw/stripe-inapp-save-during-payment-2025.md:551"
+      },
+      {
+        "text": "Collect explicit consent from the customer for this specific use.",
+        "location": "raw/stripe-inapp-save-during-payment-2025.md:32"
+      },
+      {
+        "text": "customerEphemeralKeySecret: ephemeralKey,",
+        "location": "raw/stripe-inapp-save-during-payment-2025.md:2281"
+      },
+      {
+        "text": "Keep a record of your customer’s written agreement to your terms.",
+        "location": "raw/stripe-inapp-save-during-payment-2025.md:33"
+      },
+      {
+        "text": "A `CustomerSession` grants the SDK temporary scoped access to the `Account` or `Customer`",
+        "location": "raw/stripe-inapp-save-during-payment-2025.md:121"
+      },
+      {
+        "text": "customer_account: customerAccount.id,",
+        "location": "raw/stripe-inapp-save-during-payment-2025.md:181"
+      },
+      {
+        "text": "let customerId = json[\"customer\"] as? String,",
+        "location": "raw/stripe-inapp-save-during-payment-2025.md:354"
+      },
+      {
+        "text": "customer_account: customerAccount.id,",
+        "location": "raw/stripe-inapp-save-during-payment-2025.md:1201"
+      },
+      {
+        "text": "id = networkResult.customer,",
+        "location": "raw/stripe-inapp-save-during-payment-2025.md:1392"
+      },
+      {
+        "text": "ephemeralKeySecret = ephemeralKeySecret",
+        "location": "raw/stripe-inapp-save-during-payment-2025.md:1856"
+      },
+      {
+        "text": "customerSessionClientSecret: customerSession.client_secret,",
+        "location": "raw/stripe-inapp-save-during-payment-2025.md:2100"
+      },
+      {
+        "text": "customerSessionClientSecret: customerSession.client_secret,",
+        "location": "raw/stripe-inapp-save-during-payment-2025.md:2146"
+      },
+      {
+        "text": "customerEphemeralKeySecret: ephemeralKey,",
+        "location": "raw/stripe-inapp-save-during-payment-2025.md:2346"
+      },
+      {
+        "text": "customerEphemeralKeySecret: ephemeralKey,",
+        "location": "raw/stripe-inapp-save-during-payment-2025.md:2892"
+      },
+      {
+        "text": "It’s followed by either a `payment_intent.succeeded` or `payment_intent.payment_failed` event in the future.",
+        "location": "raw/stripe-inapp-save-during-payment-2025.md:631"
+      },
+      {
+        "text": "make sure you’re listing payment methods where you’ve collected consent from the customer to save the payment method details for this specific future use.",
+        "location": "raw/stripe-inapp-save-during-payment-2025.md:638"
+      },
+      {
+        "text": "If the conditions for exemption aren’t met, the `PaymentIntent` might throw an error.",
+        "location": "raw/stripe-inapp-save-during-payment-2025.md:678"
+      },
+      {
+        "text": "Stripe doesn’t support [universal links](https://developer.apple.com/documentation/xcode/allowing-apps-and-websites-to-link-to-your-content).",
+        "location": "raw/stripe-inapp-save-during-payment-2025.md:555"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-mobile-save-during-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-inapp-save-during-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 2918
+      }
+    ],
+    "wiki/sources/source-stripe-inapp-save-during-payment.md": [
+      {
+        "start": 1,
+        "end": 95
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/d8a8a588ac2248967984a1ad/content.diff": [
+      {
+        "start": 1,
+        "end": 2921
+      }
+    ],
+    "wiki/concepts/stripe-inapp-payments.md": [
+      {
+        "start": 1,
+        "end": 116
+      }
+    ],
+    "wiki/concepts/stripe-saved-payment-methods.md": [
+      {
+        "start": 1,
+        "end": 160
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 94,
+        "end": 113
+      },
+      {
+        "start": 773,
+        "end": 781
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-mobile-save-during-payment/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 171
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-mobile-save-during-payment/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 186
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 451,
+        "end": 457
+      }
+    ]
+  },
+  "answers": {
+    "payments-mobile-save-during-payment": {
+      "Q1": "At https://docs.stripe.com/payments/mobile/save-during-payment, the 2026-11-07 snapshot gives the purpose of saving details during an in-app payment and routes to iOS, Android and React Native Payment Sheet variants. New raw lines 5-15 supply only the index. The detailed 2026-04-22 guide describes a server-created PaymentIntent with mobile `setup_future_usage` limited to cards and US bank accounts, a separate scoped CustomerSession, and either a customer-configured Accounts v2 Account or a Customers v1 Customer (old raw lines 109-132 and 140-231). In the archived Accounts v2 examples, the iOS and Android endpoints return `customer_account` (old raw lines 178-183 and 1198-1203). UIKit and SwiftUI parse `json[\"customer\"]`; the ordinary Android examples pass `networkResult.customer` from an unshown backend adapter. The samples leave the identity mapping and current SDK compatibility unverified (old raw lines 349-369, 428-450, 486-508, 1387-1396, 1426-1436 and 1513-1521). This payload discrepancy is separate from the React Native and optional Android FlowController ephemeral-key examples. Before saving or charging, the April guide calls for purpose-specific terms, explicit customer consent and retention of the written agreement. `allow_redisplay` governs customer-facing display for later purchases (old raw lines 22-33 and 634-641). Old raw lines 549-552, 620-632 and 676-681 distinguish Sheet completion from server-observed payment status and describe a later off-session attempt that may encounter authentication failure. source-stripe-inapp-save-during-payment.md now preserves the April guide with those identity, consent and delayed-outcome qualifications, and routes the November index separately. The April iOS custom-scheme return scope is at old raw lines 553-618 and the React Native iOS-only return path at 2414-2482.",
+      "Q2": "At https://docs.stripe.com/payments/mobile/save-during-payment, new raw lines 5-15 show a capture containing navigation to `mobile-ui=payment-sheet` variants. Old raw lines 8-12, 1056-1060 and 1926-1930 label the historical detailed variants `mobile-ui=payment-element`. This is a capture-scope change, with no demonstrated substantive product or API change. Keep the 2026-04-22 capture as dated authority for merchant consent and written agreement, mobile `setup_future_usage` method limits, Account versus Customer identity, scoped server credentials, preview version for Accounts v2 preview participants, and `allow_redisplay` (old raw lines 22-33, 115-130 and 634-648). Keep the Android FlowController and React Native ephemeral-key examples distinct from the CustomerSession server payload (old raw lines 1846-1867, 2098-2103, 2144-2149 and 2248-2355). Separately, the dated iOS and Android Accounts v2 endpoints return `customer_account` (old raw lines 178-183 and 1198-1203). The UIKit and SwiftUI examples read `json[\"customer\"]` (old raw lines 349-369, 428-450 and 486-508); Android’s ordinary Sheet samples pass `networkResult.customer` from an unshown backend adapter (old raw lines 1387-1396, 1426-1436 and 1513-1521). The archive gives neither the payload mapping nor current SDK compatibility evidence. source-stripe-inapp-save-during-payment.md corrects the former completion-on-selection wording, ties the recorded delayed result to server events, confines the cards and US bank accounts limit to the historical save setting, and restores the merchant’s consent responsibility. The concept corrections route readers to the historical mobile guide while distinguishing the web component, and remove the claim that consent UI handles global compliance. A client completion, return URL, saved method, or initial setup cannot establish final payment success, settlement, or future off-session success (old raw lines 549-555, 620-632 and 676-681)."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-mobile-save-during-payment-inapp-consent",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "Consent collection is automatic — handles global compliance requirements.",
+      "proposed_markdown": "For saving during an initial mobile payment, the 2026-04-22 [[source-stripe-inapp-save-during-payment|Stripe guide]] limits mobile Payment Element `setup_future_usage` to cards and US bank accounts. The merchant must state the intended future use in its terms, obtain explicit consent for that use, and retain the written agreement before saving or charging. `allow_redisplay` distinguishes methods eligible for later customer-facing display, which requires consent for that specific use.",
+      "quote_indexes": [],
+      "warnings": [
+        "raw/stripe-inapp-save-during-payment-2025.md:22-33 establishes merchant responsibility, purpose-specific consent, and written agreement. Lines 115-130 scope the cards and US bank accounts limit to mobile Payment Element setup_future_usage. Lines 634-638 establish the customer-facing redisplay boundary."
+      ]
+    },
+    {
+      "update_id": "payments-mobile-save-during-payment-inapp-source",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-inapp-appearance-api]] — Mobile Appearance API: fonts (family + sizeScaleFactor), colors (categories), shapes, primary button; dark mode patterns per platform",
+      "proposed_markdown": "- [[source-stripe-inapp-appearance-api]] — Mobile Appearance API: fonts (family + sizeScaleFactor), colors (categories), shapes, primary button; dark mode patterns per platform\n- [[source-stripe-inapp-save-during-payment]] — 2026-04-22 mobile PaymentIntent save guide with purpose-specific merchant consent, dated platform example discrepancies, and delayed payment outcomes. The 2026-11-07 capture is a Payment Sheet variant index.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "raw/stripe-inapp-save-during-payment-2025.md:22-33,178-183,349-369,551-552,620-632,1198-1203,1387-1396,1846-1867,2098-2103,2144-2149,2248-2355 ground the historical guide and qualifications."
+      ]
+    },
+    {
+      "update_id": "payments-mobile-save-during-payment-saved-methods-source",
+      "target_path": "wiki/concepts/stripe-saved-payment-methods.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-inapp-save-during-payment]] — Mobile save-during-payment: setup_future_usage supports cards + US bank only on mobile, mobile_payment_element CustomerSession, allowsDelayedPaymentMethods",
+      "proposed_markdown": "- [[source-stripe-inapp-save-during-payment]] — 2026-04-22 mobile save-during-payment guide, scoped to the `mobile_payment_element` CustomerSession component and initial PaymentIntent `setup_future_usage` for cards and US bank accounts. The web `payment_element` example above is a separate integration. The 2026-11-07 capture is a Payment Sheet variant index.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "raw/stripe-inapp-save-during-payment-2025.md:115-130,154-171,200-217 establishes the April mobile component and save setting. wiki/concepts/stripe-saved-payment-methods.md:46-67 describes the distinct web example."
+      ]
+    }
+  ]
+}

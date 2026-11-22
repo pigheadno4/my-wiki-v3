@@ -1,0 +1,74 @@
+--- wiki/sources/source-stripe-p24-accept-payment.md
++++ tracking/ingest/stripe/stripe-campaign-04/updates/attempts/payments-p24-accept-a-payment/attempt-1/candidate.md
+@@ -2,7 +2,9 @@
+ title: "Stripe: Accept a Przelewy24 Payment"
+ type: source
+ date_ingested: 2026-05-03
++date_updated: 2026-11-22
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/payments/p24/accept-a-payment"
+ raw_files:
+   - "stripe-p24-accept-payment-2025.md"
+ tags: [stripe, p24, przelewy24, poland, eur, pln, checkout, ios, android, react-native, elements]
+@@ -10,37 +12,44 @@
+ 
+ ## Summary
+ 
+-Multi-platform integration guide for accepting P24 payments: Checkout, iOS, Android, React Native, and Elements (legacy). Key: billing email required; statement descriptor limited to 14 chars; P24 regulations consent required.
++The 2026-05-03 [[stripe]] guide describes [[stripe-p24|Przelewy24 (P24)]] as a single-use payment method that redirects customers to authenticate. It covers Checkout, iOS, Android, React Native, and legacy Elements. At the same guide URL, the 2026-11-07 capture lists links to those five variants. The implementation details below come from the May capture.
+ 
+ ## Key Details
+ 
+-### Checkout path
++### Checkout
+ 
+-- `payment_method_types: ['p24']`, EUR or PLN, payment mode only
+-- No special test numbers — select P24 and click Pay
++- The May compatibility table lists EUR and PLN. Checkout Sessions use payment mode and accept only one-time line items. All line items in a Session must have the same currency. Create separate Sessions for different currencies.
++- Stripe can select eligible methods dynamically. The separate manual instructions say to include `p24` in `payment_method_types` and use EUR for all line items. The May examples use `success_url` for Stripe-hosted Checkout and `return_url` for embedded Checkout.
++- To test Checkout, select P24 and click Pay. The May guide documents refunds up to 180 days after the original payment and says there is no dispute process.
++- May raw lines 12–50 cover eligibility and method selection, 52–103 cover hosted and embedded examples, and 105–117 cover fulfillment, testing, refunds, and disputes.
+ 
+-### iOS
++### Mobile PaymentIntents
+ 
+-- `STPPaymentMethodPrzelewy24Params()` + `billing_details.email` (required) + `STPPaymentHandler.confirmPayment()`
++In the May mobile examples, the server creates a PaymentIntent with the amount, EUR or PLN, and `p24`, then passes the client secret to the app. All three examples instruct the app to collect the customer's email and show it in billing details.
+ 
+-### Android
++- **iOS** uses `STPPaymentMethodPrzelewy24Params()` and `STPPaymentHandler.confirmPayment()` (May raw lines 221–305).
++- **Android** uses `PaymentMethodCreateParams.createP24(billingDetails)` and `PaymentLauncher.confirm()` (May raw lines 406–512).
++- **React Native** uses `confirmPayment(clientSecret, { paymentMethodType: 'P24' })`. The guide labels its deep-link section optional and requires a return URL for methods that need one. It shows a custom URL scheme for bank redirects and forwarding the return to the SDK (May raw lines 586–609, 618–729, 757–767).
+ 
+-- `PaymentMethodCreateParams.createP24(billingDetails)` + `PaymentLauncher.confirm()`
++### Elements (legacy)
+ 
+-### React Native
++- The May guide labels this integration legacy and warns that support could end on deprecation. It specifically says the legacy `p24Bank` element was unavailable in the latest Stripe.js version at the time and recommends the Payment Element (May raw lines 819–825, 892–894).
++- In the historical client path, the server creates the PaymentIntent with the amount, EUR or PLN, and `p24`. The client calls `stripe.confirmP24Payment()` with the client secret and a `return_url`. The HTML example supplies customer email in billing details. The two React examples omit it, so the examples leave API requiredness unresolved (May raw lines 840–862, 1055–1095, 1139–1158, 1221–1230).
++- The alternate server confirmation example yields `requires_action` with `next_action.type: redirect_to_url`. The integration sends the customer to the URL in `next_action`. P24 PaymentMethods are single-use. The guide describes storing the customer's bank preference separately in your database or Customer metadata (May raw lines 1396–1504).
++- P24 requires the customer's agreement to authorize the transaction. The customer can agree on the intermediate P24 page. To skip that page, the merchant must clearly display the prescribed linked regulations and information-obligation wording, obtain the customer's consent, then set `payment_method_options.p24.tos_shown_and_accepted` to `true` (May raw lines 1083–1089, 1552–1561).
+ 
+-- `confirmPayment(clientSecret, { paymentMethodType: 'P24' })` + deep linking required
++### Payment status and fulfillment
+ 
+-### Elements (Legacy)
+-
+-- `p24Bank` element + `stripe.confirmP24Payment()` + `return_url`; customer email required
+-- Also: optional `tos_shown_and_accepted: true` in P24 params if accepting regulations terms on customer's behalf
++The May Elements guide uses browser return to retrieve the PaymentIntent status for display. Its sandbox illustrates successful authentication moving the intent from `requires_action` to `succeeded` and failed authentication moving it to `requires_payment_method` (May raw lines 1278–1289, 1340–1345). The May mobile and Elements guides recommend listening for Stripe's `payment_intent.succeeded` event to trigger business actions such as fulfillment, since client callbacks may be missed or manipulated (May raw lines 308–312, 514–518, 731–735, 1346–1350).
+ 
+ ### Statement descriptor
+ 
+-- Max **14 characters**
+-- Appears on bank statement as: `/OPT/X/////P24-XXX-XXX-XXX {descriptor}`
++The May mobile and legacy Elements guides allow an optional descriptor of up to 14 characters before confirming the PaymentIntent. The bank record shows it as `/OPT/X/////P24-XXX-XXX-XXX {statement_descriptor}`, with a unique P24 reference (May raw lines 259–261, 450–452, 663–665, 860–862).
+ 
+ ## Raw Sources
+ 
+-- [[stripe-p24-accept-payment-2025]] — verbatim webpage content (1587 lines, Checkout + iOS + Android + React Native + Elements legacy)
++- [[raw/stripe-p24-accept-payment-2025|2026-05-03 detailed guide]] — 1587 lines covering Checkout, iOS, Android, React Native, and legacy Elements
++
++## Related raw API references
++
++- [[raw/stripe-payments-p24-accept-a-payment-2026-11-07|2026-11-07 navigation index]] — Checkout, Elements, iOS, Android, and React Native variant links

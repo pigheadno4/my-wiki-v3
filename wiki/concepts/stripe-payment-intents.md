@@ -7,7 +7,7 @@ tags: [stripe, payment-intents, elements, confirmPayment, useStripe, useElements
 
 ## Stripe Payment Intents
 
-Stripe's core payment API for building fully custom checkout flows. Tracks the customer's payment lifecycle, handles failed attempts, and ensures the customer is only charged once. Best for integrations that require maximum control over checkout UI and flow.
+Stripe's Payment Intents API tracks attempts in custom payment flows. A single PaymentIntent can have several associated Charge records and at most one successful Charge. Reuse the Intent for a resumed cart or session and send a creation idempotency key to prevent duplicate Intent creation for a purchase. See [[source-stripe-payment-intents]].
 
 ## When to Use
 
@@ -25,7 +25,7 @@ Stripe's core payment API for building fully custom checkout flows. Tracks the c
 - **No built-in shipping-rate calculation or definition** — the 2026-04-21 Payment Intents guide describes calculating the shipping-inclusive total yourself or using Checkout Sessions; neither route is presented as the sole recommendation. See [[source-stripe-charge-shipping]].
 - **No built-in tax** — must call Tax API separately and link calculations
 - **No built-in discounts/coupons** — must calculate manually
-- **No session expiration** — sessions don't auto-expire (Checkout Sessions expire after 24h)
+- **Expiration and events**. The November comparison contrasts PaymentIntent payment-status events and merchant-owned checkout lifecycle with Checkout Session lifecycle events and automatic Session expiration. Checkout Sessions default to 24 hours, with `expires_at` configurable from 30 minutes to 24 hours after creation. Payment Intents has no automatic Checkout Session expiry. See [[source-stripe-accept-a-payment]] for the dated API comparison.
 
 ## Integration Design: 2×2 Decision Framework
 
@@ -35,8 +35,8 @@ Before building a Payment Intents integration, make two architectural choices:
 
 | Approach | Use when |
 | --- | --- |
-| **Deferred** (create Payment Element first) | Multi-page flows; dynamic amounts (items, quantities, discounts can change before Pay) |
-| **Eager** (create Intent + Payment Element together) | Static checkout pages; quickest setup |
+| **Deferred** | Render Payment Element first, then create and confirm the PaymentIntent or SetupIntent on customer submission. Useful for multi-page checkout or changing amounts. |
+| **Eager** | Create the PaymentIntent or SetupIntent before loading checkout, then initialize Elements with that Intent’s client secret. The April 2026 guide recommends this for static checkout. |
 
 **Why deferred matters**: Amount changes affect payment method eligibility. Deferring avoids syncing the Intent with every client-side change.
 
@@ -44,15 +44,17 @@ Before building a Payment Intents integration, make two architectural choices:
 
 | Approach | Use when |
 | --- | --- |
-| **Client-side** | No server business logic needed; quickest; Stripe SDK handles 3DS + next actions automatically + localizes errors |
-| **Server-side** | Must run business logic before confirmation (PM restrictions, application fees); confirm immediately after to prevent client invalidation |
+| **Client-side** | When server control at confirmation is unnecessary, use the client SDK. It handles supported next actions such as 3D Secure and localizes errors. The rest of the integration can still use a backend. |
+| **Server-side** | Run pre-confirmation business logic, such as applying payment method restrictions or adjusting application fees, then confirm immediately. Handle any returned next actions manually or through an SDK. In the linked web PaymentIntent example, use `stripe.handleNextAction` for required customer action. |
+
+Check the resulting Intent state. Confirmation can leave customer action pending, and setup success differs from a completed payment.
 
 ## Core Flow
 
 1. **Server**: `stripe.paymentIntents.create({ amount, currency, automatic_payment_methods: { enabled: true } })` → returns `client_secret`
 2. **Client**: initialize `Elements` provider with `clientSecret`
 3. **Client**: `stripe.confirmPayment({ elements, confirmParams: { return_url } })` — redirects for bank auth; immediate error for card declines
-4. **Return page**: read `payment_intent_client_secret` URL param → `stripe.retrievePaymentIntent(cs)` → handle status
+4. **Return page**: In the dated Stripe.js quickstart, Stripe.js appends `payment_intent_client_secret` for `stripe.retrievePaymentIntent` and status messaging. Use verified server events for fulfillment. Keep the secret out of logs and merchant-built URLs.
 
 ## Client Setup (React)
 
@@ -126,6 +128,8 @@ stripe.paymentIntents.create({
 
 `stripe@23.0.0` removes request `payment_method_types` from PaymentIntent create/update/confirm and SetupIntent create/update. The response field remains, and SetupIntent confirm is not included in that removal. Existing request `allowed_payment_method_types` adds `card_present` and `interac_present` enum values; do not mechanically rename every occurrence across APIs. PaymentIntent gains expandable `payment_record`, and BLIK gains off-session setup and mandate-expiration options. These are exact-version server contracts, not client confirmation support or payment-method eligibility. Source: [[source-github-stripe-node]].
 
+The separate Endive REST changelog cited in [[source-stripe-payment-intents#Descriptor and metadata boundaries|the implementation guide]] says the linked `2026-09-30.endive` PaymentIntent Create endpoint rejects writable `payment_method_types` with HTTP 400 and `payment_method_types_no_longer_supported`. The stored property is read-only. Its Impact section also names `2026-08-26.preview`, leaving the first affected version unresolved.
+
 ## Related Concepts
 
 - [[stripe-elements]] — Stripe Elements (UI component library used with Payment Intents)
@@ -134,9 +138,10 @@ stripe.paymentIntents.create({
 ## Sources
 
 - [[source-stripe-api-tour]] — conceptual same-URL tour of PaymentIntent, PaymentMethod, Charge, and Event roles; its state sketch is simplified and its Charge/retry language is conditional.
+- [[source-stripe-payment-intents]] — April and November 2026 combined reference for server creation and reuse, scoped client secrets, lifecycle and setup, and asynchronous capture. Async creation can leave Charge balance data unavailable even after confirmation and expansion. The sample response shape and creation default have separate version scopes.
 - [[source-stripe-payment-intents-quickstart]] — Full quickstart: server setup, Elements wiring, confirmPayment, return page, Stripe Tax, email receipts, off-session charging
 - [[source-stripe-elements-advanced-payments]] — Checkout Sessions vs Payment Intents comparison matrix
-- [[source-stripe-payment-element-design-integration]] — 2×2 integration design framework: when to create Intent × where to confirm (deferred vs eager, client vs server)
+- [[source-stripe-payment-element-design-integration]] — April 2026 Checkout Sessions and Payment Intents paths, including separate initialization and Intent creation/confirmation choices. The November capture is variant navigation.
 - [[source-stripe-migrate-payment-methods-dashboard]] — Migrate to Dashboard payment methods: remove payment_method_types, Google Pay disabled by default, delayed notification PM list + webhook pattern
 - [[source-stripe-payment-element-customize-payment-methods]] — April 21 versus November 7, 2026 PaymentIntent-create guide wording for manual method selection (`payment_method_types` versus `allowed_payment_method_types`), plus browser versus server card-filtering policy scope; read alongside the exact-version `stripe@23.0.0` request boundary above
 - [[source-stripe-checkout-dynamic-amounts]] — April 21, 2026 full guide: PaymentIntents amount updates require trusted server calculation and client refresh; its wording says post-confirmation increases **generally** are not possible, without specifying exceptions. It separately documents Checkout Sessions `runServerUpdate`/server line-item changes and Session completion/expiry checks, which must not be applied as PaymentIntent fields. The November 7 capture is only a Checkout Sessions/Payment Intents variant index and does not verify current implementation or lifecycle behavior.
@@ -149,4 +154,5 @@ stripe.paymentIntents.create({
 - [[source-stripe-finalize-payments-server]] — Server-side confirmation: the retained 2026-05-11 web guide covers payment, setup, and subscription variants with ConfirmationToken and branch-specific Intent handling; its SDK minimums and limitations remain dated. The 2026-11-07 canonical capture supplies variant navigation only, not refreshed implementation behavior.
 - [[source-github-stripe-js]] — package-qualified Stripe.js loader and declaration history through `@stripe/stripe-js@9.15.0`, including ConfirmationToken metadata typing
 - [[source-stripe-payments-without-auth]] — Legacy US/CA-only: CardElement + createPaymentMethod, error_on_requires_action, synchronous, no webhooks
+- [[source-stripe-legacy-apis]] — April and November 2026 existing Charges migration, Charge read compatibility and the scoped November creation notice. Includes saved-method attachment, the create API fallback and historical Payment Request Button version limits.
 - [[source-stripe-migrate-basic-card-integration]] — Migrate legacy to auth-handling: remove error_on_requires_action, add confirmation_method='manual', handleCardAction, 1-hour re-confirm window

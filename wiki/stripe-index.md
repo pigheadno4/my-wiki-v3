@@ -20,13 +20,13 @@ Operations history: [[stripe-log]]
 - [[source-stripe-payment-records]] — Stripe Payment Records API: unified on+off-Stripe ledger, 3-level hierarchy, Orchestration required (webpage, 2026-04-19)
 - [[source-stripe-payment-methods]] — Stripe Payment Methods API: customer action types, immediate vs delayed notification, single-use vs reusable (webpage, 2026-04-19)
 - [[source-stripe-checkout-sessions]] — The April and November 2026 Stripe overviews recommend the Checkout Sessions API for most payments integrations. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.)
-- [[source-stripe-payment-intents]] — Stripe PaymentIntents + SetupIntents: full lifecycle, requires_action/requires_capture, cancel rules, Checkout Sessions recommendation (webpage, 2026-04-19)
-- [[source-stripe-legacy-apis]] — Stripe reference to legacy Charges, Tokens and Sources APIs and migration paths. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.)
+- [[source-stripe-payment-intents]] — PaymentIntents and SetupIntents lifecycle, status and cancellation. See the November full lifecycle and asynchronous capture guides and dated API-version conditions.
+- [[source-stripe-legacy-apis]] — Legacy Charges, Tokens and Sources APIs. The dated sources distinguish migration, ACH onboarding and read-side authentication evidence.
 - [[source-stripe-glossary]] — Dated Stripe terminology reference. (S02 reviewed update, 2026-11-09; dated source qualifications apply.)
 - [[source-stripe-building-with-ai]] — Stripe AI developer tools: MCP server, agent skills (npx/Claude Code/Cursor), AI coding platforms, VS Code AI assistant (webpage, 2026-04-20)
 - [[source-github-ai]] — `stripe/ai` exact-SHA implementation baseline: token billing packages, MCP bridge, TypeScript/Python agent toolkits, skills/plugins, and benchmarks (github-repo, 2026-08-13)
 - [[changelog-github-ai]] — package-qualified `stripe/ai` component baseline and future exact-SHA comparison rules (github-repo, 2026-08-13)
-- [[source-stripe-accept-a-payment]] — The 2026-11-07 capture of the base URL is a 20-line index linking to Checkout, Elements, and mobile variants. (S02 reviewed update, 2026-11-09; dated source qualifications apply.)
+- [[source-stripe-accept-a-payment]] — Stripe integration choices. The November Accept a Payment base page links variants, and the separate full November Online Payments overview compares the documented UI and API paths.
 - [[source-stripe-payment-links]] — Payment Links provide shareable URLs for Stripe-hosted checkout pages. (S02 reviewed update, 2026-11-09; dated source qualifications apply.)
 - [[source-stripe-build-payments-page]] — Stripe Build a Payments Page: Checkout Page vs Elements feature matrix, hosting modes, maintenance tradeoffs (webpage, 2026-04-20)
 - [[source-stripe-checkout-quickstart]] — This entry routes two Stripe Checkout quickstarts: the **Stripe-hosted redirect** guide captured at this canonical URL on 2026-04-20 and 2026-11-07, and a separately captured **embedded page** guide from 2026-04-20. (S02 reviewed update, 2026-11-09; dated source qualifications apply.)
@@ -71,8 +71,8 @@ Operations history: [[stripe-log]]
 - [[source-stripe-payment-method-messaging-element]] — The Payment Method Messaging Element is a web Stripe UI component that displays localized information about available buy now, pay later (BNPL) plans on product, cart, and payment pages. (S02 reviewed update, 2026-11-09; dated source qualifications apply.)
 - [[source-stripe-tax-id-element]] — The Tax ID Element is an embeddable UI component for collecting customer business tax IDs for tax calculation and invoice display. (S02 reviewed update, 2026-11-09; dated source qualifications apply.) The November capture supplies variant navigation; functional details remain attributed to earlier full captures.
 - [[source-stripe-checkout-sessions-vs-payment-intents]] — Checkout Sessions vs Payment Intents: 11-row feature matrix, session expiration, webhook lifecycle, Adaptive Pricing exclusivity (webpage, 2026-04-21)
-- [[source-stripe-payment-element-design-integration]] — Payment Element design guide: 2×2 framework (when to create Intent × where to confirm), deferred vs eager, client vs server (webpage, 2026-04-21)
-- [[source-stripe-payment-element-custom-payment-methods]] — Stripe Custom Payment Methods: cpmt_ IDs, static/embedded types, elements.submit() routing, reportPayment recording, XSS warning (webpage, 2026-04-21)
+- [[source-stripe-payment-element-design-integration]] — Payment Element design. Compare the dated choices for creating intents and confirming on the client or server.
+- [[source-stripe-payment-element-custom-payment-methods]] — Web Payment Element custom payment methods. See dated creation, confirmation, reporting and platform qualifications.
 - [[source-stripe-payment-element-customize-payment-methods]] — Stripe's November 7, 2026 Payment Element guide covers **four** display controls: enabled methods, ordering, card brand/funding filters, and accordion count. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.)
 - [[source-stripe-migrate-payment-methods-dashboard]] — The April 21, 2026 capture contains separate Checkout Sessions (embedded-components) and Payment Intents (Elements) migration guides under this URL. (S02 reviewed update, 2026-11-09; dated source qualifications apply.) The November capture supplies variant navigation; functional details remain attributed to earlier full captures.
 - [[source-stripe-collect-addresses]] — Collect addresses: Checkout Sessions vs PI API differences, syncAddressCheckbox, getValue(), blockPoBox, multi-page flow, CSP for own Maps key (webpage, 2026-04-21)
@@ -100,42 +100,42 @@ Operations history: [[stripe-log]]
 - [[source-stripe-checkout-manual-approval]] — Manual approval (CS only): server-side checks before payment, compatible with dynamic line items, PI uses finalize-on-server instead (webpage, 2026-04-22)
 - [[source-stripe-auth-and-capture]] — Auth+capture: validity windows (Visa MIT=5d, Japan JPY=30d), per-PM capture windows, capture_method per-PM, automatic_delayed, partial capture (webpage, 2026-04-22)
 - [[source-stripe-checkout-elements-beta-changelog]] — Dated migration history for the Elements with Checkout Sessions API beta, covering `custom_checkout_beta_*` through Basil and Clover. (S02 reviewed update, 2026-11-09; dated source qualifications apply.)
-- [[source-stripe-inapp-payments-overview]] — In-App Payments: Payment Sheet/Flow Controller/Payment Element UIs, PaymentIntent/SetupIntent/setup_future_usage patterns, saved PMs (notes, 2026-04-22)
-- [[source-stripe-inapp-payment-sheet]] — Payment Sheet: layout options, Appearance API, wallets, address collection, CVC recollection, card brand filtering (webpage, 2026-04-22)
-- [[source-stripe-inapp-custom-payment-methods]] — Mobile CPMs: iOS/Android/React Native handlers, billing details opt-in, FlowController cancel requirement, paymentRecords.reportPayment (webpage, 2026-04-22)
+- [[source-stripe-inapp-payments-overview]] — In-app payments. See the dated UI paths, payment outcome handling and Android-only NFC tap-to-add scope.
+- [[source-stripe-inapp-payment-sheet]] — Payment Sheet. Dated documentation and November 2026 changes.
+- [[source-stripe-inapp-custom-payment-methods]] — Mobile custom payment methods. See dated platform-specific handlers and reporting. The FlowController cancellation example applies to Android.
 - [[source-stripe-inapp-appearance-api]] — Mobile Appearance API: fonts/colors/shapes/primary button across iOS/Android/RN, dark mode, font name conventions (webpage, 2026-04-22)
-- [[source-stripe-inapp-finalize-payments-server]] — Server confirmation: ConfirmationToken flow, FlowController update() retry, Apple Pay setup, mobile_payment_element CustomerSession (webpage, 2026-04-22)
-- [[source-stripe-inapp-save-during-payment]] — Mobile save-during-payment: setup_future_usage (card+US bank only), mobile_payment_element component, off-session charging, allowsDelayedPaymentMethods (webpage, 2026-04-22)
+- [[source-stripe-inapp-finalize-payments-server]] — Server finalization for in-app payments. Compare the dated ConfirmationToken flow, wallet configuration and CustomerSession setup across platforms.
+- [[source-stripe-inapp-save-during-payment]] — Saving during a mobile payment. See the dated supported-method scope, applicable consent and redisplay requirements, and off-session reuse.
 - [[source-stripe-inapp-set-up-future-payments]] — Mobile setup (no initial charge): SetupIntent supports card/Bancontact/iDEAL/Link/SEPA/Sofort/US bank, setupIntentClientSecret, FlowController (webpage, 2026-04-22)
-- [[source-stripe-inapp-filter-card-brands]] — Card brand filtering: allowed/disallowed, discover=full Global Network (JCB/UnionPay/Elo/Diners), filters Apple Pay + Google Pay (webpage, 2026-04-22)
+- [[source-stripe-inapp-filter-card-brands]] — PaymentSheet card-brand filters. See dated platform wallet, client filtering and server confirmation scope.
 - [[source-stripe-inapp-payment-element]] — Mobile Payment Element: embeds in app (vs Payment Sheet full-screen), radio/checkmark/floating layouts, inline wallets, same features as PS (webpage, 2026-04-22)
-- [[source-stripe-inapp-accept-payment-embedded]] — EmbeddedPaymentElement: UIScrollView required, height delegate, update(), formSheetAction=confirm, mandate display, clearPaymentOption (webpage, 2026-04-22)
+- [[source-stripe-inapp-accept-payment-embedded]] — Embedded Payment Element mobile integration. See dated platform flows, saving and redisplay, and the separate per-method configuration preview.
 - [[source-stripe-inapp-embedded-appearance-api]] — Embedded Appearance API: selectedBorderWidth, 4 row styles (flatWithDisclosure requires immediateAction), per-style properties (webpage, 2026-04-22)
-- [[source-stripe-inapp-embedded-custom-payment-methods]] — EmbeddedPaymentElement CPMs: EmbeddedPaymentElementResult, paymentMethodOrder, billing details opt-in, platform handler differences (webpage, 2026-04-22)
-- [[source-stripe-inapp-embedded-filter-card-brands]] — EmbeddedPaymentElement card brand filtering: 4 brands, allowed/disallowed, iOS enum namespace differs from PaymentSheet (webpage, 2026-04-22)
-- [[source-stripe-inapp-address-element]] — Mobile Address Element overview: 236 regional formats, autocomplete, prefill, Payment Sheet + Payment Element integration (webpage, 2026-04-22)
-- [[source-stripe-inapp-collect-addresses]] — Mobile Address Element integration: AddressViewController/SwiftUI/AddressLauncher/AddressSheet, Google Places for Android, billing details config (webpage, 2026-04-22)
-- [[source-stripe-inapp-payment-method-messaging-element]] — Mobile BNPL messaging overview: iOS + Android, auto-determines BNPL plans, localized messaging (webpage, 2026-04-22)
-- [[source-stripe-inapp-display-bnpl-messaging]] — Mobile BNPL messaging integration (beta): iOS UIKit/SwiftUI phase builder, Android separate dependency + Content() composable (webpage, 2026-04-22)
+- [[source-stripe-inapp-embedded-custom-payment-methods]] — Custom payment methods in Embedded Payment Element. See the dated platform handlers, result reporting and example differences.
+- [[source-stripe-inapp-embedded-filter-card-brands]] — Mobile Embedded Payment Element card-brand filters. See the April guide, retained iOS 26.11.0 type aliases and wallet behavior by platform.
+- [[source-stripe-inapp-address-element]] — Mobile Address Element. See the April platform-specific PaymentSheet, Payment Element and Link pairings and the November platform selector.
+- [[source-stripe-inapp-collect-addresses]] — Mobile Address Element integration. The guide compares platform-specific collection, requirements, address prefill and payment handoff.
+- [[source-stripe-inapp-payment-method-messaging-element]] — Mobile payment-method messaging. Compare April iOS and Android guidance, November platform navigation and separately dated React Native preview scope.
+- [[source-stripe-inapp-display-bnpl-messaging]] — Display BNPL Messaging — Mobile Integration Guide. November 2026 variant navigation and earlier detailed guidance.
 - [[source-stripe-inapp-ios-android-purchases]] — Stripe's April 22, 2026 mobile digital-goods overview is a short **US-scoped navigation page**. (S02 reviewed update, 2026-11-09; dated source qualifications apply.)
 - [[source-stripe-inapp-digital-goods-checkout]] — Stripe's 2026-11-07 capture describes a US iOS digital-goods and subscription app-to-web Checkout path: model credits with Products and Prices, use a customer-configured Account (Accounts v2) or Customer (Customers v1), open Checkout in Safari, return through a Universal Link, and update server-owned entitlements from payment events. (S02 reviewed update, 2026-11-09; dated source qualifications apply.)
 - [[source-stripe-inapp-digital-goods-payment-links]] — The April and November 2026 captures describe an iOS digital-goods and subscription path that opens a **Stripe-hosted Payment Link page in Safari** and returns to the app through a universal link. (S02 reviewed update, 2026-11-09; dated source qualifications apply.)
 - [[source-stripe-inapp-digital-goods-custom-checkout]] — The April and November 2026 captures describe an **iOS app-to-web subscription checkout**: the app opens the merchant's own Elements/Payment Element checkout page in Safari, then uses a universal link to return to the app. (S02 reviewed update, 2026-11-09; dated source qualifications apply.)
 - [[source-stripe-inapp-digital-goods-customer-portal]] — Guide for **managing** iOS digital-goods subscriptions through a Stripe-hosted customer portal opened from the app in Safari. (S02 reviewed update, 2026-11-09; dated source qualifications apply.)
 - [[source-stripe-inapp-customer-sheet]] — CustomerSheet (Payment Method Settings Sheet): app settings PM management, dual server endpoints, iOS/Android/RN, SEPA iOS only, Google Pay Android (webpage, 2026-04-22)
-- [[source-stripe-inapp-migrate-confirmation-tokens]] — PaymentMethod → ConfirmationToken migration: auto shipping/mandate/return_url, server-side CVC recollection, iOS/Android/RN callback changes (webpage, 2026-04-23)
-- [[source-stripe-inapp-without-card-auth]] — Legacy simple integration (US/Canada only): error_on_requires_action, STPPaymentCardTextField/CardInputWidget/CardField, synchronous confirm (webpage, 2026-04-23)
-- [[source-stripe-inapp-save-card-without-auth]] — Legacy save-card (US/Canada only): PM→Customer attach, charge later, setup_future_usage=on_session, CVC re-collection (webpage, 2026-04-23)
-- [[source-stripe-inapp-upgrade-to-handle-actions]] — Upgrade basic card integration: confirmation_method=manual + use_stripe_sdk, two-round-trip flow, 1-hour re-confirm window (webpage, 2026-04-23)
-- [[source-stripe-managed-payments-overview]] — Managed Payments (MoR): Stripe handles tax/fraud/disputes/support, 80+ countries, Checkout+Payment Links only, no Connect/Elements (notes, 2026-04-23)
-- [[source-stripe-managed-payments-eligibility]] — Managed Payments eligibility: ~38 business countries, 60+ tax codes, 195+ buyer countries (9 restricted), fully-automated rule (webpage, 2026-04-23)
-- [[source-stripe-managed-payments-tax-compliance]] — Tax coverage: 80+ countries auto-handled, Japan/Singapore B2B exceptions, Stripe Tax only for unsupported (free) (webpage, 2026-04-23)
-- [[source-stripe-managed-payments-how-it-works]] — Operational: Link as customer MoR, 48h rule, refund tax handling, renewal email schedule, payment methods table (webpage, 2026-04-23)
-- [[source-stripe-managed-payments-changelog]] — Timeline: GA 2026-04-22 (39 countries), one-time/in-app Sep 2025, subscription schedules + Adaptive Pricing Feb 2026 (webpage, 2026-04-23)
-- [[source-stripe-managed-payments-setup]] — Checkout integration: managed_payments.enabled, API 2025-03-31.basil, all-products-eligible, tax behavior, webhooks (webpage, 2026-04-23)
-- [[source-stripe-managed-payments-update-checkout]] — Migration to Managed Payments: existing subscriptions NOT eligible, unsupported params tables (webpage, 2026-04-23)
-- [[source-stripe-managed-payments-mobile]] — iOS digital goods with Managed Payments: managed_payments.enabled + origin_context=mobile_app, MoR + Universal Links (webpage, 2026-04-23)
-- [[source-stripe-managed-payments-payment-links]] — Payment Links with Managed Payments: managed_payments.enabled on paymentLinks.create(), immutable, variable pricing, iOS app restriction (webpage, 2026-04-23)
+- [[source-stripe-inapp-migrate-confirmation-tokens]] — Mobile ConfirmationToken migration. See the April examples for conditional context and optional saved-card CVC and the November platform selector.
+- [[source-stripe-inapp-without-card-auth]] — Basic mobile card acceptance. See the dated geographic scope and the distinction between an authentication-required error and an integration that handles customer actions.
+- [[source-stripe-inapp-save-card-without-auth]] — Basic mobile card saving. The dated guide distinguishes Customer attachment, future use and later on-session or off-session confirmation.
+- [[source-stripe-inapp-upgrade-to-handle-actions]] — Basic mobile card integration upgrade. The dated guide explains manual confirmation, required customer action, reconfirmation and a conflicting historical sandbox row.
+- [[source-stripe-managed-payments-overview]] — Stripe Managed Payments as merchant of record. See the dated merchant eligibility, tax coverage and hosted, embedded and mobile Checkout scope.
+- [[source-stripe-managed-payments-eligibility]] — Managed Payments eligibility. The November capture lists 37 merchant locations and describes conditional Stripe refund authority within 60 days.
+- [[source-stripe-managed-payments-tax-compliance]] — Managed Payments tax coverage and exceptions. See seller and buyer scope and the no-additional-fee rule for automatic Stripe Tax calculation on these transactions.
+- [[source-stripe-managed-payments-how-it-works]] — How Managed Payments Works. Dated documentation and November 2026 changes.
+- [[source-stripe-managed-payments-changelog]] — Managed Payments release history. See the dated Pay Invoice rollout, future-usage support, eligibility counts and new-subscription migration scope.
+- [[source-stripe-managed-payments-setup]] — Managed Payments Checkout setup. See the dated product eligibility, consent, tax behavior and webhook requirements.
+- [[source-stripe-managed-payments-update-checkout]] — Update a Checkout Integration to Use Managed Payments. Dated documentation and November 2026 changes.
+- [[source-stripe-managed-payments-mobile]] — Managed Payments for digital goods in mobile apps. See the dated storefront, hosted Checkout, and external purchase flow guidance.
+- [[source-stripe-managed-payments-payment-links]] — Use Payment Links with Managed Payments. Dated documentation and November 2026 changes.
 - [[source-stripe-recurring-payments-overview]] — Stripe recurring payments: 3 types, 6-product comparison, subscription creation patterns, flexible billing_mode, Accounts v2 (webpage, 2026-04-23)
 - [[source-stripe-terminal-overview]] — Stripe Terminal: 5 integration paths, 4 SDKs, Tap to Pay, offline payments, Connect-compatible (webpage, 2026-04-23)
 - [[source-stripe-terminal-how-it-works]] — Stripe Terminal architecture (4 components), connection types, E2EE vs P2PE encryption, fleet management, integration scope (webpage, 2026-04-23)
@@ -231,9 +231,9 @@ Operations history: [[stripe-log]]
 - [[source-stripe-installments]] — Installments index: Mastercard Installments (4×interest-free), Mexico meses sin intereses, Japan 分割払い (webpage, 2026-05-01)
 - [[source-stripe-jp-installments]] — Stripe's May 1 and November 7, 2026 captures describe Japanese credit-card installments (分割払い): the customer splits a purchase over billing statements while the card issuer extends credit and collects installments. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.)
 - [[source-stripe-jp-installments-accept-payment]] — The full guide captured **2026-05-01** describes Japan installment card payments through Checkout, Payment Element, Direct Payment Intents API, Invoices, and Payment Links, with sandbox card examples. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.) November capture is variant navigation; detailed behavior remains dated to earlier full captures.
-- [[source-stripe-mastercard-installments]] — Mastercard Installments: auto-enrolled, 4× interest-free, 7 countries, prohibited MCCs, recurring caveat (webpage, 2026-05-01)
-- [[source-stripe-mx-installments]] — Mexico meses sin intereses: 6 plans (3–24mo, 5–22.5% fees), 33 issuers, consumer cards only (webpage, 2026-05-01)
-- [[source-stripe-mx-installments-accept-payment]] — Mexico meses sin intereses integration: Checkout/Elements/Direct API/Invoices/Payment Links, custom settings (webpage, 2026-05-01)
+- [[source-stripe-mastercard-installments]] — Mastercard Installments. Compare separately dated customer and Stripe-account locations, prohibited business categories and availability for recurring payments.
+- [[source-stripe-mx-installments]] — Mexico meses sin intereses. Compare dated consumer card eligibility, available installment terms and issuer lists.
+- [[source-stripe-mx-installments-accept-payment]] — Accept Meses Sin Intereses Card Payments. November 2026 variant navigation and earlier detailed guidance.
 - [[source-stripe-balance-pay]] — Pay with Stripe Balance: Connect subscriptions only, Accounts V2 preview, T+0/T+1 settlement, failure handling (webpage, 2026-05-01)
 - [[source-stripe-stablecoin-payments]] — Stablecoin payments: USDC/USDP/USDG, US businesses, settles USD, no chargebacks, refunds in stablecoins (webpage, 2026-05-01)
 - [[source-stripe-accept-stablecoin-payments]] — The May 1, 2026 capture is a detailed, bundled guide for enabling Pay with Crypto and integrating through **six variant routes**: Checkout, Elements with Checkout Sessions API, Elements with Payment Intents API, Direct API, iOS, and Android. (S02 reviewed update, 2026-11-09; dated source qualifications apply.) The November capture supplies variant navigation; functional details remain attributed to earlier full captures.
@@ -256,10 +256,10 @@ Operations history: [[stripe-log]]
 - [[source-stripe-au-becs-debit]] — Australia BECS Direct Debit is a reusable, delayed-notification, domestic AUD debit for an Australian business and a customer with an Australian bank account. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.)
 - [[source-stripe-au-becs-accept-payment]] — This Stripe integration guide covers accepting AU BECS Direct Debit payments through Checkout, web Elements with either the Checkout Sessions API or Payment Intents API, iOS, Android, and React Native. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.) November capture is variant navigation; detailed behavior remains dated to earlier full captures.
 - [[source-stripe-au-becs-set-up-payment]] — This Stripe guide covers using the Setup Intents API to save AU BECS Direct Debit details and a mandate for future payments. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.) November capture is variant navigation; detailed behavior remains dated to earlier full captures.
-- [[source-stripe-nz-becs-debit]] — NZ BECS Direct Debit: NZD, T+2, DDA mandate, mandatory emails, 9-month disputes, 90-day refunds (webpage, 2026-05-03)
-- [[source-stripe-nz-becs-accept-payment]] — NZ BECS accept payment: PaymentIntent + Payment Element, DDA mandate text, off-session, 6 test accounts, target_date (webpage, 2026-05-03)
-- [[source-stripe-nz-becs-set-up-payment]] — NZ BECS save for future: SetupIntent + Payment Element, DDA mandate, off-session charging (webpage, 2026-05-03)
-- [[source-stripe-nz-becs-migrate-from-processor]] — NZ BECS processor migration: 3-step notifications, offline DDA acceptance, billing_details required (webpage, 2026-05-03)
+- [[source-stripe-nz-becs-debit]] — New Zealand BECS Direct Debit. Compare dated mandate and notice requirements, delayed payment and settlement, and documented off-session scope.
+- [[source-stripe-nz-becs-accept-payment]] — NZ BECS acceptance. See the dated PaymentIntent, mandate and scheduled-debit guidance and November implementation routes.
+- [[source-stripe-nz-becs-set-up-payment]] — NZ BECS future-payment setup. See the dated SetupIntent and advance-notice guidance and the separate November product-matrix qualification.
+- [[source-stripe-nz-becs-migrate-from-processor]] — NZ BECS migration from another processor. See the dated consent, notification, debit setup and stored payment-method guidance.
 - [[source-stripe-sepa-debit]] — SEPA Direct Debit: EUR/IBAN, T+6, Creditor ID, 5-day refusal window, 8wk disputes, 12 failure codes, Radar (webpage, 2026-05-03)
 - [[source-stripe-sepa-accept-payment]] — SEPA accept payment: Checkout + Elements + iOS + Android, 19-country IBAN table, reference_prefix, target_date (webpage, 2026-05-03)
 - [[source-stripe-sepa-set-up-payment]] — SEPA save for future: Checkout setup mode + SetupIntents, same IBAN table, reference_prefix (webpage, 2026-05-03)
@@ -280,8 +280,8 @@ Operations history: [[stripe-log]]
 - [[source-stripe-ideal-accept-payment]] — Stripe's archived iDEAL | Wero acceptance guide covers Checkout, iOS, Android, React Native, and web Elements. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.) November capture is variant navigation; detailed behavior remains dated to earlier full captures.
 - [[source-stripe-ideal-save-during-payment]] — The 2026-05-03 guide describes saving a customer's IBAN from an initial iDEAL | Wero payment as a generated SEPA Direct Debit PaymentMethod for later payments. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.) November capture is variant navigation; detailed behavior remains dated to earlier full captures.
 - [[source-stripe-ideal-set-up-payment]] — The detailed 2026-05-03 guide uses an iDEAL | Wero SetupIntent to collect a mandate and bank details for later SEPA Direct Debit. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.) November capture is variant navigation; detailed behavior remains dated to earlier full captures.
-- [[source-stripe-p24]] — Przelewy24: Poland/EUR+PLN, aggregator, 10 prohibited categories, website requirements, 180-day refunds (webpage, 2026-05-03)
-- [[source-stripe-p24-accept-payment]] — P24 accept payment: Checkout + iOS + Android + React Native + Elements legacy, email required, 14-char descriptor (webpage, 2026-05-03)
+- [[source-stripe-p24]] — Przelewy24 Payments. Dated documentation and November 2026 changes.
+- [[source-stripe-p24-accept-payment]] — Przelewy24 acceptance. The May guide details variant-specific fields and flows. The November selector lists Checkout, Elements and mobile routes.
 - [[source-stripe-twint]] — TWINT: Switzerland/CHF, mobile+QR flows, recurring, disputes, 5000 CHF max, strict onboarding (webpage, 2026-05-03)
 - [[source-stripe-twint-accept-payment]] — TWINT accept payment: Checkout + Direct API legacy, confirmTwintPayment, redirect flow (webpage, 2026-05-03)
 - [[source-stripe-twint-save-during-payment]] — TWINT save for recurring: setup_future_usage, off-session charging, Checkout + Elements + Direct API (webpage, 2026-05-03)
@@ -312,12 +312,12 @@ Operations history: [[stripe-log]]
 - [[source-stripe-customer-balance-funding-instructions]] — This guide shows how to give a customer bank-transfer funding details before their first payment **without creating a PaymentIntent**. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.)
 - [[source-stripe-bank-transfers-vban]] — VBAN permanence, allocation triggers, best practices, per-region daily/lifetime limits (webpage, 2026-05-05)
 - [[source-stripe-bank-transfers-refunds]] — The November 7, 2026 full guide and the older capture describe three destinations or origins: refund a bank-transfer payment to the customer's bank, refund that payment to the customer's **cash balance**, or return available customer cash balance to the customer's bank. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.)
-- [[source-stripe-fr-meal-vouchers]] — France titres-restaurant: CNTR approval, SIRET provisioning, off-Stripe settlement, 25 EUR daily cap, split tender (webpage, 2026-05-05)
-- [[source-stripe-fr-meal-vouchers-accept-payment]] — Integration: PaymentIntent + SIRET API, CVC save, test card + test SIRETs (webpage, 2026-05-05)
-- [[source-stripe-fr-meal-vouchers-connect]] — Connect: platform/direct charges only, fee collection via transfers, ConfirmationToken identification (webpage, 2026-05-05)
-- [[source-stripe-fr-meal-vouchers-check-balance]] — Balance check API (non-binding), response structure, test card, split tender order (webpage, 2026-05-05)
-- [[source-stripe-fr-meal-vouchers-save-payment]] — SetupIntent save API, 0.30 EUR temp auth charge, on-session reuse (webpage, 2026-05-05)
-- [[source-stripe-fr-meal-vouchers-setup-restaurant]] — SIRET provisioning: Dashboard flow, postal code matching, immutability, Connect path, test SIRETs (webpage, 2026-05-05)
+- [[source-stripe-fr-meal-vouchers]] — France Titres-Restaurant (Meal Vouchers). Dated documentation and November 2026 changes.
+- [[source-stripe-fr-meal-vouchers-accept-payment]] — French meal voucher acceptance. Compare May SIRET handling with November preview PaymentLocations, confirmation and benefit details.
+- [[source-stripe-fr-meal-vouchers-connect]] — Connect for French meal vouchers. See the dated location and SIRET onboarding requirements, confirmation-time identification and fee routing.
+- [[source-stripe-fr-meal-vouchers-check-balance]] — Check French Meal Vouchers Balances. Dated documentation and November 2026 changes.
+- [[source-stripe-fr-meal-vouchers-save-payment]] — Save a French Meal Voucher Payment Method. Dated documentation and November 2026 changes.
+- [[source-stripe-fr-meal-vouchers-setup-restaurant]] — French meal voucher SIRET setup. Compare dated Dashboard and Connect paths, location checks and the Dashboard immutability scope.
 - [[source-stripe-bnpl-overview]] — November 2026 BNPL overview: eleven product rows versus ten API rows, method-specific support and dated conflicts. Its immediate/full merchant-payment wording does not establish bank payout; the Klarna overview instead specifies acceptance credit minus fees and standard payout timing. See [[source-stripe-klarna]]. (S03 reviewed update, 2026-11-15; dated qualifications apply.)
 - [[source-stripe-affirm]] — Stripe describes Affirm as a single-use, domestic B2C buy now, pay later method. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.)
 - [[source-stripe-affirm-accept-payment]] — The detailed guide captured on May 6, 2026 describes four Affirm web/API integration variants: Checkout (hosted or embedded), Checkout Sessions API with Elements, Payment Intents API with Elements, and Direct API. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.) November capture is variant navigation; detailed behavior remains dated to earlier full captures.
@@ -336,10 +336,10 @@ Operations history: [[stripe-log]]
 - [[source-stripe-klarna-compliance]] — This Stripe page records Klarna network eligibility, marketing, termination and merchant duties. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.)
 - [[source-stripe-klarna-disputes]] — Stripe guide to Klarna payment disputes: a customer files a complaint or return request in the Klarna app; most cases pass through an inquiry before a chargeback, while some reach chargeback directly. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.)
 - [[source-stripe-klarna-supplementary-data]] — The May 6 and November 7, 2026 captures describe the same Klarna-only public preview for sending industry-specific supplementary purchase data on a PaymentIntent. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.)
-- [[source-stripe-kriya]] — Kriya: B2B UK-only GBP, no Connect, ~36 prohibited categories, 12-day dispute window (webpage, 2026-05-06)
-- [[source-stripe-kriya-accept-payment]] — Kriya integration: return_url required, 7-day manual capture (webpage, 2026-05-06)
-- [[source-stripe-mondu]] — Mondu: B2B Pay-in-30, 14 EU/UK countries, multi-currency, no Connect, ~90 prohibited categories (webpage, 2026-05-06)
-- [[source-stripe-mondu-accept-payment]] — Mondu integration: return_url required, 7-day manual capture, EUR-only Checkout (webpage, 2026-05-06)
+- [[source-stripe-kriya]] — Kriya B2B BNPL for the UK and GBP. The November method page lists Connect support and an early-access request. See the dated payout, dispute and refund terms.
+- [[source-stripe-kriya-accept-payment]] — Kriya acceptance. The May guide describes redirects and seven-day manual capture. The November selector lists separate Checkout, Elements and Direct API routes.
+- [[source-stripe-mondu]] — Mondu B2B BNPL. Compare dated business and currency coverage, the November Connect label and waitlist, and the dispute filing and evidence terms.
+- [[source-stripe-mondu-accept-payment]] — Mondu acceptance. See the dated May checkout, redirect and manual-capture rules and November implementation routes.
 - [[source-stripe-payment-on-invoice]] — Payment on invoice: consumer BNPL DE/AT, 14-day terms, risk-based, branded invoice, T+2 (webpage, 2026-05-06)
 - [[source-stripe-scalapay]] — Scalapay: consumer BNPL, EUR-only (28 countries), 90-day refund window, no Connect (webpage, 2026-05-06)
 - [[source-stripe-scalapay-accept-payment]] — Scalapay integration: return_url required, 7-day capture, Checkout restricted to 8 EU countries (webpage, 2026-05-06)
@@ -350,8 +350,8 @@ Operations history: [[stripe-log]]
 - [[source-stripe-zip]] — Zip: AU+US, 3 products (Zip Pay/Money/Pay-in-4), 14-day direct resolution, 180-day disputes (webpage, 2026-05-06)
 - [[source-stripe-zip-accept-payment]] — Zip integration: return_url required, no manual capture, Direct API deprecated (webpage, 2026-05-06)
 - [[source-stripe-real-time-payments]] — Real-time payments: 5 methods (Pay by Bank/PayNow/PayTo/PromptPay/Swish), PayTo standout (webpage, 2026-05-06)
-- [[source-stripe-pay-by-bank]] — Pay by Bank (UK/Europe): open banking, 730-day refunds, no disputes, 35 merchant countries (webpage, 2026-05-06)
-- [[source-stripe-pay-by-bank-accept-payment]] — Pay by Bank integration: Checkout + Elements, statement_descriptor required, DE/GB Checkout only (webpage, 2026-05-06)
+- [[source-stripe-pay-by-bank]] — Pay by Bank Payments. Dated documentation and November 2026 changes.
+- [[source-stripe-pay-by-bank-accept-payment]] — Pay by Bank acceptance. The May guide documents Checkout and Elements and dates the manual statement-descriptor requirement. The November capture links variants.
 - [[source-stripe-paynow]] — PayNow: SG-only QR code, 1.3% pricing, T+1 payout, 90-day refunds, no statement descriptor, Terminal (webpage, 2026-05-06)
 - [[source-stripe-paynow-accept-payment]] — PayNow integration: Checkout + Direct API, confirmPayNowPayment(), inline QR no redirect (webpage, 2026-05-06)
 - [[source-stripe-payto]] — PayTo: AU mandate-based, disputes (final/non-appealable), recurring, 44 banks, mandate fields (webpage, 2026-05-06)
@@ -376,11 +376,11 @@ Operations history: [[stripe-log]]
 - [[source-stripe-boleto-subscription]] — May/November 2026 Boleto subscription invoice collection through `send_invoice` or `charge_automatically`, with dated Customer/Account routes. The customer still actively pays each voucher; invoice collection is not cash auto-debit or proof of a successful off-session payment. (S03 reviewed update, 2026-11-15; dated qualifications apply.)
 - [[source-stripe-boleto-invoices]] — May/November 2026 Boleto invoice collection, Customer versus customer-configured Account defaults, invoice due date versus voucher expiry, and send/finalize states. Automatic invoice collection still requires the customer to pay the voucher. (S03 reviewed update, 2026-11-15; dated qualifications apply.)
 - [[source-stripe-konbini]] — Konbini is a single-use, Japan-domestic JPY cash voucher method for Japan-based businesses and customers. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.)
-- [[source-stripe-konbini-accept-payment]] — Konbini integration: confirmKonbiniPayment(), confirmation_number, product_description, expiration buffer (webpage, 2026-05-07)
-- [[source-stripe-multibanco]] — Multibanco: Portugal voucher, online/ATM flows, delayed confirmation, 365-day refunds, send_invoice only (webpage, 2026-05-07)
-- [[source-stripe-multibanco-accept-payment]] — Multibanco integration: 3 paths + mobile, 7-day expiry + 4-day buffer, confirmMultibancoPayment(), entity+reference (webpage, 2026-05-07)
-- [[source-stripe-oxxo]] — OXXO: Mexico cash voucher, next-biz-day confirmation, 10–10k MXN, no refunds, no subscriptions (webpage, 2026-05-07)
-- [[source-stripe-oxxo-accept-payment]] — OXXO integration: 4 paths + mobile, confirmOxxoPayment(), expires_after (not expires_at), 1–7 day expiry (webpage, 2026-05-07)
+- [[source-stripe-konbini-accept-payment]] — Konbini Checkout and Direct API. The May guide documents voucher issuance, later fulfillment, expiry and refunds. The November selector links both routes.
+- [[source-stripe-multibanco]] — Multibanco in Portugal. Compare dated voucher confirmation, payout scope, payment amount and refund terms.
+- [[source-stripe-multibanco-accept-payment]] — Multibanco acceptance. The May guide documents voucher instructions, expiry and async payment confirmation. The November capture routes to integration variants.
+- [[source-stripe-oxxo]] — OXXO cash vouchers for Mexico buyers in MXN. See the dated merchant-location, preview, payment-confirmation, payout and expiry distinctions.
+- [[source-stripe-oxxo-accept-payment]] — OXXO acceptance. The May guide documents voucher creation and later cash payment confirmation. The November capture links implementation variants.
 - [[source-stripe-wallets]] — Wallets hub: 17 methods, Samsung Pay Terminal-only, MoMo/GCash waitlist, subscription caveats (webpage, 2026-05-07)
 - [[stripe-wallets]] — Wallets (Stripe); reviewed source routes and dated qualifications (S03, 2026-11-15).
 - [[source-stripe-alipay]] — Stripe describes Alipay as a single-use China-based wallet with more than a billion active users worldwide. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.)
@@ -401,10 +401,10 @@ Operations history: [[stripe-log]]
 - [[source-stripe-grabpay]] — Stripe describes GrabPay as a single-use Southeast Asian stored-balance wallet. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.)
 - [[source-stripe-grabpay-accept-payment]] — Stripe's archived GrabPay acceptance guide describes five variants: Checkout, Direct API, iOS, Android, and React Native. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.) November capture is variant navigation; detailed behavior remains dated to earlier full captures.
 - [[source-stripe-link]] — Link: two PM type paths (link vs card+wallet), Instant Bank Payments exclusive, Thailand/Brazil caveat (webpage, 2026-05-07)
-- [[source-stripe-mb-way]] — MB WAY: Portugal phone-number wallet, 365-day refunds, 7-day disputes, €1k daily limit, Stripe Inc descriptor (webpage, 2026-05-07)
-- [[source-stripe-mb-way-accept-payment]] — MB WAY integration: Checkout + Elements (beta flag) + confirmMbWayPayment(), 5 test phone numbers (webpage, 2026-05-07)
-- [[source-stripe-mobilepay]] — MobilePay: DK/FI card wallet, 3DS invisible 1–7%, Dankort→Visa/MC, 35 DKK/month Denmark fee (webpage, 2026-05-07)
-- [[source-stripe-mobilepay-accept-payment]] — MobilePay integration: 4 paths + mobile, 5-min auth window, manual capture full only, redirect_to_url (webpage, 2026-05-07)
+- [[source-stripe-mb-way]] — MB WAY in Portugal. Compare dated account, refund and dispute terms and the May statement-descriptor wording.
+- [[source-stripe-mb-way-accept-payment]] — MB WAY acceptance. The May guide documents app approval, delayed outcomes and dated configuration. The November capture links implementation variants.
+- [[source-stripe-mobilepay]] — MobilePay in Denmark and Finland. Compare dated business locations, Connect activation, capture limits and fees.
+- [[source-stripe-mobilepay-accept-payment]] — MobilePay acceptance. See the May authorization, redirect and capture distinctions and the November implementation selector.
 - [[source-stripe-revolut-pay]] — Revolut Pay: UK/EU, 6 currencies, full feature set, 120-day disputes, 35-day Revolut decision, video downloaded (webpage, 2026-05-07)
 - [[source-stripe-revolut-pay-accept-payment]] — Revolut Pay integration: 6 platforms, mobile redirect + desktop QR (20× refresh), 7-day manual capture, live auto-approves (webpage, 2026-05-07)
 - [[source-stripe-revolut-pay-set-up-future-payments]] — Revolut Pay save/recurring: on-session always redirects, confirmRevolutPaySetup(), authorization text, detach triggers mandate.updated (webpage, 2026-05-07)
@@ -419,17 +419,17 @@ Operations history: [[stripe-log]]
 - [[source-stripe-wechat-pay-accept-payment]] — WeChat Pay integration: Checkout + Direct API (web only), confirmWechatPayPayment(), QR from next_action, 37 business locations (webpage, 2026-05-08)
 - [[source-stripe-local-payment-methods-by-country]] — hub: Nigeria (Naira cards) + South Korea (KakaoPay, local cards), no local entity required (webpage, 2026-05-08)
 - [[source-stripe-nigeria-payment-methods]] — May/November 2026 Nigerian local-payment overviews: a Nigerian partner acts as merchant of record. November access is invite-only; wallet prose conflicts with its unsupported product/API cells, so the source preserves both rather than inferring availability. (S03 reviewed update, 2026-11-15; dated qualifications apply.)
-- [[source-stripe-ng-bank-transfer-accept-payment]] — Naira bank transfer integration: ng_bank_transfer, 500–100M NGN limits, confirmPayment(), redirect flow (webpage, 2026-05-08)
-- [[source-stripe-ng-card-accept-payment]] — Naira card integration: ng_card, setup+subscription mode, 500–100M NGN limits, same MoR redirect flow (webpage, 2026-05-08)
-- [[source-stripe-ng-card-set-up-future-payments]] — Naira card save/recurring: SetupIntent + confirmNgCardSetup(), PaymentIntent setup_future_usage, off_session reuse, detach events (webpage, 2026-05-08)
+- [[source-stripe-ng-bank-transfer-accept-payment]] — Nigeria bank transfer. See the May PaymentIntent redirect and fulfillment guidance and the November implementation selector.
+- [[source-stripe-ng-card-accept-payment]] — Accept a payment using local cards in Nigeria. November 2026 variant navigation and earlier detailed guidance.
+- [[source-stripe-ng-card-set-up-future-payments]] — Set up future payments with Naira card. November 2026 variant navigation and earlier detailed guidance.
 - [[source-stripe-korea-payment-methods]] — The May 8 and November 7, 2026 Stripe overviews describe KRW payments from South Korean customers through local cards and wallets, using Stripe and a local processor partner without requiring a local South Korean entity. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.)
-- [[source-stripe-kr-card-accept-payment]] — KR card integration: kr_card, 100 KRW minimum, NICEPAY disclosure required, confirmPayment(), redirect flow (webpage, 2026-05-08)
-- [[source-stripe-kr-card-set-up-future-payments]] — KR card save/recurring: Accounts v2 + v1, confirmKrCardSetup(), setup_future_usage, automatic capture only for recurring (webpage, 2026-05-08)
+- [[source-stripe-kr-card-accept-payment]] — South Korea card acceptance. See the May Direct API disclosure, eligibility and redirect scope and the November selector.
+- [[source-stripe-kr-card-set-up-future-payments]] — South Korea card setup and recurring charges. The May guide separates Accounts v2 and Customers v1 and scopes the automatic-capture rule to recurring use. November links variants.
 - [[source-stripe-kakao-pay-accept-payment]] — The full 2026-05-08 guide describes one-time Kakao Pay (`kakao_pay`) acceptance through Checkout or a Direct API PaymentIntent, with a redirect to Stripe's local processor partner for authentication and authorization. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.) November capture is variant navigation; detailed behavior remains dated to earlier full captures.
 - [[source-stripe-kakao-pay-set-up-future-payments]] — The full guide captured on 2026-05-08 describes saving Kakao Pay (`kakao_pay`) for later payments through Checkout setup mode or a Direct API SetupIntent, and a separate PaymentIntent route for saving during a payment. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.) November capture is variant navigation; detailed behavior remains dated to earlier full captures.
-- [[source-stripe-naver-pay-accept-payment]] — Naver Pay integration: naver_pay, funding source card/points, 28 countries (incl. SG), no email required, NICEPAY + branding (webpage, 2026-05-08)
-- [[source-stripe-naver-pay-set-up-future-payments]] — Naver Pay save/recurring: Accounts v2 + v1, confirmNaverPaySetup(), automatic capture only, currency:ngn bug (webpage, 2026-05-08)
-- [[source-stripe-payco-accept-payment]] — PAYCO integration: payco, payment mode only (no recurring), 28 countries incl. SG, NICEPAY disclosure (webpage, 2026-05-08)
+- [[source-stripe-naver-pay-accept-payment]] — One-time Naver Pay acceptance. The May guide covers Checkout, Elements and Direct API. November links variants.
+- [[source-stripe-naver-pay-set-up-future-payments]] — Naver Pay setup and recurring charges. The May guide limits recurring capture to automatic and contains a dated currency example discrepancy. November links setup variants.
+- [[source-stripe-payco-accept-payment]] — Accept a payment using PAYCO in South Korea. November 2026 variant navigation and earlier detailed guidance.
 - [[source-stripe-custom-payment-methods]] — Custom PMs overview: type:'custom'/cpmt_ IDs, integration matrix, marks compliance, crypto restriction (ID/TH), Stripe disclaimer (webpage, 2026-05-08)
 - [[source-stripe-payment-method-support]] — comprehensive reference: 36 PMs country/currency + product support matrices + API support (setup_future_usage, return_url) (webpage, 2026-05-08)
 - [[source-stripe-payment-method-connect-support]] — Connect reference for 31 PMs: capability names, MoR tables, notable restrictions (Alma/PayPal marketplace-only, ACH cloning, iDEAL compliance) (webpage, 2026-05-08)
@@ -439,22 +439,22 @@ Operations history: [[stripe-log]]
 - [[source-stripe-payment-method-rules]] — PM rules: amount/location conditions, no-code Dashboard setup, subscription caveat, currency auto-conversion, location testing via email (webpage, 2026-05-08)
 - [[source-stripe-payment-method-configurations]] — PM configurations: named pmc_ sets, Web/iOS/Android integration, Apple Pay on/Google Pay off defaults, config vs exclusion decision rule (webpage, 2026-05-08)
 - [[source-stripe-link-payment-methods]] — Link payment methods (US-only): Instant Bank Payments/Klarna/Pix/UPI/Stablecoins, zero integration, 5 eligibility criteria, BNPL individually configurable (webpage, 2026-05-08)
-- [[source-stripe-instant-bank-payments]] — Instant Bank Payments: 2-day guaranteed settlement, < $5K limit, ACH priority rule workaround, Stripe-funded cash back, 5 test scenarios (webpage, 2026-05-08)
-- [[source-stripe-klarna-on-link]] — Klarna on Link: US-only, Payment Links/Checkout/PE only, immediate merchant settlement, test cards (webpage, 2026-05-08)
-- [[source-stripe-pix-on-link]] — Pix on Link: US/BRL only, 5 BRL–3K USD limit, Ebanx provider, IOF 3.5% customer tax, one-time/on-session only (webpage, 2026-05-08)
-- [[source-stripe-stablecoins-on-link]] — Stablecoins on Link: US/USD only, 1–10K USD, any crypto wallet, USD settlement guaranteed, refunds as stablecoins, no disputes (webpage, 2026-05-08)
-- [[source-stripe-upi-on-link]] — UPI on Link: US/INR only, 1–100K INR, QR/app redirect, virtual payment address saved, 60-day refunds, uncontestable disputes (webpage, 2026-05-08)
-- [[source-stripe-checkout-link]] — Link with Checkout: dynamic vs manual listing (card required), OTP test codes, sandbox warning, Connect, disable per PMC (webpage, 2026-05-08)
-- [[source-stripe-elements-link]] — Link Auth Element (Elements): page order, multi-page support, React integration, onChange event, supported PMs for signup (webpage, 2026-05-08)
-- [[source-stripe-express-checkout-link]] — Link in Express Checkout Element: 6 one-click PMs (Link/Apple/Google/PayPal/Klarna/Amazon), dynamic button sorting (webpage, 2026-05-08)
-- [[source-stripe-payment-element-link]] — Link in Payment Element: pass-email vs collect-email, prefill tool (page scan/local memory), accelerated sign-up (webpage, 2026-05-08)
-- [[source-stripe-payment-request-button-link]] — Link in Payment Request Button (deprecated, 90-day auth window); use ECE/PE/Auth Element instead (webpage, 2026-05-08)
-- [[source-stripe-card-element-link]] — Link in Card Element (deprecated): 90-day auth, 350px/28px min size, disableLink param, detailed Connect eligibility rules (webpage, 2026-05-08)
-- [[source-stripe-mobile-payment-element-link]] — Link in Mobile PE: iOS/Android/React Native, defaultBillingDetails prefill, sandbox OTP 000000 (webpage, 2026-05-08)
-- [[source-stripe-invoicing-link]] — Link with Invoicing: Dashboard-only, Hosted Invoice Page, Invoices + Subscriptions APIs, zero code (webpage, 2026-05-08)
-- [[source-stripe-link-payment-integrations]] — Link integration paths: PM vs card-integration, IC+ caveat, backup payment source, non-card fixed values (webpage, 2026-05-08)
-- [[source-stripe-add-link-elements-integration]] — Full custom checkout guide: 3 email strategies, React+HTML+JS, shipping, 7-day manual capture, submit flow (webpage, 2026-05-08)
-- [[source-stripe-link-save-and-reuse]] — SetupIntent save-and-reuse: same 3 strategies + Accounts v2, confirmSetup, charge-later off_session (webpage, 2026-05-08)
+- [[source-stripe-instant-bank-payments]] — Instant Bank Payments. Compare dated dynamic amount limits, settlement conditions, bank returns and the mobile documentation discrepancy.
+- [[source-stripe-klarna-on-link]] — Klarna on Link. Compare the dated eligibility, buyer flow and Stripe-balance and payout wording.
+- [[source-stripe-pix-on-link]] — Pix on Link for BRL payments. Compare the November USD-equivalent range, the May minimum and dated US eligibility and non-US preview scope.
+- [[source-stripe-stablecoins-on-link]] — Stablecoins on Link for eligible one-time, on-session USD payments. See dated merchant and buyer eligibility, payment limits and completed USD balance settlement.
+- [[source-stripe-upi-on-link]] — UPI on Link. The November INR range starts at the USD 0.50 equivalent and is capped at INR 100,000. See the dated May minimum and eligibility qualifications.
+- [[source-stripe-checkout-link]] — Link in Checkout. See the dated dynamic and manual setup examples, embedded domain registration, Connect and sandbox scope.
+- [[source-stripe-elements-link]] — Link with Web Elements. Dated documentation and November 2026 changes.
+- [[source-stripe-express-checkout-link]] — Link in Express Checkout Element. The guide names six built-in methods and qualifies when eligible buttons appear.
+- [[source-stripe-payment-element-link]] — Link in web Payment Element. See dated email collection, accelerated signup, domain registration and funding scope.
+- [[source-stripe-payment-request-button-link]] — Historical Link integration for Payment Request Button. See the versioned Endive cutoff and the dedicated migration paths.
+- [[source-stripe-card-element-link]] — Adding Link to existing Card Element integrations. See typical field dimensions, Connect scope and the separately dated Contact Details Element guidance.
+- [[source-stripe-mobile-payment-element-link]] — Link in the Mobile Payment Element. Dated documentation and November 2026 changes.
+- [[source-stripe-invoicing-link]] — Link on Stripe-hosted invoices. Enabling Link on the Hosted Invoice Page requires no extra implementation code. See dated account defaults, API overrides and invoice states.
+- [[source-stripe-link-payment-integrations]] — Standalone and card-specific Link integration. See the dated routing and request fields, response shapes, pricing and retry conditions.
+- [[source-stripe-add-link-elements-integration]] — Custom Link checkout with PaymentIntents. November shows Contact Details Element and CustomerSession redisplay. May retains Link Authentication Element and Ephemeral Key examples.
+- [[source-stripe-link-save-and-reuse]] — Link payment method reuse. Compare dated contact and account examples with server confirmation and later off-session use.
 - [[source-stripe-payments-optimization]] — The Optimization Dashboard reports **estimated** effects of Authorization Boost features on card-not-present (CNP) payment attempts: recovered payment volume and count, success-rate increase, and network cost savings. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.)
 - [[source-stripe-authorization-boost-ab-test]] — Auth Boost A/B test: 30-day free test, CAU both groups, 12-month cooldown, 37-day results, paid add-on (webpage, 2026-05-08)
 - [[source-stripe-payments-recommendations]] — The May 8 and November 7, 2026 full captures describe **Payments analytics recommendations** as suggestions shown on the Stripe Dashboard **Acceptance** page to help a business consider revenue or fraud-protection changes. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.)
@@ -566,19 +566,19 @@ Operations history: [[stripe-log]]
 - [[source-stripe-payment-line-items]] — Payment line items: L2/L3 interchange savings, Klarna/PayPal auth rates, field requirements, MCC eligibility, arithmetic validation (webpage, 2026-05-11)
 - [[source-stripe-payment-line-items-flexible]] — Payment line items + flexible payments: multicapture aggregation, overcapture, incremental auth, partial auth mismatch, surcharge rules (webpage, 2026-05-11)
 - [[source-stripe-industry-metadata]] — Industry metadata is structured travel and entertainment transaction data passed through the Payment Intents API. (S02 reviewed update, 2026-11-09; dated source qualifications apply.)
-- [[source-stripe-multicapture]] — Multicapture: IC+ feature, 50-capture limit, final_capture mechanics, Connect/refund rules, 3 integration paths (webpage, 2026-05-11)
-- [[source-stripe-overcapture]] — Overcapture: IC+ feature, percent limits by network/category, SCA constraints, amount_authorized field, 3 integration paths (webpage, 2026-05-11)
+- [[source-stripe-multicapture]] — Multicapture. Compare dated feature availability, request and final-capture rules, and integration-specific behavior.
+- [[source-stripe-overcapture]] — Overcapture. Compare dated availability, network and category limits, authentication constraints and integration-specific behavior.
 - [[source-stripe-extended-authorization]] — The May 11, 2026 full guide describes an IC+ online card feature that can extend an uncaptured authorization beyond the usual seven-day online window, up to 30 days under qualifying network and merchant-category rules. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.) November capture is variant navigation; detailed behavior remains dated to earlier full captures.
 - [[source-stripe-incremental-authorization]] — Stripe incremental authorization increases the authorized amount on a **confirmed, uncaptured PaymentIntent** before capture. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.) November capture is variant navigation; detailed behavior remains dated to earlier full captures.
-- [[source-stripe-partial-authorization]] — Partial authorization: IC+ feature, debit/prepaid insufficient balance, AmEx/Visa restrictions, overcapture excluded, partial+incremental combo (webpage, 2026-05-11)
+- [[source-stripe-partial-authorization]] — Partial Authorization for eligible cards. See dated network, issuer, approval and capture conditions, including the overcapture limit after partial approval.
 - [[source-stripe-flexible-features-migration]] — The **2026-05-11 full guide** describes migration of four non-card-present flexible payment scenarios from private beta to general release: incremental authorization, overcapture, extended authorization and multicapture. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.) November capture is variant navigation; detailed behavior remains dated to earlier full captures.
-- [[source-stripe-off-session-payments-api]] — Off-Session Payments API (v2): smart retries via AI, multi-processor routing, cadence/retry_strategy (webpage, 2026-05-11)
-- [[source-stripe-orchestration]] — Orchestration (private preview): rule-based payment routing, retry on different processor, processor-of-record rule (webpage, 2026-05-11)
-- [[source-stripe-orchestration-route-payments]] — Orchestration implementation: payments_orchestration param, Payment Records replace Charges, Balance Transaction/webhook changes (webpage, 2026-05-11)
-- [[source-stripe-orchestration-rules]] — Orchestration rules: 7 conditions (amount/BIN/country/issuer/type/currency/metadata), execution order, rule lifecycle (webpage, 2026-05-11)
-- [[source-stripe-orchestration-retries]] — Orchestration cross-processor retries: 3DS/ineligible no-retry, Radar blocks retry, Adaptive Acceptance interaction (webpage, 2026-05-11)
-- [[source-stripe-orchestration-feature-support]] — Orchestration feature matrix: Adyen/Braintree/Worldpay WPG support, orchestration_unsupported error, error protection (webpage, 2026-05-11)
-- [[source-stripe-orchestration-wallet-payments]] — Orchestration wallet payments: Apple Pay/Google Pay routing, off_session=true for saved wallets, re-prompt rule (webpage, 2026-05-11)
+- [[source-stripe-off-session-payments-api]] — Stripe Off-Session Payments API. See the dated consent, version and private-preview boundaries for smart retries and multi-processor routing.
+- [[source-stripe-orchestration]] — Stripe Payment Orchestration. Compare dated preview access, rule-based processor routing, retry and payment-method exclusions.
+- [[source-stripe-orchestration-route-payments]] — Orchestration: Route Payments to Multiple Processors. Dated documentation and November 2026 changes.
+- [[source-stripe-orchestration-rules]] — Payment Orchestration rules. See dated account routing, independent retry selection, and separate sandbox and live rule-set scope.
+- [[source-stripe-orchestration-retries]] — Cross-processor retry. See dated authentication and retry-processor compatibility rules, including the separate Stripe-main block-as-decline case.
+- [[source-stripe-orchestration-feature-support]] — Payment Orchestration feature matrix. See dated processor, account-override, fallback and wallet limits.
+- [[source-stripe-orchestration-wallet-payments]] — Apple Pay and Google Pay routing with Orchestration. See the dated saved-method, authentication and processor compatibility limits.
 - [[source-stripe-crypto-onramp]] — The May 11 and November 7, 2026 captures describe [[stripe]]'s fiat-to-crypto onramp, where customers can purchase and exchange crypto through Stripe-hosted, embedded web, or embedded mobile components paths. (S02 reviewed update, 2026-11-09; dated source qualifications apply.)
 - [[source-stripe-crypto-onramp-stripe-hosted]] — The May 11 and November 7, 2026 captures describe the Stripe-hosted standalone crypto onramp at `crypto.link.com`: platforms redirect users there through either a frontend-generated URL or a backend-created onramp session with a redirect URL. (S02 reviewed update, 2026-11-09; dated source qualifications apply.)
 - [[source-stripe-crypto-onramp-embedded]] — Embedded onramp: credit/debit/ApplePay/ACH, instant delivery post-KYC, Link, webhook per status change (webpage, 2026-05-11)
@@ -594,8 +594,8 @@ Operations history: [[stripe-log]]
 - [[source-stripe-agentic-commerce-for-agents]] — ACS for agents: OCA lifecycle, SFTP feeds, RequestedSession, payment methods, SPT next actions, mobile, MPF warning (webpage, 2026-05-12)
 - [[source-stripe-machine-payments]] — Machine Payments (Frontier): agent API pay-per-use, MPP + x402, Base/Solana/Tempo, 0.01 USDC min, NY+TX stablecoin exclusion (notes, 2026-05-12)
 - [[source-stripe-machine-payments-mpp]] — MPP implementation: mppx library, HTTP 402 middleware, crypto + SPT flows, simulate_crypto_deposit testing (webpage, 2026-05-12)
-- [[source-stripe-machine-payments-mpp-quickstart]] — MPP Hono quickstart: /crypto/paid + /spt/paid, NodeCache deposit address caching pattern (notes, 2026-05-12)
-- [[source-stripe-machine-payments-x402-quickstart]] — x402 Hono quickstart: Base network, @x402/hono middleware, facilitator pattern, purl testing (notes, 2026-05-12)
+- [[source-stripe-machine-payments-mpp-quickstart]] — MPP quickstarts. Compare the dated May Hono example with the November profile-backed guide for card SPTs and Tempo stablecoins.
+- [[source-stripe-machine-payments-x402-quickstart]] — x402 Base USDC quickstarts. Compare May deposit-mode payment with November precreated recipients and recording verified on-chain settlement.
 - [[source-stripe-machine-payments-x402]] — x402 integration guide: USDC contract addresses (Tempo/Base/Solana), CDP mainnet facilitator (webpage, 2026-05-12)
 - [[source-stripe-shared-payment-tokens]] — The full 2026-05-12 Stripe guide describes Shared Payment Tokens (SPTs) from both roles: an agent issues a scoped grant of a customer's payment method to a seller, and the seller receives a granted token for payment processing. (S02 reviewed update, 2026-11-09; dated source qualifications apply.) The November capture supplies variant navigation; functional details remain attributed to earlier full captures.
 - [[source-stripe-agentic-commerce-product-feed]] — ACS catalog feed: 4 types (product/inventory/pricing/promotions), field reference, upsert/replace, disable_checkout (webpage, 2026-05-12)
@@ -700,12 +700,12 @@ Operations history: [[stripe-log]]
 - [[stripe-entitlements]] — Stripe Entitlements — reviewed source routes and dated qualifications (S01, 2026-11-08)
 - [[stripe-agentic-commerce-product-feed]] — Stripe ACS Catalog Feed: 4 feed types, required fields, shipping/tax/variant/compliance formats
 - [[stripe-shared-payment-tokens]] — Stripe Shared Payment Tokens (SPT) — reviewed source routes and dated qualifications (S02, 2026-11-09)
-- [[stripe-machine-payments]] — Stripe Machine Payments: Frontier product, agent-to-API microtransactions, MPP + x402 protocols, fiat settlement
+- [[stripe-machine-payments]] — Stripe Machine Payments using MPP and x402. See the documented environments, supported settlement rails and the quickstarts’ execution boundaries.
 - [[stripe-agentic-commerce]] — Stripe Agentic Commerce Suite: v2 catalog feed, AI agent sales, order approval hook, checkout customization hook
 - [[stripe-crypto-onramp]] — Stripe Fiat-to-Crypto Onramp — reviewed source routes and dated qualifications (S02, 2026-11-09)
-- [[stripe-orchestration]] — Stripe Orchestration: rule-based multi-processor payment routing, retry rules, processor of record stays with third party
+- [[stripe-orchestration]] — Payment Orchestration rules, processor routing and retry conditions. See the dated integrations and feature matrix.
 - [[stripe-off-session-payments]] — Stripe Off-Session Payments API (v2): AI smart retries, multi-processor routing, single-call recurring payment initiation
-- [[stripe-partial-authorization]] — Stripe Partial Authorization: IC+ debit/prepaid partial approval, manual vs auto-capture, overcapture incompatibility, incremental combo
+- [[stripe-partial-authorization]] — Stripe Partial Authorization. See eligible card, issuer and pricing conditions, capture limits and interaction with incremental authorization.
 - [[stripe-extended-authorization]] — Stripe Extended Authorization (Online); reviewed source routes and dated qualifications (S03, 2026-11-15).
 - [[stripe-incremental-authorization]] — Stripe Incremental Authorization (Online); reviewed source routes and dated qualifications (S03, 2026-11-15).
 - [[stripe-multicapture]] — Stripe Multicapture; reviewed source routes and dated qualifications (S03, 2026-11-15).
@@ -733,13 +733,13 @@ Operations history: [[stripe-log]]
 - [[stripe-ab-testing-payment-methods]] — Stripe A/B Testing Payment Methods — reviewed source routes and dated qualifications (S02, 2026-11-09)
 - [[stripe-payment-method-rules]] — Payment Method Rules: amount/location conditions, no-code Dashboard, subscription caveat, currency auto-conversion
 - [[stripe-payment-method-configurations]] — Payment Method Configurations: named pmc_ sets per scenario, Web/iOS/Android, Apple Pay on / Google Pay off by default
-- [[stripe-link]] — Stripe Link: payment network + wallet, two PM paths, LPMs (Instant Bank/Klarna/Pix/UPI/Stablecoins), Link Auth Element
+- [[stripe-link]] — Link payment methods and checkout. See the dated Link Authentication Element and Contact Details Element routes, wallet behavior and saved-method qualifications.
 - [[stripe-instant-bank-payments]] — Stripe Instant Bank Payments; reviewed source routes and dated qualifications (S03, 2026-11-15).
 - [[stripe-ach-direct-debit]] — ACH Direct Debit — reviewed source routes and dated qualifications (S02, 2026-11-09)
 - [[stripe-bacs-direct-debit]] — Bacs Direct Debit (Stripe); reviewed source routes and dated qualifications (S03, 2026-11-15).
 - [[stripe-acss-debit]] — ACSS Debit / Canadian Pre-Authorized Debit (Stripe) — reviewed source routes and dated qualifications (S02, 2026-11-09)
 - [[stripe-au-becs-debit]] — AU BECS Direct Debit (Stripe); reviewed source routes and dated qualifications (S03, 2026-11-15).
-- [[stripe-nz-becs-debit]] — NZ BECS Direct Debit: NZD, T+2, DDA mandate, mandatory emails (5-day + day-of), 9-month disputes, vs AU BECS comparison
+- [[stripe-nz-becs-debit]] — NZ BECS Direct Debit. See the dated mandate, notice, settlement, refund and off-session scope.
 - [[stripe-sepa-debit]] — SEPA Direct Debit (Stripe); reviewed source routes and dated qualifications (S03, 2026-11-15).
 - [[stripe-bank-redirects]] — Bank Redirects (Stripe); reviewed source routes and dated qualifications (S03, 2026-11-15).
 - [[stripe-bank-transfers]] — Bank Transfers (Stripe); reviewed source routes and dated qualifications (S03, 2026-11-15).
@@ -752,7 +752,7 @@ Operations history: [[stripe-log]]
 - [[stripe-eps]] — EPS (Stripe); reviewed source routes and dated qualifications (S03, 2026-11-15).
 - [[stripe-fpx]] — FPX (Stripe); reviewed source routes and dated qualifications (S03, 2026-11-15).
 - [[stripe-ideal]] — iDEAL | Wero (Stripe); reviewed source routes and dated qualifications (S03, 2026-11-15).
-- [[stripe-p24]] — Przelewy24/P24: Poland/EUR+PLN, payment aggregator, 10 prohibited categories, website legal requirements
+- [[stripe-p24]] — Przelewy24 payment flows in Poland. See the dated currency, business requirements and product-support qualifications.
 - [[stripe-twint]] — TWINT (Stripe) — reviewed source routes and dated qualifications (S01, 2026-11-08)
 - [[stripe-wero]] — Wero: Germany/EUR, QR+app auth, under 10s, no disputes/recurring, distinct from iDEAL|Wero
 - [[stripe-jp-installments]] — Japan Card Installments (分割払い); reviewed source routes and dated qualifications (S03, 2026-11-15).
@@ -769,9 +769,9 @@ Operations history: [[stripe-log]]
 - [[stripe-payment-links]] — Stripe Payment Links — reviewed source routes and dated qualifications (S02, 2026-11-09)
 - [[stripe-checkout]] — Stripe Checkout; reviewed source routes and dated qualifications (S03, 2026-11-15).
 - [[stripe-express-checkout-element]] — Stripe Express Checkout Element — reviewed source routes and dated qualifications (S02, 2026-11-09)
-- [[stripe-address-element]] — Stripe Address Element: shipping/billing modes, PaymentIntent routing, autocomplete (26 countries), Link autofill
+- [[stripe-address-element]] — Address Element shipping and billing, separate Checkout Sessions and PaymentIntent components, and dated Link and platform guidance.
 - [[stripe-currency-selector-element]] — Stripe Currency Selector Element; reviewed source routes and dated qualifications (S03, 2026-11-15).
-- [[stripe-link-authentication-element]] — Stripe Link Authentication Element: dual-purpose email/auth input, onChange, prefill, Link autofill flow
+- [[stripe-link-authentication-element]] — Link Authentication Element and historical email and autofill examples. See the separately dated Contact Details Element path.
 - [[stripe-payment-method-messaging-element]] — Stripe Payment Method Messaging Element — reviewed source routes and dated qualifications (S02, 2026-11-09)
 - [[stripe-tax-id-element]] — Stripe Tax ID Element; reviewed source routes and dated qualifications (S03, 2026-11-15).
 - [[stripe-saved-payment-methods]] — Stripe Saved Payment Methods; reviewed source routes and dated qualifications (S03, 2026-11-15).
@@ -785,7 +785,7 @@ Operations history: [[stripe-log]]
 - [[stripe-terminal-collect-inputs]] — Stripe Terminal Collect On-Screen Inputs: 6 input types, S700/S710+WisePOS E only, signature 7-day storage, webhooks
 - [[stripe-terminal-apps-on-devices]] — Stripe Terminal Apps on Devices: custom Android POS on smart readers, two integration modes, AOSP, Connect single-platform
 - [[stripe-terminal-hardware-orders]] — Stripe Terminal Hardware Orders: ordering, statuses, self-service returns, shipping thresholds, permissions, Hardware Orders API
-- [[stripe-managed-payments]] — Stripe Managed Payments: merchant of record, 80+ country tax compliance, fraud/disputes/support handled by Stripe, Checkout+Payment Links only
+- [[stripe-managed-payments]] — Stripe as merchant of record. See the dated Checkout, Payment Links and mobile flows, product and regional scope, and migration requirements.
 - [[stripe-nigeria-payment-methods]] — Nigerian Payment Methods (Stripe); reviewed source routes and dated qualifications (S03, 2026-11-15).
 - [[stripe-korea-payment-methods]] — South Korean Payment Methods (Stripe); reviewed source routes and dated qualifications (S03, 2026-11-15).
 - [[stripe-custom-payment-methods]] — Stripe Custom Payment Methods — reviewed source routes and dated qualifications (S01, 2026-11-08)

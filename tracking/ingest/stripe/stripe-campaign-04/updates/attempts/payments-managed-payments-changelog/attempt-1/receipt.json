@@ -1,0 +1,260 @@
+{
+  "job_id": "payments-managed-payments-changelog",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Managed Payments Changelog\"\ntype: source\ndate_ingested: 2026-04-23\ndate_updated: 2026-11-22\ncanonical_url: \"https://docs.stripe.com/payments/managed-payments/changelog\"\noriginal_format: webpage\nraw_files:\n  - \"stripe-payments-managed-payments-changelog-2026-11-07.md\"\n  - \"stripe-managed-payments-changelog-2026.md\"\ntags: [stripe, managed-payments, merchant-of-record, changelog, timeline]\n---\n\n## Summary\n\nThe April 23 and November 7, 2026 captures track Managed Payments rollout dates. The November capture adds invoice payment attempts, two Checkout Session parameters for future usage, four Artificial Intelligence as a Service (AIaaS) product tax codes, and a Sigma reporting field under the April entry. Both captures retain the April 2026 general availability milestone, February Adaptive Pricing, the September 2025 one-time and mobile payment entries, and August 2025 Radar support.\n\n## Timeline\n\n### October 5, 2026 — Pay an invoice\n\nUse `POST /v1/invoices/{id}/pay` to finalize and attempt payment on a Managed Payments invoice. The endpoint uses the payment method already associated with the invoice. Managed Payments excludes payment-method overrides and other payment-related request parameters shown in the generic Invoice Pay reference, including `source` and `paid_out_of_band`. An attempt can precede a paid invoice and does not establish payment success, funds availability, or settlement. Paying an existing invoice is separate from generating a one-off invoice, which remains unsupported outside the Managed Payments subscription’s billing period.\n\n### September 3, 2026 — Checkout future usage\n\nWhen creating a Managed Payments Checkout Session, the changelog permits `payment_intent_data.setup_future_usage` and per-method `payment_method_options.{payment_method}.setup_future_usage`. The older one-time payments table in the [[source-stripe-managed-payments-update-checkout|migration guide]] excludes both fields. Use the September entry for the documented later request scope. The November migration guide separately requires Dashboard enablement, hosted or embedded Checkout in `payment` or `subscription` mode, eligible products with eligible tax codes, and API version `2025-03-31.basil` or later. The September entry does not identify its feature introduction version or supported values by payment method. Managed Payments subscription authorization covers Managed Payments charges. Charging outside Managed Payments requires appropriate customer consent.\n\n### June 2, 2026 — AIaaS tax codes\n\n| Code | Product classification |\n| --- | --- |\n| `txcd_10105001` | Cloud-based AIaaS for personal use |\n| `txcd_10105002` | Cloud-based AIaaS for business use |\n| `txcd_10105003` | Cloud-based and downloaded AIaaS for personal use |\n| `txcd_10105004` | Cloud-based and downloaded AIaaS for business use |\n\nThe [[source-stripe-managed-payments-eligibility|eligibility guide]] separately requires direct sale, necessary distribution rights, and a fully automated digital product.\n\n### April 22, 2026 — General Availability\n\n- **39 countries** (Australia added)\n- Payment Links support added\n- Add eligible Invoice Items and Invoice Line Items to invoices for Managed Payments subscriptions, and eligible Subscription Items to the subscriptions themselves.\n- Managed Payments invoices are now issued by **Sold through Link** and show the business name and product details.\n- Trial subscription confirmation email added\n- Additional digital product tax codes became eligible.\n- The November capture adds a Sigma reporting note here. The `payment_intents`, `setup_intents`, `checkout_session`, and `subscriptions` Sigma tables include `managed_payments_enabled` to identify Managed Payments transactions and subscriptions. The April capture lacks this entry.\n\n### February 9, 2026\n\n- 15 payment methods supported\n- Subscription schedules support\n- Free trials without collecting payment method: `payment_method_collection: 'if_required'`; customer gets email with hosted form before trial ends\n- Adaptive Pricing for one-time + subscription payments\n- `payment_behavior` became available when updating Managed Payments subscriptions.\n- `hosted_invoice_url` returned in Managed Payments Invoice objects.\n- One-off invoices outside a Managed Payments subscription’s billing period remain unsupported.\n\n### November 11, 2025\n\n- New Dashboard Settings page: status, usage metrics, Tax settings\n\n### October 7, 2025\n\n- `saved_payment_method_options` parameter available\n\n### September 22, 2025\n\n- **One-time payments** supported (`mode: 'payment'`)\n- **Mobile Checkout UI** via `origin_context: 'mobile_app'`. The historical entry describes keeping payment inside the app. The linked November [[source-stripe-managed-payments-mobile|iOS guide]] documents a different route for eligible external links. The server creates the Checkout Session and the client opens its URL in Safari. The parameter selects the mobile-oriented Checkout UI.\n- **Link account no longer required** — guests can checkout; receipt email contains URL to link transaction to Link account; phone number no longer required\n- The April 2026 capture lists 21 new tax codes under this entry, including codes for video games, audio and audiovisual works, artwork, Website Advertising (`txcd_10701000`), and bundles. The November capture omits Website Advertising from this historical list, and the November [[source-stripe-managed-payments-eligibility|eligibility guide]] no longer lists the code. The dated captures leave any withdrawal date or grandfathering rule unresolved.\n\n### August 22, 2025\n\n- `customer_update[address]` and `customer_update[name]` removed — Managed Payments always collects and updates customer name + billing address (needed for tax calculation)\n- Website Information Services tax codes added (`txcd_10701400`, `txcd_10701401`)\n\n### August 15, 2025\n\n- **Radar for Fraud Teams** supported — custom fraud rules (country blocking, 3DS forcing) apply on top of Managed Payments default fraud prevention\n\n### August 13, 2025\n\n- Refunded sales tax clarification: Stripe only retains original tax where required (not all refunded transactions); Payment breakdown shows refunded tax amount\n\n## Key Feature Rollout Dates\n\n| Feature | Date |\n| --- | --- |\n| Pay Invoice for Managed Payments invoices | 2026-10-05 |\n| Checkout Session future-usage parameters | 2026-09-03 |\n| Four AIaaS tax codes | 2026-06-02 |\n| GA (39 countries incl. Australia) | 2026-04-22 |\n| Payment Links | 2026-04-22 |\n| Subscription schedules | 2026-02-09 |\n| Free trials without PM | 2026-02-09 |\n| Adaptive Pricing | 2026-02-09 |\n| One-time payments | 2025-09-22 |\n| Mobile Checkout UI (historical in-app entry) | 2025-09-22 |\n| Link account no longer required | 2025-09-22 |\n| Radar for Fraud Teams | 2025-08-15 |\n\n## Related Pages\n\n- [[stripe-managed-payments]] — concept page\n- [[source-stripe-managed-payments-overview]] — overview\n\n## Raw Sources\n\n- [[raw/stripe-payments-managed-payments-changelog-2026-11-07|2026-11-07 Managed Payments changelog]] — full capture, 166 lines\n- [[raw/stripe-managed-payments-changelog-2026|2026-04-23 Managed Payments changelog]] — verbatim changelog, 138 lines and one image\n\n## Related raw API references\n\n- [[raw/stripe-api-invoices-pay-2026-11-07|2026-11-07 generic Pay Invoice API reference]] — invoice-ID route and general request parameters\n",
+  "quotes": {
+    "payments-managed-payments-changelog": [
+      {
+        "text": "The endpoint uses the payment method already associated with the invoice, so you can’t provide a different payment method or include other payment-related parameters in the request.",
+        "location": "raw/stripe-payments-managed-payments-changelog-2026-11-07.md:13"
+      },
+      {
+        "text": "parameters specific to each payment method, when creating a Managed Payments Checkout Session.",
+        "location": "raw/stripe-payments-managed-payments-changelog-2026-11-07.md:19"
+      },
+      {
+        "text": "`txcd_10105001`: Artificial Intelligence as a Service (AIaaS) - Cloud Based - Personal Use",
+        "location": "raw/stripe-payments-managed-payments-changelog-2026-11-07.md:27"
+      },
+      {
+        "text": "with eligible product categories to invoices for Managed Payments subscriptions.",
+        "location": "raw/stripe-payments-managed-payments-changelog-2026-11-07.md:46"
+      },
+      {
+        "text": "Managed Payments has a Checkout UI for mobile that you can use for in-app payment flows.",
+        "location": "raw/stripe-payments-managed-payments-changelog-2026-11-07.md:110"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-managed-payments-changelog": [
+      {
+        "text": "Managed Payments is now generally available to businesses in 39 countries, including new support for Australia.",
+        "location": "raw/stripe-managed-payments-changelog-2026.md:12"
+      },
+      {
+        "text": "`txcd_10701000`: Website Advertising",
+        "location": "raw/stripe-managed-payments-changelog-2026.md:109"
+      },
+      {
+        "text": "Invoices are now issued by _Sold through Link_, aligning with customer branding at checkout.",
+        "location": "raw/stripe-managed-payments-changelog-2026.md:27"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-managed-payments-changelog-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 166
+      }
+    ],
+    "raw/stripe-managed-payments-changelog-2026.md": [
+      {
+        "start": 1,
+        "end": 138
+      }
+    ],
+    "wiki/sources/source-stripe-managed-payments-changelog.md": [
+      {
+        "start": 1,
+        "end": 84
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/5708c13fa6b4737b33a03186/content.diff": [
+      {
+        "start": 1,
+        "end": 111
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-managed-payments-changelog/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 234
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-managed-payments-changelog/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 124
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 11
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 130,
+        "end": 138
+      },
+      {
+        "start": 786,
+        "end": 790
+      }
+    ],
+    "wiki/concepts/stripe-managed-payments.md": [
+      {
+        "start": 8,
+        "end": 12
+      },
+      {
+        "start": 33,
+        "end": 45
+      },
+      {
+        "start": 70,
+        "end": 123
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 195,
+        "end": 201
+      }
+    ],
+    "raw/stripe-payments-managed-payments-update-checkout-2026-11-07.md": [
+      {
+        "start": 9,
+        "end": 22
+      }
+    ],
+    "raw/stripe-managed-payments-update-checkout-2025.md": [
+      {
+        "start": 191,
+        "end": 205
+      }
+    ],
+    "raw/stripe-payments-managed-payments-set-up-mobile-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 9
+      },
+      {
+        "start": 335,
+        "end": 343
+      },
+      {
+        "start": 515,
+        "end": 518
+      }
+    ],
+    "raw/stripe-payments-managed-payments-eligibility-2026-11-07.md": [
+      {
+        "start": 91,
+        "end": 105
+      },
+      {
+        "start": 117,
+        "end": 120
+      },
+      {
+        "start": 166,
+        "end": 175
+      }
+    ],
+    "raw/stripe-managed-payments-eligibility-2025.md": [
+      {
+        "start": 163,
+        "end": 170
+      }
+    ],
+    "raw/stripe-api-invoices-pay-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 24
+      },
+      {
+        "start": 124,
+        "end": 150
+      }
+    ],
+    "wiki/sources/source-stripe-managed-payments-update-checkout.md": [
+      {
+        "start": 52,
+        "end": 61
+      }
+    ],
+    "wiki/sources/source-stripe-managed-payments-eligibility.md": [
+      {
+        "start": 73,
+        "end": 76
+      }
+    ],
+    "wiki/sources/source-stripe-managed-payments-overview.md": [
+      {
+        "start": 42,
+        "end": 50
+      }
+    ],
+    "raw/stripe-payments-managed-payments-2026-11-07.md": [
+      {
+        "start": 45,
+        "end": 55
+      }
+    ]
+  },
+  "answers": {
+    "payments-managed-payments-changelog": {
+      "Q1": "The November 7 capture of https://docs.stripe.com/payments/managed-payments/changelog adds three later Managed Payments entries and an April-dated Sigma entry missing from the April 23 capture. On October 5, `POST /v1/invoices/{id}/pay` became available to finalize and attempt payment on a Managed Payments Invoice with its already associated payment method. It excludes payment method overrides and other payment-related request parameters. An attempt leaves payment success and funds availability unverified (new raw lines 9-13). On September 3 the changelog allows payment_intent_data.setup_future_usage and payment_method_options.{payment_method}.setup_future_usage when creating a Managed Payments Checkout Session. The separate November migration guide requires Dashboard enablement, hosted or embedded Checkout in payment or subscription mode, eligible products with eligible tax codes, and API version 2025-03-31.basil or later. That is the migration guide's general minimum, and the September entry does not specify the fields' introduction version (new raw lines 15-19 and raw/stripe-payments-managed-payments-update-checkout-2026-11-07.md:9-22). The June 2 AIaaS codes in source order are txcd_10105001 for cloud-based personal use, txcd_10105002 for cloud-based business use, txcd_10105003 for cloud-based and downloaded personal use, and txcd_10105004 for cloud-based and downloaded business use. The separate eligibility guide still requires direct sale, distribution rights and a fully automated digital product (new raw lines 21-30 and raw/stripe-payments-managed-payments-eligibility-2026-11-07.md:91-102). The backfilled April 22 Sigma item records managed_payments_enabled on payment_intents, setup_intents, checkout_session and subscriptions (new raw lines 61-65). The mapped source-stripe-managed-payments-changelog.md preserves much of the earlier rollout timeline. Its lines 19-33 need the April distinction that eligible Invoice Items and Invoice Line Items can be added to invoices for Managed Payments subscriptions, and that invoices are now issued by Sold through Link while showing the business name and product details. It also omits February's payment_behavior support when updating Managed Payments subscriptions (old raw lines 18-27 and 55-60, new raw lines 42-51 and 83-88). The revised mapped source records the November entries alongside the dated April evidence.",
+      "Q2": "For https://docs.stripe.com/payments/managed-payments/changelog, Invoice Pay, both future-usage request fields, four AIaaS codes and the newly captured April Sigma field are substantive additions (new raw lines 9-30 and 61-65). Keep managed_payments_enabled scoped to Sigma reporting for the four named tables. Website Advertising txcd_10701000 disappears from the September 2025 historical list (old raw lines 105-113 and new raw lines 133-140). Date the source-stripe-managed-payments-changelog.md 21-code count to its April capture and add the reciprocal eligibility warning. The separate November eligibility table no longer lists the code, and the collected pages provide no live withdrawal or grandfathering date. Screenshot hosting, italics and whitespace are presentational. The older one-time Checkout migration table excludes both payment_intent_data.setup_future_usage and payment_method_options.{payment_method}.setup_future_usage. September's dated entry permits those same fields at Managed Payments Checkout Session creation (new raw lines 15-19 and raw/stripe-managed-payments-update-checkout-2025.md:191-205). The revised source cross-links that request scope. The separate iOS guide says Managed Payments subscription authorization covers charges by Managed Payments and outside charges require appropriate consent (raw/stripe-payments-managed-payments-set-up-mobile-2026-11-07.md:515-517). The changelog gives no feature introduction API version. Scope the generic Invoice Pay API fields to their documented surface. For Managed Payments the October entry excludes overrides and other payment-related request parameters, and February still blocks generating a one-off invoice outside a Managed Payments subscription's billing period (new raw lines 9-13 and 83-88, old raw lines 55-60). The historical mobile changelog says payment can stay inside the app (old raw lines 74-91 and new raw lines 102-119). The linked November guide describes eligible iOS external links with server-created Checkout Sessions and a client that opens the Session URL in Safari (raw/stripe-payments-managed-payments-set-up-mobile-2026-11-07.md:5-9,335-343). Route the discrepancy reciprocally and limit origin_context=mobile_app to its mobile-oriented Checkout UI. Preserve the April 39-country GA and invoice rules, February features and 2025 history as dated claims. The captures leave current account access, payment success and settlement unverified."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-managed-payments-changelog-invoice-existence-and-collection",
+      "target_path": "wiki/concepts/stripe-managed-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "- Invoice items on Customer object attached to Managed Payments subscription\n- One-off invoices outside billing period",
+      "proposed_markdown": "- Attaching Invoice Items on a `Customer` object to a Managed Payments subscription.\n- Generating one-off invoices on a `Customer` object or outside a subscription’s billing period.\n\nThe April 22, 2026 changelog allows adding eligible Invoice Items and Invoice Line Items directly to invoices for Managed Payments subscriptions. The October 5 entry allows finalizing and attempting payment on an existing Managed Payments invoice using its associated payment method. Payment override and other payment-related parameters are unavailable for that request. See [[source-stripe-managed-payments-changelog]].",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": [
+        "Overview exclusions: raw/stripe-payments-managed-payments-2026-11-07.md:45-55. Changelog: raw/stripe-payments-managed-payments-changelog-2026-11-07.md:9-13,42-47,83-88."
+      ]
+    },
+    {
+      "update_id": "payments-managed-payments-changelog-mobile-safari-route",
+      "target_path": "wiki/concepts/stripe-managed-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "| Mobile app payments | Accept payments via mobile app |",
+      "proposed_markdown": "| Mobile app payments | For eligible iOS external links, create a Checkout Session on the server and open its URL in Safari. The older in-app wording describes the historical changelog entry. See [[source-stripe-managed-payments-mobile]] and [[source-stripe-managed-payments-changelog]]. |",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "Historical entry: raw/stripe-payments-managed-payments-changelog-2026-11-07.md:102-119. iOS browser guide: raw/stripe-payments-managed-payments-set-up-mobile-2026-11-07.md:5-9,335-343."
+      ]
+    },
+    {
+      "update_id": "payments-managed-payments-changelog-checkout-future-usage-route",
+      "target_path": "wiki/concepts/stripe-managed-payments.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-managed-payments-update-checkout]] — Migration guide: existing subscriptions NOT eligible (new only); unsupported params tables for subscriptions + one-time payments",
+      "proposed_markdown": "- [[source-stripe-managed-payments-update-checkout]] — Migration guide for new subscriptions and one-time payments. The older one-time Checkout table excludes two `setup_future_usage` fields that the September 3, 2026 [[source-stripe-managed-payments-changelog|changelog entry]] permits when creating a Managed Payments Checkout Session.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "Both exact parameter paths and dated support: raw/stripe-payments-managed-payments-changelog-2026-11-07.md:15-19. Earlier one-time exclusions: raw/stripe-managed-payments-update-checkout-2025.md:191-205. General migration requirements and existing subscription boundary: raw/stripe-payments-managed-payments-update-checkout-2026-11-07.md:9-22."
+      ]
+    },
+    {
+      "update_id": "payments-managed-payments-changelog-eligibility-tax-code-dates",
+      "target_path": "wiki/concepts/stripe-managed-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "Must assign an eligible `txcd_` code (60+ available) to each product. Key categories: IaaS/PaaS/SaaS, video games, downloadable software, digital books/magazines/newspapers/audio/video, online courses, website hosting. See [[source-stripe-managed-payments-eligibility]] for full table.",
+      "proposed_markdown": "Assign an eligible `txcd_` code to each product. Key categories include IaaS, PaaS, SaaS, video games, downloadable software, digital publications and media, online courses, and website hosting. The June 2, 2026 [[source-stripe-managed-payments-changelog|changelog entry]] adds four AIaaS codes. Website Advertising (`txcd_10701000`) appears in the April capture and is absent from the November [[source-stripe-managed-payments-eligibility|eligibility table]]. The captures leave withdrawal timing and grandfathering unresolved.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "AIaaS: raw/stripe-payments-managed-payments-changelog-2026-11-07.md:21-30 and raw/stripe-payments-managed-payments-eligibility-2026-11-07.md:117-120. Website Advertising historical and revised lists: raw/stripe-managed-payments-changelog-2026.md:105-113, raw/stripe-payments-managed-payments-changelog-2026-11-07.md:133-140, raw/stripe-managed-payments-eligibility-2025.md:163-170, and raw/stripe-payments-managed-payments-eligibility-2026-11-07.md:166-175."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "job_id": "payments-machine-x402",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "All four pins were fully read and verified and all eight quoted excerpts match. The substantive transition to a precreated address and post-settlement transaction-verification PaymentIntent is supported. The receipt misstates the example's rounding threshold and does not carry the diagram-versus-code outcome boundary into Q1. It also cites a separate deposit-address endpoint example without warning that its Tempo token address differs from the guide's recording-mode table.",
+  "required_changes": [
+    "Correct findings and the mapped-source assessment where they say the example skips amounts below a cent. November raw lines 159-166 round atomic USDC amounts to integer USD cents first and return only when that rounded value is below one; some sub-cent inputs round to one cent. Preserve the fixed 0.01 USD route price in November raw lines 85-87 and 112-123. Do not infer a general feature minimum or universal sub-cent handling from that sample guard.",
+    "Qualify Q1's delivery and recording sequence by attributing recording before the response to the guide's intended diagram at new raw lines 24-39. The sample protects the route with verification and facilitator settlement at lines 112-136. Its separate onAfterSettle hook requires result.success and a transaction hash, asks Stripe to confirm the transaction_verification PaymentIntent with a hash idempotency key, and logs its ID without an explicit Stripe status or recovery check at lines 151-189. State that this evidence does not establish an independently verified successful recording gate, delivery, or exactly-once outcome. The current findings already recognize this distinction and Q1 should preserve it.",
+    "Qualify the Tempo token references in findings/conflicts, the mapped-source assessment and Q2 where the endpoint or recording token table is retained. The November x402 guide's transaction_verification Tempo row uses 0x20c000000000000000000000b9537d11c60e8b50 (new raw lines 216-224). The separately cited November crypto deposit-address endpoint's Tempo response is an example marked livemode:false and labels a different contract, 0x20c0000000000000000000009e8d7eb59b783726, under token_currency usdc (raw/stripe-api-crypto-deposit-address-create-2026-11-07.md lines 11-15 and 18-34). Keep the route warning on operation and example scope so a reader does not substitute one address for the other. The separate Machine Payments protocol table labels Tempo MPP USDC.e (raw/stripe-payments-machine-2026-11-07.md lines 41-49), while this x402 walkthrough is Base only. Do not infer a token migration, interchangeable addresses, or which contract is accepted in an uninspected environment."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "read_ranges": {
+    "raw/stripe-payments-machine-x402-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 281
+      }
+    ],
+    "raw/stripe-machine-payments-x402-quickstart-2026.md": [
+      {
+        "start": 1,
+        "end": 225
+      }
+    ],
+    "wiki/sources/source-stripe-machine-payments-x402-quickstart.md": [
+      {
+        "start": 1,
+        "end": 59
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/534e20208eb2039a93b17e11/content.diff": [
+      {
+        "start": 1,
+        "end": 475
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 12
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 591,
+        "end": 603
+      },
+      {
+        "start": 700,
+        "end": 705
+      }
+    ],
+    "wiki/concepts/stripe-machine-payments.md": [
+      {
+        "start": 1,
+        "end": 69
+      }
+    ],
+    "wiki/sources/source-stripe-machine-payments-x402.md": [
+      {
+        "start": 1,
+        "end": 40
+      }
+    ],
+    "wiki/sources/source-stripe-machine-payments.md": [
+      {
+        "start": 18,
+        "end": 35
+      }
+    ],
+    "raw/stripe-machine-payments-x402-2026.md": [
+      {
+        "start": 1,
+        "end": 23
+      },
+      {
+        "start": 54,
+        "end": 75
+      },
+      {
+        "start": 188,
+        "end": 231
+      }
+    ],
+    "raw/stripe-payments-machine-2026-11-07.md": [
+      {
+        "start": 14,
+        "end": 60
+      }
+    ],
+    "raw/stripe-machine-payments-2026.md": [
+      {
+        "start": 19,
+        "end": 34
+      }
+    ],
+    "raw/stripe-api-crypto-deposit-address-create-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 60
+      }
+    ]
+  },
+  "source_assessment_decisions": [
+    {
+      "source_target": "wiki/sources/source-stripe-machine-payments-x402-quickstart.md",
+      "verdict": "changes_requested",
+      "reason": "The dated source needs the November workflow and reciprocal cautions already identified. Narrow the sample threshold to rounded cents and record the separately cited Tempo response example's distinct environment, operation, and token address."
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+--- wiki/sources/source-stripe-upi-on-link.md
++++ wiki/sources/source-stripe-upi-on-link.md
+@@ -2,39 +2,64 @@
+ title: "Stripe Docs — UPI on Link"
+ type: source
+ date_ingested: 2026-05-08
++date_updated: 2026-11-22
++canonical_url: "https://docs.stripe.com/payments/link/upi"
+ original_format: webpage
+ raw_files:
++  - "stripe-payments-link-upi-2026-11-07.md"
+   - "stripe-upi-on-link-2025.md"
+ tags: [stripe, link, upi, india, inr, us-only, real-time-payments, qr-code]
+ ---
+ 
+-## Summary
++## Overview and eligibility
+ 
+-Guide for UPI (India's real-time payment system) on Link. US businesses can accept UPI payments from Indian customers via Link with zero integration changes.
++UPI is India’s real-time bank payment system. The May 8 and November 7, 2026 UPI on Link guides cover eligible US businesses subject to onboarding and restricted-business exclusions. They describe one-time, on-session payments presented in INR. Turning on Link automatically enables UPI where eligible, without a separate UPI integration. The documented surfaces are Payment Links, Stripe-hosted Checkout, and Elements. Eligibility still governs whether a given session displays UPI.
+ 
+-## Key Facts
++| Capture | Minimum | Maximum |
++| --- | --- | --- |
++| May 8, 2026 | 1 INR | 100,000 INR |
++| November 7, 2026 | 0.50 USD equivalent in INR | 100,000 INR |
+ 
+-- **US businesses only**, INR only; 1–100,000 INR; one-time + on-session only
+-- **Supported integrations**: Payment Links, Stripe Checkout (Hosted), Elements only
+-- **Device-specific UX**: desktop → QR code to scan with UPI app; mobile → list of UPI apps → redirect to selected app
+-- **Saved details**: name, address, virtual payment address stored in Link account
++The November guide adds an email form to request access. Submitting the form leaves access and account activation unverified.
++
++## Market and product scope
++
++The May general [[source-stripe-link|Link overview]] excludes India in its Stripe account business-location section. The November general overview says Link is unavailable in India without repeating the business-location qualifier. The dedicated UPI on Link guide specifies eligible US businesses and INR presentment. The captures leave an overall buyer geography rule for that route unresolved.
++
++The separate [[source-stripe-upi|direct UPI guide]] specifies India as the customer location and retains a 1 INR minimum. It documents one-time payments and recurring UPI AutoPay using an e-mandate. Those limits and recurring terms belong to direct UPI. UPI on Link remains one-time and on-session in these captures. INR is the presentment currency. Merchant settlement currency and bank payout timing are outside the dedicated UPI on Link guides.
++
++## Buyer flow
++
++New customers select UPI, enter their information, and click **Pay**. On desktop, they scan a QR code with their UPI app. On mobile, they choose an app and are redirected there. Customers authenticate and approve the payment in their banking or wallet app. After payment they return to checkout and receive the payment status. The guide describes Link sign-up and detail storage after completion of the first transaction. For returning customers, Link already has details such as name, address, and virtual payment address. A QR code, app return, or notification alone does not verify payment success or settlement.
++
++## Funding identification
++
++In the separate November [[source-stripe-link-payment-methods|US Link payment-methods guide]], UPI and Pix share funding-source group `lfsg_002`. Dashboard representation follows the [[source-stripe-link-payment-integrations|Link integration route]].
++
++| Link integration | Dashboard representation | Charge field |
++| --- | --- | --- |
++| Standalone Link | `type=link` | `Charge.payment_method_details.link.funding_source_group` |
++| Card-specific Link | `type=card` with `brand=link` | `Charge.payment_method_details.card.wallet.link.funding_source_group` |
++
++The Dashboard labels and shared group leave the exact underlying method and payment completion unverified.
+ 
+ ## Refunds
+ 
+-- Window: up to **60 days** after original payment
+-- Async; up to **7 business days** to complete
+-- Webhooks: `refund.updated` / `refund.failed`
+-- Failed refunds: amount returned to Stripe balance; merchant must arrange alternative
++Request a refund within **60 days** of the original payment. Processing is asynchronous and can take up to **7 business days**. Stripe reports the final status through `refund.updated` or `refund.failed`. A `Refund` with status `succeeded` confirms the successful refund. If it reaches `failed`, Stripe returns the amount to the Stripe balance and the merchant needs another way to refund the customer.
+ 
+ ## Disputes
+ 
+-Cannot contest — if bank/PSP accepts customer's return request, Stripe immediately removes funds from account. Low fraud risk (authentication required), but disputes may occur for debited-but-failed transactions or goods/services issues.
++Bank authentication lowers fraud risk. Customers may still dispute a debit for a failed transaction or an issue with goods or services. If the customer’s bank or payment service provider accepts the return request, the merchant cannot contest it and Stripe immediately removes the funds from the merchant’s Stripe account.
+ 
+ ## Related Pages
+ 
+-- [[stripe-link]] — Link concept page (UPI on Link section)
++- [[stripe-link]] — Link integration and funding options
+ - [[stripe]] — Stripe company page
++- [[source-stripe-upi]] — direct UPI and UPI AutoPay
++- [[source-stripe-link-payment-methods]] — US Link funding groups
++- [[source-stripe-link-payment-integrations]] — standalone and card-specific Link routes
+ 
+ ## Raw Sources
+ 
+-- [[stripe-upi-on-link-2025]] — verbatim webpage content (61 lines)
++- [[raw/stripe-payments-link-upi-2026-11-07|2026-11-07 UPI on Link guide]] — 74 lines
++- [[raw/stripe-upi-on-link-2025|2026-05-08 UPI on Link guide]] — verbatim webpage content, 61 lines

@@ -1,0 +1,97 @@
+---
+title: "Use Payment Links with Managed Payments"
+type: source
+date_ingested: 2026-04-23
+date_updated: 2026-11-22
+original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/managed-payments/use-payment-links"
+raw_files:
+  - "stripe-payments-managed-payments-use-payment-links-2026-11-07.md"
+  - "stripe-managed-payments-payment-links-2025.md"
+tags: [stripe, managed-payments, payment-links, merchant-of-record, variable-pricing, subscriptions]
+---
+
+## Summary
+
+The April 23 and November 7, 2026 guides describe using a shareable Payment Link to send customers to Managed Payments Checkout for eligible digital products. Stripe controls parts of checkout as merchant of record. Customers see Link as the merchant of record at checkout and use it for order management, subscription management and transaction support.
+
+## Before Creating a Link
+
+- Activate Managed Payments in Dashboard. Every product in the purchase must qualify. Check the product category in Dashboard and include an eligible tax code on the API-created Product.
+- Create the link in the web Dashboard or with the Payment Links API. The guides restrict creation in the Stripe iOS Dashboard app. Buyers can open the shareable URL from an app or another channel.
+- The guides specify API version `2025-03-31.basil` or later for creating Managed Payments Payment Links through the API. The November cURL samples omit an explicit version header (April raw lines 10–35 and November raw lines 11–36 and 90–92).
+
+## Create and Share a Payment Link
+
+```javascript
+stripe.paymentLinks.create({
+    managed_payments: { enabled: true },
+    line_items: [{ price: priceId, quantity: 1 }],
+    // Example selects one Price with quantity 1
+})
+```
+
+The April Node.js example above creates the Payment Link server-side with `managed_payments.enabled` and line-item Prices and quantities. Both guides specify a maximum of 20 line items for flat-rate prices and describe using `price_data` to create a Product and Price inline. After creation, share the resulting URL by email, on a website or in an app. The URL opens Checkout. The Payment Link's Managed Payments settings apply to resulting Checkout Sessions, PaymentIntents, Invoices and Subscriptions as applicable (April raw lines 53–77 and 121–123 and November raw lines 48–62 and 90–92). [Payment Link creation API](https://docs.stripe.com/api/payment-link/create)
+
+## Variable Pricing
+
+```javascript
+// Create variable price
+stripe.prices.create({
+    currency: 'usd',
+    custom_unit_amount: { enabled: true },
+    product: productId,
+})
+// then use that price in paymentLinks.create
+```
+
+The April Managed Payments guide explicitly limits customer-defined pricing to one line item. November's Managed Payments sample still shows a single eligible digital Product Price with quantity 1. Its prose omits the cardinality clause. The separate November general Payment Links guide explicitly requires the variable Price to be the sole line item with quantity 1 (April raw lines 79–119 and November raw lines 64–88). [General Payment Links creation guide](https://docs.stripe.com/payment-links/create#customers-choose-what-to-pay)
+
+## Subscription via Payment Links
+
+Specify a recurring Price in `line_items`. Optional `subscription_data` configures the resulting Subscription, including trials, and requires at least one recurring line item. Authorization from a Managed Payments subscription covers charges by Managed Payments. Obtain separate customer consent for transactions outside Managed Payments (November raw lines 60–62 and 142–166). [Payment Link creation API](https://docs.stripe.com/api/payment-link/create)
+
+## Replace a Link to Change Its Managed Payments State
+
+The Managed Payments setting is fixed at creation. To adopt Managed Payments for an existing link, create a new link with Managed Payments enabled. To switch away, create a new link without it (April raw lines 154–159 and November raw lines 123–128).
+
+## Unsupported Parameters for Managed Payments Links
+
+Stripe selects available methods through dynamic payment methods. Remove the following controls when creating a Managed Payments link (April raw lines 125–152 and November raw lines 94–121).
+
+| Category | Parameters to remove |
+| --- | --- |
+| Tax | `automatic_tax`, `tax_id_collection` |
+| Payment methods | `payment_method_types` |
+| Shipping | `shipping_address_collection`, `shipping_options` |
+| Connect | `application_fee_amount`, `application_fee_percent`, `on_behalf_of`, `transfer_data`, `payment_intent_data.transfer_group` |
+| Post-sale | `subscription_data.invoice_settings`, `invoice_creation` |
+| Statement descriptors | `payment_intent_data.statement_descriptor`, `payment_intent_data.statement_descriptor_suffix` |
+| Consent | `consent_collection.payment_method_reuse_agreement.position` |
+| Submit type | `submit_type='donate'`, `submit_type='book'` |
+| Customization | `custom_text` (standardized checkout, no custom text) |
+
+The separate `2026-08-26.dahlia` change allows Connect parameter updates on ordinary Payment Links for subsequently created Checkout Sessions. Existing active Sessions keep their earlier configuration. Managed Payments excludes Connect, and its link setting remains fixed. [Connect updates changelog](https://docs.stripe.com/changelog/dahlia/2026-08-26/adds-connect-parameters-to-the-payment-link-update-method)
+
+## Price Tax Behavior
+
+Managed Payments follows an explicit Price `tax_behavior`. `exclusive` adds tax on top of the price and `inclusive` includes tax in the price. If the Price omits that setting, Managed Payments adds tax by default. Change the default in Dashboard under **Tax settings → Include tax in prices**. This Price setting is distinct from the unavailable `automatic_tax` and `tax_id_collection` link parameters (April raw lines 214–220 and November raw lines 104–105 and 183–189).
+
+## Testing and Payment Outcomes
+
+The captured guides show how to test Checkout tax display with different billing addresses and review the resulting test transaction and applicable Subscription and Invoice in Dashboard. Sandbox receipts can be sent manually. They do not send automatically after a purchase. Test purchases do not appear in the Link app. The guides point to a live-mode Checkout Session for the Link order-management experience (April raw lines 161–212 and November raw lines 130–181).
+
+A Checkout Session can complete before a delayed payment succeeds or fails. Use the applicable server-side webhook outcome for fulfillment. Link creation, a browser return, the test transaction and a receipt do not establish live payment, settlement or customer entitlement. [Payment Links post-payment guide](https://docs.stripe.com/payment-links/post-payment) · [[source-stripe-managed-payments-setup]]
+
+## Related Pages
+
+- [[stripe]]
+- [[stripe-managed-payments]] — eligibility and merchant-of-record scope
+- [[stripe-payment-links]] — Payment Links concept page
+- [[source-stripe-managed-payments-setup]] — Checkout variant (same managed_payments.enabled, different object)
+- [[source-stripe-inapp-digital-goods-payment-links]] — non-MoR Payment Links for iOS digital goods
+
+## Raw Sources
+
+- [[raw/stripe-payments-managed-payments-use-payment-links-2026-11-07|November 7, 2026 Managed Payments Payment Links guide]]
+- [[raw/stripe-managed-payments-payment-links-2025|April 23, 2026 Managed Payments Payment Links guide]]

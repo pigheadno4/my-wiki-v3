@@ -1,0 +1,308 @@
+{
+  "job_id": "payments-payment-intents",
+  "source_target": "wiki/sources/source-stripe-payment-intents.md",
+  "source_before_sha256": "e319b3efd7df3e67549b7ef39a270640849bb557547f1500a82725d8d8f5a87f",
+  "contributions": [
+    {
+      "job_id": "payments-payment-intents",
+      "canonical_url": "https://docs.stripe.com/payments/payment-intents",
+      "attempt": 2,
+      "raw_path": "raw/stripe-payments-payment-intents-2026-11-07.md",
+      "raw_sha256": "aed0d8a8de54a641db4fade7dbd585d44eff94337215c55623ad21e5d30ed063",
+      "prior_raw_path": "raw/stripe-payment-intents-api-2025.md",
+      "prior_raw_sha256": "b15fd8e19d4f73331dd81deeee81114641bee539b831c519a59916290386b2a7",
+      "new_capture_role": "full_captured_page",
+      "proposed_disposition": "no_substantive_update",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-payment-intents/attempt-2/receipt.json",
+      "receipt_sha256": "81022c330e3d39f61d81cedf74ea1d1bc0ec428684135c1fab3f192191662d55",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-payment-intents/attempt-2/review.json",
+      "review_sha256": "1753804b76aa036572d334a8e805088b419814c2c798344923cf66bd07bed9ff",
+      "source_assessments": [
+        {
+          "source_target": "wiki/sources/source-stripe-payment-intents.md",
+          "proposed_disposition": "source_required_update",
+          "update_needed": true,
+          "findings": [
+            "Keep the combined reference and other four historical authority paths at source lines 6-11 and 80-86. Add a dated implementation-guide locator for new raw lines 22-107 and 109-171 to expose cart reuse/idempotency, client handoff, server outcome, future use, descriptor constraints and metadata lifecycle. This is a narrow improvement to the existing mapped source independent of the mainly presentation-level November delta.",
+            "Source lines 17-27 already route readers to the Checkout recommendation and lifecycle, and lines 63-69 preserve the Checkout Elements examples. Date the captured client alternatives, add a reciprocal source route in the Payment Intents concept, and maintain the version-qualified Checkout route instead of treating example language as a protocol change."
+          ],
+          "conflicts": [
+            "Source line 86's 'client_secret (server-only, TLS required)' contradicts both the historical and November delivery instructions (old raw lines 25-27, 50-125 and new raw lines 28-30, 49-101). Server create/retrieve and deliver the intent-scoped client secret to that customer through a TLS-protected SPA endpoint or SSR form. Keep secret API keys and the complete object off the browser, avoid logging or merchant embedding the secret in URLs, and distinguish the April Stripe.js quickstart's provider-appended return-page query (raw/stripe-payment-intents-quickstart-2025.md lines 190-205, Payment Intents concept line 55). The latter is for display/status retrieval and supplies no fulfillment or logging permission.",
+            "Source lines 17, 22-24, 31-40 and 55-61 oversimplify the lifecycle. PaymentIntent creation tracks an attempt to collect; server creation or confirmation alone does not prove successful charge. requires_action can be additional action such as 3DS, not limited to 3DS. Processing can be delayed; authorization can instead leave requires_capture before capture; SetupIntent saves without charge and its successful status establishes setup, not payment. Attribute the original 'immediate' wording to purpose versus the actual async path from the separately dated lifecycle authority (April raw/stripe-payment-setup-intents-2025.md lines 10-18, 24-54 and 58-86; November corresponding lifecycle lines 13-35), and state the branches accurately.",
+            "Source lines 25 and 71-73 summarize general cancellation and the limited processing exception. Scope it to the PaymentIntent rather than assuming direct cancellation for every Checkout Session. The separate November Cancel reference lines 7-11 documents direct cancellation of a Checkout Session's PaymentIntent only in requires_capture, otherwise expire the Session. Its example specifies 2026-10-28.endive at lines 20-25. Retain both scope statements and apply no blanket cancellation guarantee.",
+            "Both guide captures pair shorthand about no double charges/idempotency with explicit cart-bound idempotency keys (old raw lines 12-17 and 42-48; new raw lines 15-20, 41-47). The separate November Payment Intents API reference lines 80-85 scopes at most one successful Charge to one PaymentIntent. Multiple attempts can produce multiple Charge objects (old raw lines 127-131; new raw lines 103-107). Qualify Payment Intents concept line 10 so it does not imply duplicate creation cannot occur, and add a direct locator for creation/reuse/key best practices in the mapped source.",
+            "The dated checkout comparison at source lines 63-69 should distinguish a Checkout Session client secret initializing ui_mode=elements from a PaymentIntent secret used with Stripe.js/Elements and its confirmation. Keep the captured React @stripe/react-stripe-js/checkout CheckoutElementsProvider and checkout.confirm path, and the HTML initCheckoutElementsSdk plus loadActions path, scoped as documented examples. The reciprocal Checkout Sessions source lines 33-48 preserves ui_mode=custom as literally printed by its separate overview samples and distinguishes the versioned React elements path. Read alongside Checkout concept lines 34-81 for exact package boundaries. The compared Payment Intents guide gives no general SDK version guarantee and does not establish deprecation of Payment Intents.",
+            "The lead-in suggests statement_descriptor for card charges in both captures, while their code and explicit note use statement_descriptor_suffix for card and statement_descriptor for non-card (old raw lines 161-182; new raw lines 133-149). The November Create reference lines 690-700 confirms that statement_descriptor on cards errors. Add the reciprocal API-reference warning and keep the 22-character combined prefix, separator and suffix rule. November cURL omission of April's explicit card array in this and the metadata sample does not change supported payment methods.",
+            "April 19 descriptor and metadata examples send writable payment_method_types on PaymentIntent Create (old raw lines 165-176 and 196-209). November's cURL examples omit it and provide no API version or reason (new raw lines 137-143 and 163-169). The November-captured Endive changelog (raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07.md lines 5-36) documents HTTP 400 / payment_method_types_no_longer_supported on the linked 2026-09-30.endive PaymentIntent Create endpoint and retains the read-only object property. Its Impact heading also names 2026-08-26.preview, so do not claim the first affected API version. Preserve dated April examples and add a reciprocal warning alongside the separate exact-version stripe@23.0.0 SDK boundary at Payment Intents concept lines 125-127.",
+            "Correct the unconditional '3DS on SetupIntent creates a mandate' wording at source lines 22 and 61. The April and November lifecycle pages use compressed, dated authentication/mandate phrasing (raw/stripe-payment-setup-intents-2025.md lines 10-18 and raw/stripe-payments-paymentintents-lifecycle-2026-11-07.md lines 13-19). The separately bundled April 19 Setup Intents guide (raw/stripe-setup-intents-api-2025.md lines 28-50 and 52-68) distinguishes applicable authentication, explicit customer consent for future on-session use, and an upfront agreement or mandate for future off-session charging. 3DS alone supplies neither mandate consent nor a guaranteed later SCA exemption. SetupIntent usage describes intended reuse for setup without payment. PaymentIntent setup_future_usage is the separate field for saving during a payment (old raw lines 133-159 and new raw lines 109-131). The issuer can still require authentication or reject a later charge. Keep the dated simplified wording as source evidence and route this distinction in the combined summary."
+          ],
+          "reason": "The central API guidance is stable. The existing summary independently mislabels the intent client secret server-only, overstates immediate charge and 3DS-only lifecycle positioning, and needs a scoped Checkout cancellation distinction and direct implementation locators."
+        }
+      ],
+      "affected_concepts": [
+        "wiki/concepts/stripe-payment-intents.md",
+        "wiki/concepts/stripe-checkout.md",
+        "wiki/concepts/stripe-radar.md"
+      ],
+      "unresolved_questions": [
+        "The two Payment Intents captures and the separate CLI documentation do not establish that a help invocation alone provisions a sandbox, any live behavior, or the exact CLI package version for the new aside.",
+        "The dated comparison does not establish whether Radar Plus and Radar for Fraud Teams are interchangeable product names or about program eligibility. No current payment or deployment was exercised."
+      ],
+      "mapped_source_assessment": {
+        "source_target": "wiki/sources/source-stripe-payment-intents.md",
+        "proposed_disposition": "source_required_update",
+        "update_needed": true,
+        "findings": [
+          "Keep the combined reference and other four historical authority paths at source lines 6-11 and 80-86. Add a dated implementation-guide locator for new raw lines 22-107 and 109-171 to expose cart reuse/idempotency, client handoff, server outcome, future use, descriptor constraints and metadata lifecycle. This is a narrow improvement to the existing mapped source independent of the mainly presentation-level November delta.",
+          "Source lines 17-27 already route readers to the Checkout recommendation and lifecycle, and lines 63-69 preserve the Checkout Elements examples. Date the captured client alternatives, add a reciprocal source route in the Payment Intents concept, and maintain the version-qualified Checkout route instead of treating example language as a protocol change."
+        ],
+        "conflicts": [
+          "Source line 86's 'client_secret (server-only, TLS required)' contradicts both the historical and November delivery instructions (old raw lines 25-27, 50-125 and new raw lines 28-30, 49-101). Server create/retrieve and deliver the intent-scoped client secret to that customer through a TLS-protected SPA endpoint or SSR form. Keep secret API keys and the complete object off the browser, avoid logging or merchant embedding the secret in URLs, and distinguish the April Stripe.js quickstart's provider-appended return-page query (raw/stripe-payment-intents-quickstart-2025.md lines 190-205, Payment Intents concept line 55). The latter is for display/status retrieval and supplies no fulfillment or logging permission.",
+          "Source lines 17, 22-24, 31-40 and 55-61 oversimplify the lifecycle. PaymentIntent creation tracks an attempt to collect; server creation or confirmation alone does not prove successful charge. requires_action can be additional action such as 3DS, not limited to 3DS. Processing can be delayed; authorization can instead leave requires_capture before capture; SetupIntent saves without charge and its successful status establishes setup, not payment. Attribute the original 'immediate' wording to purpose versus the actual async path from the separately dated lifecycle authority (April raw/stripe-payment-setup-intents-2025.md lines 10-18, 24-54 and 58-86; November corresponding lifecycle lines 13-35), and state the branches accurately.",
+          "Source lines 25 and 71-73 summarize general cancellation and the limited processing exception. Scope it to the PaymentIntent rather than assuming direct cancellation for every Checkout Session. The separate November Cancel reference lines 7-11 documents direct cancellation of a Checkout Session's PaymentIntent only in requires_capture, otherwise expire the Session. Its example specifies 2026-10-28.endive at lines 20-25. Retain both scope statements and apply no blanket cancellation guarantee.",
+          "Both guide captures pair shorthand about no double charges/idempotency with explicit cart-bound idempotency keys (old raw lines 12-17 and 42-48; new raw lines 15-20, 41-47). The separate November Payment Intents API reference lines 80-85 scopes at most one successful Charge to one PaymentIntent. Multiple attempts can produce multiple Charge objects (old raw lines 127-131; new raw lines 103-107). Qualify Payment Intents concept line 10 so it does not imply duplicate creation cannot occur, and add a direct locator for creation/reuse/key best practices in the mapped source.",
+          "The dated checkout comparison at source lines 63-69 should distinguish a Checkout Session client secret initializing ui_mode=elements from a PaymentIntent secret used with Stripe.js/Elements and its confirmation. Keep the captured React @stripe/react-stripe-js/checkout CheckoutElementsProvider and checkout.confirm path, and the HTML initCheckoutElementsSdk plus loadActions path, scoped as documented examples. The reciprocal Checkout Sessions source lines 33-48 preserves ui_mode=custom as literally printed by its separate overview samples and distinguishes the versioned React elements path. Read alongside Checkout concept lines 34-81 for exact package boundaries. The compared Payment Intents guide gives no general SDK version guarantee and does not establish deprecation of Payment Intents.",
+          "The lead-in suggests statement_descriptor for card charges in both captures, while their code and explicit note use statement_descriptor_suffix for card and statement_descriptor for non-card (old raw lines 161-182; new raw lines 133-149). The November Create reference lines 690-700 confirms that statement_descriptor on cards errors. Add the reciprocal API-reference warning and keep the 22-character combined prefix, separator and suffix rule. November cURL omission of April's explicit card array in this and the metadata sample does not change supported payment methods.",
+          "April 19 descriptor and metadata examples send writable payment_method_types on PaymentIntent Create (old raw lines 165-176 and 196-209). November's cURL examples omit it and provide no API version or reason (new raw lines 137-143 and 163-169). The November-captured Endive changelog (raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07.md lines 5-36) documents HTTP 400 / payment_method_types_no_longer_supported on the linked 2026-09-30.endive PaymentIntent Create endpoint and retains the read-only object property. Its Impact heading also names 2026-08-26.preview, so do not claim the first affected API version. Preserve dated April examples and add a reciprocal warning alongside the separate exact-version stripe@23.0.0 SDK boundary at Payment Intents concept lines 125-127.",
+          "Correct the unconditional '3DS on SetupIntent creates a mandate' wording at source lines 22 and 61. The April and November lifecycle pages use compressed, dated authentication/mandate phrasing (raw/stripe-payment-setup-intents-2025.md lines 10-18 and raw/stripe-payments-paymentintents-lifecycle-2026-11-07.md lines 13-19). The separately bundled April 19 Setup Intents guide (raw/stripe-setup-intents-api-2025.md lines 28-50 and 52-68) distinguishes applicable authentication, explicit customer consent for future on-session use, and an upfront agreement or mandate for future off-session charging. 3DS alone supplies neither mandate consent nor a guaranteed later SCA exemption. SetupIntent usage describes intended reuse for setup without payment. PaymentIntent setup_future_usage is the separate field for saving during a payment (old raw lines 133-159 and new raw lines 109-131). The issuer can still require authentication or reject a later charge. Keep the dated simplified wording as source evidence and route this distinction in the combined summary."
+        ],
+        "reason": "The central API guidance is stable. The existing summary independently mislabels the intent client secret server-only, overstates immediate charge and 3DS-only lifecycle positioning, and needs a scoped Checkout cancellation distinction and direct implementation locators."
+      },
+      "findings": [
+        "Core Payment Intents behavior is substantively continuous across old raw lines 8-159 and new raw lines 9-131. Both explain create and confirm, track one cart/application session and retries, conditional authentication, safe secret delivery and server webhook observation of payment outcome. The PaymentIntent is distinct from a PaymentMethod, SetupIntent, Checkout Session and associated Charge. A PaymentIntent need not create a successful Charge when initially created.",
+        "The bulk of the change is formatting and example language: Node requests become curl, Express/Handlebars secret delivery becomes Ruby/ERB, whitespace and headings change, quickstart destination changes and lifecycle link is added (old raw lines 8, 25-40, 58-125, 145-176 and 196-218; new raw lines 9, 28-39, 57-101, 121-149 and 163-179). There is no release or SDK migration proof.",
+        "Root wiki index line 7 leads to Stripe index lines 22-23, 729 and 770. Payment Intents concept lines 8-28 and 50-111 describe custom intent flows and Checkout comparison and lines 134-152 give source routes, but lack a direct reciprocal route for this combined reference. Applicable Checkout concept lines 24-83 already distinguish the styles and explicit package releases.",
+        "Both captures explain that Charge gets the PaymentIntent metadata at Charge creation and later PaymentIntent edits do not update earlier Charges. Metadata is not customer-facing, and the text separately discusses writing custom Radar metadata rules for users of the named product. Do not broaden the default fraud statement into a claim that configured rules never use metadata. Use non-sensitive order IDs and keep PII/card details out of metadata and description (old raw lines 184-211; new raw lines 151-171).",
+        "No substantive change to the PaymentIntent lifecycle, webhook, secret handoff, retry guidance, future-use behavior, descriptor rules or metadata copying is established. November's coding-agent sandbox paragraph is new documentation coverage outside the Payment Intents flow (old raw lines 8-10 and new raw lines 9-13). Its reference conflict belongs with CLI tool scope, not an API prerequisite.",
+        "The named Radar product changes from Radar for Fraud Teams to Radar Plus in otherwise comparable custom metadata guidance (old raw lines 184-194 and new raw lines 151-161). Date the naming difference. The captures do not establish product equivalence, rename date, plan eligibility or that rule semantics changed."
+      ],
+      "substantive_changes": [],
+      "historical_claims_to_preserve": [
+        "Retain the April 19 capture date and the other four combined source raw paths at source lines 6-11, 80-86. The November guide is additional primary evidence for this implementation URL. Lifecycle, status monitoring, async capture and Setup Intents details retain their own provenance rather than being attributed to this new capture.",
+        "Preserve April's endpoint and SSR examples as historical examples, create or reuse guidance and same-cart idempotency, security warning, server webhook practice, multiple attempt Charge objects, on_session/off_session guidance and friction, card/non-card descriptor fields, copy-on-Charge metadata and prohibited sensitive content (old raw lines 25-48, 50-159 and 161-211).",
+        "Keep the pre-2019-02-11 lifecycle aliases, manual-capture and limited processing-cancel semantics attached to the separately dated lifecycle raw. Keep April's Radar product label dated. Preserve both Checkout comparison paths and names in the corresponding dated examples."
+      ],
+      "conflicts": [
+        "Source line 86's 'client_secret (server-only, TLS required)' contradicts both the historical and November delivery instructions (old raw lines 25-27, 50-125 and new raw lines 28-30, 49-101). Server create/retrieve and deliver the intent-scoped client secret to that customer through a TLS-protected SPA endpoint or SSR form. Keep secret API keys and the complete object off the browser, avoid logging or merchant embedding the secret in URLs, and distinguish the April Stripe.js quickstart's provider-appended return-page query (raw/stripe-payment-intents-quickstart-2025.md lines 190-205, Payment Intents concept line 55). The latter is for display/status retrieval and supplies no fulfillment or logging permission.",
+        "Source lines 17, 22-24, 31-40 and 55-61 oversimplify the lifecycle. PaymentIntent creation tracks an attempt to collect; server creation or confirmation alone does not prove successful charge. requires_action can be additional action such as 3DS, not limited to 3DS. Processing can be delayed; authorization can instead leave requires_capture before capture; SetupIntent saves without charge and its successful status establishes setup, not payment. Attribute the original 'immediate' wording to purpose versus the actual async path from the separately dated lifecycle authority (April raw/stripe-payment-setup-intents-2025.md lines 10-18, 24-54 and 58-86; November corresponding lifecycle lines 13-35), and state the branches accurately.",
+        "Source lines 25 and 71-73 summarize general cancellation and the limited processing exception. Scope it to the PaymentIntent rather than assuming direct cancellation for every Checkout Session. The separate November Cancel reference lines 7-11 documents direct cancellation of a Checkout Session's PaymentIntent only in requires_capture, otherwise expire the Session. Its example specifies 2026-10-28.endive at lines 20-25. Retain both scope statements and apply no blanket cancellation guarantee.",
+        "Both guide captures pair shorthand about no double charges/idempotency with explicit cart-bound idempotency keys (old raw lines 12-17 and 42-48; new raw lines 15-20, 41-47). The separate November Payment Intents API reference lines 80-85 scopes at most one successful Charge to one PaymentIntent. Multiple attempts can produce multiple Charge objects (old raw lines 127-131; new raw lines 103-107). Qualify Payment Intents concept line 10 so it does not imply duplicate creation cannot occur, and add a direct locator for creation/reuse/key best practices in the mapped source.",
+        "The dated checkout comparison at source lines 63-69 should distinguish a Checkout Session client secret initializing ui_mode=elements from a PaymentIntent secret used with Stripe.js/Elements and its confirmation. Keep the captured React @stripe/react-stripe-js/checkout CheckoutElementsProvider and checkout.confirm path, and the HTML initCheckoutElementsSdk plus loadActions path, scoped as documented examples. The reciprocal Checkout Sessions source lines 33-48 preserves ui_mode=custom as literally printed by its separate overview samples and distinguishes the versioned React elements path. Read alongside Checkout concept lines 34-81 for exact package boundaries. The compared Payment Intents guide gives no general SDK version guarantee and does not establish deprecation of Payment Intents.",
+        "New raw line 11 adds coding-agent sandbox prose that conflates the CLI help invocation with provisioning. The November CLI reference (raw/stripe-cli-sandbox-2026-11-07.md lines 5-36 and 44-70) locates creation at the create subcommand, requires email or Git identity input, describes logged-out temporary test keys and logged-in Dashboard redirection, and states seven-day expiry. The separate claimable-sandboxes platform API guide lines 5-15, 25-31 and 69-83 has private-preview, app and review scope. Preserve only a dated bounded tool-navigation note if used, with no evidence of command execution, account registration status, live keys or payment.",
+        "The lead-in suggests statement_descriptor for card charges in both captures, while their code and explicit note use statement_descriptor_suffix for card and statement_descriptor for non-card (old raw lines 161-182; new raw lines 133-149). The November Create reference lines 690-700 confirms that statement_descriptor on cards errors. Add the reciprocal API-reference warning and keep the 22-character combined prefix, separator and suffix rule. November cURL omission of April's explicit card array in this and the metadata sample does not change supported payment methods.",
+        "April 19 descriptor and metadata examples send writable payment_method_types on PaymentIntent Create (old raw lines 165-176 and 196-209). November's cURL examples omit it and provide no API version or reason (new raw lines 137-143 and 163-169). The November-captured Endive changelog (raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07.md lines 5-36) documents HTTP 400 / payment_method_types_no_longer_supported on the linked 2026-09-30.endive PaymentIntent Create endpoint and retains the read-only object property. Its Impact heading also names 2026-08-26.preview, so do not claim the first affected API version. Preserve dated April examples and add a reciprocal warning alongside the separate exact-version stripe@23.0.0 SDK boundary at Payment Intents concept lines 125-127.",
+        "Correct the unconditional '3DS on SetupIntent creates a mandate' wording at source lines 22 and 61. The April and November lifecycle pages use compressed, dated authentication/mandate phrasing (raw/stripe-payment-setup-intents-2025.md lines 10-18 and raw/stripe-payments-paymentintents-lifecycle-2026-11-07.md lines 13-19). The separately bundled April 19 Setup Intents guide (raw/stripe-setup-intents-api-2025.md lines 28-50 and 52-68) distinguishes applicable authentication, explicit customer consent for future on-session use, and an upfront agreement or mandate for future off-session charging. 3DS alone supplies neither mandate consent nor a guaranteed later SCA exemption. SetupIntent usage describes intended reuse for setup without payment. PaymentIntent setup_future_usage is the separate field for saving during a payment (old raw lines 133-159 and new raw lines 109-131). The issuer can still require authentication or reject a later charge. Keep the dated simplified wording as source evidence and route this distinction in the combined summary."
+      ],
+      "expected_read_files": [
+        {
+          "path": "raw/stripe-payments-payment-intents-2026-11-07.md",
+          "sha256": "aed0d8a8de54a641db4fade7dbd585d44eff94337215c55623ad21e5d30ed063",
+          "lines": 179
+        },
+        {
+          "path": "raw/stripe-payment-intents-api-2025.md",
+          "sha256": "b15fd8e19d4f73331dd81deeee81114641bee539b831c519a59916290386b2a7",
+          "lines": 218
+        },
+        {
+          "path": "wiki/sources/source-stripe-payment-intents.md",
+          "sha256": "e319b3efd7df3e67549b7ef39a270640849bb557547f1500a82725d8d8f5a87f",
+          "lines": 86
+        },
+        {
+          "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/edf38783f891a8e8770aab37/content.diff",
+          "sha256": "c4efcdfb4a7f14cb66ff3ec190a52967e19438c22105cf95de70f5088a9b53f6",
+          "lines": 276
+        }
+      ],
+      "original_query_prompts_path": "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md",
+      "original_prompts": "New raw: `raw/stripe-payments-payment-intents-2026-11-07.md`. Prior raw: `raw/stripe-payment-intents-api-2025.md`. Current summaries: `wiki/sources/source-stripe-payment-intents.md`.\n\n- Q1: For `https://docs.stripe.com/payments/payment-intents`, what central documented behavior, prerequisites, identities and state boundaries does the complete new capture establish, and how does it compare with the matched old capture and every mapped current summary?\n\n- Q2: Which changes are substantive versus presentational or navigation-only? Which historical claims must remain dated, which conflicts need reciprocal warnings, and which API, UI, version, client/server or outcome qualifications prevent unsupported inferences?",
+      "reviewed_answers": {
+        "Q1": "At https://docs.stripe.com/payments/payment-intents the November capture recommends Checkout Sessions with the Payment Element for most integrations, including Adaptive Pricing, while documenting the lower-level Payment Intents flow for complex checkout. A PaymentIntent typically tracks one cart or customer session and can trigger additional authentication. Create it on the server with amount and currency, store its ID so a resumed checkout can reuse it, and use a cart- or session-based idempotency key to avoid duplicate creation. Confirmation attempts payment and can lead to additional action or delayed processing. Retries can produce multiple associated Charge records, with at most one successful Charge per PaymentIntent as described by the separate November API reference. Monitor completion or failure with server webhooks (new raw lines 9-47 and 103-107). Give the corresponding customer the intent's client secret through a TLS-protected SPA endpoint or rendered checkout form. It can complete payment for that amount. Keep it out of logs and merchant-built URLs (new raw lines 49-101). A SetupIntent establishes future payment credentials without a charge. A Checkout Session in elements mode initializes a different checkout SDK from its Session secret and has distinct React and HTML confirmation paths. For a PaymentIntent, setup_future_usage distinguishes customer-present only from off-session or both. The card issuer can still reject a later payment or require authentication (new raw lines 9-26 and 109-131). The April 19 capture establishes the same main sequence and risks (old raw lines 8-48, 50-131 and 133-159). source-stripe-payment-intents.md aggregates five authorities and captures the Checkout preference, but its 'server-only' client-secret shorthand and immediate charge or 3DS-only state claims need correction. Creating or confirming either intent, or seeing a client return, gives no proof of completed payment.",
+        "Q2": "For https://docs.stripe.com/payments/payment-intents, the captures establish no substantive PaymentIntent contract change. The November guide adds a coding-agent sandbox paragraph and changes the name in its Radar metadata guidance, from Radar for Fraud Teams to Radar Plus. Neither establishes a PaymentIntent prerequisite, product rename date or plan eligibility. The separate November CLI reference documents the create operation with temporary test credentials for logged-out use, supplied email or Git identity, seven-day expiration and different logged-in behavior. It does not document provisioning through a help flag (old raw lines 8-10 and 184-194, and new raw lines 9-13 and 151-171). Node to curl, Express to Ruby/ERB, formatting and the quickstart and lifecycle links mainly change examples and navigation (old raw lines 25-40 and 58-125, new raw lines 28-39 and 57-101). Keep all April 19 evidence in source-stripe-payment-intents.md, including the other separately sourced lifecycle, status, SetupIntents and async-capture claims. Qualify the reciprocal Payment Intents and Checkout routes so Checkout Elements' Session secret and versioned UI initialization are distinguishable from PaymentIntent client-secret delivery and client confirmation. The intent secret goes only to the customer under TLS and stays out of logs or merchant-built URLs. The April quickstart's Stripe.js-appended return parameter serves status display, not fulfillment. The broad duplicate-charge wording is scoped to one successful Charge per intent and is compatible with multiple attempts. Idempotency remains explicit. The separate November cancel reference lines 7-11 documents direct cancellation of a Checkout Session's PaymentIntent in requires_capture only. Otherwise expire the Checkout Session. Both captures' descriptor lead-in conflicts with their note and the Create reference: card charges use statement_descriptor_suffix and non-card charges use statement_descriptor. Preserve the original note and both dated examples (old raw lines 42-48, 125-131 and 161-182, new raw lines 41-47, 101-107 and 133-149). The dated April 19 statement-descriptor and metadata Create examples write payment_method_types (old raw lines 165-176 and 196-209). November's examples omit it without naming an API version or reason (new raw lines 137-143 and 163-169). Separately, the November-captured Endive changelog lines 5-36 records HTTP 400 with payment_method_types_no_longer_supported on the linked 2026-09-30.endive PaymentIntent Create endpoint, preserves the read-only object property and also names 2026-08-26.preview in its Impact section. Keep the April examples dated and link the REST warning alongside the exact-version stripe@23.0.0 SDK warning in the Payment Intents concept. The April and November lifecycle captures both use simplified 3DS-and-mandate phrasing. Correct source lines 22 and 61 with the separately bundled April 19 Setup Intents guide at lines 28-50 and 52-68. Applicable authentication such as 3DS is distinct from explicit consent to save for on-session use and the upfront customer agreement for off-session charging. 3DS alone gives neither mandate consent nor a guaranteed later SCA exemption. SetupIntent usage describes future use in the setup flow without charging. PaymentIntent setup_future_usage describes intended reuse with a payment (old raw lines 133-159 and new raw lines 109-131). The issuer may still reject a later payment or require authentication. Metadata is copied on Charge creation and later intent edits do not update old Charges. Keep sensitive data out of metadata and description (old raw lines 184-211 and new raw lines 151-171)."
+      }
+    },
+    {
+      "job_id": "payments-payment-intents-asynchronous-capture",
+      "canonical_url": "https://docs.stripe.com/payments/payment-intents/asynchronous-capture",
+      "attempt": 2,
+      "raw_path": "raw/stripe-payments-payment-intents-asynchronous-capture-2026-11-07.md",
+      "raw_sha256": "5e91499cc032e6d17e39ee80f40fe332c603688207f8c3bb40f379e48033be50",
+      "prior_raw_path": "raw/stripe-async-capture-2025.md",
+      "prior_raw_sha256": "8723b0b292e6dbe7b01ae855216f4a7040297cb2a83d726f2c7b842cf200db8f",
+      "new_capture_role": "full_captured_page",
+      "proposed_disposition": "source_required_update",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-payment-intents-asynchronous-capture/attempt-2/receipt.json",
+      "receipt_sha256": "e8500ea85263d7a9c339e0992aaf22494d4e811bf08a83f9a018bc1fe925a50d",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-payment-intents-asynchronous-capture/attempt-2/review.json",
+      "review_sha256": "d0e0528aef4f7c31ecd2cdbf73d880dc59cb9affca0b0f7d6c70694dda3d1f1c",
+      "source_assessments": [
+        {
+          "source_target": "wiki/sources/source-stripe-payment-intents.md",
+          "proposed_disposition": "source_required_update",
+          "update_needed": true,
+          "findings": [
+            "Give asynchronous capture a discoverable route and preserve both dated captures. Scope creation/default and sample versions separately, retain the expansion constraint and `captured=true`/null coexistence, and list the correct webhook for each applicable deferred field with the stated SLA scope.",
+            "Clarify the operation left implicit at source line 84. The April opening says to set `capture_method=automatic_async` when confirming (old raw line 8), while the opt-in text and example put the parameter on PaymentIntent creation with `confirm=true` (old raw lines 10-28). November likewise puts it on creation, including the form-encoded `POST /v1/payment_intents` create-and-confirm example (new raw lines 19-36). These captures do not establish support for the parameter on the standalone confirm endpoint or prove its removal."
+          ],
+          "conflicts": [
+            "Source lines 17, 22, 35 and 84 need accurate state and field qualifiers. Cross-link the April `charge.updated` label/`charge.created` href discrepancy to the corrected November target. Independently qualify the old 3DS-only `requires_action` and server-only PaymentIntent client-secret shorthand at lines 23, 34 and 86 using the companion captures."
+          ],
+          "reason": "The materially clarified missing-data behavior and corrected event route merit an update, and the existing merged summary needs an independent correction for field, version and payment-state scope."
+        }
+      ],
+      "affected_concepts": [
+        "wiki/concepts/stripe-payment-intents.md"
+      ],
+      "unresolved_questions": [
+        "No runtime execution, account-specific settlement timing, or support for older unshown webhook shapes is established by the captures."
+      ],
+      "mapped_source_assessment": {
+        "source_target": "wiki/sources/source-stripe-payment-intents.md",
+        "proposed_disposition": "source_required_update",
+        "update_needed": true,
+        "findings": [
+          "Give asynchronous capture a discoverable route and preserve both dated captures. Scope creation/default and sample versions separately, retain the expansion constraint and `captured=true`/null coexistence, and list the correct webhook for each applicable deferred field with the stated SLA scope.",
+          "Clarify the operation left implicit at source line 84. The April opening says to set `capture_method=automatic_async` when confirming (old raw line 8), while the opt-in text and example put the parameter on PaymentIntent creation with `confirm=true` (old raw lines 10-28). November likewise puts it on creation, including the form-encoded `POST /v1/payment_intents` create-and-confirm example (new raw lines 19-36). These captures do not establish support for the parameter on the standalone confirm endpoint or prove its removal."
+        ],
+        "conflicts": [
+          "Source lines 17, 22, 35 and 84 need accurate state and field qualifiers. Cross-link the April `charge.updated` label/`charge.created` href discrepancy to the corrected November target. Independently qualify the old 3DS-only `requires_action` and server-only PaymentIntent client-secret shorthand at lines 23, 34 and 86 using the companion captures."
+        ],
+        "reason": "The materially clarified missing-data behavior and corrected event route merit an update, and the existing merged summary needs an independent correction for field, version and payment-state scope."
+      },
+      "findings": [
+        "November is a detailed guide and retains the April background-capture model, explicit create-time `automatic_async`, latest-version default wording, initial null fields, events and one-hour `charge.updated` SLA (old lines 8-12, 30-36, 54-76; new lines 9-23, 38-44, 63-86). It adds an explicit operational warning that neither direct nor nested expansion forces deferred data to exist and corrects the event link. No new runtime capture transition is established.",
+        "Source line 84 compresses all three fields into a single rule and hides the expanded-field case, webhook destination-charge example and API version boundary. `balance_transaction` applies for asynchronous-capture Charges generally, while `transfer` and `application_fee` are Connect-related. Their appearance in `charge.updated` is specifically annotated for destination charges, rather than a universal Connect charge expectation (new lines 40-61, 84-108; old lines 32-52, 74-97).",
+        "Source lines 17 and 22 say PaymentIntent creates an immediate charge without adequate qualification. Source lines 24 and 35 describe manual authorization/capture and asynchronous payment-method states. Preserve them as distinct from `automatic_async`, which can show `PaymentIntent.status=succeeded`, `Charge.captured=true` and a null balance transaction together (new lines 40-76). Response, status and bookkeeping availability do not by themselves establish payout or availability of funds for payout.",
+        "Root index line 7 routes via Stripe index lines 23 and 729 to `wiki/concepts/stripe-payment-intents.md`. Its core flow at lines 50-55 and source routes at 134-142 lack a reciprocal async-capture reference.",
+        "Adjacent baseline wording is independently compressed: `requires_action` is any further action such as 3DS, not 3DS alone (summary lines 23, 34 and historical lifecycle raw 32-34); source line 86 labels the PaymentIntent client secret server-only despite documented scoped client handoff (raw/stripe-payment-intents-api-2025.md:50-60, 121-125). Keep the merchant API secret server-side and the PaymentIntent client secret customer-scoped."
+      ],
+      "substantive_changes": [
+        "New lines 11-17 explicitly cover expanded `balance_transaction` and `latest_charge.balance_transaction` unavailability and make handling missing balance data mandatory. The old guide showed nulls and recommended later events without addressing these explicit expansion requests (old lines 30-52, 68-76). This is added operational guidance, not a newly observed API behavior.",
+        "Old raw line 74 displayed `charge.updated` but targeted `charge.created`. New raw line 84 corrects the destination to `charge.updated`, a material navigation correction affecting which event an integrator discovers. The intended event was already evident from old SLA and payload headings (old 68-86); no webhook rename occurred."
+      ],
+      "historical_claims_to_preserve": [
+        "April describes faster responses with capture completed in the background and points to explicit `automatic_async` on creation, including create-and-confirm in the example. The standalone opening mentions confirmation (old lines 8-12 and 20-27), but does not by itself establish any confirm-endpoint schema. November centers creation (new 19-36).",
+        "The displayed `latest_charge` payment response/webhook shape remains scoped to API version 2022-11-15 or later (old 54-66; new 63-76). That sample cutoff is not the default-capture cutoff. Companion 2024-04-10 changelog gives versioned creation default evidence and includes a 2024-06-20 API reference link (raw/stripe-changelog-2024-04-10-automatic-sync-default-paymentintents-2026-11-07.md:1-22); preserve the guide's 'latest' wording as capture-dated rather than claiming every API or SDK uses this default.",
+        "Both captures keep the stated one-hour SLA specifically for `charge.updated` after successful PaymentIntent confirmation, not for payment success, fee/transfer events, settlement or payouts (old 68-76; new 78-86). Preserve additional Connect data handling as applicable to the charge and event."
+      ],
+      "conflicts": [
+        "Old event link text and href conflict (old line 74); new line 84 aligns them. Preserve old provenance and warn readers opening the old raw to follow `charge.updated`, not `charge.created`.",
+        "The summary's broad immediate-charge shorthand and compressed null-field locator (lines 17, 22 and 84) can mislead state/ledger queries. Add a reciprocal route with the `captured=true`/initial-null coexistence, key Connect qualifiers, and the API-version boundaries. The adjacent April lifecycle paragraph saying funds are now in the account (raw/stripe-payment-setup-intents-2025.md:46-48) is not a promise of populated ledger properties or bank payout.",
+        "April Node example explicitly lists `payment_method_types`, while November cURL uses `return_url` and omits that array (old 14-28; new 25-36). This example substitution does not establish a universal `return_url` rule, array prohibition, SDK change, or endpoint removal."
+      ],
+      "expected_read_files": [
+        {
+          "path": "raw/stripe-payments-payment-intents-asynchronous-capture-2026-11-07.md",
+          "sha256": "5e91499cc032e6d17e39ee80f40fe332c603688207f8c3bb40f379e48033be50",
+          "lines": 135
+        },
+        {
+          "path": "raw/stripe-async-capture-2025.md",
+          "sha256": "8723b0b292e6dbe7b01ae855216f4a7040297cb2a83d726f2c7b842cf200db8f",
+          "lines": 121
+        },
+        {
+          "path": "wiki/sources/source-stripe-payment-intents.md",
+          "sha256": "e319b3efd7df3e67549b7ef39a270640849bb557547f1500a82725d8d8f5a87f",
+          "lines": 86
+        },
+        {
+          "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/dabc8d0e6bb4651232886ea4/content.diff",
+          "sha256": "a7a33b38671511a2086ebf49a86911cd1b4bd7f6bf81c91ba800670b55e216ad",
+          "lines": 115
+        }
+      ],
+      "original_query_prompts_path": "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md",
+      "original_prompts": "New raw: `raw/stripe-payments-payment-intents-asynchronous-capture-2026-11-07.md`. Prior raw: `raw/stripe-async-capture-2025.md`. Current summaries: `wiki/sources/source-stripe-payment-intents.md`.\n\n- Q1: For `https://docs.stripe.com/payments/payment-intents/asynchronous-capture`, what central documented behavior, prerequisites, identities and state boundaries does the complete new capture establish, and how does it compare with the matched old capture and every mapped current summary?\n\n- Q2: Which changes are substantive versus presentational or navigation-only? Which historical claims must remain dated, which conflicts need reciprocal warnings, and which API, UI, version, client/server or outcome qualifications prevent unsupported inferences?",
+      "reviewed_answers": {
+        "Q1": "The November 7, 2026 guide at https://docs.stripe.com/payments/payment-intents/asynchronous-capture says `automatic_async` during PaymentIntent creation allows faster confirmation by completing capture in the background. The captured guide calls it the latest API default, so explicit selection is optional there (new raw lines 9-36 and old raw lines 8-28). The pictured succeeded PaymentIntent and captured Charge can precede Charge `balance_transaction` availability even when expanded. The initial attached Charge in the API response and the `charge.succeeded` and `payment_intent.succeeded` events can lack that data. Connect transfer and application fee data may also be deferred, with the later `charge.updated` sample annotating these two fields for destination charges. The example PaymentIntent response and webhook `latest_charge` shape is scoped to version 2022-11-15 or later (new raw lines 38-76 and new raw lines 90-108). Use `charge.updated` for balance transaction and `application_fee.created` and `transfer.created` for applicable Connect objects. The one-hour SLA is for `charge.updated` after successful confirmation (new raw lines 78-86 and old raw lines 68-97). source-stripe-payment-intents.md names the core events but compresses field and version qualifications. Faster response and populated ledger fields are separate, and neither establishes payout.",
+        "Q2": "For https://docs.stripe.com/payments/payment-intents/asynchronous-capture, November adds explicit nullable expansion-handling instructions and fixes the old `charge.updated` text pointing to `charge.created` (old raw lines 30-52, old raw lines 68-81, new raw lines 11-17 and new raw lines 78-86). This updates integration guidance and navigation without proving a new event or capture transition. The Node-to-cURL example change, example `return_url` and reformatted payloads do not establish new API/SDK requirements (old raw lines 14-28 and new raw lines 25-36). The April opening says to set `capture_method=automatic_async` when confirming (old raw line 8), while the opt-in text and example put the parameter on PaymentIntent creation with `confirm=true` (old raw lines 10-28). November likewise puts it on creation, including the form-encoded `POST /v1/payment_intents` create-and-confirm example (new raw lines 19-36). These captures do not establish support for the parameter on the standalone confirm endpoint or prove its removal. Keep the dated older evidence in source-stripe-payment-intents.md, route to the corrected event, and distinguish latest-API default wording, the separate `2024-04-10` creation-default changelog, and 2022-11-15-or-later sample response coverage (old raw lines 54-66 and new raw lines 63-76). Warn that manual capture and delayed payment-method processing are separate from asynchronous background capture, and that the one-hour availability SLA is stated only for `charge.updated` after successful confirmation (old raw lines 68-76 and new raw lines 78-108). Connect fee/transfer field availability, funds availability, settlement and payout have separate boundaries."
+      }
+    }
+  ],
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payments-payment-intents-2026-11-07.md",
+      "sha256": "aed0d8a8de54a641db4fade7dbd585d44eff94337215c55623ad21e5d30ed063",
+      "lines": 179
+    },
+    {
+      "path": "raw/stripe-payment-intents-api-2025.md",
+      "sha256": "b15fd8e19d4f73331dd81deeee81114641bee539b831c519a59916290386b2a7",
+      "lines": 218
+    },
+    {
+      "path": "wiki/sources/source-stripe-payment-intents.md",
+      "sha256": "e319b3efd7df3e67549b7ef39a270640849bb557547f1500a82725d8d8f5a87f",
+      "lines": 86
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/edf38783f891a8e8770aab37/content.diff",
+      "sha256": "c4efcdfb4a7f14cb66ff3ec190a52967e19438c22105cf95de70f5088a9b53f6",
+      "lines": 276
+    },
+    {
+      "path": "raw/stripe-payments-payment-intents-asynchronous-capture-2026-11-07.md",
+      "sha256": "5e91499cc032e6d17e39ee80f40fe332c603688207f8c3bb40f379e48033be50",
+      "lines": 135
+    },
+    {
+      "path": "raw/stripe-async-capture-2025.md",
+      "sha256": "8723b0b292e6dbe7b01ae855216f4a7040297cb2a83d726f2c7b842cf200db8f",
+      "lines": 121
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/dabc8d0e6bb4651232886ea4/content.diff",
+      "sha256": "a7a33b38671511a2086ebf49a86911cd1b4bd7f6bf81c91ba800670b55e216ad",
+      "lines": 115
+    }
+  ],
+  "concept_targets": [
+    {
+      "path": "wiki/concepts/stripe-checkout.md",
+      "before_sha256": "cd32dd9a4b6a8d1c2e475f79781ae2dcb78e474fd58656417f2c330292d08ac6",
+      "contributing_jobs": [
+        "payments-link-checkout-link",
+        "payments-managed-payments-set-up",
+        "payments-managed-payments-update-checkout",
+        "payments-multicapture",
+        "payments-online-payments",
+        "payments-overcapture",
+        "payments-payment-intents"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    },
+    {
+      "path": "wiki/concepts/stripe-payment-intents.md",
+      "before_sha256": "67658eae2f24e929907ade9a7c64392c33beb51493865cdab5838d47ffb2747c",
+      "contributing_jobs": [
+        "payments-mobile-upgrade-to-handle-actions",
+        "payments-older-apis",
+        "payments-online-payments",
+        "payments-payment-element-design-an-integration",
+        "payments-payment-intents",
+        "payments-payment-intents-asynchronous-capture",
+        "payments-payment-intents-migration",
+        "payments-payment-intents-migration-charges"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    },
+    {
+      "path": "wiki/concepts/stripe-radar.md",
+      "before_sha256": "99c810d637fa705bd64e240966bc09181ba028d493ecd46df3a4b74faa33d733",
+      "contributing_jobs": [
+        "payments-payment-intents"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    }
+  ],
+  "state": "worker_running",
+  "attempt": 1,
+  "review_scope": "full",
+  "worker_agent": "/root/s04iw03",
+  "reviewer_agent": "/root/s04ir07",
+  "role_notes": "tracking/ingest/stripe/stripe-campaign-04/updates/role-notes.md",
+  "worker_output": "/tmp/stripe-s04-ingest/payments-payment-intents-worker.json",
+  "reviewer_output": "/tmp/stripe-s04-ingest/payments-payment-intents-reviewer.json"
+}

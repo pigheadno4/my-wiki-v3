@@ -1,0 +1,236 @@
+{
+  "job_id": "payments-managed-payments-set-up-mobile",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"iOS Digital Products with Managed Payments (MoR)\"\ntype: source\ndate_ingested: 2026-04-23\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/managed-payments/set-up-mobile\"\nraw_files:\n  - \"stripe-payments-managed-payments-set-up-mobile-2026-11-07.md\"\n  - \"stripe-managed-payments-mobile-2025.md\"\ntags: [stripe, managed-payments, merchant-of-record, mobile, ios, digital-goods, checkout, universal-links, origin-context]\n---\n\n## Summary\n\nThe 2026-04-23 and 2026-11-07 [[stripe|Stripe]] guides describe an iOS app-to-web flow for eligible digital goods and subscriptions in some countries where iOS apps can link to external payment pages. The app opens Stripe-hosted Checkout in Safari. Stripe acts as merchant of record, and Link provides the customer-facing checkout, subscription management, and transaction support. The app operator maintains the app user, the Stripe Customer association, and the entitlement ledger. Product-level support stays with the operator. The captures leave current country, storefront, account, and App Store eligibility unverified.\n\n## Eligibility and Setup\n\nBoth guides require all products in the purchase to qualify, including an eligible tax code for each Product. They also call for Dashboard activation, a configured development environment, and API version `2025-03-31.basil` or later. The video-game coin example uses tax code `txcd_10201000` for downloaded, non-subscription games with permanent rights. The guide assumes an existing system for app user authentication. Native StoreKit in-app purchases are outside its scope.\n\nThe 2026-04-23 mobile and [[source-stripe-managed-payments-setup|general Checkout setup]] captures explicitly require accepting the Managed Payments terms in the Dashboard before use. The 2026-11-07 guides retain Dashboard activation in their checklists and omit the separate terms callout. The omission leaves current terms and account onboarding requirements unresolved.\n\n## Key Checkout Session Parameters\n\nThe merchant's server creates or reuses a Stripe Customer and stores the app-user-to-Customer mapping so customers can recover purchases. It creates the Checkout Session for that Customer and returns the hosted Session URL to the app. The examples use a Price ID in `line_items`, `mode: 'payment'` for one-time purchases or `mode: 'subscription'` with a recurring Price, `managed_payments.enabled` to use Managed Payments, and `origin_context: 'mobile_app'` to opt in to the app-to-web UI.\n\n```javascript\nstripe.checkout.sessions.create({\n  line_items: [{ price: priceId, quantity: 1 }],\n  managed_payments: { enabled: true },\n  origin_context: 'mobile_app',\n  mode: 'payment',\n  customer: customerId,\n  success_url: 'https://example.com/checkout_redirect/success',\n})\n```\n\n## Safari and Universal Link Return\n\nThe Swift sample checks `SKPaymentQueue.canMakePayments()` for device purchase restrictions such as parental controls, then opens the server-provided URL with `UIApplication.shared.open`. Configure the domain's `apple-app-site-association` file, the app's Associated Domains entitlement, and a fallback page at the Universal Link `success_url`. The return lets the app update its UI and fetch current entitlements from the server.\n\nThe captures describe redirect after webhook acknowledgement, or after 10 seconds following a successful payment if the event is unacknowledged. Redirect and event acknowledgement are separate from the server persisting the entitlement.\n\n## Server Fulfillment\n\nThe mobile example receives `checkout.session.completed` for a successful purchase, maps `session.customer` to the app user, and passes `session.id` to a coin-transaction operation. Grant credits from verified server events after confirming the paid outcome, using an idempotent per-Session entitlement operation. If a delayed method is offered and completion arrives with payment still pending, wait for `checkout.session.async_payment_succeeded` and handle `checkout.session.async_payment_failed`. The [[source-stripe-managed-payments-setup|general Managed Payments setup guide]] lists both asynchronous events, and the [[source-stripe-inapp-digital-goods-checkout|separate non-MoR iOS Checkout guide]] explains the paid-status check. The mobile captures leave delayed-method availability and the sample's end-to-end idempotency unverified. The return URL is an app refresh signal only.\n\nBoth captured Node.js examples show raw-body signature verification with the configured secret, include an unsigned fallback, and later read `event.data.object` outside the block that declares `event` instead of using the extracted data. Apply verified event handling and paid-status checks in production. The archived example is illustrative and leaves production execution unverified.\n\n## Subscription Authorization\n\nBoth captures say a Managed Payments subscription authorizes charges by Managed Payments only. Obtain appropriate customer consent before charging that method for transactions outside Managed Payments.\n\n## Optional Price and Tax Display\n\nThe 2026-11-07 guide adds optional controls in Dashboard Checkout and Payment Links settings for whether yearly subscription prices display in monthly terms and whether taxes are shown. This documentation covers presentation. It gives no change to the recurring interval, charged amount, or tax calculation or collection.\n\n## Related Pages\n\n- [[stripe-managed-payments]] — merchant-of-record concept and general setup routes\n- [[stripe-inapp-payments]] — overview of mobile integration routes\n- [[source-stripe-inapp-digital-goods-checkout]] — separate US-scoped non-MoR app-to-web route, with a storefront check and a qualified Accounts v2 `customer_account` branch. The Managed Payments mobile samples use the mapped Customer ID in `customer`.\n- [[source-stripe-managed-payments-setup]] — general Checkout setup, dated terms wording, tax behavior, and asynchronous event handling\n\n## Detail Locators\n\n- 2026-11-07 raw lines 36–67 and 142–173 cover prerequisites, the Product and Price example, and Customer mapping.\n- 2026-11-07 raw lines 175–323 and 335–379 cover the Universal Link setup, Checkout Session examples, StoreKit device check, and Safari return.\n- 2026-11-07 raw lines 429–489 cover acknowledgement, redirect, and the fulfillment sample. Lines 515–517 cover subscription authorization.\n- 2026-11-07 raw lines 491–554 cover sandbox card examples, manual receipt previews, and Link's test passcode `000000`. Test purchases do not appear in the Link app. Lines 556–599 cover Universal Link diagnostics.\n- 2026-04-23 raw lines 8–10 retain the explicit terms instruction. 2026-11-07 raw lines 601–603 describe the display settings.\n\n## Raw Sources\n\n- [[raw/stripe-payments-managed-payments-set-up-mobile-2026-11-07|2026-11-07 iOS Managed Payments guide]]\n- [[raw/stripe-managed-payments-mobile-2025|2026-04-23 iOS Managed Payments guide]]\n",
+  "quotes": {
+    "payments-managed-payments-set-up-mobile": [
+      {
+        "text": "Open Stripe Checkout with Managed Payments in a browser to sell in-app digital products or subscriptions.",
+        "location": "raw/stripe-payments-managed-payments-set-up-mobile-2026-11-07.md:7"
+      },
+      {
+        "text": "To process a payment with Managed Payments, all of the products the customer is purchasing must be eligible.",
+        "location": "raw/stripe-payments-managed-payments-set-up-mobile-2026-11-07.md:47"
+      },
+      {
+        "text": "Make sure to store an association on your server between the user account and the Stripe customer ID.",
+        "location": "raw/stripe-payments-managed-payments-set-up-mobile-2026-11-07.md:169"
+      },
+      {
+        "text": "When a customer purchases a subscription through Managed Payments, it only authorizes their payment method to be charged by Managed Payments.",
+        "location": "raw/stripe-payments-managed-payments-set-up-mobile-2026-11-07.md:517"
+      },
+      {
+        "text": "In your [Checkout and Payment Links settings](https://dashboard.stripe.com/settings/checkout), configure whether [yearly subscription prices display in monthly terms](https://docs.stripe.com/payments/checkout/yearly-price-display.md) and control whether taxes are displayed.",
+        "location": "raw/stripe-payments-managed-payments-set-up-mobile-2026-11-07.md:603"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-managed-payments-set-up-mobile": [
+      {
+        "text": "You must accept the [Managed Payments terms of service](https://stripe.com/legal/managed-payments) in the [Dashboard](https://dashboard.stripe.com/settings/managed-payments) before you can use Managed Payments.",
+        "location": "raw/stripe-managed-payments-mobile-2025.md:10"
+      },
+      {
+        "text": "The `managed_payments[enabled]` parameter to `true`",
+        "location": "raw/stripe-managed-payments-mobile-2025.md:217"
+      },
+      {
+        "text": "When a customer purchases a subscription through Managed Payments, it only authorizes their payment method to be charged by Managed Payments.",
+        "location": "raw/stripe-managed-payments-mobile-2025.md:495"
+      },
+      {
+        "location": "raw/stripe-managed-payments-mobile-2025.md:36",
+        "text": "To process a payment with Managed Payments, all of the products the customer is purchasing must be eligible."
+      },
+      {
+        "location": "raw/stripe-managed-payments-mobile-2025.md:150",
+        "text": "Make sure to store an association on your server between the user account and the Stripe customer ID."
+      },
+      {
+        "location": "raw/stripe-managed-payments-mobile-2025.md:334",
+        "text": "SKPaymentQueue.canMakePayments()"
+      },
+      {
+        "location": "raw/stripe-managed-payments-mobile-2025.md:412",
+        "text": "Checkout redirects the customer to the `success_url` 10 seconds after a successful payment."
+      },
+      {
+        "location": "raw/stripe-managed-payments-mobile-2025.md:429",
+        "text": "Retrieve the event by verifying the signature using the raw body and secret."
+      },
+      {
+        "location": "raw/stripe-managed-payments-mobile-2025.md:455",
+        "text": "const session = event.data.object;"
+      },
+      {
+        "location": "raw/stripe-managed-payments-mobile-2025.md:459",
+        "text": "user.addCoinsTransaction(100, session.id);"
+      },
+      {
+        "location": "raw/stripe-managed-payments-mobile-2025.md:516",
+        "text": "acts as the merchant of record at checkout and provides subscription management and transaction support"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-managed-payments-set-up-mobile-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 609
+      }
+    ],
+    "raw/stripe-managed-payments-mobile-2025.md": [
+      {
+        "start": 1,
+        "end": 581
+      }
+    ],
+    "wiki/sources/source-stripe-managed-payments-mobile.md": [
+      {
+        "start": 1,
+        "end": 65
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/7d56148f3e85f3a6f9fe02d8/content.diff": [
+      {
+        "start": 1,
+        "end": 526
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 11
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 128,
+        "end": 140
+      },
+      {
+        "start": 775,
+        "end": 790
+      }
+    ],
+    "wiki/concepts/stripe-managed-payments.md": [
+      {
+        "start": 1,
+        "end": 123
+      }
+    ],
+    "wiki/concepts/stripe-inapp-payments.md": [
+      {
+        "start": 77,
+        "end": 116
+      }
+    ],
+    "wiki/sources/source-stripe-managed-payments-setup.md": [
+      {
+        "start": 10,
+        "end": 70
+      }
+    ],
+    "raw/stripe-managed-payments-setup-2025.md": [
+      {
+        "start": 1,
+        "end": 40
+      },
+      {
+        "start": 452,
+        "end": 470
+      }
+    ],
+    "raw/stripe-payments-managed-payments-set-up-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 36
+      },
+      {
+        "start": 389,
+        "end": 409
+      }
+    ],
+    "raw/stripe-payments-managed-payments-how-it-works-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 34
+      }
+    ],
+    "wiki/sources/source-stripe-inapp-digital-goods-checkout.md": [
+      {
+        "start": 20,
+        "end": 37
+      },
+      {
+        "start": 64,
+        "end": 76
+      }
+    ],
+    "raw/stripe-checkout-dashboard-payment-methods-2025.md": [
+      {
+        "start": 66,
+        "end": 84
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-managed-payments-set-up-mobile/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 222
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/attempts/payments-managed-payments-set-up-mobile/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 144
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-04/proposed-queries.md": [
+      {
+        "start": 227,
+        "end": 233
+      }
+    ]
+  },
+  "answers": {
+    "payments-managed-payments-set-up-mobile": {
+      "Q1": "The 2026-11-07 capture of https://docs.stripe.com/payments/managed-payments/set-up-mobile documents one-time or subscription purchases of eligible digital products for iOS users in countries where external payments are permitted. All products in the purchase must qualify, the tax code must be eligible, Managed Payments must be activated in the Dashboard, and the API version must be 2025-03-31.basil or later (new raw lines 5-9 and 36-54). The merchant keeps the server-side app-user-to-Stripe-Customer association and creates a hosted Checkout Session for that Customer with a Price, payment or subscription mode, managed_payments.enabled, origin_context mobile_app and a Universal Link success_url (new raw lines 142-173 and 229-323). The app checks device purchase permission and opens Safari. Stripe provides the merchant-of-record service through the customer-facing Link checkout, and a successful paid flow drives server-side entitlement updates. The return link only brings the customer back to the app, with fallback routing and a possible redirect after an unacknowledged webhook (new raw lines 175-227, 335-379, 429-489 and 536-542). The April capture documents the same flow and explicitly required terms acceptance before use (old raw lines 8-43, 125-154, 210-359 and 408-467). The revised source-stripe-managed-payments-mobile.md keeps the Session fields and Safari/Universal Link flow and restores identity recovery, API and activation prerequisites, paid and verified webhook qualification, and separate consent to charge outside Managed Payments after a Managed Payments subscription (new raw lines 515-517, old raw lines 493-495).",
+      "Q2": "At https://docs.stripe.com/payments/managed-payments/set-up-mobile, the November capture newly documents optional Dashboard controls for monthly presentation of yearly subscription prices and for tax visibility (new raw lines 601-609, old raw lines 534-581). Those settings are presentation controls for prices and taxes, with no stated billing cadence or tax treatment change. The text flow diagram at new raw lines 19-34 elaborates the existing browser, server and webhook flow, while the screenshot locations, Markdown list numbering, JSON layout, sandbox link wording and code formatting are presentation or navigation changes. The April requirement to accept Managed Payments terms in the Dashboard (old raw lines 8-10) disappears from the mobile text while the new prerequisites still say activate Managed Payments (new raw lines 45-50). The revised source links the dated April terms wording to the general Managed Payments setup guide. The omission leaves current terms obligations undetermined. The revised source-stripe-managed-payments-mobile.md retains the API version, some-country scope, app-user-to-Customer identity, separate subscription authorization scope, and paid server outcome boundary. The retained fulfillment example receives checkout.session.completed in its successful-purchase flow (old raw lines 408-467, new raw lines 429-489), while the general Managed Payments setup guide separately documents asynchronous success and failure. The non-MoR route provides the paid-status and verified event qualification. Its Accounts v2 alternative and its payment method options belong to that separate route. Both mobile captures retain an unsigned webhook fallback and a block-scope error in the sample (old raw lines 423-460, new raw lines 445-482). Success URL navigation, device permission and test checkout provide no proof of paid entitlement or current merchant eligibility."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-managed-payments-set-up-mobile-inapp-source",
+      "target_path": "wiki/concepts/stripe-inapp-payments.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-managed-payments-mobile]] — iOS digital goods with Managed Payments as MoR: managed_payments.enabled + origin_context=mobile_app, Stripe handles tax/fraud/disputes, Universal Links return",
+      "proposed_markdown": "- [[source-stripe-managed-payments-mobile]] — April and November 2026 iOS app-to-web Managed Payments guide for eligible digital goods in some countries. Uses the app user's mapped Stripe Customer in `customer`, Safari, and a Universal Link return. Grant entitlements from verified, paid server outcomes, independently of the return.",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "raw/stripe-payments-managed-payments-set-up-mobile-2026-11-07.md:9,169-173,262-276,335-379,429-489 supports the scope, identity, return and fulfillment boundaries. The non-MoR Accounts v2 branch and US storefront check are separately scoped."
+      ]
+    },
+    {
+      "update_id": "payments-managed-payments-set-up-mobile-managed-source",
+      "target_path": "wiki/concepts/stripe-managed-payments.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-managed-payments-mobile]] — iOS mobile integration: managed_payments.enabled + origin_context=mobile_app together; MoR alternative to non-MoR app-to-web; Universal Links + Safari",
+      "proposed_markdown": "- [[source-stripe-managed-payments-mobile]] — April and November 2026 iOS hosted Checkout setup for eligible digital products, with a mapped Customer and paid server fulfillment. See the dated Dashboard terms wording and November-only price and tax display settings.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "warnings": [
+        "raw/stripe-managed-payments-mobile-2025.md:8-10 includes the April-only explicit terms requirement; raw/stripe-payments-managed-payments-set-up-mobile-2026-11-07.md:45-50 retains activation and omits the callout. The omission leaves current terms requirements unresolved. November lines 601-603 are presentation settings."
+      ]
+    }
+  ]
+}

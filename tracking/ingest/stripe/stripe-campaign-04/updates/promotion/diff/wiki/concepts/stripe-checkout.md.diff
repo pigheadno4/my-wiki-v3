@@ -1,0 +1,60 @@
+--- wiki/concepts/stripe-checkout.md
++++ wiki/concepts/stripe-checkout.md
+@@ -24,7 +24,7 @@
+ ## 3 Hosting Modes
+ 
+ 1. **Stripe-hosted redirect** — customer is sent to Stripe's hosted Checkout page via `session.url`; the April 2026 client sample checks `?success=true`/`?canceled=true` for return-page messaging. Wait for payment success before fulfillment; the URL query is not payment proof.
+-2. **Embedded form** (`ui_mode: 'embedded_page'`) — Checkout renders in iframe on your site; server returns `clientSecret`; `return_url` with `{CHECKOUT_SESSION_ID}` template; return page checks `session.status` via `/session-status` endpoint; `open` → remount, `complete` → success
++2. **Full embedded Checkout page** (`ui_mode: 'embedded_page'` in the November create reference) — The April Accept a Payment example calls this an embedded form and renders Checkout in an iframe. The server supplies a Session client secret. The create reference requires `return_url` when redirect-based payment methods are enabled and disallows `success_url` in `embedded_page` and `elements`. The separate return example places `{CHECKOUT_SESSION_ID}` in `return_url`. Checkout substitutes the ID before redirecting. The example passes it to `/session-status`, checks `session.status`, and remounts when `open`. May multicapture and older embedded examples use `complete` for success messaging. The November Checkout Session object describes `open` as in progress before payment processing and `complete` as Session completion while payment may continue processing. For paid fulfillment, verify `payment_status=paid` server-side or await `checkout.session.async_payment_succeeded` when pending, and handle `checkout.session.async_payment_failed` separately. Apply the separate no-payment-required rule when applicable. Use PaymentIntent status for capture. The Accept a Payment URL selector `ui=embedded-page` and the separate prebuilt Checkout Form’s `ui_mode=form` have their own scopes. See [[source-stripe-accept-a-payment]], [[source-stripe-multicapture]] and [[source-stripe-managed-payments-update-checkout]] for the dated examples, including migration samples that set `success_url` without selecting an embedded mode.
+ 3. **Checkout Elements** (`ui_mode: 'elements'`) — initialize with `stripe.initCheckoutElementsSdk`; full CSS control; no order summary
+ 
+ **Embedded React components**: `EmbeddedCheckoutProvider` + `EmbeddedCheckout` from `@stripe/react-stripe-js`; `fetchClientSecret` callback; call `loadStripe` **outside** component render.
+@@ -79,6 +79,8 @@
+ Embedded Checkout remains a separate root-package path through `EmbeddedCheckoutProvider` and `EmbeddedCheckout`. Its provider accepts either `clientSecret` or `fetchClientSecret`, creates the embedded page once, and destroys it on unmount. These React bindings depend on `@stripe/stripe-js`; they do not independently prove the behavior or rollout of the Stripe-hosted runtime. See [[source-github-react-stripe-js]].
+ 
+ The `@stripe/react-stripe-js@6.8.1` documentation makes Checkout Sessions with `ui_mode: 'elements'` the recommended starting point for most new custom React checkout pages. The server creates the Session from trusted pricing data and returns its client secret; the client passes that secret to `CheckoutElementsProvider`, reads state through `useCheckoutElements()`, and confirms through `checkout.confirm({returnUrl})`. The lower-level `Elements` plus Payment Intents path remains documented for existing integrations or cases requiring finer-grained control. This is a guidance and demo change, not a removal of Payment Intents support or a React runtime API change.
++
++The April and November 2026 [[source-stripe-payment-intents#Checkout Sessions and Payment Intents|Payment Intents guide]] shows the Session secret initializing `ui_mode: 'elements'` with `CheckoutElementsProvider` in React or `initCheckoutElementsSdk` and `loadActions()` in HTML. The Intent-based Elements path uses a PaymentIntent secret for its own confirmation. The separate [[source-stripe-checkout-sessions]] overview retains the literal `ui_mode: 'custom'` in its examples.
+ 
+ Version `6.8.2` strengthens that example without changing the runtime surface. The server must verify `session.client_secret`; the client should handle loading and initialization errors, require `checkout.canConfirm`, disable duplicate submission, process both returned and thrown confirmation errors, and validate the Session-creation HTTP response. Removing the complete Payment Intents snippet from the README does not deprecate that lower-level integration path.
+ 
+@@ -115,7 +117,7 @@
+ | Webhook events | Full checkout lifecycle | Payment status only |
+ | **Adaptive Pricing** | ✓ Exclusive to Checkout Sessions | ✗ Not available |
+ 
+-**IC+ only** (both APIs): Multicapture, Overcapture, Extended authorization, Incremental authorization. See [[source-stripe-elements-advanced-payments]] for full comparison matrix.
++The November 7, 2026 [[source-stripe-elements-advanced-payments|Advanced Elements matrix]] lists Multicapture, Overcapture, Extended authorization and Incremental authorization for both APIs under its IC+ only footnote. The May 11, 2026 [[source-stripe-overcapture|Overcapture guide]] describes the IC+ offering and gives standard-pricing users a Support route to ask about access. Exceptions, plan changes and actual access are unverified.
+ 
+ ## Key Capabilities
+ 
+@@ -123,12 +125,13 @@
+ - **Adaptive Pricing** — auto local currency in 150+ countries (always enabled for Payment Links; available for Checkout); merchant pays 0%, customer pays 2–4% fee; unlocks 20 local PMs; `presentment_details` in webhook; see [[stripe-adaptive-pricing]]
+ - **Subscriptions**: recurring prices → subscription mode
+ - **Save payment methods**: `payment_intent_data.setup_future_usage` or `saved_payment_method_options.payment_method_save`
+-- **Auth + capture**: `payment_intent_data.capture_method: 'manual'`
++- **Auth + capture**: `payment_intent_data.capture_method: 'manual'`. The May 11, 2026 [[source-stripe-overcapture|Overcapture guide]] requires `payment_intent_data.capture_method=manual` for hosted and embedded Checkout, although both Session examples omit it. Embedded Session `complete` can precede PaymentIntent capture. Check the PaymentIntent and latest Charge server-side.
+ - **Mobile**: iOS (PaymentSheet), Android (PaymentSheet), React Native (`useStripe`)
+ 
+ ## Notable Details
+ 
+-- **Custom domains**: paid feature; applies to Checkout (hosted page only), **Payment Links**, and the **customer portal**
++- **Custom domains**: Paid feature for hosted Checkout, Payment Links and the customer portal. The November 7, 2026 [[source-stripe-managed-payments-how-it-works|Managed Payments guide]] excludes custom domains from Managed Payments checkouts.
++- **Link payment-method domains**: The separate [[source-stripe-pmd-registration|registration guide]] covers domains and subdomains displaying Link in Elements and the embedded Checkout form. The May [[source-stripe-checkout-link|Link with Checkout guide]] gave an unqualified registration statement, which its November capture omits. Its Checkout Session examples use the hosted success URL. The embedded flow has its own return URL rules.
+ - **Session expiry**: 24h default; configurable 30min–24h via `expires_at`; can also expire manually via API
+ - **Mixed cart**: set `mode: 'subscription'` + include both recurring + one-time Price IDs in `line_items`
+ - **Save payment methods**: `payment_intent_data.setup_future_usage` (payment mode) or automatic saving in subscription mode can save cards for later charges, but those cards have `allow_redisplay: 'limited'` and don't prefill returning Checkout purchases. With `saved_payment_method_options.payment_method_save: 'enabled'`, an optional customer consent checkbox can save an eligible card with `allow_redisplay: 'always'` for Checkout prefill; Checkout only prefills saved cards.
+@@ -248,7 +251,7 @@
+ ## Sources
+ 
+ - [[source-github-stripe-react-native]] - native 0.81.0 private-preview presentation/confirmation bridge and fulfillment/status boundary
+-- [[source-stripe-checkout-sessions]] — April and November 2026 Checkout Sessions API overviews: hosted, embedded and custom Elements UI routes, built-in tax/discounts/shipping/subscriptions/Adaptive Pricing, and an illustrative server-side `ui_mode=custom` metadata request. The separate version-qualified React custom path on this page uses `ui_mode='elements'`; the overview's sample does not settle that SDK naming or prove payment completion.
++- [[source-stripe-checkout-sessions]] — April and November 2026 Checkout Sessions API overviews cover hosted, embedded and custom Elements UI routes and built-in tax, discounts, shipping, subscriptions and Adaptive Pricing. Both include a dated server-side metadata example with literal `ui_mode=custom`. The separate version-qualified React custom path on this page uses `ui_mode='elements'`. The overview sample does not establish the React SDK contract or payment completion. Checkout Session creation under `2026-03-25.dahlia` rejects `hosted`, `embedded`, and `custom` and replaces them with `hosted_page`, `embedded_page`, and `elements`. The version adds `form` separately. See [[source-stripe-accept-a-payment]] for the dated decision guide and the distinct Form and full embedded page routes.
+ - [[source-stripe-how-checkout-works]] — April 20, 2026 full How Checkout Works guide: 26-row Hosted feature table (11 built-in and 15 customizable), mixed cart, Session expiry, saved methods, guest customers, and Checkout for agents; the November 7 capture is a four-target variant index only. Its `embedded-page` and `checkout-form` links do not establish linked-body behavior or Checkout Form SDK rollout.
+ - [[source-stripe-checkout-quickstart]] — April and November 2026 hosted redirect quickstart, with a separate April 2026 embedded sample; November adds server-owned price/availability and payment-success fulfillment cautions.
+ - [[source-stripe-checkout-form]] — Checkout form (custom path): single iframe, 100+ methods, built-in returning UI, Appearance API, 2 layouts
+@@ -283,4 +286,4 @@
+ - [[stripe-elements]] — Stripe Elements concept page (all 7 elements, React integration patterns)
+ - [[source-stripe-checkout-custom-components]] — Custom fields (3 types), custom text (4 placements), ToS consent, payment method reuse agreement, localization, Dashboard policies
+ - [[source-stripe-inapp-digital-goods-checkout]] — captured US iOS digital-goods app-to-web flow: qualified Accounts v2 or retained Customers v1, Universal Links and StoreKit gate; paid-status or asynchronous-success server fulfillment
+-- [[source-stripe-managed-payments-setup]] — Checkout with Managed Payments: managed_payments.enabled, API 2025-03-31.basil, all-products-eligible rule, tax behavior config
++- [[source-stripe-managed-payments-setup]] — New Stripe-hosted Checkout setup, API `2025-03-31.basil` or later. April 23, 2026 requires all purchased products to be eligible for Managed Payments processing. November 7, 2026 calls for product eligibility and documents the per-Session opt-out.

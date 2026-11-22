@@ -1,0 +1,136 @@
+--- wiki/sources/source-stripe-inapp-migrate-confirmation-tokens.md
++++ tracking/ingest/stripe/stripe-campaign-04/updates/attempts/payments-mobile-migration-confirmation-tokens/attempt-2/candidate.md
+@@ -2,7 +2,9 @@
+ title: "Migrate to Confirmation Tokens — Mobile"
+ type: source
+ date_ingested: 2026-04-23
++date_updated: 2026-11-22
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/payments/mobile/migration-confirmation-tokens"
+ raw_files:
+   - "stripe-inapp-migrate-confirmation-tokens-2025.md"
+ tags: [stripe, mobile, ios, android, react-native, confirmation-token, payment-method, migration, payment-intents]
+@@ -10,83 +12,59 @@
+ 
+ ## Summary
+ 
+-Migration guide from legacy `PaymentMethod` to `ConfirmationToken` in mobile integrations (iOS, Android, React Native). ConfirmationToken auto-handles shipping, mandate data, return URL, and setup_future_usage — and uniquely enables server-side CVC recollection.
++Stripe's April 23, 2026 guide describes migrating an existing iOS, Android, or React Native PaymentSheet integration from a PaymentMethod callback to a ConfirmationToken callback. It points new integrations to the separate mobile Accept a payment guide. The November 7 base capture retains the migration purpose and links to the three platform guides. The implementation below comes from the April capture and the separately identified API, SDK, and server-guide evidence.
+ 
+-## PaymentMethod vs ConfirmationToken
++## Token, preview, and collected context
+ 
+-| Feature | PaymentMethod (Legacy) | ConfirmationToken |
++The April migration guide compares two ways to supply payment details at confirmation. In its older PaymentMethod flow, the integration supplies additional context such as shipping, mandate data, the return URL, and future-use settings. The token flow can carry these fields when they were collected or configured. The ConfirmationToken API object describes `shipping`, `mandate_data`, `return_url`, and `setup_future_usage` as nullable. For the PaymentIntent attachment behavior described there, future use must be configured and the PaymentIntent must have a Customer. The payment method attaches after confirmation and any required user actions.
++
++Use the token ID when the server needs the collected context to confirm. The optional payment-method preview is information used to create a PaymentMethod at confirmation. The token has its own expiry and distinct nullable references to the PaymentIntent or SetupIntent that it was used to confirm. The Intent client secret is a separate value returned by the merchant server so the SDK can confirm or continue the Intent flow.
++
++### Optional saved-card CVC recollection
++
++The April table describes server-side CVC recollection as a capability of the token path in the comparison. The separate April [[source-stripe-inapp-finalize-payments-server]] guide describes configuring this for a saved card during PaymentIntent confirmation. Collect payment details before creating the Intent, configure optional SDK-side recollection for that flow, and supply the server's customer identifier (`customer` for Customers v1 or `customer_account` for Accounts v2 in those examples) and `payment_method_options.card.require_cvc_recollection`. This scope applies to the described deferred PaymentIntent flow and SDK configuration.
++
++## Client callback by platform
++
++| Platform | April migration path | Separately retained SDK behavior |
+ | --- | --- | --- |
+-| Payment confirmation | ✓ | ✓ |
+-| Setup future usage | Manual | Automatic |
+-| Shipping information | Manual | Automatic |
+-| Mandate data | Manual | Automatic |
+-| Return URL | Manual | Automatic |
+-| Server-side CVC recollection | ✗ | ✓ |
++| iOS | Configure a PaymentSheet token handler and send `confirmationToken.stripeId` for server confirmation. The async handler returns the client-secret string or throws in the separate April finalize guide. | 26.11.0 (`2026-09-30-7037819`) routes deferred confirmation through the configured token or regular handler. The token model defines `stripeId` and optional `paymentMethodPreview`. |
++| Android | Configure the `createIntentCallback` overload that receives the token. Send `confirmationToken.id` for server confirmation and return `CreateIntentResult` with the client secret or failure. | 23.25.1 (`2026-10-27-bb0d8d0`) keeps both the regular and token overloads, with only one configured at a time. |
++| React Native | Use `confirmationTokenConfirmHandler` to receive the token, send `confirmationToken.id` for server confirmation, and call the result callback with a client secret or error. | 0.84.0 (`2026-10-29-33ef1ee`) retains both `confirmHandler` and `confirmationTokenConfirmHandler`. For a deferred Intent without a client secret, use exactly one. Match server parameters to `IntentConfiguration`. |
+ 
+-## Client-Side Changes
++These are versioned SDK observations. The November navigation capture specifies no new minimum version or retirement of the older handlers.
+ 
+-### iOS
+-Callback param changes from `paymentMethod` to `confirmationToken`:
+-```swift
+-PaymentSheet.IntentConfiguration(mode: ...) { confirmationToken in
+-    // Send confirmationToken.stripeId instead of paymentMethod.stripeId
+-}
+-```
++## Initial confirmation modes
+ 
+-### Android
+-`createIntentCallback` now receives `confirmationToken`:
+-```kotlin
+-PaymentSheet.Builder(::onPaymentSheetResult)
+-    .createIntentCallback { confirmationToken ->
+-        // Pass confirmationToken.id to server if doing server-side confirmation
+-    }
+-```
++| Mode | Merchant server | Mobile app and SDK |
++| --- | --- | --- |
++| Client-side confirmation | Create an unconfirmed PaymentIntent or SetupIntent and return its `client_secret`. In the April token-driven example, omit `payment_method`, `return_url`, `mandate_data`, and `shipping` at creation. | Use the returned secret and token to confirm directly with Stripe through the SDK. |
++| Server-side confirmation | Receive the token ID and send `confirmation_token` with `confirm: true` to Stripe to create the Intent and attempt confirmation in one request. Return the Intent's `client_secret` in the merchant response as in the April examples. | Pass the client secret back to the SDK and let it continue any required client-side actions. |
+ 
+-### React Native
+-Rename `confirmHandler` → `confirmationTokenConfirmHandler`:
+-```javascript
+-intentConfiguration: {
+-    confirmationTokenConfirmHandler: async (confirmationToken, intentCreationCallback) => {
+-        // Pass confirmationToken.id to server
+-    }
+-}
+-```
++The April examples create PaymentIntents via `POST /v1/payment_intents`. For setup without a payment, the separately captured SetupIntent reference describes `POST /v1/setup_intents`, with its own optional `confirmation_token` and `confirm` parameters. For both objects, fields supplied directly at confirmation override corresponding token fields. Confirmation starts an attempt. Check the resulting Intent state to establish successful payment or successful setup. The separate server-finalization guide uses server payment events for fulfillment. With a manual PaymentIntent confirmation method, the server must confirm again after completed customer actions when the Intent returns to `requires_confirmation`.
+ 
+-## Server-Side Changes (Two Modes, Same for All Platforms)
++The April PaymentIntent examples enable `automatic_payment_methods`. Stripe's separately captured `2026-07-29.dahlia` changelog says `allowed_payment_method_types` is mutually exclusive with `automatic_payment_methods`, `payment_method_types`, `excluded_payment_method_types`, and `payment_method_configuration` on that versioned request path.
+ 
+-### Client-side confirmation
+-Exclude `payment_method`, `return_url`, `mandate_data`, `shipping` — SDK fills these from ConfirmationToken:
+-```javascript
+-const intent = await stripe.paymentIntents.create({
+-    amount: 1099, currency: 'usd',
+-    automatic_payment_methods: { enabled: true },
+-    // NO payment_method, return_url, mandate_data, shipping
+-});
+-res.json({ client_secret: intent.client_secret });
+-```
++### April sample integration details
+ 
+-### Server-side confirmation
+-Create + confirm in one call:
+-```javascript
+-const intent = await stripe.paymentIntents.create({
+-    amount: 1099, currency: 'usd',
+-    automatic_payment_methods: { enabled: true },
+-    confirm: true,
+-    confirmation_token: req.body.confirmationTokenId, // KEY
+-});
+-```
+-
+-**Override rule**: params passed directly to PaymentIntent at confirmation override ConfirmationToken properties.
+-
+-## Accessing PM Details
+-
+-Use `confirmationToken.paymentMethodPreview` instead of inspecting the PaymentMethod object directly.
++- **React Native**. The app example expects JSON `clientSecret` and configures amount 6099. Both server examples return JSON `client_secret` and set amount 1099. Agree on one merchant response format and match the server Intent to the app's applicable amount, currency, and future-use configuration. The server determines the amount from trusted data.
++- **iOS**. The April migration excerpt calls an unspecified `intentCreationCallback` inside a continuation without showing a resume. The separate April finalize guide shows the async callback returning the server's client secret or throwing and the SDK continuing any required next actions.
+ 
+ ## Related Pages
+ 
+-- [[stripe-inapp-payments]] — in-app payments concept page
+-- [[source-stripe-inapp-finalize-payments-server]] — full server-side confirmation guide with ConfirmationToken
++- [[stripe]] — provider and source catalog
++- [[stripe-inapp-payments]] — mobile Intent and PaymentSheet patterns
++- [[source-stripe-inapp-finalize-payments-server]] — server confirmation, client next actions, and optional saved-card CVC recollection
++
++## Related raw API references
++
++- [[raw/stripe-payments-mobile-migration-confirmation-tokens-2026-11-07]] — navigation index, November 7, 2026, linking to iOS, Android, and React Native variants
++- [[raw/stripe-api-confirmation-tokens-object-2026-11-07]] — November 7, 2026 ConfirmationToken object fields (lines 89–128)
++- [[raw/stripe-api-payment-intents-create-2026-11-07]] — November 7, 2026 PaymentIntent create and confirmation-token parameters (lines 412–427)
++- [[raw/stripe-api-setup-intents-create-2026-11-07]] — November 7, 2026 SetupIntent create and confirmation-token parameters (lines 365–381)
++- [[raw/stripe-api-payment-intents-confirm-2026-11-07]] — November 7, 2026 confirmation and resulting PaymentIntent states (lines 5–17)
++- [[raw/stripe-changelog-dahlia-2026-07-29-allowed-payment-method-types-parameter-2026-11-07]] — July 29, 2026 changelog, captured November 7, 2026 (lines 7–13)
+ 
+ ## Raw Sources
+ 
+-- [[stripe-inapp-migrate-confirmation-tokens-2025]] — verbatim migration guide (~280 lines, iOS + Android + React Native)
++- [[raw/stripe-inapp-migrate-confirmation-tokens-2025]] — complete April 23, 2026 mobile migration capture with iOS, Android, and React Native bodies

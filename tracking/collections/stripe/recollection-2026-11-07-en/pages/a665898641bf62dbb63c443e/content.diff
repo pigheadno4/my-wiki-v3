@@ -1,0 +1,415 @@
+--- raw/stripe-nz-becs-set-up-payment-2025.md
++++ raw/stripe-payments-nz-bank-account-set-up-payment-2026-11-07.md
+@@ -1,14 +1,6 @@
+ # Save details for future payments with New Zealand BECS Direct Debits
+ 
+ Learn how to save payment method details for future New Zealand bank account debit payments.
+-
+-> #### Use the Accounts v2 API to represent customers
+->
+-> The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users. If you’re part of the Accounts v2 preview, you need to specify a [specify a preview version](https://docs.stripe.com/api-v2-overview.md#sdk-and-api-versioning) in your code.
+->
+-> To request access to the Accounts v2 preview,
+->
+-> For most use cases, we recommend [modeling your customers as customer-configured Account objects](https://docs.stripe.com/accounts-v2/use-accounts-as-customers.md) instead of using [Customer](https://docs.stripe.com/api/customers.md) objects.
+ 
+ You can use the [Setup Intents API](https://docs.stripe.com/payments/setup-intents.md) to collect payment method details in advance, with the final amount or payment date determined later. This is useful for:
+ 
+@@ -22,68 +14,102 @@
+ 
+ Use our official libraries for access to the Stripe API from your application:
+ 
+-#### Node.js
++#### Ruby
+ 
+ ```bash
+-# Install with npm
+-npm install stripe --save
+-```
+-
+-## Create or retrieve a Customer [Server-side]
+-
+-To reuse a bank account for future payments, attach it to a *Customer* (Customer objects represent customers of your business. They let you reuse payment methods and give you the ability to track multiple payments).
+-
+-Create a Customer object when your customer creates an account with your business. Associating the ID of the Customer object with your own internal representation of a customer enables you to retrieve and use the stored payment method details later. If your customer hasn’t created an account, you can still create a Customer object now and associate it with your internal representation of the customer’s account later.
+-
+-Create a new Customer or retrieve an existing Customer to associate with these payment details. Include the following code on your server to create a new Customer.
+-
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require('stripe')('<<YOUR_SECRET_KEY>>');
+-
+-const customer = await stripe.customers.create();
++# Available as a gem
++sudo gem install stripe
++```
++
++```ruby
++# If you use bundler, you can add this line to your Gemfile
++gem 'stripe'
++```
++
++## Create or retrieve a customer [Server-side]
++
++To reuse a bank account for future payments, attach it to an object that represents your customer.
++
++> #### Use the Accounts v2 API to represent customers
++> 
++> The Accounts v2 API is generally available for Connect users, and in public preview for other Stripe users. If you’re part of the Accounts v2 preview, you need to specify a [preview version](https://docs.stripe.com/api-v2-overview.md#sdk-and-api-versioning) in your code.
++> 
++> To join the Accounts v2 preview, go to [Account previews and features](https://dashboard.stripe.com/settings/previews) in your Dashboard and enable **Reusable payment methods for Global Payouts**.
++> 
++> For most use cases, we recommend [modeling your customers as customer-configured Account objects](https://docs.stripe.com/accounts-v2/use-accounts-as-customers.md) instead of using [Customer](https://docs.stripe.com/api/customers.md) objects.
++
++Create a customer-configured [Account](https://docs.stripe.com/api/v2/core/accounts/create.md#v2_create_accounts-configuration-customer) or [Customer](https://docs.stripe.com/api/customers/create.md) when your customer creates an account with your business, or when saving a payment method. Associate the object’s ID with your own internal representation of a customer.
++
++Create a new customer or retrieve an existing one to associate with this payment.
++
++#### Accounts v2
++
++Set `configuration.customer` to an empty object to enable the customer configuration on this account.
++
++```curl
++curl -X POST https://api.stripe.com/v2/core/accounts \
++  -H "Authorization: Bearer <<YOUR_SECRET_KEY>>" \
++  -H "Stripe-Version: 2026-10-28.preview" \
++  --json '{
++    "contact_email": "jenny.rosen@example.com",
++    "display_name": "Jenny Rosen",
++    "configuration": {
++        "customer": {}
++    },
++    "include": [
++        "configuration.customer"
++    ]
++  }'
++```
++
++#### Customers v1
++
++```curl
++curl https://api.stripe.com/v1/customers \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "name=Jenny Rosen" \
++  --data-urlencode "email=jenny.rosen@example.com"
+ ```
+ 
+ ## Create a SetupIntent [Server-side]
+ 
+ A [SetupIntent](https://docs.stripe.com/api/setup_intents.md) is an object that represents your intent to set up a customer’s payment method for future payments. The `SetupIntent` tracks the steps of this set-up process.
+ 
+-Create a SetupIntent on your server with [payment_method_types](https://docs.stripe.com/api/setup_intents/create.md#create_setup_intent-payment_method_types) set to `nz_bank_account` and specify the Customer’s [id](https://docs.stripe.com/api/customers/object.md#customer_object-id).
+-
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require('stripe')('<<YOUR_SECRET_KEY>>');
+-
+-const setupIntent = await stripe.setupIntents.create({
+-  payment_method_types: ['nz_bank_account'],
+-  customer: '{{CUSTOMER_ID}}',
+-});
++Create a SetupIntent on your server. [Enable NZ bank account](https://dashboard.stripe.com/settings/payment_methods) in your Dashboard. Stripe handles the display of eligible payment methods using [dynamic payment methods](https://docs.stripe.com/payments/payment-methods/dynamic-payment-methods.md). Specify the ID of the customer-configured [Account](https://docs.stripe.com/api/v2/core/accounts/object.md#v2_account_object-id) or [Customer](https://docs.stripe.com/api/customers/object.md#customer_object-id).
++
++#### Accounts v2
++
++```curl
++curl https://api.stripe.com/v1/setup_intents \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "automatic_payment_methods[enabled]=true" \
++  -d "customer_account={{CUSTOMERACCOUNT_ID}}"
++```
++
++#### Customers v1
++
++```curl
++curl https://api.stripe.com/v1/setup_intents \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "automatic_payment_methods[enabled]=true" \
++  -d "customer={{CUSTOMER_ID}}"
+ ```
+ 
+ ### Retrieve the client secret
+ 
+-The SetupIntent includes a *client secret* (The client secret is a unique key returned from Stripe as part of a PaymentIntent. This key lets the client access important fields from the PaymentIntent (status, amount, currency) while hiding sensitive ones (metadata, customer)) that the client side uses to securely complete the payment process. You can use different approaches to pass the client secret to the client side.
++The SetupIntent includes a *client secret* (The client secret is a unique key returned from Stripe as part of a SetupIntent. This key lets the client access important fields from the SetupIntent (for example, status)) that the client side uses to securely complete the setup process. You can use different approaches to pass the client secret to the client side.
+ 
+ #### Single-page application
+ 
+-Retrieve the client secret from an endpoint on your server, using the browser’s `fetch` function. This approach is best if your client side is a single-page application, particularly one built with a modern frontend framework like React. Create the server endpoint that serves the client secret:
+-
+-#### Node.js
+-
+-```javascript
+-const express = require('express');
+-const app = express();
+-
+-app.get('/secret', async (req, res) => {
+-  const intent = // ... Fetch or create the SetupIntent
+-    res.json({ client_secret: intent.client_secret });
+-});
+-
+-app.listen(3000, () => {
+-  console.log('Running on port 3000');
+-});
++Retrieve the client secret from an endpoint on your server, using the browser’s `fetch` function. This approach is best if your client side is a single-page application, particularly one built with a modern front-end framework like React. Create the server endpoint that serves the client secret:
++
++#### Ruby
++
++```ruby
++get '/secret' do
++  intent = # ... Create or retrieve the SetupIntent
++  {client_secret: intent.client_secret}.to_json
++end
+ ```
+ 
+ And then fetch the client secret with JavaScript on the client side:
+@@ -91,7 +117,7 @@
+ ```javascript
+ (async () => {
+   const response = await fetch('/secret');
+-  const { client_secret: clientSecret } = await response.json();
++  const {client_secret: clientSecret} = await response.json();
+   // Render the form using the clientSecret
+ })();
+ ```
+@@ -102,35 +128,22 @@
+ 
+ Add the [client_secret](https://docs.stripe.com/api/setup_intents/object.md#setup_intent_object-client_secret) in your checkout form. In your server-side code, retrieve the client secret from the SetupIntent:
+ 
+-#### Node.js
+-
+-```html
+-<form id="payment-form" data-secret="{{ client_secret }}">
++#### Ruby
++
++```erb
++<form id="payment-form" data-secret="<%= @intent.client_secret %>">
+   <div id="payment-element">
+-    <!-- Elements will create form elements here -->
++    <!-- placeholder for Elements -->
+   </div>
+-
+   <button id="submit">Submit</button>
+ </form>
+ ```
+ 
+-```javascript
+-const express = require('express');
+-const expressHandlebars = require('express-handlebars');
+-const app = express();
+-
+-app.engine('.hbs', expressHandlebars({ extname: '.hbs' }));
+-app.set('view engine', '.hbs');
+-app.set('views', './views');
+-
+-app.get('/checkout', async (req, res) => {
+-  const intent = // ... Fetch or create the SetupIntent
+-    res.render('checkout', { client_secret: intent.client_secret });
+-});
+-
+-app.listen(3000, () => {
+-  console.log('Running on port 3000');
+-});
++```ruby
++get '/checkout' do
++  @intent = # ... Fetch or create the SetupIntent
++  erb :checkout
++end
+ ```
+ 
+ ## Collect payment method details and mandate acknowledgement [Client-side]
+@@ -142,7 +155,7 @@
+ ```html
+ <head>
+   <title>Checkout</title>
+-  <script src="https://js.stripe.com/dahlia/stripe.js"></script>
++  <script src="https://js.stripe.com/endive/stripe.js"></script>
+ </head>
+ ```
+ 
+@@ -173,15 +186,13 @@
+ 
+ ```javascript
+ // Customize the appearance of Elements using the Appearance API.
+-const appearance = {
+-  /* ... */
+-};
++const appearance = { /* ... */ };
+ 
+ // Create an elements group from the Stripe instance, passing the clientSecret (obtained in step 2) and appearance (optional).
+-const elements = stripe.elements({ clientSecret, appearance });
++const elements = stripe.elements({clientSecret, appearance});
+ 
+ // Create Payment Element instance.
+-const paymentElement = elements.create('payment');
++const paymentElement = elements.create("payment");
+ 
+ // Mount the Payment Element to its corresponding DOM node.
+ paymentElement.mount("#payment-element");
+@@ -196,22 +207,22 @@
+ If you don’t use the Payment Element, you must separately display these terms and conditions to your customer and confirm their acceptance.
+ 
+ > By providing your bank account details and confirming this payment, you authorise Stripe New Zealand Limited (authorisation code 3143978), to debit your account with the amounts of direct debits payable to Rocket Rides (“we”, “us” or “Merchant”) in accordance with this authority.
+->
++> 
+ > You agree that this authority is subject to:
+->
++> 
+ > - your bank’s terms and conditions that relate to your account, and
+-
+-- the [Direct Debit Service Terms and Conditions](https://stripe.com/nz/legal/nzbecs-customer-dd-service-terms)
+-  > You certify that you’re either the sole account holder on the bank account listed above or that you’re an authorised signatory on, and have authority to operate, this bank account severally.
+-  >
+-  > We’ll send you an email confirmation no later than 5 business days after your confirmation of this Direct Debit Authority.
++> - the [Direct Debit Service Terms and Conditions](https://stripe.com/nz/legal/nzbecs-customer-dd-service-terms)
++> 
++> You certify that you’re either the sole account holder on the bank account listed above or that you’re an authorised signatory on, and have authority to operate, this bank account severally.
++> 
++> We’ll send you an email confirmation no later than 5 days after your confirmation of this Direct Debit Authority.
+ 
+ If we request you to do so, you must promptly provide Stripe with a record of the mandates.
+ 
+ ## Optional: Customize the appearance [Client-side]
+ 
+ Now that you’ve added these Elements to your page, you can customize everything about their appearance to make them fit with the design of the rest of your page:
+-![](assets/stripe-elements-appearance-example.png)
++![](https://b.stripecdn.com/docs-statics-srv/assets/appearance_example.e076cc750983bf552baf26c305e7fc90.png)
+ 
+ [Read about the Appearance API](https://docs.stripe.com/elements/appearance-api.md)
+ 
+@@ -224,21 +235,20 @@
+ Since New Zealand BECS Direct Debits don’t require a redirect, you can also set [redirect](https://docs.stripe.com/js/payment_intents/confirm_payment#confirm_payment_intent-options-redirect) to `if_required` in place of providing a `return_url`. A `return_url` will only be required if you add another redirect-based payment method later.
+ 
+ ```javascript
+-confirmationForm.addEventListener("submit", (ev) => {
++confirmationForm.addEventListener('submit', (ev) => {
+   ev.preventDefault();
+-  stripe
+-    .confirmSetup({ elements, redirect: 'if_required' })
+-    .then(({ setupIntent, error }) => {
+-      if (error) {
+-        console.error(error.message);
+-        // The confirmation failed for some reason.
+-      } else if (setupIntent.status === 'requires_payment_method') {
+-        // Confirmation failed. Attempt again with a different payment method.
+-      } else if (setupIntent.status === 'succeeded') {
+-        // Confirmation succeeded! The account is now saved.
+-        // Display a message to the customer.
+-      }
+-    });
++  stripe.confirmSetup({elements, redirect: "if_required"})
++  .then(({setupIntent, error}) => {
++    if (error) {
++      console.error(error.message);
++      // The confirmation failed for some reason.
++    } else if (setupIntent.status === "requires_payment_method") {
++      // Confirmation failed. Attempt again with a different payment method.
++    } else if (setupIntent.status === "succeeded") {
++      // Confirmation succeeded! The account is now saved.
++      // Display a message to the customer.
++    }
++  });
+ });
+ ```
+ 
+@@ -246,30 +256,40 @@
+ 
+ ### Customer notification emails
+ 
+-You must send an email confirmation of the mandate and collected bank account details to your customer after successfully confirming the SetupIntent.
+-
+-In addition, for every payment collected, you must send your customer an email notification of the debit date and amount at latest on the day the debit takes place.
++You must send an email confirmation of the mandate and collected bank account details to your customer after successfully confirming the SetupIntent. In addition, for every payment collected, you must send your customer an email notification of the debit date and amount, no later than the day of the debit.
+ 
+ Stripe handles sending these emails for you by default, but you can choose to [send custom notifications](https://docs.stripe.com/payments/nz-bank-account.md#mandate-confirmation-and-debit-notification-emails).
+ 
+ ## Accepting future payments [Server-side]
+ 
+-When the SetupIntent succeeds, it creates a new *PaymentMethod* (PaymentMethods represent your customer's payment instruments, used with the Payment Intents or Setup Intents APIs) attached to a [Customer](https://docs.stripe.com/api/customers.md). You can use these to initiate future payments without having to prompt the customer for their bank account a second time.
+-
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require('stripe')('<<YOUR_SECRET_KEY>>');
+-
+-const paymentIntent = await stripe.paymentIntents.create({
+-  payment_method_types: ['nz_bank_account'],
+-  customer: '{{CUSTOMER_ID}}',
+-  payment_method: "{{PAYMENTMETHOD_ID}}",
+-  confirm: true,
+-  amount: 100,
+-  currency: "nzd",
+-  off_session: true,
+-});
++When the SetupIntent succeeds, it creates a new *PaymentMethod* (PaymentMethods represent your customer's payment instruments, used with the Payment Intents or Setup Intents APIs) attached to either a customer-configured [Account](https://docs.stripe.com/api/v2/core/accounts/object.md) or a [Customer](https://docs.stripe.com/api/customers.md). You can use these to initiate future payments without having to prompt the customer for their bank account a second time.
++
++#### Accounts v2
++
++```curl
++curl https://api.stripe.com/v1/payment_intents \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "automatic_payment_methods[enabled]=true" \
++  -d "customer_account={{CUSTOMERACCOUNT_ID}}" \
++  -d "payment_method={{PAYMENTMETHOD_ID}}" \
++  -d confirm=true \
++  -d amount=100 \
++  -d currency=nzd \
++  -d off_session=true
++```
++
++#### Customers v1
++
++```curl
++curl https://api.stripe.com/v1/payment_intents \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "automatic_payment_methods[enabled]=true" \
++  -d "customer={{CUSTOMER_ID}}" \
++  -d "payment_method={{PAYMENTMETHOD_ID}}" \
++  -d confirm=true \
++  -d amount=100 \
++  -d currency=nzd \
++  -d off_session=true
+ ```
+ 
+ ## Test your integration
+@@ -282,24 +302,24 @@
+ 
+ Test your form using bank code `11`, branch code `0000`, and one of the following account number and suffix combinations.
+ 
+-| Account number | Suffix | Description                                                                                                                                                                                            |
+-| -------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+-| `0000000`      | `010`  | PaymentIntents confirmed with the resulting PaymentMethod transition from `processing` to `succeeded`. The mandate status remains `active`.                                                            |
+-| `2222222`      | `027`  | PaymentIntents confirmed with the resulting PaymentMethod transition from `processing` to `requires_payment_method` with a `insufficient_funds` failure code. The mandate status remains `active`.     |
+-| `8888888`      | `000`  | PaymentIntents confirmed with the resulting PaymentMethod transition from `processing` to `requires_payment_method` with a `refer_to_customer` failure code. The mandate status remains `active`.      |
+-| `1111111`      | `016`  | PaymentIntents confirmed with the resulting PaymentMethod transition from `processing` to `requires_payment_method` with a `no_account` failure code. The mandate status becomes `inactive`.           |
+-| `5555555`      | `059`  | PaymentIntents confirmed with the resulting PaymentMethod transition from `processing` to `requires_payment_method` with a `debit_not_authorized` failure code. The mandate status becomes `inactive`. |
+-| `9999999`      | `000`  | PaymentIntents confirmed with the resulting PaymentMethod transition to `processing` and remain there. To transition it further, use an API request as described below.                                |
++| Account number | Suffix | Description |
++| --- | --- | --- |
++| `0000000` | `010` | PaymentIntents confirmed with the resulting PaymentMethod transition from `processing` to `succeeded`. The mandate status remains `active`. |
++| `2222222` | `027` | PaymentIntents confirmed with the resulting PaymentMethod transition from `processing` to `requires_payment_method` with a `insufficient_funds` failure code. The mandate status remains `active`. |
++| `8888888` | `000` | PaymentIntents confirmed with the resulting PaymentMethod transition from `processing` to `requires_payment_method` with a `refer_to_customer` failure code. The mandate status remains `active`. |
++| `1111111` | `016` | PaymentIntents confirmed with the resulting PaymentMethod transition from `processing` to `requires_payment_method` with a `no_account` failure code. The mandate status becomes `inactive`. |
++| `5555555` | `059` | PaymentIntents confirmed with the resulting PaymentMethod transition from `processing` to `requires_payment_method` with a `debit_not_authorized` failure code. The mandate status becomes `inactive`. |
++| `9999999` | `000` | PaymentIntents confirmed with the resulting PaymentMethod transition to `processing` and remain there. To transition it further, use an API request as described below. |
+ 
+ #### PaymentMethods
+ 
+ Pass these tokens in the `payment_method` parameter while creating or confirming a PaymentIntent.
+ 
+-| Payment Method                        | Description                                                                                                                                                                                            |
+-| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+-| `pm_nzBankAccount_success`            | PaymentIntents confirmed with the resulting PaymentMethod transition from `processing` to `succeeded`. The mandate status remains `active`.                                                            |
+-| `pm_nzBankAccount_insufficientFunds`  | PaymentIntents confirmed with the resulting PaymentMethod transition from `processing` to `requires_payment_method` with a `insufficient_funds` failure code. The mandate status remains `active`.     |
+-| `pm_nzBankAccount_referToCustomer`    | PaymentIntents confirmed with the resulting PaymentMethod transition from `processing` to `requires_payment_method` with a `refer_to_customer` failure code. The mandate status remains `active`.      |
+-| `pm_nzBankAccount_noAccount`          | PaymentIntents confirmed with the resulting PaymentMethod transition from `processing` to `requires_payment_method` with an `no_account` failure code. The mandate status becomes `inactive`.          |
++| Payment Method | Description |
++| --- | --- |
++| `pm_nzBankAccount_success` | PaymentIntents confirmed with the resulting PaymentMethod transition from `processing` to `succeeded`. The mandate status remains `active`. |
++| `pm_nzBankAccount_insufficientFunds` | PaymentIntents confirmed with the resulting PaymentMethod transition from `processing` to `requires_payment_method` with a `insufficient_funds` failure code. The mandate status remains `active`. |
++| `pm_nzBankAccount_referToCustomer` | PaymentIntents confirmed with the resulting PaymentMethod transition from `processing` to `requires_payment_method` with a `refer_to_customer` failure code. The mandate status remains `active`. |
++| `pm_nzBankAccount_noAccount` | PaymentIntents confirmed with the resulting PaymentMethod transition from `processing` to `requires_payment_method` with an `no_account` failure code. The mandate status becomes `inactive`. |
+ | `pm_nzBankAccount_debitNotAuthorized` | PaymentIntents confirmed with the resulting PaymentMethod transition from `processing` to `requires_payment_method` with a `debit_not_authorized` failure code. The mandate status becomes `inactive`. |
+-| `pm_nzBankAccount_processing`         | PaymentIntents confirmed with the resulting PaymentMethod transition to `processing` and remain there. To transition it further, use an API request as described below.                                |+| `pm_nzBankAccount_processing` | PaymentIntents confirmed with the resulting PaymentMethod transition to `processing` and remain there. To transition it further, use an API request as described below. |

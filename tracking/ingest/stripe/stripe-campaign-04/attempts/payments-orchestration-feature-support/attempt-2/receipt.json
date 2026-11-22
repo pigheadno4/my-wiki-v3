@@ -1,0 +1,204 @@
+{
+  "job_id": "payments-orchestration-feature-support",
+  "attempt": 2,
+  "raw_path": "raw/stripe-payments-orchestration-feature-support-2026-11-07.md",
+  "raw_sha256": "80b17fef3e50224f89190b37de5ea9eea11932e82e96dd968c55cc0b3047b396",
+  "prior_raw_path": "raw/stripe-orchestration-feature-support-2026.md",
+  "prior_raw_sha256": "ff051c7d867343b3308b1ecd1637675dbe66e79ecdc3554d5ad58830218cc74a",
+  "source_targets": [
+    "wiki/sources/source-stripe-orchestration-feature-support.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-orchestration-feature-support.md": "0d34fc44a18df1eb768c497121d294306a574bdb6ea987615974eb8ccb97e6c8"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-orchestration-feature-support-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 57
+      }
+    ],
+    "raw/stripe-orchestration-feature-support-2026.md": [
+      {
+        "start": 1,
+        "end": 43
+      }
+    ],
+    "wiki/sources/source-stripe-orchestration-feature-support.md": [
+      {
+        "start": 1,
+        "end": 48
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/1f1094d439670c36793c401a/content.diff": [
+      {
+        "start": 1,
+        "end": 64
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 575,
+        "end": 582
+      },
+      {
+        "start": 704,
+        "end": 706
+      }
+    ],
+    "wiki/concepts/stripe-orchestration.md": [
+      {
+        "start": 9,
+        "end": 40
+      },
+      {
+        "start": 48,
+        "end": 89
+      },
+      {
+        "start": 99,
+        "end": 107
+      },
+      {
+        "start": 108,
+        "end": 125
+      }
+    ],
+    "raw/stripe-payments-orchestration-rules-2026-11-07.md": [
+      {
+        "start": 40,
+        "end": 58
+      }
+    ],
+    "raw/stripe-payments-orchestration-retries-2026-11-07.md": [
+      {
+        "start": 8,
+        "end": 47
+      }
+    ],
+    "raw/stripe-payments-orchestration-wallet-payments-2026-11-07.md": [
+      {
+        "start": 8,
+        "end": 34
+      }
+    ],
+    "wiki/sources/source-stripe-orchestration-route-payments.md": [
+      {
+        "start": 43,
+        "end": 59
+      }
+    ],
+    "raw/stripe-orchestration-route-payments-2026.md": [
+      {
+        "start": 169,
+        "end": 175
+      }
+    ],
+    "raw/stripe-payments-orchestration-route-payments-2026-11-07.md": [
+      {
+        "start": 215,
+        "end": 226
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Enter your email to request access.",
+      "location": "raw/stripe-payments-orchestration-feature-support-2026-11-07.md:15"
+    },
+    {
+      "text": "The first unsupported feature found is also included in the error message.",
+      "location": "raw/stripe-payments-orchestration-feature-support-2026-11-07.md:25"
+    },
+    {
+      "text": "However, if there was a failover and the original processor was Stripe, we ignore the error protection configuration.",
+      "location": "raw/stripe-payments-orchestration-feature-support-2026-11-07.md:29"
+    },
+    {
+      "text": "[Processor account overrides](https://docs.stripe.com/payments/orchestration/rules.md#processor-account-overrides) | \u2713 Supported | - Unsupported | \u2713 Supported",
+      "location": "raw/stripe-payments-orchestration-feature-support-2026-11-07.md:47"
+    },
+    {
+      "text": "Stripe submits the refund request to the corresponding processor after the payment succeeds, or fails the refund request if the payment fails.",
+      "location": "raw/stripe-payments-orchestration-feature-support-2026-11-07.md:55"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Orchestration is in private preview.",
+      "location": "raw/stripe-orchestration-feature-support-2026.md:10"
+    },
+    {
+      "text": "However, if there was a failover and the original processor was Stripe, we ignore the error protection configuration.",
+      "location": "raw/stripe-orchestration-feature-support-2026.md:16"
+    },
+    {
+      "text": "Recurring transactions",
+      "location": "raw/stripe-orchestration-feature-support-2026.md:33"
+    },
+    {
+      "text": "Stripe submits the refund request to the corresponding processor after the payment succeeds, or fails the refund request if the payment fails.",
+      "location": "raw/stripe-orchestration-feature-support-2026.md:41"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Both dated captures document a default HTTP 400 orchestration_unsupported response identifying the first unsupported feature. The summary\u2019s line 19 needs a baseline correction: the onboarding opt-in, enabled through a Stripe representative, reroutes an unsupported request to Stripe instead of the originally determined processor. Error protection is considered during cross-processor retries and ignored only if there was failover and the original processor was Stripe, to avoid a duplicate Stripe attempt.",
+    "November adds processor account overrides as a capability row: supported for Adyen and Worldpay WPG, unsupported for Braintree. The rules capture at lines 43\u201357 says a Dashboard rule action can choose an already configured account independently for the main or retry processor. The onboarding processor-account logic remains the default when an account is unselected. Braintree remains a supported matrix processor for ordinary applicable features, including network tokens.",
+    "May establishes private preview. November retains that status and now documents an email request-access link and form. The docs-site POST shown in the capture is part of enrollment, with no evidence of approval, enablement, an Orchestration PaymentIntent parameter, or a payment operation.",
+    "Both captures document identical shared feature rows and exceptions. The source summary\u2019s \u2018Exceptions across all three\u2019 heading overstates its scope for the Adyen-specific Kana and FPAN notes. Qualify the three names as external matrix columns and clarify the preemptive full/partial refund boundary: initiate while a PaymentIntent is processing, submit to its corresponding processor only after payment succeeds, fail the request if payment fails. Submission gives no outcome guarantee.",
+    "For the catalog at wiki/stripe-index.md:580, retain the May capture history and identify the dated November matrix addition."
+  ],
+  "substantive_changes": [
+    "November newly documents the processor account overrides capability matrix in line 47. The May table in lines 22\u201333 stops at recurring transactions, which establishes absence of documentation there but gives no technical launch or past capability date.",
+    "November newly documents how to request preview access in lines 9\u201323, distinct from processor support or runtime behavior. Link and table/heading formatting are presentational where they do not carry the new row or access workflow."
+  ],
+  "historical_claims_to_preserve": [
+    "May 11, 2026 private preview, default validation behavior and optional onboarding error protection, including joint failover and original-Stripe exception. November preserves these claims and adds a request-access route. Preserve dated May matrix without the override row and date the new documented support row to November 7, 2026.",
+    "Both dates establish the three listed external processor columns and common matrix and exceptions, including network tokens unsupported by Worldpay WPG, no multicapture, no Kanji descriptor suffix and Kana suffix only on Adyen, 3DS incompatibility for Apple Pay/Google Pay DPAN, Google Pay FPAN incompatibility on Adyen, and the processing/success/failure preemptive refund boundaries."
+  ],
+  "conflicts": [
+    "The feature-support summary line 19 uses \u2018also applies during retries\u2019 and omits the failover condition. Correct it against both captures. Add reciprocal scope notes between feature support and retries: the retry guide\u2019s ineligible-feature exclusion applies to retrying with that configured processor, while the feature-support guide considers optional error protection and excludes a further Stripe attempt if failover follows an original Stripe attempt. An unsupported request and an eligible decline can trigger different decision paths.",
+    "Maintain reciprocal links between the rules UI and feature matrix: selecting an already configured external processor account depends on matrix support for that selected processor and differs from selecting a main or retry payment processor. The rules guide describes the workflow under \u2018Override processor account logic\u2019 and the feature matrix supplies processor-specific support.",
+    "Keep the general wallet routing row and wallet guide compatible by pointing each to the feature matrix\u2019s specific 3DS plus Apple Pay/Google Pay DPAN restriction and the Adyen-only Google Pay FPAN exclusion. The companion wallet guide\u2019s saved-payment-method off_session=true and native re-prompt constraints address a separate surface. The local captures supply complementary scopes without proof of a raw-to-raw contradiction.",
+    "Correct both Error Prevention sections at wiki/concepts/stripe-orchestration.md:104-106 and wiki/sources/source-stripe-orchestration-route-payments.md:48-50. The May implementation raw lines 171-175 and November implementation raw lines 222-226 describe opt-in during onboarding and an attempt to process on Stripe when the selected main or retry processor cannot handle a required feature. If Stripe is the main processor and its attempt fails, Stripe evaluates the configured retry processor and skips it on this rule only if it cannot handle the payment. Distinguish that check and the independent retry restrictions in November retries raw lines 26-36 from the feature-support guide's suppression of another Stripe attempt after failover when the original processor was Stripe. At concept lines 35 and 64, state the HTTP 400 default subject to opt-in and scope feature ineligibility to the configured retry processor. Cross-link both affected pages with the feature-support source. A Stripe fallback attempt can still fail."
+  ],
+  "unresolved_questions": [
+    "The captures leave account-level preview eligibility, approval, activation, live processing, successful refunds, exact introduction date, region and API/SDK version support unverified.",
+    "The linked Rules fragment is #processor-account-overrides while the captured section heading is \u2018Override processor account logic.\u2019 The local text establishes the related topic. Deployed anchor resolution remains unverified."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-orchestration.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-orchestration-feature-support.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Both dated captures document a default HTTP 400 orchestration_unsupported response identifying the first unsupported feature. The summary\u2019s line 19 needs a baseline correction: the onboarding opt-in, enabled through a Stripe representative, reroutes an unsupported request to Stripe instead of the originally determined processor. Error protection is considered during cross-processor retries and ignored only if there was failover and the original processor was Stripe, to avoid a duplicate Stripe attempt.",
+        "November adds processor account overrides as a capability row: supported for Adyen and Worldpay WPG, unsupported for Braintree. The rules capture at lines 43\u201357 says a Dashboard rule action can choose an already configured account independently for the main or retry processor. The onboarding processor-account logic remains the default when an account is unselected. Braintree remains a supported matrix processor for ordinary applicable features, including network tokens.",
+        "May establishes private preview. November retains that status and now documents an email request-access link and form. The docs-site POST shown in the capture is part of enrollment, with no evidence of approval, enablement, an Orchestration PaymentIntent parameter, or a payment operation.",
+        "Both captures document identical shared feature rows and exceptions. The source summary\u2019s \u2018Exceptions across all three\u2019 heading overstates its scope for the Adyen-specific Kana and FPAN notes. Qualify the three names as external matrix columns and clarify the preemptive full/partial refund boundary: initiate while a PaymentIntent is processing, submit to its corresponding processor only after payment succeeds, fail the request if payment fails. Submission gives no outcome guarantee.",
+        "Reciprocally qualify error prevention in the Orchestration concept and route-payments source. The route implementation evaluates the configured retry processor after a failed original Stripe attempt. Feature compatibility is one check alongside the retry guide\u2019s independent restrictions."
+      ],
+      "conflicts": [
+        "The feature-support summary line 19 uses \u2018also applies during retries\u2019 and omits the failover condition. Correct it against both captures. Add reciprocal scope notes between feature support and retries: the retry guide\u2019s ineligible-feature exclusion applies to retrying with that configured processor, while the feature-support guide considers optional error protection and excludes a further Stripe attempt if failover follows an original Stripe attempt. An unsupported request and an eligible decline can trigger different decision paths.",
+        "Maintain reciprocal links between the rules UI and feature matrix: selecting an already configured external processor account depends on matrix support for that selected processor and differs from selecting a main or retry payment processor. The rules guide describes the workflow under \u2018Override processor account logic\u2019 and the feature matrix supplies processor-specific support.",
+        "Keep the general wallet routing row and wallet guide compatible by pointing each to the feature matrix\u2019s specific 3DS plus Apple Pay/Google Pay DPAN restriction and the Adyen-only Google Pay FPAN exclusion. The companion wallet guide\u2019s saved-payment-method off_session=true and native re-prompt constraints address a separate surface. The local captures supply complementary scopes without proof of a raw-to-raw contradiction.",
+        "Correct both Error Prevention sections at wiki/concepts/stripe-orchestration.md:104-106 and wiki/sources/source-stripe-orchestration-route-payments.md:48-50. The May implementation raw lines 171-175 and November implementation raw lines 222-226 describe opt-in during onboarding and an attempt to process on Stripe when the selected main or retry processor cannot handle a required feature. If Stripe is the main processor and its attempt fails, Stripe evaluates the configured retry processor and skips it on this rule only if it cannot handle the payment. Distinguish that check and the independent retry restrictions in November retries raw lines 26-36 from the feature-support guide's suppression of another Stripe attempt after failover when the original processor was Stripe. At concept lines 35 and 64, state the HTTP 400 default subject to opt-in and scope feature ineligibility to the configured retry processor. Cross-link both affected pages with the feature-support source. A Stripe fallback attempt can still fail."
+      ],
+      "reason": "The November row adds documented processor-specific support. The preview request path is a documentation/enrollment change. The older source summary also needs independent correction of its retry/failover and exceptions wording against evidence unchanged across captures."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/orchestration/feature-support, May 11 and November 7, 2026 both describe Orchestration in private preview. November adds an email access request without establishing approval or activation (old raw lines 8-16 and new raw lines 9-29). When the originally selected processor does not support a requested feature, the default response is HTTP 400 orchestration_unsupported with the first unsupported feature. With error protection enabled at onboarding through a Stripe representative, Stripe takes the place of the originally selected processor. During cross-processor retries Stripe considers the setting, but ignores it when both failover occurred and Stripe was the original processor. Against source-stripe-orchestration-feature-support.md lines 13-39, retain the common feature rows for Adyen, Braintree and Worldpay WPG, including full and partial refunds, subject to the footnotes. Network tokens are listed for Adyen and Braintree only. November separately lists account overrides for Adyen and Worldpay WPG, with Braintree unsupported for that row (old raw lines 22-41 and new raw lines 35-55). A preemptive refund can be initiated while its PaymentIntent is processing. Stripe submits to the corresponding processor only after payment success and fails the refund request if the payment fails. Correct the summary\u2019s unconditional retry phrasing, preserve the dual-condition exception and label the processor-specific footnotes accurately.",
+    "Q2": "At https://docs.stripe.com/payments/orchestration/feature-support, old raw lines 22-33 and new raw lines 35-47 establish a substantive documentation addition for processor-account overrides, with Adyen and Worldpay WPG supported and Braintree unsupported. The November rules capture lines 43-57 scopes this to a Dashboard rule action selecting an existing configured account separately for the main or retry processor, with onboarding account logic applying when none is selected. There is no evidence for a PaymentIntent or SDK field, eligibility for every account, changed ordinary Braintree routing, or a technical launch date. Keep May\u2019s table and November\u2019s addition dated in source-stripe-orchestration-feature-support.md, and cross-reference the rules workflow and exact matrix together. The email request workflow added in November (old raw lines 8-10 and new raw lines 9-23) documents enrollment only. Its docs-site POST gives no evidence of access granted or product enablement. Heading whitespace and table alignment are presentational. The summary\u2019s retry correction predates this delta (old raw lines 12-16 and new raw lines 25-29): correct the reciprocal concept and implementation source where they currently say that a failed Stripe attempt always suppresses the configured retry (wiki/concepts/stripe-orchestration.md lines 35, 64 and 104-106 and wiki/sources/source-stripe-orchestration-route-payments.md lines 48-50). The May implementation raw lines 171-175 and November implementation raw lines 222-226 say that with onboarding opt-in, incompatibility at either a main or a retry processor can trigger an attempt to process the payment on Stripe. If Stripe was main and its attempt failed, Stripe evaluates the configured retry processor and skips it on this rule only if it cannot handle the payment. Independently, the feature-support guide ignores error protection if failover followed an original Stripe attempt to avoid a duplicate Stripe attempt. The configured retry processor\u2019s ineligible-feature restriction applies to retrying with that processor, and the retry guide retains separate 3DS and other conditions (November retries raw lines 26-36). An attempt on Stripe gives no assurance of payment success. Keep the unchanged descriptor, wallet-token and multicapture exceptions dated and preserve the preemptive refund\u2019s initiation/processor-submission/failure boundary, with no proof of refund completion (old raw lines 35-41 and new raw lines 49-55)."
+  }
+}
