@@ -6,6 +6,10 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-11-23] ingest | Stripe AI `default-branch@1bb4869`
+
+Full additive ingest of the 2026-11-22 exact-SHA snapshot. Reviewed 95 current retained files and relevant August source; mechanically verified generated inventories, duplicated diff, and unchanged historical evidence. Added hosted MCP configuration, package deprecations, active skills/plugins, and selected checkout benchmarks. Preserved `1953b6c` history. No hooks, Stripe calls, or benchmarks were executed. See [[source-github-ai]] and [[changelog-github-ai]].
+
 ## [2026-11-22] ingest | Stripe S04 approved documentation updates
 
 Updated 97 existing summaries from 100 reviewed documentation captures. Attached 63 full captures as dated evidence and linked 37 variant selectors. Audited 40 concept pages and updated 39. Kept the recorded source count at 666. The campaign records independently reviewed candidates, 200 query answers and three coordinator audits.

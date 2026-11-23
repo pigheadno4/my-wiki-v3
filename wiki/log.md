@@ -1,5 +1,9 @@
 # Wiki Log
 
+## [2026-11-23] ingest | Stripe AI `default-branch@1bb4869`
+
+Added the full November baseline for hosted MCP, active skills/plugins and checkout benchmarks. Recorded the five package deprecations and preserved the August baseline. Details in [[stripe-log]].
+
 ## [2026-11-22] ingest | Stripe S04 approved documentation updates
 
 Updated 97 existing summaries from 100 reviewed documentation captures. Attached 63 full captures as dated evidence and linked 37 variant selectors. Audited 40 concept pages and updated 39. Kept the recorded source count at 666. The campaign records independently reviewed candidates, 200 query answers and three coordinator audits. Details in [[stripe-log]].

@@ -2,9 +2,10 @@
 title: "GitHub: stripe/ai"
 type: source
 date_ingested: 2026-08-13
-date_updated: 2026-08-13
+date_updated: 2026-11-23
 original_format: github-repo
 raw_files:
+  - "github/stripe/ai/snapshots/2026-11-22-1bb4869/manifest.json"
   - "github/stripe/ai/snapshots/2026-08-13-1953b6c/manifest.json"
 tags: [stripe, ai, llm, token-billing, usage-based-billing, mcp, agent-toolkit, agent-skills, benchmarks, github-repository]
 ---
@@ -14,6 +15,25 @@ tags: [stripe, ai, llm, token-billing, usage-based-billing, mcp, agent-toolkit, 
 `stripe/ai` is Stripe's public implementation repository for AI-related payment tooling. The approved initial baseline is exact SHA `1953b6cce7344d880a054c42b8dd21ca3e50ebd5` on `main`, collected on 2026-08-13. It combines LLM token-billing packages, the Stripe MCP bridge, TypeScript and Python agent toolkits, agent skills and plugin manifests, and Stripe integration benchmarks.
 
 Repository: <https://github.com/stripe/ai>
+
+## November Baseline: `default-branch@1bb4869`
+
+Exact `main` SHA `1bb486909cc36ce608181c2af62c4716ba9cd7c7`, collected 2026-11-22 and ingested 2026-11-23. This is a branch snapshot, not a package release. The August implementation evidence below remains valid for `1953b6c` and is not current installation guidance.
+
+### Migration and provider configuration
+
+- **Retired packages.** The [November README](../../../../raw/github/stripe/ai/snapshots/2026-11-22-1bb4869/files/README.md) says the deprecated packages “will receive no further updates, including security fixes”: `@stripe/agent-toolkit`, Python `stripe-agent-toolkit`, `@stripe/mcp`, `@stripe/ai-sdk`, and `@stripe/token-meter`. The old toolkit, local MCP bridge, and LLM package trees are absent from this baseline. Use the README's hosted MCP direction for agent tools and its Token Billing documentation reference for metering; neither implies a drop-in wrapper replacement. The linked historical branch was not collected.
+- **Hosted MCP and separate plugin versions.** The [Agent Plugins configuration](../../../../raw/github/stripe/ai/snapshots/2026-11-22-1bb4869/files/providers/agent-plugins/plugin/mcp.json) declares `"type": "streamable-http"` and points to `https://mcp.stripe.com`; Antigravity also declares streamable HTTP. Claude, Cursor, Gemini and Grok use HTTP configurations for that endpoint; Gemini declares OAuth. Retained metadata versions: Agent Plugins and Antigravity `8.4.2`, Claude `0.15.2`, Cursor and Grok `0.13.2`, Gemini `0.1.0`. The README points Codex users to its curated install path; the formerly retained dedicated Codex provider tree is not the current distribution evidence. A manifest pointing to `main` is not a downstream version pin.
+- **Claude hook side effects.** Startup can inspect local Stripe CLI version and authentication and, when the CLI is present, query the npm version; it does not install the CLI. Recognized skill use can trigger best-effort CLI analytics; `DISABLE_TELEMETRY` or `DO_NOT_TRACK` disables the skill reporting and feedback hooks, not startup checks. Sampled feedback can use tool payloads and recent local transcript context; the draft asks for user approval before sending. The failure hook's steering message is not a payment authorization control.
+
+### Skills and checkout benchmarks
+
+- **Integration planning.** The [best-practices skill](../../../../raw/github/stripe/ai/snapshots/2026-11-22-1bb4869/files/skills/stripe-best-practices/SKILL.md) lists `2026-11-18.endive` at this SHA, prefers Checkout Sessions for on-session payments, distinguishes off-session PaymentIntents and SetupIntents, and routes fulfillment through verified webhooks and payment status rather than the success page. The planner targets new integrations and material expansions, not general debugging or availability checks. Documentation lookup may require CLI authentication; the Projects workflow distinguishes CLI/MCP readiness from browser pairing.
+- **Connect and Apps.** The [Connect recommendation skill](../../../../raw/github/stripe/ai/snapshots/2026-11-22-1bb4869/files/skills/connect-recommend/SKILL.md) maps seller-owned charges, single-recipient marketplace checkout, and delayed or multi-recipient distributions to direct charges, destination charges, and separate charges/transfers respectively. The adjacent verification lookup derives due buckets from documentation; it is not a live Accounts API response. The full Dashboard/non-direct charge guidance differs between matrices; treat it as outside the documented self-serve path, not a universal rejection or entitlement. The best-practices security reference still uses legacy Standard advice alongside Accounts v2 guidance. The Apps skill separates local UI preview, installed and activated script testing, and developer-hosted webhook processing. Its restricted-key and platform-key recommendations depend on context.
+- **Directory, Pay, and billing.** Directory resolves counterparties and hands off; resolution is not authorization. The Pay skill requires confirmation before a business transfer, and a Payment Link fallback is not transfer success. The Metronome skill prefers Contracts to legacy Plans and distinguishes event acceptance from rating. The seasonal BFCM recipe is read-only at collection; its saved dashboard can display frozen data without a Stripe query on open, while refresh requires the relevant host/account access. This does not imply an offline-only artifact.
+- **Benchmarks.** Retained examples cover [Card Element to Embedded Checkout](../../../../raw/github/stripe/ai/snapshots/2026-11-22-1bb4869/files/benchmarks/card-element-to-checkout/README.md), [Checkout Gym](../../../../raw/github/stripe/ai/snapshots/2026-11-22-1bb4869/files/benchmarks/checkout-gym/README.md) reconstruction of payment/setup/subscription Sessions, and [SaaS Starter](../../../../raw/github/stripe/ai/snapshots/2026-11-22-1bb4869/files/benchmarks/saas-starter-embedded-checkout/README.md) subscription migration with promotion handling. Reported methodology uses best-of-three scores, excludes infrastructure failures, and uses human review. These are benchmark documents, not API contracts or independently reproduced results.
+
+The focused full ingest reads all 95 retained current files and relevant August source. The [comparison](../../../../tracking/github/repos/stripe/ai/comparisons/default-branch/1953b6c--1bb4869/comparison.json) is limited to retained-union paths. Skill guidance and plugin configuration do not establish live availability, eligibility, capabilities, or successful runtime behavior. No hooks, benchmark runs, or Stripe calls were executed.
 
 ## Evidence Boundary
 
@@ -106,6 +126,8 @@ These choices make the corpus useful for evaluating Stripe integration agents un
 
 ## Raw Sources
 
+- [November snapshot manifest](../../../../raw/github/stripe/ai/snapshots/2026-11-22-1bb4869/manifest.json)
+- [August-to-November comparison manifest](../../../../tracking/github/repos/stripe/ai/comparisons/default-branch/1953b6c--1bb4869/comparison.json)
 - [Snapshot manifest](../../../../raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/manifest.json) — exact-SHA capsule, selected/excluded inventory, and hashes
 - [Repository README](../../../../raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/README.md) — repository purpose and directory map
 - [LLM overview](../../../../raw/github/stripe/ai/snapshots/2026-08-13-1953b6c/files/llm/README.md) — preview status and provider-versus-meter selection

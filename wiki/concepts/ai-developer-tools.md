@@ -24,6 +24,10 @@ AI developer tools for payments are platforms, SDKs, protocols, and integrations
 
 ### Stripe
 
+At `stripe/ai` commit `1bb4869` (2026-11-22 collection), the repository recommends the hosted Stripe MCP endpoint directly, with OAuth supported, and focuses on skills, provider plugins, and benchmarks. Its README marks the local MCP bridge, both agent toolkits, and both token-billing packages below as deprecated without further updates, including security fixes. For token billing, it points to Stripe's Token Billing documentation rather than to those packages. This is repository guidance, not verification of a live endpoint or feature entitlement.
+
+**August baseline (`1953b6c`), retained for historical queries:**
+
 - **MCP server**: Remote endpoint at `mcp.stripe.com`; OAuth clients are supported, while the local `@stripe/mcp` stdio bridge uses an API key or restricted key. Restricted-key permissions control available tools.
 - **Agent toolkits**: TypeScript `@stripe/agent-toolkit@0.9.1` and Python `stripe-agent-toolkit@0.7.0` adapt remote MCP tools to AI frameworks. They require asynchronous remote initialization and have no direct Stripe SDK fallback.
 - **LLM token billing**: `@stripe/ai-sdk@0.1.3` proxies model calls through `llm.stripe.com`; `@stripe/token-meter@0.1.0` meters native model SDK responses. Both are private-preview evidence at the retained SHA, and proxy tool calling is unsupported.
@@ -31,11 +35,14 @@ AI developer tools for payments are platforms, SDKs, protocols, and integrations
   - `stripe-best-practices` — API selection, Connect (Accounts v2), billing, Treasury, security (keys/webhooks/OAuth), deprecated API migration
   - `stripe-projects` — new app/repo setup, Stripe Projects CLI bootstrapping
   - `upgrade-stripe` — API version + SDK upgrades
+
+**Other documentation references:**
+
 - **AI coding platforms**: Base44, Manus, Replit, v0 — pre-built Stripe integrations, no account needed; claimable sandboxes for platform builders
 - **VS Code AI Assistant**: via Stripe VS Code extension; Copilot (`@stripe`) or standalone chat
 - **Plain text docs**: add `.md` to any Stripe docs URL; `/llms.txt` follows emerging standard
 
-See [[source-stripe-building-with-ai]] for the documentation overview and [[source-github-ai]] for the exact-SHA implementation baseline.
+See [[source-stripe-building-with-ai]] for the documentation overview and [Stripe AI repository evidence](../sources/stripe/github/source-github-ai.md) for both exact-SHA snapshots.
 
 ### PayPal
 

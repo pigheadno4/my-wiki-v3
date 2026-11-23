@@ -2,9 +2,10 @@
 title: "GitHub changelog: stripe/ai"
 type: source
 date_ingested: 2026-08-13
-date_updated: 2026-08-13
+date_updated: 2026-11-23
 original_format: github-repo
 raw_files:
+  - "github/stripe/ai/snapshots/2026-11-22-1bb4869/manifest.json"
   - "github/stripe/ai/snapshots/2026-08-13-1953b6c/manifest.json"
 tags: [stripe, ai, llm, mcp, agent-toolkit, token-billing, changelog, github-repository]
 ---
@@ -12,6 +13,13 @@ tags: [stripe, ai, llm, mcp, agent-toolkit, token-billing, changelog, github-rep
 ## Overview
 
 Package-qualified retained history for `stripe/ai`. The repository has multiple independently versioned packages and no single repository semantic version. Cumulative implementation knowledge belongs in [[source-github-ai]].
+
+## Full Additive Ingest: `default-branch@1bb4869` (2026-11-23)
+
+- From `1953b6cce7344d880a054c42b8dd21ca3e50ebd5` to `1bb486909cc36ce608181c2af62c4716ba9cd7c7` on `main`; target collected 2026-11-22. This exact ref does not identify a package version.
+- Repository focus moved from shipping agent toolkits, a local MCP bridge and LLM metering packages to maintaining skills, hosted-MCP plugin configuration, and benchmarks. The November README deprecates five packages without further updates, including security fixes. Plugin manifest versions are independent of one another. Skills expand documented integration planning, Connect, Apps, project and agent payment workflows.
+- The [snapshot](../../../../raw/github/stripe/ai/snapshots/2026-11-22-1bb4869/manifest.json) retains 95 files: 35 added to the retained set, 35 modified and 25 unchanged. Of 147 August-only retained files, 121 are confirmed as upstream deletions in the path-scoped [comparison](../../../../tracking/github/repos/stripe/ai/comparisons/default-branch/1953b6c--1bb4869/comparison.json); 26 are not confirmed as deletions. These are not whole-tree counts.
+- All current retained files and relevant August source were read; inventories, duplicated diff, and unchanged historical files were verified mechanically. August history remains intact. This ingest did not run a hosted endpoint, CLI, hook, payment or benchmark.
 
 ## Initial Baseline — Change Set `1953b6c` (2026-08-13)
 

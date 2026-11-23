@@ -25,7 +25,9 @@ Three ways to send meter events to Stripe:
 
 Must configure the meter before recording usage. Events process asynchronously — summaries and upcoming invoices may lag.
 
-For LLM token billing, Stripe's retained `@stripe/token-meter@0.1.0` implementation sends Billing v2 meter events with customer, token count, provider/model, and input/output token type. Its fire-and-forget path catches and logs delivery errors without interrupting model generation. Production use therefore needs independent monitoring, reconciliation, and replay/recovery controls to avoid silent usage undercount. See [[source-github-ai]].
+For historical LLM token billing at `stripe/ai` commit `1953b6c`, Stripe's retained `@stripe/token-meter@0.1.0` implementation sends Billing v2 meter events with customer, token count, provider/model, and input/output token type. Its fire-and-forget path catches and logs delivery errors without interrupting model generation. Production use therefore needs independent monitoring, reconciliation, and replay/recovery controls to avoid silent usage undercount.
+
+At `1bb4869`, the repository deprecates this package and `@stripe/ai-sdk` with no further updates and refers readers to Stripe's Token Billing documentation. This does not establish availability or a drop-in migration path. See [Stripe AI repository evidence](../sources/stripe/github/source-github-ai.md).
 
 ## Lifecycle
 

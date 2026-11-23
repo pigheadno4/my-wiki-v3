@@ -97,7 +97,9 @@ React Native `0.84.0` requires RN >=0.75 and native iOS SPM/dynamic frameworks; 
 
 ### AI Developer and Token-Billing Tooling
 
-The `stripe/ai` repository supplies independently versioned LLM token-billing packages, a local bridge to Stripe's remote MCP server, TypeScript and Python agent toolkits, provider-specific agent skills/plugins, and integration benchmarks. At the retained SHA, token billing is private preview, the Stripe AI SDK proxy does not support tool calling, native token-meter delivery is fire-and-forget, and the agent toolkits require remote MCP availability. See [[source-github-ai]] and [[changelog-github-ai]].
+At the August `1953b6c` baseline, the `stripe/ai` repository supplies independently versioned LLM token-billing packages, a local bridge to Stripe's remote MCP server, TypeScript and Python agent toolkits, provider-specific agent skills/plugins, and integration benchmarks. At that SHA, token billing is private preview, the Stripe AI SDK proxy does not support tool calling, native token-meter delivery is fire-and-forget, and the agent toolkits require remote MCP availability.
+
+At the November `1bb4869` baseline, the repository focuses on active skills, provider plugins, and benchmarks. It directs agent integrations to hosted Stripe MCP and deprecates the local MCP bridge, both old toolkits, and both LLM token-billing packages without further updates. See [[source-github-ai]] and [[changelog-github-ai]] for the exact-SHA evidence and retained history.
 
 ### Operational Data Synchronization
 
@@ -235,8 +237,8 @@ The `@stripe/react-stripe-js@6.12.0` delta adds standalone `TreasuryDisclosure` 
 - [[changelog-github-stripe-terminal-android]] — package-qualified v5/v6 Android Terminal history, UnionPay deltas, migration and runtime/evidence limits
 - [[source-github-stripe-react-native]] — cumulative SDK through v0.84.0, mandatory SPM/RN floor, internal Checkout boundary, callback/Connect fixes and native pins; all older knowledge preserved
 - [[changelog-github-stripe-react-native]] — package-qualified release history through v0.84.0, including migrations, release attribution and implementation boundaries
-- [[source-github-ai]] — exact-SHA Stripe AI implementation baseline: LLM token billing, MCP bridge, agent toolkits, skills/plugins, and benchmarks
-- [[changelog-github-ai]] — package-qualified `stripe/ai` component baseline and future comparison rules
+- [[source-github-ai]] — exact-SHA Stripe AI evidence: hosted MCP, active skills/plugins, benchmarks, and historical packages
+- [[changelog-github-ai]] — August component baseline and November exact-SHA migration
 - [[source-github-stripe-cli]] — additive Stripe CLI history from `1.50.0` through `1.55.3`, including authentication, account grouping, request encoding and tooling evidence boundaries
 - [[changelog-github-stripe-cli]] — package-qualified Stripe CLI history through `1.55.3`, retaining baseline and evidence gaps
 - [[source-github-link-cli]] — `@stripe/link-cli@0.13.0` agent wallet baseline: virtual cards, SPT/MPP, Link Pay Token, spend requests, MCP, and financial insights

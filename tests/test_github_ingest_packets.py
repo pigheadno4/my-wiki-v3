@@ -1253,6 +1253,12 @@ class GitHubIngestPacketTests(unittest.TestCase):
         )
         manifest_paths = (
             "gemini-extension.json",
+            ".agents/plugins/marketplace.json",
+            ".claude-plugin/marketplace.json",
+            ".cursor-plugin/marketplace.json",
+            ".grok-plugin/marketplace.json",
+            "providers/antigravity/plugin/mcp-config.json",
+            "providers/claude/plugin/hooks/hooks.json",
             "providers/claude/plugin/.claude-plugin/plugin.json",
             "providers/claude/plugin/.mcp.json",
             "providers/codex/plugin/.app.json",
@@ -1268,12 +1274,16 @@ class GitHubIngestPacketTests(unittest.TestCase):
             path: ('{"name":"tool"}\n', "source-capsule", "include-path", "widgets")
             for path in manifest_paths
         }
-        files["custom.json"] = (
-            '{"name":"custom"}\n',
-            "source-capsule",
-            "include-path",
-            "widgets",
+        unrelated_paths = (
+            "custom.json",
+            "data/.claude-plugin/marketplace.json",
+            "providers/other/plugin/mcp-config.json",
+            "providers/other/plugin/hooks/hooks.json",
         )
+        files.update({
+            path: ('{"name":"custom"}\n', "source-capsule", "include-path", "widgets")
+            for path in unrelated_paths
+        })
         snapshot = self.snapshot(self.current_sha, "", files)
 
         packet = build_ref_ingest_packet(
@@ -1299,7 +1309,8 @@ class GitHubIngestPacketTests(unittest.TestCase):
         }
         for path in manifest_paths:
             self.assertEqual("runtime-configuration", classified[path])
-        self.assertEqual("unclassified", classified["custom.json"])
+        for path in unrelated_paths:
+            self.assertEqual("unclassified", classified[path])
 
     def test_root_skills_sync_provenance_is_context_without_allowing_other_json(self):
         config = RepoConfig(

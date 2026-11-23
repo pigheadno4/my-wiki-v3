@@ -24,8 +24,8 @@ Operations history: [[stripe-log]]
 - [[source-stripe-legacy-apis]] — Legacy Charges, Tokens and Sources APIs. The dated sources distinguish migration, ACH onboarding and read-side authentication evidence.
 - [[source-stripe-glossary]] — Dated Stripe terminology reference. (S02 reviewed update, 2026-11-09; dated source qualifications apply.)
 - [[source-stripe-building-with-ai]] — Stripe AI developer tools: MCP server, agent skills (npx/Claude Code/Cursor), AI coding platforms, VS Code AI assistant (webpage, 2026-04-20)
-- [[source-github-ai]] — `stripe/ai` exact-SHA implementation baseline: token billing packages, MCP bridge, TypeScript/Python agent toolkits, skills/plugins, and benchmarks (github-repo, 2026-08-13)
-- [[changelog-github-ai]] — package-qualified `stripe/ai` component baseline and future exact-SHA comparison rules (github-repo, 2026-08-13)
+- [[source-github-ai]] — `stripe/ai` exact-SHA baselines: hosted MCP, active skills/plugins, checkout benchmarks and retired LLM/toolkit packages (github-repo, updated 2026-11-23)
+- [[changelog-github-ai]] — August package-qualified baseline and November exact-SHA migration (github-repo, updated 2026-11-23)
 - [[source-stripe-accept-a-payment]] — Stripe integration choices. The November Accept a Payment base page links variants, and the separate full November Online Payments overview compares the documented UI and API paths.
 - [[source-stripe-payment-links]] — Payment Links provide shareable URLs for Stripe-hosted checkout pages. (S02 reviewed update, 2026-11-09; dated source qualifications apply.)
 - [[source-stripe-build-payments-page]] — Stripe Build a Payments Page: Checkout Page vs Elements feature matrix, hosting modes, maintenance tradeoffs (webpage, 2026-04-20)

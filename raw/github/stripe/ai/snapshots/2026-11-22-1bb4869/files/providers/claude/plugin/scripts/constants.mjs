@@ -1,0 +1,2 @@
+export const CLI_COMMAND_TIMEOUT_MS = 3_000;
+export const TRANSCRIPT_READ_CHUNK_BYTES = 64 * 1024;

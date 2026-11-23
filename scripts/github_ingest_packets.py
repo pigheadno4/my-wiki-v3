@@ -1349,6 +1349,15 @@ def _classify_file(path: str, row: Mapping[str, Any]) -> str:
 
 
 def _is_agent_tool_manifest(path: str, filename: str) -> bool:
+    if path in (
+        ".agents/plugins/marketplace.json",
+        ".claude-plugin/marketplace.json",
+        ".cursor-plugin/marketplace.json",
+        ".grok-plugin/marketplace.json",
+        "providers/antigravity/plugin/mcp-config.json",
+        "providers/claude/plugin/hooks/hooks.json",
+    ):
+        return True
     if filename in ("gemini-extension.json", ".mcp.json", "mcp.json"):
         return True
     segments = path.split("/")

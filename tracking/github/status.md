@@ -250,6 +250,33 @@
   Release: [manifest](../../raw/github/paypal/paypal-checkout-components/releases/checkout-components/5.0.426/2026-09-01/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-checkout-components/comparisons/checkout-components/5.0.425--5.0.426/comparison.json)
 
+## `github-0b6f5213d4b094f31896`
+
+- Repository: `stripe/ai`
+- SHA: `1bb486909cc36ce608181c2af62c4716ba9cd7c7`
+- Collection date: `2026-11-22`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/ai/snapshots/2026-11-22-1bb4869/manifest.json)
+- Packet: [review packet](repos/stripe/ai/ingest-packets/github-0b6f5213d4b094f31896/packet.md)
+- Review priority: `high`
+- Required reading: `313` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Repository refs
+
+- `default-branch@1bb4869` (recommended `full`)
+  Ref: `main`
+  From SHA: `1953b6cce7344d880a054c42b8dd21ca3e50ebd5`
+  To SHA: `1bb486909cc36ce608181c2af62c4716ba9cd7c7`
+  Comparison: [manifest](repos/stripe/ai/comparisons/default-branch/1953b6c--1bb4869/comparison.json)
+
 ## `github-0b8ca83daa9799dbe228`
 
 - Repository: `paypal/paypal-checkout-components`
