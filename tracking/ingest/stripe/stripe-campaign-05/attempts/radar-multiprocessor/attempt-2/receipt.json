@@ -1,0 +1,164 @@
+{
+  "job_id": "radar-multiprocessor",
+  "attempt": 2,
+  "raw_path": "raw/stripe-radar-multiprocessor-2026-11-07.md",
+  "raw_sha256": "9776eea07be99ac7c9fb1ab116e3cd32e02be4deaf78f113ddcbfb6d889b4c8d",
+  "prior_raw_path": "raw/stripe-radar-multiprocessor-2026.md",
+  "prior_raw_sha256": "e8e920d9a99d4f44db49804fb68995f43fafb24eb979d04dea74a90c38554feb",
+  "source_targets": [
+    "wiki/sources/source-stripe-radar-multiprocessor.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-radar-multiprocessor.md": "97ddb9eb1659e285591b7b2dd9363157b143117771e6091987ab80cfc967c445"
+  },
+  "read_ranges": {
+    "raw/stripe-radar-multiprocessor-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 162
+      }
+    ],
+    "raw/stripe-radar-multiprocessor-2026.md": [
+      {
+        "start": 1,
+        "end": 31
+      }
+    ],
+    "wiki/sources/source-stripe-radar-multiprocessor.md": [
+      {
+        "start": 1,
+        "end": 41
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/1ee49f0b5e5faa500b0620be/content.diff": [
+      {
+        "start": 1,
+        "end": 170
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 18,
+        "end": 21
+      },
+      {
+        "start": 514,
+        "end": 521
+      },
+      {
+        "start": 717,
+        "end": 720
+      }
+    ],
+    "wiki/concepts/stripe-radar.md": [
+      {
+        "start": 194,
+        "end": 218
+      },
+      {
+        "start": 256,
+        "end": 265
+      }
+    ],
+    "raw/stripe-radar-transaction-risk-prevention-2026-11-07.md": [
+      {
+        "start": 35,
+        "end": 46
+      }
+    ],
+    "raw/stripe-api-payment-intents-confirm-2026-11-07.md": [
+      {
+        "start": 627,
+        "end": 640
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Use Radar to evaluate your payments regardless of payment processor.",
+      "location": "raw/stripe-radar-multiprocessor-2026-11-07.md:7"
+    },
+    {
+      "text": "Use the form below to request access to the Payment Evaluation API or additional capabilities, including raw card details, masked card details, and direct client signals.",
+      "location": "raw/stripe-radar-multiprocessor-2026-11-07.md:25"
+    },
+    {
+      "text": "Any `PaymentEvaluation` created with these parameters instead of a `PaymentMethod` returns only the `fraudulent_payment` signal.",
+      "location": "raw/stripe-radar-multiprocessor-2026-11-07.md:105"
+    },
+    {
+      "text": "Stripe returns a response with the `recommended_action` property and the `signals` object.",
+      "location": "raw/stripe-radar-multiprocessor-2026-11-07.md:123"
+    },
+    {
+      "text": "You can\u2019t use a `PaymentEvaluation` that has already been associated with another payment.",
+      "location": "raw/stripe-radar-multiprocessor-2026-11-07.md:141"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Evaluate your non-Stripe processed payments with Radar.",
+      "location": "raw/stripe-radar-multiprocessor-2026.md:6"
+    },
+    {
+      "text": "### Fraudulent dispute (Private preview)",
+      "location": "raw/stripe-radar-multiprocessor-2026.md:14"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "November is a full expanded guide covering any processor, with explicit pre-evaluation followed by Stripe processing. The business server creates the PaymentEvaluation and receives risk signals from Stripe; the example separately transacts with the third-party processor. Risk recommendations are distinct from authorization, capture and payment outcome (old raw lines 6\u201312 and 30\u201331; new raw lines 7\u201313 and 50\u201377).",
+    "Root index line 7 leads to Stripe index lines 517 and 719. Source lines 35\u201337 and Radar concept lines 207\u2013209 and 262 contain a reciprocal route and separate Radar Session and PAYG entries. Preserve the distinction between this evaluation, adjacent PAYG and separate Payment Records integration (source route at Stripe index line 20; new raw lines 160\u2013162).",
+    "Existing source line 20 and Radar concept line 209 say fraudulent_dispute blocks payments. Preserve this as documented wording (old raw line 16 and new raw line 17). The November sequence places Stripe evaluation before the business server separately transacts with the third-party processor (new raw lines 50-59), and the response provides recommendation and scored signals (121-127). The evidence gives no basis to say that the evaluation API automatically executes or blocks another processor's transaction."
+  ],
+  "substantive_changes": [
+    "November documents access requests for the base API and approval-gated additional card/device-data choices, masked details only returning the default signal, raw PCI scope, email and actor/object details, and independent scoring response (old raw lines 10\u201328; new raw lines 11\u201347 and 61\u2013133).",
+    "November adds both default billed evaluations when a separately assessed payment subsequently processes on Stripe and a version-example reuse option for same-payment evaluation objects at confirmation, with up to five and a no-cross-payment-reuse restriction. Payment lifecycle reporting has separate access (new raw lines 135\u2013162).",
+    "November removes private-preview labels from two signal headings without an express GA announcement and adds sandbox/idempotency/expansion practices. Diagram rendering and headings are presentation. The access form is documented onboarding rather than availability approval (old raw lines 14\u201320 and 30\u201331; new raw lines 15\u201337, 50\u201359 and 152\u2013162)."
+  ],
+  "historical_claims_to_preserve": [
+    "Maintain May non-Stripe, tokenized-card + Radar Session + customer email scoped prerequisites and the May preview labels. Both retain fraudulent_payment default and descriptions of fraudulent_dispute and early_fraud_warning, without treating a Stripe risk result as a payment outcome on a third-party processor (old raw lines 6\u201328; new raw lines 7\u201347)."
+  ],
+  "conflicts": [
+    "New raw line 125 says elevated above 65 and high above 75 while its blocking recommendation is 75 or above; same-day transaction-risk reference raw/stripe-radar-transaction-risk-prevention-2026-11-07.md line 40 gives inclusive thresholds for the risk categories. Keep the recommendation, classifications and exact threshold boundary wording distinct instead of asserting one contract.",
+    "The May current source calls fraudulent_payment GA and Radar Session mandatory. May says default and requires its tokenized route; November says request access and documents a separately approved direct-device-data alternative. Avoid universal GA or universal device input access. The preview examples do not date access or activation.",
+    "The November source references duplicate avoidance through PaymentIntent Confirm payment-evaluation options and includes a 2026-07-29.preview example, while the captured unversioned Confirm reference lines 627\u2013631 only name the general optional radar_options object. Do not project the preview example's fields onto all API versions."
+  ],
+  "unresolved_questions": [
+    "The captures do not prove approved access for a particular account, general availability of the advanced signals, or exact behavior at the disputed threshold boundaries. No runtime calls or outcomes follow from the examples."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-radar.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-radar-multiprocessor.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Current source line 13 and Radar concept line 209 describe external-only evaluations. The November title/introduction say any payment processor and a new section documents Stripe processing after a separate pre-evaluation, while the prerequisite section is specifically for non-Stripe processing (old raw lines 4\u20138 and 22\u201328; new raw lines 5\u20139, 39\u201348 and 135\u2013150). Preserve that asymmetry.",
+        "Current source line 19 calls the default fraudulent_payment signal GA, but May only calls it default, and November adds an access request. May explicitly labels the other two private preview, while November removes the heading labels without establishing GA (old raw lines 10\u201320; new raw lines 11\u201337). Treat an access request as distinct from approval and route-level capability.",
+        "Source lines 23\u201327 need November masked/raw card and device-data alternatives. Masked card details need separate approval and return only fraudulent_payment when used instead of a tokenized method. Raw card details are separate-approval and PCI DSS gated. Direct client details require separate approval while Radar Session remains recommended when possible. Keep Customer versus customer-configured Account and email prerequisites (old raw lines 24\u201328; new raw lines 41\u201347 and 79\u2013133).",
+        "Source line 31 should distinguish evaluation response and processor execution, duplicate evaluation/billing defaults and version-example scope of reuse at confirmation. Preserve the same-payment-only restriction, up to five prior evaluations and separate Payment Records lifecycle reporting integration approval (new raw lines 61\u201376 and 121\u2013162).",
+        "The November minimum tokenized PaymentEvaluation example documents card PaymentMethod, amount, currency, customer email and Radar Session (new raw lines 65-77). The tokenized example has no explicit Stripe-Version header, and the masked/raw examples show 2026-07-29.preview (new raw lines 79-119). The SAQ D sentence at new raw line 101 is specifically about creating a PaymentMethod through the API; the raw-card option has its separately documented approval and PCI DSS condition. Do not apply either example header or the API-PaymentMethod SAQ statement to every path.",
+        "Existing source line 20 and Radar concept line 209 say fraudulent_dispute blocks payments. Preserve this as documented wording (old raw line 16 and new raw line 17). The November sequence places Stripe evaluation before the business server separately transacts with the third-party processor (new raw lines 50-59), and the response provides recommendation and scored signals (121-127). The evidence gives no basis to say that the evaluation API automatically executes or blocks another processor's transaction."
+      ],
+      "conflicts": [
+        "New raw line 125 says elevated above 65 and high above 75 while its blocking recommendation is 75 or above; same-day transaction-risk reference raw/stripe-radar-transaction-risk-prevention-2026-11-07.md line 40 gives inclusive thresholds for the risk categories. Keep the recommendation, classifications and exact threshold boundary wording distinct instead of asserting one contract.",
+        "The May current source calls fraudulent_payment GA and Radar Session mandatory. May says default and requires its tokenized route; November says request access and documents a separately approved direct-device-data alternative. Avoid universal GA or universal device input access. The preview examples do not date access or activation.",
+        "The November source references duplicate avoidance through PaymentIntent Confirm payment-evaluation options and includes a 2026-07-29.preview example, while the captured unversioned Confirm reference lines 627\u2013631 only name the general optional radar_options object. Do not project the preview example's fields onto all API versions."
+      ],
+      "reason": "Add November\u2019s expanded scope, separately approved inputs, response and confirmation boundaries while preserving dated May prerequisites and preview terms."
+    }
+  ],
+  "answers": {
+    "Q1": "The November capture of https://docs.stripe.com/radar/multiprocessor describes a business server requesting real-time Radar PaymentEvaluation risk signals for any processor, including Stripe, apart from actual processor execution. For non-Stripe payments, it documents a tokenized card PaymentMethod or approval-gated masked/raw card details, Radar Session or separately approved direct device details, and customer email. The minimum tokenized example shows the card PaymentMethod, amount, currency, customer email and Radar Session. Raw card use is PCI DSS gated and masked input yields only fraudulent_payment. Stripe returns recommended_action and independently scored signals (new raw lines 39-77 and 79-133). If a separate evaluation precedes Stripe processing, default processing evaluates again and both are billed; the guide\u2019s preview example specifies how eligible prior evaluations for the same payment can be reused at confirmation (new raw lines 135-150). May and source-stripe-radar-multiprocessor.md emphasize non-Stripe payments with a tokenized card, Radar Session and email (old raw lines 6-28).",
+    "Q2": "At https://docs.stripe.com/radar/multiprocessor, November substantively adds processor breadth, access requests, approved card and client-input alternatives, risk-response details, duplicate evaluation and billing scope, and separate Payment Records access (new raw lines 7-47, 121-150 and 152-162). Preserve the May non-Stripe scope and explicit private-preview labels for fraudulent_dispute and early_fraud_warning in source-stripe-radar-multiprocessor.md (old raw lines 6-28). November removes those heading labels and requires access, which does not establish general availability. Keep the exact risk-level boundary versus blocking-recommendation wording and its conflict with the adjacent transaction-risk guide. Both dated captures describe fraudulent_dispute as blocking such payments, while the November sequence and response distinguish the processor transaction from Stripe's recommendation and scores (old raw line 16; new raw lines 15-17, 50-59 and 121-127). The evaluation response does not establish automatic blocking at another processor. The expanded text diagram is illustrative, and the form link routes to an access request. Retain the reciprocal Radar concept, separate Radar Sessions/PAYG/Payment Records routes, and review of both dated captures (old raw lines 22-31; new raw lines 39-59 and 152-162)."
+  }
+}

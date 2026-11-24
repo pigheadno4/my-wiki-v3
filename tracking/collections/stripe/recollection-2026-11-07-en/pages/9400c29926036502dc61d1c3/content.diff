@@ -1,0 +1,253 @@
+--- raw/stripe-payment-methods-overview-2025.md
++++ raw/stripe-payments-payment-methods-overview-2026-11-07.md
+@@ -1,8 +1,28 @@
+-# Supported payment methods
++# Add payment methods
+ 
+-Learn about the types of payment methods that your Stripe integration can support.
++Find the payment methods your customers prefer and learn how to offer them.
+ 
+-Stripe supports the following categories of payment methods:
++Customers in different regions prefer different ways to pay, and not all customers have or prefer a card. Stripe supports a range of payment methods so you can offer the ones your customers expect.
++
++Use the following resources to answer common questions about offering payment methods:
++
++| Question | Resource |
++| --- | --- |
++| Which payment methods can my business offer? | [Country and currency support](https://docs.stripe.com/payments/payment-methods/payment-method-support.md#country-currency-support) |
++| How much does each payment method cost? | [Pricing for payment methods](https://stripe.com/pricing/local-payment-methods) |
++| How do I turn on payment methods? | [Dynamic payment methods](https://docs.stripe.com/payments/payment-methods/dynamic-payment-methods.md) |
++| Which Stripe products support each payment method? | [Product support](https://docs.stripe.com/payments/payment-methods/payment-method-support.md#product-support) |
++| How do I add payment methods to my integration? | [Payment method integration options](https://docs.stripe.com/payments/payment-methods/integration-options.md) |
++
++## Turn on payment methods 
++
++If you use [dynamic payment methods](https://docs.stripe.com/payments/payment-methods/dynamic-payment-methods.md) with [Checkout](https://docs.stripe.com/payments/checkout.md), the [Payment Element](https://docs.stripe.com/payments/payment-element.md), [Payment Links](https://docs.stripe.com/payment-links.md), or the hosted invoice page, you can turn on most payment methods in your [Dashboard](https://dashboard.stripe.com/settings/payment_methods) without changing your code. Stripe then displays the eligible payment methods to each customer.
++
++If your integration lists payment methods explicitly with [payment_method_types](https://docs.stripe.com/api/payment_intents/object.md#payment_intent_object-payment_method_types), you must update your code to add a payment method. Some payment methods have additional requirements, so check the documentation for each payment method before you turn it on.
++
++## Payment method families 
++
++Stripe groups payment methods into the following payment method families. Payment methods in the same family have similar features and checkout experiences. After you integrate one payment method, you can usually add another in the same family with minimal changes to your integration.
+ 
+ - [Cards](https://docs.stripe.com/payments/payment-methods/overview.md#cards)
+ - [Bank debits](https://docs.stripe.com/payments/payment-methods/overview.md#bank-debits)
+@@ -10,122 +30,140 @@
+ - [Bank transfers](https://docs.stripe.com/payments/payment-methods/overview.md#bank-transfers)
+ - [Buy now, pay later](https://docs.stripe.com/payments/payment-methods/overview.md#buy-now-pay-later)
+ - [Real-time payments](https://docs.stripe.com/payments/payment-methods/overview.md#real-time-payments)
++- [Stablecoin payments](https://docs.stripe.com/payments/payment-methods/overview.md#stablecoin-payments)
+ - [Vouchers](https://docs.stripe.com/payments/payment-methods/overview.md#vouchers)
+ - [Wallets](https://docs.stripe.com/payments/payment-methods/overview.md#wallets)
++- [Gift cards](https://docs.stripe.com/payments/payment-methods/overview.md#gift-cards)
+ 
+-Different payment methods are more dominant in certain regions, meaning not all customers have or prefer a card payment method. Offering more options can help reduce the chance of losing a customer at checkout. Each payment method has its own restrictions around supported currencies, countries, products, and API options. To learn more see, [Payment method support](https://docs.stripe.com/payments/payment-methods/payment-method-support.md).
++Payment methods labeled **Private preview** or **Public preview** have limited availability. To request access to a payment method in private preview, see the documentation for that payment method.
++[Watch on YouTube](https://www.youtube.com/watch?v=tJin1R6KLyA)
++## Cards 
+ 
+-For information on payment method transaction fees, refer to [pricing details](https://stripe.com/pricing/local-payment-methods).
++Cards are a common way for customers and businesses to pay online or in person. Stripe supports [global and local card networks](https://docs.stripe.com/payments/cards.md#supported-card-brands).
+ 
+-Each category has similar features, a single integration, and common checkout experiences. After you integrate one payment method, you can add another within the same category with minimal changes to your integration.
+-[Watch on YouTube](https://www.youtube.com/watch?v=tJin1R6KLyA)
++Payment methods are grouped by the regions where they’re commonly used. See the documentation for each method to understand its eligibility for your business and customers.
+ 
+-## Cards
++| Global | US and Canada | Europe | Asia Pacific | Latin America |
++| --- | --- | --- | --- | --- |
++| [Visa](https://docs.stripe.com/payments/cards.md#supported-card-brands) | [Discover](https://docs.stripe.com/payments/cards.md#supported-card-brands) | [Cartes Bancaires](https://docs.stripe.com/payments/cartes-bancaires.md) | [eftpos](https://docs.stripe.com/payments/cards.md#supported-card-brands) | — |
++| [Mastercard](https://docs.stripe.com/payments/cards.md#supported-card-brands) | [Interac (In-person only)](https://docs.stripe.com/terminal/payments/regional.md?country=CA) |  | [JCB](https://docs.stripe.com/payments/cards.md#supported-card-brands) |  |
++| [American Express](https://docs.stripe.com/payments/cards.md#supported-card-brands) |  |  | [China UnionPay](https://docs.stripe.com/payments/cards.md#supported-card-brands) |  |
++| [Diners Club](https://docs.stripe.com/payments/cards.md#supported-card-brands) |  |  | [South Korean cards](https://docs.stripe.com/payments/countries/korea.md) |  |
+ 
+-Cards are a common way for customers and businesses to pay online or in person. Stripe supports global and local card networks. See the [card brands](https://docs.stripe.com/payments/cards.md#supported-card-brands) that Stripe supports.
+-
+-| Global                                                                              | US and Canada                                                                                | Europe                                                                   | Asia Pacific                                                                       | Latin America |
+-| ----------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- | ------------- |
+-| [Visa](https://docs.stripe.com/payments/cards.md#supported-card-brands)             | [Discover](https://docs.stripe.com/payments/cards.md#supported-card-brands)                  | [Cartes Bancaires](https://docs.stripe.com/payments/cartes-bancaires.md) | [eftpos](https://docs.stripe.com/payments/cards.md#supported-card-brands)          | —             |
+-| [Mastercard](https://docs.stripe.com/payments/cards.md#supported-card-brands)       | [Interac (In-person only)](https://docs.stripe.com/terminal/payments/regional.md?country=CA) |                                                                          | [JCB](https://docs.stripe.com/payments/cards.md#supported-card-brands)             |               |
+-| [American Express](https://docs.stripe.com/payments/cards.md#supported-card-brands) |                                                                                              |                                                                          | [China Union Pay](https://docs.stripe.com/payments/cards.md#supported-card-brands) |               |
+-| [Diners](https://docs.stripe.com/payments/cards.md#supported-card-brands)           |                                                                                              |                                                                          | [South Korean Cards](https://docs.stripe.com/payments/countries/korea.md)          |               |
++Some card payments support [installments](https://docs.stripe.com/payments/installments.md). For example, customers in Mexico can split credit card purchases into monthly payments with [Meses sin intereses](https://docs.stripe.com/payments/mx-installments.md).
+ 
+ In-person payments support different card brands, depending on the country and reader type. For more information, see Terminal’s [supported card brands](https://docs.stripe.com/terminal/payments/collect-card-payment/supported-card-brands.md#payment-method-availability).
+ 
+-## Bank debits
++## Bank debits 
+ 
+-By debiting your customer’s bank account directly, you can save on transaction fees when compared to cards. For details, see the [bank debits documentation](https://docs.stripe.com/payments/bank-debits.md).
++With [bank debits](https://docs.stripe.com/payments/bank-debits.md), you pull funds directly from your customer’s bank account for one-time and recurring payments. Payment confirmation can take several business days. For fees, see [pricing details](https://stripe.com/pricing/local-payment-methods).
+ 
+-| Global | US and Canada                                                                           | Europe                                                                              | Asia Pacific                                                                | Latin America |
+-| ------ | --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------- |
+-| —      | [Instant Bank Payments](https://docs.stripe.com/payments/link/instant-bank-payments.md) | [Bacs Direct Debit](https://docs.stripe.com/payments/payment-methods/bacs-debit.md) | [AU BECS Direct Debit](https://docs.stripe.com/payments/au-becs-debit.md)   | —             |
+-| —      | [ACH Direct Debit](https://docs.stripe.com/payments/ach-direct-debit.md)                | [SEPA Direct Debit](https://docs.stripe.com/payments/sepa-debit.md)                 | [NZ BECS Direct Debit](https://docs.stripe.com/payments/nz-bank-account.md) | —             |
+-| —      | [Canadian PADs](https://docs.stripe.com/payments/acss-debit.md)                         | —                                                                                   | —                                                                           |
++| Global | US and Canada | Europe | Asia Pacific | Latin America |
++| --- | --- | --- | --- | --- |
++| — | [ACH Direct Debit](https://docs.stripe.com/payments/ach-direct-debit.md) | [Bacs Direct Debit](https://docs.stripe.com/payments/bacs-debit.md) | [AU BECS Direct Debit](https://docs.stripe.com/payments/au-becs-debit.md) | — |
++|  | [Canadian pre-authorized debits](https://docs.stripe.com/payments/acss-debit.md) | [SEPA Direct Debit](https://docs.stripe.com/payments/sepa-debit.md) | [NZ BECS Direct Debit](https://docs.stripe.com/payments/nz-bank-account.md) |  |
++|  | [Instant Bank Payments](https://docs.stripe.com/payments/link/instant-bank-payments.md) |  |  |  |
+ 
+-## Bank redirects
++## Bank redirects 
+ 
+-Bank redirects let customers pay online using their bank account, using a secure checkout flow. They’re popular among European and Asian customers and can improve conversion and reduce fraud. See [bank redirects](https://docs.stripe.com/payments/bank-redirects.md) to learn more.
++With [bank redirects](https://docs.stripe.com/payments/bank-redirects.md), customers pay online by authenticating with their bank and approving the payment from their bank account.
+ 
+-| Global | US and Canada | Europe                                                       | Asia Pacific                                         | Latin America |
+-| ------ | ------------- | ------------------------------------------------------------ | ---------------------------------------------------- | ------------- |
+-| —      | —             | [Bancontact](https://docs.stripe.com/payments/bancontact.md) | [FPX](https://docs.stripe.com/payments/fpx.md)       | —             |
+-| —      | —             | [BLIK](https://docs.stripe.com/payments/blik.md)             | [PayNow](https://docs.stripe.com/payments/paynow.md) | —             |
+-| —      | —             | [EPS](https://docs.stripe.com/payments/eps.md)               | [UPI](https://docs.stripe.com/payments/upi.md)       | —             |
+-| —      | —             | [iDEAL                                                       | Wero](https://docs.stripe.com/payments/ideal.md)     | —             |
+-| —      | —             | [P24](https://docs.stripe.com/payments/p24.md)               | —                                                    | —             |
+-| —      | —             | [TWINT](https://docs.stripe.com/payments/twint.md)           | —                                                    | —             |
++| Global | US and Canada | Europe | Asia Pacific | Latin America |
++| --- | --- | --- | --- | --- |
++| — | — | [Bancontact](https://docs.stripe.com/payments/bancontact.md) | [FPX](https://docs.stripe.com/payments/fpx.md) | — |
++|  |  | [BLIK](https://docs.stripe.com/payments/blik.md) |  |  |
++|  |  | [EPS](https://docs.stripe.com/payments/eps.md) |  |  |
++|  |  | [iDEAL | Wero](https://docs.stripe.com/payments/ideal.md) |  |  |
++|  |  | [P24](https://docs.stripe.com/payments/p24.md) |  |  |
++|  |  | [Wero (Public preview)](https://docs.stripe.com/payments/wero.md) |  |  |
+ 
+-To request access to one of our invite only payment methods, [contact us](https://support.stripe.com/contact).
++## Bank transfers 
+ 
+-## Bank transfers
++With [bank transfers](https://docs.stripe.com/payments/bank-transfers.md), you give customers a virtual bank account number, and they push money to it from their online bank or a bank branch. Stripe uses the virtual account number to reconcile payments automatically without exposing your bank account details. Bank transfers are common for large payments between businesses, and in some countries for payments by individuals.
+ 
+-Customers or other businesses can use bank transfers to send money directly to your bank account and are common for accepting large payments from other businesses. In some countries, bank transfers are popular for consumer payments as well. See [bank transfers](https://docs.stripe.com/payments/bank-transfers.md) to learn more.
++| Global | US and Canada | Europe | Asia Pacific | Latin America |
++| --- | --- | --- | --- | --- |
++| — | [USD bank transfer](https://docs.stripe.com/payments/bank-transfers.md) | [SEPA bank transfer](https://docs.stripe.com/payments/bank-transfers.md) | [Japan bank transfer (Furikomi)](https://docs.stripe.com/payments/bank-transfers.md) | [Mexico bank transfer](https://docs.stripe.com/payments/bank-transfers.md) |
++|  |  | [UK bank transfer](https://docs.stripe.com/payments/bank-transfers.md) |  |  |
+ 
+-| Global | US and Canada                                                           | Europe                                                                   | Asia Pacific                                                                         | Latin America                                                              |
+-| ------ | ----------------------------------------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------- |
+-| —      | [USD Bank Transfer](https://docs.stripe.com/payments/bank-transfers.md) | [SEPA Bank Transfer](https://docs.stripe.com/payments/bank-transfers.md) | [Japan Bank Transfer (Furikomi)](https://docs.stripe.com/payments/bank-transfers.md) | [Mexico Bank Transfer](https://docs.stripe.com/payments/bank-transfers.md) |
+-| —      | —                                                                       | [UK Bank Transfer](https://docs.stripe.com/payments/bank-transfers.md)   | —                                                                                    | —                                                                          |
++## Buy now, pay later 
+ 
+-## Buy now, pay later
++With [buy now, pay later](https://docs.stripe.com/payments/buy-now-pay-later.md) payment methods, customers pay in installments or at a later date. Your business is paid in full up front, and your customer pays nothing or a portion of the total cost at checkout.
+ 
+-Buy now, pay later payment methods help retailers reach customers who want to pay in installments. Your business is paid immediately and in full, and your customer pays nothing or a portion of the total cost at checkout. See [buy now, pay later](https://docs.stripe.com/payments/buy-now-pay-later.md) to learn more.
++| Global | US and Canada | Europe | Asia Pacific | Latin America |
++| --- | --- | --- | --- | --- |
++| — | [Affirm](https://docs.stripe.com/payments/affirm.md) | [Affirm (UK businesses only, private preview)](https://docs.stripe.com/payments/affirm.md) | [Afterpay (Australian and New Zealand businesses only)](https://docs.stripe.com/payments/afterpay-clearpay.md) | — |
++|  | [Afterpay](https://docs.stripe.com/payments/afterpay-clearpay.md) | [Alma](https://docs.stripe.com/payments/alma.md) | [Klarna](https://docs.stripe.com/payments/klarna.md) |  |
++|  | [Klarna](https://docs.stripe.com/payments/klarna.md) | [Billie (Business customers only)](https://docs.stripe.com/payments/billie.md) | [Zip (Australian businesses only)](https://docs.stripe.com/payments/zip.md) |  |
++|  | [Sunbit (US businesses only)](https://docs.stripe.com/payments/sunbit.md) | [Clearpay (UK businesses only)](https://docs.stripe.com/payments/afterpay-clearpay.md) |  |  |
++|  | [Zip (US businesses only)](https://docs.stripe.com/payments/zip.md) | [Klarna](https://docs.stripe.com/payments/klarna.md) |  |  |
++|  |  | [Kriya (UK business customers only, private preview)](https://docs.stripe.com/payments/kriya.md) |  |  |
++|  |  | [Mondu (Business customers only, private preview)](https://docs.stripe.com/payments/mondu.md) |  |  |
++|  |  | [Scalapay](https://docs.stripe.com/payments/scalapay.md) |  |  |
++|  |  | [SeQura (Spanish businesses only)](https://docs.stripe.com/payments/sequra.md) |  |  |
+ 
+-| Payment method                                                               | US and Canada                 | Europe          | Asia Pacific    | Latin America   |
+-| ---------------------------------------------------------------------------- | ----------------------------- | --------------- | --------------- | --------------- |
+-| [Affirm](https://docs.stripe.com/payments/affirm.md)                         | ✓ Supported                   | ✗ Not supported | ✗ Not supported | ✗ Not supported |
+-| [Afterpay / Clearpay](https://docs.stripe.com/payments/afterpay-clearpay.md) | ✓ Supported                   | ✓ Supported     | ✓ Supported     | ✗ Not supported |
+-| [Klarna](https://docs.stripe.com/payments/klarna.md)                         | ✓ Supported                   | ✓ Supported     | ✓ Supported     | ✗ Not supported |
+-| [Meses sin intereses](https://docs.stripe.com/payments/mx-installments.md)   | ✗ Not supported               | ✗ Not supported | ✗ Not supported | ✓ Supported     |
+-| [Zip](https://docs.stripe.com/payments/zip.md)                               | ✓ Supported (US Only) US Only | ✗ Not supported | ✓ Supported     | ✗ Not supported |
++## Real-time payments 
+ 
+-To request access to one of our invite only payment methods, [contact us](https://support.stripe.com/contact).
++With [real-time payments](https://docs.stripe.com/payments/real-time.md), customers send money directly from their bank account or other funding source, using an intermediary such as a phone number or app to authenticate.
+ 
+-## Real-time payments
++| Global | US and Canada | Europe | Asia Pacific | Latin America |
++| --- | --- | --- | --- | --- |
++| — | — | [Bizum](https://docs.stripe.com/payments/bizum.md) | [PayNow](https://docs.stripe.com/payments/paynow.md) | [Pix](https://docs.stripe.com/payments/pix.md) |
++|  |  | [Pay by Bank](https://docs.stripe.com/payments/pay-by-bank.md) | [PayTo](https://docs.stripe.com/payments/payto.md) |  |
++|  |  | [Swish (Private preview)](https://docs.stripe.com/payments/swish.md) | [PromptPay](https://docs.stripe.com/payments/promptpay.md) |  |
++|  |  |  | [UPI](https://docs.stripe.com/payments/upi.md) |  |
+ 
+-Real-time payments let customers send money directly from their bank account or other funding source using an intermediary to authenticate, such as a phone number or other account. They’re a common payment type in Asia and Latin America. See [real-time payments](https://docs.stripe.com/payments/real-time.md) to learn more.
++## Stablecoin payments 
+ 
+-| Global | US and Canada | Europe                                                           | Asia Pacific                                               | Latin America                                  |
+-| ------ | ------------- | ---------------------------------------------------------------- | ---------------------------------------------------------- | ---------------------------------------------- |
+-| —      | —             | [Swish (Invite only)](https://docs.stripe.com/payments/swish.md) | [PayTo](https://docs.stripe.com/payments/payto.md)         | [Pix](https://docs.stripe.com/payments/pix.md) |
+-| —      | —             | —                                                                | [PayNow](https://docs.stripe.com/payments/paynow.md)       | —                                              |
+-| —      | —             | —                                                                | [PromptPay](https://docs.stripe.com/payments/promptpay.md) | —                                              |
++With stablecoin payments, customers pay with stablecoins from their preferred crypto wallet, and completed payments settle in your Stripe balance in your local currency. See [stablecoin payments](https://docs.stripe.com/payments/stablecoin-payments.md) to learn more.
+ 
+-To request access to one of our invite only payment methods, [contact us](https://support.stripe.com/contact).
++| Global | US and Canada | Europe | Asia Pacific | Latin America |
++| --- | --- | --- | --- | --- |
++| [Stablecoin payments](https://docs.stripe.com/payments/stablecoin-payments.md) | — | — | — | — |
+ 
+-## Vouchers
++## Vouchers 
+ 
+-Vouchers are a popular way for customers in Asia and Latin America to complete online purchases in-person. At checkout, customers receive a digital voucher with pending transaction details and then complete the payment at local stores. See [vouchers](https://docs.stripe.com/payments/vouchers.md) to learn more.
++With [vouchers](https://docs.stripe.com/payments/vouchers.md), customers complete online purchases in person. At checkout, customers receive a voucher with the transaction details, and then pay with it at a local store, bank, or other location.
+ 
+-| Global | US and Canada | Europe                                                       | Asia                                                   | Latin America                                        |
+-| ------ | ------------- | ------------------------------------------------------------ | ------------------------------------------------------ | ---------------------------------------------------- | --- |
+-| —      | —             | [Multibanco](https://docs.stripe.com/payments/multibanco.md) | [Konbini](https://docs.stripe.com/payments/konbini.md) | [OXXO](https://docs.stripe.com/payments/oxxo.md)     |
+-| —      | —             | —                                                            | —                                                      | [Boleto](https://docs.stripe.com/payments/boleto.md) | —   |
++| Global | US and Canada | Europe | Asia Pacific | Latin America |
++| --- | --- | --- | --- | --- |
++| — | — | [Multibanco](https://docs.stripe.com/payments/multibanco.md) | [Konbini](https://docs.stripe.com/payments/konbini.md) | [Boleto](https://docs.stripe.com/payments/boleto.md) |
++|  |  |  |  | [OXXO](https://docs.stripe.com/payments/oxxo.md) |
+ 
+-## Wallets
++## Wallets 
+ 
+-Wallets provide a fast and secure way for customers to pay with a saved card or a stored balance. Wallets can help increase conversion and reduce fraud. To learn more, see [Wallets](https://docs.stripe.com/payments/wallets.md).
++With [wallets](https://docs.stripe.com/payments/wallets.md), customers pay with a saved card or a stored balance.
+ 
+-| Global                                                                            | US and Canada                                                    | Europe                                                         | Asia                                                               | Latin America |
+-| --------------------------------------------------------------------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------ | ------------- |
+-| [Apple Pay (Not available in India)](https://docs.stripe.com/apple-pay.md)        | [Cash App Pay](https://docs.stripe.com/payments/cash-app-pay.md) | [PayPal](https://docs.stripe.com/payments/paypal.md)           | [Alipay](https://docs.stripe.com/payments/alipay.md)               | —             |
+-| [Google Pay (Not available in India)](https://docs.stripe.com/google-pay.md)      |                                                                  | [MobilePay](https://docs.stripe.com/payments/mobilepay.md)     | [WeChat Pay](https://docs.stripe.com/payments/wechat-pay.md)       |               |
+-| [Link](https://docs.stripe.com/payments/link.md)                                  |                                                                  |                                                                | [GrabPay](https://docs.stripe.com/payments/grabpay.md)             |               |
+-| [Secure Remote Commerce](https://docs.stripe.com/secure-remote-commerce.md)       |                                                                  | [Revolut Pay](https://docs.stripe.com/payments/revolut-pay.md) | [Kakao Pay](https://docs.stripe.com/payments/countries/korea.md)   |               |
+-| [Stablecoins and crypto](https://docs.stripe.com/payments/stablecoin-payments.md) |                                                                  | [Satispay](https://docs.stripe.com/payments/satispay.md)       | [Naver Pay](https://docs.stripe.com/payments/countries/korea.md)   |               |
+-|                                                                                   |                                                                  |                                                                | [Samsung Pay](https://docs.stripe.com/payments/countries/korea.md) |               |
+-|                                                                                   |                                                                  |                                                                | [PayCo](https://docs.stripe.com/payments/countries/korea.md)       |               |
++| Global | US and Canada | Europe | Asia Pacific | Latin America |
++| --- | --- | --- | --- | --- |
++| [Apple Pay](https://docs.stripe.com/apple-pay.md) | [Amazon Pay](https://docs.stripe.com/payments/amazon-pay.md) | [Amazon Pay](https://docs.stripe.com/payments/amazon-pay.md) | [AEON Pay (Private preview)](https://docs.stripe.com/payments/aeon-pay.md) | — |
++| [Google Pay (Not available in India)](https://docs.stripe.com/google-pay.md) | [Cash App Pay](https://docs.stripe.com/payments/cash-app-pay.md) | [MB WAY](https://docs.stripe.com/payments/mb-way.md) | [Alipay](https://docs.stripe.com/payments/alipay.md) |  |
++| [Link](https://docs.stripe.com/payments/wallets/link.md) |  | [MobilePay](https://docs.stripe.com/payments/mobilepay.md) | [au PAY (Private preview)](https://docs.stripe.com/payments/au-pay.md) |  |
++| [Secure Remote Commerce](https://docs.stripe.com/secure-remote-commerce.md) |  | [PayPal](https://docs.stripe.com/payments/paypal.md) | [d-Barai (Private preview)](https://docs.stripe.com/payments/d-barai.md) |  |
++|  |  | [Revolut Pay](https://docs.stripe.com/payments/revolut-pay.md) | [GrabPay](https://docs.stripe.com/payments/grabpay.md) |  |
++|  |  | [Satispay](https://docs.stripe.com/payments/satispay.md) | [Kakao Pay](https://docs.stripe.com/payments/countries/korea.md) |  |
++|  |  |  | [Merpay (Private preview)](https://docs.stripe.com/payments/merpay.md) |  |
++|  |  |  | [Naver Pay](https://docs.stripe.com/payments/countries/korea.md) |  |
++|  |  | [TWINT](https://docs.stripe.com/payments/twint.md) | [PAYCO](https://docs.stripe.com/payments/countries/korea.md) |  |
++|  |  |  | [PayPay](https://docs.stripe.com/payments/paypay.md) |  |
++|  |  |  | [Rakuten Pay (Private preview)](https://docs.stripe.com/payments/rakuten-pay.md) |  |
++|  |  |  | [Samsung Pay](https://docs.stripe.com/payments/countries/korea.md) |  |
++|  |  |  | [WeChat Pay](https://docs.stripe.com/payments/wechat-pay.md) |  |
+ 
+-To request access to one of our invite only payment methods, [contact us](https://support.stripe.com/contact).
++## Gift cards 
+ 
+-## Custom payment methods
++With closed-loop gift cards, customers pay with stored value that they can redeem only with your business or a related group of businesses. Gift card payments settle outside of Stripe. See [gift cards](https://docs.stripe.com/payments/gift-cards.md) to learn more.
++
++| Global | US and Canada | Europe | Asia Pacific | Latin America |
++| --- | --- | --- | --- | --- |
++| — | [Gift cards (US only, private preview)](https://docs.stripe.com/payments/gift-cards.md) | — | — | — |
++
++## Custom payment methods 
+ 
+ If you need a payment method that’s not on this page, see [custom payment methods](https://docs.stripe.com/payments/payment-methods/custom-payment-methods.md).
+ 
+ ## See also
+ 
+-- [Guide to Payment Methods](https://stripe.com/payments/payment-methods-guide)
+-- [Supported card brands](https://docs.stripe.com/payments/cards.md#supported-card-brands)
+-- [Faster checkout with Link](https://docs.stripe.com/payments/link.md)
+-- [Wallets](https://docs.stripe.com/payments/wallets.md)
+-- [Vouchers](https://docs.stripe.com/payments/vouchers.md)+- [Payment method support](https://docs.stripe.com/payments/payment-methods/payment-method-support.md)
++- [Dynamic payment methods](https://docs.stripe.com/payments/payment-methods/dynamic-payment-methods.md)
++- [Guide to payment methods](https://stripe.com/payments/payment-methods-guide)

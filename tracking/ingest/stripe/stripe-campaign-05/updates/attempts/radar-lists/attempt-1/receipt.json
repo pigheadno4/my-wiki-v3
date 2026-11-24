@@ -1,0 +1,195 @@
+{
+  "job_id": "radar-lists",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe — Radar Lists\"\ntype: source\ndate_ingested: 2026-05-10\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/radar/lists\"\nraw_files:\n  - \"stripe-radar-lists-2026-11-07.md\"\n  - \"stripe-radar-lists-2026.md\"\ntags: [stripe, radar, lists, block-list, allow-list, fraud-teams, rules, fingerprint]\n---\n\n## Overview and plan scope\n\nRadar rules reference lists of matching values to apply a configured allow, block or review action. The May 10, 2026 guide refers to Radar for Fraud Teams for custom lists in rules, adding items in the Dashboard and longer-lived custom payment-method fingerprint lists. The November 7, 2026 guide conditions custom list use on a supporting plan. The separately dated [November plan comparison](../../raw/stripe-radar-how-radar-works-2026-11-07.md#L26-L38) lists default allowlists and blocklists on Standard, Plus and Pro, and custom rules, backtesting and custom allowlists and blocklists on Plus and Pro. Lite lacks both default and custom lists in that table. These are documented plan labels. Check the merchant’s plan for availability.\n\n## Default lists\n\nCards, ACH Direct Debit and SEPA Direct Debit have separate default list categories. Each includes the applicable card or bank-account fingerprint, charge description, client IP country and address, customer ID, email and email domain. Cards also include BIN and issuer country. The default email and domain resolve from the Charge first, then the Card for card payments or Bank Account for direct debits, then the Customer. Merchants can add or remove items. Stripe keeps the default lists themselves fixed.\n\n## Custom list creation and types\n\nBoth guides enumerate ten custom list entries: string, case-sensitive string, card fingerprint, card BIN, customer ID, email, IP address, country, SEPA Direct Debit fingerprint and ACH Direct Debit fingerprint.\n\nCreate a custom list in the [Radar lists Dashboard](https://dashboard.stripe.com/test/radar/lists) or with the Value List API at `/v1/radar/value_lists`. In the Dashboard, name the list, choose the item type and save it. Stripe generates an alias that can be overridden. Add an explicit rule reference to use the list. Merchants can edit or remove their custom lists.\n\nThe separate [November Create a Value List API schema](../../raw/stripe-api-radar-value-lists-create-2026-11-07.md#L55-L69) lists 12 `item_type` values, including `account`, `crypto_fingerprint` and `us_bank_account_fingerprint` for the US bank account fingerprint. The [April 22 Dahlia changelog](../../raw/stripe-changelog-dahlia-2026-04-22-radar-value-lists-account-item-type-2026-11-07.md#L5-L15) scopes the `account` support to Connect platforms. These API entries describe the dated API contract. The ten-entry list above is the guide’s inventory.\n\n## Item management and expiry\n\nThe November Dashboard section describes viewing, adding and removing items, keeping the author and addition date, and filtering by value, author or date. The maximum is 50,000 items per list. A Dashboard string item can have a chosen expiry, after which rules stop evaluating it. Default fingerprint allowlist entries last at most 30 days. Longer or indefinite expiration applies to custom payment-method fingerprint lists used in custom rules.\n\n## Card fraud feedback\n\nRefunding and reporting a card payment as fraudulent adds the card fingerprint and relevant associated card fingerprints on the Customer to the default card fingerprint blocklist. It also adds associated emails from `receipt_email`, Customer email, customer or payment descriptions, and the card’s `name` field to the default email blocklist. The documented Charge update with `fraud_details.user_report: fraudulent` also adds associated cards and emails. Ordinary refunds carry no such reported-fraud state by themselves. The November guide links to [Transaction Risk Prevention feedback](../../raw/stripe-radar-transaction-risk-prevention-2026-11-07.md#L163-L174).\n\n## Related\n\n- [[stripe-radar]] — Radar concepts, plans and rule behavior\n- [[source-stripe-radar-how-it-works]] — plan and capability context\n- [[source-stripe-radar-rules]] — rule actions and list references\n- [[source-stripe-radar-risk-evaluation]] — historical risk evaluation feedback route from the May capture\n- [[stripe]] — Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-radar-lists-2026-11-07|November 7, 2026 Radar lists]] — full capture with supporting-plan language and updated feedback route.\n- [[raw/stripe-radar-lists-2026|May 10, 2026 Radar lists]] — full capture with the Radar for Fraud Teams terminology.\n",
+  "quotes": {
+    "radar-lists": [
+      {
+        "text": "If [your Radar plan](https://docs.stripe.com/radar/how-radar-works.md#compare-plans) supports this feature, you can create lists of specific types of information and use them in [rules](https://docs.stripe.com/radar/rules.md).",
+        "location": "raw/stripe-radar-lists-2026-11-07.md:9"
+      },
+      {
+        "text": "You can add and remove items from default lists, but you can’t edit or remove the default lists themselves.",
+        "location": "raw/stripe-radar-lists-2026-11-07.md:21"
+      },
+      {
+        "text": "Each list can contain up to 50,000 items.",
+        "location": "raw/stripe-radar-lists-2026-11-07.md:86"
+      },
+      {
+        "text": "entries on default fingerprint allowlists have a maximum lifespan of 30 days.",
+        "location": "raw/stripe-radar-lists-2026-11-07.md:102"
+      },
+      {
+        "text": "You can create custom payment method fingerprint lists with longer or indefinite expiration windows for your custom rules.",
+        "location": "raw/stripe-radar-lists-2026-11-07.md:104"
+      }
+    ]
+  },
+  "old_evidence": {
+    "radar-lists": [
+      {
+        "text": "Stripe Radar for Fraud Teams lets you create lists of specific types of information and use them in [rules](https://docs.stripe.com/radar/rules.md).",
+        "location": "raw/stripe-radar-lists-2026.md:8"
+      },
+      {
+        "text": "You can create custom payment method fingerprint lists with longer or indefinite expiration windows for your custom rules using Stripe Radar for Fraud Teams.",
+        "location": "raw/stripe-radar-lists-2026.md:108"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-radar-lists-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 108
+      }
+    ],
+    "raw/stripe-radar-lists-2026.md": [
+      {
+        "start": 1,
+        "end": 112
+      }
+    ],
+    "wiki/sources/source-stripe-radar-lists.md": [
+      {
+        "start": 1,
+        "end": 46
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/ad7b0724cdcaa8611301660f/content.diff": [
+      {
+        "start": 1,
+        "end": 103
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/radar-lists/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 191
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/radar-lists/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 92
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 522,
+        "end": 526
+      },
+      {
+        "start": 717,
+        "end": 720
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 719,
+        "end": 723
+      }
+    ],
+    "wiki/concepts/stripe-radar.md": [
+      {
+        "start": 56,
+        "end": 69
+      },
+      {
+        "start": 264,
+        "end": 273
+      }
+    ],
+    "raw/stripe-radar-how-radar-works-2026-11-07.md": [
+      {
+        "start": 15,
+        "end": 38
+      }
+    ],
+    "raw/stripe-api-radar-value-lists-create-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 8
+      },
+      {
+        "start": 47,
+        "end": 70
+      }
+    ],
+    "raw/stripe-changelog-dahlia-2026-04-22-radar-value-lists-account-item-type-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-radar-transaction-risk-prevention-2026-11-07.md": [
+      {
+        "start": 163,
+        "end": 174
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md": [
+      {
+        "start": 771,
+        "end": 777
+      }
+    ]
+  },
+  "answers": {
+    "radar-lists": {
+      "Q1": "At https://docs.stripe.com/radar/lists, November 7, 2026 documents plan-conditioned list use in Radar rules. Stripe supplies default Card, ACH and SEPA lists whose items can change while the lists cannot be edited or deleted. An eligible merchant creates a custom typed list in Dashboard or the Value List API and references it in a rule. The rule action can allow, block or review matching payments. Items can be filtered and limits are 50,000 per list. Dashboard string-item expiry stops rule use, default fingerprint allowlist entries last at most 30 days, and custom payment-method fingerprint lists in custom rules may have longer or indefinite windows. Card fraud report or the documented Charge update populates default fingerprint/email blocklists (old raw lines 8-58 and 62-108, new raw lines 9-56 and 60-104). source-stripe-radar-lists.md now matches both guides' ten bullets and scopes longer expiry to custom payment-method fingerprint lists used in custom rules. The separate November plan matrix distinguishes default Standard/Plus/Pro and custom Plus/Pro support, while the API enum has additional values. Neither creates entitlement or verifies an actual rule outcome.",
+      "Q2": "At https://docs.stripe.com/radar/lists, November replaces the May 10, 2026 Radar for Fraud Teams references with supporting-plan wording for creation, Dashboard item management and custom fingerprint expiry. That is substantive documentation framing, with no inferred universal access or specific rename. The separately dated November plan matrix lines 26-38 lists default lists for Standard, Plus and Pro and custom lists for Plus and Pro. Default categories, ten overview types, 50,000-item and 30-day boundaries, custom fingerprint lifespan and card fraud feedback stay dated and intact (old raw lines 8-20 and 62-108, new raw lines 9-21 and 60-104). The November API list includes account and crypto_fingerprint beyond the guide, so source-stripe-radar-lists.md now corrects the overview count while preserving scoped API and Connect version evidence. Blank table rows, punctuation, step numbers and risk feedback link destination are presentation or navigation. Preserve May raw provenance, root-to-Stripe index and reciprocal Radar concept/source routes, and the separate risk-evaluation, transaction-risk, plan and REST support references."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "radar-lists-plan-and-defaults",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Block/Allow Lists (Fraud Teams)\n\nReusable value collections used in Radar rules. Default lists cover Cards (BIN, country, fingerprint, IP, email, customer ID), ACH (fingerprint + shared), SEPA (fingerprint + shared). Cannot delete default lists.",
+      "proposed_markdown": "## Block and allow lists\n\nRadar rules can reference reusable lists for allow, block or review. Default lists cover Cards, ACH and SEPA. Merchants can change their items while Stripe keeps the default lists fixed. May named Radar for Fraud Teams for custom lists. The November plan matrix lists default lists on Standard, Plus and Pro and custom lists on Plus and Pro.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "May guide line 8 and the November How Radar works plan matrix lines 26–38 support the dated plan descriptions."
+      ]
+    },
+    {
+      "update_id": "radar-lists-fingerprint-expiration",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Custom list types**: String, Case-sensitive string, Card fingerprint, Card BIN, Customer ID, Email, IP address, Country, SEPA/ACH fingerprint. Up to 50,000 items. Default fingerprint allowlists: 30-day max lifespan. Custom lists can have indefinite expiration.",
+      "proposed_markdown": "**Custom list types**. Both lists guides describe ten entries. Each list can hold up to 50,000 items. Default fingerprint allowlist entries last at most 30 days. Custom payment-method fingerprint lists can have longer or indefinite expiration when used in custom rules. See [[source-stripe-radar-lists]] for the dated API enum and expiration scope.",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "radar-lists-dated-reciprocal",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-radar-lists]] — Lists: default (Cards/ACH/SEPA), 11 custom types, 50k limit, 30-day allowlist max, fraud report auto-population",
+      "proposed_markdown": "- [[source-stripe-radar-lists]] — May and November 2026 guides with default lists, ten custom entries in the guide, separate API enum, item expiry and card fraud-feedback effects.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ]
+}

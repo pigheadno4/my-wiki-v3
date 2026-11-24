@@ -7,36 +7,23 @@ tags: [stripe, radar, fraud, fraud-detection, rules-engine, risk, machine-learni
 
 ## Overview
 
-Stripe Radar is Stripe's real-time fraud protection system using AI/ML. Available in three tiers with no additional development time required for the base tier.
+Stripe Radar evaluates transaction fraud, account risk and customer abuse in its November 2026 overview.
 
-## Product Tiers
+## Dated plan coverage
 
-| Tier | Key capability |
-| --- | --- |
-| **Stripe Radar** | AI fraud detection built into every Stripe account |
-| **Radar for Fraud Teams** | Custom rules engine, risk insights, trend analysis |
-| **Radar for Platforms** | Adds account-level risk protection for Connect platforms |
+May 2026 describes Stripe Radar, Radar for Fraud Teams and Radar for Platforms. November lists Lite, Standard, Plus and Pro. All four list card fraud prevention, card testing prevention and alerts. Standard and above add expanded and all-supported-method protections, default rules/lists, analytics and risk levels, and account manual reviews. Plus and above add transaction scores and manual reviews, custom controls and advanced features. Pro adds dynamic transaction risk thresholds and customer abuse controls. See [[source-stripe-radar-how-it-works]] for the transaction, account and customer matrices. The captures give no May-to-November plan mapping.
 
 ## Pricing
 
-Fee per evaluated transaction across all attempt types (successful, declined, blocked, flagged for review).
+The November overview charges Standard, Plus and Pro for screened authorizations and charges. For Stripe Billing it documents the first payment and the first payment after a method change, a configurable number of successful renewal cycles to screen, and no fee for skipped renewals. On a free trial the first screen is when the customer is charged. May described only a first-transaction fee exception for Billing. This fee wording is separate from the earlier model scoring and rules evaluation guidance.
 
-**Stripe Billing exception**: only billed for the first transaction of a recurring series — subsequent transactions are free.
-
-Radar for Platforms adds a per-connected-account fee.
+For Connect, the November guide says Stripe charges the platform the Radar account fee. A screened transaction uses the collecting account's rate. A collecting platform can pass on fees by reducing its transfer. See [[source-stripe-radar-how-it-works]].
 
 ## Payment Methods Screened
 
-Default protection (all users): all payment methods blocked at high risk. Custom risk settings (Fraud Teams/Platforms):
+May lists cards, card-backed wallets, ACH and SEPA Direct Debit, with other payment method controls in preview. November screens supported successful, declined, blocked and review-flagged attempts. Its all-payment-methods prevention row starts at Standard. The same-day supported-method guide describes broad default protection but scopes default high-risk controls to Standard and above and says Stripe may still block Lite payments. Custom settings depend on plan. Use `:payment_method_type:` to target a method within eligible rules. See [[source-stripe-radar-supported-payment-methods]].
 
-| Support level | Payment methods |
-| --- | --- |
-| Full | Cards (credit/debit/Apple Pay/Google Pay), ACH, SEPA |
-| Private preview | ACSS, AU BECS, Bacs, NZ BECS, PayTo; BNPL (Affirm, Afterpay, Klarna); Cash App, PayPal; Stablecoin/crypto |
-
-Use `:payment_method_type:` attribute to target specific PMs in rules. See [[source-stripe-radar-supported-payment-methods]].
-
-**Not screened**: SetupIntents for non-card payment methods (unless enabled in settings).
+Both Radar overviews exclude non-card SetupIntents. The separate May Risk evaluations guide describes enabling Radar for SetupIntents when using cards. See [[source-stripe-radar-risk-evaluation]].
 
 ## Rules (Custom + Built-in)
 
@@ -56,11 +43,11 @@ The April 2026 [[source-stripe-payment-intents#Descriptor and metadata boundarie
 
 **Rule reference details**: Missing attributes always return false (use `is_missing()` to check explicitly). Velocity attributes use bucket windows (hourly = 3900s/5min buckets). `amount_in_xyz` auto-converts currency. Metadata is case-sensitive; customer/destination/account scopes available (`::customer:field::`). Post-authorization attributes (CVC/AVS) may cause temporary auth hold. See [[source-stripe-radar-rules-reference]].
 
-## Block/Allow Lists (Fraud Teams)
+## Block and allow lists
 
-Reusable value collections used in Radar rules. Default lists cover Cards (BIN, country, fingerprint, IP, email, customer ID), ACH (fingerprint + shared), SEPA (fingerprint + shared). Cannot delete default lists.
+Radar rules can reference reusable lists for allow, block or review. Default lists cover Cards, ACH and SEPA. Merchants can change their items while Stripe keeps the default lists fixed. May named Radar for Fraud Teams for custom lists. The November plan matrix lists default lists on Standard, Plus and Pro and custom lists on Plus and Pro.
 
-**Custom list types**: String, Case-sensitive string, Card fingerprint, Card BIN, Customer ID, Email, IP address, Country, SEPA/ACH fingerprint. Up to 50,000 items. Default fingerprint allowlists: 30-day max lifespan. Custom lists can have indefinite expiration.
+**Custom list types**. Both lists guides describe ten entries. Each list can hold up to 50,000 items. Default fingerprint allowlist entries last at most 30 days. Custom payment-method fingerprint lists can have longer or indefinite expiration when used in custom rules. See [[source-stripe-radar-lists]] for the dated API enum and expiration scope.
 
 **Fraud report auto-populates block lists**: card fingerprint(s) + email from `receipt_email`/Customer.email/description fields. See [[source-stripe-radar-lists]].
 
@@ -109,9 +96,9 @@ The more data you provide, the better Radar performs. Estimated improvements fro
 | Customer name | +3% |
 | Billing address | +1% |
 
-**Integration ranking** (best → worst): Payment Links / Checkout / Elements+customer → Direct API + Radar Sessions + customer → Direct API + client+customer → Direct API alone.
+**Integration evidence**. May and November recommend Payment Links, Checkout and Elements with customer risk factors. The captured completeness columns are blank. The percentages above are Stripe’s model estimates for individual factors. See [[source-stripe-radar-optimize-risk-factors]] for the full dated integration rows and factor scopes.
 
-**Key practices**: include Stripe.js on every page; use Customer objects; enable Radar for SetupIntents in settings; update privacy policy to disclose Stripe's device data collection. See [[source-stripe-radar-optimize-risk-factors]].
+**Key practices**. Stripe recommends including Stripe.js on every page and instructs merchants to always load it directly from Stripe’s hosted URL. Reuse Customer objects and disclose device collection. Stripe scans per Charge, including Charges generated across retries. Charge-free setup scans are off by default. Use the Radar settings opt-in to scan SetupIntents. See [[source-stripe-radar-optimize-risk-factors]] for the dated Dahlia and Endive script instructions and setting.
 
 ## Radar for Platforms
 
@@ -125,11 +112,17 @@ Extends Radar to Connect platforms with connected account risk scoring (`highest
 
 **Platform payment controls**: platform-only (overrides connected accounts) or shared (platform rules first). Permissions: Connect Risk Analyst role required.
 
-**API signals (private preview)**: account fraud, account insolvency, fraudulent website — webhook-driven via Account Signals API. See [[source-stripe-radar-for-platforms]] and [[source-stripe-radar-account-risk-signals]].
+**Account Signals API.** The May 2026 overview links a dated preview and describes fraudulent merchant, merchant delinquency risk and on-demand fraudulent website evaluations. The November overview adds payment delinquency exposure, a conditional estimate of dispute and refund dollars at risk. It describes a 90-day lookup period after creation for signals and evaluations, omits older signals from lists, and illustrates notification, retrieval and a platform action decision.
 
-## Fraud Insights (Fraud Teams)
+The separate November merchant guide uses `2026-10-28.preview`, documents Radar Standard or higher and limits certain detail fields to Plus and Pro. It shows a thin readiness event followed by an API fetch. The website guide also documents thin events and retrieval. It allows sandbox testing on any Radar plan and specifies Plus or Pro and a 4,000-request monthly limit for live evaluation. See [[source-stripe-radar-account-risk-signals]] for each signal contract and [[source-stripe-radar-for-platforms]] for review and account actions.
 
-Dashboard → Radar → Insights tab. Default filters: risk score >65 + >10 charges/card/hour. 3-month near-real-time view. Payment status filter: All/Successful/All fraud/Disputes/EFWs. Pivot chart by Day/Week/Month or attribute dimension (risk score stacks into 0-9, 10-19 ranges). Transaction list with drill-down. Actions: refund individual, enable risk controls, write rules. See [[source-stripe-radar-fraud-insights]].
+## Fraud Insights
+
+The May 2026 Insights guide names Radar for Fraud Teams for Dashboard access. November names Radar Plus. The separate November plan table lists agentic insights for Plus and Pro and transaction fraud alerts for all four listed plans. The dated material leaves plan equivalence and account entitlements unresolved.
+
+The initial Insights view shows the prior three months in near real time, with successful payments, risk score strictly above 65, and more than 10 charges per card number per hour. Available statuses include all payments, successful payments, all fraud, disputes and early fraud warnings. Operators can change the date range and attributes, pivot by day, week, month or an attribute such as risk score, and drill into individual payments. Refunds and changes to risk controls or rules are merchant decisions.
+
+The November guide adds analysis of payments that triggered a fraud alert. An alert can yield one or more patterns for inspection in Insights, where the operator can see transaction details, fraud volume and dispute counts and decide whether to change rules or risk settings. See [[source-stripe-radar-fraud-insights]] for the dated workflow and [[source-stripe-radar-fraud-alerts]] for separate alert notifications and investigation.
 
 ## Fraud Alerts
 
@@ -137,11 +130,9 @@ Stripe auto-detects unusual patterns (e.g. risk score distribution shift) → em
 
 ## Analytics Center
 
-Dashboard → Radar Overview. Two views: new Analytics Center (default) and Legacy overview (toggle).
+**May 10, 2026 Radar Overview.** Radar Analytics center was the default, with a toggle to the Legacy overview. The newer view defaults to 30 days after a 24-hour delay. It offers count or volume, fraud arrival or payment date, retry deduplication and optional SetupIntent inclusion. Fraud, all disputes, blocks and rule actions have separate panels.
 
-**New view**: Fraud/Disputes/Blocks rate charts with peer benchmark comparison; rule match breakdown (Blocked/3DS/Allow/Review details); monitoring program status tracking. Configurable: volume vs count, fraud arrival date, de-duplicate retries, include SetupIntents. 24-hour delay; defaults to prior 30 days.
-
-**Legacy view**: Overview Chart (3DS→Screened→Disputed flow), benchmarks (block rate, fraud dispute rate, false positive estimate), fraudulent disputes chart with projected maximum (dashed line). Each chart has CSV download + View in Sigma. See [[source-stripe-radar-analytics]].
+**Legacy overview.** The six-month default includes the 3DS, Radar screening and dispute sequence, privacy-gated benchmark comparisons, modeled dispute projections and manual reviews for Radar for Fraud Teams. Legacy block rate uses attempted payments, while the newer view's May formula uses successful payments. Charts offer CSV download. View in Sigma requires Sigma access. The November capture links both views. See [[source-stripe-radar-analytics]].
 
 ## Test Cards
 
@@ -204,9 +195,9 @@ Score 0–100, same `risk_level` bands as payment (`highest`/`elevated`/`normal`
 
 IssuingAuthorizationEvaluation API: real-time fraud risk scoring for Stripe Issuing card authorizations before approving or declining. Works with physical and tokenized cards. Supports automated approval workflows for Issuing programs. See [[source-stripe-radar-issuing]].
 
-## Multiprocessor (External Payment Evaluation)
+## Multiprocessor Payment Evaluation
 
-Evaluate non-Stripe-processed payments with Radar at any point in the payment lifecycle. Signals: `fraudulent_payment` (default), `fraudulent_dispute` (preview, blocks), `early_fraud_warning` (preview). Prerequisites: tokenized PaymentMethod (card only) + Radar Session + customer email. API: `POST /v1/radar/payment_evaluations`. See [[source-stripe-radar-multiprocessor]].
+The May 2026 guide describes non-Stripe processing with a tokenized card, Radar Session and customer email. The November guide documents evaluations for any processor, approval-gated input alternatives for non-Stripe processing and a preview example for same-payment evaluation reuse when processing on Stripe. Both describe `fraudulent_payment` as the default and give blocking language for `fraudulent_dispute`. The response provides a recommendation and separate scores. The business server separately transacts with a third-party processor. See [[source-stripe-radar-multiprocessor]] for the dated signal, PCI and billing conditions.
 
 ## Bot Abuse Prevention
 
@@ -224,7 +215,7 @@ Enable at Dashboard → Risk controls → Free trial abuse. Auto-detected with C
 
 ## Custom Fraud Models
 
-Extends Radar's global model with business-specific metadata (e.g. account age, VIP status, session duration, product category, internal risk scores). Requires: structured metadata on PaymentIntent objects + sufficient payment volume. No integration changes after setup — new risk score replaces global one automatically. Model retrains as business evolves. See [[source-stripe-radar-custom-fraud-models]].
+Custom models use structured merchant signals on payment objects, such as `PaymentIntent.metadata`, and enough transaction history for Stripe's onboarding review. In the May and November 2026 guides, Stripe trains with global and merchant signals. After deployment, a score combining those signals becomes available without another integration change, and Stripe retrains the model as patterns change. The November guide also documents an email-based preview request. See [[source-stripe-radar-custom-fraud-models]].
 
 ## Advanced Fraud Detection (Stripe.js / Mobile SDKs)
 
@@ -249,31 +240,31 @@ See [[source-stripe-radar-sessions]].
 
 ## Sources
 
-- [[source-stripe-radar-how-it-works]] — Radar overview: tiers, pricing, payment methods, features
-- [[source-stripe-radar-optimize-risk-factors]] — Risk factor impact table, integration ranking, best practices
+- [[source-stripe-radar-how-it-works]] — May Radar labels and November plan matrices, method screening, Billing renewals and Connect fee attribution
+- [[source-stripe-radar-optimize-risk-factors]] — Stripe’s estimated model impact, three recommended integration rows with blank captured completeness cells, and dated hosted-script and charge-free setup guidance.
 - [[source-stripe-radar-sessions]] — Radar Sessions: when to use, integration flow, on/off-session attachment strategy
 - [[source-stripe-radar-risk-evaluation]] — Risk levels/scores, outcome fields, object support matrix, feedback loop, network coverage
-- [[source-stripe-radar-custom-fraud-models]] — Custom fraud models: business metadata signals, requirements, how it works, high-impact metadata types
+- [[source-stripe-radar-custom-fraud-models]] — May and November custom-model guides on preview access, merchant metadata, volume assessment, and post-deployment scores
 - [[source-stripe-disputes-advanced-fraud-detection]] — Advanced fraud detection: device+activity risk factors, Stripe.js on every page, hCaptcha, disable options
 - [[source-stripe-radar-customer-evaluation]] — Customer Evaluation API: multi_accounting + account_sharing signals, score/risk levels, lifecycle flow
 - [[source-stripe-radar-free-trial-abuse]] — Free trial abuse: blocks high-risk trial starts, auto-detected with Checkout Sessions, Sigma monitoring
 - [[source-stripe-radar-payg-abuse]] — PAYG abuse: non_payment_abuse signal, fail-open Payment Evaluation API, mid-cycle background evaluation
 - [[source-stripe-radar-bot-abuse]] — Bot score (0-99) for Checkout payments: anti-scripting policy enforcement, Sigma query, Radar rules
-- [[source-stripe-radar-multiprocessor]] — Multiprocessor: evaluate non-Stripe payments, 3 signals (fraudulent_payment/dispute/EFW), card-only
+- [[source-stripe-radar-multiprocessor]] — May and November 2026 Payment Evaluation guides for external and Stripe processing, dated access and input scope, risk responses and evaluation reuse.
 - [[source-stripe-radar-issuing]] — Radar for Issuing: IssuingAuthorizationEvaluation API, pre-authorization fraud scoring, physical + tokenized cards
 - [[source-stripe-radar-risk-settings]] — Risk settings (3 presets), 4 risk controls, 5 Radar scores, deprecation of risk_score
 - [[source-stripe-radar-supported-payment-methods]] — PM coverage: cards+ACH+SEPA fully supported; BNPL/wallets/stablecoin preview; :payment_method_type: attribute
 - [[source-stripe-radar-reviews]] — Review queue: Smart Refunds, actions, assignments, webhooks, best practices
 - [[source-stripe-radar-risk-insights]] — Risk insights: fraud factor numbers, top factors, customer signals, related payments (6-month limit)
 - [[source-stripe-radar-reviews-auth-capture]] — Auth-and-capture review: approve ≠ capture; Cancel vs Refund; review.closed webhook auto-capture pattern
-- [[source-stripe-radar-lists]] — Lists: default (Cards/ACH/SEPA), 11 custom types, 50k limit, 30-day allowlist max, fraud report auto-population
+- [[source-stripe-radar-lists]] — May and November 2026 guides with default lists, ten custom entries in the guide, separate API enum, item expiry and card fraud-feedback effects.
 - [[source-stripe-radar-rules]] — Rules: 4 actions, built-in rules, syntax, 3DS attributes, Radar Assistant, EU geo-blocking note
 - [[source-stripe-radar-rules-reference]] — Rules reference: processing order, attribute types, operators, missing attributes, velocity buckets, metadata scopes
 - [[source-stripe-radar-rules-supported-attributes]] — Supported attributes: 5 categories, risk/IP/email/distance/fingerprint/time/crypto (827 lines)
 - [[source-stripe-radar-testing]] — Test cards (highest/elevated risk), rule backtesting framework, when to implement each rule type
 - [[source-stripe-radar-rules-disputes]] — Dispute resolution rules: Resolve dispute action, dispute-specific attributes (is_fraudulent, network_reason_code)
-- [[source-stripe-radar-analytics]] — Analytics Center: fraud/dispute/block rate charts, benchmarks, rule match breakdown, legacy overview
+- [[source-stripe-radar-analytics]] — May 2026 Radar Analytics center and legacy reporting, view-specific metrics, cohort benchmarks and Sigma access. November links the two views.
 - [[source-stripe-radar-fraud-alerts]] — Fraud alerts: auto-detected attacks, email+bell notification, investigation page, Fraud Teams extra actions
-- [[source-stripe-radar-fraud-insights]] — Fraud insights: Insights tab, default filters (risk>65+velocity), pivot chart, payment status filter, drill-down actions
+- [[source-stripe-radar-fraud-insights]] covers the May and November 2026 Dashboard workflows, dated plan terms, initial filters and the November alert-triggered analysis.
 - [[source-stripe-radar-for-platforms]] — Radar for Platforms: connected account risk scores, investigation tools, reject (7 codes), reserves, API signals
-- [[source-stripe-radar-account-risk-signals]] — Account Signals API: 3 signal types (fraud/delinquency/website), webhook-driven, actions table
+- [[source-stripe-radar-account-risk-signals]] — May and November 2026 Account Signals API overviews, four November signal routes, 90-day lookup and list scope, and separate guides to plan, event and retrieval behavior.

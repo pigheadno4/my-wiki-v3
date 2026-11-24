@@ -1,0 +1,172 @@
+{
+  "job_id": "payments-payment-methods-transitioning",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Legacy APIs\"\ntype: source\ndate_ingested: 2026-04-20\ndate_updated: 2026-11-22\ncanonical_url: \"https://docs.stripe.com/payments/charges-api\"\noriginal_format: webpage\nraw_files:\n  - \"stripe-payments-payment-methods-transitioning-2026-11-07.md\"\n  - \"stripe-payments-older-apis-2026-11-07.md\"\n  - \"stripe-payments-payment-intents-migration-2026-11-07.md\"\n  - \"stripe-payments-payment-intents-migration-charges-2026-11-07.md\"\n  - \"stripe-payments-charges-api-2026-11-07.md\"\n  - \"stripe-older-apis-2025.md\"\n  - \"stripe-charges-api-legacy-2025.md\"\n  - \"stripe-payment-intents-migration-2025.md\"\n  - \"stripe-sources-api-2025.md\"\n  - \"stripe-sources-to-payment-methods-migration-2025.md\"\n  - \"stripe-charges-vs-payment-intents-2025.md\"\n  - \"stripe-upgrade-integration-2025.md\"\ntags: [stripe, legacy, charges-api, sources-api, payment-intents, migration]\n---\n\n## Summary\n\n[[stripe]] reference for legacy Charges, Tokens and Sources and migration to Payment Intents, Setup Intents and Payment Methods. The gateway is the dedicated Charges guide. The separately captured guides below have their own dates and scopes.\n\n## Key Takeaways\n\nThe [Older APIs overview](https://docs.stripe.com/payments/older-apis) captured 2026-04-20 and 2026-11-07 gives the same general guidance. It says Stripe stopped updating documentation for some replaced APIs, recommends the current Intent and Payment Methods APIs, and groups them as broader in payment-method coverage with SCA readiness, Terminal and future development. The comparison lists cards and ACH for the Charges, Tokens and Sources group. These are group-level comparisons. The separate April Charges comparison describes a broader historical Charges route for cards and all methods available through Sources.\n\n- **Charges.** Both Older APIs captures say unsupported Charges can still be used pending upgrade. The April Charges comparison also says Charges was not being deprecated. The dedicated Charges guide and [Charges versus Payment Intents comparison](https://docs.stripe.com/payments/payment-intents/migration/charges), both captured 2026-11-07, deprecate **using Charges to create card payments**, state a plan to remove that support and bar new integrations from creating payments through Charges. New integrations are directed to Checkout or Payment Intents. The creation notice gives no removal date or general shutdown for Charge retrieval and refunds.\n- **Sources for local methods.** Both Older APIs captures describe deprecated acceptance through Sources, a planned shutoff, required migration and more details by email. Local-payment-method availability through current APIs is a separate question.\n- **Sources for cards and legacy Cards.** Both Older APIs captures describe Sources card acceptance as deprecated with no then-current shutoff plan. The separate [November transition guide](https://docs.stripe.com/payments/payment-methods/transitioning) instead plans to stop Sources card acceptance and legacy Cards support, requires migration for Sources card payments and says Stripe will send email. The dedicated [November Sources guide](https://docs.stripe.com/sources) broadly requires existing Sources users to migrate and bars new integrations from using Sources. The [detailed November card migration](https://docs.stripe.com/payments/payment-methods/migrate-from-legacy-cards-sources) separately covers ending creation of Card or Source objects, including creation through Tokens, and their use for payments. These notices leave specific timing, email delivery and account enforcement unverified.\n- **Legacy ACH.** Both Older APIs captures describe older ACH as usable by existing users pending upgrade. The dedicated [November ACH with Charges guide](https://docs.stripe.com/ach-deprecated) blocks new legacy onboarding, directs new integrations to current ACH Direct Debit and recommends Payment Intents migration for existing integrations. The separate November card Charges guide does not cover ACH.\n\n## Card-payment flow in the dedicated Charges guide\n\n | Step | Charges API (legacy) | Payment Intents API | \n | --- | --- | --- | \n | 1 | Collect payment info via Elements | Create PaymentIntent server-side | \n | 2 | Tokenize via Stripe.js → token | Send client_secret to client | \n | 3 | Send token to server | Collect payment info via Elements | \n | 4 | Create Charge server-side | Handle 3DS client-side via Stripe.js | \n | 5 | Fulfill on success | Fulfill via webhook on success | \n\nCharges API does **not** support: SCA, India businesses, bank-requested card authentication. In the legacy flow, browser Elements data is tokenized by Stripe.js; the token goes to the merchant server for Charge creation, and fulfillment follows **successful payment**, not mere token or Charge request creation. PaymentIntents are created server-side, the client receives a client secret and handles 3DS with Stripe.js/mobile SDK, and the dedicated guide directs fulfillment from success webhooks. These are actor and outcome boundaries, not executable authorization for a new Charges integration.\n\n## Other Details (Charges API)\n\n- **Refunds**: the April Node example uses `stripe.refunds.create({ charge: id, amount?: cents })`; November shows equivalent server-side secret-key curl to `POST /v1/refunds` with a Charge ID and optional integer `amount` in the currency's minor unit. A refund request example is not evidence of successful refund.\n- **Apple Pay (legacy)**: `PKPayment → createToken → Charge` (new path uses PaymentIntent)\n- **Dynamic statement descriptor**: 22 char limit; dynamic portion appended with `*` separator; Stripe allots 10 chars each side; use Dashboard \"shortened descriptor\" (2–10 chars) to give more room to dynamic portion\n- **Metadata**: supported; use with Radar rules; do not store PII or card details in metadata or Charge `description`. For PaymentIntents, read/update `metadata` and `description` on the **PaymentIntent**: the corresponding Charge fields are not guaranteed to stay consistent. A Charge metadata value is not a substitute for PaymentIntent state.\n- **Declines**: inspect the failed-payment API error and, where provided, its Charge ID to retrieve `outcome`; `charge.failed` webhooks signal unsuccessful charges. Do not infer success from tokenization or an attempted request.\n\n**Example surface:** November changes the refunds, descriptor and metadata illustrations from April Node SDK snippets to curl with a secret key; it does not say the SDK is deprecated. The Apple Pay legacy example still converts a `PKPayment` through `createTokenWithPayment` into a Token and then a server Charge. That example does not override the new-integration bar.\n\n## Charges vs Payment Intents: Historical comparison\n\nThe use-case table comes from the 2026-04-20 Charges versus Payment Intents comparison. It describes an existing simpler cards use case for merchants with mainly US or Canadian customers, lists both APIs on Web, iOS and Android, and describes legacy Charges as supporting cards and all methods on Sources. The 2026-11-07 capture of that comparison replaces the table with the card-creation deprecation and new-integration bar, names India businesses, bank-requested authentication and SCA as unsupported on Charges, and describes hosted, embedded and Elements-backed Checkout. The historical table supplies no new-integration permission.\n\n |  | Charges API | Payment Intents API | \n | --- | --- | --- | \n | Use case | Simple card acceptance for mainly US/Canada customers | Multiple methods and cards requiring authentication | \n | SCA ready | No | Yes | \n | Terminal (in-person) | No | Yes | \n | New features | No | Yes (only here) | \n\n**Charge object read migration.** Both comparison captures advise updating existing Charge readers before incrementally changing payment creation flows. The guide says the two top-level fields `charge.payment_method_details` and `charge.billing_details` are available across API versions for Charges created through either API. The method identifier is the separate `charge.payment_method` field. Availability of those top-level fields establishes neither nested schema parity across versions nor non-null data on a particular Charge.\n\n | Old card/bank-account shape | Old Sources shape | Common Charge read | \n | --- | --- | --- | \n | `charge.source` | `charge.source` | `charge.payment_method_details` | \n | `charge.source.id` | `charge.source.id`, or `charge.source.three_d_secure.card` for a 3DS Source | `charge.payment_method` | \n | `charge.source.name` | `charge.source.owner.name` | `charge.billing_details.name` | \n | `charge.source.address_zip` | `charge.source.owner.address.postal_code` | `charge.billing_details.address.postal_code` | \n | `charge.source.brand: \"MasterCard\"` | `charge.source.card.brand: \"MasterCard\"` | `charge.payment_method_details.card.brand: \"mastercard\"` | \n | `charge.source.tokenization_method: \"android_pay\"` | `charge.source.card.tokenization_method: \"android_pay\"` | `charge.payment_method_details.card.wallet.type: \"google_pay\"` | \n\n**Historical 3DS row.** Both comparisons place `charge.source.object == 'source' && charge.source.type == 'three_d_secure'` beside `charge.payment_method_details.card.three_d_secure.succeeded`. The former tests the legacy object shape and type. The latter is a historical boolean. The separate [3DS Charge changelog](https://docs.stripe.com/changelog/2020-08-27/updates-3d-scure-charge-object) says `succeeded` and `authenticated` were removed in favor of `result`, and links Charge and SetupAttempt REST definitions for API version `2024-06-20`. See [[source-stripe-3d-secure-authentication-flow]] for the November enum evidence. The Source type check does not establish authentication or equate to `three_d_secure.result=authenticated`. The enum reports authentication outcome. Payment authorization, capture, success and settlement are separate.\n\n## Sources → Payment Methods Migration\n\n**Key conceptual shift**: `Source` is stateful (has `status`); `PaymentMethod` is stateless — the PaymentIntent owns the state.\n\nThe [transition guide](https://docs.stripe.com/payments/payment-methods/transitioning) covered local methods in the April 20, 2026 capture and centers on cards in the November 7, 2026 capture. Both show the routes below. The November method table covers deprecated legacy cards and ACH Direct Debit supported through legacy Tokens, with Sources unsupported for ACH Debit. It calls the table non-comprehensive and continues to direct other Sources integrations to migrate to Payment Methods. See April lines 8–32 and 73–96 and November lines 9–33 and 76–87.\n\n**Transition paths** (complexity order):\n\n | Path | Complexity | Server | Client | \n | --- | --- | --- | --- | \n | Stripe Checkout | Low | Create CheckoutSession | Not needed | \n | Payment Element | Medium | Create PaymentIntent | Render Payment Element with client_secret | \n | Own form | High | Create PaymentIntent | Custom form + JS SDK | \n\n**Key details:**\n\n- The 2026-04-20 local-payment-method transition says incomplete customer authorization after 48 hours moves the PaymentIntent from `requires_action` to `requires_payment_method` and permits another confirmation attempt. The 2026-11-07 card-oriented transition lists `succeeded`, `requires_payment_method` and `requires_action`, with possible 3DS for incomplete authorization. It requires server retrieval or server webhook verification and omits the 48-hour example. A browser return alone does not verify status.\n- **Webhooks.** The mapping has no replacement for `source.chargeable`, `source.failed` or `source.canceled`. Both `charge.succeeded` and `charge.failed` are still sent, and `charge.dispute.created` stays in both mappings. The PaymentIntent mapping uses `payment_intent.succeeded` and `payment_intent.payment_failed`. The Checkout comparison names `payment_intent.succeeded` for payment success, and the Checkout event mapping names `checkout.session.completed` for Session completion. A completed Session can have a pending payment. The customer can retry payment within the same Session until expiry, when `checkout.session.expired` is sent. Verify the paid outcome server-side. See April lines 26–32 and 60–71, November lines 27–33 and 63–74, and [[stripe-checkout#Key Webhooks|Checkout webhook handling]].\n- **Reusable local Sources.** The April local-method guide says saved Alipay, Bacs Direct Debit and SEPA Direct Debit Sources do not migrate automatically. It describes converting them with the Dashboard data migration tool. The November transition overview omits this compatibility section.\n- **Saved legacy cards**. The 2026-04-20 transition describes a compatible saved Card as a Payment Methods view of the same object and shows its ID in `payment_method` with the matching Customer. The separate November detailed card migration says unmigrated Card/Source IDs can no longer be passed in `payment_method`, and describes the transitional PaymentIntent `source` parameter, explicitly undocumented, plus `customer` if attached. Its tool for migrating existing Cards to PaymentMethods is private preview. The November transition overview also omits the April saved-card compatibility section and points to the distinct detailed card guide.\n- **Charge IDs, refunds and errors.** The transition guide describes retaining Charge references and also recommends recording the PaymentIntent ID. Both captures accept either a PaymentIntent ID or the Charge ID from `latest_charge` for a refund request. April presents the Charge ID first, and November presents the PaymentIntent ID first. Both allow either identifier. Verify refund status separately. Inspect PaymentIntent errors at creation and after customer authorization. The codes can differ from corresponding Sources errors. See April lines 34–58 and November lines 35–61.\n\n## Integration Upgrade Map\n\n | Legacy | Recommended | Key benefit | \n | --- | --- | --- | \n | Card Element | Payment Element | 100+ payment methods; dynamic presentment by location/currency | \n | Legacy Checkout | Checkout or Payment Links | Adaptive Pricing, Dynamic payment methods, embed or redirect | \n | Payment Request Button | Express Checkout Element | Apple Pay + Amazon Pay + Google Pay + Link + PayPal simultaneously | \n | Manual payment methods | Dynamic payment methods | Dashboard-managed; Stripe selects eligible methods per transaction | \n\nThe 2026-11-07 [Payment Request Button page](https://docs.stripe.com/stripe-js/elements/payment-request-button) marks the Element deprecated and directs readers to Express Checkout Element and its migration guide. The [2026-09-30 Endive changelog](https://docs.stripe.com/changelog/endive/2026-09-30/deprecate-payment-request-button) says Stripe.js through Dahlia supports the Element and that `elements.create('paymentRequestButton')` throws starting with Endive, including React `PaymentRequestButtonElement` integrations. The change concerns the Element. See [[stripe-express-checkout-element#Migrating from Payment Request Button Element|Express Checkout Element migration]].\n\n## Related Pages\n\n- [[stripe]] — Stripe company page (API Deprecations table)\n- [[source-stripe-payment-intents]] — current Payment Intents API\n- [[stripe-payment-intents]] and [[stripe-payment-methods]] — payment and instrument contexts\n- [[stripe-ach-direct-debit]] — current ACH Direct Debit and migration routes\n\n## Sources API Concepts\n\n4 characteristics classify every Source object:\n\n | Characteristic | Values | Notes | \n | --- | --- | --- | \n | Pull vs Push | Pull = merchant debits customer; Push = customer sends funds | Cards = pull; iDEAL/Sofort/ACH Credit = push | \n | Flow | none / redirect / code verification / receiver | Determines customer action required before source is chargeable | \n | Usage | `single_use` / `reusable` | Single-use → `consumed` after charge; reusable must be attached to Customer | \n | Confirmation | synchronous / asynchronous | Async charge starts `pending`; webhook required for fulfillment | \n\n**Receiver flow detail**: if not fully charged, funds credited to balance after 60 days. If source becomes chargeable but no charge is made, source is canceled and payment refunded automatically.\n\nThe 2026-04-20 Sources API guide marks **accepting local payment methods through the Sources API route** as deprecated and planned for removal; migrate that route to the Payment Methods API. Its push-method table names Alipay, Bancontact, giropay, iDEAL, Przelewy24, WeChat Pay, Sofort and Multibanco in the Sources context. This notice does not say those payment methods themselves are unavailable through current APIs.\n\n## Migration Guide (Charges → Payment Intents)\n\nThe [migration guide](https://docs.stripe.com/payments/payment-intents/migration) captured 2026-04-20 and 2026-11-07 describes parallel adoption while transitioning an existing cards/Charges integration. It recommends upgrading the API version and client SDK, updating Charge reads where applicable, migrating the payment flow and saved-card handling, and validating authentication in a sandbox. Before API version 2019-02-11, `requires_source` and `requires_source_action` correspond to `requires_payment_method` and `requires_action`. The iOS and Android links route to separate guides. The November quickstart link is for Checkout Sessions with Payment Element and its own confirmation flow. Parallel adoption guidance does not extend to new Charges payment creation.\n\n- **One-time Elements card payment.** The server creates the PaymentIntent and passes its client secret. Stripe.js `confirmCardPayment` initiates the Charge. For automatic confirmation, fulfill server-side after `payment_intent.succeeded`. Legacy Checkout can migrate to Checkout or Elements. The Stripe.js v2 route first moves collection to Elements.\n- **Historical Payment Request Button.** The two migration captures pass the token event's ID into `confirmCardPayment` and invoke the completion callback after its promise resolves. Use the server success webhook to establish paid fulfillment. This Element path is version-limited by the through-Dahlia and Endive warning above. The version notice does not remove lower-level Payment Request or `confirmCardPayment`.\n- **Save in the payment flow.** Supply the Customer identity and `setup_future_usage` on the PaymentIntent. Use `on_session` for reuse only with the customer present or `off_session` for reuse outside or in both contexts. Both migration captures describe attachment after confirmation and any required actions, then include a separate attach instruction. The November create and confirm references clarify automatic attachment with the qualifying customer and setup, and separate attachment after completion where no Customer was given. The create reference distinguishes `customer` and `customer_account`.\n- **Save without charging.** Create a SetupIntent server-side and confirm using its client secret and `confirmCardSetup` instead of `createToken` or `createSource`. Customer action may be required. On successful setup use `setupIntent.payment_method`. A supplied Customer or Account identity attaches the method on success per the November SetupIntent create reference. Where separate attachment is needed, use the Payment Methods API. Bare attachment without either setup flow does not optimize the instrument for future use. Successful setup does not establish a paid transaction.\n- **Charge later and list saved methods.** The migration guide asks for the Customer and selected saved Card, Source or PaymentMethod ID, with the legacy parameter qualification above and an off-session flag when applicable. The [November PaymentIntent create reference](https://docs.stripe.com/api/payment_intents/create#create_payment_intent-payment_method) documents a migration fallback specifically when `confirm=true` and `payment_method` is omitted: it attaches `customer.default_source`. Provide the chosen instrument explicitly. List via the Payment Methods API, since new PaymentMethods are not duplicated in `customer.sources`.\n- **Sandbox fixtures.** The test cases cover authentication on setup or first use (`4000002500003155`), always required (`4000002760003184`), authentication followed by `insufficient_funds` (`4000008260003178`), and optional 3DS2 unless sandbox Radar requests it (`4000000000003055`). These are simulated outcomes.\n\n## Companion evidence locators\n\n- November Sources transition lines 5–17, 27–49 and 51–85 cover planned card-route changes, server verification, refunds, events and method mapping. November detailed card migration lines 15–21, 39–64 and 474–484 cover legacy object creation, transitional card IDs and the private-preview migration tool.\n- November PaymentIntent create lines 432–444, 647–650 and 672–685 and confirm lines 639–654 cover attachment and the conditional default-source fallback. SetupIntent create lines 378–386, confirm lines 5–11 and PaymentMethod attach lines 5–11 cover the no-charge setup and attach boundaries.\n- The November Charges comparison lines 31–68 retain the Charge read table. The 3DS changelog lines 7–21 and November authentication guide lines 73–80 and 499–505 define the separate authentication result.\n\n## Raw Sources\n\n- [[raw/stripe-payments-payment-methods-transitioning-2026-11-07|November 7, 2026 Sources and Tokens transition guide]] — Full same-URL overview for card-route migration, server verification, events and legacy mapping.\n- [[raw/stripe-payments-older-apis-2026-11-07|November 2026 Older APIs overview]] — same-route full capture and grouped comparison.\n- [[raw/stripe-payments-payment-intents-migration-2026-11-07|November 2026 Payment Intents migration]] — existing integration migration and the historical Payment Request Button procedure.\n- [[raw/stripe-payments-payment-intents-migration-charges-2026-11-07|November 2026 Charges versus Payment Intents comparison]] — scoped write-side deprecation and Charge read mappings.\n- [[raw/stripe-payments-charges-api-2026-11-07]] — 2026-11-07 full Charges page (160 lines); scoped card-payment-creation deprecation and new-integration bar.\n- [[raw/stripe-older-apis-2025]] — 2026-04-20 overview and grouped comparison. See the dated Sources, Charges and ACH qualifications above.\n- [[raw/stripe-charges-api-legacy-2025]] — Charges API: flow comparison, refunds, Apple Pay, statement descriptors, metadata, declines\n- [[raw/stripe-payment-intents-migration-2025]] — Charges→PaymentIntents migration: incremental approach, confirmCardPayment, setup_future_usage, confirmCardSetup, off-session flagging, test cards\n- [[raw/stripe-sources-api-2025]] — Sources API concepts: 4 characteristics (pull/push, flow, usage, sync/async), 4 flow types, single-use vs reusable, async pending→webhook pattern; deprecated local-payment-method acceptance is scoped to the Sources API route\n- [[raw/stripe-sources-to-payment-methods-migration-2025]] — Sources/Tokens→PaymentMethods migration: 3 paths (Checkout/Element/own form), stateless PaymentMethod vs stateful Source, 48h requires_action timeout, webhook mapping, reusable legacy method migration tool, legacy card backward-compat\n- [[raw/stripe-charges-vs-payment-intents-2025]] — Charges vs PaymentIntents: 3 API options, Charges = US/Canada simple cards not SCA-ready, PI = all methods + SCA + Terminal; charge object read migration field mapping; brand/Google Pay rename\n- [[raw/stripe-upgrade-integration-2025]] — Integration upgrade map: Card Element→Payment Element, Legacy Checkout→Checkout/Payment Links, Payment Request Button→Express Checkout Element, Manual→Dynamic payment methods\n",
+  "quotes": {
+    "payments-payment-methods-transitioning": [
+      {
+        "text": "We plan to stop Sources API support for card payments, and to stop support for [Cards](https://docs.stripe.com/api/cards.md).",
+        "location": "raw/stripe-payments-payment-methods-transitioning-2026-11-07.md:11"
+      },
+      {
+        "text": "To migrate your integration, update your server and front end to use the [Payment Intents API](https://docs.stripe.com/api/payment_intents.md).",
+        "location": "raw/stripe-payments-payment-methods-transitioning-2026-11-07.md:17"
+      },
+      {
+        "text": "Don’t rely solely on the user returning to the `return_url`",
+        "location": "raw/stripe-payments-payment-methods-transitioning-2026-11-07.md:49"
+      },
+      {
+        "text": "By contrast, a `PaymentMethod` is stateless, relying on the PaymentIntent object to represent payment state.",
+        "location": "raw/stripe-payments-payment-methods-transitioning-2026-11-07.md:78"
+      },
+      {
+        "text": "The customer can re-attempt the payment on the same Checkout Session",
+        "location": "raw/stripe-payments-payment-methods-transitioning-2026-11-07.md:73"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-payment-methods-transitioning": [
+      {
+        "text": "If the customer doesn’t complete the payment within 48 hours, then the PaymentIntent transitions to `requires_payment_method` and you can retry the confirmation.",
+        "location": "raw/stripe-sources-to-payment-methods-migration-2025.md:44"
+      },
+      {
+        "text": "To preserve your existing customers’ saved payment methods, you must convert those sources to payment methods using a data migration tool in the Stripe Dashboard.",
+        "location": "raw/stripe-sources-to-payment-methods-migration-2025.md:108"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-payment-methods-transitioning-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 95
+      }
+    ],
+    "raw/stripe-sources-to-payment-methods-migration-2025.md": [
+      {
+        "start": 1,
+        "end": 306
+      }
+    ],
+    "wiki/sources/source-stripe-legacy-apis.md": [
+      {
+        "start": 1,
+        "end": 164
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/b308ac0573b8546d932b43a4/content.diff": [
+      {
+        "start": 1,
+        "end": 343
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 21,
+        "end": 26
+      },
+      {
+        "start": 728,
+        "end": 731
+      }
+    ],
+    "wiki/concepts/stripe-checkout.md": [
+      {
+        "start": 175,
+        "end": 195
+      },
+      {
+        "start": 206,
+        "end": 217
+      }
+    ],
+    "wiki/concepts/stripe-payment-intents.md": [
+      {
+        "start": 85,
+        "end": 95
+      },
+      {
+        "start": 152,
+        "end": 158
+      }
+    ],
+    "wiki/concepts/stripe-payment-methods.md": [
+      {
+        "start": 85,
+        "end": 100
+      }
+    ],
+    "raw/stripe-payments-older-apis-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 20
+      }
+    ],
+    "raw/stripe-payments-payment-methods-migrate-from-legacy-cards-sources-2026-11-07.md": [
+      {
+        "start": 15,
+        "end": 23
+      },
+      {
+        "start": 39,
+        "end": 64
+      },
+      {
+        "start": 474,
+        "end": 484
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md": [
+      {
+        "start": 115,
+        "end": 122
+      }
+    ]
+  },
+  "answers": {
+    "payments-payment-methods-transitioning": {
+      "Q1": "The 2026-11-07 capture of https://docs.stripe.com/payments/payment-methods/transitioning is a full, card-oriented overview. It plans to stop Sources API card support and legacy Cards support, requires existing Sources card integrations to migrate to Payment Intents, and links a separate detailed migration guide (new raw lines 9-25). The November table is non-comprehensive and explicitly still instructs merchants to migrate other methods integrated through Sources to the Payment Methods API (new raw lines 76-85). That instruction is separate from the earlier plan to turn off local-method support. The merchant creates a Checkout Session or PaymentIntent on the server. Payment Element and custom-form paths use the client secret and Stripe.js. A PaymentMethod represents the instrument while the PaymentIntent owns payment state. The guide describes succeeded, requires_payment_method and requires_action, possibly for 3DS, and requires server retrieval or server webhook verification rather than browser return (new raw lines 27-49 and 76-85). April emphasized local Sources and said no planned card shutdown, gave a 48-hour local authorization example and discussed reusable local Sources and compatible saved cards (old raw lines 8-12, 38-46 and 100-132). source-stripe-legacy-apis.md now links the full November capture directly and scopes the migration events to their respective objects.",
+      "Q2": "For https://docs.stripe.com/payments/payment-methods/transitioning, the substantive change is the planned Sources card and Cards cutoff and mandatory card-path migration after April's local-method focus and no planned card shutdown (old raw lines 8-12; new raw lines 9-13). The same-day Older APIs overview still deprecates card Sources without a then-planned cutoff. Preserve that conflict, no effective cutoff date, the April 48-hour example and local reusable-data conversion, and the distinct November detailed card compatibility limits in source-stripe-legacy-apis.md (old raw lines 38-46 and 100-132; new raw lines 39-49 and 76-95). Retain Checkout, Payment Element and custom form choices, server confirmation evidence and the separate Checkout and Intent event routes (old raw lines 26-32 and 60-71; new raw lines 27-33 and 63-74). The Checkout comparison row names payment_intent.succeeded (new raw line 33), while the Checkout webhook mapping names checkout.session.completed (new raw line 72). A Session completion event alone does not universally prove a paid outcome. Table markup, typographic changes and the detailed migration link are presentation/navigation. Keep reciprocal Payment Methods and Payment Intents routes and both dated raws, alongside the separate Charges, Sources and detailed card migration authority."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "sources-transition-intent-route",
+      "target_path": "wiki/concepts/stripe-payment-intents.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-legacy-apis]] — April and November 2026 existing Charges migration, Charge read compatibility and the scoped November creation notice. Includes saved-method attachment, the create API fallback and historical Payment Request Button version limits.",
+      "proposed_markdown": "- [[source-stripe-legacy-apis]] — April and November 2026 existing Charges migration, Charge read compatibility and the scoped November creation notice. Includes saved-method attachment, the create API fallback and historical Payment Request Button version limits. The separate same-URL Sources transition evidence distinguishes server-verified Intent outcomes, Checkout Session completion and retained Charge events.",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "April raw lines 26–32 and 60–71 and November raw lines 27–33 and 63–74 distinguish payment events from Session completion. The dated comparison is scoped to the migration guide."
+      ]
+    },
+    {
+      "update_id": "sources-transition-method-route",
+      "target_path": "wiki/concepts/stripe-payment-methods.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-legacy-apis]] — April and November 2026 legacy Sources, Cards and Tokens migration scopes, including the dated local-method transition and the separate November legacy card migration.",
+      "proposed_markdown": "- [[source-stripe-legacy-apis]] — April and November 2026 legacy Sources, Cards and Tokens migration scopes. The paired transition guides cover April local methods and November's planned Sources card and legacy Cards cutoff. The detailed November legacy card migration is separate.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "April raw lines 8–12, 100–132 and 300 and November raw lines 9–13 and 76–95 delimit the shifted transition scope. The transition guide gives no effective cutoff date."
+      ]
+    }
+  ]
+}

@@ -227,7 +227,7 @@ Session: `mode: 'subscription'` + `ui_mode: 'elements'` + `customer` or `custome
 - [[source-stripe-checkout-subscriptions-quickstart]] — May and November 2026 hosted Checkout subscription quickstart: recurring Price lookup key, customer portal, webhook and active-status access check; dated variants and optional features in source
 - [[source-stripe-subscriptions-design-integration]] — Design guide: 4 pricing models, 7 checkout interfaces, 3 billing timing models, integration matrix
 - [[source-stripe-build-subscriptions]] — Full integration guide: 3 UI paths (hosted/embedded/Elements), billing_mode:flexible, provision access pattern, test payment methods
-- [[source-stripe-recurring-pricing-models]] — Pricing models reference: flat rate, per-seat, tiered, usage-based
+- [[source-stripe-recurring-pricing-models]] — May and November 2026 overview of flat-rate, per-seat, tiered and usage-based models. See the source for the dated usage-based route and quantity or usage tier calculations.
 - [[source-stripe-flat-rate-pricing]] — Flat rate pricing implementation: Product + monthly/yearly Price + Subscription API pattern
 - [[source-stripe-per-seat-pricing]] — Per-seat pricing: same API as flat rate but pass quantity (seats) in subscription items
 - [[source-stripe-usage-based-pricing]] — Usage-based pricing: licensed vs metered usage_type, billing_scheme:tiered + meter, credit burndown via billing.creditGrants
@@ -249,6 +249,7 @@ Session: `mode: 'subscription'` + `ui_mode: 'elements'` + `customer` or `custome
 - [[source-stripe-subscriptions-billing-mode]] — Flexible billing mode: migrate API, proration_discounts itemized/included, schedule inheritance, cannot revert to classic
 - [[source-stripe-subscriptions-billing-mode-compare]] — Classic vs flexible billing comparison (May and November 2026 captures): prorations, usage, anchors, pending items, cancellations, trials, mixed intervals, and item limits; scenario-specific differences
 - [[source-stripe-subscriptions-mixed-interval]] — Mixed interval subscriptions: item-level periods, interval alignment rules, cancellation, Checkout limitation
+- [[source-stripe-products-prices]] — Catalog modeling with recurring Prices, the matching interval and count rule outside flexible billing, and the three-year maximum
 - [[source-stripe-subscriptions-coupons]] — Coupons/promotion codes: duration behaviors, stackable discounts, promo code restrictions, update rules
 - [[source-stripe-subscriptions-modify]] — Modify subscriptions hub: billing-related vs non-billing update distinction, discount+proration mixed-call behavior, pending updates
 - [[source-stripe-subscriptions-change-price]] — Change price (upgrade/downgrade): item-ID pitfall, quantity reset, billing period rules, zero-amount edge cases, usage meter notes

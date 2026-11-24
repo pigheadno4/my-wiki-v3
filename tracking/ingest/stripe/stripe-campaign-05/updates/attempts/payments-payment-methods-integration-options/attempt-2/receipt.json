@@ -1,0 +1,218 @@
+{
+  "job_id": "payments-payment-methods-integration-options",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Stripe: Payment Method Integration Options\"\ntype: source\ndate_ingested: 2026-05-01\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/payment-methods/integration-options\"\nraw_files:\n  - \"stripe-payments-payment-methods-integration-options-2026-11-07.md\"\n  - \"stripe-payment-method-integration-options-2025.md\"\ntags: [stripe, payment-methods, integration, checkout, elements, payment-links, dynamic-payment-methods]\n---\n\n## Overview\n\nThe November 7, 2026 guide explains how Dashboard settings, code restrictions, transaction compatibility and presentation order work together. An authorized Dashboard role is needed to manage settings. Some methods need activation, approval or an invitation. Some wallets, such as Apple Pay, require domain registration for Elements or embedded Checkout. On Connect direct charges or charges using `on_behalf_of`, the connected account's payment method settings apply. See November lines 9–22 and [[source-stripe-payment-method-support]] and [[source-stripe-pmd-registration]].\n\n## Enabling, filtering and sorting\n\n- **Dynamic selection.** Dashboard settings can turn methods on or off without code changes in a dynamic integration. Stripe can turn on some methods by default and may enable additional methods after notification. Merchant code can further restrict the eligible set. Dashboard settings cannot add a type excluded by code.\n- **Compatibility and order.** Stripe filters by transaction factors, including amount, currency, customer and payment flow. Checkout orders the remaining eligible methods dynamically, and the Payment Element defaults to dynamic ordering with a `paymentMethodOrder` override. The allowlist order does not determine display order. May described Checkout's lower-priority overflow menu. November describes dynamic ordering without repeating that placement.\n- **Dynamic exclusions.** Use `excluded_payment_method_types` for specific transaction exclusions while keeping dynamic Dashboard management. The separate November dynamic guide lists PaymentIntents, SetupIntents, Checkout and Payment Element. For Apple Pay, Google Pay or Link on a specific PaymentIntent, use the integration-specific wallets hash. The dynamic guide says putting these three methods in the exclusion list returns an error.\n\nSee November lines 24–41 and 85–88, May lines 39–49 and 89, and [[source-stripe-dynamic-payment-methods]].\n\n## Versioned request fields\n\nThe November Checkout Session and PaymentIntent create examples send `allowed_payment_method_types` with bancontact, card, eps, ideal, p24 and sepa_debit. The Checkout Session example uses a payment-mode Session, price and quantity line items and `success_url`. The PaymentIntent example sends `amount=1099` and `currency=eur`. Incompatible types are silently filtered. The computed `payment_method_types` response lists the compatible subset, with no payment execution implied. The May Node examples for the same two objects use `payment_method_types` in the request. The November cURL examples retain the distinct Session and Intent request shapes. See May lines 51–89 and November lines 43–88.\n\n| Dated authority | Documented boundary |\n| --- | --- |\n| Earlier GA Checkout | The integration guide says earlier GA Checkout Session creation uses `payment_method_types`. |\n| `2026-07-29.dahlia` PaymentIntents and SetupIntents | The Dahlia changelog adds `allowed_payment_method_types`, with silent compatibility filtering and the computed response subset. It is mutually exclusive with `payment_method_types`, `excluded_payment_method_types`, `automatic_payment_methods` and `payment_method_configuration`. |\n| `2026-09-30.endive` Checkout Session creation | The Checkout changelog documents HTTP 400 if the create request includes `payment_method_types`. Use dynamic methods or the allowlist. The computed response property persists. |\n| `2026-09-30.endive` Intent endpoints | The separate Intent changelog removes writable `payment_method_types` on PaymentIntent create, update and confirm, and SetupIntent create and update. Passing it on those endpoints returns HTTP 400 with `payment_method_types_no_longer_supported`. The Intent response property is read-only. The changelog's Impact section separately advises migration before `2026-08-26.preview`, leaving the first affected Intent version unresolved. |\n\nSee the captured [Dahlia Intent allowlist changelog](https://docs.stripe.com/changelog/dahlia/2026-07-29/allowed-payment-method-types-parameter), [Endive Checkout Session changelog](https://docs.stripe.com/changelog/endive/2026-09-30/remove-payment-method-types-checkout-sessions) and [Endive Intent changelog](https://docs.stripe.com/changelog/endive/2026-09-30/removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents).\n\n## Web integration options\n\n| Path | API | Effort | Hosting and customization |\n| --- | --- | --- | --- |\n| Payment Links | Checkout Sessions | No code | Stripe-hosted with optional custom domain. Limited customization. |\n| Full-page hosted Checkout | Checkout Sessions | Low code | Stripe-hosted with optional custom domain. Limited customization. |\n| Full-page embedded Checkout | Checkout Sessions | Low code | Merchant site. Limited customization. |\n| Custom flow with Elements | Checkout Sessions | More code | Merchant site. Appearance API. |\n| Custom flow with Elements | PaymentIntents | Most code | Merchant site. Appearance API. |\n\nBoth captures describe the five paths and the limited styling options, including 20 preset fonts, three border-radius presets, logos, backgrounds and custom button color. Both route users to no-code Invoicing for a supported saved-method charge or emailed invoice. The May comparison says “40+” dynamically displayed methods, whereas November describes eligible methods. November adds a BNPL support row across the five paths subject to method-specific eligibility and scopes Dashboard management to dynamic integrations. It qualifies domain registration for some wallets in embedded Checkout or Elements. See May lines 10–37 and November lines 90–116.\n\nThe May table placed custom payment methods in the advanced web path only. The separate May product guide also listed Payment Element, mobile and Billing contexts. The November integration table says support varies by integration. The separate November product guide marks Checkout supported, Express Checkout Element private preview and Payment Links unsupported, without resolving every Checkout UI. See [[source-stripe-custom-payment-methods]].\n\n## Related Pages\n\n- [[stripe-payment-methods]] — Payment method and integration overview\n- [[stripe-dynamic-payment-methods]] — Dynamic selection and exclusions\n- [[source-stripe-payment-method-support]] — Method-specific product, currency and API support\n- [[source-stripe-pmd-registration]] — Payment method domain registration\n- [[stripe]] — Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-payments-payment-methods-integration-options-2026-11-07|November 7, 2026 payment method integration options]] — Full guide and versioned cURL examples\n- [[raw/stripe-payment-method-integration-options-2025|May 1, 2026 payment method integration options]] — Earlier full comparison and Node SDK examples\n",
+  "quotes": {
+    "payments-payment-methods-integration-options": [
+      {
+        "text": "your Dashboard settings can’t add payment methods that the code doesn’t allow.",
+        "location": "raw/stripe-payments-payment-methods-integration-options-2026-11-07.md:11"
+      },
+      {
+        "text": "the connected account’s payment method settings determine which payment methods are available.",
+        "location": "raw/stripe-payments-payment-methods-integration-options-2026-11-07.md:22"
+      },
+      {
+        "text": "A payment method that isn’t in `allowed_payment_method_types` can’t appear, even if you turn it on in the Dashboard.",
+        "location": "raw/stripe-payments-payment-methods-integration-options-2026-11-07.md:47"
+      },
+      {
+        "text": "Starting with API version `2026-09-30.endive`, you can’t pass `payment_method_types` when you create Checkout Sessions, PaymentIntents, or SetupIntents.",
+        "location": "raw/stripe-payments-payment-methods-integration-options-2026-11-07.md:83"
+      },
+      {
+        "text": "The order of `allowed_payment_method_types` doesn’t determine the display order:",
+        "location": "raw/stripe-payments-payment-methods-integration-options-2026-11-07.md:85"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-payment-methods-integration-options": [
+      {
+        "text": "Every payment method you want your PaymentIntent to accept must be added to `payment_method_types`.",
+        "location": "raw/stripe-payment-method-integration-options-2025.md:53"
+      },
+      {
+        "text": "If multiple payment methods are passed, Checkout dynamically reorders them to prioritize the most relevant payment methods based on the customer’s location and other characteristics.",
+        "location": "raw/stripe-payment-method-integration-options-2025.md:89"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-payment-methods-integration-options-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 121
+      }
+    ],
+    "raw/stripe-payment-method-integration-options-2025.md": [
+      {
+        "start": 1,
+        "end": 89
+      }
+    ],
+    "wiki/sources/source-stripe-payment-method-integration-options.md": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/52030c7eb4859f6e72368e4b/content.diff": [
+      {
+        "start": 1,
+        "end": 188
+      }
+    ],
+    "wiki/concepts/stripe-payment-methods.md": [
+      {
+        "start": 76,
+        "end": 95
+      }
+    ],
+    "wiki/concepts/stripe-dynamic-payment-methods.md": [
+      {
+        "start": 8,
+        "end": 35
+      },
+      {
+        "start": 67,
+        "end": 70
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 220,
+        "end": 222
+      },
+      {
+        "start": 437,
+        "end": 437
+      },
+      {
+        "start": 730,
+        "end": 731
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md": [
+      {
+        "start": 75,
+        "end": 81
+      }
+    ],
+    "raw/stripe-changelog-dahlia-2026-07-29-allowed-payment-method-types-parameter-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 23
+      }
+    ],
+    "raw/stripe-changelog-endive-2026-09-30-remove-payment-method-types-checkout-sessions-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 25
+      }
+    ],
+    "raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 28
+      }
+    ],
+    "raw/stripe-payments-payment-methods-custom-payment-methods-2026-11-07.md": [
+      {
+        "start": 57,
+        "end": 75
+      }
+    ],
+    "raw/stripe-custom-payment-methods-2025.md": [
+      {
+        "start": 68,
+        "end": 76
+      }
+    ],
+    "raw/stripe-payments-payment-methods-dynamic-payment-methods-2026-11-07.md": [
+      {
+        "start": 89,
+        "end": 105
+      }
+    ],
+    "raw/stripe-payments-payment-methods-overview-2026-11-07.md": [
+      {
+        "start": 23,
+        "end": 25
+      }
+    ]
+  },
+  "answers": {
+    "payments-payment-methods-integration-options": {
+      "Q1": "At https://docs.stripe.com/payments/payment-methods/integration-options, November documents how authorized Dashboard users enable eligible methods in a dynamic integration, while integration code can further restrict the eligible set; Dashboard cannot add a method outside code. Some methods require activation, approval or an invite, and some wallets require domain registration for Elements or embedded Checkout, and Connected Account settings apply to direct or on_behalf_of charges. Stripe filters by compatibility, and only then does Checkout or Payment Element order remaining methods (old raw lines 8-49 and new raw lines 9-41). The November examples send allowed_payment_method_types on Checkout Session or PaymentIntent creation. Stripe silently filters incompatible types and returns the computed payment_method_types subset. The stable 2026-09-30.endive guide removes writable payment_method_types from affected create requests for Checkout Sessions, PaymentIntents and SetupIntents. The computed response property stays. Checkout Session create has its own Endive changelog. The Intent removal changelog also points to 2026-08-26.preview in its Impact section, leaving the first affected Intent version open. Dahlia 2026-07-29 already offers the Intent allowlist, and the guide identifies the old request field for earlier GA Checkout. Dashboard dynamic exclusion is separate, and Payment Element has a presentation order override (old raw lines 51-89 and new raw lines 43-88). source-stripe-payment-method-integration-options.md now dates both five-path comparisons, the version gates, eligibility and order, and the wallet and custom-method scopes. Configuration/compatible response is distinct from payment execution.",
+      "Q2": "At https://docs.stripe.com/payments/payment-methods/integration-options, November materially adds the earlier-GA, July Dahlia and September Endive request boundaries, compatible response subset, explicit Dashboard/code/eligibility/order distinctions, role/approval/domain prerequisites, Connect ownership and per-transaction exclusions. It qualifies Dashboard changes as dynamic-only, adds a BNPL row and replaces the prior advanced-only custom-method label with a scope-dependent route (old raw lines 16-37 and 43-89, new raw lines 9-88 and 90-116). Preserve May 1's five paths, older request examples, numeric 40+ marketing and priority overflow as dated language. Node-to-cURL presentation, table renames, pricing/quickstart links and reordering are presentational or navigation, while updated request parameters are substantive. Preserve the July 29 Dahlia Intent allowlist availability, stable Endive writable removal for the five named Intent endpoints, and the separate Intent Impact reference to 2026-08-26.preview without assigning a first affected Intent version. Keep Checkout Session create and its Endive 400 distinct from the named Intent error code, and preserve the compatible payment_method_types response, Checkout Session and PaymentIntent examples, and scoped custom-method product boundaries. Update source-stripe-payment-method-integration-options.md and retain May raw provenance, the root-to-Stripe index and reciprocal Stripe Payment Methods concept/source route, with separate Dynamic Payment Methods, domain registration and support references."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payment-integration-custom-scope",
+      "target_path": "wiki/concepts/stripe-payment-methods.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Advanced (PaymentIntents)**: most coding; custom payment methods supported; Appearance API",
+      "proposed_markdown": "- **Advanced (PaymentIntents)**: most coding, with Appearance API. The May 2026 comparison listed custom payment methods only on the advanced web path. The November comparison says support varies by integration. The separate product guide lists Checkout support, Express Checkout Element private preview and Payment Links unsupported. See [[source-stripe-custom-payment-methods]].",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "May comparison lines 16–33 and November comparison lines 90–116 document scope. The separate November custom-methods guide lines 57–75 qualifies product support."
+      ]
+    },
+    {
+      "update_id": "payment-integration-versioned-wallet-scope",
+      "target_path": "wiki/concepts/stripe-payment-methods.md",
+      "update_kind": "durable_fact",
+      "anchor": "Wallet methods require domain registration for Elements/Advanced integrations.",
+      "proposed_markdown": "Some wallets, such as Apple Pay, require domain registration for Elements or embedded Checkout. See [[source-stripe-pmd-registration]].",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": [
+        "November guide lines 19–22 and 114–116 supply method and surface qualifications."
+      ]
+    },
+    {
+      "update_id": "payment-integration-options-source-link",
+      "target_path": "wiki/concepts/stripe-payment-methods.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-payment-method-integration-options]] — integration paths comparison, dynamic vs manual, domain registration for wallets",
+      "proposed_markdown": "- [[source-stripe-payment-method-integration-options]] — Dated web comparison, Dashboard and code boundaries, versioned allowlists, compatibility, order and wallet registration",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "November raw lines 9–116 supply the scope."
+      ]
+    },
+    {
+      "update_id": "payment-integration-manual-parameter-scope",
+      "target_path": "wiki/concepts/stripe-payment-methods.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Dynamic payment methods** (recommended): manage via Dashboard, 40+ methods, Stripe handles eligibility. **Manual**: specify `payment_method_types` explicitly.",
+      "proposed_markdown": "**Dynamic payment methods.** In the November 2026 overview, merchants using dynamic Checkout, Payment Element, Payment Links or hosted invoices can enable most methods in the Dashboard without code changes. Stripe displays eligible methods, and individual methods can have additional prerequisites. An integration that explicitly lists `payment_method_types` must change its code to add a method.\n\nThe May 2026 comparison described “40+” dynamically displayed methods and used writable `payment_method_types` in its manual examples. The November guide uses the `allowed_payment_method_types` request allowlist for Checkout Session and PaymentIntent creation and returns eligible types in the computed `payment_method_types` response. See [[source-stripe-payment-method-integration-options]] for earlier GA Checkout, Dahlia Intent and Endive endpoint conditions.",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "May raw lines 24 and 51–89 and November raw lines 9–11, 30–47, 81–88 and 104 supply the dated count, request, response and code boundaries. The separate November Add payment methods overview lines 23–25 supplies the named dynamic surfaces."
+      ]
+    }
+  ]
+}

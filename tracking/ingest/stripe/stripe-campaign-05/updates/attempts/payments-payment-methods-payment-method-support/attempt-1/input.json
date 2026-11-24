@@ -1,0 +1,217 @@
+{
+  "job_id": "payments-payment-methods-payment-method-support",
+  "source_target": "wiki/sources/source-stripe-payment-method-support.md",
+  "source_before_sha256": "f61bfa65401617c262bef9c5cdd7e9abbd61ce66be61ca414c1741c77bd502f7",
+  "contributions": [
+    {
+      "job_id": "payments-payment-methods-payment-method-support",
+      "canonical_url": "https://docs.stripe.com/payments/payment-methods/payment-method-support",
+      "attempt": 2,
+      "raw_path": "raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md",
+      "raw_sha256": "b6d30dc84f1f68108b952a7fb6949c8742ee8f022f7a9ec7fa90e487202ff29b",
+      "prior_raw_path": "raw/stripe-payment-method-support-2025.md",
+      "prior_raw_sha256": "67d841efc90173800c3acce5f4735f5be62b74af3f526ad0500f4b4b259e2404",
+      "new_capture_role": "full_captured_page",
+      "proposed_disposition": "source_required_update",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-payment-methods-payment-method-support/attempt-2/receipt.json",
+      "receipt_sha256": "264d9eaf64888e6e82e1bb8cff52fe455c724189e79c1042581ed0280fad331b",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-payment-methods-payment-method-support/attempt-2/review.json",
+      "review_sha256": "03d6801e6fa099595457d357cf54759b3e68427d101adb26d9c2b1a8b5c2fc08",
+      "source_assessments": [
+        {
+          "source_target": "wiki/sources/source-stripe-payment-method-support.md",
+          "proposed_disposition": "source_required_update",
+          "update_needed": true,
+          "findings": [
+            "New raw lines 9-29 describe Link as a reusable network, the method-specific country/currency, product and API axes, additional method and terms restrictions, and use of the Dashboard troubleshooting tool when a customer cannot see a method. Business location and customer country are separate columns, and the allowed location/currency combinations are not a Cartesian product. Connected accounts can have different eligibility than their platform or marketplace. Product table modes include payment, subscription and setup, subject to row/footnote and individual method restrictions (new raw lines 78-84).",
+            "New raw lines 33-76 have 44 country/currency rows; old raw lines 32-72 have 41. They are table coverage, not every Stripe method. The current source's line 15 and provider/concept routes say 36; its line 13 promises all methods. Its line 22 Pay by Bank GB/GBP is May-only. Its lines 31-32 miss the now-documented BNPL changes and the six methods already have separate catalog summaries. Its lines 47-50 omit PaymentIntents, SetupIntents and capture from the API headings, and add webhook availability although no API matrix in either capture has that column.",
+            "New raw lines 211-343 list API enums where applicable, PaymentIntents and SetupIntents separately, manual capture, saving and redirects. Payment confirmation might need return_url to redirect the customer; neither a listed redirect nor a support cell establishes payment state or real-world success. Cards and the bank debits described in the footnotes support on- and off-session setup usage, while other method types either do not support it or support off-session only. Bacs Direct Debit confirmation uses a mandate collected through a Stripe-owned flow and SetupIntent creation is supported through Checkout setup mode despite the generic unsupported cell (new raw lines 90-97 and 226-233). ACSS excludes subscription mode, deferred Intent creation and Elements with Checkout Sessions, rather than all non-payment Checkout modes (current source line 40).",
+            "Current source line 37 groups Invite-only Invoicing for Bancontact, EPS and P24 and unqualified FPX Invoicing under a generic send_invoice statement. Old raw lines 101-109 and new raw lines 105-112 attach the send_invoice footnote to the Subscriptions cells for these four methods, not expressly to the parallel Invoicing cells. Keep in-snapshot cell/footnote attribution, and the separate November FPX method profile raw lines 86-115 expressly lists Invoicing, a send_invoice limitation and B2C-only mobile Payment Sheet. FPX Invoicing itself remains Supported in both table rows and the separate profile. The neighboring Customer Portal cell is Unsupported in each.",
+            "New raw lines 215-220 retain Connect distinctions: limited on_behalf_of support for bank transfers through customer_balance, no PayPal on_behalf_of, and private-preview Alipay and WeChat Pay on_behalf_of. The custom methods table is separately scoped. The November method guide (raw/stripe-payments-payment-methods-custom-payment-methods-2026-11-07.md lines 5-11 and 57-75) confirms external processing, Checkout support, Express Checkout private preview and no Payment Links support. Do not infer Stripe settlement, eligibility or compliance.",
+            "The current line 41 Terminal-only BNPL statement is obsolete for the November matrix, which lists Klarna in private preview as well as Affirm supported. The current line 36 TWINT product constraints are historical; the current line 32 SeQura Invoicing blanket exclusion is inconsistent with November. Keep the method-level support and preview conflicts discoverable rather than copying entire tables."
+          ],
+          "conflicts": [
+            "New raw lines 90 and 106 list the combined Instant Bank Payments/ACH row as Mobile Payment Element unsupported and BLIK Mobile Payment Element supported. The separate November Link Instant Bank Payments guide lines 120-137 lists Mobile Payment Element with an iOS-linked route and eligibility conditions. The separate November BLIK profile lines 144-181 lists in-app payments unsupported, gives off-session setup instructions, and requires `blik_payments`, then `blik_recurring_payments`, active on the platform and each accepting connected account. Preserve the narrow documentation disagreements.",
+            "New raw line 190 lists Alipay Mobile Payment Element supported, while the November Alipay profile lines 142-170 expressly excludes PaymentSheet and allows separate custom mobile integrations. Its one-time Hosted Invoice Page support and invite-only recurring invoice/setup paths qualify the changed matrix Invoicing cell.",
+            "New raw lines 307 and 338 still carry different labels for the same stablecoin URL and `crypto` enum: the dedicated table says manual capture supported and SetupIntents/future usage private preview, while the wallets row says manual capture unsupported and invite-only SetupIntents/future usage. Old raw lines 298-302 and 332 show the same conflict; product labels differ between the two tables as well (new raw lines 171-173 and 204). Do not merge into a universal capability claim.",
+            "New raw lines 207-209 and 341 describe WeChat Pay private-preview Subscriptions and Intent saving plus Terminal outside Japan. The separate November WeChat Pay profile lines 73-80, 118-124 and 159-181 contains general recurring/setup/off-session unsupported labels alongside private-preview recurring off-session prose and the Terminal restriction. Preserve general versus preview and document scope. The separate Samsung Pay South Korea capture lines 5-12 identifies Checkout and Direct API as navigation, not world-wide activation or detailed behavior.",
+            "New raw line 269 retains the Sunbit API matrix's unsupported manual capture, while the separate November Sunbit profile lines 281-295 marks manual capture supported. Pay by Bank's separate November profile lines 15-27 and 61-63 names FI/IE/GB as generally available customer locations and Belgium/France/Germany as private preview, and lines 266-277 separately describe Elements/Payment Intents preview recurring with an initial Pay by Bank payment and a Bacs mandate. The matrix's direct Pay by Bank SetupIntent/future usage cells remain unsupported and do not settle the status of that distinct mandate flow."
+          ],
+          "reason": "The outdated coverage count and dated method claims change integration selection and callback/capture expectations. Add current matrix provenance and locators and scope historical values, confirmation/redirect capability and Connect requirements. Keep wiki/index.md line 7, Stripe index lines 434-435 and 730, and Stripe Payment Methods concept lines 90-103 reciprocal, with appropriate links to the separate Connect, method and category authorities."
+        }
+      ],
+      "affected_concepts": [
+        "wiki/concepts/stripe-payment-methods.md",
+        "wiki/concepts/stripe-wallets.md",
+        "wiki/concepts/stripe-bnpl.md"
+      ],
+      "unresolved_questions": [
+        "Where the cross-method and method-specific tables disagree, the snapshots do not resolve precise account, SDK, API or environment eligibility. No payment, capture, account activation, settlement or payout has been established."
+      ],
+      "mapped_source_assessment": {
+        "source_target": "wiki/sources/source-stripe-payment-method-support.md",
+        "proposed_disposition": "source_required_update",
+        "update_needed": true,
+        "findings": [
+          "New raw lines 9-29 describe Link as a reusable network, the method-specific country/currency, product and API axes, additional method and terms restrictions, and use of the Dashboard troubleshooting tool when a customer cannot see a method. Business location and customer country are separate columns, and the allowed location/currency combinations are not a Cartesian product. Connected accounts can have different eligibility than their platform or marketplace. Product table modes include payment, subscription and setup, subject to row/footnote and individual method restrictions (new raw lines 78-84).",
+          "New raw lines 33-76 have 44 country/currency rows; old raw lines 32-72 have 41. They are table coverage, not every Stripe method. The current source's line 15 and provider/concept routes say 36; its line 13 promises all methods. Its line 22 Pay by Bank GB/GBP is May-only. Its lines 31-32 miss the now-documented BNPL changes and the six methods already have separate catalog summaries. Its lines 47-50 omit PaymentIntents, SetupIntents and capture from the API headings, and add webhook availability although no API matrix in either capture has that column.",
+          "New raw lines 211-343 list API enums where applicable, PaymentIntents and SetupIntents separately, manual capture, saving and redirects. Payment confirmation might need return_url to redirect the customer; neither a listed redirect nor a support cell establishes payment state or real-world success. Cards and the bank debits described in the footnotes support on- and off-session setup usage, while other method types either do not support it or support off-session only. Bacs Direct Debit confirmation uses a mandate collected through a Stripe-owned flow and SetupIntent creation is supported through Checkout setup mode despite the generic unsupported cell (new raw lines 90-97 and 226-233). ACSS excludes subscription mode, deferred Intent creation and Elements with Checkout Sessions, rather than all non-payment Checkout modes (current source line 40).",
+          "Current source line 37 groups Invite-only Invoicing for Bancontact, EPS and P24 and unqualified FPX Invoicing under a generic send_invoice statement. Old raw lines 101-109 and new raw lines 105-112 attach the send_invoice footnote to the Subscriptions cells for these four methods, not expressly to the parallel Invoicing cells. Keep in-snapshot cell/footnote attribution, and the separate November FPX method profile raw lines 86-115 expressly lists Invoicing, a send_invoice limitation and B2C-only mobile Payment Sheet. FPX Invoicing itself remains Supported in both table rows and the separate profile. The neighboring Customer Portal cell is Unsupported in each.",
+          "New raw lines 215-220 retain Connect distinctions: limited on_behalf_of support for bank transfers through customer_balance, no PayPal on_behalf_of, and private-preview Alipay and WeChat Pay on_behalf_of. The custom methods table is separately scoped. The November method guide (raw/stripe-payments-payment-methods-custom-payment-methods-2026-11-07.md lines 5-11 and 57-75) confirms external processing, Checkout support, Express Checkout private preview and no Payment Links support. Do not infer Stripe settlement, eligibility or compliance.",
+          "The current line 41 Terminal-only BNPL statement is obsolete for the November matrix, which lists Klarna in private preview as well as Affirm supported. The current line 36 TWINT product constraints are historical; the current line 32 SeQura Invoicing blanket exclusion is inconsistent with November. Keep the method-level support and preview conflicts discoverable rather than copying entire tables."
+        ],
+        "conflicts": [
+          "New raw lines 90 and 106 list the combined Instant Bank Payments/ACH row as Mobile Payment Element unsupported and BLIK Mobile Payment Element supported. The separate November Link Instant Bank Payments guide lines 120-137 lists Mobile Payment Element with an iOS-linked route and eligibility conditions. The separate November BLIK profile lines 144-181 lists in-app payments unsupported, gives off-session setup instructions, and requires `blik_payments`, then `blik_recurring_payments`, active on the platform and each accepting connected account. Preserve the narrow documentation disagreements.",
+          "New raw line 190 lists Alipay Mobile Payment Element supported, while the November Alipay profile lines 142-170 expressly excludes PaymentSheet and allows separate custom mobile integrations. Its one-time Hosted Invoice Page support and invite-only recurring invoice/setup paths qualify the changed matrix Invoicing cell.",
+          "New raw lines 307 and 338 still carry different labels for the same stablecoin URL and `crypto` enum: the dedicated table says manual capture supported and SetupIntents/future usage private preview, while the wallets row says manual capture unsupported and invite-only SetupIntents/future usage. Old raw lines 298-302 and 332 show the same conflict; product labels differ between the two tables as well (new raw lines 171-173 and 204). Do not merge into a universal capability claim.",
+          "New raw lines 207-209 and 341 describe WeChat Pay private-preview Subscriptions and Intent saving plus Terminal outside Japan. The separate November WeChat Pay profile lines 73-80, 118-124 and 159-181 contains general recurring/setup/off-session unsupported labels alongside private-preview recurring off-session prose and the Terminal restriction. Preserve general versus preview and document scope. The separate Samsung Pay South Korea capture lines 5-12 identifies Checkout and Direct API as navigation, not world-wide activation or detailed behavior.",
+          "New raw line 269 retains the Sunbit API matrix's unsupported manual capture, while the separate November Sunbit profile lines 281-295 marks manual capture supported. Pay by Bank's separate November profile lines 15-27 and 61-63 names FI/IE/GB as generally available customer locations and Belgium/France/Germany as private preview, and lines 266-277 separately describe Elements/Payment Intents preview recurring with an initial Pay by Bank payment and a Bacs mandate. The matrix's direct Pay by Bank SetupIntent/future usage cells remain unsupported and do not settle the status of that distinct mandate flow."
+        ],
+        "reason": "The outdated coverage count and dated method claims change integration selection and callback/capture expectations. Add current matrix provenance and locators and scope historical values, confirmation/redirect capability and Connect requirements. Keep wiki/index.md line 7, Stripe index lines 434-435 and 730, and Stripe Payment Methods concept lines 90-103 reciprocal, with appropriate links to the separate Connect, method and category authorities."
+      },
+      "findings": [
+        "New raw lines 9-29 describe Link as a reusable network, the method-specific country/currency, product and API axes, additional method and terms restrictions, and use of the Dashboard troubleshooting tool when a customer cannot see a method. Business location and customer country are separate columns, and the allowed location/currency combinations are not a Cartesian product. Connected accounts can have different eligibility than their platform or marketplace. Product table modes include payment, subscription and setup, subject to row/footnote and individual method restrictions (new raw lines 78-84).",
+        "New raw lines 33-76 have 44 country/currency rows; old raw lines 32-72 have 41. They are table coverage, not every Stripe method. The current source's line 15 and provider/concept routes say 36; its line 13 promises all methods. Its line 22 Pay by Bank GB/GBP is May-only. Its lines 31-32 miss the now-documented BNPL changes and the six methods already have separate catalog summaries. Its lines 47-50 omit PaymentIntents, SetupIntents and capture from the API headings, and add webhook availability although no API matrix in either capture has that column.",
+        "New raw lines 211-343 list API enums where applicable, PaymentIntents and SetupIntents separately, manual capture, saving and redirects. Payment confirmation might need return_url to redirect the customer; neither a listed redirect nor a support cell establishes payment state or real-world success. Cards and the bank debits described in the footnotes support on- and off-session setup usage, while other method types either do not support it or support off-session only. Bacs Direct Debit confirmation uses a mandate collected through a Stripe-owned flow and SetupIntent creation is supported through Checkout setup mode despite the generic unsupported cell (new raw lines 90-97 and 226-233). ACSS excludes subscription mode, deferred Intent creation and Elements with Checkout Sessions, rather than all non-payment Checkout modes (current source line 40).",
+        "Current source line 37 groups Invite-only Invoicing for Bancontact, EPS and P24 and unqualified FPX Invoicing under a generic send_invoice statement. Old raw lines 101-109 and new raw lines 105-112 attach the send_invoice footnote to the Subscriptions cells for these four methods, not expressly to the parallel Invoicing cells. Keep in-snapshot cell/footnote attribution, and the separate November FPX method profile raw lines 86-115 expressly lists Invoicing, a send_invoice limitation and B2C-only mobile Payment Sheet. FPX Invoicing itself remains Supported in both table rows and the separate profile. The neighboring Customer Portal cell is Unsupported in each.",
+        "New raw lines 215-220 retain Connect distinctions: limited on_behalf_of support for bank transfers through customer_balance, no PayPal on_behalf_of, and private-preview Alipay and WeChat Pay on_behalf_of. The custom methods table is separately scoped. The November method guide (raw/stripe-payments-payment-methods-custom-payment-methods-2026-11-07.md lines 5-11 and 57-75) confirms external processing, Checkout support, Express Checkout private preview and no Payment Links support. Do not infer Stripe settlement, eligibility or compliance."
+      ],
+      "substantive_changes": [
+        "Country matrix (old raw lines 30-72 and new raw lines 31-76): Pay by Bank moves from GBP/GB to EUR and GBP with FI, IE and GB business and customer rows; new entries PayTo AUD with Australia, Revolut Pay six currencies with listed European/UK coverage, and UPI INR with Indian customers and the listed business countries. Apple Pay's link target changes but the support label does not.",
+        "Product matrices (old raw lines 82-169 and new raw lines 86-173): combined Instant Bank Payments or ACH Direct Debit Mobile Payment Element changes supported to unsupported; BLIK moves to unqualified Checkout, adds Subscriptions, Invoicing and Customer Portal while keeping its Elements restrictions; bank transfer Subscriptions and Invoicing attach send_invoice to their cells explicitly; Pay by Bank Mobile Payment Element changes to supported; UPI is newly listed in real-time product support.",
+        "BNPL product matrix (old raw lines 121-137 and new raw lines 124-140): Affirm Subscriptions becomes unsupported and Customer Portal becomes supported; Klarna Checkout changes from payment-only footnotes to buyer-country/payment-option qualification, Subscriptions loses the old send_invoice marker, and Terminal becomes private preview, with Invoicing still send_invoice-qualified and Express Checkout still excluding saving during payment. Scalapay adds Mobile Payment Element and SeQura adds send_invoice Invoicing.",
+        "Wallets product matrix (old raw lines 182-204 and new raw lines 186-209): Alipay Invoicing moves from invite only to supported; MB WAY gains Mobile Payment Element and send_invoice Subscriptions/Invoicing; Samsung Pay gains Checkout payment mode and retains Terminal; TWINT moves from bank redirects to wallets and newly lists all Checkout modes and Subscriptions/Invoicing/Customer Portal as supported; WeChat Pay Subscriptions becomes private preview send_invoice and Terminal becomes supported outside Japan. Apple Pay loses the old India-IP footnote marker while retaining embedded_page Safari/iOS 17+; Google Pay's footnote switches from India IP addresses to India-based accounts, so the changed matrix wording is not blanket Apple Pay enablement.",
+        "API matrices (old raw lines 230-268, 286-302 and 315-336; new raw lines 235-272, 290-307 and 320-343): Bancontact SetupIntents change to unsupported and the new saving footnote specifies a SEPA Direct Debit PaymentMethod; BLIK adds SetupIntents and off_session-scoped setup_future_usage and still excludes deferred creation. SeQura setup_future_usage becomes unsupported. UPI adds `upi`, listed PaymentIntents, SetupIntents, future usage and redirect, without manual capture. Wallets add `samsung_pay` supporting PaymentIntents and redirect, move the unchanged TWINT API row from bank redirects to wallets, and flip Alipay and WeChat Pay from no redirect to required. WeChat Pay adds private-preview SetupIntents and future usage. Stablecoin and wallet crypto scopes remain distinct.",
+        "Custom methods move from unsupported to supported for Checkout and to private-preview support for Express Checkout Element (old raw lines 338-344 and new raw lines 345-353); Payment Links remain unsupported. Link resolver and Markdown separator/spacing changes are presentation/navigation, including routing the Connect footnote to the dedicated Connect matrix and the Elements restrictions to the updated quickstart. These changes do not establish additional payment behavior. TWINT retains its `twint` enum, supported PaymentIntents/SetupIntents/setup_future_usage, unsupported manual capture and redirect Yes when moved to the wallets API table (old raw line 241, new raw line 339). Its separate product changes are at old raw line 107 and new raw line 205."
+      ],
+      "historical_claims_to_preserve": [
+        "Preserve the 2026-05-08 capture as the historical support matrix, with May-specific invite/preview states and conditional labels, and the full 2026-11-07 capture as separate newer matrix evidence. Preserve redirects, collection method, client/UI, region and mode distinctions shown in the dated sections.",
+        "Keep the named method materials distinct from the cross-method matrix. The Checkout modes footnotes do not imply permission for automatic recurring payment. iDEAL | Wero retains the `ideal` enum and send_invoice and customer authentication qualifications (old raw lines 105-109 and new raw lines 109-112 and 243-247), distinct from standalone Wero. Connect and consumer eligibility are distinct."
+      ],
+      "conflicts": [
+        "New raw lines 90 and 106 list the combined Instant Bank Payments/ACH row as Mobile Payment Element unsupported and BLIK Mobile Payment Element supported. The separate November Link Instant Bank Payments guide lines 120-137 lists Mobile Payment Element with an iOS-linked route and eligibility conditions. The separate November BLIK profile lines 144-181 lists in-app payments unsupported, gives off-session setup instructions, and requires `blik_payments`, then `blik_recurring_payments`, active on the platform and each accepting connected account. Preserve the narrow documentation disagreements.",
+        "New raw line 190 lists Alipay Mobile Payment Element supported, while the November Alipay profile lines 142-170 expressly excludes PaymentSheet and allows separate custom mobile integrations. Its one-time Hosted Invoice Page support and invite-only recurring invoice/setup paths qualify the changed matrix Invoicing cell.",
+        "New raw lines 307 and 338 still carry different labels for the same stablecoin URL and `crypto` enum: the dedicated table says manual capture supported and SetupIntents/future usage private preview, while the wallets row says manual capture unsupported and invite-only SetupIntents/future usage. Old raw lines 298-302 and 332 show the same conflict; product labels differ between the two tables as well (new raw lines 171-173 and 204). Do not merge into a universal capability claim.",
+        "New raw lines 207-209 and 341 describe WeChat Pay private-preview Subscriptions and Intent saving plus Terminal outside Japan. The separate November WeChat Pay profile lines 73-80, 118-124 and 159-181 contains general recurring/setup/off-session unsupported labels alongside private-preview recurring off-session prose and the Terminal restriction. Preserve general versus preview and document scope. The separate Samsung Pay South Korea capture lines 5-12 identifies Checkout and Direct API as navigation, not world-wide activation or detailed behavior.",
+        "New raw line 269 retains the Sunbit API matrix's unsupported manual capture, while the separate November Sunbit profile lines 281-295 marks manual capture supported. Pay by Bank's separate November profile lines 15-27 and 61-63 names FI/IE/GB as generally available customer locations and Belgium/France/Germany as private preview, and lines 266-277 separately describe Elements/Payment Intents preview recurring with an initial Pay by Bank payment and a Bacs mandate. The matrix's direct Pay by Bank SetupIntent/future usage cells remain unsupported and do not settle the status of that distinct mandate flow."
+      ],
+      "expected_read_files": [
+        {
+          "path": "raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md",
+          "sha256": "b6d30dc84f1f68108b952a7fb6949c8742ee8f022f7a9ec7fa90e487202ff29b",
+          "lines": 353
+        },
+        {
+          "path": "raw/stripe-payment-method-support-2025.md",
+          "sha256": "67d841efc90173800c3acce5f4735f5be62b74af3f526ad0500f4b4b259e2404",
+          "lines": 344
+        },
+        {
+          "path": "wiki/sources/source-stripe-payment-method-support.md",
+          "sha256": "f61bfa65401617c262bef9c5cdd7e9abbd61ce66be61ca414c1741c77bd502f7",
+          "lines": 63
+        },
+        {
+          "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/e7b5555fe16533927a3d0cc1/content.diff",
+          "sha256": "6ae7518c3e5c54242c199923047fadf2bd0889d99f0657e6d5bdf3379b52a69b",
+          "lines": 611
+        }
+      ],
+      "original_query_prompts_path": "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md",
+      "original_prompts": "New raw `raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md`. Prior raw `raw/stripe-payment-method-support-2025.md`. Current summaries `wiki/sources/source-stripe-payment-method-support.md`.\n\n- Q1. For `https://docs.stripe.com/payments/payment-methods/payment-method-support`, what documented behavior, prerequisites, actors and state transitions does the complete new capture establish? How do these compare with the matched prior capture and each mapped summary?\n\n- Q2. Which changes are substantive, presentational or navigation-only? Identify the exact dated qualifications, conflicts and reciprocal routes that the proposed disposition should preserve.",
+      "reviewed_answers": {
+        "Q1": "The full 2026-11-07 capture of https://docs.stripe.com/payments/payment-methods/payment-method-support helps a merchant select a method using three independent scopes: presentment currency and business/customer geography, product and mode, and PaymentIntent, SetupIntent, capture, future-use and redirect capabilities. The customer may need to take a redirect action and an eligible connected account can differ from the platform. New raw lines 9-84 and 211-343 retain those controls from old raw lines 8-80 and 206-336. Bacs confirmation still depends on a Stripe-collected mandate, and Checkout setup mode is the SetupIntent route documented there. The page describes compatibility and prerequisites, without establishing a payment-state transition, activation or actual payment outcome. The November body also changes country/product/API cells and preview limitations. source-stripe-payment-method-support.md currently miscounts geography rows, misstates webhook coverage, and leaves old Pay by Bank, BNPL, TWINT and ACSS guidance underqualified.",
+        "Q2": "At https://docs.stripe.com/payments/payment-methods/payment-method-support, compare old raw lines 24-344 dated 2026-05-08 with new raw lines 25-353 dated 2026-11-07. Substantive table differences include Pay by Bank EUR and FI/IE, newly listed PayTo, Revolut Pay and UPI geography, BLIK off-session setup and product expansion, Bancontact's SEPA saving distinction, SeQura Invoicing and lost setup_future_usage, Klarna Terminal private preview, Samsung Pay and TWINT product changes, WeChat Pay Terminal and preview API scope, and custom methods Checkout and private-preview Express Checkout. Preserve method-specific conflicts for stablecoin capture, Sunbit capture, combined ACH/Instant Bank mobile support, BLIK and Alipay mobile scope, and general versus preview WeChat support. Formatting, link targets and TWINT's unchanged API row moving from bank redirects to wallets are presentational or navigation. FPX Invoicing remains supported, with the separate method profile's send_invoice qualification. source-stripe-payment-method-support.md should retain both dated full raws and reciprocal Stripe index, Payment Methods concept and separate Connect references."
+      }
+    }
+  ],
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md",
+      "sha256": "b6d30dc84f1f68108b952a7fb6949c8742ee8f022f7a9ec7fa90e487202ff29b",
+      "lines": 353
+    },
+    {
+      "path": "raw/stripe-payment-method-support-2025.md",
+      "sha256": "67d841efc90173800c3acce5f4735f5be62b74af3f526ad0500f4b4b259e2404",
+      "lines": 344
+    },
+    {
+      "path": "wiki/sources/source-stripe-payment-method-support.md",
+      "sha256": "f61bfa65401617c262bef9c5cdd7e9abbd61ce66be61ca414c1741c77bd502f7",
+      "lines": 63
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/e7b5555fe16533927a3d0cc1/content.diff",
+      "sha256": "6ae7518c3e5c54242c199923047fadf2bd0889d99f0657e6d5bdf3379b52a69b",
+      "lines": 611
+    }
+  ],
+  "concept_targets": [
+    {
+      "path": "wiki/concepts/stripe-bnpl.md",
+      "before_sha256": "bd20bcf44b11ed2e7b56c7ae009eccefe3b92b72141bd4f9dcc77d45b88fb608",
+      "contributing_jobs": [
+        "payments-payment-methods-payment-method-support",
+        "payments-scalapay",
+        "payments-scalapay-accept-a-payment",
+        "payments-sequra",
+        "payments-sequra-accept-a-payment",
+        "payments-sunbit",
+        "payments-sunbit-accept-a-payment",
+        "payments-zip",
+        "payments-zip-accept-a-payment"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    },
+    {
+      "path": "wiki/concepts/stripe-payment-methods.md",
+      "before_sha256": "26621c942bfc14ded9a7220aa98b72ab245da1d9b8cf3695c80e4dc077205f03",
+      "contributing_jobs": [
+        "payments-payment-methods",
+        "payments-payment-methods-integration-options",
+        "payments-payment-methods-overview",
+        "payments-payment-methods-payment-method-connect-support",
+        "payments-payment-methods-payment-method-support",
+        "payments-payment-methods-transitioning"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    },
+    {
+      "path": "wiki/concepts/stripe-wallets.md",
+      "before_sha256": "2a02bc3b8c9f9423fbadd2ca1be00409066001945724c4fa91569fa3a284f455",
+      "contributing_jobs": [
+        "payments-payment-methods-payment-method-connect-support",
+        "payments-payment-methods-payment-method-support",
+        "payments-payment-methods-pmd-registration",
+        "payments-paypal",
+        "payments-paypal-activate",
+        "payments-paypal-disputed-payments",
+        "payments-paypal-payout-reconciliation",
+        "payments-paypal-paypal-button",
+        "payments-paypal-set-up-future-payments",
+        "payments-paypay",
+        "payments-paypay-accept-a-payment",
+        "payments-revolut-pay",
+        "payments-revolut-pay-set-up-future-payments",
+        "payments-satispay",
+        "payments-satispay-accept-a-payment",
+        "payments-vipps",
+        "payments-vipps-accept-a-payment",
+        "payments-wallets",
+        "payments-wallets-link",
+        "payments-wechat-pay",
+        "payments-wechat-pay-accept-a-payment"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    }
+  ],
+  "state": "worker_running",
+  "attempt": 1,
+  "review_scope": "full",
+  "worker_agent": "/root/s05w2",
+  "reviewer_agent": "/root/s05r4",
+  "role_notes": "tracking/ingest/stripe/stripe-campaign-05/updates/role-notes.md",
+  "worker_output": "/tmp/stripe-s05-ingest/payments-payment-methods-payment-method-support-worker.json",
+  "reviewer_output": "/tmp/stripe-s05-ingest/payments-payment-methods-payment-method-support-reviewer.json"
+}

@@ -1,0 +1,145 @@
+{
+  "job_id": "payments-upi-set-up-future-payments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Set Up Future UPI Payments\"\ntype: source\ndate_ingested: 2026-05-06\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/upi/set-up-future-payments\"\nraw_files:\n  - \"stripe-upi-set-up-future-payments-2025.md\"\ntags: [stripe, real-time-payments, upi, india, inr, setup-intent, e-mandate, recurring, off-session, upi-autopay]\n---\n\n## Overview\n\nThe May 6, 2026 guide describes saving UPI payment details for future use through hosted Checkout or the Direct API. The merchant obtains customer permission and sets up a mandate up front. The full May guide supplies the implementation details below. The November 7, 2026 capture gives links to the Checkout and Direct API variants.\n\n## Customer identity and authorization\n\nAttach the payment method to the object representing the customer and associate its ID with the merchant's customer record. The May Direct API samples use `customer_account` for an Accounts v2 customer-configured Account and `customer` for a Customers v1 Customer. The guide describes Accounts v2 as generally available to Connect users and in public preview for other Stripe users, with a preview version required for enrollees. See May lines 14, 29–44, 136–148 and 180–194. For India e-mandate rules, see [[source-stripe-upi-autopay]].\n\n## May setup and payment paths\n\n- **Hosted Checkout setup.** Create a server-side Checkout Session in `setup` mode and send the customer to its returned hosted URL to authorize UPI for future payments. The sample uses `payment_method_types: ['card', 'upi']`, `customer: customer.id` and `success_url`. The test instructs the customer to choose UPI and shows mobile redirect or desktop QR to reach the test approval page. See May lines 75–107.\n- **Direct API SetupIntent.** Create a SetupIntent with `upi`, the matching customer identity and `usage` of `on_session` or `off_session`. The samples use `off_session`. Pass the SetupIntent client secret to the client and call `stripe.confirmUpiSetup()` with `return_url` and `mandate_data`. The example uses online customer acceptance with `infer_from_client: true`. See May lines 191–363.\n- **Direct API payment and save.** Create a UPI PaymentIntent for the current INR payment with the matching customer identity, `confirm: true`, `setup_future_usage: 'off_session'`, `return_url` and optional `mandate_data`. Confirming initiates the payment attempt. The resulting PaymentIntent can still require customer action. See May lines 365–462 and 506–567.\n\nThe Direct API samples show a billing name and an Indian address with `line1`, `line2`, city, state, postal code and country. The May text does not specify requiredness for each sample field. See May lines 202–248, 383–459 and 519–540.\n\n## Later payment and revocation\n\nCreate and confirm a new PaymentIntent with the same PaymentMethod ID from the previous SetupIntent or PaymentIntent. Set `off_session: true` when the customer is outside checkout. On-session UPI payments still redirect to the UPI app for confirmation even when the payment method is saved. Detaching the PaymentMethod deactivates it for reuse and emits `mandate.updated` and `payment_method.detached`. See May lines 119–121, 464–504 and 569–571.\n\nThe optional manual PaymentIntent flow checks for `requires_action` and `next_action.type` of `upi_handle_redirect_or_display_qr_code`. The May response example shows `hosted_instructions_url` and a nested `qrcode` object with `image_url_png`, `image_url_svg` and `expires_at`. Its prose at line 567 leaves out the `qrcode` level on the image paths. The response shape is dated to the example. See May lines 506–567.\n\n## Related Pages\n\n- [[stripe-real-time-payments]] — UPI and other real-time payment methods\n- [[stripe]] — Stripe company page\n- [[source-stripe-upi]] — UPI method overview\n- [[source-stripe-upi-accept-payment]] — UPI acceptance paths\n- [[source-stripe-upi-autopay]] — UPI AutoPay and e-mandate guidance\n\n## Raw Sources\n\n- [[raw/stripe-upi-set-up-future-payments-2025|May 6, 2026 full future UPI payments guide]] — 571 lines, with Markdown emphasis fixes\n\n## Related raw API references\n\n- [[raw/stripe-payments-upi-set-up-future-payments-2026-11-07|November 7, 2026 future UPI payments variant index]] — Checkout and Direct API navigation\n",
+  "quotes": {
+    "payments-upi-set-up-future-payments": [
+      {
+        "text": "Learn how to save UPI details and charge your customers later.",
+        "location": "raw/stripe-payments-upi-set-up-future-payments-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-upi-set-up-future-payments-2026-11-07.md:11"
+      },
+      {
+        "text": "[Checkout](https://docs.stripe.com/payments/upi/set-up-future-payments.md?payment-ui=checkout)",
+        "location": "raw/stripe-payments-upi-set-up-future-payments-2026-11-07.md:13"
+      },
+      {
+        "text": "[Direct API](https://docs.stripe.com/payments/upi/set-up-future-payments.md?payment-ui=direct-api)",
+        "location": "raw/stripe-payments-upi-set-up-future-payments-2026-11-07.md:14"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-upi-set-up-future-payments": [
+      {
+        "text": "You need permission to save your customer’s payment method for future use.",
+        "location": "raw/stripe-upi-set-up-future-payments-2025.md:14"
+      },
+      {
+        "text": "Any on-session UPI payment, where you’re actively in your checkout flow, redirects you to the UPI app for confirmation, even if you’re using a saved payment method.",
+        "location": "raw/stripe-upi-set-up-future-payments-2025.md:121"
+      },
+      {
+        "text": "The `off_session` value must also be set to true if the customer isn’t in a checkout flow for this PaymentIntent.",
+        "location": "raw/stripe-upi-set-up-future-payments-2025.md:466"
+      },
+      {
+        "text": "payment_method_types: [\"card\", \"upi\"],",
+        "location": "raw/stripe-upi-set-up-future-payments-2025.md:98"
+      },
+      {
+        "text": "\"qrcode\": {",
+        "location": "raw/stripe-upi-set-up-future-payments-2025.md:552"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-upi-set-up-future-payments-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-upi-set-up-future-payments-2025.md": [
+      {
+        "start": 1,
+        "end": 571
+      }
+    ],
+    "wiki/sources/source-stripe-upi-set-up-future-payments.md": [
+      {
+        "start": 1,
+        "end": 33
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/0225dea46000b1136b1abf8c/content.diff": [
+      {
+        "start": 1,
+        "end": 573
+      }
+    ],
+    "wiki/concepts/stripe-real-time-payments.md": [
+      {
+        "start": 120,
+        "end": 148
+      },
+      {
+        "start": 194,
+        "end": 207
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 4,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 365,
+        "end": 371
+      },
+      {
+        "start": 745,
+        "end": 751
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md": [
+      {
+        "start": 507,
+        "end": 514
+      }
+    ]
+  },
+  "answers": {
+    "payments-upi-set-up-future-payments": {
+      "Q1": "The November 7 capture at https://docs.stripe.com/payments/upi/set-up-future-payments is a Checkout and Direct API variant index. It states the goal of saving UPI for future use but gives no prerequisites or state transitions itself (new raw lines 5-14). The May 6 guide requires customer permission for saving and describes arranging a mandate up front, with a customer-configured Account or Customer for later reuse. Its server creates Checkout setup Sessions for hosted customer authorization, or a SetupIntent that the client confirms with confirmUpiSetup, or a confirm=true INR PaymentIntent intended to pay and save. Reuse calls a new PaymentIntent with the same PaymentMethod ID and off_session=true outside checkout. The on-session path redirects to the UPI app even with a saved method, the manual PaymentIntent can require action, and detach emits mandate.updated and payment_method.detached. Setup or return alone establishes no completed payment (old raw lines 12-44, old raw lines 75-121, old raw lines 180-248, old raw lines 341-375 and old raw lines 464-571). source-stripe-upi-set-up-future-payments.md now separates the checkout setup, Direct API setup, payment-and-save attempt and reuse. It records the consent and customer object prerequisites and dates the billing address examples.",
+      "Q2": "For https://docs.stripe.com/payments/upi/set-up-future-payments the November transition from a full inline May guide to two links is navigation-only (old raw lines 8-14 and old raw lines 109-121, new raw lines 5-14). This does not verify changed or discarded UPI behavior. Retain the May 6, 2026 evidence with actual fetch date, Accounts v2 public-preview condition outside Connect, customer consent, regular on-session redirect, and distinct off-session reuse and detach events. In source-stripe-upi-set-up-future-payments.md the revised summary corrects the independently pre-existing Checkout example, address requiredness and state wording. May illustrates an Indian billing address and line2 without stating universal requiredness, and the Checkout sample selects UPI within a card-plus-UPI list. Preserve the nested qrcode response object while noting the old prose path discrepancy (old raw lines 75-107, old raw lines 191-248 and old raw lines 542-571). Keep the raw route and restore a reciprocal Stripe Real-Time Payments concept link. The November variants remain navigation."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "upi-future-payments-dated-save-scope",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Save/recurring**: Checkout (setup mode) or Direct API via `stripe.confirmUpiSetup()` (SetupIntent) or PaymentIntent + `setup_future_usage: off_session`. Full billing address required (name, Indian address). `next_action.upi_handle_redirect_or_display_qr_code` (parallel to Swish). On-session saved payments still redirect to UPI app. Detach via `detachPaymentMethod` → `mandate.updated` + `payment_method.detached` events.",
+      "proposed_markdown": "**Save/recurring (May 6, 2026 guide).** With customer permission and a mandate, save UPI through hosted Checkout setup mode, a Direct API SetupIntent confirmed with `stripe.confirmUpiSetup()`, or a UPI PaymentIntent confirmed with `setup_future_usage: 'off_session'` to initiate payment and save. The Direct API samples show a billing name and Indian address, including `line2`, without specifying requiredness for each field. For a later PaymentIntent, reuse the PaymentMethod ID and set `off_session: true` when the customer is outside checkout. On-session payments still redirect to the UPI app. The optional manual flow uses `upi_handle_redirect_or_display_qr_code` when the PaymentIntent requires action. Detach emits `mandate.updated` and `payment_method.detached`. See [[source-stripe-upi-set-up-future-payments]].",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "The November capture only indexes the two variants. May raw lines 14, 75–107, 119–121, 180–248, 341–462 and 464–571 support the historical qualifications."
+      ]
+    },
+    {
+      "update_id": "upi-future-payments-source-route",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-upi-set-up-future-payments]] — UPI save/recurring: confirmUpiSetup(), full address required, next_action QR data, on-session still redirects",
+      "proposed_markdown": "- [[source-stripe-upi-set-up-future-payments]] — May 2026 UPI setup and payment paths, consent, address examples, later payments and QR handling. The November index links Checkout and Direct API variants.",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "May raw lines 14, 75–107, 180–248, 341–462 and 464–571 supply the dated details."
+      ]
+    }
+  ]
+}

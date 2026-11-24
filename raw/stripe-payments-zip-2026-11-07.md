@@ -1,0 +1,291 @@
+<!-- Source URL: https://docs.stripe.com/payments/zip -->
+<!-- Fetched: 2026-11-07 -->
+<!-- Discovery: reconciled llms.txt,sitemap.xml -->
+
+# Zip payments
+
+Learn about Zip, a popular payment method in Australia and the US for customers to buy now and pay later.
+
+Zip gives customers in Australia and the US a way to split purchases over a series of payments. Zip makes the full purchase amount, minus fees, available to you up front and collects repayments directly from the customer according to their payment-plan terms.
+Payment method family: Buy now, pay later
+Usability: Single-use
+Access type: Instant provisional access
+Payment confirmation timing: Immediate
+Settlement timing: Up to 2 business days (T+2)
+Pricing: https://stripe.com/en-us/pricing/local-payment-methods#zip
+## Eligibility and availability 
+
+### Account eligibility
+Business location: AU, US
+Account type: ✓ Merchant, ✓ Platform or marketplace (Connect)
+Business model: ✓ B2B, ✓ B2C
+Business category: View list of prohibited and restricted business categories
+Review the list of *merchant category codes* (A Merchant Category Code (MCC) is a four-digit number that classifies the type of goods or services a business offers) that are prohibited or restricted for Zip.
+
+- **Prohibited**: You can’t use this payment method with these MCCs.
+- **Restricted**: You might be able to use this payment method with these MCCs, but you must provide additional information when you create the account.
+
+MCC requirements depend on your business country.
+
+#### Business country - Select your business country
+
+Select your business country to review its prohibited and restricted MCCs.
+
+#### Business country - Australia
+
+| MCC | Description | Type |
+| --- | --- | --- |
+| 4829 | Money Orders - Wire Transfers | Prohibited |
+| 5521 | Car and Truck Dealers (Used Only) | Prohibited |
+| 5541 | Service Stations | Prohibited |
+| 5542 | Automated Fuel Dispensers | Prohibited |
+| 5933 | Pawn Shops | Prohibited |
+| 6010 | Manual Cash Disburse | Prohibited |
+| 6011 | Financial Service | Prohibited |
+| 6012 | Financial Institutions | Prohibited |
+| 6051 | Cryptocurrency exchanges and wallets | Prohibited |
+| 6211 | Security Brokers and Dealers | Prohibited |
+| 6300 | Insurance Underwriting, Premiums | Prohibited |
+| 6513 | Real Estate Agents and Managers - Rentals | Prohibited |
+| 6529 | Software | Prohibited |
+| 6530 | Software | Prohibited |
+| 6532 | Software | Prohibited |
+| 6533 | Software | Prohibited |
+| 6534 | Software | Prohibited |
+| 6535 | Software | Prohibited |
+| 6536 | Software | Prohibited |
+| 6537 | Software | Prohibited |
+| 6538 | Software | Prohibited |
+| 6539 | Software | Prohibited |
+| 7273 | Dating and Escort Services | Prohibited |
+| 7297 | Massage Parlors | Prohibited |
+| 7778 | Software | Prohibited |
+| 7801 | Government Licensed On-line Casinos (On-Line Gambling) | Prohibited |
+| 7802 | Government-Licensed Horse and Dog Racing | Prohibited |
+| 7995 | Betting and Casino Gambling | Prohibited |
+| 8111 | Legal Services, Attorneys | Prohibited |
+| 8398 | Charitable and Social Service Organizations - Fundraising | Prohibited |
+| 9311 | Tax Payments - Government Agencies | Prohibited |
+| 9399 | Government Services (Not Elsewhere Classified) | Prohibited |
+| 9402 | Postal Services - Government Only | Prohibited |
+| 9405 | US Federal Govt Agencies or Departments | Prohibited |
+
+#### Business country - United States
+
+| MCC | Description | Type |
+| --- | --- | --- |
+| 4829 | Money Orders - Wire Transfers | Prohibited |
+| 5521 | Car and Truck Dealers (Used Only) | Prohibited |
+| 5541 | Service Stations | Prohibited |
+| 5542 | Automated Fuel Dispensers | Prohibited |
+| 5933 | Pawn Shops | Prohibited |
+| 6010 | Manual Cash Disburse | Prohibited |
+| 6011 | Financial Service | Prohibited |
+| 6012 | Financial Institutions | Prohibited |
+| 6051 | Cryptocurrency exchanges and wallets | Prohibited |
+| 6211 | Security Brokers and Dealers | Prohibited |
+| 6300 | Insurance Underwriting, Premiums | Prohibited |
+| 6513 | Real Estate Agents and Managers - Rentals | Restricted |
+| 6529 | Software | Prohibited |
+| 6530 | Software | Prohibited |
+| 6532 | Software | Prohibited |
+| 6533 | Software | Prohibited |
+| 6534 | Software | Prohibited |
+| 6535 | Software | Prohibited |
+| 6536 | Software | Prohibited |
+| 6537 | Software | Prohibited |
+| 6538 | Software | Prohibited |
+| 6539 | Software | Prohibited |
+| 7273 | Dating and Escort Services | Prohibited |
+| 7297 | Massage Parlors | Prohibited |
+| 7778 | Software | Prohibited |
+| 7801 | Government Licensed On-line Casinos (On-Line Gambling) | Prohibited |
+| 7802 | Government-Licensed Horse and Dog Racing | Prohibited |
+| 7995 | Betting and Casino Gambling | Prohibited |
+| 8111 | Legal Services, Attorneys | Prohibited |
+| 8398 | Charitable and Social Service Organizations - Fundraising | Prohibited |
+| 9311 | Tax Payments - Government Agencies | Prohibited |
+| 9399 | Government Services (Not Elsewhere Classified) | Prohibited |
+| 9402 | Postal Services - Government Only | Prohibited |
+| 9405 | US Federal Govt Agencies or Departments | Prohibited |
+
+Stripe accounts in the following countries can accept Zip payments that settle in a supported currency.
+
+AMER: US
+
+APAC: AU
+
+Customers in the following countries can use Zip.
+
+AMER: US
+
+APAC: AU
+
+### Payment support
+Customer location: AU, US
+Presentment currency: AUD, USD
+Geographic coverage: ✓ Domestic, ✗ Crossborder
+### Payment options
+
+Available payment options vary by country. Regardless of the option selected, Zip makes the full purchase amount, minus fees, available to you up front and collects installments directly from the customer.
+
+### AU
+
+| Payment option | Description | Amount range |
+| --- | --- | --- |
+| Zip Pay | Zip Pay is Zip's Australian line of credit for purchases between 0.50 AUD and 1,000 AUD. Customers can select weekly, biweekly, or monthly repayments. Zip charges a monthly account fee, but waives it if the balance is repaid in full by the monthly due date. | AUD&nbsp;1–AUD&nbsp;1,000 |
+| Zip Money | Zip Money is Zip's Australian credit product for purchases between 1,000 AUD and 50,000 AUD, subject to approval and retailer availability. Customers can receive an interest-free period of up to 36 months, depending on the retailer. Interest-free periods longer than 3 months and credit limits above 5,000 AUD require retailer qualification. Zip charges an account establishment fee and a monthly fee, but waives the monthly fee when the account balance is zero at the end of the calendar month. | AUD&nbsp;1,000–AUD&nbsp;50,000 |
+
+Country note: If an Australian purchase exceeds the customer's available Zip credit, the customer can pay the remainder with a card up front.
+
+### US
+
+| Payment option | Description | Amount range |
+| --- | --- | --- |
+| Pay in 4 | Zip Pay in 4 is Zip’s US buy now, pay later product for purchases between 35 USD and 1,500 USD. Customers pay in four installments: the first at checkout and the remaining three at two-week intervals over six weeks. Zip charges the customer a fee based on the purchase amount, and you receive payment up front. | USD&nbsp;35–USD&nbsp;1,500 |
+
+### Customer country filtering 
+
+Customer country filtering applies when you enable a dynamic payment method on the Payment Element or Checkout Session. Zip only displays as a payment method option if the customer’s country is supported.
+
+We determine the customer’s country in the following priority order:
+
+1. Shipping address country: The two-letter country code, not the full country name.
+2. Geocoded country: The country based on the client-side IP address.
+
+## Capabilities 
+Recurring payments: ✗ Not supported
+
+Payment authorizations:
+  ✗ Extended authorizations
+  ✗ Flexible extended authorizations
+  ✗ Incremental authorizations
+  ✗ Decremental authorizations
+  ✗ Re-authorizations
+
+Payment captures:
+  ✗ Manual capture
+  ✗ Partial capture
+  ✗ Multi-capture
+  ✗ Over-capture
+
+Refunds:
+  ✓ Partial refunds
+  ✓ Full refunds
+  Submission window: 180 days
+  Processing time: 3–5 business days
+
+Disputes:
+  ✗ Partial disputes
+  ✓ Full disputes
+### Refunds 
+
+You can issue a full or partial refund for a Zip payment within 180 calendar days of the original payment through the [Dashboard](https://dashboard.stripe.com/payments) or [Refunds API](https://docs.stripe.com/api/refunds/create.md). A submitted refund is initially pending and completes asynchronously. Refunds typically complete 3–5 business days after Zip processes your refund confirmation, but this timing isn’t guaranteed. You can’t cancel a pending Zip refund.
+
+#### Refund process 
+
+**United States**: For a full refund, Zip cancels unpaid installments and returns payments the customer has already made to their original payment method. For a partial refund, Zip reduces the remaining unpaid installments by the refund amount. If the refund exceeds the amount the customer still owes, Zip returns the difference to their original payment method.
+
+**Australia**: Zip credits the refunded amount to the customer’s available Zip balance for both full and partial refunds.
+
+#### Tracking refunds 
+
+To check a refund’s status, open the payment in the [Dashboard](https://dashboard.stripe.com/payments) and click **View details** on the refund entry. You can also [retrieve the Refund object](https://docs.stripe.com/api/refunds/retrieve.md) and check its `status` field.
+
+Stripe notifies you of the final status through a `refund.updated` or `refund.failed` *webhook* (A webhook is a real-time push notification sent to your application as a JSON payload through HTTPS requests) event. [Verify webhook signatures](https://docs.stripe.com/webhooks.md#verify-events) to confirm that events came from Stripe. You can also use Stripe’s [public IP addresses](https://docs.stripe.com/ips.md) for network allowlisting. When a refund succeeds, the [Refund object](https://docs.stripe.com/api/refunds/object.md) status changes to `succeeded`. If the refund fails, the status changes to `failed` and Stripe returns the amount to your Stripe balance. You must refund the customer using another method.
+
+### Disputes 
+
+#### Dispute process 
+
+**United States**: Zip manages disputes for US Zip payments directly. Customers who want to open or discuss a dispute should contact [Zip Support](https://zip.co/us/contact-us).
+
+**Australia**: Customers have up to 180 calendar days from the purchase date to file a dispute. Zip requires the customer to contact you first. If the issue remains unresolved 14 days after the purchase date, the customer can open a case with Zip. When the case becomes a dispute, Stripe holds the disputed amount and the applicable dispute fee from your balance until Zip resolves it.
+
+#### Dispute notifications 
+
+**United States**: Zip manages dispute notifications for US Zip payments. Direct customers to [Zip Support](https://zip.co/us/contact-us) for help with a dispute.
+
+**Australia**: Stripe notifies you of a dispute by email, in the [Stripe Dashboard](https://dashboard.stripe.com/disputes), and through a [`charge.dispute.created`](https://docs.stripe.com/api/events/types.md#event_types-charge.dispute.created) webhook event if your integration receives webhooks. The dispute reason and evidence deadline are available in the Dashboard and on the [Dispute object](https://docs.stripe.com/api/disputes/object.md).
+
+#### Responding to disputes 
+
+**United States**: Zip manages responses for US Zip payment disputes directly. Direct customers to [Zip Support](https://zip.co/us/contact-us).
+
+**Australia**: You have 12 calendar days from dispute creation to respond. [Submit evidence through the Dashboard](https://docs.stripe.com/disputes/responding.md#respond) or programmatically with the [Disputes API](https://docs.stripe.com/api/disputes/update.md). Evidence can include:
+
+- Received return confirmation for shipped goods the customer returned
+- Tracking ID
+- Shipping date
+- A record of purchase for intangible goods, such as an IP address or email receipt
+- A record of purchase for services or physical goods, such as a phone number or proof of receipt
+
+Provide as much detail as possible from the information the customer supplied at checkout. To submit evidence through the API, upload supporting files with the [Files API](https://docs.stripe.com/api/files/create.md) and include the returned file IDs when you update the dispute.
+
+#### Dispute outcomes 
+
+**United States**: Zip manages outcomes for US Zip payment disputes directly. Direct customers to [Zip Support](https://zip.co/us/contact-us) for information about an outcome.
+
+**Australia**: Zip reviews the evidence and determines the outcome. Zip provides case-specific deadlines and doesn’t publish a fixed decision timeframe. If Zip resolves the dispute in your favor, Stripe returns the disputed amount and dispute fee to your Stripe balance. If Zip rules in favor of the customer, the balance charge becomes permanent.
+
+## Stripe product support 
+Checkout UIs:
+  ✓ Full page (Recommended)
+  ✓ Payment Links
+  ✓ Embedded form
+  ✓ Payment Element
+  ✗ Express Checkout Element
+  ✗ Payment Method Messaging Element
+  ✓ In-app payments
+
+Products:
+  ✗ Managed Payments
+  ✗ Billing
+  ✗ Invoicing
+  ✗ Customer Portal
+  ✓ Radar
+  ✗ Terminal
+  ✓ Connect
+
+APIs:
+  ✓ Checkout Sessions (Recommended)
+  ✓ Payment Intents
+  ✗ Payment Intents with setup_future_usage
+  ✗ Setup Intents
+  ✗ Off-session payments
+Not supported when using Checkout in subscription mode or setup mode.
+
+### Add Zip branding to your website 
+
+Zip works closely with partners to test and enhance how Zip is presented to customers. You must use and display Zip’s branding according to its country-specific guidance:
+
+- **Australia**: See Zip’s [best practice integration guide](https://developers.zip.co/docs/best-practice-implementation) and [static visual assets and branding guidelines](https://developers.zip.co/docs/zip-marketing-assets).
+- **United States**: See Zip’s [marketing guidelines](https://zip.co/us/merchant-resources).
+
+## Customer experience 
+
+#### 1. Select Zip
+
+The customer selects Zip at checkout and confirms their billing information.
+
+#### 2. Redirect to Zip
+
+The customer leaves your site through Stripe's hosted redirect page and continues to Zip's hosted flow. The same redirect-based flow applies on desktop and mobile.
+
+#### 3. Choose a plan and authorize
+
+The customer checks their eligibility, logs in or creates a Zip account, selects an available payment plan, and accepts its terms.
+
+#### 4. Return and complete payment
+
+Zip automatically redirects the customer to your return URL. Stripe immediately reports whether the payment succeeded or failed, and your integration displays the corresponding final state.
+
+### Statement descriptors 
+
+Zip determines the statement description that appears for each installment on the customer’s bank or card statement. Zip uses your trading name with other transaction details, such as the Zip order number and your business location, to construct the description. Stripe’s account-level and per-payment statement descriptors don’t affect it.
+
+## Enable Zip 
+
+If you use Stripe front-end products, enable Zip in your [payment method settings](https://dashboard.stripe.com/settings/payment_methods). Stripe automatically determines which payment methods are most relevant to each customer.
+
+If your integration requires manually listing payment methods, you can [configure Zip as an accepted payment method](https://docs.stripe.com/payments/zip/accept-a-payment.md).

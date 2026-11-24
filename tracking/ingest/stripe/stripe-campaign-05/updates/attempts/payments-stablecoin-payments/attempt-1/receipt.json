@@ -1,0 +1,263 @@
+{
+  "job_id": "payments-stablecoin-payments",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Stablecoin Payments\"\ntype: source\ndate_ingested: 2026-05-01\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/stablecoin-payments\"\nraw_files:\n  - \"stripe-payments-stablecoin-payments-2026-11-07.md\"\n  - \"stripe-stablecoin-payments-2025.md\"\ntags: [stripe, stablecoin, crypto, usdc, usdp, usdg, connect, billing, wallets]\n---\n\n## Overview\n\nThe May 1 and November 7, 2026 overviews describe direct Stripe Crypto checkout. A customer selects Crypto, opens Stripe’s hosted page at `crypto.stripe.com`, connects a wallet, chooses a token and network, and completes the customer-authenticated payment. Stripe shows a completion notification and may return the customer to the merchant’s site. In the separate [Clover API changelog](../../raw/stripe-changelog-clover-2025-09-30-stablecoin-payments-processing-status-2026-11-07.md#L5-L22), a `crypto` PaymentIntent on `2025-09-30.clover` enters `processing` after blockchain submission. Stripe rejects cancellation in that state with `payment_intent_invalid_cancellation_state` and waits until payment finalization before redirecting. Check the actual Intent outcome separately. Stripe-balance settlement and external payout are separate steps.\n\n## Buyer eligibility, business eligibility and currencies\n\nBoth product overviews describe global customer coverage excluding sanctioned countries. May limits acceptance to US businesses and states that completed payments settle in USD in the merchant’s Stripe balance. November lists the US and names the European Union, Hong Kong, Mexico and Switzerland in its private-preview prose. Its [detailed business-location list](../../raw/stripe-payments-stablecoin-payments-2026-11-07.md#L61-L100) also includes GI, LI and NO. The prose supplies no additional access label for those three bullets. Account eligibility and activation remain account-specific.\n\nThe November overview lists USD presentment and other presentment currencies in private preview. It describes completed payments settling in the merchant’s local currency in their Stripe balance. Both the [May](../../raw/stripe-payment-method-support-2025.md#L30-L68) and [November](../../raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md#L31-L71) cross-method eligibility matrices give the same direct method’s row as USD, US businesses and worldwide customers. Those rows report a currency column and business/customer geography. The dedicated overview provides the separate settlement wording and preview qualifications. Payout timing varies by network in both product overviews.\n\n## Direct checkout tokens and networks\n\n| Token | May 1, 2026 overview | November 7, 2026 overview |\n| --- | --- | --- |\n| USDC | Ethereum, Solana, Polygon, Base | Tempo, Ethereum, Solana, Polygon, Base |\n| USDP | Ethereum, Solana | Ethereum, Solana. US only. |\n| USDG | Ethereum | Ethereum. US only. |\n\nThe November glossary separately names OUSD and USDC for stablecoin balances and USDC.e for transfers on Tempo. [[source-stripe-stablecoins-on-link|Stablecoins on Link]] is a separate funding path for eligible US businesses with one-time, on-session USD payments. The [Dahlia API changelog](../../raw/stripe-changelog-dahlia-2026-04-22-stablecoin-payments-phantom-cash-and-usdt-2026-11-07.md#L5-L23) documents `phantom_cash` and `usdt` read-side `token_currency` values on `2026-04-22.dahlia`. These values are reporting evidence. Review the direct accepted-token table for the dated checkout list.\n\n## Limit, refunds and disputes\n\nThe customer limit is USD 10,000 per transaction. Both overviews list full and partial refunds and say refunds go back as stablecoins to the customer’s original wallet. They list disputes as unsupported and say there is no dispute-to-chargeback withdrawal from the Stripe balance. Payment confirmation is customer-authenticated through the documented wallet flow.\n\n## Products and capability differences\n\nThe product overviews cover Checkout, Elements, Connect and Stripe Billing for invoices and subscriptions. They also list Payment Links and Invoicing in Dashboard guidance. The overviews mark manual capture unsupported. Enable the method in Payment methods settings if using a supported front end. See [[source-stripe-accept-stablecoin-payments]] for the distinct direct acceptance guide and [[source-stripe-subscriptions-stablecoins]] for subscription integration.\n\nThe May and November cross-method captures each contain two sets of product and API rows that link this same direct stablecoin method. Preserve their differing labels.\n\n| Capability | Dedicated stablecoin rows | Wallets rows |\n| --- | --- | --- |\n| Manual capture | Supported | Unsupported |\n| SetupIntents and `setup_future_usage` | Private preview | Invite only |\n| Subscriptions | Private preview | Invite only |\n| Invoicing | Supported with the Invoicing cell’s `send_invoice` collection-method footnote for subscriptions | Supported |\n| Customer Portal | Private preview | Supported |\n\nThe dedicated overview’s manual-capture exclusion and Billing coverage remain separately attributed. The [November dedicated product](../../raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md#L169-L173), [Wallets product](../../raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md#L188-L204), [dedicated API](../../raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md#L305-L307) and [Wallets API](../../raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md#L322-L338) rows retain those differences. The corresponding May rows carry the same distinctions. Account access, manual capture behavior and recurring execution remain unverified by these labels.\n\n## Connect\n\nStripe documents all Connect charge types, provided each connected account has the crypto payment method enabled. Connected accounts with full Dashboard access, including Standard accounts, can enable it there. For accounts without that access, request `crypto_payments` from the account’s page in the platform Dashboard or through the API. Check the connected account’s `capabilities.crypto_payments` for `active`.\n\n## Related\n\n- [[stripe-stablecoin-payments]] — direct and Link payment evidence\n- [[source-stripe-crypto-onramp]] — separate fiat-to-crypto purchase flow\n- [[stripe]] — Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-payments-stablecoin-payments-2026-11-07|November 7, 2026 direct Stablecoin Payments overview]] — full capture with dated eligibility, presentment, settlement, token and Connect scope.\n- [[raw/stripe-stablecoin-payments-2025|May 1, 2026 direct Stablecoin Payments overview]] — earlier eligibility and settlement wording, supported token networks and retained hosted flow diagrams.\n",
+  "quotes": {
+    "payments-stablecoin-payments": [
+      {
+        "text": "USD (other currencies available in private preview)",
+        "location": "raw/stripe-payments-stablecoin-payments-2026-11-07.md:21"
+      },
+      {
+        "text": "USDC (Tempo, Ethereum, Solana, Polygon, and Base networks), USDP (Ethereum and Solana, US-only), USDG (Ethereum, US-only)",
+        "location": "raw/stripe-payments-stablecoin-payments-2026-11-07.md:25"
+      },
+      {
+        "text": "Stablecoin payments are available in private preview to businesses operating in the European Union, Hong Kong, Mexico, and Switzerland.",
+        "location": "raw/stripe-payments-stablecoin-payments-2026-11-07.md:67"
+      },
+      {
+        "text": "Stablecoin payments settle in your Stripe balance in your local currency.",
+        "location": "raw/stripe-payments-stablecoin-payments-2026-11-07.md:145"
+      },
+      {
+        "text": "Each connected account must have the crypto payment method enabled.",
+        "location": "raw/stripe-payments-stablecoin-payments-2026-11-07.md:163"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-stablecoin-payments": [
+      {
+        "text": "USDC (Ethereum, Solana, Polygon, and Base networks), USDP (Ethereum and Solana), USDG (Ethereum)",
+        "location": "raw/stripe-stablecoin-payments-2025.md:20"
+      },
+      {
+        "text": "Customers can use stablecoins as payment globally, but currently only US businesses can accept stablecoin payments.",
+        "location": "raw/stripe-stablecoin-payments-2025.md:60"
+      },
+      {
+        "text": "All stablecoin payments settle in your Stripe balance in USD.",
+        "location": "raw/stripe-stablecoin-payments-2025.md:106"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-stablecoin-payments-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 178
+      }
+    ],
+    "raw/stripe-stablecoin-payments-2025.md": [
+      {
+        "start": 1,
+        "end": 141
+      }
+    ],
+    "wiki/sources/source-stripe-stablecoin-payments.md": [
+      {
+        "start": 1,
+        "end": 31
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/6abcea6a4776290aa12af106/content.diff": [
+      {
+        "start": 1,
+        "end": 155
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-stablecoin-payments/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 245
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-stablecoin-payments/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 124
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 234,
+        "end": 244
+      },
+      {
+        "start": 755,
+        "end": 763
+      }
+    ],
+    "wiki/concepts/stripe-stablecoin-payments.md": [
+      {
+        "start": 1,
+        "end": 56
+      }
+    ],
+    "raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md": [
+      {
+        "start": 31,
+        "end": 31
+      },
+      {
+        "start": 71,
+        "end": 71
+      },
+      {
+        "start": 167,
+        "end": 173
+      },
+      {
+        "start": 186,
+        "end": 188
+      },
+      {
+        "start": 204,
+        "end": 204
+      },
+      {
+        "start": 303,
+        "end": 307
+      },
+      {
+        "start": 320,
+        "end": 323
+      },
+      {
+        "start": 338,
+        "end": 338
+      }
+    ],
+    "raw/stripe-payment-method-support-2025.md": [
+      {
+        "start": 30,
+        "end": 30
+      },
+      {
+        "start": 68,
+        "end": 68
+      },
+      {
+        "start": 163,
+        "end": 169
+      },
+      {
+        "start": 182,
+        "end": 184
+      },
+      {
+        "start": 200,
+        "end": 200
+      },
+      {
+        "start": 298,
+        "end": 302
+      },
+      {
+        "start": 315,
+        "end": 318
+      },
+      {
+        "start": 332,
+        "end": 332
+      }
+    ],
+    "raw/stripe-payments-link-stablecoins-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 36
+      }
+    ],
+    "raw/stripe-changelog-clover-2025-09-30-stablecoin-payments-processing-status-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 32
+      }
+    ],
+    "raw/stripe-changelog-dahlia-2026-04-22-stablecoin-payments-phantom-cash-and-usdt-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 23
+      },
+      {
+        "start": 61,
+        "end": 69
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md": [
+      {
+        "start": 419,
+        "end": 425
+      }
+    ]
+  },
+  "answers": {
+    "payments-stablecoin-payments": {
+      "Q1": "The November 7, 2026 overview at https://docs.stripe.com/payments/stablecoin-payments describes customer-authenticated direct stablecoin payments. Stripe redirects a buyer selecting Crypto to crypto.stripe.com to choose a currency and network and connect a wallet. The buyer gets a completion notification and may return to the merchant. Completed payments settle in the merchant's local-currency Stripe balance, while USD presentment is listed and other currencies are in private preview (new raw lines 9-29, 109-123 and 141-147). Global customers exclude sanctioned countries. Supported merchants are separately identified through US availability and named private previews. Connect requires each account to have the method enabled and gives distinct Dashboard/request routes (new raw lines 55-100 and 161-173). The May overview specified US-only merchants and USD balance settlement (old raw lines 8-20, 54-60 and 103-109); source-stripe-stablecoin-payments.md now dates those historical conditions and adds the November Tempo and US-only token qualifiers. The overview describes completion rather than a PaymentIntent state sequence. The separate 2025-09-30.clover changelog lines 5-22 identify processing after blockchain submission, an error when canceling then, and redirection after finalization.",
+      "Q2": "At https://docs.stripe.com/payments/stablecoin-payments, the substantive November changes are the merchant-preview breakout, USD presentment with other currencies in private preview, local-currency Stripe-balance settlement, and dated direct checkout token/network wording (new raw lines 9-25, 61-100 and 141-147). Preserve the May 1, 2026 US-only and USD-only settlement evidence and the older token/network table (old raw lines 8-20, 54-60 and 103-109). In source-stripe-stablecoin-payments.md distinguish the named private preview regions from the detailed list, including GI, LI and NO, and do not merge checkout USDC on Tempo with stablecoin balances or USDC.e transfers, Link's separately scoped USD payments, or API reporting enums. The icons, heading and getting-started link changes are presentational or navigational. The core wallet flow, 10,000 USD cap, original-wallet refunds and Connect active qualification are retained (old raw lines 69-99 and 105-135; new raw lines 109-173). Preserve root index line 7, Stripe index lines 238 and 760 and the Stablecoin Payments concept's source and distinct Link routes at lines 38-40 and 52-54. Add the source backlink and retain both factual captures. The November 7 cross-method support matrix at raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md lines 31 and 71 still labels this same direct URL USD, US businesses and worldwide customers, as did the May matrix at raw/stripe-payment-method-support-2025.md lines 30 and 68. The November method overview distinguishes USD presentment plus other currencies in private preview (new raw line 21), sanctions-excluded global buyers (line 59), separately named merchant previews (lines 61-100), and local-currency Stripe balance settlement (line 145). Keep both dated scopes. The matrix currency column does not describe settlement, and the overview preview scope does not prove activation. The November method overview marks manual capture unsupported and lists Billing for invoices and subscriptions (new raw lines 47-49 and 157-159). The same-URL dedicated `crypto` API row in raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md lines 305-307 marks manual capture Supported and SetupIntents/setup_future_usage Private preview. Its Wallets API row at lines 322 and 338 marks manual capture Unsupported and those saving flags Invite only. Dedicated products at lines 169-173 say Subscriptions Private preview, Invoicing Supported with a send_invoice collection-method footnote for subscriptions, and Customer Portal Private preview. Wallets products at lines 188 and 204 instead say Subscriptions Invite only, Invoicing Supported, Customer Portal Supported. The equivalent conflicts also occur in the May matrix at lines 165-169, 184, 200, 300-302, 317 and 332. The candidate and proposed Stablecoin Payments concept edits preserve each profile and matrix statement as dated evidence. Account access, capture behavior and recurring execution remain unresolved."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-stablecoin-payments-capture-and-billing-qualifications",
+      "target_path": "wiki/concepts/stripe-stablecoin-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **No manual capture**; payout timing varies by network\n- **Recurring payments**: supported via Stripe Billing",
+      "proposed_markdown": "- **Capture and payout**. The direct product overview lists manual capture as unsupported and payout timing as network-dependent. The dedicated stablecoin API rows mark manual capture supported, and the Wallets API rows mark it unsupported.\n- **Billing**. The direct overview lists invoices and subscriptions. The dedicated and Wallets matrices apply separate private-preview, invite-only and product labels. See [[source-stripe-stablecoin-payments]] for the dated rows and their unresolved account and workflow scope.",
+      "quote_indexes": [],
+      "warnings": [
+        "November overview lines 35–57 and 157–159, November matrix lines 169–173, 188–204, 305–307 and 322–338, and corresponding May matrix rows."
+      ]
+    },
+    {
+      "update_id": "payments-stablecoin-payments-product-and-eligibility",
+      "target_path": "wiki/concepts/stripe-stablecoin-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "The direct Stripe Crypto product covers Checkout, Elements, Invoicing, Payment Links, Billing (invoices and subscriptions) and Connect (all charge types), subject to the product’s own eligibility. The November 2026 direct overview lists US business availability, private previews in the European Union, Hong Kong, Mexico and Switzerland, settlement in the merchant’s local currency in their Stripe balance, and a direct accepted-token table. Its USDC-on-Tempo listing applies to direct Crypto payments. See [[raw/stripe-payments-stablecoin-payments-2026-11-07|November 2026 direct Stripe Crypto overview]].",
+      "proposed_markdown": "The direct Stripe Crypto overview covers Checkout, Elements, Invoicing, Payment Links, Billing and Connect, subject to product and account eligibility. November lists USD presentment and other currencies in private preview, and describes settlement to the merchant’s local-currency Stripe balance. Its named business previews and detailed country list, including GI, LI and NO, differ from the May and November cross-method rows that say USD and US businesses. The direct November token table adds USDC on Tempo and qualifies USDP and USDG as US only. See [[source-stripe-stablecoin-payments]] for the dated geographic, currency and product-matrix boundaries.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "payments-stablecoin-payments-dated-dashboard-capability",
+      "target_path": "wiki/concepts/stripe-stablecoin-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "Each connected account needs the `crypto_payments` capability:\n- Standard accounts: enable via Dashboard\n- Other accounts: request via platform Dashboard or API",
+      "proposed_markdown": "Both direct overviews make each connected account’s enabled method a prerequisite. Accounts with full Stripe Dashboard access, including Standard accounts, can enable the method there. For accounts without full Dashboard access, request `crypto_payments` in the platform Dashboard or through the API.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "November raw lines 161–173 and old raw lines 123–135."
+      ]
+    },
+    {
+      "update_id": "payments-stablecoin-payments-dated-reciprocal",
+      "target_path": "wiki/concepts/stripe-stablecoin-payments.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-stablecoin-payments]] — primary source: stablecoin types, payment flow, limitations, disputes, refunds, Connect",
+      "proposed_markdown": "- [[source-stripe-stablecoin-payments]] — May and November 2026 direct Crypto overviews with dated eligibility, presentment and settlement, checkout token networks, product-matrix differences, refunds and Connect activation.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+--- wiki/sources/source-stripe-sequra.md
++++ wiki/sources/source-stripe-sequra.md
+@@ -2,28 +2,47 @@
+ title: "Stripe: SeQura Payments"
+ type: source
+ date_ingested: 2026-05-06
++date_updated: 2026-11-22
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/payments/sequra"
+ raw_files:
++  - "stripe-payments-sequra-2026-11-07.md"
+   - "stripe-sequra-2025.md"
+-tags: [stripe, bnpl, sequra, buy-now-pay-later, consumer, spain, installments, eur]
++tags: [stripe, bnpl, sequra, buy-now-pay-later, b2b, b2c, spain, installments, eur]
+ ---
+ 
+ ## Summary
+ 
+-Overview of SeQura as a Stripe consumer BNPL for Southern Europe (Spain only). Pay in 3 interest-free or up to 12 total installments. No Connect. Most extensive prohibited category list of any BNPL (~160+ categories).
++SeQura is a single-use installment payment method on [[stripe]]. The 2026-11-07 overview describes domestic EUR payments between Spanish businesses and buyers, for amounts from €29 to €3,000. It lists B2B and B2C and describes instant provisional access with possible post-activation review. The buyer chooses a repayment option and authorizes on SeQura's hosted page. Payment confirmation is immediate in the guide and merchant settlement follows the standard payout schedule (November lines 9–40, 247–270 and 401–421).
+ 
+-## Key Details
++## Eligibility and Connect
+ 
+-**Consumer BNPL** — Spain (ES) only, EUR only. Pay in 3 interest-free or up to 12 installments. **No Connect support**.
++- November lists **Merchant** and **Platform or marketplace (Connect)** as account types. The same capture separately marks **MCC 5262 Marketplaces** prohibited, and May also listed Marketplaces as a prohibited business category. Account type, category eligibility and capability status are separate checks. Stripe's own restricted businesses and website requirements still apply. November describes restricted MCCs as possibly usable with more account-creation information and permits appeal of capability restrictions through Stripe support. Its MCC table labels every displayed row Prohibited. See the dated tables for individual categories (November lines 17–245, May lines 92–290).
++- Accepting connected accounts must have `sequra_payments` enabled. A platform can request it during account creation or by updating an existing account. Direct charges use the connected account as merchant of record and its descriptor according to the Connect section. Destination and transfer charges use the platform as merchant of record. The general buyer-statement section says buyers see SeQura and refers Connect readers to separate descriptor rules. Preserve these documented scopes when identifying a statement entry (November lines 393–421).
+ 
+-**Transaction limits**: min €29. No stated maximum.
++## Integration and outcomes
+ 
+-**Prohibited categories**: ~160+ categories — the most extensive prohibited list of any payment method on Stripe (exceeds even Mondu's ~90). Includes restaurants, doctors, legal services, marketplaces, digital goods, bakeries, and many more everyday categories.
++- The November guide recommends Checkout Sessions and full-page Checkout. It lists Payment Links, embedded form, Payment Element and in-app payments. The separate BNPL product matrix marks Mobile Payment Element supported in November. These product labels do not specify every native implementation. Express Checkout Element is excluded in both dated dedicated overviews. Activate SeQura in Dashboard settings for Stripe frontend products and see the acceptance guide for manual listing (May lines 58–86, November lines 355–384 and 423–427).
++- SeQura uses cart items for risk assessment. Checkout sends the Session's line items automatically. With Payment Intents, supply `amount_details[line_items]` on create or update for SeQura to receive item details. Without it, SeQura receives the total only (November lines 386–391).
++- Desktops and mobile devices redirect the buyer to the hosted page. If the buyer does not authorize within 60 minutes, the attempt expires and the PaymentIntent returns to `requires_payment_method`. The guide places the completion screen before the customer returns. Verify payment outcome separately from return. After completion, expand `latest_charge` to read `latest_charge.payment_method_details.sequra.transaction_id` (November lines 401–421).
++- November supports manual and partial capture and excludes multi-capture, over-capture, extended, flexible extended, incremental and decremental authorizations, re-authorizations, recurring, Setup Intents, `setup_future_usage` and off-session payments. The method page lists Billing and Invoicing, and specifies `send_invoice` for invoices. The November BNPL matrix lists Subscriptions as unsupported and Invoicing as `send_invoice` only. May explicitly excluded Checkout subscription and setup modes. The earlier acceptance guide's seven-day window is for capture after authorization and its 7–120 day terms describe repayment (November lines 272–286 and 365–384, May lines 58–66, May acceptance lines 16 and 1094–1140).
+ 
+-**Disputes**: 12-day evidence window.
++## Refunds and disputes
+ 
+-**Refunds**: 180-day window; async (up to 5 min). `refund.updated`/`refund.failed` webhooks.
++- **Refunds.** Both captures document full and partial asynchronous refunds, up to five minutes, with a 180-day submission limit. November specifies the original payment as the reference date and says refunds cannot be canceled. For a full refund, SeQura cancels remaining installments and returns the amounts already paid to the original card. A partial refund recalculates remaining installments, with money returned only once there are no future installments. Check the Refund object's `status` or `refund.updated` and `refund.failed` events. A failed refund returns the amount to the merchant's Stripe balance, and the merchant must refund the buyer another way (May lines 316–323, November lines 288–312).
++- **Disputes.** November says a buyer can file one full dispute per payment within 120 calendar days of purchase. Stripe immediately withholds the amount. The seller has 15 calendar days from dispute creation to submit a single round of evidence. SeQura issues a final decision within 25 calendar days of creation. A merchant win restores the held amount to their Stripe balance, and a buyer win makes the balance charge permanent. The Dashboard or `Dispute.evidence_due_by` gives the deadline. May gave a 12-calendar-day evidence window (May lines 292–314, November lines 294–297 and 314–353).
++
++## May evidence and matrix differences
++
++- The 2026-05-06 SeQura overview describes Southern Europe, lists EU customer locations and Spanish Stripe accounts, and uses EUR. It describes three interest-free or up to twelve installments and a €29 minimum without a stated maximum. November instead says domestic Spain and describes buyer choice without listing the earlier installment counts. The separate May Checkout acceptance guide lists Europe under business locations, a different dated label from the overview's Spanish account list (May lines 8–56 and 88–90, May acceptance lines 16–35).
++- The May SeQura overview lists no Connect, in conflict with the May BNPL product matrix's Supported cell. November lists Connect in both captures, with the capability prerequisite in the dedicated guide. May's BNPL API row marks `setup_future_usage` Supported, with its non-card footnote limiting supported use to `off_session`. The November API matrix and dedicated guide mark it unsupported. Both dedicated overviews exclude recurring payments. See [[source-stripe-bnpl-overview]] for the dated product and API matrix rows.
++
++## Related Pages
++
++- [[stripe-bnpl]] — buy now, pay later comparison and SeQura details
++- [[source-stripe-sequra-accept-payment]] — separate implementation guide and dated selector
+ 
+ ## Raw Sources
+ 
+-- [[stripe-sequra-2025]] — verbatim webpage content (329 lines); fixed `_webhook_` → `*webhook*`; MP4 video URL left as-is
++- [[raw/stripe-payments-sequra-2026-11-07|SeQura overview, captured 2026-11-07]] — full method overview with MCCs, product support and payment lifecycle.
++- [[raw/stripe-sequra-2025|SeQura overview, captured 2026-05-06]] — full 329-line capture with webhook italic formatting fixed and the video URL preserved.

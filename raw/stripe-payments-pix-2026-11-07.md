@@ -1,0 +1,282 @@
+<!-- Source URL: https://docs.stripe.com/payments/pix -->
+<!-- Fetched: 2026-11-07 -->
+<!-- Discovery: reconciled llms.txt,sitemap.xml -->
+
+# Pix payments
+
+Learn about Pix, a real-time payment method.
+
+Pix is a real-time payment system developed by the Central Bank of Brazil. The service works by transferring funds between two bank accounts. To pay with Pix, customers authenticate and approve by scanning a QR code or copying a Pix string in their preferred banking apps.
+
+Pix supports both one-time payments and recurring payments through Pix Automático. For recurring payments, customers authorize a mandate in their bank app, which allows you to charge them automatically for future payments within the mandate terms.
+Payment method family: Real-time payments
+Usability: Reusable
+Access type: Instant provisional access
+Payment confirmation timing: Immediate
+Settlement timing: Up to 2 business days (T+2)
+Pricing: https://stripe.com/pt-br/pricing/local-payment-methods#pix
+## Eligibility and availability 
+
+### Account eligibility
+Business location: AT, AU, BE, BG, BR, CA, CH, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GR, HR, HU, IE, IT, LI, LT, LU, LV, MT, NL, NO, PL, PT, RO, SE, SG, SI, SK, US
+Account type: ✓ Merchant, ✓ Platform or marketplace (Connect)
+Business model: ✓ B2B, ✓ B2C
+Business category: View list of prohibited and restricted business categories
+Review the list of *merchant category codes* (A Merchant Category Code (MCC) is a four-digit number that classifies the type of goods or services a business offers) that are prohibited or restricted for Pix.
+
+- **Prohibited**: You can’t use this payment method with these MCCs.
+- **Restricted**: You might be able to use this payment method with these MCCs, but you must provide additional information when you create the account.
+
+| MCC | Description | Type |
+| --- | --- | --- |
+| 5047 | Medical, Dental, Ophthalmic, and Hospital Equipment and Supplies | Prohibited |
+| 5122 | Drugs, Drug Proprietaries, and Druggist Sundries | Prohibited |
+| 5813 | Drinking Places | Prohibited |
+| 5912 | Drug Stores and Pharmacies | Prohibited |
+| 5921 | Package Stores-Beer, Wine, and Liquor | Prohibited |
+| 6051 | Cryptocurrency exchanges and wallets | Prohibited |
+| 6300 | Insurance Underwriting, Premiums | Prohibited |
+| 7273 | Dating and Escort Services | Prohibited |
+| 7995 | Betting and Casino Gambling | Prohibited |
+| 8062 | Hospitals | Prohibited |
+| 8071 | Medical and Dental Labs | Prohibited |
+| 8099 | Medical Services | Prohibited |
+
+Stripe accounts in the following countries can accept Pix payments that settle in a supported currency.
+
+AMER: BR, CA, US
+
+EMEA: AT, BE, BG, CH, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GR, HR, HU, IE, IT, LI, LT, LU, LV, MT, NL, NO, PL, PT, RO, SE, SI, SK
+
+APAC: AU, SG
+
+Customers in the following countries can use Pix.
+
+AMER: BR
+
+### Payment support
+Customer location: BR
+Presentment currency: BRL
+Geographic coverage: ✓ Domestic, ✓ Crossborder
+> Stripe accounts in Brazil can accept Pix one-time payments with BRL settlement. Pix Automático isn’t available in Brazil. Businesses outside Brazil can accept Pix payments from customers in Brazil, including eligible recurring payments through Pix Automático.
+
+### Settlement currencies 
+
+Accepted Pix payments settle in a currency based on your Stripe account country.
+
+| Account country | Settlement currency |
+| --- | --- |
+| BR | BRL |
+| US | USD |
+| AT, BE, BG, CY, CZ, DE, DK, EE, ES, FI, FR, GR, HR, HU, IE, IT, LI, LT, LU, LV, MT, NL, NO, PL, PT, RO, SE, SI, SK | EUR |
+| CH, GB | GBP |
+| CA | CAD |
+| AU | AUD |
+| SG | SGD |
+
+### Transaction limits 
+
+The amount for a Pix payment must be at least 0.50 BRL. The default per-payment maximum is the BRL equivalent of 3,000 USD, including for businesses in Brazil. Accounts enabled for a higher per-payment limit can accept larger amounts.
+
+For Brazilian customers paying businesses outside Brazil, the limits are 3,000 USD per day and 10,000 USD per month, per customer per business.
+
+For recurring transactions, the amount that can be charged is limited by the amount that the customer authorizes during mandate creation. If you charge above the authorized amount, the payment fails.
+
+### Additional business restrictions 
+
+Review [Prohibited and Restricted Businesses](https://stripe.com/legal/restricted-businesses) and the prohibited and restricted MCCs above. Other crypto businesses, as well as telehealth or medicine vendors, also aren’t allowed to use Pix. In Singapore, non-profits and charities aren’t allowed.
+
+For more information about Pix eligibility for your account, go to your [Payment methods settings](https://dashboard.stripe.com/settings/payment_methods).
+
+## Capabilities 
+Recurring payments: ✓ Supported
+
+Payment authorizations:
+  ✗ Extended authorizations
+  ✗ Flexible extended authorizations
+  ✗ Incremental authorizations
+  ✗ Decremental authorizations
+  ✗ Re-authorizations
+
+Payment captures:
+  ✗ Manual capture
+  ✗ Partial capture
+  ✗ Multi-capture
+  ✗ Over-capture
+
+Refunds:
+  ✓ Partial refunds
+  ✓ Full refunds
+  Submission window: 90 days
+  Processing time: Usually within a few minutes
+
+Disputes:
+  ✗ Partial disputes
+  ✓ Full disputes
+### Refunds 
+
+You can request a Pix refund within 90 days of the original payment. Customers usually receive the refund within a few minutes, but there is no guaranteed maximum completion time. You can’t cancel Pix refunds.
+
+#### Refund process 
+
+Refunds return funds to the bank account used for the original payment. Pix supports full and partial refunds.
+
+#### Tracking refunds 
+
+View the refund in the Stripe Dashboard or [retrieve the Refund object](https://docs.stripe.com/api/refunds/retrieve.md) through the API to check its [status](https://docs.stripe.com/api/refunds/object.md#refund_object-status). A successful refund request or an early status update is not, by itself, proof that the customer’s bank account has been credited. If the customer hasn’t received the refund, investigate the refund and partner status before treating the funds as received.
+
+### Disputes 
+
+#### Dispute process 
+
+Pix permits disputes in a limited set of circumstances, such as fraud or account takeover. Customers raise disputes with their banks and provide evidence of the issue. Pix’s Special Refund Mechanism (MED) is the bank process for seeking the return of funds in eligible cases.
+
+#### Dispute notifications 
+
+Stripe notifies you of a Pix dispute by email, in the Stripe Dashboard, and through the [charge.dispute.created](https://docs.stripe.com/api/events/types.md#event_types-charge.dispute.created) webhook event. The dispute reason is available in the Dashboard and in the [reason](https://docs.stripe.com/api/disputes/object.md#dispute_object-reason) field of the Dispute object.
+
+#### Responding to disputes 
+
+You can’t contest Pix disputes or submit evidence to challenge them through Stripe. The partner’s decision is final and can’t be appealed.
+
+#### Dispute outcomes 
+
+If Stripe receives notification that our partner has accepted a request to return customer funds, Stripe removes the funds from your account. The partner’s outcome is final.
+
+### Mandates 
+
+Recurring payments through Pix Automático require a mandate that the customer authorizes in their banking app. This section applies to Pix Automático, not one-time Pix payments. Pix Automático isn’t available to businesses domiciled in Brazil.
+
+#### What customers authorize 
+
+The customer authorizes an amount and billing cycle for recurring charges. Future payments must stay within the mandate terms. If a charge exceeds the amount authorized in the mandate, the payment fails.
+
+#### Collect mandates 
+
+The customer authorizes enrollment in their banking app during the initial Pix Automático flow. Use a [SetupIntent](https://docs.stripe.com/api/setup_intents/create.md) to create the mandate without an initial charge, or a [PaymentIntent](https://docs.stripe.com/api/payment_intents/create.md) to take an initial payment and create the mandate. Follow the [Pix Automático integration guide](https://docs.stripe.com/payments/pix/pix-automatico.md) to collect authorization in the customer’s banking app. A consent checkbox or authorization statement on your checkout page doesn’t replace this step.
+
+#### Manage mandates 
+
+Find the mandate ID in the [payment_method_details.pix.mandate](https://docs.stripe.com/api/charges/object.md#charge_object-payment_method_details-pix-mandate) field on the Charge. Use this ID to [retrieve the mandate](https://docs.stripe.com/api/mandates/retrieve.md) and inspect [payment_method_details.pix](https://docs.stripe.com/api/mandates/object.md#mandate_object-payment_method_details-pix). Mandate objects aren’t generally visible in the Dashboard. A customer’s saved payment methods in the Dashboard provide context, but aren’t a mandate-management view.
+
+#### Cancel mandates 
+
+[Detaching the saved PaymentMethod](https://docs.stripe.com/api/payment_methods/detach.md) revokes its mandate and prevents future reuse of that PaymentMethod. Customers can also revoke authorization in their banking app; Stripe sends a [mandate.updated](https://docs.stripe.com/api/events/types.md#event_types-mandate.updated) event. After revocation, bring the customer back on-session to create a new mandate before taking future payments.
+
+## Stripe product support 
+Checkout UIs:
+  ✓ Full page (Recommended)
+  ✓ Payment Links
+  ✓ Embedded form
+  ✓ Payment Element
+  ✗ Express Checkout Element
+  ✗ Payment Method Messaging Element
+  ✓ In-app payments
+
+Products:
+  ✓ Managed Payments
+  ✓ Billing
+  ✓ Invoicing
+  ✓ Customer Portal
+  ✓ Radar
+  ✗ Terminal
+  ✓ Connect
+
+APIs:
+  ✓ Checkout Sessions (Recommended)
+  ✓ Payment Intents
+  ✓ Payment Intents with setup_future_usage
+  ✓ Setup Intents
+  ✓ Off-session payments
+### Integration guides 
+
+To integrate with a Stripe front-end product, follow a quickstart:
+
+- [Checkout](https://docs.stripe.com/checkout/quickstart.md): Stripe’s prebuilt checkout page.
+- [Elements](https://docs.stripe.com/payments/quickstart.md): Stripe’s drop-in UI components.
+- [Payment Links](https://docs.stripe.com/payment-links.md).
+- [Subscriptions](https://docs.stripe.com/billing/subscriptions/overview.md).
+
+For Checkout in subscription mode, use [Pix Automático](https://docs.stripe.com/payments/pix/pix-automatico.md). The customer authorizes a recurring mandate in their banking app during the initial flow. Subsequent recurring charges trigger a bank pre-debit notice, wait the required 3 days, and then charge the customer. The PaymentIntent is `processing` during this period; confirmation can take up to 7 days with retries. Pix Automático isn’t available to businesses domiciled in Brazil.
+
+### Handle Brazilian consumer tax (IOF) 
+
+IOF is a Brazilian tax on all transactions that involve foreign exchange (for example, from BRL to USD). The IOF is collected from Brazilian customers paying international businesses (that is, those domiciled outside of Brazil). The current rate is 3.5% of the transaction value.
+
+> The IOF rate can be subject to change by the Brazilian authorities. Check the Stripe documentation periodically to see if the rate changes.
+
+Stripe and our partner handle the collection and remittance of this IOF fee for you. However, you must decide how you want to present this tax to your customer. By default, your customer pays the IOF. To change this behavior, you can use the `amount_includes_iof` parameter in the field `payment_method_options` for Pix.
+
+| amount_includes_iof | Description |
+| --- | --- |
+| `never` | This is the default behavior where your customer pays the IOF. The amount that you collect on a payment intent is marked up by 3.5% in your customer’s banking app. |
+| `always` | You absorb the IOF on behalf of your customer. If you think an extra 3.5% could hurt conversion, you can elect to pay the IOF on behalf of your customer. In this scenario, we deduct the IOF from your settlement. |
+
+If you’re integrating Pix through Checkout or Elements, Stripe handles customer disclosures on your behalf.
+
+If you’re an API user, you must show the appropriate disclosures based on which IOF handling option you choose. See the following section for suggested language.
+
+#### IOF suggested language for API users 
+
+If you’re integrating as a Direct API user, you must show the appropriate customer disclosures for processing Pix transactions at checkout, depending on which IOF handling option you choose:
+
+| amount_includes_iof | Suggested Language (English) | Suggested Language (Brazilian Portuguese) |
+| --- | --- | --- |
+| `never` | This is an international purchase and excludes a 3.5% IOF fee. By proceeding, you acknowledge and accept [Ebanx’s terms and conditions](https://www.ebanx.com/pt-br/legal/consumidores/brasil/termos-para-processar-pagamentos/). | Esta é uma compra internacional e não inclui a tarifa de 3.5% de IOF. Ao prosseguir, você reconhece e aceita os [termos e condições do Ebanx](https://www.ebanx.com/pt-br/legal/consumidores/brasil/termos-para-processar-pagamentos/). |
+| `always` | This is an international purchase and includes a 3.5% IOF fee. By proceeding, you acknowledge and accept [Ebanx’s terms and conditions](https://www.ebanx.com/pt-br/legal/consumidores/brasil/termos-para-processar-pagamentos/). | Esta é uma compra internacional e inclui a tarifa de 3.5% de IOF. Ao prosseguir, você reconhece e aceita os [termos e condições do Ebanx](https://www.ebanx.com/pt-br/legal/consumidores/brasil/termos-para-processar-pagamentos/). |
+
+## Customer experience 
+
+#### 1. Choose Pix
+
+The customer selects Pix as their payment method at checkout.
+
+#### 2. Get payment details
+
+The customer receives a QR code or Pix string to use in their banking app.
+
+#### 3. Authorize the payment
+
+The customer scans the QR code or copies the Pix string into their banking app, then reviews and approves the payment.
+
+#### 4. See payment confirmation
+
+The customer receives confirmation that their payment is complete.
+
+During authorization, checkout remains open while the customer uses their banking app. The banking app doesn’t redirect the customer back. Checkout or Elements handles the configured `return_url` redirect when the underlying intent reaches a terminal state. Check the intent’s status to distinguish a successful payment from another terminal outcome.
+
+Authorization time depends on the customer opening the payment request and confirming it in their banking app. There is no fixed authorization-duration promise.
+
+For recurring payments through [Pix Automático](https://docs.stripe.com/payments/pix/pix-automatico.md), the customer authorizes the mandate’s amount and billing cycle in their banking app during enrollment. Future charges follow the pre-debit process described in the integration guide.
+
+### Customer communications
+
+#### Receipts
+
+In Brazil, businesses commonly send a receipt for each transaction and itemize the IOF amount.
+
+By default, our Pix partner, Ebanx, sends customer receipts. If you want to disable those emails and send your own receipts, include a line item for the IOF amount. If you absorb the IOF fee, we recommend itemizing the IOF amount in your customer receipts.
+
+To disable these emails, go to your [Customer emails settings](https://dashboard.stripe.com/settings/emails) and use the **Pix payments** section to disable Pix receipts.
+
+#### Complete transaction reminder emails
+
+Enable customer emails to help them complete the transaction. The email includes a Pix QR code and Pix key that they can scan outside the checkout flow.
+
+These emails are disabled by default. Enable them in the Stripe Dashboard at [Customer emails settings](https://dashboard.stripe.com/settings/emails) in the **Pix payments** section.
+
+### Statement descriptors 
+
+Pix doesn’t support customized statement descriptors. The value supplied in [statement_descriptor](https://docs.stripe.com/api/payment_intents/create.md#create_payment_intent-statement_descriptor) is ignored; dynamic or account-level descriptor settings don’t provide Pix customization.
+
+Ebanx appears as the payment recipient and in the statement descriptor on the customer’s bank statement. Your business name appears in the `identifier` field when the customer makes the payment.
+
+For general Connect guidance, see [Statement descriptors for connected accounts](https://docs.stripe.com/connect/statement-descriptors.md). Pix’s customization limitation still applies.
+
+## Enable Pix 
+
+If you use Stripe front-end products, enable Pix in your [payment method settings](https://dashboard.stripe.com/settings/payment_methods). Stripe automatically determines which payment methods are most relevant to each customer.
+
+If your integration requires manually listing payment methods, you can [configure Pix as an accepted payment method](https://docs.stripe.com/payments/pix/accept-a-payment.md).
+
+For Connect direct charges or charges using `on_behalf_of`, the connected account must be in a supported country and have Pix activated. If the account uses the Express Dashboard or doesn’t have a Stripe-hosted Dashboard, request its [pix_payments capability](https://docs.stripe.com/connect/account-capabilities.md#payment-methods). Accounts with the full Stripe Dashboard can activate Pix in their own [payment method settings](https://dashboard.stripe.com/settings/payment_methods).

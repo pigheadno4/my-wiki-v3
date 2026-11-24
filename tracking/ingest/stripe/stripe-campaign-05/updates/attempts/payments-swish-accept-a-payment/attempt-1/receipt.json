@@ -1,0 +1,141 @@
+{
+  "job_id": "payments-swish-accept-a-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Accept a Swish Payment\"\ntype: source\ndate_ingested: 2026-05-06\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/swish/accept-a-payment\"\nraw_files:\n  - \"stripe-swish-accept-payment-2025.md\"\ntags: [stripe, real-time-payments, swish, sweden, sek, checkout, elements, direct-api, ios, android, react-native, qr-code]\n---\n\n## Summary\n\nSwish is a single-use payment method for customers in Sweden. The 2026-05-06 [[stripe]] guide describes Swish and Swedish BankID authorization and immediate payment outcome notification. It covers Checkout, web Elements, Direct API, and custom iOS, Android and React Native flows. The 2026-11-07 capture is a navigation selector for the same six variants. The version-specific details below come from the May guide.\n\n## Key Details\n\n- **Checkout.** The May guide lists Europe as the business location and SEK as the supported and presentment currency. The customer and business location descriptions have different scopes. Use payment mode with all line items in SEK. The guide excludes setup and subscription modes for this Checkout path. It shows dynamic and manual payment method selection, including Stripe-hosted and fully embedded Session examples (lines 8–113).\n- **Elements.** Create the PaymentIntent on the server and confirm it on the client with `stripe.confirmPayment` and a `return_url`. Mobile web redirects to Swish. Desktop shows an inline QR code that closes automatically after successful authentication and can be refreshed up to 20 times. Use PaymentIntent status for return-page messaging and Stripe's `payment_intent.succeeded` event for fulfillment. App or browser return and QR modal closure alone do not establish payment success. The automatic-method USD sample is generic. The Swish-specific manual Elements example uses SEK (lines 191–227, 450–452 and 546–683).\n- **Direct API.** The merchant creates and confirms a SEK PaymentIntent on the server and supplies a return URL. The optional `payment_method_options.swish.reference` appears in the customer's Swish app. The confirmation example shows `requires_action` with `next_action.swish_handle_redirect_or_display_qr_code`, including `hosted_instructions_url` and QR data, PNG and SVG fields. Redirect to or embed the hosted instructions, which offer desktop QR and mobile app handoff. The phone-number fallback that lets a customer open Swish manually is described as invite-only beta (lines 748–775 and 866–932).\n- **Required notice.** Before authorization, the May Direct API and custom iOS, Android and React Native guides require an on-screen localized notice stating that Stripe Technology Europe Limited acquired the payment claim and receives the payment. Stripe displays the notice for Stripe-hosted forms and UI components such as Checkout and Payment Element. See the English and Swedish text and equivalent translation instruction at lines 727–735, 998–1012, 1284–1298 and 1519–1527.\n- **Custom mobile.** The May native and React Native flows use a backend SEK PaymentIntent. Native iOS offers a custom scheme or universal link for automatic webview dismissal. The distinct React Native iOS return setup uses a custom scheme and excludes universal links. React Native confirms client-side with `confirmPayment` and `paymentMethodType: 'Swish'` (lines 1103–1197, 1364–1394, 1601–1658 and 1662–1759).\n- **Payment outcome and expiry.** The May guide gives customers three minutes to act on a Swish PaymentIntent in `requires_action`. Decline or no action by expiry detaches the PaymentMethod and returns the intent to `requires_payment_method`. Direct API describes `payment_intent.payment_failed` when the customer does not pay and `payment_intent.succeeded` after completed payment. Merchant cancellation of an unexpired PaymentIntent is a separate operation (lines 151–157, 711–717, 914–927, 978–988, 1264–1274, 1499–1509 and 1787–1797).\n- **Testing.** May Checkout and Elements distinguish test-page approval and decline from live Swish-app approval and decline. The Direct API test scenarios simulate success after about one minute for an ordinary email, success within seconds with `succeed_immediately`, failure within seconds with `expire_immediately`, and expiry after about three minutes with `expire_with_delay` (lines 137–149, 697–709 and 953–976).\n\n## Related Pages\n\n- [[stripe-real-time-payments]] — Swish and other real-time payment methods\n- [[source-stripe-swish]] — separate Swish payment method overview\n\n## Raw Sources\n\n- [[raw/stripe-swish-accept-payment-2025|Swish acceptance guide, captured 2026-05-06]] — full 1,797-line capture with italic formatting fixes to Prices, webhook, client secret, fulfillment, confirm, PaymentMethod and require.\n\n## Related raw API references\n\n- [[raw/stripe-payments-swish-accept-a-payment-2026-11-07|Swish acceptance variant selector, captured 2026-11-07]] — navigation for Checkout, Elements, Direct API, iOS, Android, and React Native.\n",
+  "quotes": {
+    "payments-swish-accept-a-payment": [
+      {
+        "text": "Learn how to accept Swish, a popular payment method in Sweden.",
+        "location": "raw/stripe-payments-swish-accept-a-payment-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-swish-accept-a-payment-2026-11-07.md:11"
+      },
+      {
+        "text": "[Direct API](https://docs.stripe.com/payments/swish/accept-a-payment.md?payment-ui=direct-api)",
+        "location": "raw/stripe-payments-swish-accept-a-payment-2026-11-07.md:15"
+      },
+      {
+        "text": "[React Native](https://docs.stripe.com/payments/swish/accept-a-payment.md?payment-ui=mobile&platform=react-native)",
+        "location": "raw/stripe-payments-swish-accept-a-payment-2026-11-07.md:19"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-swish-accept-a-payment": [
+      {
+        "text": "<!-- Fetched: 2026-05-06 -->",
+        "location": "raw/stripe-swish-accept-payment-2025.md:2"
+      },
+      {
+        "text": "you must display the following text in your payment flow on the screen before the customer authorizes the Swish payment:",
+        "location": "raw/stripe-swish-accept-payment-2025.md:1521"
+      },
+      {
+        "text": "This is a React Native for when payment-ui is mobile and platform is react-native.",
+        "location": "raw/stripe-swish-accept-payment-2025.md:1513"
+      },
+      {
+        "text": "Universal links aren’t supported.",
+        "location": "raw/stripe-swish-accept-payment-2025.md:1668"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-swish-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 19
+      }
+    ],
+    "raw/stripe-swish-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 1797
+      }
+    ],
+    "wiki/sources/source-stripe-swish-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 44
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/1f4aa28520f6d40c256fa8f9/content.diff": [
+      {
+        "start": 1,
+        "end": 1804
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 362,
+        "end": 368
+      },
+      {
+        "start": 746,
+        "end": 750
+      }
+    ],
+    "wiki/concepts/stripe-real-time-payments.md": [
+      {
+        "start": 31,
+        "end": 39
+      },
+      {
+        "start": 168,
+        "end": 187
+      },
+      {
+        "start": 207,
+        "end": 218
+      }
+    ]
+  },
+  "answers": {
+    "payments-swish-accept-a-payment": {
+      "Q1": "The November 7, 2026 capture of https://docs.stripe.com/payments/swish/accept-a-payment identifies Swish as a Swedish payment method and supplies six navigation routes (new raw lines 5-19), with no implementation prerequisites or state transitions in the base body. The May 6, 2026 guide describes single-use Swish and BankID authorization with immediate outcome, a Stripe account and eligible European Checkout payment-mode sessions with SEK line items, and both dynamic and manual selection (old raw lines 8-60). The merchant creates a Checkout Session or PaymentIntent depending on path. Browser Elements confirms the Intent client-side and uses mobile redirection or desktop QR. Direct API confirms server-side with a return URL, then hands the customer off to Swish using hosted QR/redirect instructions while the Intent requires action (old raw lines 450-452, 663-683 and 748-927). Successful authorization can lead to succeeded and the success webhook for fulfillment. Decline or no action within three minutes can detach the method and return the Intent to requires_payment_method. Browser or app return alone supplies no success proof (old raw lines 546-555, 914-927 and 982-988). The former source-stripe-swish-accept-payment.md listed the web and QR paths but missed React Native and understated the notice's scope. The revised summary covers React Native and distinguishes the custom-path notice requirement from Stripe displaying it on hosted forms or UI components.",
+      "Q2": "The difference at https://docs.stripe.com/payments/swish/accept-a-payment (new raw lines 9-19) is presentational and navigational, without evidence of a substantive payment change or renewed SDK requirements. React Native already has a full May 6, 2026 body (old raw lines 1511-1797). The revised source-stripe-swish-accept-payment.md includes the full May React Native route and scopes the notice separately from the raw delta. The claim-acquisition notice appears before authorization for Direct API and custom mobile flows while Checkout or the Payment Element display it on the merchant's behalf (old raw lines 727-735, 998-1012, 1284-1298 and 1519-1527). Preserve the native iOS custom URL or universal-link choice versus the May React Native iOS custom-scheme setup without universal links, the desktop Elements QR refresh scope, the three-minute action window and detachment on timeout or decline, and the May invite-only phone-number fallback (old raw lines 663-678, 928-932, 982-988, 1163-1197 and 1662-1672). Keep the root index to Stripe index routes and the Real-Time Payments concept's existing link back to the guide (root line 7, Stripe index lines 365 and 748, concept line 213), add the reciprocal source route and cite the dated November selector as navigation."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-swish-accept-a-payment-custom-notice-scope",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Integration**: Checkout, Elements, Direct API, iOS/Android SDK. Direct API requires displaying a legal notice that Stripe is the merchant of record (EN/SE/other languages); Checkout and Elements handle automatically. `next_action.swish_handle_redirect_or_display_qr_code` exposes `hosted_instructions_url`, `qr_code.data`, `qr_code.image_url_png/svg`. Optional `payment_method_options.swish.reference` (order reference shown in Swish app). Desktop QR refreshable up to 20 times. Cancelable before expiry.",
+      "proposed_markdown": "**Integration** — The May 2026 guide covers Checkout, Elements, Direct API, and custom iOS, Android and React Native. Direct API and the custom mobile guides require an on-screen localized claim-acquisition notice before authorization. Stripe displays it for hosted forms and UI components such as Checkout and Payment Element. Direct API gives QR and hosted instructions in `next_action.swish_handle_redirect_or_display_qr_code`, plus an optional Swish order reference. The May desktop Elements QR can be refreshed up to 20 times. The guide describes merchant cancellation before expiry. See [[source-stripe-swish-accept-payment]].",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "The detailed obligations are grounded in the May capture at lines 727–735, 998–1012, 1284–1298 and 1519–1527. The November quotes document routes only. The unrelated Billing and invoicing tension is outside the acceptance-guide correction."
+      ]
+    },
+    {
+      "update_id": "payments-swish-accept-a-payment-guide-route",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-swish-accept-payment]] — Swish integration: 3 paths + mobile SDK, Direct API legal notice required, next_action QR data, 20 QR refreshes, cancelable",
+      "proposed_markdown": "- [[source-stripe-swish-accept-payment]] — May 2026 Swish implementation guide with custom-flow notice and authorization outcomes, plus the November 2026 implementation selector.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "The November selector does not carry the May notice or authorization contract."
+      ]
+    }
+  ]
+}

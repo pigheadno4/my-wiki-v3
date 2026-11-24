@@ -1,0 +1,180 @@
+{
+  "job_id": "payments-upi",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-upi-2026-11-07.md",
+  "raw_sha256": "896134ce0cf9d8f08b1102e70f3352a4caf65b3dfbe6d4e3453024f29db00493",
+  "prior_raw_path": "raw/stripe-upi-2025.md",
+  "prior_raw_sha256": "2ddbdbeef3cc1df4596db772c167cc172816b41e37d8d504267f488853354167",
+  "source_targets": [
+    "wiki/sources/source-stripe-upi.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-upi.md": "5859a241b4e244d1b3b3e83be442c240c6c135a4b79e77b3a4f2b5ee69d5fd7c"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-upi-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 124
+      }
+    ],
+    "raw/stripe-upi-2025.md": [
+      {
+        "start": 1,
+        "end": 123
+      }
+    ],
+    "wiki/sources/source-stripe-upi.md": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/574ff06b66e34c82b47eefef/content.diff": [
+      {
+        "start": 1,
+        "end": 30
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 11
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 363,
+        "end": 370
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 566,
+        "end": 573
+      }
+    ],
+    "wiki/concepts/stripe-real-time-payments.md": [
+      {
+        "start": 11,
+        "end": 26
+      },
+      {
+        "start": 125,
+        "end": 147
+      },
+      {
+        "start": 199,
+        "end": 206
+      }
+    ],
+    "raw/stripe-changelog-dahlia-2026-03-25-adds-support-for-the-upi-payment-method-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 26
+      }
+    ],
+    "raw/stripe-real-time-payments-2025.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md": [
+      {
+        "start": 72,
+        "end": 75
+      },
+      {
+        "start": 154,
+        "end": 163
+      },
+      {
+        "start": 292,
+        "end": 301
+      }
+    ],
+    "raw/stripe-payments-upi-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 16
+      }
+    ],
+    "raw/stripe-payments-upi-upi-autopay-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 27
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "On desktop, customers scan a QR code using their UPI app.",
+      "location": "raw/stripe-payments-upi-2026-11-07.md:11"
+    },
+    {
+      "text": "within the mandate terms.",
+      "location": "raw/stripe-payments-upi-2026-11-07.md:13"
+    },
+    {
+      "text": "Stripe returns the amount to your Stripe balance.",
+      "location": "raw/stripe-payments-upi-2026-11-07.md:116"
+    },
+    {
+      "text": "Recurring payments are limited to a maximum of 15,000 INR.",
+      "location": "raw/stripe-payments-upi-2026-11-07.md:124"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Stripe returns the amount to your Stripe balance.",
+      "location": "raw/stripe-upi-2025.md:115"
+    },
+    {
+      "text": "Recurring payments are limited to a maximum of 15,000 INR.",
+      "location": "raw/stripe-upi-2025.md:123"
+    }
+  ],
+  "proposed_disposition": "no_substantive_update",
+  "findings": [
+    "Both full guides document the same NPCI real-time transfer and India/INR customer context. The customer authenticates and approves via UPI app using desktop QR/mobile redirect; recurring AutoPay requires separate mandate approval before future automatic charges within mandate terms. Enable UPI through Dashboard for relevant methods on Stripe front ends, or use the separate manual integration route. Keep method selection and actual account eligibility separate.",
+    "Both guides list 35 identical business account countries, Connect, standard payout timing, full/partial refunds, no manual capture and 1\u2013100,000 INR with a recurring cap of 15,000 INR. The source incorrectly counts 36. Both guides name Invoicing, Payment Links and Subscriptions as Dashboard paths without specifying collection methods.",
+    "Both guides retain the 60-day asynchronous refund window, up to seven business days and final `refund.updated`/`refund.failed` notifications. `succeeded` and `failed` are Refund states. Failure returns the amount to the merchant's Stripe balance and needs an alternative refund. The payer's bank/PSP decides on a dispute; acceptance makes it non-contestable and removes funds immediately."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "Keep both dated same-URL raw captures, the separate May 6 beta language where relevant, direct UPI overview limits, dated UPI AutoPay rules, and the separate Link UPI path's independent country and payment limits.",
+    "Keep UPI activation, country and product support scope, and related sources reciprocally through the provider, company and real-time payments routes."
+  ],
+  "conflicts": [
+    "Current `36 merchant countries` is a count error: the 2026-05-06 and 2026-11-07 guides and separate November support matrix each enumerate 35 identical business account countries. IN is the customer-location row, distinct from the business-country list. Remove the unneeded Pix analogy from the count.",
+    "Current `likely supports charge_automatically` and `appears to have graduated` infer a Billing collection method and general rollout from silence. Keep named Dashboard products and documented UPI AutoPay on its own path. The May real-time hub line 8 explicitly invited UPI beta participation and the March 25 Dahlia API changelog describes its versioned UPI contract, neither of which settles general availability. Its broader mention of Indian customers outside India is distinct from the overview and November matrix customer location India.",
+    "Current source `Non-recoverable on failure` can obscure the explicit return of the amount to the merchant's Stripe balance and obligation to refund via an alternative method. The concept table's SetupIntents and setup_future_usage Unknown should be scoped to actual dated evidence: November support matrix line 298 marks both Supported and the endnote limits this non-card method to off_session when supported. Mobile UPI app/browser redirection is independent of Mobile Payment Element, which the product matrix marks Unsupported."
+  ],
+  "unresolved_questions": [
+    "General-availability transition, account-specific eligibility, and invoice collection-mode conditions are unverified in the compared pair. The November acceptance page is an implementation selector and does not settle full variant behavior."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-real-time-payments.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-upi.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Correct the 35 business countries, failed refund mechanics, release-stage and Billing collection-method inferences. Cite both complete overview captures and independently dated API/support sources where relevant. Add reciprocal real-time payments, UPI AutoPay and manual-acceptance routes. Apply dated product/API scope to any concept edits rather than treating app redirect as Mobile Payment Element support."
+      ],
+      "conflicts": [
+        "Current `36 merchant countries` is a count error: the 2026-05-06 and 2026-11-07 guides and separate November support matrix each enumerate 35 identical business account countries. IN is the customer-location row, distinct from the business-country list. Remove the unneeded Pix analogy from the count.",
+        "Current `likely supports charge_automatically` and `appears to have graduated` infer a Billing collection method and general rollout from silence. Keep named Dashboard products and documented UPI AutoPay on its own path. The May real-time hub line 8 explicitly invited UPI beta participation and the March 25 Dahlia API changelog describes its versioned UPI contract, neither of which settles general availability. Its broader mention of Indian customers outside India is distinct from the overview and November matrix customer location India.",
+        "Current source `Non-recoverable on failure` can obscure the explicit return of the amount to the merchant's Stripe balance and obligation to refund via an alternative method. The concept table's SetupIntents and setup_future_usage Unknown should be scoped to actual dated evidence: November support matrix line 298 marks both Supported and the endnote limits this non-card method to off_session when supported. Mobile UPI app/browser redirection is independent of Mobile Payment Element, which the product matrix marks Unsupported."
+      ],
+      "reason": "The full recapture supplies no change in product behavior, but the existing 36 count, unsupported rollout/Billing inference, and refund failure shorthand warrant bounded corrections."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/upi, old raw lines 8-58 and new raw lines 9-59 preserve India customer location and INR presentment, UPI-app authentication and approval through desktop QR or mobile redirect, and separate recurring mandate authorization. Old raw lines 60-111 and new raw lines 61-112 preserve the same 35 business account countries and Dashboard enablement and manual routes. Stripe's standard payout schedule still applies, with no manual capture. Old raw lines 113-123 and new raw lines 114-124 keep final Refund `succeeded` and `failed` transitions with merchant balance return on failure, and bank/PSP acceptance determines non-contestable dispute funds removal. source-stripe-upi.md preserves the core workflow but gives an incorrect count and infers rollout and Billing collection behavior from silence.",
+    "Q2": "At https://docs.stripe.com/payments/upi, the May 6 and November 7, 2026 captures have no substantive scope or state delta. Old raw lines 90-111 and new raw lines 91-112 retain the country list's end and the product routes, with the Elements quickstart changed from `/payments/quickstart-checkout-sessions.md` to `/payments/quickstart.md`. Old raw lines 113-123 and new raw lines 114-124 retain the refund, dispute and limit qualifications with heading whitespace changes. Correct source-stripe-upi.md to 35 merchant countries and preserve the explicit failed-refund outcome, independent capture of prior beta wording, unresolved Billing collection mode, and separate direct UPI versus Link scope. Preserve provider index and company routes and add reciprocal links for the real-time payments concept, UPI AutoPay and acceptance source."
+  }
+}

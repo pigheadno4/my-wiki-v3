@@ -1,0 +1,104 @@
+--- raw/stripe-products-prices-2025.md
++++ raw/stripe-products-prices-how-products-and-prices-work-2026-11-07.md
+@@ -4,7 +4,7 @@
+ 
+ Products and prices are core resources for many Stripe integrations. Products define what your business offers, whether that’s goods or services. Prices define how much and how often to charge for products.
+ 
+-You can create products and prices in Stripe or [import](https://docs.stripe.com/products-prices/manage-prices.md#import-products-prices) them into Stripe through the [API](https://docs.stripe.com/api/products.md). After you create products and prices, you can use them with [Checkout Sessions](https://docs.stripe.com/api/checkout/sessions/create.md), [Payment Links](https://docs.stripe.com/payment-links.md), [Invoices](https://docs.stripe.com/invoicing.md), [Quotes](https://docs.stripe.com/quotes/create.md), or a custom integration to create [Subscriptions](https://docs.stripe.com/billing.md).
++You can create products and prices in Stripe or [import](https://docs.stripe.com/products-prices/manage-prices.md#import-products-prices) them into Stripe through the [Products](https://docs.stripe.com/api/products.md) and [Prices](https://docs.stripe.com/api/prices.md) APIs. After you create products and prices, you can use them with [Checkout Sessions](https://docs.stripe.com/api/checkout/sessions/create.md), [Payment Links](https://docs.stripe.com/payment-links.md), [Invoices](https://docs.stripe.com/invoicing.md), [Quotes](https://docs.stripe.com/quotes/create.md), or a custom integration to create [Subscriptions](https://docs.stripe.com/billing.md).
+ 
+ ## Products
+ 
+@@ -30,20 +30,22 @@
+ 
+ Prices can either be one-time or recurring. Subscriptions use recurring prices to charge the customer at an interval, such as “once a month.” If you sell the same service at several different intervals, it’s best to create multiple recurring prices for the same product. Learn more about [pricing models](https://docs.stripe.com/products-prices/pricing-models.md#flat-rate).
+ 
+-### Variable pricing
++### Variable pricing 
+ 
+ You can use two types of variable pricing:
+ 
+ - **Inline pricing**: You define the price for your customer when you create a subscription, invoice, Checkout Session, or Payment Link.
+ - **Pay-what-you-want pricing**: The customer fills in the price they pay, such as with a tip or donation. Recurring payments don’t support this type of variable pricing. See how to [let customers decide what to pay](https://docs.stripe.com/payments/checkout/pay-what-you-want.md) for single payments.
+ 
+-#### Inline pricing
++#### Inline pricing 
+ 
+ In some cases, you might want to use a custom price that hasn’t been preconfigured. For example, you might want to use inline prices when you manage your product catalog outside of Stripe. You can only create inline prices through the API.
+ 
+ ### Multiple currencies
+ 
+ A single Price can support multiple currencies. This helps you manage localized pricing when selling internationally. For example, if you sell a product in the US for 10 USD, in Europe for 9 EUR, and in Japan for 1300 JPY, the same `Price` object can cover all three currencies. Each purchase uses one of the supported currencies for the price, depending on how you use the price in your integration. Learn more about [multi-currency prices](https://docs.stripe.com/products-prices/manage-prices.md#create-multi-currency-prices).
++
++> If you [create invoice items](https://docs.stripe.com/api/invoiceitems/create.md) or charges with the API, Stripe processes the amount and currency you explicitly provide. The localized price isn’t automatically calculated, and you’re responsible for passing the correct amount and currency for your customer’s region. We recommend using the [pricing.price](https://docs.stripe.com/api/invoiceitems/create.md#create_invoiceitem-pricing-price) parameter to pass the price ID.
+ 
+ ### Multiple prices
+ 
+@@ -56,6 +58,36 @@
+ ### Tax behavior
+ 
+ If you use Stripe Tax, you can specify the `tax_behavior` for the price to determine whether the tax is already included in the amount, or if it needs to be added. Learn more about [tax behavior](https://docs.stripe.com/tax/products-prices-tax-codes-tax-behavior.md#tax-behavior).
++
++## Model your product catalog 
++
++Create a separate product for each distinct option a customer chooses between. Use prices for billing variants (interval, currency) of the same product.
++
++> If two options appear as different rows on your pricing page, they must be different products. If they’re the same row billed at a different interval (monthly versus annual), they’re different prices on one product.
++
++### Example: SaaS with multiple tiers
++
++A business with Starter, Professional, and Enterprise plans where they’re each available monthly and annually, need to create:
++
++- **3 products**: Starter, Professional, Enterprise
++- **2 prices per product**: Monthly, Annual
++
++Checkout, Payment Links, and invoices display the **Product name** for each line item. With distinct products per tier, each option shows its tier name. With one product and many prices, all options display the same product name. Customers can’t distinguish tiers.
++
++> Don’t attach prices for different tiers to a single product. Line items that share a product share its name and description on receipts and invoices. This means only the amount differs.
++
++### When to create a new product
++
++- Distinct name on your pricing page (for example, “Basic” versus “Pro”)
++- Different features or entitlements
++- Different [tax code](https://docs.stripe.com/tax/tax-codes.md)
++- Needs to appear as a separate line item
++
++### When to add a price to an existing product
++
++- Same plan, different billing interval (monthly / annual)
++- Same plan, different currency
++- Price change (create new price, [archive](https://docs.stripe.com/products-prices/manage-prices.md#archive-price) old one)
+ 
+ ## Working with products and prices
+ 
+@@ -107,18 +139,18 @@
+ 
+ Not all features of products and prices are compatible with all Stripe APIs. Consult the following table for compatibility information.
+ 
+-| Feature                                                      | Checkout    | Payment Links  | Quotes         | Subscriptions  | Invoices       |
+-| ------------------------------------------------------------ | ----------- | -------------- | -------------- | -------------- | -------------- |
+-| Product images                                               | ✓ Supported | ✓ Supported    | (Ignored\*)    | (Ignored\*)    | (Ignored\*)    |
+-| Product descriptions                                         | ✓ Supported | ✓ Supported    | ✓ Supported    | (Ignored\*)    | (Ignored\*)    |
+-| Product tax codes                                            | ✓ Supported | ✓ Supported    | ✓ Supported    | ✓ Supported    | ✓ Supported    |
+-| Product statement descriptor                                 | ✓ Supported | ✓ Supported    | (Ignored\*)    | ✓ Supported    | ✓ Supported    |
+-| Recurring prices                                             | ✓ Supported | ✓ Supported    | ✓ Supported    | ✓ Supported    | ✓ Supported    |
+-| Multi-currency prices                                        | ✓ Supported | ✓ Supported    | (Ignored\*)    | ✓ Supported    | (Ignored\*)    |
+-| Tiered prices                                                | ✓ Supported | (Disallowed\*) | ✓ Supported    | ✓ Supported    | ✓ Supported    |
+-| Decimal amounts (for example, charging half-a-cent per unit) | ✓ Supported | (Disallowed\*) | ✓ Supported    | ✓ Supported    | ✓ Supported    |
+-| Usage-based prices                                           | ✓ Supported | (Disallowed\*) | ✓ Supported    | ✓ Supported    | ✓ Supported    |
+-| Customer chooses price                                       | ✓ Supported | ✓ Supported    | (Disallowed\*) | (Disallowed\*) | (Disallowed\*) |
++| Feature | Checkout | Payment Links | Quotes | Subscriptions | Invoices |
++| --- | --- | --- | --- | --- | --- |
++| Product images | ✓ Supported | ✓ Supported | (Ignored*) | (Ignored*) | (Ignored*) |
++| Product descriptions | ✓ Supported | ✓ Supported | ✓ Supported | (Ignored*) | (Ignored*) |
++| Product tax codes | ✓ Supported | ✓ Supported | ✓ Supported | ✓ Supported | ✓ Supported |
++| Product statement descriptor | ✓ Supported | ✓ Supported | (Ignored*) | ✓ Supported | ✓ Supported |
++| Recurring prices | ✓ Supported | ✓ Supported | ✓ Supported | ✓ Supported | ✓ Supported |
++| Multi-currency prices | ✓ Supported | ✓ Supported | (Ignored*) | ✓ Supported | (Ignored*) |
++| Tiered prices | ✓ Supported | (Disallowed*) | ✓ Supported | ✓ Supported | ✓ Supported |
++| Decimal amounts (for example, charging half-a-cent per unit) | ✓ Supported | (Disallowed*) | ✓ Supported | ✓ Supported | ✓ Supported |
++| Usage-based prices | ✓ Supported | (Disallowed*) | ✓ Supported | ✓ Supported | ✓ Supported |
++| Customer chooses price | ✓ Supported | ✓ Supported | (Disallowed*) | (Disallowed*) | (Disallowed*) |
+ 
+ Entries marked as (Disallowed) indicate that if a product or price uses this feature, you can’t use that product or price with this Stripe API.
+ 

@@ -1,0 +1,126 @@
+{
+  "job_id": "products-prices-manage-prices",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Products and Prices\"\ntype: source\ndate_ingested: 2026-04-20\ndate_updated: 2026-11-22\noriginal_format: webpage\nraw_files:\n  - \"stripe-products-prices-manage-prices-2026-11-07.md\"\n  - \"stripe-products-prices-2025.md\"\n  - \"stripe-manage-products-prices-2025.md\"\ntags: [stripe, products, prices, catalog, subscriptions, checkout, invoices, pricing-models]\n---\n\n## Summary\n\nProducts define what a business sells. Prices define how much and how often the business charges. These objects support Checkout, Payment Links, Subscriptions, Invoices and Quotes.\n\nThe April 20, 2026 overview at https://docs.stripe.com/products-prices/how-products-and-prices-work describes catalog objects and compatibility. The April 20 and November 7, 2026 captures of https://docs.stripe.com/products-prices/manage-prices describe Dashboard and API catalog management. Each guide has its own scope.\n\n## Product and Price lifecycle\n\n- **Product.** Give the Product a name. An optional custom ID can map it to your own catalog. Optional description, image and tax code affect downstream integrations. The management guide requires at least one Price to save a Product in the Dashboard. This is a Dashboard save requirement. The API also documents creating a Product with `default_price_data` in one request.\n- **Price.** A Price belongs to a Product and carries the amount, currency, and recurrence or other pricing model. One Product can have multiple Prices. A default Price must be active, and the first Price added with a new Dashboard Product becomes the default.\n- **Change an amount.** Create a replacement Price, switch to its ID and archive the old Price with `active=false`. The guide lists `metadata`, `nickname` and `active` in its generic edit note, separately illustrates `lookup_key` in a Price update, and documents adding currency options to an existing Price in the Dashboard. These passages do not establish an exhaustive edit-field list.\n- **Archive.** Archiving a Product or Price prevents adding that item to new invoices or subscriptions. Existing subscriptions using the archived item remain active until canceled. Both archive passages say existing Payment Links using the Product are deactivated, including the paragraph about a Price. For an existing Product, archive prose links to updating `active=false`, while both archive examples submit a Product-create request with `active=false`. The create examples do not demonstrate updating the existing Product. Unarchive by updating `active=true`.\n- **Delete.** The management guides say only Products without associated Prices can be deleted, while their Dashboard paragraph says to delete or archive an associated Price first. These passages leave the archive-only deletion path unresolved. The Dashboard can delete an unused Price. The Price API documents archival instead of deletion. Stripe retains archived catalog information for transaction history.\n\n## Price types\n\n| Type | Scope |\n| --- | --- |\n| One-time | Single charge |\n| Recurring | Subscription billing at the specified interval |\n| Inline (`price_data`) | Create a dynamic Price in the API instead of passing a stored Price ID. It is `active=false` by default and cannot be updated or reused. The April overview says it is absent from the main Dashboard catalog but viewable directly, and associated Product objects may persist. |\n| Customer chooses price | One-time payments through Checkout or Payment Links |\n| Multi-currency | A single Price with a default currency and additional currency options |\n| Tiered / usage-based | Price tiers or usage-based pricing |\n\n## April 2026 overview compatibility\n\n| Feature | Checkout | Payment Links | Quotes | Subscriptions | Invoices |\n| --- | --- | --- | --- | --- | --- |\n| Product images | ✓ | ✓ | Ignored | Ignored | Ignored |\n| Recurring prices | ✓ | ✓ | ✓ | ✓ | ✓ |\n| Multi-currency prices | ✓ | ✓ | Ignored | ✓ | Ignored |\n| Tiered prices | ✓ | Disallowed | ✓ | ✓ | ✓ |\n| Usage-based prices | ✓ | Disallowed | ✓ | ✓ | ✓ |\n| Decimal amounts | ✓ | Disallowed | ✓ | ✓ | ✓ |\n| Customer chooses price | ✓ | ✓ | Disallowed | Disallowed | Disallowed |\n\nThe overview uses **Disallowed** where the Product or Price cannot be used with the API, and **Ignored** where the resource is usable but the feature has no effect. The April and November management guides document an explicit invoice-item currency path below.\n\n## Integration and multi-currency selection\n\n- **Checkout.** Supply each line-item Price ID. Checkout renders the Product name and image. The management guides describe selecting a supported local currency based on IP, with default-currency fallback and an explicit `currency` option. Applicable Prices, coupons, promotion codes and shipping rates in a Session must share a default currency and all support the local currency for automatic selection.\n- **Payment Links.** Create a link from the catalog. It renders the Product name and image. The guide describes local-currency selection when all included Prices support it, default fallback, and a `currency` override. The Prices must share a default currency.\n- **Subscriptions.** Use recurring prices. The April overview sets a three-year maximum interval and requires matching `recurring.interval` and `recurring.interval_count` unless flexible billing mode is used to support mixed intervals. Checkout uses its currency-selection flow. For directly created subscriptions, pass `currency` to select a nondefault option. Subscription schedules use `phases.currency` and otherwise follow the Price default.\n- **Quotes.** Use a Price ID or select a Product in the Dashboard. Accepted quotes can create the associated invoice or subscription. The management guides say Quotes use the Price’s default currency.\n- **Invoices.** Use the Price ID for API invoice items. The invoice uses the Product name in the PDF. When selecting a multi-currency Price’s currency for an invoice item, explicitly pass `currency` even if it matches the Customer default. The management guides say omitting the parameter prevents this multi-currency path from working.\n\n## Catalog operations and tests\n\n- **Lookup keys.** Retrieve Prices by `lookup_key`. To publish a replacement amount under the same lookup key, create a Price with `transfer_lookup_key=true`. Expand `currency_options` to retrieve currency-specific amounts.\n- **Rounding.** For decimal pricing, the management guides round invoice line items after multiplying unit amount by quantity, before summing. They separately distinguish invoice-level automatic tax rounding from configurable manual tax rounding.\n- **Import synchronization.** Map your Product IDs, keep Stripe Price IDs and compare current amounts. The guide’s one-active-Price convention applies to this example synchronization pattern. If the amount differs, create a replacement Price and make the old one inactive.\n- **Dashboard copy to live.** The April management guide says a test Product can be copied once. The November guide says the same sandbox Product can be copied repeatedly from the Dashboard. Associated Prices copy and each copy creates a separate live Product. On both dates, later test or sandbox edits do not propagate to existing live copies.\n\n## Detail locators\n\n- November management lines 18–170 and 422–500 cover Product and Price creation, archival, deletion and updates. Lines 232–275 cover defaults and inline Prices.\n- November management lines 277–409 cover currency options, product-specific selection, lookup keys and rounding. Lines 506–557 cover import and synchronization. November lines 591–595 and April management lines 697–701 record the dated Dashboard copy rules.\n- April catalog overview lines 63–75 cover inline Price visibility. Lines 109–137 cover compatibility and recurring interval limits.\n\n## Related Pages\n\n- [[stripe]] — Stripe company page\n- [[stripe-checkout]] — Checkout integration concept\n- [[source-stripe-checkout-sessions]] — Checkout Sessions API\n- [[paypal-subscriptions]] — PayPal's subscription and plan model\n\n## Raw Sources\n\n- [[raw/stripe-products-prices-manage-prices-2026-11-07|November 7, 2026 Products and Prices management guide]] — Dashboard and API management paths.\n- [[raw/stripe-products-prices-2025|April 20, 2026 Products and Prices overview]] — catalog model, compatibility, inline pricing and subscription constraints.\n- [[raw/stripe-manage-products-prices-2025|April 20, 2026 Products and Prices management guide]] — historical CRUD, lookup keys, currencies, import and test copy guidance.\n",
+  "quotes": {
+    "products-prices-manage-prices": [
+      {
+        "text": "Specify the Price ID when you create a Checkout Session.",
+        "location": "raw/stripe-products-prices-manage-prices-2026-11-07.md:565"
+      },
+      {
+        "text": "The default price must be an [active](https://docs.stripe.com/api/prices/object.md#price_object-active) price.",
+        "location": "raw/stripe-products-prices-manage-prices-2026-11-07.md:234"
+      },
+      {
+        "text": "Note that you can’t change a price’s amount in the API.",
+        "location": "raw/stripe-products-prices-manage-prices-2026-11-07.md:426"
+      },
+      {
+        "text": "You can copy the same sandbox product to live mode more than once.",
+        "location": "raw/stripe-products-prices-manage-prices-2026-11-07.md:595"
+      },
+      {
+        "text": "Each copy creates a separate live product, and updates you make to the sandbox product later aren’t reflected in existing live copies.",
+        "location": "raw/stripe-products-prices-manage-prices-2026-11-07.md:595"
+      }
+    ]
+  },
+  "old_evidence": {
+    "products-prices-manage-prices": [
+      {
+        "text": "You can only copy test products to live mode once.",
+        "location": "raw/stripe-manage-products-prices-2025.md:701"
+      },
+      {
+        "text": "If you make updates to the test product after the copy, the live product won’t reflect the changes.",
+        "location": "raw/stripe-manage-products-prices-2025.md:701"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-products-prices-manage-prices-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 595
+      }
+    ],
+    "raw/stripe-manage-products-prices-2025.md": [
+      {
+        "start": 1,
+        "end": 701
+      }
+    ],
+    "wiki/sources/source-stripe-products-prices.md": [
+      {
+        "start": 1,
+        "end": 77
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/cbde6a92cd48f06ed4a2933f/content.diff": [
+      {
+        "start": 1,
+        "end": 838
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 17,
+        "end": 21
+      },
+      {
+        "start": 768,
+        "end": 772
+      }
+    ],
+    "wiki/concepts/stripe-checkout.md": [
+      {
+        "start": 119,
+        "end": 140
+      },
+      {
+        "start": 239,
+        "end": 248
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 285,
+        "end": 292
+      }
+    ],
+    "raw/stripe-products-prices-2025.md": [
+      {
+        "start": 1,
+        "end": 143
+      }
+    ]
+  },
+  "answers": {
+    "products-prices-manage-prices": {
+      "Q1": "The November 7 capture of https://docs.stripe.com/products-prices/manage-prices is a complete guide to managing Stripe Products and Prices through Dashboard and API. A merchant must add at least one Price to save a Product in the Dashboard, a separate condition from API creation and the import convention (old raw lines 36-38 and new raw lines 37-39). The merchant can set an active default and create a new Price to change the amount. Archival prevents adding the Product or Price to new invoices or subscriptions, but existing subscriptions stay active until cancellation. Both archive paragraphs describe deactivating existing Payment Links that use the Product (old raw lines 129-131 and 534-536; new raw lines 113-115 and 448-450). Dashboard can delete an unused Price, while Price deletion is unavailable through the API and a Product needs no associated Prices to qualify for deletion. A merchant can copy a sandbox Product and associated Prices to live mode more than once, producing a new live Product each time with no ongoing sync (new raw lines 591-595). April instead said once only (old raw lines 697-701). The revised source-stripe-products-prices.md records both copy rules, retains Price amount replacement (old raw lines 504-508), and preserves the overview compatibility table alongside the explicit invoice-item currency path and Quotes’ default-currency rule (new raw lines 354-362).",
+      "Q2": "The substantive change at https://docs.stripe.com/products-prices/manage-prices is follow-on Dashboard sandbox copies: November describes repeated copies creating separate live Products and associated Prices, with no later sandbox updates to those copies; April said one copy (old raw lines 697-701 and new raw lines 591-595). The Node-to-curl examples, step numbering, wording and CLI link changes are presentational or navigational (old raw lines 12-16 and 65-100; new raw lines 13-17 and 67-88). The revised source-stripe-products-prices.md retains dated April’s one-time rule and the scoped Product/Price deletion and edit-field tensions (old raw lines 174-180 and 520-532; new raw lines 150-176 and 438-446). Retain the separate April compatibility overview and qualify invoice-item currency explicitly. Preserve the root, Stripe index and company catalog routes and the source's existing Checkout Sessions source link. A bounded reciprocal link in Checkout points to the catalog guide alongside existing Checkout Sessions navigation. It does not infer new Checkout behavior from catalog copy instructions."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "products-prices-checkout-catalog-route",
+      "target_path": "wiki/concepts/stripe-checkout.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-checkout-sessions]] — Checkout Sessions API deep dive",
+      "proposed_markdown": "- [[source-stripe-checkout-sessions]] — Checkout Sessions API deep dive\n- [[source-stripe-products-prices]] — Catalog overview and management guides for Product and Price IDs, including how Checkout uses Price IDs.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The November guide’s Checkout Price-ID navigation is at lines 563–569. Sandbox copying is a separate catalog operation."
+      ]
+    }
+  ]
+}

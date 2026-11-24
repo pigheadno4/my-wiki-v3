@@ -67,7 +67,7 @@ Truncated to first 16 alphanumeric chars; no `<>'"`. Dynamic override via `state
 
 ## Connect
 
-Requires `us_bank_account_ach_payments` capability. PaymentMethod cloning supported (duplicates mandate authorization). Charge type determines merchant of record on mandate/emails.
+The May and November 2026 Connect guides require `us_bank_account_ach_payments` on the platform and applicable connected accounts. They describe cloning platform-collected methods with duplicated authorization and no new mandate confirmation email. Tell customers the authorization extends to the applicable connected accounts. A mandate authorized on behalf of one connected account cannot be reused for another. Charge type determines the merchant of record and the business displayed in mandate and email flows. See [[source-stripe-payment-method-connect-support]] for the separate May descriptor and settlement tables.
 
 ## ACH Subscriptions
 

@@ -1,0 +1,154 @@
+{
+  "job_id": "payments-paypay-accept-a-payment",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-paypay-accept-a-payment-2026-11-07.md",
+  "raw_sha256": "372a51219f5f81d4386100d9add0e5c14cf7e96683b2311c3e768a1f14a868a3",
+  "prior_raw_path": "raw/stripe-paypay-accept-payment-2025.md",
+  "prior_raw_sha256": "4f39f512ed148a7fe226cde48d33e4cb818eeb28695415dea69cebbcda4644b6",
+  "source_targets": [
+    "wiki/sources/source-stripe-paypay-accept-payment.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-paypay-accept-payment.md": "904d74049429d910b4d6abb3182354131813178051a55e9cccd5751d9850caa0"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-paypay-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 20
+      }
+    ],
+    "raw/stripe-paypay-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 1838
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/4481204d99ba0b8213356ce0/content.diff": [
+      {
+        "start": 1,
+        "end": 1846
+      }
+    ],
+    "wiki/sources/source-stripe-paypay-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 380,
+        "end": 389
+      },
+      {
+        "start": 405,
+        "end": 418
+      }
+    ],
+    "wiki/concepts/stripe-wallets.md": [
+      {
+        "start": 16,
+        "end": 47
+      },
+      {
+        "start": 272,
+        "end": 302
+      },
+      {
+        "start": 417,
+        "end": 427
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-paypay-accept-a-payment-2026-11-07.md:11"
+    },
+    {
+      "text": "[Checkout Sessions API](https://docs.stripe.com/payments/paypay/accept-a-payment.md?payment-ui=elements&api-integration=checkout)",
+      "location": "raw/stripe-payments-paypay-accept-a-payment-2026-11-07.md:15"
+    },
+    {
+      "text": "[Payment Intents API](https://docs.stripe.com/payments/paypay/accept-a-payment.md?payment-ui=elements&api-integration=paymentintents)",
+      "location": "raw/stripe-payments-paypay-accept-a-payment-2026-11-07.md:16"
+    },
+    {
+      "text": "[Android](https://docs.stripe.com/payments/paypay/accept-a-payment.md?payment-ui=mobile&platform=android)",
+      "location": "raw/stripe-payments-paypay-accept-a-payment-2026-11-07.md:20"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "success_url: \"https://example.com/success\",",
+      "location": "raw/stripe-paypay-accept-payment-2025.md:68"
+    },
+    {
+      "text": "Confirm the `PaymentIntent` has a status of `requires_action`. The type for the `next_action` will be `redirect_to_url`.",
+      "location": "raw/stripe-paypay-accept-payment-2025.md:1293"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "New raw 5\u201320 is a six-route selector only. The six exact query identities match the May 7, 2026 full guide variant declarations at old raw 10, 88, 571, 1113, 1345, and 1615. November 7 does not freshly verify or withdraw any child implementation, support or runtime behavior. The near-total textual deletion in diff 7\u20131839 is a capture-presentation change.",
+    "The May capture describes single-use customer authorization with PayPay and return to the merchant site/app (old 16,1115,1349,1619). Checkout and Checkout Sessions Elements expressly state Japan businesses, JPY support/presentment, payment mode yes, setup/subscription modes no, and same-currency line items per Session (old 18\u201335,94\u2013111). Direct and both mobile examples also document JP/JPY (old 1327\u20131329,1591\u20131593,1806\u20131808). Source 13\u201321 correctly identifies six routes but misses these compatibility conditions and overgeneralizes the scope of the Checkout mode matrix.",
+    "May hosted Checkout begins with an existing Checkout integration and describes manual payment_method_types or recommended Dashboard configuration with a sample success_url (old 10\u201369). Elements with Checkout Sessions uses a server-created Checkout Session and its client secret, Dashboard or manual method selection, client Checkout Elements confirmation and sample return_url (old 113\u2013201,243\u2013305,487\u2013567). Elements with PaymentIntents instead creates a server-priced PaymentIntent, provides its client secret to the front end and calls stripe.confirmPayment with return_url (old 798\u2013933). Accounts v2 customer_account and Customers v1 customer are alternative examples for attaching the relevant customer identity to PaymentIntent; the generic comments about saving and retrieving do not establish PayPay reuse (old 810\u2013918; source 25).",
+    "May Direct API uses a server-created PaymentIntent and Stripe.js confirmPayment or manual server confirmation. The latter inspects requires_action and next_action.redirect_to_url, then redirects the customer. On browser return verify PaymentIntent status. PaymentIntent paths describe payment_intent.succeeded and recommend relying on provider events over client callbacks for downstream fulfillment (old 1075\u20131087,1130\u20131146,1219\u20131313,1595\u20131599,1810\u20131814). Source line 21 needs checkout-surface-specific URLs and should distinguish customer return, outcome reporting and merchant fulfillment.",
+    "May iOS explicitly documents webview return and automatic dismissal with a custom URL scheme or universal link forwarded to Stripe, and STPPaymentHandler.confirmPayment accepts the return URL (old 1510\u20131589). May Android Kotlin illustrates PayPay params and PaymentLauncher.confirm with a result callback, without a corresponding configured return_url in that sample (old 1755\u20131804). Android's generic iOS type and PaymentHandler prose conflict with its Kotlin example, and the generic future-use mandate comment does not establish PayPay setup/subscription (old 1757\u20131798).",
+    "Source line 23 needs the sandbox-versus-live fixture distinction anchored to the two web Elements variants (old 563\u2013567 and 1093\u20131097). It describes absence of the simulation control during the live PayPay redirect, with no inference that live payment auto-approves. May hosted Checkout only gives choose PayPay and click Pay in its test section (old 76\u201378). Source 27\u201335 lists the five common PaymentIntent errors documented in the May PaymentIntents Elements, Direct API and Android sections (old 1099\u20131109,1331\u20131341,1828\u20131838); retain that scope, including the missing return_url confirmation error."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "The May capture describes single-use customer authorization with PayPay and return to the merchant site/app (old 16,1115,1349,1619). Checkout and Checkout Sessions Elements expressly state Japan businesses, JPY support/presentment, payment mode yes, setup/subscription modes no, and same-currency line items per Session (old 18\u201335,94\u2013111). Direct and both mobile examples also document JP/JPY (old 1327\u20131329,1591\u20131593,1806\u20131808). Source 13\u201321 correctly identifies six routes but misses these compatibility conditions and overgeneralizes the scope of the Checkout mode matrix.",
+    "May hosted Checkout begins with an existing Checkout integration and describes manual payment_method_types or recommended Dashboard configuration with a sample success_url (old 10\u201369). Elements with Checkout Sessions uses a server-created Checkout Session and its client secret, Dashboard or manual method selection, client Checkout Elements confirmation and sample return_url (old 113\u2013201,243\u2013305,487\u2013567). Elements with PaymentIntents instead creates a server-priced PaymentIntent, provides its client secret to the front end and calls stripe.confirmPayment with return_url (old 798\u2013933). Accounts v2 customer_account and Customers v1 customer are alternative examples for attaching the relevant customer identity to PaymentIntent; the generic comments about saving and retrieving do not establish PayPay reuse (old 810\u2013918; source 25).",
+    "May Direct API uses a server-created PaymentIntent and Stripe.js confirmPayment or manual server confirmation. The latter inspects requires_action and next_action.redirect_to_url, then redirects the customer. On browser return verify PaymentIntent status. PaymentIntent paths describe payment_intent.succeeded and recommend relying on provider events over client callbacks for downstream fulfillment (old 1075\u20131087,1130\u20131146,1219\u20131313,1595\u20131599,1810\u20131814). Source line 21 needs checkout-surface-specific URLs and should distinguish customer return, outcome reporting and merchant fulfillment.",
+    "May iOS explicitly documents webview return and automatic dismissal with a custom URL scheme or universal link forwarded to Stripe, and STPPaymentHandler.confirmPayment accepts the return URL (old 1510\u20131589). May Android Kotlin illustrates PayPay params and PaymentLauncher.confirm with a result callback, without a corresponding configured return_url in that sample (old 1755\u20131804). Android's generic iOS type and PaymentHandler prose conflict with its Kotlin example, and the generic future-use mandate comment does not establish PayPay setup/subscription (old 1757\u20131798).",
+    "Source line 23 needs the sandbox-versus-live fixture distinction anchored to the two web Elements variants (old 563\u2013567 and 1093\u20131097). It describes absence of the simulation control during the live PayPay redirect, with no inference that live payment auto-approves. May hosted Checkout only gives choose PayPay and click Pay in its test section (old 76\u201378). Source 27\u201335 lists the five common PaymentIntent errors documented in the May PaymentIntents Elements, Direct API and Android sections (old 1099\u20131109,1331\u20131341,1828\u20131838); retain that scope, including the missing return_url confirmation error.",
+    "Maintain May 7, 2026 provenance under current source lines 4\u20137 and 37\u201339 despite the historical filename suffix. Keep November six-child index strictly as navigation. Preserve wiki/index.md line 7 \u2192 wiki/stripe-index.md lines 385, 411\u2013412 \u2192 wallet concept lines 279\u2013295 and 423\u2013424, and add a reciprocal surface-qualified route from the acceptance source, which currently ends without a related concept section."
+  ],
+  "conflicts": [
+    "Source 21 and stripe-wallets.md 295 universally tie redirected return to return_url. May hosted Checkout sample uses success_url at old 68; Checkout Sessions Elements examples use return_url at old 155 and 192; PaymentIntent web uses return_url at old 930 and 1238; iOS explicitly configures the app return at old 1518\u20131554; the Android example omits an explicit URL at old 1767\u20131804. Apply per-path qualification.",
+    "Source 19 says setup/subscription modes are unsupported across all platforms, but the explicit mode matrix is Checkout and Checkout Sessions Elements (old 26\u201330 and 102\u2013106). May describes PayPay as single-use in several variants; generic Android mandate comment or v2/v1 customer attachment comments do not establish reuse (old 825\u2013853,1115,1793\u20131795).",
+    "Source 23 presents the sandbox/live distinction without surface scope and adds an incidental Cash App cross-provider analogy unsupported by the paired capture. May documents the approved/declined fixture and the live loss of that choice in the two Elements branches (old 563\u2013567 and 1093\u20131097).",
+    "May Android prose names STPPaymentIntentParams and PaymentHandler.confirmPayment whereas the Kotlin example gives ConfirmPaymentIntentParams and PaymentLauncher.confirm (old 1757\u20131798). Keep the dated discrepancy visible if naming the API, using the Kotlin example as scoped illustration."
+  ],
+  "unresolved_questions": [
+    "The November child links were not read. Their current setup, market and account eligibility, SDK/version or live behavior cannot be established from the canonical selector."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-wallets.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-paypay-accept-payment.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "New raw 5\u201320 is a six-route selector only. The six exact query identities match the May 7, 2026 full guide variant declarations at old raw 10, 88, 571, 1113, 1345, and 1615. November 7 does not freshly verify or withdraw any child implementation, support or runtime behavior. The near-total textual deletion in diff 7\u20131839 is a capture-presentation change.",
+        "The May capture describes single-use customer authorization with PayPay and return to the merchant site/app (old 16,1115,1349,1619). Checkout and Checkout Sessions Elements expressly state Japan businesses, JPY support/presentment, payment mode yes, setup/subscription modes no, and same-currency line items per Session (old 18\u201335,94\u2013111). Direct and both mobile examples also document JP/JPY (old 1327\u20131329,1591\u20131593,1806\u20131808). Source 13\u201321 correctly identifies six routes but misses these compatibility conditions and overgeneralizes the scope of the Checkout mode matrix.",
+        "May hosted Checkout begins with an existing Checkout integration and describes manual payment_method_types or recommended Dashboard configuration with a sample success_url (old 10\u201369). Elements with Checkout Sessions uses a server-created Checkout Session and its client secret, Dashboard or manual method selection, client Checkout Elements confirmation and sample return_url (old 113\u2013201,243\u2013305,487\u2013567). Elements with PaymentIntents instead creates a server-priced PaymentIntent, provides its client secret to the front end and calls stripe.confirmPayment with return_url (old 798\u2013933). Accounts v2 customer_account and Customers v1 customer are alternative examples for attaching the relevant customer identity to PaymentIntent; the generic comments about saving and retrieving do not establish PayPay reuse (old 810\u2013918; source 25).",
+        "May Direct API uses a server-created PaymentIntent and Stripe.js confirmPayment or manual server confirmation. The latter inspects requires_action and next_action.redirect_to_url, then redirects the customer. On browser return verify PaymentIntent status. PaymentIntent paths describe payment_intent.succeeded and recommend relying on provider events over client callbacks for downstream fulfillment (old 1075\u20131087,1130\u20131146,1219\u20131313,1595\u20131599,1810\u20131814). Source line 21 needs checkout-surface-specific URLs and should distinguish customer return, outcome reporting and merchant fulfillment.",
+        "May iOS explicitly documents webview return and automatic dismissal with a custom URL scheme or universal link forwarded to Stripe, and STPPaymentHandler.confirmPayment accepts the return URL (old 1510\u20131589). May Android Kotlin illustrates PayPay params and PaymentLauncher.confirm with a result callback, without a corresponding configured return_url in that sample (old 1755\u20131804). Android's generic iOS type and PaymentHandler prose conflict with its Kotlin example, and the generic future-use mandate comment does not establish PayPay setup/subscription (old 1757\u20131798).",
+        "Source line 23 needs the sandbox-versus-live fixture distinction anchored to the two web Elements variants (old 563\u2013567 and 1093\u20131097). It describes absence of the simulation control during the live PayPay redirect, with no inference that live payment auto-approves. May hosted Checkout only gives choose PayPay and click Pay in its test section (old 76\u201378). Source 27\u201335 lists the five common PaymentIntent errors documented in the May PaymentIntents Elements, Direct API and Android sections (old 1099\u20131109,1331\u20131341,1828\u20131838); retain that scope, including the missing return_url confirmation error."
+      ],
+      "conflicts": [
+        "Source 21 and stripe-wallets.md 295 universally tie redirected return to return_url. May hosted Checkout sample uses success_url at old 68; Checkout Sessions Elements examples use return_url at old 155 and 192; PaymentIntent web uses return_url at old 930 and 1238; iOS explicitly configures the app return at old 1518\u20131554; the Android example omits an explicit URL at old 1767\u20131804. Apply per-path qualification.",
+        "Source 19 says setup/subscription modes are unsupported across all platforms, but the explicit mode matrix is Checkout and Checkout Sessions Elements (old 26\u201330 and 102\u2013106). May describes PayPay as single-use in several variants; generic Android mandate comment or v2/v1 customer attachment comments do not establish reuse (old 825\u2013853,1115,1793\u20131795).",
+        "Source 23 presents the sandbox/live distinction without surface scope and adds an incidental Cash App cross-provider analogy unsupported by the paired capture. May documents the approved/declined fixture and the live loss of that choice in the two Elements branches (old 563\u2013567 and 1093\u20131097).",
+        "May Android prose names STPPaymentIntentParams and PaymentHandler.confirmPayment whereas the Kotlin example gives ConfirmPaymentIntentParams and PaymentLauncher.confirm (old 1757\u20131798). Keep the dated discrepancy visible if naming the API, using the Kotlin example as scoped illustration."
+      ],
+      "reason": "November is navigation-only. Independently fix the source's universal return_url and all-platform mode claims, qualify the test fixtures and preserve important May eligibility and payment-outcome distinctions."
+    }
+  ],
+  "answers": {
+    "Q1": "The November 7, 2026 capture of https://docs.stripe.com/payments/paypay/accept-a-payment provides routes for Checkout, Elements with Checkout Sessions API, Elements with Payment Intents API, Direct API, iOS and Android (new raw lines 9-20). It documents no implementation prerequisites or payment-state transitions itself. The May 7, 2026 full guide describes the merchant configuring PayPay for a single-use customer authorization. Checkout and Checkout Sessions Elements explicitly require a Japan business, JPY presentment, one currency per Session and payment mode (old raw lines 10-48 and 88-129). Hosted Checkout illustrates success_url. The Elements surfaces separately confirm a Checkout Session or a server-created PaymentIntent, and Accounts v2 customer_account and Customers v1 customer are different PaymentIntent identity choices (old raw lines 488-567, 799-933). Direct API lets the merchant direct the customer to the requires_action redirect_to_url and verify the PaymentIntent after the return. The May guide uses payment_intent.succeeded for completion-driven workflows rather than the customer return (old raw lines 1219-1313). iOS configures app return for the SDK webview, while Android illustrates PaymentLauncher.confirm and a callback (old raw lines 1510-1599 and 1755-1814). source-stripe-paypay-accept-payment.md accurately enumerates the six surfaces but overgeneralizes return_url, Checkout's mode matrix, and sandbox/live fixture scope. The two web Elements variants describe sandbox approve/decline versus the live PayPay website. Completion, individual access and eligibility require their own evidence.",
+    "Q2": "At https://docs.stripe.com/payments/paypay/accept-a-payment, the November change is presentational and navigation-only: the canonical capture now points to the same six query-selected variants instead of embedding their instructions (new raw lines 9-20, old raw lines 8-88 and 563-573, old raw lines 1111-1115 and 1343-1349, old raw lines 1613-1619). No substantive product change is established. Preserve the May 7, 2026 full evidence beneath source-stripe-paypay-accept-payment.md and label the November 7, 2026 selector separately. Baseline corrections include hosted Checkout success_url versus return_url in applicable paths, Android's conflicting prose and Kotlin names, Checkout-only scope for the explicit setup/subscription mode matrix, and sandbox approve/decline versus the live destination in the two Elements examples. Preserve the May JP/JPY and same-currency Session requirements, the different Session and PaymentIntent actors, and the status/event boundary for fulfillment. Maintain the root wiki index through the Stripe provider index, the Stripe Wallets concept's PayPay acceptance source route and add the return path from the acceptance source. Keep the neighboring PayPay overview separate and unread November child links as navigation."
+  }
+}

@@ -13,6 +13,8 @@ Stripe supports PayPal as a payment method for one-time payments and subscriptio
 
 ## Prerequisites
 
+The May and November 2026 [[source-stripe-paypal-activate|activation guides]] describe linking PayPal and checking status in the Stripe Dashboard. For a supported account switch, previously enabled recurring payments require re-enablement and fresh customer mandates. Connect platforms and connected accounts cannot switch accounts.
+
 - **Stripe-hosted Checkout, May 2026 guide:** After PayPal activation in the Dashboard, Stripe said recurring payments were automatically enabled for most users, with possible manual enablement due to PayPal policy or regional restrictions.
 - **Direct API, May 2026 guide:** The guide instructed merchants to enable recurring payments in the Dashboard and check supported business locations.
 - The 2026-11-07 canonical capture is a variant index only; it does not verify current account enablement or business-location eligibility.

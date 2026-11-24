@@ -1,0 +1,174 @@
+{
+  "job_id": "payments-scalapay-accept-a-payment",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Stripe: Accept a Payment with Scalapay\"\ntype: source\ndate_ingested: 2026-05-06\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/scalapay/accept-a-payment\"\nraw_files:\n  - \"stripe-scalapay-accept-payment-2025.md\"\ntags: [stripe, bnpl, scalapay, buy-now-pay-later, consumer, installments, checkout, payment-intents]\n---\n\n## Overview\n\nThe May 6, 2026 guide describes accepting a single-use `scalapay` payment in three or four installments. The customer authorizes with Scalapay after a redirect, and the merchant receives immediate notice of success or failure. Use the resulting payment status to decide what to display or fulfill. The November 7, 2026 capture links the four implementation variants without including their instructions.\n\n## May integration paths\n\n| Path | Setup and return |\n| --- | --- |\n| Hosted Checkout | Create a Checkout Session. Use Dashboard-managed payment methods or add `scalapay` to an explicit list as shown in May. The hosted example uses `success_url`. |\n| Payment Element with Checkout Sessions | Create the Checkout Session server-side, set its `return_url`, and use the Session client secret to initialize Checkout on the client. The guide shows Dashboard-managed and manually listed approaches. |\n| Payment Element with PaymentIntents | Set amount and currency server-side. The examples distinguish Accounts v2 `customer_account` from Customers v1 `customer`. Use the Intent client secret and `stripe.confirmPayment` with `return_url`. |\n| Direct API | Create a PaymentIntent server-side. For the recommended Stripe.js client route, call `stripe.confirmPayment` with the Intent client secret and `return_url` to handle the redirect. The optional separate server-confirm route sends `return_url` and follows `next_action.redirect_to_url` when the Intent requires action. Verify the Intent status on return. |\n\nBoth May Checkout Sessions paths list **IT, FR, ES, DE, NL, BE, IE and FI** and EUR as the supported and presentment currency. The documented mode is payment. Setup and subscription modes are excluded. Keep line items in the same currency. The May method overview lists 28 business locations, with EUR presentment and a EUR-only country map, but does not map that broader list to each integration. The acceptance guide’s May Direct API currency map includes non-EUR examples such as USD for the US and GBP for the UK. The malformed currency comment in the May hosted sample does not override its compatibility table. These are dated scope differences. See May acceptance lines 18–70, 95–197 and 1376–1391, and the separate [[source-stripe-scalapay|Scalapay method overview]].\n\n## May PaymentIntent lifecycle\n\nThe Payment Element/PaymentIntents variant documents optional manual capture. Setting `capture_method: 'manual'` authorizes only. On successful authorization the Intent enters `requires_capture`. Capture defaults to the authorized total and accepts `amount_to_capture` up to that total. Explicit cancellation is available before capture. Stripe cancels an uncaptured Intent after seven days and sends `payment_intent.canceled`. See May lines 1094–1140. Use `payment_intent.succeeded` for completed-payment handling instead of relying on browser return.\n\nSandbox redirect testing offers approval and decline controls on the test page. The May guide distinguishes the live redirect to Scalapay from those test controls. The Intent error tables include `payment_intent_invalid_currency`, `payment_intent_authentication_failure` and `payment_intent_redirect_confirmation_without_return_url`. See May lines 1142–1158 and 1358–1403.\n\n## Cross-guide coverage\n\nThe May method overview marks Connect No. The May and November BNPL product matrices both mark Connect Supported for Scalapay. The November BNPL matrix marks Mobile Payment Element Supported where May marked it Unsupported. The November acceptance selector supplies no mobile variant. The November BNPL API table omits Scalapay, leaving the May method-specific Intent guidance separately dated. See [[source-stripe-bnpl-overview]] and [[stripe-bnpl#API Support|BNPL API and Connect coverage]].\n\n## Related Pages\n\n- [[stripe-bnpl]] — Stripe BNPL payment methods and dated integration guides\n- [[source-stripe-scalapay]] — Scalapay method overview and scope\n- [[stripe]] — Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-scalapay-accept-payment-2025|May 6, 2026 full Scalapay acceptance guide]] — 1,403 lines, with Markdown formatting fixes and one locally captured image\n\n## Related raw API references\n\n- [[raw/stripe-payments-scalapay-accept-a-payment-2026-11-07|November 7, 2026 Scalapay acceptance variant index]] — Checkout, Elements with Checkout Sessions, Elements with Payment Intents, and Direct API navigation\n",
+  "quotes": {
+    "payments-scalapay-accept-a-payment": [
+      {
+        "text": "Learn how to set up your integration with Scalapay.",
+        "location": "raw/stripe-payments-scalapay-accept-a-payment-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-scalapay-accept-a-payment-2026-11-07.md:11"
+      },
+      {
+        "text": "[Checkout Sessions API](https://docs.stripe.com/payments/scalapay/accept-a-payment.md?payment-ui=elements&api-integration=checkout)",
+        "location": "raw/stripe-payments-scalapay-accept-a-payment-2026-11-07.md:15"
+      },
+      {
+        "text": "[Payment Intents API](https://docs.stripe.com/payments/scalapay/accept-a-payment.md?payment-ui=elements&api-integration=paymentintents)",
+        "location": "raw/stripe-payments-scalapay-accept-a-payment-2026-11-07.md:16"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-scalapay-accept-a-payment": [
+      {
+        "text": "<!-- Fetched: 2026-05-06 -->",
+        "location": "raw/stripe-scalapay-accept-payment-2025.md:2"
+      },
+      {
+        "text": "**Supported business locations**: IT, FR, ES, DE, NL, BE, IE, FI",
+        "location": "raw/stripe-scalapay-accept-payment-2025.md:20"
+      },
+      {
+        "text": "success_url: \"https://example.com/success\",",
+        "location": "raw/stripe-scalapay-accept-payment-2025.md:68"
+      },
+      {
+        "text": "- usd: US",
+        "location": "raw/stripe-scalapay-accept-payment-2025.md:1385"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-scalapay-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "raw/stripe-scalapay-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 1403
+      }
+    ],
+    "wiki/sources/source-stripe-scalapay-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 27
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/1b91674711ab1a2d439052f4/content.diff": [
+      {
+        "start": 1,
+        "end": 1408
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 22
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 340,
+        "end": 350
+      },
+      {
+        "start": 742,
+        "end": 752
+      }
+    ],
+    "wiki/concepts/stripe-bnpl.md": [
+      {
+        "start": 23,
+        "end": 41
+      },
+      {
+        "start": 150,
+        "end": 183
+      },
+      {
+        "start": 253,
+        "end": 273
+      }
+    ],
+    "raw/stripe-scalapay-2025.md": [
+      {
+        "start": 12,
+        "end": 18
+      },
+      {
+        "start": 34,
+        "end": 39
+      },
+      {
+        "start": 52,
+        "end": 93
+      },
+      {
+        "start": 160,
+        "end": 170
+      }
+    ],
+    "raw/stripe-bnpl-overview-2025.md": [
+      {
+        "start": 38,
+        "end": 55
+      }
+    ],
+    "raw/stripe-payments-buy-now-pay-later-2026-11-07.md": [
+      {
+        "start": 39,
+        "end": 76
+      }
+    ],
+    "wiki/sources/source-stripe-scalapay.md": [
+      {
+        "start": 1,
+        "end": 29
+      }
+    ]
+  },
+  "answers": {
+    "payments-scalapay-accept-a-payment": {
+      "Q1": "The November 7, 2026 capture at https://docs.stripe.com/payments/scalapay/accept-a-payment identifies Scalapay acceptance and gives four variant links (new raw lines 5-17), without supplying prerequisites, payment steps or state transitions. The May 6 guide documents a single-use three- or four-installment flow in which the customer authorizes with Scalapay and returns for an immediate stated success/failure outcome (old raw lines 12-35 and 1160-1164). The May Checkout and Elements/Checkout Sessions paths list eight countries, EUR same-currency lines and payment mode without setup/subscription. For those paths the merchant creates a Checkout Session, using a hosted success URL or a Session return URL for Elements with Checkout Sessions. The May Elements/Payment Intents and Direct API paths create an Intent server-side and confirm with a return URL. The optional Direct API manual redirect follows requires_action and next_action.redirect_to_url, and the application verifies payment status on return (old raw lines 125-197, 799-933 and 1268-1362). Manual authorization transitions to requires_capture, followed by capture or cancellation (old raw lines 1094-1140). source-stripe-scalapay-accept-payment.md now distinguishes each currency and return field scope and retains the seven-day PaymentIntent window.",
+      "Q2": "The November change at https://docs.stripe.com/payments/scalapay/accept-a-payment is presentation and navigation only. The new raw lines 9-17 link four implementation bodies and establish no substantive behavior change or deprecation. Preserve the May 6, 2026 Checkout and Elements/Checkout Sessions eight-country, EUR-only, same-currency and payment-mode compatibility (old raw lines 18-35 and 95-112). Correct the global EUR-only statement in source-stripe-scalapay-accept-payment.md because the Direct API May map lists non-EUR cases (old raw lines 1376-1391) while the separate same-date method overview lists EUR for all 28 business locations (raw/stripe-scalapay-2025.md lines 52-93 and 160-170). The malformed Checkout comment at old raw line 58 is insufficient to override its table. Preserve hosted Checkout success_url versus Session/Intent return_url, and the seven-day Intent authorization, capture and cancellation flow (old raw lines 50-70, 125-197, 927-933 and 1094-1140). At the concept route, retain the May method Connect No versus both BNPL matrices' Supported flags and the November BNPL API table omission. The separate November Mobile Payment Element matrix change supplies no missing variant body. Preserve root index line 7, Stripe index lines 345 and 747, and the BNPL concept's source link (line 267), with a reciprocal source link and separate November navigation reference."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "scalapay-acceptance-path-scope",
+      "target_path": "wiki/concepts/stripe-bnpl.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Integration notes**: `return_url` required. Manual capture: 7-day window. Checkout path limited to 8 EU countries (IT, FR, ES, DE, NL, BE, IE, FI) despite 28-country merchant base.",
+      "proposed_markdown": "**May 2026 acceptance paths.** Hosted Checkout and Elements with Checkout Sessions list IT, FR, ES, DE, NL, BE, IE and FI, with EUR and payment mode only. Hosted Checkout shows `success_url`. Set `return_url` when creating the Checkout Session for Elements with Checkout Sessions, or in the confirmation request for a PaymentIntent. The May Direct API currency map includes non-EUR cases. Optional PaymentIntent manual capture has a seven-day authorization window. See [[source-stripe-scalapay-accept-payment]].",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": [
+        "The November raw identifies separate variant routes. May raw lines 18–35, 50–70, 95–112, 125–197, 927–933, 1094–1140, 1287–1356 and 1376–1391 supply the detailed qualifications."
+      ]
+    },
+    {
+      "update_id": "scalapay-acceptance-source-route",
+      "target_path": "wiki/concepts/stripe-bnpl.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-scalapay-accept-payment]] — Scalapay integration: return_url required, 7-day capture, Checkout limited to 8 EU countries",
+      "proposed_markdown": "- [[source-stripe-scalapay-accept-payment]] — May 2026 guide for path-specific Scalapay compatibility, return fields and PaymentIntent capture. The November variant index provides navigation.",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "May raw lines 18–35, 95–112 and 1094–1140 establish the historical route qualifications."
+      ]
+    }
+  ]
+}

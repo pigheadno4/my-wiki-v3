@@ -1,0 +1,155 @@
+{
+  "job_id": "radar-merchant-delinquency-risk",
+  "attempt": 1,
+  "raw_path": "raw/stripe-radar-merchant-delinquency-risk-2026-11-07.md",
+  "raw_sha256": "1897840a762f1e1adf060cb5f852e9bc99f805c610eb249be3525c266f7573d9",
+  "prior_raw_path": "raw/stripe-radar-merchant-delinquency-signal-2026.md",
+  "prior_raw_sha256": "d8c9ab745933dd945b678d1cde8984cd82fc910d99cf5d07890a8e28e94e5246",
+  "source_targets": [
+    "wiki/sources/source-stripe-radar-account-risk-signals.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-radar-account-risk-signals.md": "8bf3c163d3a37fa36f7dc6b1330a3b16fa3c689926df225b48df714f1f44b15e"
+  },
+  "read_ranges": {
+    "raw/stripe-radar-merchant-delinquency-risk-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 66
+      }
+    ],
+    "raw/stripe-radar-merchant-delinquency-signal-2026.md": [
+      {
+        "start": 1,
+        "end": 55
+      }
+    ],
+    "wiki/sources/source-stripe-radar-account-risk-signals.md": [
+      {
+        "start": 1,
+        "end": 70
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/beeb45e83dfec611fee817a4/content.diff": [
+      {
+        "start": 1,
+        "end": 98
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 532,
+        "end": 536
+      },
+      {
+        "start": 717,
+        "end": 721
+      }
+    ],
+    "wiki/concepts/stripe-radar.md": [
+      {
+        "start": 116,
+        "end": 130
+      },
+      {
+        "start": 276,
+        "end": 279
+      }
+    ],
+    "raw/stripe-radar-account-fraud-prevention-2026-11-07.md": [
+      {
+        "start": 113,
+        "end": 126
+      }
+    ],
+    "raw/stripe-radar-fraudulent-merchant-2026-11-07.md": [
+      {
+        "start": 17,
+        "end": 26
+      },
+      {
+        "start": 44,
+        "end": 46
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "The merchant delinquency risk signal identifies connected accounts at risk of carrying a negative balance for more than 90 days.",
+      "location": "raw/stripe-radar-merchant-delinquency-risk-2026-11-07.md:9"
+    },
+    {
+      "text": "Enter your email to request access.",
+      "location": "raw/stripe-radar-merchant-delinquency-risk-2026-11-07.md:13"
+    },
+    {
+      "text": "On Radar Plus and Radar Pro, the signal also includes a `probability` score with a value between 0 and 100.",
+      "location": "raw/stripe-radar-merchant-delinquency-risk-2026-11-07.md:29"
+    },
+    {
+      "text": "Listen for `v2.signals.account_signal.merchant_delinquency_ready` event notifications when a delinquency signal is evaluated.",
+      "location": "raw/stripe-radar-merchant-delinquency-risk-2026-11-07.md:62"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Listen for `v1.account_signals[delinquency].created` event notifications when a delinquency signal is evaluated.",
+      "location": "raw/stripe-radar-merchant-delinquency-signal-2026.md:51"
+    },
+    {
+      "text": "The signal hasn\u2019t been assessed for this account.",
+      "location": "raw/stripe-radar-merchant-delinquency-signal-2026.md:24"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The November 7 delinquency capture is a full concise guide. It explicitly identifies connected-account risk of a negative balance lasting beyond 90 days and says a platform can request early access, retrieve its latest assessment and receive a readiness event. No risk score executes an account action by itself (old raw lines 6\u201312 and 49\u201355; new raw lines 7\u201329 and 60\u201366).",
+    "Root index line 7 routes to Stripe index lines 534 and 719. Source lines 32\u201335 and concept lines 128 and 279 are reciprocal. Keep the other signal-specific raw evidence separate and add November delinquency evidence alongside the pinned May raw, while maintaining the dated Radar for Platforms and Account Fraud Prevention action routes."
+  ],
+  "substantive_changes": [
+    "November adds the over-90-day risk horizon and an early access request, replacing May's broad financial-distress lead (old raw lines 6\u20138; new raw lines 7\u201321).",
+    "Latest-result retrieval is retained, while the linked API reference changes from the 2026-03-25.preview core/event reference to the 2026-07-29.preview Signals reference and the readiness event changes from the historical v1 name to the v2 delinquency-specific name (old raw lines 10\u201312 and 49\u201351; new raw lines 23\u201325 and 60\u201362).",
+    "The new risk table has four levels and no not_assessed row, adds plan-qualified probability, and has 15 indicator rows instead of May's 16 because duplicates is omitted while related_accounts remains (old raw lines 14\u201347; new raw lines 27\u201358)."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the May negative-balance risk examples, five listed levels, 16 indicator rows and old v1 readiness notification as historical evidence. Both retain the ability for a platform to retrieve the latest evaluation and take separate account actions (old raw lines 6\u201355; new raw lines 7\u201366)."
+  ],
+  "conflicts": [
+    "November drops not_assessed and duplicates from the tables (old raw lines 18\u201324 and 30\u201347; new raw lines 31\u201336 and 42\u201358). Treat these as documented list changes, not confirmed field deprecations or equivalence to unknown.",
+    "Do not reuse the fraudulent merchant signal's thin-event/fetch contract or plan scope for delinquency. The companion merchant capture expressly documents thin event data (raw/stripe-radar-fraudulent-merchant-2026-11-07.md lines 44\u201346) where the November delinquency guide only specifies when it notifies (new raw lines 60\u201362)."
+  ],
+  "unresolved_questions": [
+    "The captures do not give individual early-access eligibility, v1/v2 transition timing, November notification-body shape, or an explicit service-wide removal statement for omitted rows."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-radar.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-radar-account-risk-signals.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Source lines 16, 23 and 45\u201347 give broad financial-distress coverage without November's precise predicted negative balance duration. Add 'more than 90 days' as the risk horizon, separate from proof of a current delinquency or a lookback/retention cutoff, and document the early access request without implying entitlement (old raw lines 6\u201312; new raw lines 7\u201325).",
+        "Source line 47 says five levels like fraudulent merchant, and line 49 gives 16 indicators. Preserve both May facts as dated. November delinquency lists highest, elevated, normal and low, Plus/Pro probability 0\u2013100, and 15 indicators without the duplicates row. The separate November fraudulent merchant list uses unknown rather than low. Do not cross-apply score/result schemas, absent-row semantics, or plan gates (old raw lines 14\u201347; new raw lines 27\u201358; raw/stripe-radar-fraudulent-merchant-2026-11-07.md lines 17\u201326).",
+        "Source line 51 is correct for May and needs the November event name v2.signals.account_signal.merchant_delinquency_ready and retrieval link to Account Signals 2026-07-29.preview. Retain latest risk level/indicators retrieval and keep event notification separate from any assertion about event-body shape, read path parameters or retention window (old raw lines 10\u201312 and 49\u201351; new raw lines 23\u201325 and 60\u201362).",
+        "Source lines 26\u201330 should distinguish a signal ready after evaluation from decisions or automatic actions. The November action destination is Account Fraud Prevention and lists separate operator decisions (new raw lines 64\u201366 and raw/stripe-radar-account-fraud-prevention-2026-11-07.md lines 113\u2013126)."
+      ],
+      "conflicts": [
+        "November drops not_assessed and duplicates from the tables (old raw lines 18\u201324 and 30\u201347; new raw lines 31\u201336 and 42\u201358). Treat these as documented list changes, not confirmed field deprecations or equivalence to unknown.",
+        "Do not reuse the fraudulent merchant signal's thin-event/fetch contract or plan scope for delinquency. The companion merchant capture expressly documents thin event data (raw/stripe-radar-fraudulent-merchant-2026-11-07.md lines 44\u201346) where the November delinquency guide only specifies when it notifies (new raw lines 60\u201362)."
+      ],
+      "reason": "Replace the shared summary\u2019s unqualified May delinquency details with a dated comparison and direct November provenance, preserving sibling scope."
+    }
+  ],
+  "answers": {
+    "Q1": "The November 7 capture of https://docs.stripe.com/radar/merchant-delinquency-risk describes Stripe evaluating connected-account delinquency risk, specifically risk of a negative balance lasting more than 90 days. The platform can request early access and retrieve the latest risk level and indicators from the linked Signals reference. The result lists highest, elevated, normal and low; Plus and Pro also get a probability score. Stripe notifies the platform with v2.signals.account_signal.merchant_delinquency_ready, after which the platform can choose a Radar action (new raw lines 7-36 and 60-66). The May guide and source-stripe-radar-account-risk-signals.md described broader distress, five levels including not_assessed, 16 indicators and a v1 event (old raw lines 6-24 and 30-55).",
+    "Q2": "For https://docs.stripe.com/radar/merchant-delinquency-risk, substantive November changes are the over-90-day prediction horizon, early access route, version-linked Signals retrieval reference, v2 notification, tiered probability and reduced result vocabulary and indicator table (new raw lines 7-36 and 38-62). Preserve May's historical v1 event, not_assessed and duplicates rows, and financial-distress wording (old raw lines 6-24 and 30-55). Their omission does not establish API-wide removal. Treat table styling and downstream Radar action links as presentation/navigation (old raw lines 53-55; new raw lines 64-66). Keep the reciprocal Radar concept route and the separate fraudulent-merchant and website contracts in source-stripe-radar-account-risk-signals.md. The other signals' event payload shape and tiers do not establish this signal's."
+  }
+}

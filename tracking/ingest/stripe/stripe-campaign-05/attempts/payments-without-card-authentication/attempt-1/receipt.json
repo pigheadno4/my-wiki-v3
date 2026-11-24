@@ -1,0 +1,146 @@
+{
+  "job_id": "payments-without-card-authentication",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-without-card-authentication-2026-11-07.md",
+  "raw_sha256": "f5ec3f0e32f1a2014795c52e4fb12d04d8734754daad33fc5b04a1d8a877388a",
+  "prior_raw_path": "raw/stripe-payments-without-auth-2026.md",
+  "prior_raw_sha256": "a45298e5808781de6938720de4dc566b6ca6997bdfa1bf805b5e1af63fe57ec0",
+  "source_targets": [
+    "wiki/sources/source-stripe-payments-without-auth.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-payments-without-auth.md": "77861089ff27231438a43a8831e27a0ac7940170417cca6c48161a4daa5eb16d"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-without-card-authentication-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 394
+      }
+    ],
+    "raw/stripe-payments-without-auth-2026.md": [
+      {
+        "start": 1,
+        "end": 418
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/4b5590bb0b15289025546dfe/content.diff": [
+      {
+        "start": 1,
+        "end": 412
+      }
+    ],
+    "wiki/sources/source-stripe-payments-without-auth.md": [
+      {
+        "start": 1,
+        "end": 49
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 556,
+        "end": 564
+      },
+      {
+        "start": 726,
+        "end": 731
+      }
+    ],
+    "wiki/concepts/stripe-payment-intents.md": [
+      {
+        "start": 7,
+        "end": 42
+      },
+      {
+        "start": 150,
+        "end": 158
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "This integration supports businesses accepting only US and Canadian cards.",
+      "location": "raw/stripe-payments-without-card-authentication-2026-11-07.md:9"
+    },
+    {
+      "text": "Always decide how much to charge on the server, a trusted environment, as opposed to the client.",
+      "location": "raw/stripe-payments-without-card-authentication-2026-11-07.md:296"
+    },
+    {
+      "text": "<script src=\"https://js.stripe.com/endive/stripe.js\"></script>",
+      "location": "raw/stripe-payments-without-card-authentication-2026-11-07.md:56"
+    },
+    {
+      "text": "If the payment was successful, it will have a status of `succeeded`.",
+      "location": "raw/stripe-payments-without-card-authentication-2026-11-07.md:325"
+    },
+    {
+      "text": "\"decline_code\": \"authentication_not_handled\"",
+      "location": "raw/stripe-payments-without-card-authentication-2026-11-07.md:357"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "<script src=\"https://js.stripe.com/dahlia/stripe.js\"></script>",
+      "location": "raw/stripe-payments-without-auth-2026.md:42"
+    },
+    {
+      "text": "This integration supports businesses accepting only US and Canadian cards.",
+      "location": "raw/stripe-payments-without-auth-2026.md:8"
+    },
+    {
+      "text": "if (intent.status === \"succeeded\") {",
+      "location": "raw/stripe-payments-without-auth-2026.md:331"
+    }
+  ],
+  "proposed_disposition": "raw_reference",
+  "findings": [
+    "Both full captures describe a synchronous documented path for businesses accepting only US and Canadian cards. The browser-hosted Elements iframe keeps card details from merchant code. Stripe.js creates a card PaymentMethod and the merchant server receives its ID, determines the amount, and creates and immediately confirms the PaymentIntent with confirm=true and error_on_requires_action=true. The server observes success or failure, so this path can handle immediate post-payment actions without a webhook. Global/other-method integrations handle authentication requests and recommend webhooks for post-payment tasks (old raw lines 8\u201335, 49\u201353, 71\u2013104, 272\u2013345; new raw lines 9\u201349, 63\u201367, 83\u2013116, 290\u2013325).",
+    "Stripe documents succeeded as the success status. In the authentication-required example the error code is authentication_required, the decline code is authentication_not_handled, and the Intent status is requires_payment_method. Preserve ordinary invalid card/funds failures separately. The new diagram omits those other failure branches; `no authentication required` is not evidence of unconditional success, and PaymentMethod creation is not a completed payment. Both captures point to the global or upgrade integration to support bank-requested authentication (old raw lines 18\u201330 and 345\u2013418; new raw lines 19\u201331, 35\u201344 and 321\u2013394).",
+    "November replaces the May dahlia Stripe.js include with endive, changes the server SDK installation example from Node.js to Ruby, and changes the server submission illustration from an Express handler to a cURL create request. React links now specify `?ui=elements`. The new text flow diagram and Markdown/JS formatting are presentation and navigation. The parameter intent and success/error examples have the same documented state boundary (old raw lines 31\u201349, 154\u2013187, 261\u2013373; new raw lines 33\u201363, 166\u2013199, 274\u2013349)."
+  ],
+  "substantive_changes": [
+    "The displayed Stripe.js script release path moves from Dahlia to Endive, and the explanatory server examples shift from Node/Express to Ruby setup plus cURL (old raw lines 39\u201345 and 261\u2013345; new raw lines 53\u201359 and 274\u2013321). These are dated implementation-reference changes. They establish neither changed protocol semantics nor deprecation of the earlier SDK example."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the May 11, 2026 and November 7, 2026 captures, the May Express example's server-side success check and rejection of unexpected status (old raw lines 300\u2013340) and the different dated examples in the November raw (lines 274\u2013325).",
+    "Retain US/Canada card scope, the stated issuer behavior, secure Elements collection, amount decision on merchant server, immediate actions without a webhook only for this described route, and the growing/global business upgrade recommendation (old raw lines 8\u201335, 39\u201353 and 272\u2013345; new raw lines 9\u201349, 53\u201367 and 290\u2013325).",
+    "Keep decline code versus API error code distinct and retain the three test scenarios as sandbox fixtures (old raw lines 375\u2013410; new raw lines 351\u2013386). Keep reciprocal source-stripe-payments-without-auth and stripe-payment-intents routes at source line 45 and concept lines 155\u2013158."
+  ],
+  "conflicts": [
+    "Current source lines 13 and 20 can read as a general webhook exemption; current line 34 says 'Yes (recommended)' for global. Both guides describe immediate post-payment actions in the narrow synchronous path and recommend global webhooks, without making universal statements (old raw lines 12\u201330; new raw lines 13\u201331).",
+    "Current source lines 24\u201326 omit the trusted server amount and the May server code's conditional success response. Keep `succeeded` as the condition for fulfillment, and keep the authentication-required example's `requires_payment_method`, distinct error code/decline code, and upgrade route visible (old raw lines 272\u2013345 and 375\u2013418; new raw lines 290\u2013325 and 351\u2013394).",
+    "The November text diagram's no-authentication branch depicts success (new raw lines 35\u201344) while the same capture's table and sandbox show other declines (lines 19\u201329 and 380\u2013386). In November examples the curl snippet has explanatory blank/comment lines and the success JSON contains trailing commas (new raw lines 300\u2013349); treat as illustrative documentation and do not infer execution."
+  ],
+  "unresolved_questions": [
+    "Neither capture verifies eligibility for an account, useful exemptions for particular cards, runtime execution or successful capture and settlement."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-payment-intents.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-payments-without-auth.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Preserve May provenance and add the November full raw and dated Stripe.js and server example differences. Distinguish the narrow synchronous flow from the global alternative and add the existing migration guidance route (source lines 13\u201335, 43\u201349; concept lines 155\u2013158).",
+        "Complete the abbreviated source lines 24\u201326 with authoritative server-side pricing and require `succeeded` before successful fulfillment. Preserve `authentication_required` error code, `authentication_not_handled` decline code, `requires_payment_method` and ordinary decline cases (new raw lines 290\u2013325 and 351\u2013386, old raw lines 272\u2013345 and 375\u2013410). A reader searching how to fulfill would otherwise see an unconditional success-return fragment."
+      ],
+      "conflicts": [
+        "Narrow source lines 13, 20 and 34 to immediate post-payment tasks without a webhook in this scenario and a webhook recommendation for global integration. Do not present either as universal. Do not treat sample changes as earlier language/SDK support removal."
+      ],
+      "reason": "Raw-reference changes account for changed presentation and implementation examples. Independent baseline corrections improve the security and outcome boundaries and the current route to both dated captures."
+    }
+  ],
+  "answers": {
+    "Q1": "https://docs.stripe.com/payments/without-card-authentication documents a regional flow for businesses accepting only US and Canadian cards. At new raw lines 9\u201349, 83\u2013116 and 290\u2013325 the buyer enters card details into Stripe-hosted Elements, the browser creates a PaymentMethod and gives the merchant server its ID, and the server calculates the amount and immediately confirms a PaymentIntent using error_on_requires_action. A succeeded result supports immediate post-payment handling. A required bank authentication fails this path with the authentication_required error, authentication_not_handled decline code and requires_payment_method in the example (new raw lines 351\u2013376). May documents the same outcome with an Express handler (old raw lines 8\u201335, 272\u2013345 and 375\u2013400). source-stripe-payments-without-auth.md captures the basic flow but should preserve the server price decision, explicit success check and scoped webhook wording.",
+    "Q2": "At https://docs.stripe.com/payments/without-card-authentication, the November changes include an explanatory text diagram and React link selectors, a versioned Stripe.js include changing Dahlia to Endive (old raw lines 39\u201345; new raw lines 53\u201359), and Ruby SDK installation with a cURL request replacing May's Node/Express sample (old raw lines 261\u2013345; new raw lines 274\u2013321). These are presentation, navigation and implementation-example changes, with the same documented payment behavior in both. Preserve the May and November provenance and reciprocal stripe-payment-intents route in source-stripe-payments-without-auth.md. Keep only US/Canadian cards, immediate actions without webhooks within this synchronous path, the global webhook recommendation and the distinction between success, normal decline and authentication-required failure (old raw lines 8\u201330 and 375\u2013418, new raw lines 9\u201331 and 351\u2013394). The diagram is a simplified branch, not a promise that lack of authentication ensures payment success."
+  }
+}

@@ -1,0 +1,168 @@
+{
+  "job_id": "payments-save-during-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Save a Customer's Payment Method During Payment\"\ntype: source\ndate_ingested: 2026-04-21\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/save-during-payment\"\nraw_files:\n  - \"stripe-save-during-payment-elements-2025.md\"\ntags: [stripe, checkout-sessions, payment-intents, save-payment-method, customer-session, allow-redisplay, off-session, sepa-debit]\n---\n\n## Overview\n\nThe April 21, 2026 guide covers saving a payment method during a web payment using Elements with Checkout Sessions or Payment Intents. The November 7, 2026 capture links to the two implementations.\n\nFor later redisplay or charging, the April guide tells merchants to obtain explicit consent for that purpose and retain the written agreement. Explain the intended payments, timing and frequency, how the amount is determined, and the cancellation policy for subscriptions. Use the payment details only for the agreed purpose. Saving card-present payment methods uses the separate Terminal process.\n\n## Checkout Sessions API with Elements\n\nThe April guide limits saved methods in this integration to cards and ACH Direct Debit. Its new-customer example sets `ui_mode: elements`, `saved_payment_method_options.payment_method_save: enabled` and `customer_creation: always` on the Session. For an existing customer, authenticate them before passing the Customers v1 ID as `customer` or the customer-configured Accounts v2 ID as `customer_account`. The April guide describes Accounts v2 as generally available for Connect and in public preview for other Stripe users, with a preview API version required for the latter.\n\nThe April guide says that with saved payment methods enabled on the Session, the then-latest Stripe.js defaulted `enableSave` and `enableRedisplay` to `auto`. In the custom UI examples, set both options to `never` and collect consent explicitly. Pass `savePaymentMethod` when confirming a new method or `paymentMethod` with the selected saved ID. The guide’s `savedPaymentMethods` list exposes methods with `allow_redisplay: always` in this route. Show only methods the customer authorized for this use.\n\n## Payment Intents API with the Payment Element\n\nFor the April saved-method UI, create the PaymentIntent and a CustomerSession on the server using the same customer identity, enable the CustomerSession’s `payment_element` component and pass both client secrets when creating Elements. The CustomerSession secret grants access to the customer’s saved methods. If CustomerSession creation fails, the guide says to handle the error and omit that secret. This fallback does not supply the saved-method UI.\n\nAt confirmation, Stripe.js uses the customer’s save-checkbox selection to set `setup_future_usage` on the PaymentIntent and `allow_redisplay` on the PaymentMethod. Do not explicitly set both the Intent’s `setup_future_usage` and the CustomerSession’s `payment_method_save_usage` for the same transaction. A server-set `setup_future_usage` overrides the built-in checkbox behavior. The merchant still needs consent, and the guide instructs the merchant to disable the Intent setting on the server if the customer declines. Its per-method example sets `payment_method_options.card.setup_future_usage` for cards when only some offered methods can be saved.\n\n> [!warning] Subscription removal\n> The April CustomerSession examples enable `payment_method_remove`. The separate April 21 [[source-stripe-payment-element-saved-pms#Subscription Removal Warning|Payment Element saved-methods guide]] says removing a method through **Saved** also removes it from an ongoing subscription that uses it. Stripe recommends disabling removal there and managing changes on an account settings page that shows subscriptions.\n\n## Later payments and testing\n\nA later off-session attempt uses a separate PaymentIntent with the saved PaymentMethod ID and the corresponding `customer` or `customer_account`. The April examples set `off_session: true` and `confirm: true`. Confirmation can fail if a payment partner requests authentication and the exemption is unavailable.\n\nWhen set up for reuse, the April guide says Bancontact, iDEAL and Sofort generate a reusable `sepa_debit` PaymentMethod. Use that type when listing saved methods. The documented SEPA Debit payment can enter `processing` before it reaches `succeeded` or `requires_payment_method`. The email and token fixtures in the April guide’s **Test charging a saved SEPA Debit PaymentMethod** section simulate those outcomes, including delayed and insufficient-funds cases.\n\n## Related\n\n- [[stripe-saved-payment-methods]] — Stripe saved-payment methods\n- [[source-stripe-checkout-save-during-payment]] — Checkout-specific save-during-payment guide\n- [[source-stripe-payment-element-saved-pms]] — Payment Element display and management\n- [[stripe-payment-intents]] — PaymentIntent lifecycle\n- [[stripe]] — Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-save-during-payment-elements-2025|April 21, 2026 save-during-payment guide]] — full Checkout Sessions and Payment Intents implementations.\n\n## Related raw API references\n\n- [[raw/stripe-payments-save-during-payment-2026-11-07|November 7, 2026 save-during-payment variant index]] — navigation to Checkout Sessions API and Payment Intents API.\n",
+  "quotes": {
+    "payments-save-during-payment": [
+      {
+        "text": "Learn how to save your customer's payment details for future purchases when they make a payment.",
+        "location": "raw/stripe-payments-save-during-payment-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-save-during-payment-2026-11-07.md:11"
+      },
+      {
+        "text": "- [Checkout Sessions API](https://docs.stripe.com/payments/save-during-payment.md?payment-ui=embedded-components)",
+        "location": "raw/stripe-payments-save-during-payment-2026-11-07.md:13"
+      },
+      {
+        "text": "- [Payment Intents API](https://docs.stripe.com/payments/save-during-payment.md?payment-ui=elements)",
+        "location": "raw/stripe-payments-save-during-payment-2026-11-07.md:14"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-save-during-payment": [
+      {
+        "text": "When using Elements with the Checkout Sessions API, only cards and ACH Direct Debit are supported for saved payment methods.",
+        "location": "raw/stripe-save-during-payment-elements-2025.md:31"
+      },
+      {
+        "text": "If an error occurs, you don’t need to provide the CustomerSession client secret to the Elements instance, as it’s optional.",
+        "location": "raw/stripe-save-during-payment-elements-2025.md:697"
+      },
+      {
+        "text": "If the customer declines to have their payment details saved, disable `setup_future_usage` in the PaymentIntent on the server-side.",
+        "location": "raw/stripe-save-during-payment-elements-2025.md:753"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-save-during-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-save-during-payment-elements-2025.md": [
+      {
+        "start": 1,
+        "end": 963
+      }
+    ],
+    "wiki/sources/source-stripe-save-during-payment-elements.md": [
+      {
+        "start": 1,
+        "end": 147
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/5edb8a985c09bbe5e7b6049b/content.diff": [
+      {
+        "start": 1,
+        "end": 965
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-save-during-payment/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 170
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-save-during-payment/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 62
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 94,
+        "end": 99
+      },
+      {
+        "start": 775,
+        "end": 779
+      }
+    ],
+    "wiki/concepts/stripe-saved-payment-methods.md": [
+      {
+        "start": 25,
+        "end": 94
+      },
+      {
+        "start": 147,
+        "end": 157
+      }
+    ],
+    "raw/stripe-payment-element-saved-payment-methods-2025.md": [
+      {
+        "start": 1,
+        "end": 7
+      },
+      {
+        "start": 40,
+        "end": 54
+      }
+    ],
+    "wiki/sources/source-stripe-payment-element-saved-pms.md": [
+      {
+        "start": 42,
+        "end": 56
+      }
+    ]
+  },
+  "answers": {
+    "payments-save-during-payment": {
+      "Q1": "https://docs.stripe.com/payments/save-during-payment gives a two-variant selector at new raw lines 5–14. The April 21, 2026 implementation in old raw lines 18–82, 130–176, 331–347, 402–406, 605–618, 697–729 and 804–853 distinguishes Checkout Sessions with Elements, which enables the save-consent UI for cards and ACH Direct Debit, from a PaymentIntent with a server-created CustomerSession for saved-method features. The merchant provides the correct Customer or customer-configured Account identity and, for redisplay and later use, records the customer's purpose-specific consent. Stripe.js applies the checkbox response to the saving and redisplay settings in the Payment Intents route. Eligible prior methods can be used for a later, separate PaymentIntent. Off-session authentication can fail, and SEPA Debit can stay processing before a final result. source-stripe-save-during-payment-elements.md now makes the Elements-specific restriction, eligible redisplay, consent and the CustomerSession-secret fallback explicit.",
+      "Q2": "At https://docs.stripe.com/payments/save-during-payment, new raw lines 9–14 present the same two web route labels found at old raw lines 8–16 and 558–566. This is navigation and presentation rather than evidence of a substantive workflow change or withdrawal. Keep the April 21, 2026 implementation and November 7, 2026 index as separately dated evidence in source-stripe-save-during-payment-elements.md, with the reciprocal stripe-saved-payment-methods route. Preserve the distinction between Checkout Sessions with Elements and PaymentIntents and the Accounts v2 preview/version boundary. Preserve authorized redisplay, the card/ACH scope, the server-side disable instruction when a buyer declines, and the documented fallback when CustomerSession creation fails (old raw lines 18–52, 402–406, 605–618, 697–729 and 747–753). The setup override bypasses the UI checkbox’s save behavior, while the merchant still has the guide’s explicit consent and recordkeeping responsibilities. The April PaymentIntent examples enable payment_method_remove (old raw lines 636–649 and 676–689). The separate April 21 Payment Element reference (raw/stripe-payment-element-saved-payment-methods-2025.md lines 48–50) says removal through Saved also removes the method from an ongoing subscription using it. Keep that dated warning with the example or link directly to it. Stripe recommends disabling Payment Element removal and routing changes through account settings where subscriptions are visible."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-save-during-payment-reciprocal-route",
+      "target_path": "wiki/concepts/stripe-saved-payment-methods.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-save-during-payment-elements]] — full integration: both API paths, CustomerSession, enableSave/enableRedisplay, Bancontact→SEPA, off-session charging",
+      "proposed_markdown": "- [[source-stripe-save-during-payment-elements]] — April 2026 web save-during-payment guide for Checkout Sessions with Elements and Payment Intents, with consent, redisplay and later charging. November links the two variants.",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "payments-save-during-payment-customersession-fallback",
+      "target_path": "wiki/concepts/stripe-saved-payment-methods.md",
+      "update_kind": "durable_fact",
+      "anchor": "Requires a **CustomerSession** alongside the PaymentIntent:",
+      "proposed_markdown": "For the April 21, 2026 Payment Element saved-method UI, create a **CustomerSession** alongside the PaymentIntent. If CustomerSession creation fails, the guide says to omit its client secret after handling the error. See [[source-stripe-save-during-payment-elements]] for supported saving and redisplay options.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "The November variant link provides navigation. The April guide at lines 605–618 and 697–729 describes the saved-method scope and fallback."
+      ]
+    },
+    {
+      "update_id": "payments-save-during-payment-checkout-scope",
+      "target_path": "wiki/concepts/stripe-saved-payment-methods.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Supported methods**: card, ACH Direct Debit only (not bank redirects, etc.)",
+      "proposed_markdown": "- **Supported methods**. The April 21, 2026 guide limits saved methods to cards and ACH Direct Debit for Elements with Checkout Sessions.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "The limitation is in the April capture at lines 18–31. The November capture links to the embedded-components variant."
+      ]
+    }
+  ]
+}

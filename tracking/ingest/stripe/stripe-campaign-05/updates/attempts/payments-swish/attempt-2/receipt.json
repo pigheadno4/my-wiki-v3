@@ -1,0 +1,219 @@
+{
+  "job_id": "payments-swish",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Stripe: Swish Payments\"\ntype: source\ndate_ingested: 2026-05-06\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/payments/swish\nraw_files:\n  - \"stripe-payments-swish-2026-11-07.md\"\n  - \"stripe-swish-2025.md\"\ntags: [stripe, real-time-payments, swish, sweden, sek, redirect, qr-code, connect, merchant-of-record]\n---\n\n## Summary\n\nThe May 6 and November 7, 2026 overviews describe Swish as a single-use real-time method for Swedish customers paying in SEK. Customers open the Swish app through a mobile redirect or scan a desktop QR code, then approve using Swedish BankID. Stripe reports payment success or failure immediately and follows its standard payout schedule. Stripe acts as merchant of record under the factoring addendum. The November overview adds explicit eligibility, authorization, refund tracking and transaction identifier details.\n\n## Access and eligibility\n\n**API enum** is `swish`, as shown in the May acceptance guide's Checkout and PaymentIntent examples. [[source-stripe-swish-accept-payment|May acceptance guide, raw lines 55–60 and 748–764]]\n\n- The November overview lists merchant and Connect platform or marketplace accounts, B2C only, and domestic and cross-border customer payments in the documented locations. The customer must be in Sweden and the amount must be SEK 3.00–150,000.00. Both captures list the same 27 business-account countries: AT, BE, BG, CY, CZ, DE, DK, EE, ES, FI, FR, GR, HR, IE, IS, IT, LI, LT, LU, LV, NL, NO, PL, RO, SE, SI, SK.\n- The November overview labels access “Instant provisional access” and also shows an email access request and the identifier `swish_beta_preview`. It directs merchants to Dashboard Payment methods settings for account eligibility. Merchants using Stripe front-end products enable Swish there and Stripe selects relevant methods. See [[source-stripe-swish-accept-payment]] for manual configuration.\n- The November MCC table distinguishes prohibited codes from restricted codes that require more information at account creation (new raw lines 41–78). Both captures also list prohibited categories in addition to Stripe's general restricted-business rules (old raw lines 137–152, new raw lines 95–110). These include wine and Champagne producers, alcoholic beverage wholesalers and package stores, pawn shops and salvage yards, art dealers and galleries, real estate rental agents and managers, legal services and attorneys, precious stones and metals, watches and jewelry, and digital wallet top-ups. The broader category list still applies where a category does not appear by name in the MCC table.\n\n## Authorization and outcome\n\nThe November overview gives customers three minutes to authorize. On expiration the PaymentIntent returns to `requires_payment_method`. A successful payment reaches `succeeded`. The May acceptance guide uses server-side payment events for fulfillment. `payment_intent.succeeded` reports completion. The browser return serves customer navigation. Separately, if the three-minute window expires while the PaymentIntent is in `requires_action`, Stripe detaches the PaymentMethod and returns the PaymentIntent to `requires_payment_method`. The allowance of up to 20 QR refreshes belongs to the May Elements desktop flow. See [[source-stripe-swish-accept-payment|May acceptance guide, raw lines 665–681, 914–926 and 984–988]].\n\n## Merchant of record and identifiers\n\nBoth captures say Stripe is the payment recipient shown in the Swish app and describe Stripe's name as the bank statement descriptor under the [Swish factoring terms](https://stripe.com/legal/swish). The November overview also documents the following distinct mappings (new raw lines 229–243).\n\n- The Swish **Message** field uses the merchant's legal entity name, falling back to the displayable business name. For destination charges with `on_behalf_of`, it uses the connected account's business name. Stripe removes unsupported characters and truncates the value to 50 characters.\n- Set a custom reference via `payment_method_options[swish][reference]` with 1–35 letters, numbers or hyphens. The May acceptance guide describes an order reference shown in the Swish app. For payments processed through PPRO, the November overview says Stripe sends this custom reference as the statement descriptor. PPRO or the customer's bank may display a different value.\n- On completed payments, the provider returns a distinct bank reference at `latest_charge.payment_method_details.swish.payment_reference` when the PaymentIntent's `latest_charge` is expanded.\n- Both captures list Connect direct charges, destination charges, and separate charges and transfers. November describes general descriptor ownership as connected-account for direct charges. Destination charges and separate charges and transfers use the connected account with `on_behalf_of` and the platform otherwise. Those general settings do not control the Swish Message or PPRO reference mapping.\n\n## Refunds and disputes\n\nBoth overviews document full and partial refunds up to 365 days after payment completes, with multiple partial refunds capped at the original amount. A refund usually takes a few minutes. The November matrix labels the window “1 year” and leaves processing time blank. Its prose retains the precise 365-day window and the usual timing estimate.\n\nNovember describes asynchronous refunds. Stripe tracks the provider outcome, which merchants can inspect in the Dashboard or the Refund object's `status`. Stripe reports the final status through `refund.updated` or `refund.failed`. On failure the amount returns to the merchant's Stripe balance and the merchant must refund through another method. Swish lacks standard disputes, so customers with concerns contact the merchant.\n\n## Product and API scope\n\nBoth Swish overviews list Payment Links alongside Checkout and Elements, and both exclude Checkout subscription/setup modes and Express Checkout Element. The November method matrix lists full-page Checkout, Payment Links, embedded form, Payment Element, in-app payments and Connect, with Checkout Sessions recommended and PaymentIntents supported. It excludes Managed Payments, Billing, Invoicing, Customer Portal, Radar, Terminal, PaymentIntents with `setup_future_usage`, and SetupIntents. November also lists no recurring payments, manual or partial capture, multi-capture, over-capture or the listed authorization adjustments.\n\nThe May and November cross-method tables instead mark Payment Links unsupported and list Subscriptions as supported only with `send_invoice`, while listing Invoicing as unsupported. The November Swish method page explicitly excludes Billing and Invoicing. Treat the subscription cell as a dated cross-method label. Both method captures exclude recurring payments. See [[source-stripe-real-time-payments]] for the separate comparison and the Swish cells at [[raw/stripe-real-time-payments-2025|May raw lines 24–32]] and [[raw/stripe-payments-real-time-2026-11-07|November raw lines 25–34]].\n\n## Related\n\n- [[stripe]]\n- [[stripe-real-time-payments]]\n- [[source-stripe-swish-accept-payment]]\n- [[source-stripe-real-time-payments]]\n\n## Raw Sources\n\n- [[raw/stripe-payments-swish-2026-11-07]] — November 7, 2026 method overview (249 lines). Flow diagrams use CDN links.\n- [[raw/stripe-swish-2025]] — May 6, 2026 method overview (164 lines). No italic fixes. Both PNG flow diagrams were downloaded from CloudFront to `assets/`.\n",
+  "quotes": {
+    "payments-swish": [
+      {
+        "text": "Access type: Instant provisional access",
+        "location": "raw/stripe-payments-swish-2026-11-07.md:14"
+      },
+      {
+        "text": "Customers must authorize the payment within three minutes. If authorization expires, the PaymentIntent returns to `requires_payment_method`. Successful PaymentIntents transition to `succeeded`.",
+        "location": "raw/stripe-payments-swish-2026-11-07.md:227"
+      },
+      {
+        "text": "Swish refunds are asynchronous. Stripe tracks the refund until Swish reports whether it succeeded or failed.",
+        "location": "raw/stripe-payments-swish-2026-11-07.md:143"
+      },
+      {
+        "text": "For payments processed through PPRO, Stripe sends this reference to PPRO as the statement descriptor. PPRO or the customer’s bank might display a different value on the bank statement.",
+        "location": "raw/stripe-payments-swish-2026-11-07.md:235"
+      },
+      {
+        "text": "After the payment completes, expand `latest_charge` on the PaymentIntent and retrieve the customer’s bank reference from `latest_charge.payment_method_details.swish.payment_reference`. The payment provider returns this identifier, which differs from the custom reference you set in `payment_method_options[swish][reference]`.",
+        "location": "raw/stripe-payments-swish-2026-11-07.md:243"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-swish": [
+      {
+        "text": "For Swish payments, Stripe operates as the merchant of record. Therefore, Stripe’s name appears as the recipient of payments in the Swish app and as the statement descriptor in the customer’s bank statements. Your business name appears in the message field in the Swish app. The factoring addendum in the [Swish terms](https://stripe.com/legal/swish) applies.",
+        "location": "raw/stripe-swish-2025.md:135"
+      },
+      {
+        "text": "You can refund Swish charges up to 365 days after the payment completes. Refunds usually take a few minutes to complete. Swish supports full and partial refunds. You can also issue multiple partial refunds up to the amount of the original charge.",
+        "location": "raw/stripe-swish-2025.md:156"
+      },
+      {
+        "text": "[Payment Links](https://docs.stripe.com/payment-links.md)",
+        "location": "raw/stripe-swish-2025.md:131"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-swish-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 249
+      }
+    ],
+    "raw/stripe-swish-2025.md": [
+      {
+        "start": 1,
+        "end": 164
+      }
+    ],
+    "wiki/sources/source-stripe-swish.md": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/77c2f3fa6b682bdd3b926c70/content.diff": [
+      {
+        "start": 1,
+        "end": 369
+      }
+    ],
+    "wiki/concepts/stripe-real-time-payments.md": [
+      {
+        "start": 25,
+        "end": 43
+      },
+      {
+        "start": 164,
+        "end": 185
+      },
+      {
+        "start": 207,
+        "end": 218
+      }
+    ],
+    "raw/stripe-real-time-payments-2025.md": [
+      {
+        "start": 1,
+        "end": 4
+      },
+      {
+        "start": 24,
+        "end": 35
+      }
+    ],
+    "raw/stripe-payments-real-time-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 4
+      },
+      {
+        "start": 24,
+        "end": 35
+      }
+    ],
+    "raw/stripe-swish-accept-payment-2025.md": [
+      {
+        "start": 53,
+        "end": 60
+      },
+      {
+        "start": 665,
+        "end": 681
+      },
+      {
+        "start": 748,
+        "end": 775
+      },
+      {
+        "start": 914,
+        "end": 926
+      },
+      {
+        "start": 984,
+        "end": 988
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-swish/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 206
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-swish/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 52
+      }
+    ]
+  },
+  "answers": {
+    "payments-swish": {
+      "Q1": "At https://docs.stripe.com/payments/swish, the November 7, 2026 capture describes single-use Swish for Swedish customers and SEK 3.00–150,000.00, domestic/cross-border B2C and the same 27 listed business-account locations as May. The merchant or Connect platform has a provisional-access label alongside an email request, and MCC eligibility applies. The customer goes to Swish by mobile redirect or desktop QR, authenticates with Swedish BankID and must authorize within three minutes. Expiry moves PaymentIntent to requires_payment_method and success to succeeded. Stripe immediately notifies the merchant of the outcome, with standard payout timing (old raw lines 8-56 and 58-116, new raw lines 9-94 and 195-227). Stripe remains merchant of record under the factoring addendum. May already describes the merchant name in the Swish Message field (old raw lines 133-135). November adds automatic naming and fallback rules, conditional forwarding of the custom reference to PPRO as the statement descriptor, and a distinct bank reference returned by the provider (new raw lines 229-243). Refunds may be partial or full within 365 days and are asynchronous with explicit failure recovery; customer concerns go to merchant directly. source-stripe-swish.md preserves the core May behavior and now records the November limits, status boundaries, coded restrictions and identifier qualifications. The separate real-time matrix disagrees with the method page on Payment Links and lists Subscriptions via send_invoice despite the method’s Billing exclusion (old raw lines 127-164 and new raw lines 112-193 and 229-243).",
+      "Q2": "At https://docs.stripe.com/payments/swish, substantive November documentation adds provisional-access/request coexistence, B2C and cross-border coverage, amount limits, prohibited/restricted MCC distinctions, three-minute expiration and PaymentIntent states newly included in this overview, expanded product/API matrix, asynchronous refund status and identifier/descriptor details (old raw lines 8-56 and 127-164, new raw lines 9-110, 112-193 and 195-243). The May 6, 2026 acceptance guide already states the same three-minute limit, expiry/failure and success states, separate server-side webhook fulfillment, and method detachment after expiration from requires_action (raw/stripe-swish-accept-payment-2025.md lines 914–926 and 984–988). The 20-refresh condition belongs to the May Elements desktop QR path (lines 665–681). Preserve May's 27-market merchant scope separately from Sweden customers, standard payout, no recurring/capture/disputes and Stripe merchant-of-record and factoring terms. Retain the dated method-page Payment Links support versus the extra matrices’ unsupported cells, November method Billing/Invoicing exclusions versus matrix send_invoice-only Subscriptions, and the distinction between PPRO routing, Connect mapping and actual display. November screenshots/CDN, restructuring and linked acceptance are presentation/navigation. The revised source-stripe-swish.md preserves the exact 365-day prose and ordinary few-minute estimate, both dated raw routes, and the reciprocal Real-Time Payments concept/source links alongside the acceptance and matrix references. The root and Stripe index still route to the concept and source."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "swish-overview-matrix-heading",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "Pay by Bank, PayNow, PromptPay, and Swish support subscriptions/invoicing only via `send_invoice` (not `charge_automatically`).",
+      "proposed_markdown": "Pay by Bank, PayNow, and PromptPay support subscriptions/invoicing only via `send_invoice` (not `charge_automatically`). For Swish, the May and November real-time matrices label Subscriptions `send_invoice` only and Invoicing unsupported, while the November method page lists Billing and Invoicing as unsupported.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The separate real-time matrices at raw/stripe-real-time-payments-2025.md:24-32 and raw/stripe-payments-real-time-2026-11-07.md:25-34 supply the Swish cells. Method scope is at new raw lines 155-183."
+      ]
+    },
+    {
+      "update_id": "swish-overview-timing",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Mobile redirect + desktop QR** — Sweden customers only, SEK only.",
+      "proposed_markdown": "**Mobile redirect or desktop QR** for Swedish customers using Swish and Swedish BankID. The November 2026 overview lists single-use B2C payments of SEK 3–150,000 and a three-minute authorization window. Expiry returns the PaymentIntent to `requires_payment_method` and successful payment reaches `succeeded`. Stripe reports the outcome immediately and follows its standard payout schedule.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "Amount and audience are in new raw lines 36-94; standard payout is at new raw line 16. The May acceptance guide documented the same production transitions at raw/stripe-swish-accept-payment-2025.md:914-926."
+      ]
+    },
+    {
+      "update_id": "swish-overview-identifiers",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Stripe as merchant of record** — unique among real-time methods: Stripe's name shown as payment recipient in Swish app and as statement descriptor. Merchant name appears in message field only. Factoring addendum in Swish legal terms applies.",
+      "proposed_markdown": "**Stripe is the merchant of record** under the Swish factoring addendum and appears as recipient in the Swish app. The November 2026 overview distinguishes the automatic business-name Message, the conditional PPRO statement-descriptor forwarding of a custom reference, and the provider-returned bank reference. PPRO or the bank can display a different descriptor. See [[source-stripe-swish]] for the field and Connect scope.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "The May merchant-of-record statement is at old raw lines 133-135, retained at new raw line 237. The Message fallback and Connect distinctions are at new raw lines 229-243."
+      ]
+    },
+    {
+      "update_id": "swish-overview-refunds-products",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Refunds**: **365-day** window. Full and partial. Multiple partials supported. Takes a few minutes.\n\n**No disputes. No recurring. No billing/invoicing.**\n\n**Product support**: Connect, Checkout (not subscription/setup), Elements (not Express Checkout Element), Payment Links only.",
+      "proposed_markdown": "**Refunds** can be full or partial up to 365 days after payment completion, including multiple partials totaling up to the original payment amount. They usually take a few minutes. Check the asynchronous result using the Refund object's status or `refund.updated`/`refund.failed`.\n\n**Product scope** in the November 2026 Swish overview includes Connect, Checkout (payment mode), Payment Links, Embedded form, Payment Element, and in-app payments. It excludes recurring payments, standard disputes, Billing, Invoicing, Express Checkout Element, and Checkout setup/subscription modes. Both dated real-time matrices separately show Payment Links unsupported and Subscriptions `send_invoice` only, with Invoicing unsupported.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [
+        "Product support is at new raw lines 112-193. The conflicting cells are at raw/stripe-real-time-payments-2025.md:24-32 and raw/stripe-payments-real-time-2026-11-07.md:25-34."
+      ]
+    },
+    {
+      "update_id": "swish-overview-source-link",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-swish]] — Swish: SE-only mobile redirect + desktop QR, Stripe as MoR, 365-day refunds, no billing, extensive prohibited categories",
+      "proposed_markdown": "- [[source-stripe-swish]] covers the May and November 2026 overviews, Swedish customer eligibility, authorization states, asynchronous refunds, and PPRO reference and product scope.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The revised source preserves both dated overview captures, eligibility categories, and the conflicting matrix entries."
+      ]
+    }
+  ]
+}

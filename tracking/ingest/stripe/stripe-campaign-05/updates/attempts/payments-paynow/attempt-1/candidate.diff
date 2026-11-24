@@ -1,0 +1,75 @@
+--- wiki/sources/source-stripe-paynow.md
++++ tracking/ingest/stripe/stripe-campaign-05/updates/attempts/payments-paynow/attempt-1/candidate.md
+@@ -2,42 +2,57 @@
+ title: "Stripe: PayNow Payments"
+ type: source
+ date_ingested: 2026-05-06
++date_updated: 2026-11-22
+ original_format: webpage
++canonical_url: https://docs.stripe.com/payments/paynow
+ raw_files:
++  - "stripe-payments-paynow-2026-11-07.md"
+   - "stripe-paynow-2025.md"
+ tags: [stripe, real-time-payments, paynow, singapore, sgd, qr-code, connect, terminal, billing]
+ ---
+ 
+ ## Summary
+ 
+-Overview of Stripe's PayNow integration — Singapore-only QR code payment method. 1.3% pricing, T+1 payout, 90-day refunds, no disputes, no statement descriptor customization. Connect and Terminal supported; billing via `send_invoice` only.
++PayNow (`paynow`) lets Singapore customers pay Singapore-based [[stripe|Stripe]] accounts in SGD through a participating bank or non-bank payment app. The November 7, 2026 overview documents single-use, domestic payments, instant provisional access, merchant and Connect platform or marketplace accounts, B2B and B2C, and an SGD 0.50 to SGD 200,000.00 range. November identifies prohibited MCCs 5172, 5541, 5542 and 5983 and retains Stripe-wide category restrictions. See November lines 9–15 and 22–58.
+ 
+-## Key Details
++## Customer authorization and payment outcome
+ 
+-**API enum**: `paynow`. SGD only. Singapore customers and merchants only (SG accounts only).
++Stripe displays a QR code. The customer can scan it from a computer display using the app or save the image on mobile and upload it in a participating app. The customer reviews and authorizes the transaction in the app within one hour. Stripe receives confirmation after successful authorization and reports the payment outcome immediately.
+ 
+-**Pricing**: 1.3%.
++An expired QR produces `payment_intent_payment_attempt_expired`. The guide recommends using a webhook to bring the customer back to the payment page, where a new payment session creates a new PaymentIntent and QR. After successful payment, further attempts with the same QR are rejected. How the bank or app communicates the rejection can vary. See May lines 8–10 and 103–115, and November lines 163–199.
+ 
+-**Payout**: T+1 — funds available in Stripe balance the day after the transaction.
++## Balance availability and pricing
+ 
+-**Refunds**: 90-day window. Asynchronous — via `refund.updated`/`refund.failed` webhook events.
++The May 6, 2026 guide defaults to funds becoming available in the Stripe balance the day after the transaction. November likewise describes one-day balance availability. The bank payout follows the account schedule. A Wednesday payment becomes available Thursday, for example, with a Thursday payout on the guide's daily schedule or the following Monday on its weekly schedule. May quotes 1.3%, while November supplies a pricing link. See May lines 54–56 and 123–127 and November lines 12–20.
+ 
+-**QR code expiration**: 1 hour. Expired QR → `payment_intent_payment_attempt_expired` error. Must webhook customer back to create a new PaymentIntent/QR.
++## Refunds and disputes
+ 
+-**Duplicate protection**: QR code rejected after first successful use.
++Both guides support full and partial asynchronous refunds for up to 90 days from the original payment. November specifies processing of up to five minutes, an initial `pending` status and no cancellation. Check status in the Dashboard or retrieve the Refund object. Stripe documents final status notifications through `refund.updated` or `refund.failed`; verify webhook signatures and use the Refund status to confirm `succeeded` or `failed`. A failed refund returns the amount to the merchant's Stripe balance, which requires the merchant to refund the customer by another method.
+ 
+-**Statement descriptor**: ignored — `STRIPE PAYMENTS SINGAPORE PTE. LTD.` always shown (cannot customize).
++Stripe attributes low fraud risk to payment authentication in a participating app. Its guides say PayNow has no standard dispute or chargeback process and no Stripe balance debits from such disputes. See May lines 97–101 and 129–131, and November lines 76–103.
+ 
+-**No disputes** — QR authentication prevents chargebacks.
++## Product and integration support
+ 
+-**Billing**: supports subscriptions and invoices via `send_invoice` collection method only (no auto-charge).
++The November product matrix lists full-page and embedded Checkout, Payment Links, Payment Element and in-app payments, plus Checkout Sessions, Payment Intents, Connect, Billing, Invoicing and Terminal. It excludes Express Checkout Element, Payment Method Messaging Element, Managed Payments, Customer Portal, and Radar. PayNow is single-use. Checkout excludes setup and subscription modes, and the guide excludes SetupIntents, `setup_future_usage`, off-session and recurring payments. The guide lists manual, partial, multi- and overcapture as unsupported, along with the stated authorization adjustments.
+ 
+-**Prohibited categories**: Petroleum and Petroleum Products, Fuel Dealers, Service Stations, Automated Fuel Dispensers.
++Billing supports PayNow on invoices generated by subscriptions or one-off invoices through `send_invoice`. Customers pay the invoice rather than being charged automatically. Both dated guides require PayNow to be listed manually for Terminal. The November guide labels Terminal support public preview.
+ 
+-**Connect**: Direct, Destination, Separate charges and transfers. Capability: `paynow_payments`. Must set correct MCC for connected accounts.
++The separate [[source-stripe-paynow-accept-payment|acceptance guide]] covers its own Checkout and Direct API procedures. The overview's Payment Element listing is product-scope evidence. See May lines 64–95 and 117–121, and November lines 60–74 and 105–151.
+ 
+-**Product support**: Connect, Checkout (not subscription/setup mode), Payment Links, Elements (not Express Checkout Element), Subscriptions (`send_invoice`), Invoicing (`send_invoice`), Terminal.
++## Connect and statement information
++
++Direct, destination, and separate charges and transfers are supported. The platform enables PayNow and requests `paynow_payments` for connected accounts accepting it. May describes setting correct MCCs for Express or non-Stripe-hosted Dashboards. November describes that requirement for connected accounts without the full Stripe Dashboard. The May guide relates the merchant of record to the Stripe account authorized to create payments with a particular PaymentMethod. November explicitly connects charge type, merchant of record and the platform or connected-account merchant name in the PayNow website or app flow.
++
++On the bank statement and in bank or app payment details, the customer sees `STRIPE PAYMENTS SINGAPORE PTE. LTD.`, the amount and a Stripe-generated reference. Stripe ignores a customized PaymentIntent `statement_descriptor`. Retrieve the reference from `charge.payment_method_details.paynow.reference`. This statement information and the Connect merchant name describe different surfaces. See May lines 109–111 and 142–160, and November lines 153–161 and 201–207.
++
++## Related Pages
++
++- [[stripe]] — provider overview
++- [[stripe-real-time-payments#PayNow Details|PayNow in Stripe real-time payments]]
++- [[source-stripe-paynow-accept-payment]] — Checkout and Direct API acceptance
++- [[source-stripe-terminal-additional-payment-methods]] — separate Terminal integration guidance
+ 
+ ## Raw Sources
+ 
+-- [[stripe-paynow-2025]] — verbatim webpage content (160 lines); fixed `*webhook*` ×1, `*subscriptions*` ×1, `*invoices*` ×1, `*Connect*` ×1
++- [[raw/stripe-payments-paynow-2026-11-07]] — November 7, 2026 full PayNow overview
++- [[raw/stripe-paynow-2025]] — May 6, 2026 full PayNow overview, including dated pricing

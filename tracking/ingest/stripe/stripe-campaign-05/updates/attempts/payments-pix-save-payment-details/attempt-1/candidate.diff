@@ -1,0 +1,80 @@
+--- wiki/sources/source-stripe-pix-save-payment-details.md
++++ tracking/ingest/stripe/stripe-campaign-05/updates/attempts/payments-pix-save-payment-details/attempt-1/candidate.md
+@@ -2,45 +2,55 @@
+ title: "Stripe: Save Payment Details with Pix"
+ type: source
+ date_ingested: 2026-05-06
++date_updated: 2026-11-22
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/payments/pix/save-payment-details"
+ raw_files:
+   - "stripe-pix-save-payment-details-2025.md"
+ tags: [stripe, real-time-payments, pix, brazil, brl, setup-intent, mandates, pix-automatico, recurring, off-session]
+ ---
+ 
+-## Summary
++## Overview
+ 
+-Guide for saving Pix payment details for recurring use via Checkout and Direct API. Requires Pix Automático mandate. Uses Pix-specific JS methods: `stripe.confirmPixSetup()` and `stripe.confirmPixPayment()`. QR code data exposed via `next_action.pix_display_qr_code`.
++The May 6, 2026 guide describes saving Pix details through hosted Checkout or the Direct API. Recurring use requires a customer-authorized Pix Automático mandate. Attach the PaymentMethod to the object representing the customer, either a Customer or a customer-configured Account. The May guide describes Accounts v2 as generally available for Connect users and in public preview for other Stripe users, with a preview version required for enrollees. The November 7, 2026 capture provides navigation to the two variants.
+ 
+-## Key Details
++## May setup and payment paths
+ 
+-**Saving Pix requires Pix Automático mandate** — must specify `mandate_options` (at minimum `amount` and `payment_schedule`) in `payment_method_options.pix`. Mandate can be revoked by customer in banking app → Stripe sends `mandate.updated` → bring customer back on-session.
++| Path | Save without charging | Pay and save |
++| --- | --- | --- |
++| Hosted Checkout | Create the Session in `setup` mode and send the customer to the returned Session URL. When they complete Checkout and authorize in their banking app, the SetupIntent succeeds and Checkout attaches the saved method. | Create a `payment` mode Session with `payment_method_options.pix.setup_future_usage: 'off_session'`. Payment and bank-app mandate authorization precede saving and attachment. |
++| Direct API | Create a SetupIntent server-side and call `stripe.confirmPixSetup()` with the SetupIntent client secret and `return_url`. Verify the SetupIntent on return. The setup can succeed and attach the method after customer authorization without an initial charge. | Set `setup_future_usage: 'off_session'` on PaymentIntent creation. Call `stripe.confirmPixPayment()` with that Intent's client secret and `return_url`. Verify the PaymentIntent on return. Payment success and bank-app mandate authorization precede saving the method. |
+ 
+-**Two integration paths**: Checkout and Direct API (no Elements path).
++The Direct API examples collect name, email and `tax_id` (CPF for an individual or CNPJ for a business). The stated Brazilian government tax-ID requirement applies to cross-border transactions. React's Elements provider wiring belongs to the Direct API variant. See May lines 27–41, 72–145, 222–278, 351–380, 453–542 and 563–689.
+ 
+-**Checkout paths**:
+-- **Save without charging** (`mode: 'setup'`): creates SetupIntent; customer authorizes mandate; PaymentMethod attached to Customer
+-- **Save while charging** (`mode: 'payment'` + `setup_future_usage: 'off_session'`): charges first payment and saves for future
++The examples put `amount` and `payment_schedule` in `payment_method_options.pix.mandate_options`, and the Direct API prose tells implementers to provide Pix Automático mandate options. The May 6 [Pix Automático customization guide](https://docs.stripe.com/payments/pix/pix-automatico) lists defaults of 400 BRL and monthly. The May 13 Direct Subscriptions API guide makes the options optional for that route and shows an amount-only configuration. These are route-specific instructions, examples and defaults. See May save-guide lines 76–108, 248–278 and 351–380, customization lines 53–67, and subscription guide lines 688–722.
+ 
+-**Direct API — SetupIntent**: `stripe.confirmPixSetup(clientSecret, { payment_method: { billing_details: { name, email, tax_id } }, return_url })`. Returns `next_action.pix_display_qr_code`.
++## QR instructions and outcome
+ 
+-**Direct API — PaymentIntent**: `stripe.confirmPixPayment(clientSecret, { payment_method: { billing_details: { name, email, tax_id } }, return_url })`. Same `next_action` structure.
++Stripe.js can display the instructions. If the merchant sets `handleActions: false` for manual display, read `next_action.pix_display_qr_code` on the matching Intent. The May examples show the EMV copy-and-paste value `data`, QR images `image_url_svg` and `image_url_png`, expiration `expires_at` and `hosted_instructions_url`. Displaying or scanning the QR and returning to the site are intermediate steps. Check the matching Intent status to determine the setup or payment outcome. See May lines 563–803.
+ 
+-**`next_action.pix_display_qr_code` fields**:
+-- `data` — Pix copy-paste string (EMV)
+-- `image_url_svg`, `image_url_png` — QR code images
+-- `expires_at` — expiration unix timestamp
+-- `hosted_instructions_url` — Stripe-hosted QR page
++## Later payment, retry and revocation
+ 
+-Use `handleActions: false` to render QR code manually instead of Stripe's modal.
++Create and confirm a separate PaymentIntent for the customer with the saved PaymentMethod ID. Set `off_session: true` when the customer is outside checkout. The May guide says Stripe retries failures unrelated to a mandate violation. After exhausted retries, bring the customer back on-session for a new payment.
+ 
+-**Off-session recurring charge**: `PaymentIntents.create({ payment_method, off_session: true, confirm: true })`.
++The Pix scheme limits charges to once per cycle specified by the mandate's `payment_schedule`. Bring the customer back on-session for an add-on that requires a further charge in that cycle. If the customer revokes the Pix mandate in their banking app, Stripe sends `mandate.updated`. Bring the customer back on-session to create a new mandate. See May lines 147–168 and 805–870.
+ 
+-**Test email scenarios for save/recurring** (extend one-time scenarios):
+-- `succeed_mandate_expire_payments_immediately@*` — mandate created; recurring payments expire immediately
+-- `succeed_mandate_expire_payments_with_delay@*` — mandate created; recurring payments expire after 3 minutes
+-- `succeed_immediately@*` — mandate created; recurring payments succeed immediately
++## Test boundaries
++
++Use the test QR simulation to authorize or expire a test attempt. In the live flow the customer needs a Brazilian bank account with Pix enabled. The May test email scenarios include an active mandate with later payments expiring immediately or after three minutes, and a separate immediate-success case. See May lines 170–201 and 829–860 for the fixture strings and webhook outcomes.
++
++## Related Pages
++
++- [[stripe-real-time-payments]] — Pix setup and related payment routes
++- [[stripe-pix]] — Pix Automático and subscription integration scopes
++- [[source-stripe-pix-automatico]] — mandate customization and retries
++- [[source-stripe-subscriptions-pix]] — separately scoped billing routes
++- [[stripe]] — Stripe company page
+ 
+ ## Raw Sources
+ 
+-- [[stripe-pix-save-payment-details-2025]] — verbatim webpage content (870 lines); fixed `*webhook*` ×14 (approx), `*subscription*` ×1, `*client secret*` ×2
++- [[raw/stripe-pix-save-payment-details-2025|May 6, 2026 full Pix save-payment-details guide]] — 870 lines with the original Markdown formatting fixes
++
++## Related raw API references
++
++- [[raw/stripe-payments-pix-save-payment-details-2026-11-07|November 7, 2026 Pix save-payment-details variant index]] — Checkout and Direct API navigation

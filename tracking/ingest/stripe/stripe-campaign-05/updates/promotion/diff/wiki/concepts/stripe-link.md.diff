@@ -1,0 +1,40 @@
+--- wiki/concepts/stripe-link.md
++++ wiki/concepts/stripe-link.md
+@@ -43,7 +43,7 @@
+ 
+ ## Link Payment Methods (US-only)
+ 
+-Link automatically presents alternative PMs — [[stripe-instant-bank-payments|Instant Bank Payments]], Klarna, Pix, UPI, Stablecoins — with zero integration. Link handles all routing.
++In an existing Link integration for a US Stripe account, Link automatically presents eligible alternative funding, including [[stripe-instant-bank-payments|Instant Bank Payments]], Klarna, Pix, UPI and stablecoins. See [[source-stripe-link-payment-methods]] for dated funding groups, eligibility and settings.
+ 
+ **Klarna on Link**: For eligible US Link customers in Payment Links, Stripe-hosted Checkout and Payment Element. Turning on Link enables Klarna subject to eligibility. Disable it in Link settings under **Pay later with Klarna**. The May and November guides describe immediate net credit to the merchant’s Stripe account after issuer authorization, without waiting for Klarna installments. Express Checkout lists Klarna and Link as separate buttons. See [[source-stripe-klarna-on-link]] for the funding, UI and sandbox test boundaries.
+ 
+@@ -62,7 +62,7 @@
+ - New: email → PM selected → Link signup + auth → instant confirmation → details saved cross-merchant
+ - Returning: auto-detected via email/phone/browser cookie → OTP → autofill saved details + shipping
+ 
+-**Disabling**: must turn off Link entirely (removes accelerated checkout + returning customer benefits). Exception: BNPL methods can be configured individually on Link settings page.
++**Disabling**: The separate November 2026 US funding guide says disabling methods in Link Groups 1–3 requires turning off Link, which removes accelerated checkout for cards and other saved methods and removes returning-customer benefits. The May 8, 2026 US funding capture separately describes individual BNPL settings. See [[source-stripe-link-payment-methods#Customer experience and settings]].
+ 
+ > Enabling a PM outside Link disables its Link interface — customers can't save details for faster checkout.
+ 
+@@ -86,7 +86,7 @@
+ 
+ **Versioned request boundary.** Checkout Session Create on `2026-09-30.endive` rejects writable `payment_method_types` with HTTP 400. Use the applicable dynamic method or `allowed_payment_method_types` request route, and inspect the computed `payment_method_types` response. The affected PaymentIntent and SetupIntent request fields and deferred Elements options have separate scopes. See [[source-stripe-checkout-link]] and [[source-stripe-link-payment-integrations]].
+ 
+-**Domain registration.** The separate [[source-stripe-pmd-registration|registration guide]] covers Link in Elements and the embeddable Checkout form. The November Link with Checkout capture omits May’s unqualified registration statement.
++**Domain registration.** The separate [[source-stripe-pmd-registration|registration guide]] covers registering each domain and subdomain displaying Link in Elements and the embeddable Checkout form in May 2026. Its November lead retains the UI scope and points to Dashboard and API variants. The November Link with Checkout capture omits May’s unqualified registration statement.
+ 
+ **PaymentMethod type and pricing.** Link as a payment method returns `PaymentMethod.type=link`. The eligible card-specific path returns `PaymentMethod.type=card` with `card.wallet.type=link`. The Checkout guide compares Link pricing with other card payments. See [[source-stripe-checkout-link#Funding, pricing and settlement|Checkout Link funding and pricing]] for agreement-based Link Group fees and the blended rate and IC+ limits of Link as a payment method.
+ 
+@@ -176,8 +176,8 @@
+ 
+ - [[source-github-stripe-js]] - version-qualified Link Signup beta contract at 9.16.0
+ 
+-- [[source-stripe-link]] — two PM type paths (link vs card+wallet), Instant Bank Payments exclusive, Thailand/Brazil Payment Element caveat
+-- [[source-stripe-link-payment-methods]] — Link payment methods (US-only): LPMs, zero integration, 5 eligibility criteria, customer flow, disabling rules
++- [[source-stripe-link]] — May and November 2026 general Link wallet overviews cover integration and eligibility outside India, with separate Thailand and Brazil Payment Element restrictions.
++- [[source-stripe-link-payment-methods]] — US Link funding guides for an existing Link integration, with session eligibility, Dashboard labels, Charge group fields and dated settings.
+ - [[source-stripe-klarna-on-link]] — eligible US Link customers in Payment Links, Hosted Checkout and Payment Element, issuer-authorized net credit to the Stripe account, sandbox fixtures
+ - [[source-stripe-pix-on-link]] — May and November 2026 captures: eligible US sellers, BRL presentment with dated minimums, private-preview requests, Ebanx and customer-paid IOF, limited disputes, and 90-day refunds
+ - [[source-stripe-stablecoins-on-link]] — Stablecoins on Link eligibility, November access-interest form, supported surfaces, USD Stripe-balance settlement and original-wallet refunds

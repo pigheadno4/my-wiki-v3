@@ -1,0 +1,71 @@
+--- wiki/sources/source-stripe-wallets.md
++++ wiki/sources/source-stripe-wallets.md
+@@ -2,38 +2,51 @@
+ title: "Stripe: Wallets Overview"
+ type: source
+ date_ingested: 2026-05-07
++date_updated: 2026-11-22
+ original_format: webpage
++canonical_url: https://docs.stripe.com/payments/wallets
+ raw_files:
++  - "stripe-payments-wallets-2026-11-07.md"
+   - "stripe-wallets-2025.md"
+-tags: [stripe, wallets, alipay, amazon-pay, apple-pay, cash-app, google-pay, grabpay, link, mb-way, mobilepay, paypal, paypay, revolut-pay, samsung-pay, satispay, stablecoins, vipps, wechat-pay]
++tags: [stripe, wallets, alipay, amazon-pay, apple-pay, cash-app, google-pay, grabpay, link, mb-way, mobilepay, paypal, paypay, revolut-pay, samsung-pay, satispay, stablecoins, twint, vipps, wechat-pay]
+ ---
+ 
+ ## Summary
+ 
+-Hub page for Stripe's 17 wallet payment methods. Covers two wallet types (saved credential vs stored balance), subscription caveats, and product/API support matrices. Samsung Pay is Terminal-only; MoMo/GCash on waitlist.
++The May 7 and November 7, 2026 [[stripe|Stripe]] Wallets guides describe payments using a saved tokenized card or bank credential, or a balance with the wallet provider. The wallet typically authenticates the customer and passes payment information or a token to the merchant or processor. In the illustrated mobile and web flows, a customer selects the wallet, authenticates using device credentials or the wallet app, and sees a completion notification. Some web flows use a QR code and a mobile device. Authorization actions and actual payment results have method-specific rules. See May lines 8–13 and 36–62 and November lines 9–14 and 49–73.
+ 
+-## Key Details
++Before enabling a wallet, check country, device and online or in-person coverage, and the refund and dispute process for the route. For recurring use, Stripe says to confirm whether the method can create a token or billing agreement, support merchant-initiated charges, continue after a card update and meet retry and dunning requirements. The MoMo and GCash preview waitlist covers interest in one-time and recurring payments for customers in Vietnam and the Philippines. May mentions the waitlist. November adds an email request form. Submission establishes a request for access (May lines 15–34, November lines 16–47).
+ 
+-**17 wallet methods**: Alipay, Amazon Pay, Apple Pay, Cash App Pay, Google Pay, GrabPay, Link, MB WAY, MobilePay, PayPal, PayPay, Revolut Pay, Samsung Pay, Satispay, Stablecoins/crypto, Vipps, WeChat Pay.
++## Wallet matrix changes
+ 
+-**Waitlist**: MoMo (Vietnam) and GCash (Philippines) — not yet available.
++The May product matrix has 17 rows covering Alipay, Amazon Pay, Apple Pay, Cash App Pay, Google Pay, GrabPay, Link, MB WAY, MobilePay, PayPal, PayPay, Revolut Pay, Samsung Pay, Satispay, stablecoins and crypto, Vipps, and WeChat Pay. November adds TWINT as the 18th product row and adds Samsung Pay and TWINT API rows. Read each cell with the dated header, footnotes and method guide. See May lines 68–88 and 94–113 and November lines 79–100 and 106–127.
+ 
+-**Two wallet types**: (1) saved payment credential (tokenized card/bank); (2) stored wallet balance.
++- **Samsung Pay.** May lists Terminal as the only supported product and has no API row. November retains Terminal, adds Checkout excluding subscription and setup modes, and lists `samsung_pay` with PaymentIntents and required redirect. The November hub API row excludes SetupIntents, manual capture and saving. The captured [[raw/stripe-payments-samsung-pay-accept-a-payment-2026-11-07|South Korea acceptance page]] links Checkout and Direct API variants. The separate [[raw/stripe-changelog-dahlia-2026-07-29-samsung-pay-and-payco-setup-future-usage-none-only-2026-11-07|Dahlia changelog]] documents `setup_future_usage=none` on scoped PaymentIntent and Checkout Session fields to indicate the method will not be saved. See November hub lines 93, 100 and 120.
++- **TWINT.** The November hub lists `twint`, PaymentIntents, SetupIntents, `setup_future_usage` and redirect, with manual capture unsupported. Its product row includes Billing-related routes and excludes Express Checkout Element and Terminal. The [[source-stripe-twint|separate TWINT method guide]] describes an authorization in the TWINT app when setting up reusable, off-session payments through a SetupIntent or a PaymentIntent configured for future use. One-time TWINT payments need no mandate. See November hub lines 96 and 123 and method guide lines 188–198 and 212–236.
++- **WeChat Pay.** The May Wallets product table marks Terminal N/A (online payments only) and Subscriptions supported with `send_invoice`. Its API table shows no redirect required and no SetupIntents or `setup_future_usage`. November lists redirect, Terminal outside Japan, Subscriptions in private preview with its `send_invoice` footnote, and SetupIntents and `setup_future_usage` in private preview. The [[source-stripe-wechat-pay|same-date method guide]] lists standard API negatives for SetupIntents, `setup_future_usage` and off-session, and describes a separate off-session-only recurring private preview. It requires manual Terminal setup and excludes Japan. Desktop checkout stays on the QR screen, while supported native mobile routes open WeChat Pay and return to the merchant app. See May hub lines 86–88 and 111, November hub lines 98–100 and 125–127, and method guide lines 118–122 and 152–199.
++- **MB WAY.** May marks Mobile Payment Element, Subscriptions and Invoicing unsupported. November adds all three, with `send_invoice` for Subscriptions and Invoicing, and retains Express Checkout Element support. The [[source-stripe-mb-way|same-date method guide]] lists in-app payments and marks Express Checkout Element unsupported. It limits Checkout to one-time payments and says customers pay each `send_invoice` invoice on its hosted page. The hub and method guide leave Express Checkout Element support unresolved across these scopes. Invoice payment is separate from saving and automatic recurrence. See May hub line 77, November hub lines 88, 100 and 115, and method guide lines 104–130 and 143–147.
++- **Alipay.** The hub changes Invoicing from invite only to supported and redirect from no to yes. Subscriptions remain invite only. The [[source-stripe-alipay|November method profile]] documents one-time payments through Checkout and the Hosted Invoice Page, and separately requires invite-only preview and individual Alipay approval for recurring Invoicing, Checkout subscription or setup and saving. The November hub marks Mobile Payment Element supported. The same-date method profile explicitly says its unsupported in-app cell refers to Mobile Payment Element (PaymentSheet), while documenting custom iOS, Android and React Native integrations. Preserve the disagreement for PaymentSheet. See May hub lines 70 and 96, November hub lines 79–81 and 108, and method profile lines 144–170.
++- **Satispay.** Both hub product tables mark Subscriptions, Invoicing and Customer Portal unsupported. Satispay has no November hub API row. The [[source-stripe-satispay|same-date method guide]] lists Billing, Invoicing, Customer Portal, recurring use, SetupIntents, PaymentIntents with `setup_future_usage` and off-session payments. Specific product and integration availability remains unresolved. See May hub line 83, November hub lines 79 and 94 and 106–125, and method guide lines 79–86 and 184–208.
+ 
+-**Subscription caveats**: many wallets have limited recurring support — verify token/billing agreement creation, MIT support, card-update continuity, retry/dunning behavior before committing.
++## Stablecoin capability references
+ 
+-**Notable product support**:
+-- Samsung Pay: **Terminal only** — no online product support
+-- Apple Pay / Google Pay: no explicit API enum; not displayed for Indian IPs; Terminal supported
+-- Link: Payment Element doesn't support in Brazil or India
+-- Alipay: subscriptions/invoicing invite-only
+-- PayPay Connect: requires invite
++The May and November Wallets hubs show `crypto`, PaymentIntents and redirect. The November product row labels Subscriptions invite only, and Invoicing and Customer Portal supported. The November hub API row labels SetupIntents and `setup_future_usage` invite only and manual capture unsupported (lines 79, 95, 106 and 122). The dedicated stablecoin product table in the [[source-stripe-payment-method-support|same-date cross-method reference]] lists Subscriptions and Customer Portal in private preview and Invoicing supported with the `send_invoice` subscription footnote (raw lines 169–173). Its dedicated stablecoin API row lists SetupIntents and `setup_future_usage` in private preview and manual capture supported (raw lines 305–307). The same reference also has separate wallet rows that retain invite-only Subscriptions and supported Customer Portal (raw line 204), and invite-only SetupIntents and future use and unsupported manual capture (raw line 338). The [[source-stripe-stablecoin-payments|same-date method guide]] lists manual capture unsupported and describes Billing support for invoices and subscriptions (raw lines 47–49 and 157–159). These are three documented scopes. Actual account access, recurring behavior and capture remain unverified by these captures.
+ 
+-**API support highlights** — SetupIntents + setup_future_usage supported by:
+-- Amazon Pay (`amazon_pay`), Cash App (`cashapp`), Link (`link`), PayPal (`paypal`), Revolut Pay (`revolut_pay`)
++## Other retained matrix qualifications
+ 
+-**Stablecoins/crypto** (`crypto`): SetupIntents invite-only; no manual capture; redirect required.
++- **Apple Pay and Google Pay.** Both hub API tables list PaymentIntents, SetupIntents, manual capture and future use without separate API enums. Both product tables list Terminal. May's footnote says Stripe does not display either wallet for Indian IP addresses. November instead says India-based Stripe accounts do not support Google Pay. November removes Apple's marker, leaving Apple Pay access unverified by that omission. The Apple Pay embedded Checkout footnote requires Safari 17 or later and iOS 17 or later.
++- **Link and PayPay.** Both hubs exclude Link in the Payment Element in Brazil and India and direct PayPay Connect users to request an invite.
++- **Saving and invoicing.** Both hub API tables list SetupIntents and `setup_future_usage` for Amazon Pay, Cash App Pay, Link, PayPal and Revolut Pay. Preserve separate footnotes for Checkout modes, saving during payment and `send_invoice` where marked. The API table's general footnotes describe which methods support both `on_session` and `off_session` future use and which redirect flows may require `return_url`.
++
++See May product footnotes at line 88 and API footnotes at line 113, and November product footnotes at line 100 and API footnotes at line 127.
++
++## Related Pages
++
++- [[stripe]] — provider overview
++- [[stripe-wallets]] — Wallets concept and method routes
++- [[source-stripe-payment-method-support]] — cross-method product and API evidence
+ 
+ ## Raw Sources
+ 
+-- [[stripe-wallets-2025]] — verbatim webpage content (113 lines); fixed `*subscriptions*` ×1, `*confirm*` ×1; 6 SVG flow diagrams downloaded to assets/
++- [[raw/stripe-payments-wallets-2026-11-07]] — November 7, 2026 full Wallets overview and matrices
++- [[raw/stripe-wallets-2025]] — May 7, 2026 full Wallets overview and representative mobile and web illustrations

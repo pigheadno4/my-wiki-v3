@@ -1,0 +1,145 @@
+{
+  "job_id": "payments-upi-set-up-future-payments",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-upi-set-up-future-payments-2026-11-07.md",
+  "raw_sha256": "4712c44f60560d48382b0ce99182a54e0355e01b93649c7887553aca656f3c76",
+  "prior_raw_path": "raw/stripe-upi-set-up-future-payments-2025.md",
+  "prior_raw_sha256": "69eb6f47924ab149153f01b084a4d3558c84bba664590c8b934eb16a8a2297ca",
+  "source_targets": [
+    "wiki/sources/source-stripe-upi-set-up-future-payments.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-upi-set-up-future-payments.md": "dc18d691049dce9d8c7e68fbfcb74b061e258d42709d221a8d74f5d63c9fbe5f"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-upi-set-up-future-payments-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-upi-set-up-future-payments-2025.md": [
+      {
+        "start": 1,
+        "end": 571
+      }
+    ],
+    "wiki/sources/source-stripe-upi-set-up-future-payments.md": [
+      {
+        "start": 1,
+        "end": 33
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/0225dea46000b1136b1abf8c/content.diff": [
+      {
+        "start": 1,
+        "end": 573
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 22
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 362,
+        "end": 372
+      },
+      {
+        "start": 745,
+        "end": 751
+      }
+    ],
+    "wiki/concepts/stripe-real-time-payments.md": [
+      {
+        "start": 119,
+        "end": 151
+      },
+      {
+        "start": 195,
+        "end": 208
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Learn how to save UPI details and charge your customers later.",
+      "location": "raw/stripe-payments-upi-set-up-future-payments-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-upi-set-up-future-payments-2026-11-07.md:11"
+    },
+    {
+      "text": "[Checkout](https://docs.stripe.com/payments/upi/set-up-future-payments.md?payment-ui=checkout)",
+      "location": "raw/stripe-payments-upi-set-up-future-payments-2026-11-07.md:13"
+    },
+    {
+      "text": "[Direct API](https://docs.stripe.com/payments/upi/set-up-future-payments.md?payment-ui=direct-api)",
+      "location": "raw/stripe-payments-upi-set-up-future-payments-2026-11-07.md:14"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "You need permission to save your customer\u2019s payment method for future use.",
+      "location": "raw/stripe-upi-set-up-future-payments-2025.md:14"
+    },
+    {
+      "text": "Any on-session UPI payment, where you\u2019re actively in your checkout flow, redirects you to the UPI app for confirmation, even if you\u2019re using a saved payment method.",
+      "location": "raw/stripe-upi-set-up-future-payments-2025.md:121"
+    },
+    {
+      "text": "The `off_session` value must also be set to true if the customer isn\u2019t in a checkout flow for this PaymentIntent.",
+      "location": "raw/stripe-upi-set-up-future-payments-2025.md:466"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The 2026-11-07 canonical capture only supplies two variant links and a purpose statement (new 5-14). May 6, 2026 is the actual fetch date of the full paired guide, despite its filename. The May capture embeds both Checkout and Direct API variants (old 2, 8-14, 109-121), so the raw delta is navigation-only and proves no removal or current runtime behavior.",
+    "May says the merchant needs customer consent to save the method and arranges a mandate for future use. The merchant server attaches the method to a customer-configured Accounts v2 Account or Customers v1 Customer and distinguishes customer_account from customer where shown in Direct API requests. May describes Accounts v2 as generally available for Connect and public preview requiring a preview version for other Stripe users (old 29-44 and 136-148).",
+    "Checkout mode setup creates a Session server-side, redirects the customer to Stripe's hosted URL for authorization and illustrates mobile redirect or desktop QR in testing. This is saving through Checkout, not an assertion of a charge. The May Direct API has a SetupIntent with usage on_session or off_session, client secret transport and confirmUpiSetup with return_url and online customer acceptance, distinct from confirming an INR PaymentIntent with setup_future_usage=off_session to initiate payment and save (old 75-107, 180-248, 251-363, 365-462).",
+    "May reuse creates and confirms a new PaymentIntent using the same PaymentMethod ID from the previous SetupIntent or PaymentIntent. Use off_session=true when the customer is outside checkout. The on-session path still redirects to the UPI app even for a saved method. May's manual handling uses requires_action and hosted instructions or QR, and detaching a reusable PaymentMethod sends mandate.updated and payment_method.detached (old 119-121, 464-504, 506-571).",
+    "Root index 7 links Stripe index. Provider index 366-369 and 748 lead to the source, UPI companion routes and Stripe Real-Time Payments concept. That concept's lines 125-145 and 199-205 contain UPI context and link to the source, while current source ends with only the raw link at 31-33. Preserve the inward route and restore a reciprocal concept link in the later correction."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "Preserve all old May 6 Checkout and Direct API evidence with real capture date and raw provenance. Retain customer-save permission and mandate, object identity and Accounts v2 preview boundary, hosted setup authorization, Direct SetupIntent client confirmation, charge-plus-save and later off-session PaymentIntent, on-session redirect, manual requires_action, and detach events.",
+    "The two November URLs are variant navigation and the linked pages were not fetched or read for this job. Retain the May flow as historical, with its response-path example discrepancy and source accuracy fixes distinguished from the raw delta."
+  ],
+  "conflicts": [
+    "Current source 13 and 21-23, concept 143 and Stripe index 368 present a full billing address and every enumerated field as required. The May raw uses name and Indian address fields in the Direct API samples (old 202-248, 383-459 and 519-540), including example line2, without specifying field requiredness. November does not reproduce those examples. Keep the observed sample values distinct from requiredness.",
+    "Current source 19 gives payment_method_types ['upi'] as the Checkout setup example, while the pinned Checkout request specifies ['card','upi']; the guide then instructs the customer to select UPI and authorize it. The sample does not establish exclusivity or forbid a UPI-only list (old 75-107).",
+    "Source 23 says the PaymentIntent path charges immediately and saves for future use. May distinguishes initiating a confirm=true INR payment intended to charge in the current flow from a completed payment, and separately describes the requires_action redirect/QR path (old 365-375, 383-462, 506-567). Preserve intent purpose and actual payment state separately.",
+    "The May JSON nests image_url_png and image_url_svg under qrcode (old 547-563), while the following prose at 567 omits that nesting. Current source 25 matches the JSON shape. Retain the discrepancy rather than promoting the prose path or asserting a current API schema."
+  ],
+  "unresolved_questions": [
+    "The pinned November index does not establish either linked variant\u2019s content or current behaviors. Neither attached examples nor the November index proves whether line2 or any exact address field is universally mandatory, or that customer authorization, mandate setup or a later charge will succeed."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-real-time-payments.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-upi-set-up-future-payments.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Navigation-only November capture. Separately correct unsupported absolute address requiredness and Checkout request depiction in source 13 and 19-23 and scope PaymentIntent initiation versus final success (old 75-107, 191-248, 373-462, 506-543; new 9-14).",
+        "Restore discoverable consent and mandate, customer-configured Account versus Customer, off-session reuse and separate on-session confirmation boundary. Preserve manual requires_action and date the QR example and its nested shape. Add reciprocal Stripe Real-Time Payments link while retaining May raw (source 25-33, concept 143 and 204, old 14, 29-44, 119-121, 136-148, 180-193, 464-571)."
+      ],
+      "conflicts": [
+        "Current source 13 and 21-23, concept 143 and Stripe index 368 present a full billing address and every enumerated field as required. The May raw uses name and Indian address fields in the Direct API samples (old 202-248, 383-459 and 519-540), including example line2, without specifying field requiredness. November does not reproduce those examples. Keep the observed sample values distinct from requiredness.",
+        "Current source 19 gives payment_method_types ['upi'] as the Checkout setup example, while the pinned Checkout request specifies ['card','upi']; the guide then instructs the customer to select UPI and authorize it. The sample does not establish exclusivity or forbid a UPI-only list (old 75-107).",
+        "Source 23 says the PaymentIntent path charges immediately and saves for future use. May distinguishes initiating a confirm=true INR payment intended to charge in the current flow from a completed payment, and separately describes the requires_action redirect/QR path (old 365-375, 383-462, 506-567). Preserve intent purpose and actual payment state separately.",
+        "The May JSON nests image_url_png and image_url_svg under qrcode (old 547-563), while the following prose at 567 omits that nesting. Current source 25 matches the JSON shape. Retain the discrepancy rather than promoting the prose path or asserting a current API schema."
+      ],
+      "reason": "November is variant navigation, while the older source summary needs material corrections for prerequisites, unsupported field requiredness and payment state. Date the full May evidence and preserve the concept route."
+    }
+  ],
+  "answers": {
+    "Q1": "The November 7 capture at https://docs.stripe.com/payments/upi/set-up-future-payments is a Checkout and Direct API variant index. It states the goal of saving UPI for future use but gives no prerequisites or state transitions itself (new raw lines 5-14). The May 6 guide requires customer permission for saving and describes arranging a mandate up front, with a customer-configured Account or Customer for later reuse. Its server creates Checkout setup Sessions for hosted customer authorization, or a SetupIntent that the client confirms with confirmUpiSetup, or a confirm=true INR PaymentIntent intended to pay and save. Reuse calls a new PaymentIntent with the same PaymentMethod ID and off_session=true outside checkout. The on-session path redirects to the UPI app even with a saved method, the manual PaymentIntent can require action, and detach emits mandate.updated and payment_method.detached. Setup or return alone establishes no completed payment (old raw lines 12-44, old raw lines 75-121, old raw lines 180-248, old raw lines 341-375 and old raw lines 464-571). source-stripe-upi-set-up-future-payments.md retains core paths but omits the consent and object boundary and overstates address requiredness and immediate charge.",
+    "Q2": "For https://docs.stripe.com/payments/upi/set-up-future-payments the November transition from a full inline May guide to two links is navigation-only (old raw lines 8-14 and old raw lines 109-121, new raw lines 5-14). This does not verify changed or discarded UPI behavior. Retain the May 6, 2026 evidence with actual fetch date, Accounts v2 public-preview condition outside Connect, customer consent, regular on-session redirect, and distinct off-session reuse and detach events. In source-stripe-upi-set-up-future-payments.md correct the independently pre-existing Checkout example, address requiredness and state wording. May illustrates an Indian billing address and line2 without stating universal requiredness, and the Checkout sample selects UPI within a card-plus-UPI list. Preserve the nested qrcode response object while noting the old prose path discrepancy (old raw lines 75-107, old raw lines 191-248 and old raw lines 542-571). Keep the raw route and restore a reciprocal Stripe Real-Time Payments concept link. The November variants remain navigation."
+  }
+}

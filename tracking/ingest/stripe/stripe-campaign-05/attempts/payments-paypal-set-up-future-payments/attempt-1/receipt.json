@@ -1,0 +1,162 @@
+{
+  "job_id": "payments-paypal-set-up-future-payments",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-paypal-set-up-future-payments-2026-11-07.md",
+  "raw_sha256": "cc46cd2ada11764e9f78f5995f330378a71c97ba0b27096eb525bf731aa0496e",
+  "prior_raw_path": "raw/stripe-paypal-set-up-future-payments-2025.md",
+  "prior_raw_sha256": "d41022ff99f5ca72d59b126740cf25c464b3795167cef02abb26752b3e703fc5",
+  "source_targets": [
+    "wiki/sources/source-stripe-paypal-set-up-future-payments.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-paypal-set-up-future-payments.md": "8f9bc9cd912942557dee6a65e317c7105d0cab8d63ab6d63ef9e2c545644477f"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-paypal-set-up-future-payments-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "raw/stripe-paypal-set-up-future-payments-2025.md": [
+      {
+        "start": 1,
+        "end": 1124
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/af29defa87831d604779cd9c/content.diff": [
+      {
+        "start": 1,
+        "end": 1129
+      }
+    ],
+    "wiki/sources/source-stripe-paypal-set-up-future-payments.md": [
+      {
+        "start": 1,
+        "end": 51
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 380,
+        "end": 387
+      },
+      {
+        "start": 793,
+        "end": 799
+      }
+    ],
+    "wiki/concepts/stripe-paypal.md": [
+      {
+        "start": 1,
+        "end": 68
+      }
+    ],
+    "wiki/concepts/stripe-wallets.md": [
+      {
+        "start": 161,
+        "end": 211
+      },
+      {
+        "start": 380,
+        "end": 418
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 604,
+        "end": 614
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Learn how to save PayPal details and charge your customers later.",
+      "location": "raw/stripe-payments-paypal-set-up-future-payments-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-paypal-set-up-future-payments-2026-11-07.md:11"
+    },
+    {
+      "text": "- [Checkout](https://docs.stripe.com/payments/paypal/set-up-future-payments.md?payment-ui=checkout)",
+      "location": "raw/stripe-payments-paypal-set-up-future-payments-2026-11-07.md:13"
+    },
+    {
+      "text": "- [Direct API](https://docs.stripe.com/payments/paypal/set-up-future-payments.md?payment-ui=direct-api)",
+      "location": "raw/stripe-payments-paypal-set-up-future-payments-2026-11-07.md:14"
+    },
+    {
+      "text": "- [Android](https://docs.stripe.com/payments/paypal/set-up-future-payments.md?payment-ui=mobile&platform=android)",
+      "location": "raw/stripe-payments-paypal-set-up-future-payments-2026-11-07.md:17"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "It usually takes up to five business days to get access.",
+      "location": "raw/stripe-paypal-set-up-future-payments-2025.md:26"
+    },
+    {
+      "text": "Create a Checkout Session in `setup` mode to collect the required information.",
+      "location": "raw/stripe-paypal-set-up-future-payments-2025.md:82"
+    },
+    {
+      "text": "returns to a status of `requires_payment_method`.",
+      "location": "raw/stripe-paypal-set-up-future-payments-2025.md:183"
+    },
+    {
+      "text": "It\u2019s _not required_ when using a PayPal payment method that was previously set up with a SetupIntent or a PaymentIntent with `setup_future_usage`.",
+      "location": "raw/stripe-paypal-set-up-future-payments-2025.md:478"
+    }
+  ],
+  "proposed_disposition": "raw_reference",
+  "findings": [
+    "The November 7, 2026 parent index links Checkout, Direct API, iOS and Android (new raw lines 5\u201317). It provides navigation for the same four routes inlined in the May 7, 2026 capture (old raw lines 18\u201335 and 63\u201382, 248\u2013256, 632\u2013637, 841\u2013849). It provides no variant implementation or change to the payment model.",
+    "The May guide says activation automatically enables recurring payments for most users, subject to PayPal policy and regional or legacy-account restrictions. The manual Dashboard path goes pending and usually takes up to five business days; testing enables recurring by default (old raw lines 18\u201329). Checkout uses a Customer ID and a setup-mode Session. Retrieve the authorized payment method via the Session's SetupIntent and PaymentMethod ID, using a webhook or verified server retrieval when the buyer returns (old raw lines 49\u2013183).",
+    "For May Direct API and mobile, the server creates a PayPal SetupIntent with customer_account (Accounts v2) or customer (Customers v1) and passes its client secret to the client. The web guide uses confirmPayPalSetup and a PayPal billing-agreement redirect, with a server-side requires_action / next_action.redirect_to_url alternative. iOS STPPaymentHandler.confirmSetupIntent and Android PaymentLauncher.confirm with ConfirmSetupIntentParams are separate historical SDK routes (old raw lines 285\u2013386, 505\u2013586, 652\u2013733, 866\u2013912 and 929\u20131018). Checkout's Session success_url differs from the Direct API setup return_url and the iOS sample return URL.",
+    "After successful buyer authorization Stripe emits setup_intent.succeeded; failure emits setup_intent.setup_failed and returns SetupIntent to requires_payment_method. The test steps discuss PaymentIntent outcomes separately. Later off-session charging creates and confirms a PaymentIntent using saved Customer/PaymentMethod IDs and errors if authentication is required. For Direct API on-session confirmation, return_url is conditionally optional with a PaymentMethod previously set up via SetupIntent or PaymentIntent setup_future_usage. For manual server-side on-session confirmation with a saved instrument, Fraudnet (web) or Magnes (mobile) supplies the required risk correlation ID, while Stripe.js has built-in Fraudnet. PayPal-side revocation emits mandate.updated, later charges fail using the saved instrument until it is replaced with one having an active mandate, and detach also revokes the Stripe mandate and calls PayPal to cancel the agreement (old raw lines 181\u2013237, 384\u2013503, 588\u2013630, 1016\u20131061 and 1082\u20131124)."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "Retain the May 7, 2026 date from old raw lines 1\u20134 despite the 2025 filename, and distinguish the November 7, 2026 index (new raw lines 1\u201317). Preserve the old raw and add the November navigation reference for the same canonical URL.",
+    "Preserve Accounts v2 dated availability (Connect generally available; non-Connect public preview; preview users need a preview version) and the separate Customer and customer-configured Account fields in relevant examples. The later off-session examples explicitly show Customer IDs (old raw lines 8\u201314, 285\u2013324 and 388\u2013425). This is not a source of November route or account feature availability.",
+    "Keep distinct setup, charge, agreement and mandate objects/statuses, plus revoke/detach consequences and customer- versus merchant-initiated actions (old raw lines 109\u2013237, 376\u2013386 and 482\u2013503 and 588\u2013630). Preserve the Stripe Wallets summary route (concept lines 197\u2013209 and 410) with a source backlink; the PayPal concept's subscription and mandate sections (lines 20\u201364) provide related guidance and should retain their separate scope."
+  ],
+  "conflicts": [
+    "Source lines 17 and 23 overstate the duration and field assignment. May says pending for usually up to five business days and explicitly identifies payer_id and billing_agreement_id on Mandate, while payer_email and payer_id are on PaymentMethod.paypal. The immediately adjacent table lists the three labels without independently locating all three on Mandate (old raw lines 18\u201329 and 376\u2013382, Stripe PayPal concept lines 50\u201352). The Stripe Wallets concept repeats the same source ambiguity at lines 197 and 201.",
+    "Source line 43 loses line 27's prior-setup qualification when describing on-session confirmPayPalPayment. Distinguish that exception from the requirement in all other cases, including a new on-session PayPal PaymentMethod (old raw lines 427\u2013480). Source line 21's server-side SetupIntent example also needs the required return_url and the requires_action status check retained (old raw lines 505\u2013538).",
+    "The May manual redirect example repeats next_action with a null value and switches the variable name to paymentIntent although its surrounding prose refers to SetupIntent (old raw lines 537\u2013584). The prose's status and next-action checks are the intended flow, and the inconsistent sample should stay visible as dated evidence without proving PaymentIntent object identity."
+  ],
+  "unresolved_questions": [
+    "The November linked variants' implementation, current SDK versions, recurring enablement and merchant account eligibility were not established by the pinned index."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-wallets.md",
+    "wiki/concepts/stripe-paypal.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-paypal-set-up-future-payments.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Date the implementation to May 7 and add the November navigation route. Line 17 should retain 'usually', lines 19\u201321 should preserve authorization failure and requires_payment_method plus the server-side SetupIntent return_url, and lines 27/43 should consistently state the prior-setup exception. Preserve line 35's merchant detach consequences and add the Stripe Wallets reciprocal source link and related Stripe PayPal concept.",
+        "Fix line 23's attribution of payer_email, keeping PaymentMethod and Mandate identities distinct (old raw lines 376\u2013386). This matters for a field lookup and current raw contains no substitute field schema."
+      ],
+      "conflicts": [
+        "The May Direct API field paragraph and adjacent field list must not become a blanket mapping to Mandate. The May manual redirect sample has duplicate next_action and misleading variable name (old raw lines 537\u2013584), while surrounding prose clearly directs inspection of the SetupIntent."
+      ],
+      "reason": "The November index itself is navigation-only. The current source independently needs qualifiers for a field location, enablement timing, and conditions and states in the setup and on-session flows."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/paypal/set-up-future-payments, new raw lines 5\u201317 describe the guide's purpose and link Checkout, Direct API, iOS and Android. The May 7, 2026 implementation in old raw lines 18\u201329, 49\u2013183, 285\u2013386, 388\u2013503 and 505\u2013630 says Stripe automatically enables recurring access when most users activate PayPal, subject to conditional manual enablement. Buyers approve a PayPal billing agreement through Checkout setup mode or a PayPal SetupIntent. The merchant verifies successful authorization through setup_intent.succeeded, while failure emits setup_intent.setup_failed and returns requires_payment_method. The saved PaymentMethod and Customer association enable a later separate PaymentIntent attempt. The buyer can revoke the agreement through PayPal and Stripe emits mandate.updated, after which reuse fails until an active method replaces it. source-stripe-paypal-set-up-future-payments.md captures the overall flow but should distinguish the Mandate IDs from PaymentMethod.paypal details and preserve the on-session prior-setup return_url qualification.",
+    "Q2": "At https://docs.stripe.com/payments/paypal/set-up-future-payments, new raw lines 9\u201317 provide navigation to the same four variants whose May 7, 2026 implementation appears at old raw lines 18\u201329, 63\u2013103, 248\u2013324, 632\u2013733 and 841\u20131018. The November format change establishes no substantive payment behavior change. Keep the May guide and November variant index as separate evidence in source-stripe-paypal-set-up-future-payments.md and preserve the stripe-wallets reciprocal route, with related Stripe PayPal subscription guidance separate. In the May evidence preserve the usually-up-to-five-business-days manual enablement, the dated Accounts v2 preview/version qualification, conditional return_url for on-session confirmPayPalPayment and its separate SetupIntent redirect usage, Fraudnet/Magnes implementation scope, and revoke/detach effects (old raw lines 8\u201329, 376\u2013386, 427\u2013480 and 505\u2013630). Distinguish the Mandate and PaymentMethod payer field locations."
+  }
+}

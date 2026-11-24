@@ -1,0 +1,172 @@
+{
+  "job_id": "payouts-instant-payouts",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Stripe — Instant Payouts for Dashboard Users\"\ntype: source\ndate_ingested: 2026-05-11\ndate_updated: 2026-11-22\noriginal_format: webpage\nraw_files:\n  - \"stripe-payouts-instant-payouts-2026-11-07.md\"\n  - \"stripe-payouts-instant-2026.md\"\n  - \"stripe-payouts-instant-banks-2026.md\"\n  - \"stripe-payouts-instant-advance-funding-2026.md\"\ntags: [stripe, payouts, instant-payouts, liquidity, debit-card, api, daily-limit]\n---\n\n## Summary\n\nThe May 11 and [November 7, 2026 Dashboard user guides](https://docs.stripe.com/payouts/instant-payouts) from [[stripe]] list the same 36 account countries. Eligible Dashboard users can request an Instant Payout at any time, including weekends and holidays, with funds typically settling at the payout destination within 30 minutes. Funds left in the balance follow the standard payout schedule.\n\n## Key Details\n\n- **Account and balance**: Check individual eligibility in the Dashboard. New users are ineligible immediately after joining. Requests require a positive eligible balance and a configured, eligible payout destination.\n- **Request paths**: Use **Pay out** in the Balances Dashboard, the mobile Dashboard app if eligible for both, or the Payouts API.\n- **Daily limits**: Up to 10 Instant Payouts per day and a separate account-specific daily maximum amount shown in the Dashboard. Each payout counts toward the day it was requested, even if it arrives on a subsequent day. Reset times depend on the account region.\n- **Currencies**: Instant Payouts cannot use multi-currency settlement.\n- **Fee**: The November guide says Stripe charges a fee per payout and pre-deducts it from the eligible balance shown. It omits the May 11, 2026 rates of 1% for CA, EU, UK, SG, NO, HK and MY, and 1.5% for US, AU, NZ and AE.\n\n## Funds Eligibility (`instant_available` balance)\n\nThe Balances API reports eligible funds before any payout is requested. A completed card charge can count immediately, including funds pending in the payout schedule window, while ACH and SEPA debits count only after full settlement. The balance covers supported payment methods and local Instant Payout currencies. It includes only funds that become available within roughly six business days, based on the payout schedule.\n\nStripe caps the amount at the remaining daily allowance and pre-deducts the fee. Stripe withholds pending recovery debits and Stripe Capital repayments to prevent negative balances. A positive `instant_available` amount identifies funds eligible to be paid out and does not indicate that a payout has started or arrived.\n\n## API\n\nRead `instant_available` using the Balances API, then request the payout with `method: 'instant'` and the ID of an eligible debit card or bank account as the destination. The May guide shows Node.js and the November guide shows curl with the same request semantics. Both use a debit card in the creation example.\n\n```js\n// Check balance\nconst balance = await stripe.balance.retrieve();\n// balance.instant_available[0].amount\n\n// Create instant payout using an eligible debit card or bank account ID\nawait stripe.payouts.create({\n  amount: 50,\n  currency: 'usd',\n  method: 'instant',\n  destination: eligibleDestinationId,\n});\n```\n\n## Payout Methods by Country\n\n- **US, GB, Euro Area, SE, DK, AU, SG** — debit card or eligible bank account\n- **CA, CZ, HU, NO, PL, RO, NZ, MY, AE** — debit card only\n- **HK** — eligible bank accounts only\n\n## Minimum and Maximum Transaction Amounts\n\nUS USD 0.50–9,999, CA CAD 0.60–9,999, GB GBP 0.40–9,999, Euro Area EUR 0.40–9,999, AU AUD 0.50–9,999, SG SGD 0.50–9,999, HK HKD 5–9,999, NZ NZD 0.50–9,999, MY MYR 2–9,999 and AE AED 2–9,999. The table also lists CZ CZK 10–99,999, DK DKK 5–9,999, HU HUF 200–999,999, NO NOK 5–9,999, PL PLN 2–9,999, RO RON 2–9,999 and SE SEK 5–9,999. Both captures list the same currency amounts.\n\n## Related Pages\n\n- [[stripe-payouts]] — Payouts concept and options comparison\n- [[source-stripe-payouts-next-day]] — Next-Day Settlement is automatic and charges a monthly percentage of the previous month's accelerated charges. The November Next-Day guide gives no rate. Instant Payouts are on demand with a fee per payout.\n- [Instant Payouts for Connect](https://docs.stripe.com/connect/instant-payouts) — separate guidance for marketplaces and platforms\n\n## Raw Sources\n\n- [[raw/stripe-payouts-instant-payouts-2026-11-07|November 7, 2026 Instant Payouts guide]]\n- [[raw/stripe-payouts-instant-2026|May 11, 2026 Instant Payouts guide]] — verbatim Dashboard guide (223 lines)\n- [[stripe-payouts-instant-banks-2026]] — US institution support lookup (8,721 lines; thousands of banks/credit unions)\n- [[stripe-payouts-instant-advance-funding-2026]] — Advance funding mechanics: advance/advance_funding/payout balance transactions, negative balance recovery, multi-day alignment\n",
+  "quotes": {
+    "payouts-instant-payouts": [
+      {
+        "text": "funds typically settle",
+        "location": "raw/stripe-payouts-instant-payouts-2026-11-07.md:11"
+      },
+      {
+        "text": "ACH or bank debits are only available for Instant Payouts after the payment has settled.",
+        "location": "raw/stripe-payouts-instant-payouts-2026-11-07.md:19"
+      },
+      {
+        "text": "You’re limited to a maximum of 10 Instant Payouts per day.",
+        "location": "raw/stripe-payouts-instant-payouts-2026-11-07.md:157"
+      },
+      {
+        "text": "The Instant Payout fee is pre-deducted so the balance shown reflects what you’d actually receive.",
+        "location": "raw/stripe-payouts-instant-payouts-2026-11-07.md:167"
+      },
+      {
+        "text": "You must have an eligible payout account to receive Instant Payouts.",
+        "location": "raw/stripe-payouts-instant-payouts-2026-11-07.md:196"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payouts-instant-payouts": [
+      {
+        "text": "Stripe charges Dashboard users a 1% fee for all Instant Payouts for CA, EU, UK, SG, NO, HK and MY, and a 1.5% fee for US, AU, NZ, and AE.",
+        "location": "raw/stripe-payouts-instant-2026.md:175"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payouts-instant-payouts-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 224
+      }
+    ],
+    "raw/stripe-payouts-instant-2026.md": [
+      {
+        "start": 1,
+        "end": 223
+      }
+    ],
+    "wiki/sources/source-stripe-payouts-instant.md": [
+      {
+        "start": 1,
+        "end": 66
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/3771dc06471d73da6c1eb7e3/content.diff": [
+      {
+        "start": 1,
+        "end": 172
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payouts-instant-payouts/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 152
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payouts-instant-payouts/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 60
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 546,
+        "end": 552
+      },
+      {
+        "start": 715,
+        "end": 721
+      }
+    ],
+    "wiki/concepts/stripe-payouts.md": [
+      {
+        "start": 42,
+        "end": 59
+      },
+      {
+        "start": 83,
+        "end": 90
+      }
+    ],
+    "raw/stripe-payouts-next-day-settlement-2026-11-07.md": [
+      {
+        "start": 362,
+        "end": 375
+      }
+    ],
+    "raw/stripe-payouts-next-day-2026.md": [
+      {
+        "start": 1,
+        "end": 4
+      },
+      {
+        "start": 50,
+        "end": 54
+      }
+    ]
+  },
+  "answers": {
+    "payouts-instant-payouts": {
+      "Q1": "The 2026-11-07 capture of https://docs.stripe.com/payouts/instant-payouts is a full Dashboard-user guide. Eligible users with a positive, eligible balance and configured card or bank destination request through Dashboard, qualified mobile or the API using method=instant and destination. Balances API instant_available reflects eligible funds after fee and limit adjustments. Eligible card proceeds can count on charge completion, including qualifying pending funds within the payout schedule window. Eligible bank debit proceeds count only after full settlement. New users are not immediately eligible. The guide specifies a maximum of ten Instant Payouts per day and a separate account-specific maximum daily payout amount visible in the Dashboard. A payout counts toward the regional daily allowance at request time even if it arrives on another day (new raw lines 135-157). The capture does not specify how failed requests affect the count. Arrival is typically within 30 minutes (new raw lines 9-19, 62-168 and 194-220). May documents the same behavior and 36 listed countries. The revised source-stripe-payouts-instant.md records 36 published entries and typical delivery timing. The May guide quotes regional 1% or 1.5% fees while November retains the fee and deduction with no percentage (old raw lines 20-59 and 162-195; new raw lines 21-60 and 159-192).",
+      "Q2": "At https://docs.stripe.com/payouts/instant-payouts, the substantive change is pricing coverage: November retains per-payout fees, balance pre-deduction and unchanged currency transaction minimums and maximums but omits May's 1% and 1.5% rates (old raw lines 169-195; new raw lines 166-192). This does not establish a new or zero rate. The reciprocal Payouts concept should preserve distinct fee bases: Instant Payouts uses a per-payout fee, while the November Next-Day guide quotes a monthly percentage of the previous month's accelerated charges without specifying the rate. A current relative cost is unverified. The Node-to-curl examples, renumbering, settings links and extra Connect backlink are presentational or navigational. The revised source-stripe-payouts-instant.md keeps May's dated rates and both guides. It records the same 36 published entries in each capture, preserves typical arrival and account-specific requirements, and retains the reciprocal Stripe Payouts route plus separate next-day, bank lookup, advance-funding and Connect routes (old raw lines 8-18, 20-59 and 197-223; new raw lines 9-19, 21-60 and 194-224)."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payouts-instant-payouts-concept-availability",
+      "target_path": "wiki/concepts/stripe-payouts.md",
+      "update_kind": "durable_fact",
+      "anchor": "Available in 37 countries. Within 30 minutes, any time including weekends. Fee: **1%** (CA/EU/UK/SG/NO/HK/MY) or **1.5%** (US/AU/NZ/AE). Not compatible with multi-currency settlement. Daily limits: max 10/day, daily maximum amount, region-specific reset time. `instant_available` balance: fee pre-deducted, capped by daily limit, card funds immediate (ACH/SEPA only after settlement). Payout methods: debit card (most countries) or eligible bank account (US/GB/EU/SG/AU/HK). API: `method: 'instant'`.",
+      "proposed_markdown": "The May and November 2026 Dashboard guides list 36 account countries. For eligible accounts, funds typically settle within 30 minutes, including weekends. The May guide quoted **1%** (CA/EU/UK/SG/NO/HK/MY) or **1.5%** (US/AU/NZ/AE). The November guide retains the per-payout fee and pre-deduction without percentages. Multi-currency settlement is unsupported. Daily limits use request time and regional resets, with up to 10 payouts and a separate daily maximum amount. `instant_available` is capped by the remaining daily limit and includes eligible card funds after charge completion and ACH/SEPA after settlement. The destination table allows debit cards or eligible bank accounts in the US, GB, Euro Area, SE, DK, AU and SG, bank accounts only in HK, and debit cards only in the other listed destination row. For API calls, set `method: 'instant'` and an eligible `destination`.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The country lists are old raw lines 20–59 and new raw lines 21–60. May fee rate evidence is old raw line 175. The API destination and regional payout rows are new raw lines 124 and 194–206. The provider index at line 549 repeats the unqualified timing, fee and 37-country wording."
+      ]
+    },
+    {
+      "update_id": "payouts-instant-payouts-concept-fee-comparison",
+      "target_path": "wiki/concepts/stripe-payouts.md",
+      "update_kind": "durable_fact",
+      "anchor": "vs Instant Payouts: next-day is automatic/continuous (0.6%), Instant is manual/on-demand (within 30 min, higher fee).",
+      "proposed_markdown": "The November 2026 guides distinguish automatic Next-Day Settlement, with a monthly percentage of the previous month's accelerated charges, from on-demand Instant Payouts, with a fee per payout and typical settlement within 30 minutes. The documents give no current relative price.",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": [
+        "This replacement only covers the comparison clause. The separate Next-Day Settlement contribution owns the standalone next-day qualifications earlier on the same line. November Next-Day fee wording and comparison are in raw/stripe-payouts-next-day-settlement-2026-11-07.md:362–375."
+      ]
+    },
+    {
+      "update_id": "payouts-instant-payouts-concept-source-route",
+      "target_path": "wiki/concepts/stripe-payouts.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-payouts-instant]] — Instant Payouts: 37 countries, 30 min, 1–1.5% fee, daily limits, instant_available balance rules",
+      "proposed_markdown": "- [[source-stripe-payouts-instant]] — May and November Dashboard guides to 36 listed countries, typical payout arrival, fees and amount limits, eligible balance, and destinations",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The old and new country lists contain the same 36 account countries, independent of individual eligibility."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,139 @@
+{
+  "job_id": "payments-payment-intents-three-d-secure-import",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Docs — Import 3D Secure results\"\ntype: source\ndate_ingested: 2026-05-08\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/payment-intents/three-d-secure-import\"\nraw_files:\n  - \"stripe-payments-payment-intents-three-d-secure-import-2026-11-07.md\"\n  - \"stripe-3ds-import-2025.md\"\ntags: [stripe, 3d-secure, 3ds-import, travel, cryptogram, cartes-bancaires, pci-dss, exemption]\n---\n\n## Summary\n\nThe May 8 and November 7, 2026 guides cover importing external 3DS results into Stripe from a travel aggregator or third-party 3DS provider. Importing authentication and confirming an Intent do not establish authorization or payment success.\n\n## Availability and access\n\n- Both captures list AU, CA, CH, EU, GB, HK, MX, NZ, SG and US as available and exclude IN, MY and TH. The May 8 capture labels other Stripe card-payment locations **Beta**. The November 7 capture labels them **Private preview**.\n- Raw-card API access requires validation of PCI DSS compliance, submission to Stripe review and agreement to maintain additional controls on top of Stripe's default security settings. For accounts with custom pricing, naming Stripe as acquirer in the 3DS request triggers applicable network-cost pass-through per the account agreement.\n\n## Import paths\n\n1. **PaymentIntent with raw card data.** The merchant server creates and confirms a PaymentIntent in one call with card details and external 3DS data.\n2. **PaymentIntent with a PaymentMethod ID.** The merchant server creates and confirms in one call with the existing PaymentMethod ID and external 3DS data. Use raw card data instead if the payment is shortly after tokenization, subject to the raw-card access requirements above.\n3. **SetupIntent for future payments.** Create and confirm a SetupIntent with a non-payment authentication cryptogram and either card details or a PaymentMethod ID. Both captures show `confirm=true` on this setup path.\n\nThe `three_d_secure` parameters must exactly match the external provider's values. The examples use `payment_method_options.card.three_d_secure` with version, ECI, cryptogram and transaction ID. The two PaymentIntent import directions specify `confirm=true` and `error_on_requires_action=true` to prevent Stripe from attempting 3DS during a soft decline. Both captures' PaymentIntent instructions link the `confirm` label to a SetupIntent reference, while the prose and examples identify PaymentIntent create-and-confirm. The SetupIntent example does not use the soft-decline flag. November changes example language from Node.js to cURL and includes sample return URLs, with no general parameter or payment-method-default change established by those examples.\n\n## Exemption import\n\nFor an externally obtained low-risk SCA exemption, pass `exemption_indicator=low_risk`. Stripe requests the exemption from the issuer if its real-time transaction risk analysis determines it is appropriate. In the expanded `latest_charge`, inspect `payment_method_details.card.three_d_secure.exemption_indicator_applied` to learn whether Stripe requested the exemption. That signal does not establish issuer approval.\n\n## Cartes Bancaires\n\nFor transactions that process on Cartes Bancaires, explicitly set the authenticated network to `cartes_bancaires`. The cryptogram guidance applies to PaymentIntent and SetupIntent imports. It requires `cb_avalgo` and recommends including ECI, `cb_exemption`, `cb_score`, `ares_trans_status` and `requestor_challenge_indicator` when available.\n\nFor an SCA exemption granted over 3DS, supply `cb_exemption`, `exemption_indicator` or both. Prefer `cb_exemption` alone if available. Stripe infers the exemption indicator from it. If both are supplied, they must agree on the exempted status. Stripe rejects the documented mismatch where `exemption_indicator=none` and the `cb_exemption` bitmap indicates low risk. If either indicates low risk due to acquirer transaction risk analysis, Stripe reassesses the transaction.\n\n## Sandbox tests\n\n- Authentication-required fixtures include `4000002760003184` and `pm_card_authenticationRequired`. The sandbox accepts correctly formatted 3DS results. The dated raw captures provide the v2.1.0 and v2.2.0 samples.\n- The standard low-risk negative fixture uses card `4000000000016123` with `exemption_indicator=low_risk` to return `exemption_indicator_applied=false`. The same card is listed in the Cartes Bancaires tests, where the negative case is scoped to a low-risk `cb_exemption`.\n- The Cartes Bancaires co-badged card fixtures also include `4000002500001001` (Visa) and `5555552500001001` (Mastercard). The raw guides have separate token and PaymentMethod tables.\n\n## Detail locators\n\n| Topic | May 8 raw lines | November 7 raw lines |\n| --- | --- | --- |\n| Availability and exclusions | 15–34 | 16–35 |\n| PaymentIntent and SetupIntent examples, field matching and tokenization | 36–146 | 37–113 |\n| Low-risk issuer request and Charge signal | 148–213 | 115–170 |\n| Cartes Bancaires fields and exemption consistency | 215–279 | 172–222 |\n| Sandbox fixtures and negative cases | 281–336 | 224–279 |\n| Raw card access and pricing | 338–350 | 281–293 |\n\n## Related Pages\n\n- [[stripe-3d-secure]] — 3D Secure concept and external import route\n- [[source-stripe-standalone-3ds]] — Standalone 3DS authentication on Stripe\n- [[stripe]] — Stripe company page\n- [PaymentIntent 3D Secure options](https://docs.stripe.com/api/payment_intents/create.md#create_payment_intent-payment_method_options-card-three_d_secure) — API reference linked by both guides\n\n## Raw Sources\n\n- [[raw/stripe-payments-payment-intents-three-d-secure-import-2026-11-07|November 7, 2026 full guide]]\n- [[raw/stripe-3ds-import-2025|May 8, 2026 full guide]]\n",
+  "quotes": {
+    "payments-payment-intents-three-d-secure-import": [
+      {
+        "text": "(Private preview) All other countries in which Stripe supports card payments.",
+        "location": "raw/stripe-payments-payment-intents-three-d-secure-import-2026-11-07.md:29"
+      },
+      {
+        "text": "parameters set in the `three_d_secure` object must identically match the values returned by your 3DS provider.",
+        "location": "raw/stripe-payments-payment-intents-three-d-secure-import-2026-11-07.md:37"
+      },
+      {
+        "text": "If you intend to process a payment with a PaymentMethod shortly after tokenizing the card details, use raw card data instead.",
+        "location": "raw/stripe-payments-payment-intents-three-d-secure-import-2026-11-07.md:90"
+      },
+      {
+        "text": "If there’s a mismatch where `exemption_indicator=none` and the bitmap in `cb_exemption` indicates that the applied exemption is a low risk exemption, Stripe rejects the request.",
+        "location": "raw/stripe-payments-payment-intents-three-d-secure-import-2026-11-07.md:222"
+      },
+      {
+        "text": "Agreement to maintain additional controls on top of Stripe’s default security settings",
+        "location": "raw/stripe-payments-payment-intents-three-d-secure-import-2026-11-07.md:289"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-payment-intents-three-d-secure-import": [
+      {
+        "text": "(Beta) All other countries in which Stripe supports card payments.",
+        "location": "raw/stripe-3ds-import-2025.md:28"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-payment-intents-three-d-secure-import-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 297
+      }
+    ],
+    "raw/stripe-3ds-import-2025.md": [
+      {
+        "start": 1,
+        "end": 354
+      }
+    ],
+    "wiki/sources/source-stripe-3ds-import.md": [
+      {
+        "start": 1,
+        "end": 63
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/81e8edff311a1bcc1dd1b5e5/content.diff": [
+      {
+        "start": 1,
+        "end": 423
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 457,
+        "end": 468
+      },
+      {
+        "start": 725,
+        "end": 731
+      }
+    ],
+    "wiki/concepts/stripe-3d-secure.md": [
+      {
+        "start": 105,
+        "end": 126
+      },
+      {
+        "start": 149,
+        "end": 160
+      }
+    ]
+  },
+  "answers": {
+    "payments-payment-intents-three-d-secure-import": {
+      "Q1": "https://docs.stripe.com/payments/payment-intents/three-d-secure-import documents merchant import of external 3DS authentication from a travel aggregator or third-party 3DS provider. Match the provider's values exactly. A merchant server creates and confirms the PaymentIntent in one call using raw card details or an existing PaymentMethod ID, with confirm=true and error_on_requires_action=true to prevent Stripe from making a 3DS request during a soft decline. Use raw card data shortly after tokenization, subject to PCI DSS validation, Stripe review, and agreement to additional controls. Future payment setup instead creates and confirms a SetupIntent with a non-payment authentication cryptogram and card details or PaymentMethod ID. For an externally obtained low-risk SCA exemption, the merchant flags it and Stripe requests it from the issuer only if Stripe's real-time risk assessment warrants it. The expanded Charge indicator records whether Stripe requested the exemption. Cartes Bancaires needs explicit network selection and cb_avalgo with optional additional fields, and Stripe rejects the specified inconsistent exemption indicators. Sandbox behavior is test-scoped. Imported authentication, confirmation and the exemption request signal do not establish issuer approval or payment success. These paths persist across old raw lines 36-122 and new raw lines 37-113, old raw lines 148-301 and new raw lines 115-244, and old raw lines 338-350 and new raw lines 281-293. The revised source-stripe-3ds-import.md distinguishes the two Intent paths, surfaces the recent-tokenization and exemption-mismatch conditions, and dates availability while preserving both captures.",
+      "Q2": "At https://docs.stripe.com/payments/payment-intents/three-d-secure-import, the substantive change is that the May 8, 2026 Beta label in other Stripe card-payment countries becomes Private preview in the November 7, 2026 capture. The named AU/CA/CH/EU/GB/HK/MX/NZ/SG/US locations and IN/MY/TH exclusions persist across old raw lines 15-34 and new raw lines 16-35. Preserve both dated labels and remove the unsupported GA inference in source-stripe-3ds-import.md and the reciprocal concept. The Node.js-to-cURL conversion, return_url additions and changed values in examples, and markup changes are presentation; they establish no general new parameter requirement or change to defaults. The linked sandbox wording is an environment clarification and navigation, consistent with existing sandbox scope and the retained conditional negative tests (old raw lines 281-336 and new raw lines 224-279). Preserve the separate SetupIntent scope and flag conflict, both captures' mismatched confirm hyperlink, the conditional issuer exemption signal and Cartes Bancaires mismatch rejection, raw PAN prerequisites and custom-pricing note with their dates. Preserve the root wiki index to Stripe index route, the Stripe index and stripe-3d-secure concept reciprocal route with source-stripe-3ds-import.md, the standalone 3DS navigation, and the summary's historical May raw link alongside the November evidence."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-payment-intents-three-d-secure-import-concept-availability",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Availability**: AU/CA/CH/EU/GB/HK/MX/NZ/SG/US (GA); beta elsewhere; excluded: IN/MY/TH. Raw card path requires PCI DSS validation + Stripe review.",
+      "proposed_markdown": "**Availability**: The May 8 and November 7, 2026 guides list AU/CA/CH/EU/GB/HK/MX/NZ/SG/US as available and exclude IN/MY/TH. Other Stripe card-payment locations are Beta in May and Private preview in November. Raw-card access requires PCI DSS validation, Stripe review and agreement to additional controls.",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": [
+        "Availability wording is dated to old raw lines 15–34 and new raw lines 16–35. The named list carries no GA label. Raw-card requirements are at new raw lines 281–289."
+      ]
+    },
+    {
+      "update_id": "payments-payment-intents-three-d-secure-import-concept-flags",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Key parameters**: `payment_method_options.card.three_d_secure: { version, electronic_commerce_indicator, cryptogram, transaction_id }`; always `confirm: true` + `error_on_requires_action: true`.",
+      "proposed_markdown": "**Intent paths**: Match the external provider's `three_d_secure` values exactly. The PaymentIntent import directions use `confirm=true` and `error_on_requires_action=true` to prevent a Stripe 3DS request during a soft decline. The non-payment cryptogram path creates and confirms a SetupIntent for future payments. Its example omits the soft-decline flag.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "The PaymentIntent instructions and SetupIntent example are at new raw lines 39–113. Both PaymentIntent confirm hyperlinks point to SetupIntent reference anchors despite the PaymentIntent prose and endpoints."
+      ]
+    },
+    {
+      "update_id": "payments-payment-intents-three-d-secure-import-concept-reciprocal",
+      "target_path": "wiki/concepts/stripe-3d-secure.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-3ds-import]] — Import 3DS results: travel/third-party 3DS, confirm+error_on_requires_action, exemption import, Cartes Bancaires cb_avalgo",
+      "proposed_markdown": "- [[source-stripe-3ds-import]] — May and November 2026 guides for importing external 3DS results into PaymentIntents and SetupIntents, with dated availability and exemption guidance",
+      "quote_indexes": [
+        0,
+        1,
+        3
+      ],
+      "warnings": [
+        "The source preserves both captures and distinguishes the PaymentIntent and SetupIntent flags."
+      ]
+    }
+  ]
+}

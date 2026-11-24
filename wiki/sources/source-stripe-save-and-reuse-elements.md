@@ -2,7 +2,9 @@
 title: "Save a Payment Method Without Making a Payment"
 type: source
 date_ingested: 2026-04-21
+date_updated: 2026-11-22
 original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/save-and-reuse"
 raw_files:
   - "stripe-save-and-reuse-elements-2025.md"
 tags: [stripe, setup-intents, checkout-sessions, save-payment-method, setup-mode, off-session, apple-pay, link, radar]
@@ -10,97 +12,44 @@ tags: [stripe, setup-intents, checkout-sessions, save-payment-method, setup-mode
 
 ## Summary
 
-Integration guide for saving a payment method WITHOUT an initial charge. Two API paths: Checkout Sessions `mode: 'setup'` (simpler) and Setup Intents API (more control). Both result in a saved PaymentMethod that can be charged off-session later. See also [[source-stripe-checkout-save-and-reuse]] for earlier CS coverage.
+The 2026-04-21 [[stripe]] guide describes two web paths to save payment details without an initial charge. Use a Checkout Session in setup mode or use a SetupIntent with the Payment Element. An off-session charge requires a later PaymentIntent with its own outcome. The 2026-11-07 capture links the Checkout Sessions embedded-components and Setup Intents Elements variants. The implementation details below come from the April guide.
 
-## Checkout Sessions Path (`mode: 'setup'`)
+## Consent and customer identity
 
-```js
-stripe.checkout.sessions.create({
-  mode: 'setup',
-  ui_mode: 'elements',
-  currency: 'usd',  // required for dynamic PM selection
-});
-```
+- **Permission.** Collect explicit opt-in for the specific future use, including separate scope for charging while the customer is offline and displaying the method for future purchases. For offline charges the April guide says to keep written agreement covering permission, expected timing and frequency, amount determination and the cancellation policy for subscriptions. Card-present Terminal uses a separate process (lines 16–34, 247–264 and 1065–1069).
+- **Identity.** Use `customer_account` for the Accounts v2 customer-configured Account and `customer` for the Customers v1 Customer in the applicable requests. The April guide describes Accounts v2 as generally available for Connect users and in public preview for other Stripe users, with a preview API version required for preview participants (lines 51–61 and 287–297).
 
-**Full flow:**
-1. Session create → customer completes
-2. `checkout.session.completed` webhook → get `setup_intent` ID from session
-3. Retrieve SetupIntent → get `payment_method` ID
-4. Attach PM to customer: `stripe.paymentMethods.attach(pmId, { customer: id })`
-5. Charge later: `off_session: true, confirm: true`
+## Checkout Sessions Path
 
-If off-session charge fails (402) → send customer to new CS with existing customer to pick a new PM.
+- **Set up and attach.** The April example creates a Session with `mode: 'setup'` and `ui_mode: 'elements'`. After successful completion, handle `checkout.session.completed`, retrieve the linked `Session.setup_intent`, and read its `payment_method`. Stripe attaches the method automatically if an existing customer identity was supplied at Session creation. Otherwise, attach it to the appropriate customer-configured Account or Customer (lines 83–139).
+- **Charge and recover.** Create and confirm a separate PaymentIntent with the saved PaymentMethod ID, matching customer identity and `off_session: true`. On the documented HTTP 402 and `requires_payment_method` path, bring the buyer back to a new Checkout Session in `mode: 'payment'` under the same identity so they can pay with a replacement method (lines 141–237).
 
 ## Setup Intents Path
 
-```js
-// Server
-const si = await stripe.setupIntents.create({
-  customer: 'cus_...',
-  automatic_payment_methods: { enabled: true },
-});
-// Send si.client_secret to client
-```
+- **Set up.** Enable at least one payment method. Create the SetupIntent on the server for the applicable customer identity and initialize the Payment Element with that Intent's client secret. The client calls `stripe.confirmSetup` with a return URL. With `redirect: 'if_required'`, redirect-based payment methods still redirect (lines 281–386, 501–518 and 848–853).
+- **Verify and save.** Retrieve the SetupIntent using `setup_intent_client_secret` on the return page and distinguish `succeeded`, `processing` and `requires_payment_method`. Successful confirmation saves the method to the supplied Account or Customer. Browser return alone does not establish successful setup or payment (lines 946–1054).
+- **Charge and recover.** Create and confirm a later off-session PaymentIntent with the saved PaymentMethod and matching customer identity. The guide describes HTTP 402 with `requires_payment_method`. For `authentication_required`, bring the customer back to authenticate that PaymentIntent with its own client secret and `stripe.confirmPayment`. For other failures, the existing PaymentIntent can be retried with replacement details (lines 1065–1190).
+- **Dated API change.** The April manual method-list examples use writable `payment_method_types`. The separately captured `2026-08-26.preview` changelog removes writes on SetupIntent create and update and PaymentIntent create, update and confirm. Requests passing it on those endpoints return HTTP 400 with `payment_method_types_no_longer_supported`. The computed response property remains read-only. See the REST passage at lines 7–34 of [[raw/stripe-changelog-dahlia-2026-08-26-removes-payment-method-types-parameter-from-payment-intents-setup-intents-2026-11-07|Dahlia preview changelog, captured 2026-11-07]].
 
-```js
-// Client — confirm
-const { error } = await stripe.confirmSetup({
-  elements,
-  confirmParams: { return_url: 'https://example.com/setup-complete' },
-  redirect: 'if_required', // optional: avoids redirect for cards
-});
-```
+## Optional Elements features in the April Setup Intents variant
 
-**Return URL params**: `setup_intent`, `setup_intent_client_secret`
+- **Radar.** Radar does not act on SetupIntents without an initial payment by default in this guide. The Dashboard setting is **Use Radar on payment methods saved for future use** (lines 454–456).
+- **Apple Pay and Google Pay.** The HTML and React examples configure Apple Pay merchant tokens for a deferred payment with `applePay.deferredPaymentRequest`. Wallet display also depends on card enablement and the customer's environment, wallet settings and domain registration. The April guide names an India support and tester-IP restriction (lines 526–545, 620–654 and 1292–1301).
+- **Link.** Optionally supply the customer's email using `defaultValues.billingDetails.email` or let the customer enter it in the Payment Element (lines 666–696).
+- **Stored methods.** A server-created CustomerSession with the `payment_element` component can enable saving and redisplay. Use its dedicated client secret alongside the SetupIntent secret. Stripe.js sets `allow_redisplay` based on the buyer's save choice in this flow. Attachment and permission to redisplay are distinct (lines 700–719, 802–834 and 1067–1069).
 
-```js
-// Return page
-const { setupIntent } = await stripe.retrieveSetupIntent(clientSecret);
-// setupIntent.payment_method → saved PM ID
-```
-
-## Key Differences: CS Setup vs Setup Intents
-
-| | CS `mode: 'setup'` | Setup Intents |
-| --- | --- | --- |
-| PM retrieval | Via webhook + SetupIntent lookup | Via return URL + retrieveSetupIntent |
-| Apple Pay merchant tokens | No | Yes — `applePay.deferredPaymentRequest` |
-| Radar | No | Optional — enable in Dashboard settings |
-| Custom PM display | No | Yes — CustomerSession |
-| Link prefill | Auto | `defaultValues.billingDetails.email` |
-
-## Apple Pay Merchant Tokens (Setup Intents)
-
-```js
-elements.create('payment', {
-  applePay: {
-    deferredPaymentRequest: {
-      paymentDescription: 'My deferred payment',
-      managementURL: 'https://example.com/billing',
-      deferredBilling: { amount: 2500, label: 'Deferred Fee', deferredPaymentDate: new Date('2030-01-05') },
-    }
-  },
-});
-```
-
-## Radar (Setup Intents)
-
-Radar does NOT run on SetupIntents by default. Enable at Dashboard → Radar settings → "Use Radar on payment methods saved for future use".
-
-## Link Prefill (Setup Intents)
-
-```js
-elements.create('payment', {
-  defaultValues: { billingDetails: { email: 'foo@bar.com' } },
-});
-```
+The April Checkout variant describes the setup and payment routes above. Its coverage does not establish Checkout-wide wallet, Radar or saved-method UI exclusions or automatic Link prefill.
 
 ## Related Pages
 
-- [[stripe-saved-payment-methods]] — concept page
-- [[source-stripe-checkout-save-and-reuse]] — earlier CS setup mode source (hosted + embedded)
-- [[source-stripe-save-during-payment-elements]] — save WITH initial payment
+- [[stripe-saved-payment-methods]] — concept and related flows
+- [[source-stripe-checkout-save-and-reuse]] — earlier Checkout setup mode source (hosted and embedded)
+- [[source-stripe-save-during-payment-elements]] — save with an initial payment
 
 ## Raw Sources
 
-- [[stripe-save-and-reuse-elements-2025]] — verbatim guide (1312 lines, both API paths)
+- [[raw/stripe-save-and-reuse-elements-2025|Save without payment, captured 2026-04-21]] — full 1,312-line guide for both API routes.
+
+## Related raw API references
+
+- [[raw/stripe-payments-save-and-reuse-2026-11-07|Save without payment variant selector, captured 2026-11-07]] — navigation for Checkout Sessions and Setup Intents.

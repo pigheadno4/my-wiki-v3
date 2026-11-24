@@ -1,0 +1,239 @@
+{
+  "job_id": "payments-upi",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Stripe: UPI Payments\"\ntype: source\ndate_ingested: 2026-05-06\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/upi\"\nraw_files:\n  - \"stripe-payments-upi-2026-11-07.md\"\n  - \"stripe-upi-2025.md\"\ntags: [stripe, real-time-payments, upi, india, inr, qr-code, recurring, e-mandate, connect, disputes]\n---\n\n## Overview\n\nThe May 6 and November 7, 2026 direct UPI method guides describe NPCI's real-time transfer system for India customers in INR. Customers approve through a participating banking or wallet app. On desktop they scan a QR code in the UPI app, and on mobile they are redirected to that app. Recurring UPI AutoPay payments require customer authorization of an e-mandate in the app, enabling later automatic charges within its terms. See [[source-stripe-upi-autopay]] for the separate recurring flow. The overviews describe standard payout timing. See May lines 8–42 and November lines 9–43.\n\n## Business locations, product scope and limits\n\nBoth captures list the same 35 Stripe account countries, separately from the India customer location. They list AT, AU, BE, BG, CA, CH, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GR, HR, HU, IE, IT, LI, LT, LU, LV, MT, NL, NO, PL, PT, RO, SE, SG, SI, SK and US. The range is INR 1–100,000 per payment, with a recurring maximum of INR 15,000. Connect is supported, and manual capture is unsupported. See May lines 40–94 and 121–123 and November lines 41–95 and 122–124.\n\nThe guides describe Dashboard enablement for Stripe front ends, list Invoicing, Payment Links and Subscriptions and link a separate manual integration. They do not specify the Billing collection mode. The November cross-method matrix identifies `upi` and lists PaymentIntents, SetupIntents and `setup_future_usage` as supported. Its non-card/non-bank-debit footnote limits supported future usage to `off_session`. It marks Mobile Payment Element unsupported, separately from the mobile browser/app redirect in the direct UPI guide. The November acceptance capture is a variant index. See May lines 96–111, November lines 97–112, [[source-stripe-payment-method-support]] and [[source-stripe-upi-accept-payment]].\n\nThe May real-time payments hub invites UPI beta participation. The separate [March 25 Dahlia changelog](https://docs.stripe.com/changelog/dahlia/2026-03-25/adds-support-for-the-upi-payment-method) adds a versioned UPI API contract and its Impact text mentions Indian customers outside India. The dated direct overview and support matrix separately list India customer location. These records leave general availability and eligibility for a particular account unresolved. UPI as a funding source through Link has a separate eligibility and limit scope. See [[source-stripe-real-time-payments]] and [[source-stripe-link-payment-methods]].\n\n## Refunds and disputes\n\nFull and partial refunds are available up to 60 days after the original payment. Refunds are asynchronous and can take up to seven business days. Stripe sends `refund.updated` or `refund.failed` for the final state. The Refund object transitions to `succeeded` or `failed`. If it fails, Stripe returns the amount to the merchant's Stripe balance, and the merchant arranges an alternative refund. See May lines 44–50 and 113–115 and November lines 45–51 and 114–116.\n\nThe customer can dispute a charge through their bank or payment service provider. If the bank or provider accepts, the dispute cannot be contested and Stripe immediately removes funds from the merchant's Stripe account. See May lines 117–119 and November lines 118–120.\n\n## Related Pages\n\n- [[stripe-real-time-payments#UPI Details|UPI in Stripe Real-Time Payments]]\n- [[source-stripe-upi-accept-payment]] — UPI acceptance variants\n- [[source-stripe-upi-set-up-future-payments]] — Setup and saving paths\n- [[source-stripe-upi-autopay]] — UPI AutoPay e-mandates and payment flows\n- [[stripe]] — Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-payments-upi-2026-11-07|November 7, 2026 UPI payments]] — Full direct method overview\n- [[raw/stripe-upi-2025|May 6, 2026 UPI payments]] — Earlier full direct method overview\n",
+  "quotes": {
+    "payments-upi": [
+      {
+        "text": "On desktop, customers scan a QR code using their UPI app.",
+        "location": "raw/stripe-payments-upi-2026-11-07.md:11"
+      },
+      {
+        "text": "within the mandate terms.",
+        "location": "raw/stripe-payments-upi-2026-11-07.md:13"
+      },
+      {
+        "text": "Stripe returns the amount to your Stripe balance.",
+        "location": "raw/stripe-payments-upi-2026-11-07.md:116"
+      },
+      {
+        "text": "Recurring payments are limited to a maximum of 15,000 INR.",
+        "location": "raw/stripe-payments-upi-2026-11-07.md:124"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-upi": [
+      {
+        "text": "Stripe returns the amount to your Stripe balance.",
+        "location": "raw/stripe-upi-2025.md:115"
+      },
+      {
+        "text": "Recurring payments are limited to a maximum of 15,000 INR.",
+        "location": "raw/stripe-upi-2025.md:123"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-upi-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 124
+      }
+    ],
+    "raw/stripe-upi-2025.md": [
+      {
+        "start": 1,
+        "end": 123
+      }
+    ],
+    "wiki/sources/source-stripe-upi.md": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/574ff06b66e34c82b47eefef/content.diff": [
+      {
+        "start": 1,
+        "end": 30
+      }
+    ],
+    "wiki/concepts/stripe-real-time-payments.md": [
+      {
+        "start": 14,
+        "end": 54
+      },
+      {
+        "start": 125,
+        "end": 146
+      },
+      {
+        "start": 199,
+        "end": 207
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 11
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 363,
+        "end": 370
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 566,
+        "end": 573
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md": [
+      {
+        "start": 491,
+        "end": 497
+      }
+    ],
+    "raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md": [
+      {
+        "start": 74,
+        "end": 74
+      },
+      {
+        "start": 162,
+        "end": 162
+      },
+      {
+        "start": 188,
+        "end": 188
+      },
+      {
+        "start": 208,
+        "end": 208
+      },
+      {
+        "start": 292,
+        "end": 301
+      }
+    ],
+    "raw/stripe-changelog-dahlia-2026-03-25-adds-support-for-the-upi-payment-method-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 26
+      }
+    ],
+    "raw/stripe-real-time-payments-2025.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "raw/stripe-payments-upi-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 16
+      }
+    ],
+    "raw/stripe-payments-upi-upi-autopay-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 27
+      }
+    ],
+    "wiki/sources/source-stripe-link-payment-methods.md": [
+      {
+        "start": 13,
+        "end": 13
+      },
+      {
+        "start": 19,
+        "end": 19
+      },
+      {
+        "start": 21,
+        "end": 21
+      }
+    ]
+  },
+  "answers": {
+    "payments-upi": {
+      "Q1": "At https://docs.stripe.com/payments/upi, old raw lines 8-58 and new raw lines 9-59 preserve India customer location and INR presentment, UPI-app authentication and approval through desktop QR or mobile redirect, and separate recurring mandate authorization. Old raw lines 60-111 and new raw lines 61-112 preserve the same 35 business account countries and Dashboard enablement and manual routes. Stripe's standard payout schedule still applies, with no manual capture. Old raw lines 113-123 and new raw lines 114-124 keep final Refund `succeeded` and `failed` transitions with merchant balance return on failure, and bank/PSP acceptance determines non-contestable dispute funds removal. source-stripe-upi.md now records 35 account countries and dates the independent beta and API evidence. The Billing collection mode is unspecified in the overview pair.",
+      "Q2": "At https://docs.stripe.com/payments/upi, the May 6 and November 7, 2026 captures have no substantive scope or state delta. Old raw lines 90-111 and new raw lines 91-112 retain the country list's end and the product routes, with the Elements quickstart changed from `/payments/quickstart-checkout-sessions.md` to `/payments/quickstart.md`. Old raw lines 113-123 and new raw lines 114-124 retain the refund, dispute and limit qualifications with heading whitespace changes. Correct source-stripe-upi.md to 35 merchant countries and preserve the explicit failed-refund outcome, independent capture of prior beta wording, unresolved Billing collection mode, and separate direct UPI versus Link scope. Preserve provider index and company routes and add reciprocal links for the real-time payments concept, UPI AutoPay and acceptance source."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "upi-dated-matrix-support-row",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "| UPI | `upi` | India | Yes (mobile) | Unknown | Unknown | Yes |",
+      "proposed_markdown": "| UPI | `upi` | India | November API matrix Yes. Desktop QR and mobile app redirect in the overview. | November matrix Supported | November matrix Supported (`off_session` per its footnote) | Mobile Payment Element Unsupported in November matrix |",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "November overview lines 9–13 describe app and QR behavior. November cross-method raw lines 74, 162 and 298–301 establish the separate matrix scope."
+      ]
+    },
+    {
+      "update_id": "upi-overview-refund-outcome",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Refunds**: **60-day** window. Asynchronous — up to 7 business days.",
+      "proposed_markdown": "**UPI refunds.** The two 2026 method captures specify a 60-day window and asynchronous processing up to seven business days. Stripe returns a failed refund to the merchant's Stripe balance, and the merchant arranges an alternative refund.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "May overview line 115 and November overview line 116 establish the window, status and failed-refund outcome."
+      ]
+    },
+    {
+      "update_id": "upi-overview-country-billing-scope",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Recurring**: UPI AutoPay (e-mandate). Billing: Invoicing, Subscriptions (no `send_invoice` restriction mentioned).\n\n**36 merchant countries** (US, AU, SG, most of Europe).",
+      "proposed_markdown": "**Recurring.** UPI AutoPay uses a customer-authorized e-mandate. The May and November direct overviews list Invoicing, Payment Links and Subscriptions without specifying a Billing collection mode.\n\n**Business locations.** Both direct overviews list 35 Stripe account countries, separate from India customer location. See [[source-stripe-upi]].",
+      "quote_indexes": [
+        1,
+        3
+      ],
+      "warnings": [
+        "May lines 12, 60–94 and 103–111 and November lines 13, 61–95 and 104–112 establish the mandate, account and collection-mode scopes."
+      ]
+    },
+    {
+      "update_id": "upi-overview-reciprocal-route",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-upi]] — UPI: India QR/redirect, 60-day refunds, 15k INR recurring limit, non-contestable disputes, UPI AutoPay",
+      "proposed_markdown": "- [[source-stripe-upi]] — May and November direct UPI overviews with 35 account locations, app authorization, AutoPay limits, refund outcomes and non-contestable disputes after bank or provider acceptance",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "May and November direct method captures agree on the documented limits and outcome boundaries."
+      ]
+    },
+    {
+      "update_id": "upi-dated-matrix-required-redirect",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Redirect required**: Pay by Bank (UK/Europe) and Swish only.",
+      "proposed_markdown": "**Redirect required.** The November 7, 2026 API support matrix marks Pay by Bank, Swish and UPI as requiring redirect. The direct UPI overview describes customers scanning a QR code in their UPI app on desktop and being redirected to the UPI app on mobile.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "November API support matrix raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md lines 292–301 lists all three methods and explains that confirmation might require a return_url. November direct UPI overview raw/stripe-payments-upi-2026-11-07.md lines 9–13 describes the desktop and mobile flows."
+      ]
+    }
+  ]
+}

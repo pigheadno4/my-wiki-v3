@@ -2,38 +2,41 @@
 title: "Stripe: PromptPay Payments"
 type: source
 date_ingested: 2026-05-06
+date_updated: 2026-11-22
 original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/promptpay"
 raw_files:
+  - "stripe-payments-promptpay-2026-11-07.md"
   - "stripe-promptpay-2025.md"
 tags: [stripe, real-time-payments, promptpay, thailand, thb, qr-code, connect, billing]
 ---
 
-## Summary
+## Overview and eligibility
 
-Overview of Stripe's PromptPay integration — Thailand-only QR code payment method. Instant confirmation. No statement descriptor customization. Refunds require customer bank account input via email. Duplicate QR risk (unlike PayNow). Billing via `send_invoice` only. TH merchant accounts only.
+PromptPay (`promptpay`) is a customer-initiated real-time QR payment for customers in Thailand, with THB presentment. The May 6, 2026 and November 7, 2026 method overviews list TH as the standard Stripe account location. The November cross-method support matrix also lists TH for the merchant and customer. Separately, November documents a private-preview waitlist for US-based Stripe accounts. An applicant submits their email, Stripe reviews the application and contacts eligible applicants. This is an application route with eligibility and activation pending. See May lines 6–28 and 50–54, November lines 7–29, 51–55 and 71–81, and [[source-stripe-payment-method-support]].
 
-## Key Details
+## Payment and product support
 
-**API enum**: `promptpay`. THB only. Thailand customers and merchants only (TH accounts only).
+The customer selects PromptPay, scans the displayed QR with a participating Thai bank app, authorizes and receives confirmation. Stripe immediately confirms to the merchant when the payment completes. Payout timing is unspecified in these overviews. The payment statement and bank app show `STRIPE PAYMENTS (THAILAND) LTD` in place of a custom statement descriptor. The statement also includes the amount and a unique reference. See May lines 8–10, 70–83 and 108–110 and November lines 9–11, 83–95 and 120–122.
 
-**Statement descriptor**: ignored — `STRIPE PAYMENTS (THAILAND) LTD` shown with amount and unique reference code.
+Both captures list Connect, Checkout in payment mode, Payment Links, Elements, and Invoicing and Subscriptions with `send_invoice`. Checkout setup and subscription modes and Express Checkout Element are excluded. The Mobile Payment Element is iOS-only for PromptPay. Manual capture is unsupported. Stripe's front-end products can select eligible methods after Dashboard enablement. The separate November acceptance index lists Checkout and Direct API and serves as navigation for that guide. See May lines 34–68 and 85–102, November lines 35–69 and 97–114, and [[source-stripe-promptpay-accept-payment]].
 
-**Refunds**: Customer must provide bank account number for refund routing — Stripe emails customer at PaymentIntent email address to request. Refund fails without it.
+## Refunds, repeated payments and irregularities
 
-**Duplicate QR risk**: re-scanning a completed QR code can deduct funds again. Stripe reimburses excess to merchant balance, but merchant must refund customer outside Stripe (check/cash/store credit). Unlike PayNow which rejects duplicate QR scans.
+For a full or partial refund initiated through the Stripe Dashboard or API, Stripe emails the address supplied at PaymentIntent confirmation and requests the number of the bank account that originally funded the payment. Stripe automatically processes the refund after receiving that information. If the customer cannot provide the original account number, the refund might fail. See May lines 46–48 and 104–106 and November lines 47–49 and 116–118.
 
-**Disputes**: "Not applicable" — low fraud risk. Stripe notes irregularities can occur and reviews them directly.
+Reusing a completed PromptPay QR can debit the buyer again. If Stripe receives excess funds, it credits the merchant's Stripe balance and notifies the merchant. The merchant refunds that excess to the customer outside Stripe, for example by check, cash or store credit. The separate November PayNow overview describes rejection of further attempts to use a completed PayNow QR. See May lines 112–114, November lines 124–126 and [[source-stripe-paynow]].
 
-**Billing**: `send_invoice` only (confirmed in product support footnotes).
+The overview marks dispute support “Not applicable” and describes lower fraud risk due to customer authorization. Stripe can still review irregular, unexpected or repeated payments, contact the merchant or take other action if required. See May lines 38–40 and 116–118 and November lines 39–41 and 128–130.
 
-**Mobile Payment Element**: supports PromptPay on iOS only (not Android).
+## Related Pages
 
-**No payout timing specified** in overview (unlike PayNow's T+1).
-
-**Connect**: Yes. No capability name stated in overview.
-
-**Product support**: Connect, Checkout (not subscription/setup mode), Payment Links, Elements (Express Checkout Element not supported; Mobile Payment Element iOS only), Subscriptions (`send_invoice`), Invoicing (`send_invoice`).
+- [[stripe-real-time-payments#PromptPay Details|PromptPay in Stripe Real-Time Payments]]
+- [[source-stripe-promptpay-accept-payment]] — Acceptance guide and variant navigation
+- [[source-stripe-payment-method-support]] — Country, currency and product matrices
+- [[stripe]] — Stripe company page
 
 ## Raw Sources
 
-- [[stripe-promptpay-2025]] — verbatim webpage content (118 lines); no italic fixes; 4 SVG flow diagrams downloaded to assets/
+- [[raw/stripe-payments-promptpay-2026-11-07|November 7, 2026 PromptPay payments]] — Full overview with the US private-preview application
+- [[raw/stripe-promptpay-2025|May 6, 2026 PromptPay payments]] — Earlier full guide, including four captured flow illustrations

@@ -1,0 +1,159 @@
+--- raw/stripe-custom-payment-methods-2025.md
++++ raw/stripe-payments-payment-methods-custom-payment-methods-2026-11-07.md
+@@ -8,36 +8,23 @@
+ 
+ ## Configure custom payment method types
+ 
+-In the Dashboard, create the custom payment method type your customers will pay with. Custom payment method types allow you to specify branding for the custom payment methods you define for each customer. For example, if you’re using `SamplePay` as another processor, you might want to create a `SamplePayCard` to represent cards that you process with `SamplePay`.
++Create custom payment method types in the Dashboard to represent payment methods that you process outside Stripe. For example, if you use `SamplePay` as another processor, you can create a `SamplePayCard` type for cards processed by `SamplePay`.
+ 
+-Go to [Custom payment method types](https://dashboard.stripe.com/settings/custom_payment_methods) in the Dashboard. At the end of these steps, you’ll have one or more custom payment method types defined that you can offer your customers when they checkout.
++Go to [Custom payment method types](https://dashboard.stripe.com/settings/custom_payment_methods), then complete these actions:
+ 
+-1. Create a custom payment method type.
+-1. Set the display name and logo for the custom payment method type. Alternatively, use one of over 50 preset methods for common payment methods processed outside of Stripe.
++1. **Create the type**: Create a custom payment method type for each payment method that you want to offer your customers at checkout.
++2. **Choose a preset or provide branding**: Choose from the presets for common payment methods processed outside Stripe, or provide your own display name and logo. Use a preset if you use the Payment Element. Provide custom branding if you use a custom front end or interact with the custom payment method through the [Payment Methods API](https://docs.stripe.com/api/payment_methods.md). Make sure the display name and logo comply with the [marks policy](https://docs.stripe.com/payments/payment-methods/custom-payment-methods.md#marks-requirements).
++3. **Save the type**: Click **Create** to save the type. You can then view its details in the Dashboard and use it to create custom payment methods. You can’t retrieve custom payment method types through the API, so store the type ID in your database for use when creating payment methods.
+ 
+-> Set your own display name and logo if you use a custom front end or want the logo to display when interacting with the custom payment method through the [Payment Methods API](https://docs.stripe.com/api/payment_methods.md). A preset is suitable if you rely on Payment Element to render the custom payment method.
+-
+-> Make sure your custom payment method display name and logo align with our [marks policy](https://docs.stripe.com/payments/payment-methods/custom-payment-methods.md#marks-requirements).
+-
+-1. Click **Create** to make a new payment method type, `SamplePayCard`, which you can then use to set up a custom payment method.
+-1. You can see the created custom payment method type details in the Dashboard.
+-1. Custom payment method types aren’t retrievable through the API. We recommend storing the ID in your database and retrieving it during payment method creation.
+-
+-### Payment Methods
++### Payment methods 
+ 
+ Create and retrieve custom payment methods with the [Payment Methods API](https://docs.stripe.com/api/payment_methods.md). When creating them, pass the ID of the custom payment method type you configured in the Stripe Dashboard as `custom[type]`.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const paymentMethod = await stripe.paymentMethods.create({
+-  type: "custom",
+-  custom: {
+-    type: "{{CUSTOM_PAYMENT_METHOD_TYPE_ID}}",
+-  },
+-});
++```curl
++curl https://api.stripe.com/v1/payment_methods \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d type=custom \
++  -d "custom[type]={{CUSTOM_PAYMENT_METHOD_TYPE_ID}}"
+ ```
+ 
+ ```json
+@@ -49,7 +36,8 @@
+     "email": "jenny@example.com",
+     "name": "Jenny Rosen",
+     "phone": "+335555555555"
+-  },"custom": {
++  },
++  "custom": {
+     "display_name": "SamplePayCard",
+     "logo": {
+       "content_type": "image/jpeg",
+@@ -62,49 +50,45 @@
+ }
+ ```
+ 
+-## Integrations
++## Integrations 
+ 
+-| Payment method         | Connect     | Checkout      | Payment Links | Payment Element | Express Checkout Element | Mobile Payment Element | Subscriptions | Invoicing   | Customer Portal |
+-| ---------------------- | ----------- | ------------- | ------------- | --------------- | ------------------------ | ---------------------- | ------------- | ----------- | --------------- |
+-| Custom payment methods | ✓ Supported | - Unsupported | - Unsupported | ✓ Supported     | - Unsupported            | ✓ Supported            | ✓ Supported   | ✓ Supported | ✓ Supported     |
++| Payment method | Connect | Checkout | Payment Links | Payment Element | Express Checkout Element | Mobile Payment Element | Subscriptions | Invoicing | Customer Portal |
++| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
++| Custom payment methods | ✓ Supported | ✓ Supported | - Unsupported | ✓ Supported | ✓ Supported 1 | ✓ Supported | ✓ Supported | ✓ Supported | ✓ Supported |
+ 
+-### Payment Element
++1 In private preview.
++
++### Payment Element 
+ 
+ The Payment Element can display custom payment methods so you can provide your customers with unified checkout. See [Custom payment methods in Payment Element](https://docs.stripe.com/payments/payment-element/custom-payment-methods.md) to learn more.
+ 
+-### Subscription Billing
++### Express Checkout Element 
++
++The Express Checkout Element can display custom payment method buttons alongside wallets, such as Apple Pay and Google Pay. To learn more, see [Custom payment methods in Express Checkout Element](https://docs.stripe.com/payments/payment-element/custom-payment-methods.md#cpm-express-checkout-element).
++
++### Subscription billing 
+ 
+ Integrate Stripe Billing with your third-party payment service processors to create subscriptions that automatically charge payment methods not stored on Stripe, manage subscription states, and track payment success for external payments. See [Integrate with third-party payment processors](https://docs.stripe.com/billing/subscriptions/third-party-payment-processing.md) to learn more.
+ 
+-### Connect
++### Connect 
+ 
+ Your platform account can create custom payment methods in its connected accounts using its own custom payment method types, as well as the connected account’s custom payment method types.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const paymentMethod = await stripe.paymentMethods.create(
+-  {
+-    type: "custom",
+-    custom: {
+-      type: "{{CUSTOM_PAYMENT_METHOD_TYPE_ID}}",
+-    },
+-  },
+-  {
+-    stripeAccount: "{{CONNECTEDACCOUNT_ID}}",
+-  },
+-);
++```curl
++curl https://api.stripe.com/v1/payment_methods \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -H "Stripe-Account: {{CONNECTEDACCOUNT_ID}}" \
++  -d type=custom \
++  -d "custom[type]={{CUSTOM_PAYMENT_METHOD_TYPE_ID}}"
+ ```
+ 
+-## Compliance
++## Compliance 
+ 
+-### Ongoing availability of custom payment methods and PSP integrations
++### Ongoing availability of custom payment methods and PSP integrations 
+ 
+ Stripe might at any time decide to remove or block the availability of any payment method as a custom payment method (for example, if required to do so by a governmental authority). Stripe notifies you of any removal of a custom payment method that you’re using, and you must immediately remove the custom payment method in your code. Failure to do so results in the custom payment method not rendering to your customers.
+ 
+-### Restricted custom payment methods
++### Restricted custom payment methods 
+ 
+ The following payment methods or types of payment methods are prohibited from being used with custom payment methods and third-party payment processors:
+ 
+@@ -112,7 +96,7 @@
+   - The [crypto payment methods](https://market.sec.or.th/public/idisc/th/Viewmore/invalert-head?LicenseType=03&PublicFlag=Y) provided by the operators
+   - Any other crypto-related payment methods
+ 
+-### Marks requirements
++### Marks requirements 
+ 
+ The use of name, logo, icon, design element or anything else that can identify a payment method (“Marks”) must adhere to the following guidance:
+ 
+@@ -123,7 +107,7 @@
+ - Don’t use methods, devices or designs to obfuscate or mislead as to the true underlying payment method.
+ - Don’t use the payment method Marks in violation of any laws or regulations.
+ 
+-### Disclaimer
++### Disclaimer 
+ 
+ By using custom payment methods (CPM) and [third-party payment processors](https://docs.stripe.com/billing/subscriptions/third-party-payment-processing.md), you acknowledge that:
+ 
+@@ -137,7 +121,7 @@
+ - You’re responsible for properly configuring the CPM and third-party payment processor integration, which might include configuring a redirect URL.
+ - You must immediately remove any CPM and disable your PSP integration in the event your agreement with any PSP terminates or Stripe, at its sole discretion, gives you notices or documents its [prohibition of use of that type of custom payment method](https://docs.stripe.com/payments/payment-methods/custom-payment-methods.md#restricted-custom-payment-methods).
+ - You can’t integrate with [restricted PSPs](https://docs.stripe.com/payments/payment-methods/custom-payment-methods.md#restricted-custom-payment-methods).
+-- You’re solely responsible for correctly presenting buyers with their chosen CPM.
++- You’re solely responsible for correctly presenting customers with their chosen CPM.
+ - You won’t misrepresent that Stripe processes payments for the CPMs you present to your customers.
+ - As a third-party payment processor user, you’ve obtained the requisite permission to enable Stripe to collect, use, retain, and disclose the data provided through the integration (“PSP Data”).
+ - You authorize Stripe to access and use the PSP Data to provide and update the Stripe services, comply with legal and financial partner requirements, and prevent and mitigate fraud, financial loss, and other harm.

@@ -1,0 +1,186 @@
+{
+  "job_id": "payments-revolut-pay-set-up-future-payments",
+  "source_target": "wiki/sources/source-stripe-revolut-pay-set-up-future-payments.md",
+  "source_before_sha256": "e13f652b901ed91b2c618296c3bb46f4898b52026e925391e0a1382b4e333b27",
+  "contributions": [
+    {
+      "job_id": "payments-revolut-pay-set-up-future-payments",
+      "canonical_url": "https://docs.stripe.com/payments/revolut-pay/set-up-future-payments",
+      "attempt": 2,
+      "raw_path": "raw/stripe-payments-revolut-pay-set-up-future-payments-2026-11-07.md",
+      "raw_sha256": "46fd5e33ae2569c03407cb7d4a09745efc29a089e2a95b509037eaf6e9c4f333",
+      "prior_raw_path": "raw/stripe-revolut-pay-set-up-future-payments-2025.md",
+      "prior_raw_sha256": "5c4571cc7a848df63cb02f636bb1b63723e751142c61beae9dd3d72ea497a1b0",
+      "new_capture_role": "navigation_only_variant_index",
+      "proposed_disposition": "raw_reference",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-revolut-pay-set-up-future-payments/attempt-2/receipt.json",
+      "receipt_sha256": "8f3a403cf8f42abffcf671aef0f9b32629fe1a2a4770f53da58986ec14b22749",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-revolut-pay-set-up-future-payments/attempt-2/review.json",
+      "review_sha256": "ae3f3117bd116b829df44a8f5865192516f7038b2d8c57bcd3fdbf405df3a671",
+      "source_assessments": [
+        {
+          "source_target": "wiki/sources/source-stripe-revolut-pay-set-up-future-payments.md",
+          "proposed_disposition": "source_required_update",
+          "update_needed": true,
+          "findings": [
+            "November 7 raw 5–17 supplies the same four variant identities that May 7 raw 8–10,122–124,573–575,851–853 labels Checkout, Direct API, mobile iOS and mobile Android. Diff 7–1115 replaces inline bodies with selector links. The source already identifies the correct variants at line 13. November changes presentation and navigation, not evidenced behavior.",
+            "May requires permission and agreement before saving. Merchant terms describe what is saved, opt-in, intended payment series/transactions, timing/frequency, amount determination, applicable subscription cancellation policy, and retention of written agreement (old 29–40,151–162). Custom forms must present written notice before confirming the SetupIntent or PaymentIntent, but the following sentence in each custom-form branch says 'after the first time you save' (old 210–218,754–762,1007–1015). Treat this as a dated conflict; the sample wording is a recommendation, not mandatory literal text. Source 19 and concept 277 present a resolved 'before first save' rule without that conflict.",
+            "May requires attaching the method to a customer identity. Accounts v2 customer-configured Account and Customers v1 Customer are separate branches; the v2 note describes Connect GA and public preview for other Stripe users, with a preview version for enrollees (old 42–86,164–208,676–720,929–973). Checkout actually illustrates customer.id in its setup-mode Session, together with customer authorization, returned Session URL and test SetupIntent requires_action→succeeded (old 88–120). Source 27's 'throughout' exceeds what the older Checkout example shows.",
+            "The May Direct API SetupIntent usage prose offers on_session or off_session, while shown web/mobile samples use off_session (old 227–264,722–752,975–1005). The Stripe.js client confirms with setup intent client secret, return_url and example online mandate_data infer_from_client (old 265–268,355–377). Native iOS STPPaymentHandler.confirmSetupIntent reports succeeded/canceled/failed setup and example returnURL, and Android PaymentLauncher.confirm with ConfirmSetupIntentParams reports setup via callback (old 764–801,1017–1062). Source 22 should distinguish example usage from the documented choices.",
+            "May's payment-and-save Direct API section creates/confirms a PaymentIntent with matching customer identity and setup_future_usage=off_session, return_url, and mandate_data if needed to create a mandate (old 440–523). The separate optional manual redirect example in the SetupIntent portion is a PaymentIntent for a payment, with requires_action and next_action.redirect_to_url, and lacks the save flag or mandate in its sample (old 379–437). Keep it scoped as a payment example and do not reinterpret it as a SetupIntent or as demonstrated save-on-payment.",
+            "May later reuse is a separate merchant create/confirm PaymentIntent with saved PaymentMethod ID, matching customer, off_session=true when customer is outside checkout (old 525–567,803–845,1064–1106). May explicitly says on-session still redirects to Revolut even with a saved method (old 134,585,863). Generic examples at old 224 and 443 mention avoiding future authentication, which cannot be applied universally or override the explicit on-session rule. Detach deactivates the reusable method and sends mandate.updated plus payment_method.detached (old 569–571,847–849,1108–1110), accurately reflected at source 25."
+          ],
+          "conflicts": [
+            "Current source 19 equates the first save date with a settled notice rule. May old 212–218,756–762,1009–1015 explicitly require notice before confirmation but conflict with the nearby ‘after the first time’ sentence. Use the scoped clear before-confirm instruction and record the ambiguity. Example notice text is recommended.",
+            "Source 22 presents SetupIntent usage only as off_session; old 229, 724 and 977 offer on_session or off_session. Wallet concept 277 omits SetupIntent usage and correctly assigns off_session to the separate PaymentIntent setup_future_usage path (old 451–457). The concept’s actual consent timing simplification remains a separate issue. The generic no-auth wording at old 224 and 443 does not override May's explicit on-session redirect with a saved method (old 134,585,863).",
+            "Source 27 says customer_account replaces customer throughout; May old 110–115 directly shows customer.id on Checkout, and old 231–264,459–523 and 529–567 instead illustrate the versioned alternative fields explicitly.",
+            "May's optional manual redirect section within SetupIntent exposition is actually a PaymentIntent example (old 379–437). It establishes a payment redirect and status verification, not support for manual SetupIntent confirmation or saving without setup_future_usage."
+          ],
+          "reason": "The November raw remains navigation only. The existing summary needs dated consent ambiguity, retention of written agreement, accurate customer identity and setup usage scope, and explicit setup versus later off-session payment."
+        }
+      ],
+      "affected_concepts": [
+        "wiki/concepts/stripe-wallets.md"
+      ],
+      "unresolved_questions": [
+        "November child guides were not read. Current account/preview eligibility, precise consent scheduling where the captured language conflicts, live mandate acceptance and later payment success require separate evidence."
+      ],
+      "mapped_source_assessment": {
+        "source_target": "wiki/sources/source-stripe-revolut-pay-set-up-future-payments.md",
+        "proposed_disposition": "source_required_update",
+        "update_needed": true,
+        "findings": [
+          "November 7 raw 5–17 supplies the same four variant identities that May 7 raw 8–10,122–124,573–575,851–853 labels Checkout, Direct API, mobile iOS and mobile Android. Diff 7–1115 replaces inline bodies with selector links. The source already identifies the correct variants at line 13. November changes presentation and navigation, not evidenced behavior.",
+          "May requires permission and agreement before saving. Merchant terms describe what is saved, opt-in, intended payment series/transactions, timing/frequency, amount determination, applicable subscription cancellation policy, and retention of written agreement (old 29–40,151–162). Custom forms must present written notice before confirming the SetupIntent or PaymentIntent, but the following sentence in each custom-form branch says 'after the first time you save' (old 210–218,754–762,1007–1015). Treat this as a dated conflict; the sample wording is a recommendation, not mandatory literal text. Source 19 and concept 277 present a resolved 'before first save' rule without that conflict.",
+          "May requires attaching the method to a customer identity. Accounts v2 customer-configured Account and Customers v1 Customer are separate branches; the v2 note describes Connect GA and public preview for other Stripe users, with a preview version for enrollees (old 42–86,164–208,676–720,929–973). Checkout actually illustrates customer.id in its setup-mode Session, together with customer authorization, returned Session URL and test SetupIntent requires_action→succeeded (old 88–120). Source 27's 'throughout' exceeds what the older Checkout example shows.",
+          "The May Direct API SetupIntent usage prose offers on_session or off_session, while shown web/mobile samples use off_session (old 227–264,722–752,975–1005). The Stripe.js client confirms with setup intent client secret, return_url and example online mandate_data infer_from_client (old 265–268,355–377). Native iOS STPPaymentHandler.confirmSetupIntent reports succeeded/canceled/failed setup and example returnURL, and Android PaymentLauncher.confirm with ConfirmSetupIntentParams reports setup via callback (old 764–801,1017–1062). Source 22 should distinguish example usage from the documented choices.",
+          "May's payment-and-save Direct API section creates/confirms a PaymentIntent with matching customer identity and setup_future_usage=off_session, return_url, and mandate_data if needed to create a mandate (old 440–523). The separate optional manual redirect example in the SetupIntent portion is a PaymentIntent for a payment, with requires_action and next_action.redirect_to_url, and lacks the save flag or mandate in its sample (old 379–437). Keep it scoped as a payment example and do not reinterpret it as a SetupIntent or as demonstrated save-on-payment.",
+          "May later reuse is a separate merchant create/confirm PaymentIntent with saved PaymentMethod ID, matching customer, off_session=true when customer is outside checkout (old 525–567,803–845,1064–1106). May explicitly says on-session still redirects to Revolut even with a saved method (old 134,585,863). Generic examples at old 224 and 443 mention avoiding future authentication, which cannot be applied universally or override the explicit on-session rule. Detach deactivates the reusable method and sends mandate.updated plus payment_method.detached (old 569–571,847–849,1108–1110), accurately reflected at source 25."
+        ],
+        "conflicts": [
+          "Current source 19 equates the first save date with a settled notice rule. May old 212–218,756–762,1009–1015 explicitly require notice before confirmation but conflict with the nearby ‘after the first time’ sentence. Use the scoped clear before-confirm instruction and record the ambiguity. Example notice text is recommended.",
+          "Source 22 presents SetupIntent usage only as off_session; old 229, 724 and 977 offer on_session or off_session. Wallet concept 277 omits SetupIntent usage and correctly assigns off_session to the separate PaymentIntent setup_future_usage path (old 451–457). The concept’s actual consent timing simplification remains a separate issue. The generic no-auth wording at old 224 and 443 does not override May's explicit on-session redirect with a saved method (old 134,585,863).",
+          "Source 27 says customer_account replaces customer throughout; May old 110–115 directly shows customer.id on Checkout, and old 231–264,459–523 and 529–567 instead illustrate the versioned alternative fields explicitly.",
+          "May's optional manual redirect section within SetupIntent exposition is actually a PaymentIntent example (old 379–437). It establishes a payment redirect and status verification, not support for manual SetupIntent confirmation or saving without setup_future_usage."
+        ],
+        "reason": "The November raw remains navigation only. The existing summary needs dated consent ambiguity, retention of written agreement, accurate customer identity and setup usage scope, and explicit setup versus later off-session payment."
+      },
+      "findings": [
+        "November 7 raw 5–17 supplies the same four variant identities that May 7 raw 8–10,122–124,573–575,851–853 labels Checkout, Direct API, mobile iOS and mobile Android. Diff 7–1115 replaces inline bodies with selector links. The source already identifies the correct variants at line 13. November changes presentation and navigation, not evidenced behavior.",
+        "May requires permission and agreement before saving. Merchant terms describe what is saved, opt-in, intended payment series/transactions, timing/frequency, amount determination, applicable subscription cancellation policy, and retention of written agreement (old 29–40,151–162). Custom forms must present written notice before confirming the SetupIntent or PaymentIntent, but the following sentence in each custom-form branch says 'after the first time you save' (old 210–218,754–762,1007–1015). Treat this as a dated conflict; the sample wording is a recommendation, not mandatory literal text. Source 19 and concept 277 present a resolved 'before first save' rule without that conflict.",
+        "May requires attaching the method to a customer identity. Accounts v2 customer-configured Account and Customers v1 Customer are separate branches; the v2 note describes Connect GA and public preview for other Stripe users, with a preview version for enrollees (old 42–86,164–208,676–720,929–973). Checkout actually illustrates customer.id in its setup-mode Session, together with customer authorization, returned Session URL and test SetupIntent requires_action→succeeded (old 88–120). Source 27's 'throughout' exceeds what the older Checkout example shows.",
+        "The May Direct API SetupIntent usage prose offers on_session or off_session, while shown web/mobile samples use off_session (old 227–264,722–752,975–1005). The Stripe.js client confirms with setup intent client secret, return_url and example online mandate_data infer_from_client (old 265–268,355–377). Native iOS STPPaymentHandler.confirmSetupIntent reports succeeded/canceled/failed setup and example returnURL, and Android PaymentLauncher.confirm with ConfirmSetupIntentParams reports setup via callback (old 764–801,1017–1062). Source 22 should distinguish example usage from the documented choices.",
+        "May's payment-and-save Direct API section creates/confirms a PaymentIntent with matching customer identity and setup_future_usage=off_session, return_url, and mandate_data if needed to create a mandate (old 440–523). The separate optional manual redirect example in the SetupIntent portion is a PaymentIntent for a payment, with requires_action and next_action.redirect_to_url, and lacks the save flag or mandate in its sample (old 379–437). Keep it scoped as a payment example and do not reinterpret it as a SetupIntent or as demonstrated save-on-payment.",
+        "May later reuse is a separate merchant create/confirm PaymentIntent with saved PaymentMethod ID, matching customer, off_session=true when customer is outside checkout (old 525–567,803–845,1064–1106). May explicitly says on-session still redirects to Revolut even with a saved method (old 134,585,863). Generic examples at old 224 and 443 mention avoiding future authentication, which cannot be applied universally or override the explicit on-session rule. Detach deactivates the reusable method and sends mandate.updated plus payment_method.detached (old 569–571,847–849,1108–1110), accurately reflected at source 25."
+      ],
+      "substantive_changes": [],
+      "historical_claims_to_preserve": [
+        "May requires permission and agreement before saving. Merchant terms describe what is saved, opt-in, intended payment series/transactions, timing/frequency, amount determination, applicable subscription cancellation policy, and retention of written agreement (old 29–40,151–162). Custom forms must present written notice before confirming the SetupIntent or PaymentIntent, but the following sentence in each custom-form branch says 'after the first time you save' (old 210–218,754–762,1007–1015). Treat this as a dated conflict; the sample wording is a recommendation, not mandatory literal text. Source 19 and concept 277 present a resolved 'before first save' rule without that conflict.",
+        "May requires attaching the method to a customer identity. Accounts v2 customer-configured Account and Customers v1 Customer are separate branches; the v2 note describes Connect GA and public preview for other Stripe users, with a preview version for enrollees (old 42–86,164–208,676–720,929–973). Checkout actually illustrates customer.id in its setup-mode Session, together with customer authorization, returned Session URL and test SetupIntent requires_action→succeeded (old 88–120). Source 27's 'throughout' exceeds what the older Checkout example shows.",
+        "The May Direct API SetupIntent usage prose offers on_session or off_session, while shown web/mobile samples use off_session (old 227–264,722–752,975–1005). The Stripe.js client confirms with setup intent client secret, return_url and example online mandate_data infer_from_client (old 265–268,355–377). Native iOS STPPaymentHandler.confirmSetupIntent reports succeeded/canceled/failed setup and example returnURL, and Android PaymentLauncher.confirm with ConfirmSetupIntentParams reports setup via callback (old 764–801,1017–1062). Source 22 should distinguish example usage from the documented choices.",
+        "May's payment-and-save Direct API section creates/confirms a PaymentIntent with matching customer identity and setup_future_usage=off_session, return_url, and mandate_data if needed to create a mandate (old 440–523). The separate optional manual redirect example in the SetupIntent portion is a PaymentIntent for a payment, with requires_action and next_action.redirect_to_url, and lacks the save flag or mandate in its sample (old 379–437). Keep it scoped as a payment example and do not reinterpret it as a SetupIntent or as demonstrated save-on-payment.",
+        "May later reuse is a separate merchant create/confirm PaymentIntent with saved PaymentMethod ID, matching customer, off_session=true when customer is outside checkout (old 525–567,803–845,1064–1106). May explicitly says on-session still redirects to Revolut even with a saved method (old 134,585,863). Generic examples at old 224 and 443 mention avoiding future authentication, which cannot be applied universally or override the explicit on-session rule. Detach deactivates the reusable method and sends mandate.updated plus payment_method.detached (old 569–571,847–849,1108–1110), accurately reflected at source 25.",
+        "Preserve the May 7, 2026 raw in source 4–7 and 39–41, distinguish November 7 chooser and unread child links, keep root index 7 → Stripe index 385 and 408–410 → Stripe Wallets concept 263–277 and 422, and add the reciprocal source-to-concept route."
+      ],
+      "conflicts": [
+        "Current source 19 equates the first save date with a settled notice rule. May old 212–218,756–762,1009–1015 explicitly require notice before confirmation but conflict with the nearby ‘after the first time’ sentence. Use the scoped clear before-confirm instruction and record the ambiguity. Example notice text is recommended.",
+        "Source 22 presents SetupIntent usage only as off_session; old 229, 724 and 977 offer on_session or off_session. Wallet concept 277 omits SetupIntent usage and correctly assigns off_session to the separate PaymentIntent setup_future_usage path (old 451–457). The concept’s actual consent timing simplification remains a separate issue. The generic no-auth wording at old 224 and 443 does not override May's explicit on-session redirect with a saved method (old 134,585,863).",
+        "Source 27 says customer_account replaces customer throughout; May old 110–115 directly shows customer.id on Checkout, and old 231–264,459–523 and 529–567 instead illustrate the versioned alternative fields explicitly.",
+        "May's optional manual redirect section within SetupIntent exposition is actually a PaymentIntent example (old 379–437). It establishes a payment redirect and status verification, not support for manual SetupIntent confirmation or saving without setup_future_usage."
+      ],
+      "expected_read_files": [
+        {
+          "path": "raw/stripe-payments-revolut-pay-set-up-future-payments-2026-11-07.md",
+          "sha256": "46fd5e33ae2569c03407cb7d4a09745efc29a089e2a95b509037eaf6e9c4f333",
+          "lines": 17
+        },
+        {
+          "path": "raw/stripe-revolut-pay-set-up-future-payments-2025.md",
+          "sha256": "5c4571cc7a848df63cb02f636bb1b63723e751142c61beae9dd3d72ea497a1b0",
+          "lines": 1110
+        },
+        {
+          "path": "wiki/sources/source-stripe-revolut-pay-set-up-future-payments.md",
+          "sha256": "e13f652b901ed91b2c618296c3bb46f4898b52026e925391e0a1382b4e333b27",
+          "lines": 41
+        },
+        {
+          "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/480bbb7f8b565a6f06e391ad/content.diff",
+          "sha256": "86e6eb56075192361a80967626e441507bff526294dc6a04900227a8cb974032",
+          "lines": 1115
+        }
+      ],
+      "original_query_prompts_path": "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md",
+      "original_prompts": "New raw `raw/stripe-payments-revolut-pay-set-up-future-payments-2026-11-07.md`. Prior raw `raw/stripe-revolut-pay-set-up-future-payments-2025.md`. Current summaries `wiki/sources/source-stripe-revolut-pay-set-up-future-payments.md`.\n\n- Q1. For `https://docs.stripe.com/payments/revolut-pay/set-up-future-payments`, what documented behavior, prerequisites, actors and state transitions does the complete new capture establish? How do these compare with the matched prior capture and each mapped summary?\n\n- Q2. Which changes are substantive, presentational or navigation-only? Identify the exact dated qualifications, conflicts and reciprocal routes that the proposed disposition should preserve.",
+      "reviewed_answers": {
+        "Q1": "The November 7, 2026 capture of https://docs.stripe.com/payments/revolut-pay/set-up-future-payments is a selector for future Revolut Pay payments through Checkout, Direct API, native iOS and native Android (new raw lines 5-17). It establishes no implementation behavior or transitions by itself. The May 7 guide requires merchant permission and written agreement, customer association, and a hosted Checkout setup-mode Session or a server-created SetupIntent with the matching Customer or customer-configured Account. Hosted Checkout demonstrates test authentication from requires_action to succeeded (old raw lines 29-57 and 88-120). Direct API client confirmation uses the SetupIntent secret and return URL with online acceptance data, while iOS and Android use their SDK setup handlers. The separate charge-and-save example confirms a PaymentIntent with setup_future_usage=off_session; later reuse creates and confirms a new PaymentIntent, with off_session if the customer is outside checkout (old raw lines 227-264, 355-377, 440-571, 764-801 and 1017-1106). On-session still redirects even with a saved method. Detach deactivates the method and emits both dated events. source-stripe-revolut-pay-set-up-future-payments.md captures most routes but overstates Accounts v2 field use and leaves the notice contradiction and setup usage choice implicit. Setup succeeded does not establish a subsequent charge.",
+        "Q2": "At https://docs.stripe.com/payments/revolut-pay/set-up-future-payments, the November 7, 2026 difference is presentation and navigation. The selector replaces inline variant bodies with links to the same variants labeled in the May 7, 2026 guide (new raw lines 9-17; old raw lines 8-14, 122-137, 573-585 and 851-863). No substantive product change is established. Preserve the dated opt-in/recordkeeping requirements, clear preconfirmation notice and unresolved 'after the first time' sentence with recommended example text, versioned Accounts v2 versus Customers v1 examples, and on-session redirect despite the generic future no-auth wording (old raw lines 29-57, 134-137, 210-264 and 754-762). Keep the optional manual PaymentIntent redirect separate from SetupIntent and charge-and-save evidence, and retain later-charge and detach boundaries (old raw lines 379-457 and 525-571). Correct source-stripe-revolut-pay-set-up-future-payments.md on those baseline points. Maintain the root index and Stripe provider index route, the Stripe Wallets concept's reciprocal future-payments source route, the May raw and separate November selector. The child variants were not reread for runtime guidance."
+      }
+    }
+  ],
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payments-revolut-pay-set-up-future-payments-2026-11-07.md",
+      "sha256": "46fd5e33ae2569c03407cb7d4a09745efc29a089e2a95b509037eaf6e9c4f333",
+      "lines": 17
+    },
+    {
+      "path": "raw/stripe-revolut-pay-set-up-future-payments-2025.md",
+      "sha256": "5c4571cc7a848df63cb02f636bb1b63723e751142c61beae9dd3d72ea497a1b0",
+      "lines": 1110
+    },
+    {
+      "path": "wiki/sources/source-stripe-revolut-pay-set-up-future-payments.md",
+      "sha256": "e13f652b901ed91b2c618296c3bb46f4898b52026e925391e0a1382b4e333b27",
+      "lines": 41
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/480bbb7f8b565a6f06e391ad/content.diff",
+      "sha256": "86e6eb56075192361a80967626e441507bff526294dc6a04900227a8cb974032",
+      "lines": 1115
+    }
+  ],
+  "concept_targets": [
+    {
+      "path": "wiki/concepts/stripe-wallets.md",
+      "before_sha256": "2a02bc3b8c9f9423fbadd2ca1be00409066001945724c4fa91569fa3a284f455",
+      "contributing_jobs": [
+        "payments-payment-methods-payment-method-connect-support",
+        "payments-payment-methods-payment-method-support",
+        "payments-payment-methods-pmd-registration",
+        "payments-paypal",
+        "payments-paypal-activate",
+        "payments-paypal-disputed-payments",
+        "payments-paypal-payout-reconciliation",
+        "payments-paypal-paypal-button",
+        "payments-paypal-set-up-future-payments",
+        "payments-paypay",
+        "payments-paypay-accept-a-payment",
+        "payments-revolut-pay",
+        "payments-revolut-pay-set-up-future-payments",
+        "payments-satispay",
+        "payments-satispay-accept-a-payment",
+        "payments-vipps",
+        "payments-vipps-accept-a-payment",
+        "payments-wallets",
+        "payments-wallets-link",
+        "payments-wechat-pay",
+        "payments-wechat-pay-accept-a-payment"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    }
+  ],
+  "state": "worker_running",
+  "attempt": 2,
+  "review_scope": "targeted",
+  "worker_agent": "/root/s05w4",
+  "reviewer_agent": "/root/s05r4",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-05/updates/attempts/payments-revolut-pay-set-up-future-payments/attempt-1/receipt.json",
+  "receipt_sha256": "0f29160c97552eb10f6723a1dcc980ebad77c765b86a111bb833f31fdd5e05fd",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-05/updates/attempts/payments-revolut-pay-set-up-future-payments/attempt-1/review.json",
+  "review_sha256": "2c062536823dc7404bd135b17301e40884033caf5024bb5acc452d8a3cd3b867",
+  "role_notes": "tracking/ingest/stripe/stripe-campaign-05/updates/role-notes.md",
+  "worker_output": "/tmp/stripe-s05-ingest/payments-revolut-pay-set-up-future-payments-worker.json",
+  "reviewer_output": "/tmp/stripe-s05-ingest/payments-revolut-pay-set-up-future-payments-reviewer.json",
+  "prior_attempt_dir": "tracking/ingest/stripe/stripe-campaign-05/updates/attempts/payments-revolut-pay-set-up-future-payments/attempt-1"
+}

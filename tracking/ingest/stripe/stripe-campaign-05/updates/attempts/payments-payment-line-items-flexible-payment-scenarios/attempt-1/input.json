@@ -1,0 +1,163 @@
+{
+  "job_id": "payments-payment-line-items-flexible-payment-scenarios",
+  "source_target": "wiki/sources/source-stripe-payment-line-items-flexible.md",
+  "source_before_sha256": "19b8fa3311350ac9bef1b956a82ea3532a49879117870cd7b82b0c0fba5068f7",
+  "contributions": [
+    {
+      "job_id": "payments-payment-line-items-flexible-payment-scenarios",
+      "canonical_url": "https://docs.stripe.com/payments/payment-line-items/flexible-payment-scenarios",
+      "attempt": 2,
+      "raw_path": "raw/stripe-payments-payment-line-items-flexible-payment-scenarios-2026-11-07.md",
+      "raw_sha256": "080d9e352f6aef809bc499e3c14ede1d70cb868c366980f6bf28ca643f55021c",
+      "prior_raw_path": "raw/stripe-payment-line-items-flexible-2026.md",
+      "prior_raw_sha256": "41756fe3620750c4c693fbb7998a453319bc776fba73ff80def39f4fd27e9af6",
+      "new_capture_role": "full_captured_page",
+      "proposed_disposition": "source_required_update",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-payment-line-items-flexible-payment-scenarios/attempt-2/receipt.json",
+      "receipt_sha256": "953ee4a9ca7fb64b5606ee36837a9ee1b8ac1ece326a37579270e4924e2ec24d",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-payment-line-items-flexible-payment-scenarios/attempt-2/review.json",
+      "review_sha256": "33b4e0b2c1f8b8f7eb09c5a0da33840db27259f3e6974a69d952ef27375ffde6",
+      "source_assessments": [
+        {
+          "source_target": "wiki/sources/source-stripe-payment-line-items-flexible.md",
+          "proposed_disposition": "source_required_update",
+          "update_needed": true,
+          "findings": [
+            "Source lines 43-47 retain surcharge-inclusive amount, separate surcharge field and the no-separate-line-item rule, and omit November's explicit top-level tax direction (old 1153-1178 and 1280-1282, new 925-946 and 1024-1026).",
+            "Restore the pre-existing late-add prohibition, optional-but-stable postal codes, PaymentIntent state boundaries, and overcapture/increment ceilings at source lines 15-34. These are baseline summary omissions, independent of the actual surcharge tax clarification.",
+            "Disambiguate source lines 18-23. The general rules cover later captures, while the zero-amount finalization example shows no amount_details or line_items submitted and retains prior line items. Both captures show that example. Its scope is limited to the illustrated finalization."
+          ],
+          "conflicts": [
+            "Baseline source lines 17-23 omit payment-method-dependent/manual multicapture and the rule against introducing amount_details or line_items late, and summarize the Klarna/PayPal exclusion as generic cards-only. Both raw captures establish an explicit Klarna/PayPal exclusion, conditional payment-method support and the symmetric include/unset and no-late-add rules (old 14-20, 136-142, 231-239, new 15-21, 107-113, 182-190). Do not infer broad payment-method coverage from the card sample.",
+            "Source lines 27-34 omit the materially different ceilings and separation between a larger capture and a larger authorization (old 542-544, 791-793, new 439-441, 632-634). Scoped L2/L3 language at source 38-41 should remain card-network transmission and eligibility language, while concept line 83's claim that savings are preserved requires qualification (old 1042, 1089, new 821, 868).",
+            "The partially captured final example shows succeeded alongside a retained amount_capturable value and the reconciled partial-authorization example includes a nested list URL with a different PaymentIntent ID. These sample discrepancies already exist (old 348-406 and 1044-1082, new 279-333 and 823-861), so avoid reading response excerpt values as contract or selecting the embedded URL as authoritative object identity."
+          ],
+          "reason": "November adds a material field-placement rule for tax with surcharge, and longstanding multicapture and authorization/capture conditions are incomplete in the current summary."
+        }
+      ],
+      "affected_concepts": [
+        "wiki/concepts/stripe-payment-line-items.md",
+        "wiki/concepts/stripe-surcharge.md"
+      ],
+      "unresolved_questions": [
+        "Neither sample transition establishes production method support, API version or realized savings. This comparison does not adjudicate availability or arithmetic outside the two captures and inspected concept context."
+      ],
+      "mapped_source_assessment": {
+        "source_target": "wiki/sources/source-stripe-payment-line-items-flexible.md",
+        "proposed_disposition": "source_required_update",
+        "update_needed": true,
+        "findings": [
+          "Source lines 43-47 retain surcharge-inclusive amount, separate surcharge field and the no-separate-line-item rule, and omit November's explicit top-level tax direction (old 1153-1178 and 1280-1282, new 925-946 and 1024-1026).",
+          "Restore the pre-existing late-add prohibition, optional-but-stable postal codes, PaymentIntent state boundaries, and overcapture/increment ceilings at source lines 15-34. These are baseline summary omissions, independent of the actual surcharge tax clarification.",
+          "Disambiguate source lines 18-23. The general rules cover later captures, while the zero-amount finalization example shows no amount_details or line_items submitted and retains prior line items. Both captures show that example. Its scope is limited to the illustrated finalization."
+        ],
+        "conflicts": [
+          "Baseline source lines 17-23 omit payment-method-dependent/manual multicapture and the rule against introducing amount_details or line_items late, and summarize the Klarna/PayPal exclusion as generic cards-only. Both raw captures establish an explicit Klarna/PayPal exclusion, conditional payment-method support and the symmetric include/unset and no-late-add rules (old 14-20, 136-142, 231-239, new 15-21, 107-113, 182-190). Do not infer broad payment-method coverage from the card sample.",
+          "Source lines 27-34 omit the materially different ceilings and separation between a larger capture and a larger authorization (old 542-544, 791-793, new 439-441, 632-634). Scoped L2/L3 language at source 38-41 should remain card-network transmission and eligibility language, while concept line 83's claim that savings are preserved requires qualification (old 1042, 1089, new 821, 868).",
+          "The partially captured final example shows succeeded alongside a retained amount_capturable value and the reconciled partial-authorization example includes a nested list URL with a different PaymentIntent ID. These sample discrepancies already exist (old 348-406 and 1044-1082, new 279-333 and 823-861), so avoid reading response excerpt values as contract or selecting the embedded URL as authoritative object identity."
+        ],
+        "reason": "November adds a material field-placement rule for tax with surcharge, and longstanding multicapture and authorization/capture conditions are incomplete in the current summary."
+      },
+      "findings": [
+        "Both captures cover amount_details on a manually captured PaymentIntent. Request if_available where the example calls for multicapture, overcapture, incremental authorization or partial authorization. Payment-method support governs availability, and amount_details.line_items requires expansion to appear in the response. The multi-capture section explicitly excludes Klarna and PayPal (old 14-21, 413-417, 660-666, 912-918, new 15-22, 338-344, 531-537, 724-730).",
+        "At first capture, add amount_details and/or its line items if absent or include or explicitly unset either when supplied at creation. The general subsequent-capture prose says to keep individually retained fields and cannot introduce fields absent in prior captures. Amounts for discount, tax and shipping sum and line items aggregate. Postal codes may be omitted but cannot change if supplied. An incomplete nonfinal capture remains requires_capture; an explicit final capture or default final capture can transition to succeeded. The special partial-capture finish example passes zero and final_capture=true after the earlier capture, omits amount_details and line_items from the final request, and retains first-capture line items in its response (old 136-142, 231-239, 282-286, 346-362, new 107-113, 182-190, 213-217, 277-289).",
+        "Overcapture increases the capture up to maximum_amount_capturable, with amount_details matching the actual capture. Incremental authorization calls increment_authorization up to the payment-method limit, with amount_details matching the new total authorized amount, and the example remains requires_capture with zero amount received (old 540-544, 789-793 and 851-905, new 437-441, 630-634 and 663-717).",
+        "Partial authorization can produce amount_details_amount_mismatch when the old items no longer match the smaller approved total. The merchant can reconcile amount_details at capture, clearing the error and allowing Stripe to send card line data to the networks. The unreconciled case can still succeed at capture, but Stripe withholds mismatched card data and the transaction loses eligibility for L2/L3 savings. Network transmission is one prerequisite, not an assertion of actual savings (old 964-1016, 1042-1089, 1104-1147, new 756-808, 821-868, 876-919).",
+        "Wiki root index line 7 leads to Stripe index 563-569 and 713-718. Source 49-57 links the Payment Line Items concept, main source and Surcharge concept. Payment Line Items concept 57-103 reciprocates and carries the scenario definitions. Surcharge concept 23-25 and 50-59 covers surcharge state and compatibility and routes to the separately scoped surcharge guide."
+      ],
+      "substantive_changes": [
+        "November 7 adds an explicit surcharge-plus-tax instruction to use top-level amount_details[tax][total_tax_amount] instead of line-level tax. The May 11 good example already populated top-level tax without stating the rule. The literal new prose uses singular line_item in its negative illustration, while actual example request arrays use line_items. Keep the semantic top-level-versus-line-level instruction without repurposing the negative spelling as a schema definition (old 1153-1178, new 925-946).",
+        "November redirects standard surcharge-flow navigation from /payments/collect-surcharges.md to /payments/cards/surcharge.md. Node examples are rendered in curl, select a PaymentMethod without explicitly listing payment_method_types, add a sample return_url on confirmed creation and substitute placeholders in two capture examples. The incorrect surcharge example drops May's public-preview SDK comment with the SDK sample. These example and navigation changes establish no new API version, eligibility or live payment behavior (old 22-81, 1018-1039, 1091-1101, 1155-1214 and 1282-1347, new 23-52, 810-818, 870-873, 927-958 and 1026-1059)."
+      ],
+      "historical_claims_to_preserve": [
+        "Retain May 11 and November 7 separately, including May's public-preview Node comment as a property of the incorrect SDK example (old 1282-1290). The November curl form gives no new SDK or GA claim, and neither snapshot changes the surcharge-inclusive PaymentIntent amount, separate surcharge field or failure from double-counting a separate surcharge line item (old 1153-1155, 1280-1282, new 925-927, 1024-1026).",
+        "Retain expansion, manually captured PaymentIntent and method qualification, independent multicapture field carry-forward, authorization/capture distinctions and the data-transmission consequences of a capture-time mismatch (old 14-20, 136-142, 231-239, 542-544, 791-793, 964-1089, new 15-21, 107-113, 182-190, 439-441, 632-634, 756-868).",
+        "Keep source 49-57's Payment Line Items and Surcharge navigation, Payment Line Items concept line 103 reciprocal source link, and old raw provenance.",
+        "Retain the dated general continuity prose and the scoped zero-amount example together (old 236-239 and 346-362, new 187-190 and 277-289)."
+      ],
+      "conflicts": [
+        "Baseline source lines 17-23 omit payment-method-dependent/manual multicapture and the rule against introducing amount_details or line_items late, and summarize the Klarna/PayPal exclusion as generic cards-only. Both raw captures establish an explicit Klarna/PayPal exclusion, conditional payment-method support and the symmetric include/unset and no-late-add rules (old 14-20, 136-142, 231-239, new 15-21, 107-113, 182-190). Do not infer broad payment-method coverage from the card sample.",
+        "Source lines 27-34 omit the materially different ceilings and separation between a larger capture and a larger authorization (old 542-544, 791-793, new 439-441, 632-634). Scoped L2/L3 language at source 38-41 should remain card-network transmission and eligibility language, while concept line 83's claim that savings are preserved requires qualification (old 1042, 1089, new 821, 868).",
+        "The partially captured final example shows succeeded alongside a retained amount_capturable value and the reconciled partial-authorization example includes a nested list URL with a different PaymentIntent ID. These sample discrepancies already exist (old 348-406 and 1044-1082, new 279-333 and 823-861), so avoid reading response excerpt values as contract or selecting the embedded URL as authoritative object identity.",
+        "Both dated documents pair the general subsequent-capture field-continuity rule (old raw lines 236-239 and new raw lines 187-190) with a specific zero-amount finalization example (old raw lines 346-362 and new raw lines 277-289). That request omits both amount_details and line_items after a first capture included them, and the example response retains first-capture line items. Current source lines 18-23 and concept lines 63-69 juxtapose them without scoping the example. Preserve the tension and avoid treating the example as a general exception or API contract."
+      ],
+      "expected_read_files": [
+        {
+          "path": "raw/stripe-payments-payment-line-items-flexible-payment-scenarios-2026-11-07.md",
+          "sha256": "080d9e352f6aef809bc499e3c14ede1d70cb868c366980f6bf28ca643f55021c",
+          "lines": 1071
+        },
+        {
+          "path": "raw/stripe-payment-line-items-flexible-2026.md",
+          "sha256": "41756fe3620750c4c693fbb7998a453319bc776fba73ff80def39f4fd27e9af6",
+          "lines": 1359
+        },
+        {
+          "path": "wiki/sources/source-stripe-payment-line-items-flexible.md",
+          "sha256": "19b8fa3311350ac9bef1b956a82ea3532a49879117870cd7b82b0c0fba5068f7",
+          "lines": 57
+        },
+        {
+          "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/e47c9805e0462d6845bf01d0/content.diff",
+          "sha256": "c6550b935f88b96bc7091d8fac689825ad64cb6c27fb44caf4e82eecc16ac07d",
+          "lines": 1008
+        }
+      ],
+      "original_query_prompts_path": "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md",
+      "original_prompts": "New raw `raw/stripe-payments-payment-line-items-flexible-payment-scenarios-2026-11-07.md`. Prior raw `raw/stripe-payment-line-items-flexible-2026.md`. Current summaries `wiki/sources/source-stripe-payment-line-items-flexible.md`.\n\n- Q1. For `https://docs.stripe.com/payments/payment-line-items/flexible-payment-scenarios`, what documented behavior, prerequisites, actors and state transitions does the complete new capture establish? How do these compare with the matched prior capture and each mapped summary?\n\n- Q2. Which changes are substantive, presentational or navigation-only? Identify the exact dated qualifications, conflicts and reciprocal routes that the proposed disposition should preserve.",
+      "reviewed_answers": {
+        "Q1": "The November 7 capture at https://docs.stripe.com/payments/payment-line-items/flexible-payment-scenarios describes merchant use of amount_details on a PaymentIntent, including manual capture and if_available requests subject to method support. Multicapture excludes Klarna and PayPal, permits adding data at first capture, and describes general later-capture continuity for previously supplied fields, with no adding fields that prior captures omitted. The initial nonfinal partial capture can stay requires_capture and the explicit or default final capture can complete it. In the specific zero-amount example, the final request sets final_capture=true and omits amount_details and line_items even though the earlier capture sent them. The example response retains first-capture line items. Both captures present this prose/example tension (old raw lines 236-239 and old raw lines 346-362, new raw lines 187-190 and new raw lines 277-289). Stripe aggregates items and sums amounts across captures. Overcapture updates details to match the larger capture within its ceiling, while an increment updates details to match the larger authorized total without capturing it. A partial-authorization mismatch can be corrected at capture to enable card-network data transmission or remain when capture succeeds without sending mismatched data. A surcharge is included in the amount and specified separately, with top-level tax. The May mechanics match apart from the new explicit tax instruction (old raw lines 14-21, old raw lines 231-286, old raw lines 540-544, old raw lines 789-793 and old raw lines 964-1155, compared with new raw lines 15-22, new raw lines 182-217, new raw lines 437-441, new raw lines 630-634 and new raw lines 756-927). source-stripe-payment-line-items-flexible.md summarizes the scenarios but needs the tax qualification, field continuity, and capture/authorization ceilings.",
+        "Q2": "For https://docs.stripe.com/payments/payment-line-items/flexible-payment-scenarios, source-stripe-payment-line-items-flexible.md needs a source update. The substantive November 7 clarification directs top-level tax when using a surcharge, while the May 11 example already used top-level tax (old raw lines 1153-1178 versus new raw lines 925-946). Preserve surcharge-inclusive PaymentIntent amount, distinct surcharge field, and the example’s 400 when surcharge is also a line item (old raw lines 1280-1282 and new raw lines 1024-1026). Node-to-curl, example return URL and payment method selection, and the updated surcharge link are presentation or navigation. The dropped public-preview SDK note is historical example context (old raw lines 1284-1290 and new raw lines 1028-1034). Both dates preserve the general continuity rule and the distinct zero-amount final request omitting amount_details and line_items while the example response retains first-capture items (old raw lines 236-239 and old raw lines 346-362, new raw lines 187-190 and new raw lines 277-289). Treat the zero-amount example as scoped to its illustrated finalization. Existing missing late-add and ceiling checks are baseline findings, and sample object inconsistencies do not define behavior. Keep the Payment Line Items reciprocal source link, Surcharge concept route and May raw provenance."
+      }
+    }
+  ],
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payments-payment-line-items-flexible-payment-scenarios-2026-11-07.md",
+      "sha256": "080d9e352f6aef809bc499e3c14ede1d70cb868c366980f6bf28ca643f55021c",
+      "lines": 1071
+    },
+    {
+      "path": "raw/stripe-payment-line-items-flexible-2026.md",
+      "sha256": "41756fe3620750c4c693fbb7998a453319bc776fba73ff80def39f4fd27e9af6",
+      "lines": 1359
+    },
+    {
+      "path": "wiki/sources/source-stripe-payment-line-items-flexible.md",
+      "sha256": "19b8fa3311350ac9bef1b956a82ea3532a49879117870cd7b82b0c0fba5068f7",
+      "lines": 57
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/e47c9805e0462d6845bf01d0/content.diff",
+      "sha256": "c6550b935f88b96bc7091d8fac689825ad64cb6c27fb44caf4e82eecc16ac07d",
+      "lines": 1008
+    }
+  ],
+  "concept_targets": [
+    {
+      "path": "wiki/concepts/stripe-payment-line-items.md",
+      "before_sha256": "b74c3604eef526ff82f821886be1004b2dfdc009c0be9ef49270aa3a10965aa3",
+      "contributing_jobs": [
+        "payments-payment-line-items",
+        "payments-payment-line-items-flexible-payment-scenarios"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    },
+    {
+      "path": "wiki/concepts/stripe-surcharge.md",
+      "before_sha256": "85632c5703347832ac277b7eaa078f3a67c02679e6037c00c148478690e2cce4",
+      "contributing_jobs": [
+        "payments-payment-line-items-flexible-payment-scenarios"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    }
+  ],
+  "state": "worker_running",
+  "attempt": 1,
+  "review_scope": "full",
+  "worker_agent": "/root/s05w5",
+  "reviewer_agent": "/root/s05r5",
+  "role_notes": "tracking/ingest/stripe/stripe-campaign-05/updates/role-notes.md",
+  "worker_output": "/tmp/stripe-s05-ingest/payments-payment-line-items-flexible-payment-scenarios-worker.json",
+  "reviewer_output": "/tmp/stripe-s05-ingest/payments-payment-line-items-flexible-payment-scenarios-reviewer.json"
+}

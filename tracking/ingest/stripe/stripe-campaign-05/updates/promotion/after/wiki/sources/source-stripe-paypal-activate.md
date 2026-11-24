@@ -1,0 +1,52 @@
+---
+title: "Stripe: Activate PayPal Payments"
+type: source
+date_ingested: 2026-05-07
+date_updated: 2026-11-22
+original_format: webpage
+canonical_url: https://docs.stripe.com/payments/paypal/activate
+raw_files:
+  - "stripe-payments-paypal-activate-2026-11-07.md"
+  - "stripe-paypal-activate-2025.md"
+tags: [stripe, wallets, paypal, activation, connect, settlement-preference, account-switching, recurring]
+---
+
+## Summary
+
+The May 7 and November 7, 2026 guides describe PayPal activation for eligible [[stripe|Stripe]] accounts based in the EU except Hungary, plus Liechtenstein, Norway, the United Kingdom and Switzerland. Both document the same Dashboard activation and switching flow.
+
+## Activate and check status
+
+1. In Stripe Dashboard **Payment methods**, find PayPal and select **Turn on**.
+2. Choose **Add PayPal funds to your Stripe balance** for the standard Stripe money flow, or **Keep PayPal funds in PayPal balance** to manage payouts on PayPal. PayPal payout frequency can optionally be automated. See [[source-stripe-paypal-settlement]] for the two settlement paths.
+3. Select **Continue to PayPal** to connect an existing PayPal account or create and connect a new one. PayPal redirects back to Stripe. Check integration status in Stripe's **Payment methods** settings.
+4. If the integration is pending after linking, confirm the PayPal account email and check whether PayPal needs additional verification. Contact Stripe Support if those possibilities do not apply.
+
+See May lines 8–19 and November lines 9–20 for both settlement options, the return and status checks.
+
+## Connect onboarding
+
+Check the [[source-stripe-paypal|PayPal overview's Connect scope]] before requesting access. The separate November overview describes online marketplaces, destination charges and separate charges and transfers, a joint Stripe and PayPal review that can take several weeks, and instructions for linking after approval. It lists direct charges and `on_behalf_of` as unsupported (overview lines 114–135).
+
+Both activation guides describe submitting a Dashboard onboarding request and receiving a Stripe confirmation email. Prepare the Acceptable User Policy (AUP) or terms and conditions and evidence of seller controls, such as screening, reviews or listing restrictions. A PayPal representative contacts the business by phone and email to complete onboarding and obtain the documents. Stripe separately sends progress emails. Payment methods settings also show onboarding status. Submission, review, approval and account linking are distinct stages. See May lines 21–31 and November lines 22–32.
+
+## Switch PayPal accounts
+
+Outside Connect, an existing or newly created PayPal account can replace the previous one. In **Payment methods** under **Wallets**, expand PayPal, choose **Switch account**, read the dialog and select **Switch PayPal account**. Connect platforms and connected accounts cannot switch PayPal accounts.
+
+Payments continue through the previous PayPal account until the new account is successfully connected. After the cutover, payments processed through the old account remain eligible for refunds and disputes. The new account can show as pending for email confirmation or additional PayPal verification. Contact Stripe Support if the PayPal requirements have been met and status stays pending.
+
+If recurring PayPal payments were enabled, switching disables them. Re-enable recurring payments and collect customer mandates again after switching. See May lines 33–55 and November lines 34–56.
+
+## Related Pages
+
+- [[stripe]] — provider overview
+- [[stripe-wallets#PayPal (via Stripe) Details|PayPal in Stripe Wallets]]
+- [[stripe-paypal#Prerequisites|Stripe PayPal prerequisites]]
+- [[source-stripe-paypal-accept-payment]] — accepting PayPal after activation
+- [[source-stripe-paypal-set-up-future-payments]] — recurring enablement and mandate setup
+
+## Raw Sources
+
+- [[raw/stripe-payments-paypal-activate-2026-11-07]] — November 7, 2026 full PayPal activation guide
+- [[raw/stripe-paypal-activate-2025]] — May 7, 2026 full PayPal activation guide

@@ -1,0 +1,60 @@
+---
+title: "Stripe Docs — Payment method rules"
+type: source
+date_ingested: 2026-05-08
+date_updated: 2026-11-22
+original_format: webpage
+canonical_url: https://docs.stripe.com/payments/payment-method-rules
+raw_files:
+  - "stripe-payments-payment-method-rules-2026-11-07.md"
+  - "stripe-payment-method-rules-2025.md"
+tags: [stripe, payment-method-rules, dynamic-payment-methods, checkout, payment-element, klarna, bnpl]
+---
+
+## Summary
+
+[[stripe]] payment method rules control method visibility by order amount, customer country, or payment currency. Merchants set conditions in the Dashboard without adding custom rule code. Both the May 8 and November 7, 2026 guides require dynamic payment methods and a Payment Element, Express Checkout Element, Checkout, or Payment Links integration.
+
+## Scope and setup
+
+The November guide limits rules to eligible non-card methods and explicitly excludes cards and wallets, including Apple Pay and Google Pay. The rules do not apply on the Hosted Invoice Page or when one of the listed integrations creates a subscription. May documented the subscription exception and used broader wording for methods. November supplies the explicit exclusions without dating when they began.
+
+In Dashboard payment method settings, open the supported method's overflow menu, choose **Customize availability**, set the conditions, and select **Apply Overrides**. When a transaction uses another currency, Stripe converts the configured limit using the current exchange rate. Stripe A/B Testing can use these conditions as experiment criteria.
+
+The May guide showed a **Customized** tag after applying overrides and described matching sessions for Checkout, Payment Element, and Express Checkout Element. November retains the **Apply Overrides** workflow and Payment Links prerequisite and testing instructions. The November capture omits the tag and the May example's session-result sentence, leaving the current tag state unverified.
+
+## Connect availability rules and method configurations
+
+For direct charges, the November rules guide uses the platform's template configuration. Connected accounts inherit those conditional rules and cannot override them. For destination charges, conditional rules come from the platform's direct payment method settings. The connected account's rules do not affect those charges.
+
+The separate November [Manage payment methods for connected accounts guide](../../raw/stripe-connect-manage-payment-methods-2026-11-07.md#L5-L16) describes general method enablement and configuration selection by merchant of record. Direct charges and indirect charges with `on_behalf_of` use the connected account's enablement and configuration. The indirect group includes destination charges and separate charges and transfers. Indirect charges without `on_behalf_of` use the platform's enablement and configuration.
+
+These captures leave open how the conditional rules and method configuration selection interact on a destination charge with `on_behalf_of`. They also give no conditional rule inheritance for separate charges and transfers.
+
+## Testing location-based rules
+
+Use a test email with `+location_XX` in its local part, where `XX` is a valid two-letter ISO country code. The Checkout or Payment Link URL shows the methods available for the simulated country. Test cards work as usual. This exercise simulates visibility and leaves live payment outcomes unverified.
+
+| Integration | How to test |
+| --- | --- |
+| Checkout | Set `customer_email` on Session creation, such as `test+location_FR@example.com`, or use a Customer whose email has the location suffix |
+| Payment Links | Pass `prefilled_email` or `locked_prefilled_email` as a URL parameter with the location-formatted email |
+
+May uses Node.js and November uses cURL for the same Checkout Session test.
+
+## CDN Assets
+
+- `raw/assets/stripe-pm-rules-klarna-present.png` — May screenshot with Klarna visible (73 KB)
+- `raw/assets/stripe-pm-rules-klarna-hidden.png` — May screenshot with Klarna hidden (115 KB)
+
+## Related Pages
+
+- [[stripe-payment-method-rules]] — rule and charge-type scope
+- [[stripe-dynamic-payment-methods]] — dynamic payment methods prerequisite
+- [[stripe-ab-testing-payment-methods]] — compatible experiments
+- [[stripe]] — Stripe company page
+
+## Raw Sources
+
+- [[raw/stripe-payments-payment-method-rules-2026-11-07|November 7, 2026 payment method rules guide]]
+- [[raw/stripe-payment-method-rules-2025|May 8, 2026 payment method rules guide]] — verbatim webpage content (78 lines)

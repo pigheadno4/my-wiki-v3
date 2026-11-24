@@ -7,7 +7,7 @@ tags: [stripe, payouts, bank-account, payout-schedule, settlement, currencies, i
 
 ## Overview
 
-Stripe payouts transfer your available balance to your bank account. Initial payout takes 7–14 days after first payment; subsequent payouts follow your chosen schedule.
+Stripe payouts transfer your available balance to your bank account. Stripe typically schedules the first payout to complete within 7–14 days after your first successful live payment, depending on industry, country and risk. Subsequent payouts follow your chosen schedule, while settlement timing controls when funds become available and the recipient bank can take additional time. See [[source-stripe-payouts]].
 
 ## Payout Schedule
 
@@ -19,7 +19,7 @@ Stripe payouts transfer your available balance to your bank account. Initial pay
 
 Non-business days → next business day. All times UTC (APAC: local timezone).
 
-**Country restrictions**: Brazil and India always automatic daily. Japan: no daily (default manual).
+**Country restrictions**: Brazil and India always use automatic daily payouts. Thailand defaults to automatic daily payouts. Japan defaults to manual, allows weekly and monthly, and has no daily option. Connect cross-border rules can differ. See [[source-stripe-payouts]] for the separate dated settlement table.
 
 **Key distinction**: schedule controls when funds are *sent*, not when they *become available*.
 
@@ -35,9 +35,9 @@ Non-business days → next business day. All times UTC (APAC: local timezone).
 ## Supported Bank Account Types
 
 - Traditional checking/savings
-- Virtual banks (N26, Revolut, Wise) — higher payout failure rate
+- The May 2026 guide lists virtual accounts such as N26, Revolut and Wise, with a higher payout-failure caveat. The November guide requires a Japanese futsū or tōza account in the legal entity’s name and excludes services that do not open accounts in that name, such as Wise and Payoneer, for Japan payouts.
 - Debit cards (instant payouts, if eligible)
-- US Treasury financial accounts
+- For eligible US businesses, payment proceeds settle into a Stripe financial account. Bank details are needed for payouts to an external account. The full guide separately describes an optional Stripe financial account destination for approved Stripe Capital financing.
 
 ## Country Coverage (80+ countries)
 
@@ -47,25 +47,25 @@ Most other countries require cross-border payout accounts. Bank account format v
 
 ## Instant Payouts
 
-Available in 37 countries. Within 30 minutes, any time including weekends. Fee: **1%** (CA/EU/UK/SG/NO/HK/MY) or **1.5%** (US/AU/NZ/AE). Not compatible with multi-currency settlement. Daily limits: max 10/day, daily maximum amount, region-specific reset time. `instant_available` balance: fee pre-deducted, capped by daily limit, card funds immediate (ACH/SEPA only after settlement). Payout methods: debit card (most countries) or eligible bank account (US/GB/EU/SG/AU/HK). API: `method: 'instant'`.
+The May and November 2026 Dashboard guides list 36 account countries. For eligible accounts, funds typically settle within 30 minutes, including weekends. The May guide quoted **1%** (CA/EU/UK/SG/NO/HK/MY) or **1.5%** (US/AU/NZ/AE). The November guide retains the per-payout fee and pre-deduction without percentages. Multi-currency settlement is unsupported. Daily limits use request time and regional resets, with up to 10 payouts and a separate daily maximum amount. `instant_available` is capped by the remaining daily limit and includes eligible card funds after charge completion and ACH/SEPA after settlement. The destination table allows debit cards or eligible bank accounts in the US, GB, Euro Area, SE, DK, AU and SG, bank accounts only in HK, and debit cards only in the other listed destination row. Use `method: 'instant'` with an eligible `destination` for API requests. See [[source-stripe-payouts-instant#Institution and rail directory|the dated institution directory]] for country, rail and destination details.
 
 **Advance funding** (when payout exceeds available balance): Stripe pulls from pending balances, creating `advance_funding` transactions (one per day of pending funds pulled) and one `advance` transaction (credits available balance). Failed/canceled instant payouts reverse all transactions. Negative available balance: advance funding skips dates where cumulative balance is still negative. Filter via `stripe.balanceTransactions.list({ source: 'po_xxx' })`. See [[source-stripe-payouts-instant]].
 
 ## Next-Day Settlement
 
-**US only** (not new users immediately). Domestic transactions except ACH direct debits settle next business day. Fee: **0.6% monthly** (prior month's accelerated charges, auto-debited). Limit: >$1M adds 1 extra day. Toggle on/off in payout settings. vs Instant Payouts: next-day is automatic/continuous (0.6%), Instant is manual/on-demand (within 30 min, higher fee). See [[source-stripe-payouts-next-day]].
+The November 2026 guide lists 24 Dashboard-user countries and directs platforms to their account team for connected-account access. Eligible domestic funds become available in the Stripe balance the next business day. On a daily automatic schedule Stripe sends eligible funds to the bank then, with receipt subject to bank timing. The guide gives regional exclusions and thresholds. May listed US-only Dashboard access and a 0.6% monthly fee. November retains a monthly assessment on the previous month’s accelerated charges and gives no percentage. Instant Payouts are on demand and charged per payout. See [[source-stripe-payouts-next-day]] and [[source-stripe-payouts-instant]].
 
 ## Minimum Balance
 
-Retains a fixed amount in Stripe account after each automatic payout to cover refunds/disputes/fees. Not supported in Brazil, India, Thailand. Recommended: 4–5× average daily volume. Reconciliation report shows minimum as a `-X USD` transaction. Platforms: configure per connected account via `Balance Settings API` (`minimum_balance_by_currency`, merge semantics). Notify connected accounts before setting. See [[source-stripe-payouts-minimum-balance]].
+The May and November 2026 guides describe paying out only the available funds above an enabled minimum on each automatic payout schedule. The reserve covers anticipated refunds, disputes and fees and is unavailable in Brazil, India and Thailand. Stripe generally recommends four to five times average daily processing volume. The reconciliation report includes a retained-amount transaction in the example currency. Platforms configure individual connected accounts using the Balance Settings API's `minimum_balance_by_currency`. Adding a currency preserves the existing minimum balance settings for other currencies. Stripe recommends explaining the effect on payouts to those customers beforehand. See [[source-stripe-payouts-minimum-balance]].
 
 ## Customized Start of Day
 
-**APAC only** (AU, HK, ID, IN, JP, MY, NZ, PH, SG, TH). Groups payout contents by local-timezone day instead of UTC day — aids reconciliation. Default: UTC midnight. Express/Custom accounts cannot change (platform sets). Not immediate (takes effect at the new time). Not retroactive (pre-change transactions stay on UTC day). Setup: Dashboard → Settings → Business → Bank accounts and currencies → Start of day. See [[source-stripe-payouts-start-of-day]].
+Customized start of day groups automatic payout contents by a local-day cutoff for reconciliation. Stripe's November 7, 2026 direct guide lists AU, HK, ID, IN, JP, MY, NZ, PH, SG and TH and offers an email preview request with unspecified eligibility. It describes the default as local midnight with some APAC exceptions. Connected accounts without the full Stripe Dashboard or under platform control inherit the platform cutoff. The linked Connect guide describes platform customization in selected markets and a private preview for US connected accounts. In the direct Dashboard, use **Settings** → **Linked accounts and payouts** → **Settlement and transfer rules** → **Start of day**. Changes take effect at the new cutoff and pre-change transactions retain their original payout settings and timing. The May 11 capture documented a UTC-midnight default with some APAC exceptions, a preceding Dashboard path and a common platform-selected cutoff for Express and Custom accounts. See [[source-stripe-payouts-start-of-day]].
 
 ## Statement Descriptors
 
-Two levels: **Account-level** (all auto+manual payouts; Dashboard → Payout settings) and **Payout-level** (single manual payout; API `statement_descriptor` field or Dashboard balance overview). Precedence: payout-level → account-level → default `'STRIPE'`. Banks don't guarantee display. See [[source-stripe-payouts-statement-descriptors]].
+Set the account descriptor for automatic and manual payouts in Dashboard payout settings. For a single manual payout, the Dashboard balance overview or API `statement_descriptor` can override it. Stripe falls back to `STRIPE` when neither value is set. The November 7, 2026 guide maps standard US ACH payouts to the 10-character ACH Company Entry Description and says Stripe silently truncates longer values before submission. The generic payout API request maximum is 22 characters. The beneficiary bank decides what appears. See [[source-stripe-payouts-statement-descriptors]].
 
 ## Trace IDs
 
@@ -82,9 +82,9 @@ Unique banking partner identifier for tracking missing/delayed payouts. Provide 
 - [[source-stripe-payouts]] — payout timing, schedule options, multi-currency, 80+ country bank account tables
 - [[source-stripe-payouts-reconciliation]] — reconciliation: API flow, BalanceTransaction types, expand pattern
 - [[source-stripe-payouts-trace-ids]] — Trace IDs: 3 statuses, access methods, unsupported countries
-- [[source-stripe-payouts-statement-descriptors]] — Statement descriptors: 2 levels, precedence order, bank display caveat
+- [[source-stripe-payouts-statement-descriptors]] — May and November guides to configuration precedence, standard US ACH truncation, and beneficiary-bank display
 - [[source-stripe-payouts-multicurrency]] — Multi-currency settlement: availability (10 regions), setup, no FX fees, minimum balance
-- [[source-stripe-payouts-next-day]] — Next-day settlement: US only, 0.6% fee, ACH excluded, vs Instant Payouts comparison
-- [[source-stripe-payouts-instant]] — Instant Payouts: 37 countries, 30 min, 1–1.5% fee, daily limits, instant_available balance rules
-- [[source-stripe-payouts-start-of-day]] — Customized start of day: APAC only, groups by local timezone, not retroactive
-- [[source-stripe-payouts-minimum-balance]] — Minimum balance: retain fixed amount, 4-5× daily volume recommended, Connect API, Brazil/India/Thailand excluded
+- [[source-stripe-payouts-next-day]] — May and November 2026 next-day settlement guides with dated country, balance, bank timing and fee qualifications.
+- [[source-stripe-payouts-instant]] — May and November Dashboard guides to 36 listed countries, typical payout arrival, fees and amount limits, eligible balance, and destinations
+- [[source-stripe-payouts-start-of-day]] — Automatic payout grouping by local-day cutoff, dated direct and Connect availability, and original transaction settings
+- [[source-stripe-payouts-minimum-balance]] — May and November 2026 guides for retaining a reserve on automatic payouts, reconciling it and configuring connected-account currency settings.

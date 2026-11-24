@@ -16,11 +16,13 @@ Payment method rules let merchants control when specific payment methods appear 
 - **Amount-based**: hide/show a PM if order total is above or below a threshold (e.g., require ≥ $100 for Klarna)
 - **Location-based**: hide/show a PM for buyers in specific countries or using specific currencies
 
-Rules do NOT apply when creating subscriptions.
+The November 7, 2026 guide limits rules to supported non-card methods and excludes wallets such as Apple Pay and Google Pay. Rules do not apply on the Hosted Invoice Page or when the listed integrations create a subscription. The May guide also documented the subscription exception.
 
 ## Setup
 
-Dashboard → Payment methods settings → overflow menu on a PM → **Customize availability** → set rules → **Apply Overrides**. The PM gets a **Customized** tag.
+In Dashboard payment method settings, choose **Customize availability** for a supported method and select **Apply Overrides**. The May 8, 2026 guide displayed a **Customized** tag. The November capture leaves the tag unverified.
+
+For direct charges, the November rules guide gives connected accounts the platform template conditions without account override. Destination-charge conditions come from the platform's direct settings. The separate Connect guide uses connected-account enablement/configuration for all direct charges and for indirect charges with `on_behalf_of`, and platform enablement/configuration for indirect charges without it. The interaction on destination charges with `on_behalf_of` remains unresolved.
 
 Limits are configured in one currency; Stripe auto-converts at current exchange rate for other-currency transactions.
 
@@ -37,4 +39,4 @@ Limits are configured in one currency; Stripe auto-converts at current exchange 
 
 ## Sources
 
-- [[source-stripe-payment-method-rules]] — primary: rule conditions, setup flow, subscription caveat, currency auto-conversion, location testing
+- [[source-stripe-payment-method-rules]] — May and November rules for method visibility, supported surfaces, direct and destination charges, and test location simulation

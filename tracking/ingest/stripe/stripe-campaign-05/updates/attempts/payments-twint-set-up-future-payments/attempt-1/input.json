@@ -1,0 +1,144 @@
+{
+  "job_id": "payments-twint-set-up-future-payments",
+  "source_target": "wiki/sources/source-stripe-twint-set-up-future-payments.md",
+  "source_before_sha256": "7c1da94f488ac30d7dc5e30d13442d553cced714880c28d12aafc21f0b8d58a4",
+  "contributions": [
+    {
+      "job_id": "payments-twint-set-up-future-payments",
+      "canonical_url": "https://docs.stripe.com/payments/twint/set-up-future-payments",
+      "attempt": 1,
+      "raw_path": "raw/stripe-payments-twint-set-up-future-payments-2026-11-07.md",
+      "raw_sha256": "0fba0e50417b247fff1765e757bc8dd9374f444c83629b781e275a21b55b2bee",
+      "prior_raw_path": "raw/stripe-twint-set-up-future-payments-2025.md",
+      "prior_raw_sha256": "05b38da55ca7a73380c09c0c7d17bb56c83e9b19dcc540bc21b181dcd41e34d2",
+      "new_capture_role": "navigation_only_variant_index",
+      "proposed_disposition": "raw_reference",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-twint-set-up-future-payments/attempt-1/receipt.json",
+      "receipt_sha256": "d1bab71909698c4d7d4e903094a7074e8209da831f6d0ad39f1c82ccbb1c9b0c",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-twint-set-up-future-payments/attempt-1/review.json",
+      "review_sha256": "6dd5ac7cb839f9ff352ee0713bddd937fa978e86ac1eba144230fcd975c25fbb",
+      "source_assessments": [
+        {
+          "source_target": "wiki/sources/source-stripe-twint-set-up-future-payments.md",
+          "proposed_disposition": "source_required_update",
+          "update_needed": true,
+          "findings": [
+            "Source lines 13–38 correctly distinguish setup-only and later charge, three May routes and the narrow saved-method return_url exception. Distinguish server retrieval of the Checkout Session/SetupIntent from authorization proof: browser return alone is insufficient, and all routes monitor setup_intent.succeeded versus setup_intent.setup_failed with requires_payment_method (old raw lines 130–143, 180–216, 736–742, 1105–1111). Source lines 20–27 omit the negative result and rely on a terse redirect retrieval label.",
+            "Source lines 32–33 omit the action after server-side confirmation: while requires_action, the merchant redirects to next_action.redirect_to_url.url so the customer can authorize at TWINT before returning (old raw lines 1041–1103). Manual mandate-data and return_url examples apply to Direct API server confirmation and do not impose those fields on every variant.",
+            "Qualify source line 47 with the May Accounts v2 conditions: customer-configured Account/customer_account versus Customers v1 Customer/customer, GA for Connect and public preview with explicit preview version for other users described in May (old raw lines 33–46, 324–336 and 845–857). Do not project access or eligibility from the November selector.",
+            "Source lines 40–43 should keep decline/revoke email patterns in the Direct API test-key saved-charge simulation. The billing-details email is set at SetupIntent confirmation to simulate later PaymentIntent failures, separate from mandate setup failure (old raw lines 1105–1111, 1185–1198)."
+          ],
+          "conflicts": [
+            "The old test tables at lines 1193–1198 label later payment failures as payment_intent.failed. The separate May TWINT save-during-payment raw has payment_intent.payment_failed for a payment-time mandate authorization failure (raw/stripe-twint-save-during-payment-2025.md line 1135) and repeats payment_intent.failed in its simulation table (lines 1217–1222). Preserve the observed docs wording and stage distinction; do not elevate the simulation spelling to a production webhook contract or confuse it with setup_intent.setup_failed."
+          ],
+          "reason": "Restore the setup authorization boundary, failure status and manual redirect action, and qualify historical customer-object availability and test semantics. Keep the existing setup-only, save-during-payment and later charging distinctions."
+        }
+      ],
+      "affected_concepts": [
+        "wiki/concepts/stripe-twint.md"
+      ],
+      "unresolved_questions": [
+        "No November variant bodies or independently verified runtime event contract are present. The older test-table label difference is unresolved by this capture."
+      ],
+      "mapped_source_assessment": {
+        "source_target": "wiki/sources/source-stripe-twint-set-up-future-payments.md",
+        "proposed_disposition": "source_required_update",
+        "update_needed": true,
+        "findings": [
+          "Source lines 13–38 correctly distinguish setup-only and later charge, three May routes and the narrow saved-method return_url exception. Distinguish server retrieval of the Checkout Session/SetupIntent from authorization proof: browser return alone is insufficient, and all routes monitor setup_intent.succeeded versus setup_intent.setup_failed with requires_payment_method (old raw lines 130–143, 180–216, 736–742, 1105–1111). Source lines 20–27 omit the negative result and rely on a terse redirect retrieval label.",
+          "Source lines 32–33 omit the action after server-side confirmation: while requires_action, the merchant redirects to next_action.redirect_to_url.url so the customer can authorize at TWINT before returning (old raw lines 1041–1103). Manual mandate-data and return_url examples apply to Direct API server confirmation and do not impose those fields on every variant.",
+          "Qualify source line 47 with the May Accounts v2 conditions: customer-configured Account/customer_account versus Customers v1 Customer/customer, GA for Connect and public preview with explicit preview version for other users described in May (old raw lines 33–46, 324–336 and 845–857). Do not project access or eligibility from the November selector.",
+          "Source lines 40–43 should keep decline/revoke email patterns in the Direct API test-key saved-charge simulation. The billing-details email is set at SetupIntent confirmation to simulate later PaymentIntent failures, separate from mandate setup failure (old raw lines 1105–1111, 1185–1198)."
+        ],
+        "conflicts": [
+          "The old test tables at lines 1193–1198 label later payment failures as payment_intent.failed. The separate May TWINT save-during-payment raw has payment_intent.payment_failed for a payment-time mandate authorization failure (raw/stripe-twint-save-during-payment-2025.md line 1135) and repeats payment_intent.failed in its simulation table (lines 1217–1222). Preserve the observed docs wording and stage distinction; do not elevate the simulation spelling to a production webhook contract or confuse it with setup_intent.setup_failed."
+        ],
+        "reason": "Restore the setup authorization boundary, failure status and manual redirect action, and qualify historical customer-object availability and test semantics. Keep the existing setup-only, save-during-payment and later charging distinctions."
+      },
+      "findings": [
+        "The 2026-11-07 base page is a selector for the same three families the 2026-05-03 capture expands (new raw lines 5–15; old raw headings 8, 299, 820). Differences are presentational/navigation-only. The variant bodies and their current behavior remain outside the capture.",
+        "Root index line 7 routes into Stripe index lines 288 and 756; TWINT concept lines 39–60 route setup-only independently from acceptance, save-during-payment and subscriptions. Keep the concept/source reciprocal setup route and the May raw route, plus the November selector as navigation."
+      ],
+      "substantive_changes": [],
+      "historical_claims_to_preserve": [
+        "May Checkout setup mode uses a customer identity and TWINT, with checkout.session.completed or expanded Session retrieval to find the SetupIntent and its PaymentMethod. Confirm customer mandate authorization through SetupIntent status/events rather than browser arrival (old raw lines 79–129, 130–216).",
+        "May Elements uses server-created SetupIntent and client confirmSetup; Direct API recommends confirmTwintSetup or documents optional server confirmation with mandate data followed by requires_action redirect (old raw lines 370–400, 613–631, 891–928 and 1021–1111). Each captures mandate authorization independently from a later payment.",
+        "Later saved charging uses a separate CHF PaymentIntent, customer identity plus saved PaymentMethod, and off-session confirmation, with return_url waived only for previously set-up TWINT via SetupIntent or setup_future_usage (old raw lines 1145–1183; parallels 250–288 and 776–814). Preserve dated Accounts v2 preview/availability and Direct API sandbox conditions."
+      ],
+      "conflicts": [
+        "The old test tables at lines 1193–1198 label later payment failures as payment_intent.failed. The separate May TWINT save-during-payment raw has payment_intent.payment_failed for a payment-time mandate authorization failure (raw/stripe-twint-save-during-payment-2025.md line 1135) and repeats payment_intent.failed in its simulation table (lines 1217–1222). Preserve the observed docs wording and stage distinction; do not elevate the simulation spelling to a production webhook contract or confuse it with setup_intent.setup_failed."
+      ],
+      "expected_read_files": [
+        {
+          "path": "raw/stripe-payments-twint-set-up-future-payments-2026-11-07.md",
+          "sha256": "0fba0e50417b247fff1765e757bc8dd9374f444c83629b781e275a21b55b2bee",
+          "lines": 15
+        },
+        {
+          "path": "raw/stripe-twint-set-up-future-payments-2025.md",
+          "sha256": "05b38da55ca7a73380c09c0c7d17bb56c83e9b19dcc540bc21b181dcd41e34d2",
+          "lines": 1198
+        },
+        {
+          "path": "wiki/sources/source-stripe-twint-set-up-future-payments.md",
+          "sha256": "7c1da94f488ac30d7dc5e30d13442d553cced714880c28d12aafc21f0b8d58a4",
+          "lines": 51
+        },
+        {
+          "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/a2b399eb31fa0b5df58b8ab6/content.diff",
+          "sha256": "e7da0fa9b42ee7898f2c5998bcc0a77e0e9c67a54dee8c3d017ea0fc5dcded4e",
+          "lines": 1201
+        }
+      ],
+      "original_query_prompts_path": "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md",
+      "original_prompts": "New raw `raw/stripe-payments-twint-set-up-future-payments-2026-11-07.md`. Prior raw `raw/stripe-twint-set-up-future-payments-2025.md`. Current summaries `wiki/sources/source-stripe-twint-set-up-future-payments.md`.\n\n- Q1. For `https://docs.stripe.com/payments/twint/set-up-future-payments`, what documented behavior, prerequisites, actors and state transitions does the complete new capture establish? How do these compare with the matched prior capture and each mapped summary?\n\n- Q2. Which changes are substantive, presentational or navigation-only? Identify the exact dated qualifications, conflicts and reciprocal routes that the proposed disposition should preserve.",
+      "reviewed_answers": {
+        "Q1": "The 2026-11-07 capture of https://docs.stripe.com/payments/twint/set-up-future-payments identifies TWINT setup for future charging and links Checkout, Elements and Direct API (new raw lines 5-15). Detailed prerequisites, actors and states come from May 3. The merchant uses a customer-configured Account/customer_account or Customer/customer, creates a Checkout Session in setup mode or a server SetupIntent, then the customer authorizes the mandate in the hosted flow. Elements uses confirmSetup and Direct API uses confirmTwintSetup or manual redirect_to_url upon requires_action (old raw lines 79-129, 370-400, 613-631 and 1021-1103). Stripe reports setup_intent.succeeded with succeeded or setup_intent.setup_failed with requires_payment_method. Browser return alone is insufficient. A later off-session CHF PaymentIntent attempts the charge using the saved method (old raw lines 210-288 and 1105-1183). source-stripe-twint-set-up-future-payments.md correctly distinguishes setup-only and later charging but compresses the failed-setup, state verification and customer-model conditions.",
+        "Q2": "For https://docs.stripe.com/payments/twint/set-up-future-payments, the November selector is a presentation and navigation change covering the same three May families (new raw lines 9-15). No substantive change to method, mandate, release eligibility or charging is established. Keep the 2026-05-03 source-stripe-twint-set-up-future-payments.md detailed raw and reciprocal TWINT concept route separate from saving during payment and subscriptions. Preserve the May Connect GA and other-user preview-version qualification for Accounts v2 (old raw lines 33-46 and 845-857), optional Direct API manual setup confirmation and mandatory customer authorization rather than browser-return proof (old raw lines 1041-1111), and return_url exception for previously set-up TWINT only (old raw lines 1145-1183). Direct API decline/revoke email examples simulate later saved-charge outcomes under test keys and do not prove production webhook spelling; May's test table calls it payment_intent.failed, while mandate setup failure is setup_intent.setup_failed (old raw lines 1105-1111 and 1185-1198)."
+      }
+    }
+  ],
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payments-twint-set-up-future-payments-2026-11-07.md",
+      "sha256": "0fba0e50417b247fff1765e757bc8dd9374f444c83629b781e275a21b55b2bee",
+      "lines": 15
+    },
+    {
+      "path": "raw/stripe-twint-set-up-future-payments-2025.md",
+      "sha256": "05b38da55ca7a73380c09c0c7d17bb56c83e9b19dcc540bc21b181dcd41e34d2",
+      "lines": 1198
+    },
+    {
+      "path": "wiki/sources/source-stripe-twint-set-up-future-payments.md",
+      "sha256": "7c1da94f488ac30d7dc5e30d13442d553cced714880c28d12aafc21f0b8d58a4",
+      "lines": 51
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/a2b399eb31fa0b5df58b8ab6/content.diff",
+      "sha256": "e7da0fa9b42ee7898f2c5998bcc0a77e0e9c67a54dee8c3d017ea0fc5dcded4e",
+      "lines": 1201
+    }
+  ],
+  "concept_targets": [
+    {
+      "path": "wiki/concepts/stripe-twint.md",
+      "before_sha256": "b64ffb90f44a7151457811deeffa1dd614297da88aa855caf15f2c8eb79a0614",
+      "contributing_jobs": [
+        "payments-twint",
+        "payments-twint-accept-a-payment",
+        "payments-twint-save-during-payment",
+        "payments-twint-set-up-future-payments"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    }
+  ],
+  "state": "worker_running",
+  "attempt": 1,
+  "review_scope": "full",
+  "worker_agent": "/root/s05w2",
+  "reviewer_agent": "/root/s05r5",
+  "role_notes": "tracking/ingest/stripe/stripe-campaign-05/updates/role-notes.md",
+  "worker_output": "/tmp/stripe-s05-ingest/payments-twint-set-up-future-payments-worker.json",
+  "reviewer_output": "/tmp/stripe-s05-ingest/payments-twint-set-up-future-payments-reviewer.json"
+}

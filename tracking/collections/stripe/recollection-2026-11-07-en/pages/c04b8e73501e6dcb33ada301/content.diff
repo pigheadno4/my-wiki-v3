@@ -1,0 +1,736 @@
+--- raw/stripe-sequra-2025.md
++++ raw/stripe-payments-sequra-2026-11-07.md
+@@ -2,325 +2,422 @@
+ 
+ Offer customers the ability to pay when they want while getting paid instantly.
+ 
+-[SeQura](https://www.sequra.com/) allows customers in Southern Europe the ability to pay in 3 interest-free or up to 12 installments total.
+-
+-#### Payment method properties
+-
+-- **Customer locations**
+-
+-  EU
+-
+-- **Presentment currencies**
+-
+-  EUR
+-
+-- **Payment confirmation**
+-
+-  Customer-initiated
+-
+-- **Payment method family**
+-
+-  Buy Now, Pay Later
+-
+-- **Recurring payments**
+-
+-  No
+-
+-- **Payout timing**
+-
+-  Standard
+-
+-- **Connect support**
+-
+-  No
+-
+-- **Dispute support**
+-
+-  [ Yes ](https://docs.stripe.com/payments/sequra.md#disputed-payments)
+-
+-- **Manual capture support**
+-
+-  [ Yes ](https://docs.stripe.com/payments/sequra/accept-a-payment.md)
+-
+-- **Refunds / Partial refunds**
+-
+-  [ Yes ](https://docs.stripe.com/payments/sequra.md#refunds) / [ Yes ](https://docs.stripe.com/payments/sequra.md#refunds)
+-
+-#### Business locations
+-
+-Stripe accounts in the following countries can accept SeQura payments that settle in a [supported currency](https://docs.stripe.com/payments/sequra.md#supported-currencies).
+-
+-- ES
+-
+-#### Product support
+-
+-- Payment Links
+-- Checkout1
+-- Elements2
+-
+-1Not supported when using Checkout in subscription mode or setup mode.
+-
+-2Express Checkout Element doesn’t support SeQura.
+-
+-## Payment flow
+-
+-Below is a demonstration of the SeQura payment flow from your checkout page:
+-![](https://d37ugbyn3rpeym.cloudfront.net/videos/sequra_checkout_demo.mp4)
+-
+-## Get started
+-
+-You don’t have to integrate SeQura and other payment methods individually. If you use our front-end products, Stripe automatically determines the most relevant payment methods to display. Go to the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods) and enable SeQura. To get started with one of our hosted UIs, follow a quickstart:
+-
+-- [Checkout](https://docs.stripe.com/checkout/quickstart.md): Our prebuilt, hosted checkout page.
+-- [Elements](https://docs.stripe.com/payments/quickstart-checkout-sessions.md): Our drop-in UI components.
+-
+-### Other payment products
+-
+-The following Stripe products also let you add SeQura from the Dashboard:
+-
+-- [Payment Links](https://docs.stripe.com/payment-links.md)
+-
+-If your integration requires manually listing payment methods, learn how to [ configure SeQura](https://docs.stripe.com/payments/sequra/accept-a-payment.md).
+-
+-## Payment options
+-
+-The minimum charge limit is 29,00 EUR or the equivalent for other supported currencies.
+-
+-## Prohibited and restricted business categories
+-
+-In addition to the categories of goods or services sold and businesses [restricted from using Stripe overall](https://stripe.com/restricted-businesses), the following categories are prohibited from using SeQura:
+-
+-- A/C, Refrigeration Repair
+-- Accounting/Bookkeeping Services
+-- Advertising Services
+-- Agricultural Cooperative
+-- Airlines, Air Carriers
+-- Airports, Flying Fields
+-- Ambulance Services
+-- Architectural/Surveying Services
+-- Automobile Associations
+-- Bail and Bond Payments
+-- Bakeries
+-- Bands, Orchestras
+-- Barber and Beauty Shops
+-- Betting/Casino Gambling
+-- Billiard/Pool Establishments
+-- Boat Dealers
+-- Boat Rentals and Leases
+-- Books, Periodicals, and Newspapers
+-- Bowling Alleys
+-- Business/Secretarial Schools
+-- Buying/Shopping Services
+-- Cable, Satellite, and Other Pay Television and Radio
+-- Candy, Nut, and Confectionery Stores
+-- Car Rental Agencies
+-- Car Washes
+-- Car and Truck Dealers (New & Used)
+-- Car and Truck Dealers (Used Only)
+-- Carpentry Services
+-- Carpet/Upholstery Cleaning
+-- Caterers
+-- Charitable and Social Service Organizations - Fundraising
+-- Chemicals and Allied Products (Not Elsewhere Classified)
+-- Child Care Services
+-- Chiropodists, Podiatrists
+-- Chiropractors
+-- Cigar Stores and Stands
+-- Civic, Social, Fraternal Associations
+-- Cleaning and Maintenance
+-- Clothing Rental
+-- Colleges, Universities
+-- Commercial Equipment (Not Elsewhere Classified)
+-- Commercial Footwear
+-- Commercial Photography, Art and Graphics
+-- Commuter Transport, Ferries
+-- Computer Network Services
+-- Computer Programming
+-- Computer Repair
+-- Concrete Work Services
+-- Construction Materials (Not Elsewhere Classified)
+-- Consulting, Public Relations
+-- Correspondence Schools
+-- Counseling Services
+-- Country Clubs
+-- Courier Services
+-- Court Costs
+-- Credit Reporting Agencies
+-- Dairy Products Stores
+-- Dance Hall, Studios, Schools
+-- Dentists, Orthodontists
+-- Detective Agencies
+-- Digital Goods Media – Books, Movies, Music
+-- Digital Goods – Applications (Excludes Games)
+-- Digital Goods – Games
+-- Digital Goods – Large Digital Goods Merchant
+-- Adult Content and Services
+-- Direct Marketing - Insurance Services
+-- Direct Marketing - Other
+-- Direct Marketing - Outbound Telemarketing
+-- Direct Marketing - Subscription
+-- Direct Marketing - Travel
+-- Doctors
+-- Door-To-Door Sales
+-- Drinking Places
+-- Drugs, Drug Proprietaries, and Druggist Sundries
+-- Dry Cleaners
+-- Eating Places, Restaurants
+-- Electric Vehicle Charging
+-- Electrical Parts and Equipment
+-- Electrical Services
+-- Electronics Repair Shops
+-- Elementary, Secondary Schools
+-- Employment/Temp Agencies
+-- Equipment Rental
+-- Exterminating Services
+-- Fast Food Restaurants
+-- Financial Institutions
+-- Fines - Government Administrative Entities
+-- Freezer and Locker Meat Provisioners
+-- Fuel Dealers (Non Automotive)
+-- Funeral Services, Crematories
+-- Furniture Repair, Refinishing
+-- General Services
+-- Government Licensed On-line Casinos (On-Line Gambling)
+-- Government Services (Not Elsewhere Classified)
+-- Government-Licensed Horse/Dog Racing
+-- Government-Owned Lotteries (Non-US region)
+-- Government-Owned Lotteries (US Region only)
+-- Grocery Stores, Supermarkets
+-- Heating, Plumbing, A/C
+-- Hospitals
+-- Hotels, Motels, and Resorts
+-- Industrial Supplies (Not Elsewhere Classified)
+-- Information Retrieval Services
+-- Insurance Underwriting, Premiums
+-- Intra-Company Purchases
+-- Landscaping Services
+-- Laundries
+-- Laundry, Cleaning Services
+-- Legal Services, Attorneys
+-- Marinas, Service and Supplies
+-- Marketplaces
+-- Masonry, Stonework, and Plaster
+-- Massage Parlors
+-- Medical Services
+-- Medical and Dental Labs
+-- Medical, Dental, Ophthalmic, and Hospital Equipment and Supplies
+-- Membership Organizations
+-- Metal Service Centers
+-- Miscellaneous Business Services
+-- Miscellaneous Food Stores
+-- Miscellaneous General Services
+-- Miscellaneous Publishing and Printing
+-- Miscellaneous Recreation Services
+-- Miscellaneous Repair Shops
+-- Mobile Home Dealers
+-- Motion Picture Theaters
+-- Motor Freight Carriers and Trucking
+-- Motor Homes Dealers
+-- Motor Vehicle Supplies and New Parts
+-- Motorcycle Shops and Dealers
+-- Motorcycle Shops, Dealers
++SeQura is a Spanish buy now, pay later payment method that lets your customers pay in installments. When your customers select SeQura, Stripe redirects them to the SeQura payment page to choose their repayment option and complete the purchase. Stripe notifies you immediately whether the payment succeeded. SeQura payments are presented in EUR.
++Payment method family: Buy now, pay later
++Usability: Single-use
++Access type: Instant provisional access
++Payment confirmation timing: Immediate
++Settlement timing: Standard payout schedule
++## Eligibility and availability 
++
++### Account eligibility
++Business location: ES
++Account type: ✓ Merchant, ✓ Platform or marketplace (Connect)
++Business model: ✓ B2B, ✓ B2C
++Business category: View list of prohibited and restricted business categories
++In addition to businesses restricted by Stripe’s prohibited and restricted businesses policy, the following businesses are also prohibited from using SeQura:
++
++- Adult content and services
++- Betting, gambling, and lotteries
+ - Cryptocurrency exchanges and wallets
+-- Non-FI, Stored Value Card Purchase/Load
+-- Nondurable Goods (Not Elsewhere Classified)
+-- Nursing/Personal Care
+-- Office and Commercial Furniture
+-- Opticians, Eyeglasses
+-- Optometrists, Ophthalmologist
+-- Osteopaths
+-- Package Stores-Beer, Wine, and Liquor
+-- Paints, Varnishes, and Supplies
+-- Parking Lots, Garages
+-- Pawn Shops
+-- Petroleum and Petroleum Products
+-- Photo Developing
+-- Photographic, Photocopy, Microfilm Equipment, and Supplies
+-- Picture/Video Production
+-- Piece Goods, Notions, and Other Dry Goods
+-- Plumbing, Heating Equipment, and Supplies
+-- Political Organizations
+-- Precious Stones and Metals, Watches and Jewelry
+-- Professional Services
+-- Public Warehousing and Storage
+-- Quick Copy, Repro, and Blueprint
+-- Railroads
+-- Real Estate Agents and Managers - Rentals
+-- Recreational Vehicle Rentals
+-- Religious Organizations
+-- Roofing/Siding, Sheet Metal
+-- Secretarial Support Services
+-- Security Brokers/Dealers
+-- Shoe Repair/Hat Cleaning
+-- Small Appliance Repair
+-- Snowmobile Dealers
+-- Special Trade Services
+-- Specialty Cleaning
+-- Sporting/Recreation Camps
+-- Sports Clubs/Fields
+-- Stationery, Office Supplies, Printing and Writing Paper
+-- TUI Travel - Germany
+-- Tailors, Alterations
+-- Tax Preparation Services
+-- Taxicabs/Limousines
+-- Telecommunication Equipment and Telephone Sales
+-- Telecommunication Services
+-- Telegraph Services
+-- Testing Laboratories
+-- Theatrical Ticket Agencies
+-- Timeshares
+-- Tolls/Bridge Fees
+-- Towing Services
+-- Trailer Parks, Campgrounds
+-- Travel Agencies, Tour Operators
+-- Truck/Utility Trailer Rentals
+-- Typesetting, Plate Making, and Related Services
+-- Typewriter Stores
+-- Miscellaneous Business Services
+-- Utilities
+-- Video Amusement Game Supplies
+-- Video Game Arcades
+-- Video Tape Rental Stores
+-- Vocational/Trade Schools
+-- Watch/Jewelry Repair
+-- Welding Repair
++- Direct marketing and outbound telemarketing
++- Financial services and money services
++- Government and political organizations
++- Hotels, accommodation, and travel
++- Real estate and property rentals
++- Telecommunications and digital goods
+ - Other categories at the discretion of SeQura
+ 
+-## Disputes
+-
+-SeQura has a claims process that allows transaction disputes. Customers can open disputes for cases of suspected fraud, double payments, or a difference between an order and a transaction amount.
+-
+-After the customer initiates a dispute, Stripe notifies you using:
++Your account might be reviewed after activation to confirm eligibility. While SeQura doesn’t enforce any additional website requirements, make sure that you provide a website that meets the [Stripe account activation requirements](https://support.stripe.com/questions/business-website-for-account-activation-faq). You can contact [Stripe support](https://support.stripe.com/) to appeal any SeQura capability restrictions.
++
++Review the list of *merchant category codes* (A Merchant Category Code (MCC) is a four-digit number that classifies the type of goods or services a business offers) that are prohibited or restricted for SeQura.
++
++- **Prohibited**: You can’t use this payment method with these MCCs.
++- **Restricted**: You might be able to use this payment method with these MCCs, but you must provide additional information when you create the account.
++
++| MCC | Description | Type |
++| --- | --- | --- |
++| 0763 | Agricultural Cooperative | Prohibited |
++| 0780 | Landscaping Services | Prohibited |
++| 1520 | General Services | Prohibited |
++| 1711 | Heating, Plumbing, A/C | Prohibited |
++| 1731 | Electrical Services | Prohibited |
++| 1740 | Masonry, Stonework, and Plaster | Prohibited |
++| 1750 | Carpentry Services | Prohibited |
++| 1761 | Roofing and Siding, Sheet Metal | Prohibited |
++| 1771 | Concrete Work Services | Prohibited |
++| 1799 | Special Trade Services | Prohibited |
++| 2741 | Miscellaneous Publishing and Printing | Prohibited |
++| 2791 | Typesetting, Plate Making, and Related Services | Prohibited |
++| 2842 | Specialty Cleaning | Prohibited |
++| 4011 | Railroads | Prohibited |
++| 4111 | Commuter Transport, Ferries | Prohibited |
++| 4119 | Ambulance Services | Prohibited |
++| 4121 | Taxicabs and Limousines | Prohibited |
++| 4214 | Motor Freight Carriers and Trucking | Prohibited |
++| 4215 | Courier Services | Prohibited |
++| 4225 | Public Warehousing and Storage | Prohibited |
++| 4457 | Boat Rentals and Leases | Prohibited |
++| 4468 | Marinas, Service and Supplies | Prohibited |
++| 4511 | Airlines, Air Carriers | Prohibited |
++| 4582 | Airports, Flying Fields | Prohibited |
++| 4722 | Travel Agencies, Tour Operators | Prohibited |
++| 4723 | TUI Travel - Germany | Prohibited |
++| 4784 | Tolls and Bridge Fees | Prohibited |
++| 4812 | Telecommunication Equipment and Telephone Sales | Prohibited |
++| 4814 | Telecommunication Services | Prohibited |
++| 4816 | Computer Network Services | Prohibited |
++| 4821 | Telegraph Services | Prohibited |
++| 4829 | Money Orders - Wire Transfers | Prohibited |
++| 4899 | Cable, Satellite, and Other Pay Television and Radio | Prohibited |
++| 4900 | Utilities | Prohibited |
++| 5013 | Motor Vehicle Supplies and New Parts | Prohibited |
++| 5021 | Office and Commercial Furniture | Prohibited |
++| 5039 | Construction Materials (Not Elsewhere Classified) | Prohibited |
++| 5044 | Photographic, Photocopy, Microfilm Equipment, and Supplies | Prohibited |
++| 5046 | Commercial Equipment (Not Elsewhere Classified) | Prohibited |
++| 5047 | Medical, Dental, Ophthalmic, and Hospital Equipment and Supplies | Prohibited |
++| 5051 | Metal Service Centers | Prohibited |
++| 5065 | Electrical Parts and Equipment | Prohibited |
++| 5074 | Plumbing, Heating Equipment, and Supplies | Prohibited |
++| 5085 | Industrial Supplies (Not Elsewhere Classified) | Prohibited |
++| 5094 | Precious Stones and Metals, Watches and Jewelry | Prohibited |
++| 5111 | Stationery, Office Supplies, Printing and Writing Paper | Prohibited |
++| 5122 | Drugs, Drug Proprietaries, and Druggist Sundries | Prohibited |
++| 5131 | Piece Goods, Notions, and Other Dry Goods | Prohibited |
++| 5137 | Men's Women's and Children's Uniforms and Commercial Clothing | Prohibited |
++| 5139 | Commercial Footwear | Prohibited |
++| 5169 | Chemicals and Allied Products (Not Elsewhere Classified) | Prohibited |
++| 5172 | Petroleum and Petroleum Products | Prohibited |
++| 5192 | Books, Periodicals, and Newspapers | Prohibited |
++| 5199 | Nondurable Goods (Not Elsewhere Classified) | Prohibited |
++| 5262 | Marketplaces | Prohibited |
++| 5271 | Mobile Home Dealers | Prohibited |
++| 5411 | Grocery Stores, Supermarkets | Prohibited |
++| 5422 | Freezer and Locker Meat Provisioners | Prohibited |
++| 5441 | Candy, Nut, and Confectionery Stores | Prohibited |
++| 5451 | Dairy Products Stores | Prohibited |
++| 5462 | Bakeries | Prohibited |
++| 5499 | Miscellaneous Food Stores | Prohibited |
++| 5511 | Car and Truck Dealers (New & Used) | Prohibited |
++| 5521 | Car and Truck Dealers (Used Only) | Prohibited |
++| 5551 | Boat Dealers | Prohibited |
++| 5552 | Electric Vehicle Charging | Prohibited |
++| 5561 | Motorcycle Shops, Dealers | Prohibited |
++| 5571 | Motorcycle Shops and Dealers | Prohibited |
++| 5592 | Motor Homes Dealers | Prohibited |
++| 5598 | Snowmobile Dealers | Prohibited |
++| 5697 | Tailors, Alterations | Prohibited |
++| 5734 | Computer Software Stores | Prohibited |
++| 5811 | Caterers | Prohibited |
++| 5812 | Eating Places, Restaurants | Prohibited |
++| 5813 | Drinking Places | Prohibited |
++| 5814 | Fast Food Restaurants | Prohibited |
++| 5815 | Digital Goods Media – Books, Movies, Music | Prohibited |
++| 5816 | Digital Goods – Games | Prohibited |
++| 5817 | Digital Goods – Applications (Excludes Games) | Prohibited |
++| 5818 | Digital Goods – Large Digital Goods Merchant | Prohibited |
++| 5921 | Package Stores-Beer, Wine, and Liquor | Prohibited |
++| 5933 | Pawn Shops | Prohibited |
++| 5935 | Wrecking and Salvage Yards | Prohibited |
++| 5960 | Direct Marketing - Insurance Services | Prohibited |
++| 5962 | Direct Marketing - Travel | Prohibited |
++| 5963 | Door-To-Door Sales | Prohibited |
++| 5966 | Direct Marketing - Outbound Telemarketing | Prohibited |
++| 5967 | Adult Content and Services | Prohibited |
++| 5968 | Direct Marketing - Subscription | Prohibited |
++| 5969 | Direct Marketing - Other | Prohibited |
++| 5978 | Typewriter Stores | Prohibited |
++| 5983 | Fuel Dealers (Non Automotive) | Prohibited |
++| 5992 | Florists | Prohibited |
++| 5993 | Cigar Stores and Stands | Prohibited |
++| 6010 | Manual Cash Disburse | Prohibited |
++| 6011 | Financial Service | Prohibited |
++| 6012 | Financial Institutions | Prohibited |
++| 6051 | Cryptocurrency exchanges and wallets | Prohibited |
++| 6211 | Security Brokers and Dealers | Prohibited |
++| 6300 | Insurance Underwriting, Premiums | Prohibited |
++| 6513 | Real Estate Agents and Managers - Rentals | Prohibited |
++| 6540 | Non-FI, Stored Value Card Purchase and Load | Prohibited |
++| 7011 | Hotels, Motels, and Resorts | Prohibited |
++| 7012 | Timeshares | Prohibited |
++| 7032 | Sporting and Recreation Camps | Prohibited |
++| 7033 | Trailer Parks, Campgrounds | Prohibited |
++| 7210 | Laundry, Cleaning Services | Prohibited |
++| 7211 | Laundries | Prohibited |
++| 7216 | Dry Cleaners | Prohibited |
++| 7217 | Carpet and Upholstery Cleaning | Prohibited |
++| 7230 | Barber and Beauty Shops | Prohibited |
++| 7251 | Shoe Repair and Hat Cleaning | Prohibited |
++| 7261 | Funeral Services, Crematories | Prohibited |
++| 7273 | Dating and Escort Services | Prohibited |
++| 7276 | Tax Preparation Services | Prohibited |
++| 7277 | Counseling Services | Prohibited |
++| 7278 | Buying and Shopping Services | Prohibited |
++| 7296 | Clothing Rental | Prohibited |
++| 7297 | Massage Parlors | Prohibited |
++| 7299 | Miscellaneous General Services | Prohibited |
++| 7311 | Advertising Services | Prohibited |
++| 7321 | Credit Reporting Agencies | Prohibited |
++| 7333 | Commercial Photography, Art and Graphics | Prohibited |
++| 7338 | Quick Copy, Repro, and Blueprint | Prohibited |
++| 7339 | Secretarial Support Services | Prohibited |
++| 7342 | Exterminating Services | Prohibited |
++| 7349 | Cleaning and Maintenance | Prohibited |
++| 7361 | Employment and Temp Agencies | Prohibited |
++| 7372 | Computer Programming | Prohibited |
++| 7375 | Information Retrieval Services | Prohibited |
++| 7379 | Computer Repair | Prohibited |
++| 7392 | Consulting, Public Relations | Prohibited |
++| 7393 | Detective Agencies | Prohibited |
++| 7394 | Equipment Rental | Prohibited |
++| 7395 | Photo Developing | Prohibited |
++| 7399 | Miscellaneous Business Services | Prohibited |
++| 7512 | Car Rental Agencies | Prohibited |
++| 7513 | Truck and Utility Trailer Rentals | Prohibited |
++| 7519 | Recreational Vehicle Rentals | Prohibited |
++| 7523 | Parking Lots, Garages | Prohibited |
++| 7542 | Car Washes | Prohibited |
++| 7549 | Towing Services | Prohibited |
++| 7622 | Electronics Repair Shops | Prohibited |
++| 7623 | A/C, Refrigeration Repair | Prohibited |
++| 7629 | Small Appliance Repair | Prohibited |
++| 7631 | Watch and Jewelry Repair | Prohibited |
++| 7641 | Furniture Repair, Refinishing | Prohibited |
++| 7692 | Welding Repair | Prohibited |
++| 7699 | Miscellaneous Repair Shops | Prohibited |
++| 7800 | Government-Owned Lotteries (US Region only) | Prohibited |
++| 7801 | Government Licensed On-line Casinos (On-Line Gambling) | Prohibited |
++| 7802 | Government-Licensed Horse and Dog Racing | Prohibited |
++| 7829 | Picture and Video Production | Prohibited |
++| 7832 | Motion Picture Theaters | Prohibited |
++| 7841 | Video Tape Rental Stores | Prohibited |
++| 7911 | Dance Hall, Studios, Schools | Prohibited |
++| 7922 | Theatrical Ticket Agencies | Prohibited |
++| 7929 | Bands, Orchestras | Prohibited |
++| 7932 | Billiard and Pool Establishments | Prohibited |
++| 7933 | Bowling Alleys | Prohibited |
++| 7941 | Sports Clubs and Fields | Prohibited |
++| 7993 | Video Amusement Game Supplies | Prohibited |
++| 7994 | Video Game Arcades | Prohibited |
++| 7995 | Betting and Casino Gambling | Prohibited |
++| 7996 | Amusement Parks and Carnivals | Prohibited |
++| 7997 | Country Clubs | Prohibited |
++| 7999 | Miscellaneous Recreation Services | Prohibited |
++| 8011 | Doctors | Prohibited |
++| 8021 | Dentists and Orthodontists | Prohibited |
++| 8031 | Osteopaths | Prohibited |
++| 8041 | Chiropractors | Prohibited |
++| 8042 | Optometrists, Ophthalmologist | Prohibited |
++| 8043 | Opticians, Eyeglasses | Prohibited |
++| 8049 | Chiropodists, Podiatrists | Prohibited |
++| 8050 | Nursing and Personal Care | Prohibited |
++| 8062 | Hospitals | Prohibited |
++| 8071 | Medical and Dental Labs | Prohibited |
++| 8099 | Medical Services | Prohibited |
++| 8111 | Legal Services, Attorneys | Prohibited |
++| 8211 | Elementary, Secondary Schools | Prohibited |
++| 8220 | Colleges, Universities | Prohibited |
++| 8241 | Correspondence Schools | Prohibited |
++| 8244 | Business and Secretarial Schools | Prohibited |
++| 8249 | Vocational and Trade Schools | Prohibited |
++| 8299 | Educational Services | Prohibited |
++| 8351 | Child Care Services | Prohibited |
++| 8398 | Charitable and Social Service Organizations - Fundraising | Prohibited |
++| 8641 | Civic, Social, Fraternal Associations | Prohibited |
++| 8651 | Political Organizations | Prohibited |
++| 8661 | Religious Organizations | Prohibited |
++| 8675 | Automobile Associations | Prohibited |
++| 8699 | Membership Organizations | Prohibited |
++| 8734 | Testing Laboratories | Prohibited |
++| 8911 | Architectural and Surveying Services | Prohibited |
++| 8931 | Accounting and Bookkeeping Services | Prohibited |
++| 8999 | Professional Services | Prohibited |
++| 9211 | Court Costs | Prohibited |
++| 9222 | Fines - Government Administrative Entities | Prohibited |
++| 9223 | Bail and Bond Payments | Prohibited |
++| 9399 | Government Services (Not Elsewhere Classified) | Prohibited |
++| 9406 | Government-Owned Lotteries (Non-US region) | Prohibited |
++| 9950 | Intra-Company Purchases | Prohibited |
++
++Stripe accounts in the following countries can accept SeQura payments that settle in a supported currency.
++
++EMEA: ES
++
++Customers in the following countries can use SeQura.
++
++EMEA: ES
++
++### Payment support
++Customer location: ES
++Presentment currency: EUR
++Geographic coverage: ✓ Domestic, ✗ Crossborder
++Transaction limits: Minimum amount: 29.00 EUR
++
++Maximum amount: 3,000.00 EUR
++The minimum charge amount is 29.00 EUR. The maximum charge amount is 3,000.00 EUR.
++
++### Payment options
++
++### ES
++
++| Payment option | Description | Amount range |
++| --- | --- | --- |
++| Installments | Customers choose their repayment option at checkout. | EUR&nbsp;29–EUR&nbsp;3,000 |
++
++## Capabilities 
++Recurring payments: ✗ Not supported
++
++Payment authorizations:
++  ✗ Extended authorizations
++  ✗ Flexible extended authorizations
++  ✗ Incremental authorizations
++  ✗ Decremental authorizations
++  ✗ Re-authorizations
++
++Payment captures:
++  ✓ Manual capture
++  ✓ Partial capture
++  ✗ Multi-capture
++  ✗ Over-capture
++
++Refunds:
++  ✓ Partial refunds
++  ✓ Full refunds
++  Submission window: 180 days
++  Processing time: 5 minutes
++
++Disputes:
++  ✗ Partial disputes
++  ✓ Full disputes
++  Submission window: 120 days
++### Refunds 
++
++SeQura requires that you submit a refund within 180 days from the original payment using the [Dashboard](https://dashboard.stripe.com/payments) or [Refunds API](https://docs.stripe.com/api/refunds/create.md). This is the maximum the payment method allows. Your return policy determines what you offer customers.
++
++Refunds for SeQura payments are asynchronous and take up to 5 minutes to complete. You can’t cancel SeQura refunds.
++
++#### Refund process 
++
++When you refund a SeQura payment, SeQura updates the buyer’s installment plan. For a full refund, SeQura cancels the buyer’s remaining installments and returns any amounts they have already paid to their original card. For a partial refund, SeQura recalculates the remaining installments to the lower order total, so the buyer receives money back only once no future installments remain.
++
++#### Tracking refunds 
++
++To check a refund’s status, open the payment in the [Dashboard](https://dashboard.stripe.com/payments) and click **View details** on the refund entry. You can also [retrieve the Refund object](https://docs.stripe.com/api/refunds/retrieve.md) and check its `status` field.
++
++Stripe notifies you of the final status through a `refund.updated` or `refund.failed` *webhook* (A webhook is a real-time push notification sent to your application as a JSON payload through HTTPS requests) event. When a refund succeeds, the [Refund object](https://docs.stripe.com/api/refunds/object.md) status changes to `succeeded`. If the refund fails, the status changes to `failed` and Stripe returns the amount to your Stripe balance. You must refund the customer using another method.
++
++### Disputes 
++
++Customers have up to 120 calendar days from the date of purchase to file SeQura disputes. SeQura payments can only be disputed once.
++
++#### Dispute process 
++
++1. **Dispute opened**: SeQura opens a dispute. Stripe immediately withholds the disputed amount from your balance. You have 15 calendar days to submit evidence.
++2. **Decision**: SeQura reviews your evidence and issues a final decision within 25 calendar days of dispute creation.
++
++#### Dispute notifications 
++
++When SeQura disputes are opened, Stripe notifies you through:
+ 
+ - Email
+-- The Stripe Dashboard
+-- An API `charge.dispute.created` event (if your integration is set up to receive [webhooks](https://docs.stripe.com/webhooks.md))
+-
+-Stripe holds back the disputed amount from your balance until SeQura resolves the dispute.
+-
+-We request that you upload compelling evidence proving that you fulfilled the purchase order [using the Stripe Dashboard](https://docs.stripe.com/disputes/responding.md#respond). This evidence can include the:
++- The [Stripe Dashboard](https://dashboard.stripe.com/disputes)
++- A [charge.dispute.created](https://docs.stripe.com/api/events/types.md#event_types-charge.dispute.created) event
++
++The dispute reason is available in the Dashboard and in the `reason` field of the [Dispute object](https://docs.stripe.com/api/disputes/object.md). The evidence submission deadline is available in the Dashboard and in the `evidence_due_by` field of the Dispute object.
++
++#### Responding to disputes 
++
++You have 15 calendar days from dispute creation to submit evidence.
++
++Upload compelling evidence in the Stripe Dashboard proving that you fulfilled the purchase order. This evidence can include:
+ 
+ - Tracking ID
+ - Shipping date
+ - Record of purchase for intangible goods, such as IP address or email receipt
+ - Record of purchase for services or physical goods, such as phone number or proof of receipt
+-- Record of refund (for purchase you’ve already refunded)
+-
+-To handle disputes programmatically, [respond to disputes using the API](https://docs.stripe.com/disputes/api.md).
+-
+-This information helps SeQura determine if a dispute is valid. Make sure the evidence you provide contains as much detail as possible from what the customer provided at checkout. You must submit the requested information within 12 calendar days. If SeQura resolves the dispute with you winning, we return the disputed amount to your Stripe balance. If SeQura rules in favor of the customer, the disputed amount stays with the customer.
+-
+-## Refunds
+-
+-SeQura supports full and partial refunds.
+-
+-- The refund period is up to 180 days after the purchase.
+-- Refunds for SeQura payments are asynchronous and take up to 5 minutes to complete.
+-
+-Stripe notifies you of the final refund status using the `refund.updated` or `refund.failed` *webhook* (A webhook is a real-time push notification sent to your application as a JSON payload through HTTPS requests) event. When a refund succeeds, the [Refund](https://docs.stripe.com/api/refunds/object.md) object’s status transitions to `succeeded`. If a refund fails (the `Refund` object’s status transitions to `failed`), then we return the amount to your Stripe balance, and you must arrange an alternative way of providing your customer with a refund.
+-
+-## Supported currencies
+-
+-You can create SeQura payments in the currencies that map to your country. The default local currency for SeQura is `eur`.
+-
+-- eur: ES+- Record of refund (for purchases you’ve already refunded)
++
++You can submit evidence and manage SeQura disputes in the [Dashboard](https://dashboard.stripe.com/disputes) or programmatically using the [Disputes API](https://docs.stripe.com/api/disputes/update.md). In the Dashboard, go to the **Needs response** tab, click the disputed payment, then click **Counter dispute** to submit your evidence, or **Accept dispute** to accept the loss. To submit evidence through the API, upload supporting files using the [Files API](https://docs.stripe.com/api/files/create.md) and include the returned file IDs when you update the [Dispute Evidence object](https://docs.stripe.com/api/disputes/update.md).
++
++#### Dispute outcomes 
++
++If SeQura resolves the dispute in your favor, Stripe returns the disputed amount to your Stripe balance.
++
++If they rule in favor of the customer, the balance charge becomes permanent.
++
++SeQura disputes allow only a single round of evidence submission. Make sure to gather all necessary evidence before submitting—you won’t be able to supplement it afterward.
++
++## Stripe product support 
++Checkout UIs:
++  ✓ Full page (Recommended)
++  ✓ Payment Links
++  ✓ Embedded form
++  ✓ Payment Element
++  ✗ Express Checkout Element
++  ✗ Payment Method Messaging Element
++  ✓ In-app payments
++
++Products:
++  ✗ Managed Payments
++  ✓ Billing
++  ✓ Invoicing
++  ✗ Customer Portal
++  ✓ Radar
++  ✗ Terminal
++  ✓ Connect
++
++APIs:
++  ✓ Checkout Sessions (Recommended)
++  ✓ Payment Intents
++  ✗ Payment Intents with setup_future_usage
++  ✗ Setup Intents
++  ✗ Off-session payments
++
++1. Only supports send_invoice collection method.
++### Invoices 
++
++Invoices using SeQura only support the [`send_invoice`](https://docs.stripe.com/api/invoices/object.md#invoice_object-collection_method) collection method.
++
++### Payment line items 
++
++SeQura uses the contents of the shopper’s cart in its risk assessment. Send [payment line items](https://docs.stripe.com/payments/payment-line-items.md) with every SeQura payment so that SeQura receives the product name, product code, unit cost, quantity, tax, and discount for each item.
++
++- **Checkout:** Stripe automatically sends the line items from your Checkout Session.
++- **Payment Intents API:** Pass `amount_details[line_items]` when you create or update the PaymentIntent. Without it, SeQura receives only the total amount.
++
++## Connect 
++
++| Capability | Requirement |
++| --- | --- |
++| `sequra_payments` | Connected accounts must have this capability enabled. Request it during account creation or by updating an existing connected account. |
++
++If you use Connect, you must consider the following before you enable SeQura on connected accounts. To accept SeQura payments, connected accounts must have the sequra_payments capability enabled. You can request this capability during account creation or update an existing connected account. How you structure the charge also matters: with direct charges, the connected account is the merchant of record and their statement descriptor appears on the customer’s bank statement. With destination charges or transfer charges, your platform is the merchant of record. Review the Connect documentation for guidance on charge types and how they interact with payment method capabilities.
++
++## Customer experience 
++
++#### 1. Select payment method
++
++The customer selects SeQura at checkout.
++
++#### 2. Create or log in
++
++On both desktop and mobile, the customer is redirected from your website or app to SeQura's hosted payment page. The payment flow is the same on every device.
++
++#### 3. Accept terms
++
++The customer chooses a repayment option and completes payment authorization on SeQura's hosted page within 60 minutes. If they don't, the payment attempt expires and the PaymentIntent returns to requires_payment_method.
++
++#### 4. Payment Complete
++
++The customer sees a SeQura confirmation screen, then returns to your website or app.
++
++### Transaction identifiers 
++
++Payments made with SeQura appear on the buyer’s statement as SeQura rather than your Stripe statement descriptor. For Connect scenarios, learn more about how [statement descriptors are set with Connect](https://docs.stripe.com/connect/statement-descriptors.md). After a payment completes, expand `latest_charge` on the PaymentIntent to retrieve the SeQura transaction ID from `latest_charge.payment_method_details.sequra.transaction_id`. Share it with customers to help them locate the payment when contacting SeQura support.
++
++## Enable SeQura 
++
++If you use Stripe front-end products, enable SeQura in your [payment method settings](https://dashboard.stripe.com/settings/payment_methods). Stripe automatically determines which payment methods are most relevant to each customer.
++
++If your integration requires manually listing payment methods, you can [configure SeQura as an accepted payment method](https://docs.stripe.com/payments/sequra/accept-a-payment.md).

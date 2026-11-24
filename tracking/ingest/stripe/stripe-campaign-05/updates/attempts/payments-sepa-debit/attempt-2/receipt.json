@@ -1,0 +1,234 @@
+{
+  "job_id": "payments-sepa-debit",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Stripe: SEPA Direct Debit Payments\"\ntype: source\ndate_ingested: 2026-05-03\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/sepa-debit\"\nraw_files:\n  - \"stripe-payments-sepa-debit-2026-11-07.md\"\n  - \"stripe-sepa-debit-2025.md\"\ntags: [stripe, sepa, sepa-debit, eu, eur, iban, bank-debit, mandates, disputes, radar]\n---\n\n## Summary\n\nSEPA Direct Debit on [[stripe]] is a reusable, business-initiated bank debit in EUR with delayed payment notification. The May 3 and November 7, 2026 overviews describe SEPA Core for personal and business accounts. The separate SEPA B2B scheme and manual capture are unsupported. Both list EU customer locations and 40 eligible Stripe-account business locations. Payments are limited to €10,000 each, with an additional €10,000 weekly limit for new users that can rise with volume (May lines 6–118, November lines 7–119).\n\n**Stripe-account business locations** in both overviews are AT, AU, BE, BG, CA, CH, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GI, GR, HK, HR, HU, IE, IT, JP, LI, LT, LU, LV, MT, MX, NL, NO, NZ, PL, PT, RO, SE, SG, SI, SK and US. The overviews list these separately from the EU customer-location label (May lines 20–22 and 60–103, November lines 21–23 and 61–104).\n\n## Activation and mandate\n\n- Request access from Dashboard payment method settings and complete the additional identity verification. The overviews list Checkout, Elements, Payment Links, Subscriptions, Invoicing and Connect, and exclude Express Checkout Element (May lines 105–149, November lines 106–149).\n- Collect the customer's name and IBAN and obtain their acceptance of a mandate before creating the debit. November adds billing `city`, `postal_code`, `line1` and `country` for payments with an IBAN outside the EEA. Find the Mandate ID at `payment_method_details.sepa_debit.mandate` on the Charge (May line 10, November line 11).\n- The customer can cancel via the party they established the mandate with or their bank. Subsequent debits under that mandate are invalid. Stripe learns of external cancellation on a failed attempt, marks the mandate `inactive` and emits `mandate.updated`. A merchant can cancel an active mandate by detaching its payment method or Source. A dispute can also deactivate a multi-use mandate. Collect fresh acceptance before using a replacement mandate (May lines 216–224 and 274–288, November lines 222–230 and 280–294).\n\n## Timing and failures\n\nBoth method overviews list standard success and Stripe balance availability at **T+6 at 00:00 UTC**. T is bank submission. Payments created on a business day before the **10:30 CET** cutoff generally submit that day. Payments created after the cutoff or on a non-business day are processed the next business day. The bank can refuse the debit during the five business days after submission. Most failures occur within six business days of initiation, and rare later failures can appear as disputes. The setup guide separately describes a later payment typically taking five business days to arrive in the account. Its wording differs from the method overviews' submission-based timing. Neither the Checkout flow illustration, the debit estimate nor Stripe balance availability verifies external bank payout (both overviews lines 121–130 and 152–162, May failure section lines 226–272, November lines 232–278; [[source-stripe-sepa-set-up-payment|May future-payment setup guide]], May raw lines 20–27).\n\n`expected_debit_date` on the Charge and in `charge.updated`, `charge.succeeded` or `charge.failed` events is an estimate when determinable. On failure, Stripe removes the funds immediately from the Stripe balance. Read the Charge's `failure_code` and `failure_message`. The May and November tables each list **13** codes (May lines 260–272, November lines 266–278): `refer_to_customer`, `insufficient_funds`, `debit_disputed`, `authorization_revoked`, `debit_not_authorized`, `account_closed`, `bank_account_restricted`, `debit_authorization_not_match`, `recipient_deceased`, `branch_does_not_exist`, `incorrect_account_holder_name`, `invalid_account_number`, and `generic_could_not_process`.\n\n## Debit notifications\n\nNotify the customer for each debit. Stripe sends an email by default, and always sends it automatically when its Creditor ID is used. When custom notices are allowed, manage Stripe email in Dashboard settings or use `mandate.notification_method` with the Sources API. Use `payment_intent.processing` to trigger a custom debit-initiation email. Include the debtor account's last four digits, mandate reference `sepa_debit[reference]`, amount, SEPA Creditor ID and merchant contact information. Standard notice is at least 14 calendar days before payment creation. State any shorter timing in the mandate. The Stripe mandate described in both captures permits notice up to two calendar days ahead of future payments, including at payment creation. One notice can list several upcoming debits of the same amount with their dates (both captures lines 164–180).\n\n## Creditor ID and Connect\n\n- The default is Stripe's Creditor ID. Creditor Name checks business or legal entity name, then custom statement descriptor, then Stripe default name. For Connect, the first two prefer the connected account's respective field when available, then the platform's. Stripe recommends a recognizable descriptor and suggests an own Creditor ID for EU businesses. After collecting live SEPA debits, the Dashboard blocks changing the Creditor ID. Contact Stripe support for migration guidance (May lines 186–202, November lines 192–208).\n- Enable SEPA Direct Debit on the platform and request `sepa_debit_payments` for the connected accounts. The charge-type table assigns Creditor ID to the connected account for direct charges and for destination or separate charges and transfers with `on_behalf_of`. Without that flag the two latter paths use the platform (May lines 182–214, November lines 182–220).\n- November requires a mandate for each connected account for destination charges processed `on_behalf_of`, where the connected account is merchant of record. It prohibits cloning the SEPA PaymentMethod and mandate to connected accounts for destination charges. Collect a new mandate authorization from the customer through a new PaymentIntent or SetupIntent with `on_behalf_of` set to that connected account (November lines 186–190).\n\n## Disputes and refunds\n\n- A buyer can dispute through their bank without giving a reason for up to eight weeks after the debit. Disputes in that period are automatically honored. After that and up to 13 months, only unauthorized debits qualify. Stripe can supply the accepted mandate to the bank on request, and the bank can still refund the buyer. The disputes are final without appeal. After a successful dispute, merchants must contact the customer directly to resolve it and any agreed return of funds requires a new payment. Stripe emits `charge.dispute.created` and deducts the amount and a fee that varies with default settlement currency. Check for multi-use mandate deactivation (May lines 274–284 and 288, November lines 280–290 and 294–296).\n- Both captures allow full or partial refunds within 180 days. Refunds have no fee, and the original processing fees remain nonrefundable. The guides describe typical processing in 3–4 business days and arrival within five business days. The bank statement shows a credit referencing the original descriptor. New-account refunds can be restricted while Stripe reviews the account, typically up to two business days (May lines 290–304, November lines 298–320).\n- **Dated refund advice.** May recommends a trusted and verified customer, confirming processing with them and waiting at least seven business days. It also advises immediate outreach for an accidental debit. November advises waiting until the original payment fully settles, confirming the refund is being processed and explaining the expected timing. A bank dispute can still proceed after a refund and produce a double credit. The seven-day advice does not establish protection against that outcome (May lines 302–322, November lines 296 and 310–320).\n\n## Radar, Billing retries and business restrictions\n\nMay says Radar might default to on for Radar users. November says it is on by default for supported payment methods. Both describe real-time fraud evaluation trained for SEPA Direct Debit. May labels Direct Debit Billing retries private preview. November describes enablement for recurring subscription invoices, one-off invoices or both, with up to two automatic retries for insufficient funds within 30 days of the original attempt and no debit failure fees on Stripe-initiated automatic retries. November omits the preview label and does not state general availability (May lines 324–332, November lines 322–334).\n\nThe November method overview adds SEPA-specific prohibited or restricted business categories alongside Stripe's general policy. Examples include cannabis businesses excluding cannabidiol (CBD), payment facilitators processing for sub-merchants, peer-to-peer money transfers and weapons or firearms. The overview does not assign a separate prohibition or restriction status to each listed item. See its full list at November lines 336–351.\n\n## Related Pages\n\n- [[stripe-sepa-debit]] — durable SEPA Direct Debit concept\n- [[source-stripe-sepa-accept-payment]] — separate acceptance implementation\n- [[source-stripe-sepa-set-up-payment]] — separate future-payment setup guide\n- [[source-stripe-subscriptions-sepa-debit]] — separate subscription integration\n\n## Raw Sources\n\n- [[raw/stripe-payments-sepa-debit-2026-11-07|SEPA Direct Debit overview, captured 2026-11-07]] — full method eligibility, Connect, refund and retry guidance.\n- [[raw/stripe-sepa-debit-2025|SEPA Direct Debit overview, captured 2026-05-03]] — full dated overview reusing three generic flow SVGs from `raw/assets/stripe-acss-debit-*.svg`.\n",
+  "quotes": {
+    "payments-sepa-debit": [
+      {
+        "text": "For payments from IBANs outside the European Economic Area (EEA), you must also collect the customer’s billing address, including `city`, `postal_code`, `line1`, and `country`.",
+        "location": "raw/stripe-payments-sepa-debit-2026-11-07.md:11"
+      },
+      {
+        "text": "You must collect a mandate for each connected account that you process destination charges",
+        "location": "raw/stripe-payments-sepa-debit-2026-11-07.md:188"
+      },
+      {
+        "text": "You can’t clone SEPA direct debit payment methods and their mandates to connected accounts for use with destination charges.",
+        "location": "raw/stripe-payments-sepa-debit-2026-11-07.md:190"
+      },
+      {
+        "text": "Stripe can automatically retry each failed SEPA Direct Debit payment a maximum of 2 times, no more than 30 days after the original payment attempt.",
+        "location": "raw/stripe-payments-sepa-debit-2026-11-07.md:332"
+      },
+      {
+        "text": "Debit failure fees aren’t charged for retry attempts that we initiate automatically.",
+        "location": "raw/stripe-payments-sepa-debit-2026-11-07.md:334"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-sepa-debit": [
+      {
+        "text": "## Billing Retries (Private preview)",
+        "location": "raw/stripe-sepa-debit-2025.md:330"
+      },
+      {
+        "text": "At least 7 business days have passed since the original payment",
+        "location": "raw/stripe-sepa-debit-2025.md:312"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-sepa-debit-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 351
+      }
+    ],
+    "raw/stripe-sepa-debit-2025.md": [
+      {
+        "start": 1,
+        "end": 332
+      }
+    ],
+    "wiki/sources/source-stripe-sepa-debit.md": [
+      {
+        "start": 1,
+        "end": 45
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/ab89dd7170ec9f0a33823248/content.diff": [
+      {
+        "start": 1,
+        "end": 234
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 260,
+        "end": 266
+      },
+      {
+        "start": 741,
+        "end": 745
+      }
+    ],
+    "wiki/concepts/stripe-sepa-debit.md": [
+      {
+        "start": 8,
+        "end": 94
+      },
+      {
+        "start": 109,
+        "end": 118
+      }
+    ],
+    "raw/stripe-sepa-set-up-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 3
+      },
+      {
+        "start": 20,
+        "end": 27
+      }
+    ]
+  },
+  "answers": {
+    "payments-sepa-debit": {
+      "Q1": "At https://docs.stripe.com/payments/sepa-debit, November documents a business-initiated, reusable, delayed EUR SEPA Core debit, covering eligible personal and business accounts rather than the B2B scheme. After requesting activation, merchants complete additional identity verification, collect name and IBAN plus billing city, postal code, line1 and country for non-EEA IBANs, and obtain an accepted mandate. The Charge links the mandate (old raw lines 6-118, new raw lines 7-119). Connect requires platform enablement and connected-account capability. A destination charge on_behalf_of needs a mandate for each connected account as merchant of record. The guide prohibits cloning the method/mandate to connected accounts for destination charges and uses a new PaymentIntent or SetupIntent with on_behalf_of to get authorization (old raw lines 182-224, new raw lines 182-230). Submission time, debit estimate, five-day refusal window, T+6 standard success/funds availability and late failure remain distinct. Customer cancellation invalidates later debits, and a failed attempt can surface mandate inactivity (old raw lines 152-180 and 216-272, new raw lines 152-180 and 222-278). November retains the automatically honored eight-week bank dispute window and the refund window, and adds exposure controls, supported-method Radar default and limited automatic insufficient-funds retries. source-stripe-sepa-debit.md now preserves the May guide, summarizes the November requirements and identifies the 13 unchanged failure-code rows. Setup, modeled payment states and Stripe funds availability are separate from confirmed external payout.",
+      "Q2": "At https://docs.stripe.com/payments/sepa-debit, substantive November 7, 2026 documentation changes include non-EEA IBAN billing address, destination on_behalf_of fresh-mandate and no-clone rules, fully settled refund guidance and persistent double-credit risk, Radar default-on for supported methods, two automatic insufficient-funds retries within 30 days without debit failure fees on Stripe-initiated retries, and added business restrictions (old raw lines 6-16, 182-214 and 290-332, new raw lines 7-17, 182-220 and 298-351). Preserve May's at-least-seven-business-day refund recommendation and private-preview label as dated, without inferring GA or a guaranteed remedy from November wording. Both method captures give T+6 after submission for standard success and funds availability, while the separate May future-setup guide describes a typical five-business-day later-payment arrival. Retain that timing tension, the 13-row baseline correction, and the Stripe mandate’s at-creation notification qualification in source-stripe-sepa-debit.md (old raw lines 152-180 and 252-272, new raw lines 152-180 and 258-278). Image URLs, headings, table formatting and quickstart/HTTPS links are presentational or navigation changes. Preserve the May raw, the root-to-Stripe index and reciprocal Stripe SEPA Direct Debit concept/source route, with acceptance, setup and subscription links separate."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-sepa-debit-mandate-address",
+      "target_path": "wiki/concepts/stripe-sepa-debit.md",
+      "update_kind": "durable_fact",
+      "anchor": "Collect customer name + IBAN; customer accepts mandate authorizing Stripe to debit on business's behalf. Mandate ID on `payment_method_details.sepa_debit.mandate` on Charge.",
+      "proposed_markdown": "Collect the customer's name and IBAN and obtain mandate acceptance before debit. The November 2026 method overview adds billing `city`, `postal_code`, `line1` and `country` for payments from an IBAN outside the EEA. The Charge exposes the Mandate ID at `payment_method_details.sepa_debit.mandate`. See [[source-stripe-sepa-debit]].",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The address requirement applies to the IBAN condition stated at November line 11."
+      ]
+    },
+    {
+      "update_id": "payments-sepa-debit-creditor-id-settings",
+      "target_path": "wiki/concepts/stripe-sepa-debit.md",
+      "update_kind": "durable_fact",
+      "anchor": "- Cannot change Creditor ID after live payments collected (contact support)",
+      "proposed_markdown": "- After collecting live SEPA debits, the Dashboard blocks changing the Creditor ID. Contact Stripe support for migration guidance.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "Dashboard-only restriction and support route from May line 202 and November line 208."
+      ]
+    },
+    {
+      "update_id": "payments-sepa-debit-notice-timing",
+      "target_path": "wiki/concepts/stripe-sepa-debit.md",
+      "update_kind": "durable_fact",
+      "anchor": "Standard lead time: 14 days. Stripe mandate allows as close as 2 days in advance.",
+      "proposed_markdown": "Standard notice is at least 14 calendar days before payment creation. State any shorter timing in the mandate. The Stripe mandate quoted by both overviews allows notice up to two calendar days before a future payment, including at payment creation. See [[source-stripe-sepa-debit]].",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The timing qualification appears in both captures at line 180."
+      ]
+    },
+    {
+      "update_id": "payments-sepa-debit-connect-mandate",
+      "target_path": "wiki/concepts/stripe-sepa-debit.md",
+      "update_kind": "durable_fact",
+      "anchor": "Requires `sepa_debit_payments` capability on connected accounts.",
+      "proposed_markdown": "Enable SEPA Direct Debit on the platform and request `sepa_debit_payments` for connected accounts. The November overview requires a new mandate per connected account for destination charges processed `on_behalf_of`. It prohibits cloning the SEPA method and mandate to connected accounts for destination charges. Obtain acceptance with a new PaymentIntent or SetupIntent using `on_behalf_of`. See [[source-stripe-sepa-debit]].",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [
+        "Do not extend the November destination-charge rule to other charge types."
+      ]
+    },
+    {
+      "update_id": "payments-sepa-debit-failure-code-count",
+      "target_path": "wiki/concepts/stripe-sepa-debit.md",
+      "update_kind": "durable_fact",
+      "anchor": "12 failure codes: `refer_to_customer`, `insufficient_funds`, `debit_disputed`, `authorization_revoked`, `debit_not_authorized`, `account_closed`, `bank_account_restricted`, `debit_authorization_not_match`, `recipient_deceased`, `branch_does_not_exist`, `incorrect_account_holder_name`, `invalid_account_number`, `generic_could_not_process`.",
+      "proposed_markdown": "13 failure codes: `refer_to_customer`, `insufficient_funds`, `debit_disputed`, `authorization_revoked`, `debit_not_authorized`, `account_closed`, `bank_account_restricted`, `debit_authorization_not_match`, `recipient_deceased`, `branch_does_not_exist`, `incorrect_account_holder_name`, `invalid_account_number`, `generic_could_not_process`.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Both raw tables have 13 rows (May lines 260–272 and November lines 266–278)."
+      ]
+    },
+    {
+      "update_id": "payments-sepa-debit-refund-overview",
+      "target_path": "wiki/concepts/stripe-sepa-debit.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Wait 7 business days before refunding** (ensures refusal window closed)\n- Risk of double-credit if customer disputes after refund",
+      "proposed_markdown": "- May 2026 recommends waiting at least seven business days. November 2026 recommends issuing the refund after the original payment fully settles, confirming processing with the buyer and sharing expected timing.\n- Bank disputes can still proceed after a refund, with potential double credit. See [[source-stripe-sepa-debit]].",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "Dated refund advice is at May lines 302–322 and November lines 296 and 310–320. November retry quotes concern a separate Billing action."
+      ]
+    },
+    {
+      "update_id": "payments-sepa-debit-settlement-advice",
+      "target_path": "wiki/concepts/stripe-sepa-debit.md",
+      "update_kind": "durable_fact",
+      "anchor": "> Wait at least 6 business days before considering a SEPA payment as successful. Wait 7 days before refunding.",
+      "proposed_markdown": "> Both method overviews advise waiting at least six business days before considering a SEPA debit successful. See the dated refund advice below.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The payment-success and refund advice are distinct. See May line 250 and November line 256."
+      ]
+    },
+    {
+      "update_id": "payments-sepa-debit-dated-source-route",
+      "target_path": "wiki/concepts/stripe-sepa-debit.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-sepa-debit]] — primary source: settlement, Creditor ID, mandates, failure codes, disputes, refunds, Radar",
+      "proposed_markdown": "- [[source-stripe-sepa-debit]] — May and November 2026 method overviews with IBAN and mandate requirements, Connect, timing, refunds, disputes and Billing retries.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The November method overview is distinct from the acceptance, setup and subscriptions guides."
+      ]
+    },
+    {
+      "update_id": "payments-sepa-debit-customer-and-business-locations",
+      "target_path": "wiki/concepts/stripe-sepa-debit.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Currency**: EUR only. **Region**: EU customers (all EUR IBAN accounts in the SEPA zone).",
+      "proposed_markdown": "**Currency** is EUR only. The May and November 2026 method overviews label customer locations as EU and separately list 40 Stripe-account business locations. See [[source-stripe-sepa-debit]] for the list.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The customer label and business list are at May lines 20–22 and 60–103 and November lines 21–23 and 61–104. November line 11 and the separate mandate suggestion cover the non-EEA IBAN billing-address rule."
+      ]
+    }
+  ]
+}

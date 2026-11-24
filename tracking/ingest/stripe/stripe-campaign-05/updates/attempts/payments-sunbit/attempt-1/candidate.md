@@ -1,0 +1,60 @@
+---
+title: "Stripe: Sunbit Payments"
+type: source
+date_ingested: 2026-05-06
+date_updated: 2026-11-22
+original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/sunbit"
+raw_files:
+  - "stripe-payments-sunbit-2026-11-07.md"
+  - "stripe-sunbit-2025.md"
+tags: [stripe, bnpl, sunbit, buy-now-pay-later, consumer, us, installments, connect]
+---
+
+## Summary
+
+The November 7, 2026 guide describes single-use Sunbit buy now, pay later for domestic US consumers and US businesses, with USD 60.00–19,999.99 presentment. On desktop or mobile, the customer goes to Sunbit, creates or signs into an account, chooses 3, 6, 12 or 18 monthly installments, accepts the terms and authorizes. Sunbit or its partner bank determines customer eligibility and has the right to collect installment payments. Stripe acquires and settles the purchase on its standard payout schedule. The depicted completed-payment flow shows immediate success notification after return. The manual-capture flow below has a separate capture step.
+
+## Eligibility and requirements
+
+- The November guide lists US merchants and Connect platforms or marketplaces, and supports B2C with B2B excluded. Access is initially provisional and account review may follow activation. Contact Stripe Support to appeal account rejection, offboarding or capability restrictions.
+- The customer must complete their own application and review the terms. Merchants cannot surcharge. The financed amount including any down payment cannot exceed the price of goods delivered or services rendered. The business website must meet Stripe's account activation requirements.
+- The May page has 213 prohibition-list bullets, including duplicates and an Other categories entry. November uses a code-keyed table with 220 listed rows, all marked Prohibited, alongside language defining Restricted MCCs separately. Compare individual codes and labels in raw. Marketplace account-type support is separate from prohibited MCC 5262 for Marketplaces.
+
+## Capture, API and product scope
+
+- The May 6, 2026 method guide lists no manual capture. The November method guide lists manual capture but excludes partial capture, multi-capture, over-capture, the listed authorization adjustments and recurring payments. The [June 24 Dahlia changelog](https://docs.stripe.com/changelog/dahlia/2026-06-24/enables-manual-capture-for-sunbit-payments) documents manual Sunbit PaymentIntents on `2026-06-24.dahlia`, including the Sunbit-specific capture option. It also documents a Checkout Session configuration through a create link pinned to `2026-05-27.dahlia`. In this flow, authorization precedes the merchant's explicit capture request, which must occur within the authorization window.
+- The May and November cross-method BNPL API matrices list Sunbit manual capture as unsupported and `setup_future_usage` as supported. Their non-card and non-bank-debit footnote limits any supported use to `off_session`. The November Sunbit method guide lists manual capture as supported and PaymentIntents with `setup_future_usage`, SetupIntents and off-session payments as unsupported. This disagreement leaves route-specific applicability unresolved. Both method captures exclude recurring payments.
+- The November product matrix lists full-page Checkout, Payment Links, embedded form, Payment Element, in-app payments and Connect as supported. It lists Express Checkout Element, Payment Method Messaging Element, Managed Payments, Billing, Invoicing, Customer Portal, Radar and Terminal as unsupported. The November API matrix lists Checkout Sessions and PaymentIntents. The May product list separately excludes Checkout setup and subscription modes and Express Checkout Element. November routes Dashboard enablement and manual method selection to their separate guidance.
+
+## Refunds and disputes
+
+- **Refunds.** Submit full or partial refunds within 180 days through the Dashboard or Refunds API. Processing is asynchronous and takes up to five minutes. Refunds cannot be canceled and are never reversals. Sunbit cancels remaining scheduled payments and returns amounts already paid. Check Refund `status` or final `refund.updated` and `refund.failed` events. A failed refund restores the amount to the Stripe balance and requires an alternative refund to the customer.
+- **Disputes.** May lists suspected fraud, duplicate payment and amount mismatch as reasons. November lists full disputes with partial disputes unsupported and states no set customer filing deadline. Stripe immediately withholds the disputed amount on opening. The merchant has 12 calendar days from creation to submit evidence via the Dashboard or Disputes API. The `charge.dispute.created` event notifies integrations, and the Dispute object gives `reason` and `evidence_details.due_by`. Sunbit issues a final decision within 35 calendar days of creation. No dispute fee applies, and the decision cannot be appealed. A merchant win restores the disputed amount to the Stripe balance. Otherwise the balance charge becomes permanent.
+- **Fraud.** November says Sunbit covers customer fraud losses and directs merchants to promptly honor any Stripe request on Sunbit's behalf to stop or pause shipment.
+
+## Connect and transaction identifiers
+
+- **May 6, 2026 configuration.** The guide directs the platform and selected connected accounts to have an active `sunbit_payments` capability. The descriptor comes from the connected account for direct charges, from the platform for destination and separate charges and transfers, and from the connected account for destination and separate charges and transfers using `on_behalf_of`.
+- **November 7, 2026 identifiers.** The statement shows Sunbit and a merchant identifier derived from business information or the descriptor suffix. Set a custom descriptor on the PaymentIntent before confirmation or use the account-level default. The guide links separately to Connect descriptor rules. After payment completes, expand `latest_charge` and read `latest_charge.payment_method_details.sunbit.transaction_id`.
+
+## Detail locators
+
+| Topic | May raw lines | November raw lines |
+| --- | --- | --- |
+| Customer flow, eligibility, limits and categories | 6–67, 69–72, 89–320, 377–381 | 7–42, 43–280, 398–412 |
+| Capture, API and product matrices | 44–67 | 281–295, 371–395 |
+| Refunds, disputes and liability | 322–353 | 297–369 |
+| Connect configuration, identifiers and enablement | 74–87, 355–375 | 414–426 |
+
+## Related
+
+- [[stripe-bnpl]] — BNPL concept, capability comparisons and dated conflicts
+- [[source-stripe-bnpl-overview]] — Cross-method API and product matrices
+- [[source-stripe-sunbit-accept-payment]] — Separate Sunbit integration guide
+- [[stripe]] — Stripe company page
+
+## Raw Sources
+
+- [[raw/stripe-payments-sunbit-2026-11-07|November 7, 2026 full method guide]]
+- [[raw/stripe-sunbit-2025|May 6, 2026 full method guide]]

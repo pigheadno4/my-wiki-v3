@@ -1,0 +1,175 @@
+{
+  "job_id": "payments-paypal-payout-reconciliation",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: PayPal Payout Reconciliation\"\ntype: source\ndate_ingested: 2026-05-07\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/paypal/payout-reconciliation\"\nraw_files:\n  - \"stripe-payments-paypal-payout-reconciliation-2026-11-07.md\"\n  - \"stripe-paypal-reconciliation-2025.md\"\ntags: [stripe, wallets, paypal, reconciliation, settlement, payout, transaction-id, reference]\n---\n\n## Settlement and reconciliation scope\n\nThe May 7 and November 7, 2026 guides describe matching processed Stripe payments to PayPal orders when funds settle on PayPal. The merchant reconciles those transactions using its PayPal business reports or sFTP feed. For transactions settling on Stripe, Stripe reconciles the transactions before payout. The separate November [[source-stripe-paypal-settlement|settlement preference guide]] says direct businesses can choose the settlement destination when connecting their accounts. Connect funds settle on Stripe. The merchant manages payouts on PayPal when funds settle there.\n\nStripe's separate [Payout reconciliation report](../../raw/stripe-reports-payout-reconciliation-2026-11-07.md#L9-L26) groups transactions into automatic payout batches. It also covers platforms using manual payouts when their connected accounts have automatic payouts enabled. Other manual-payout users can use the Balance report. Stripe cannot identify the transactions included in an instant payout. See [[stripe-payouts]] and [[source-stripe-payouts-reconciliation]] for Stripe-side payout reconciliation.\n\n## Merchant reference\n\nUse a business-generated order or invoice ID as `payment_method_options.paypal.reference` when creating the PaymentIntent. The customer can see the reference. After the payment is processed, it appears as **Invoice ID** in the PayPal Settlement Report. Refunds and disputes derived from the original payment are associated with that reference.\n\n| Capture | PaymentIntent create example |\n| --- | --- |\n| May 7, 2026 | Node server example with `amount: 1099`, `currency: \"eur\"`, `payment_method_types: [\"paypal\"]` and the PayPal reference `my_order_id`. |\n| November 7, 2026 | cURL example with `amount=1099`, `currency=eur`, `automatic_payment_methods[enabled]=true` and `payment_method_options[paypal][reference]=my_order_id`. |\n\nThese examples illustrate creating the PaymentIntent and composing its method selection and reference. Account eligibility and payment confirmation or capture are separate.\n\n## PayPal capture ID\n\nWhen a business-generated order ID is unavailable, the guide recommends the PayPal capture ID at `Charge.payment_method_details.paypal.transaction_id`. Stripe documents the field as present only after capture. After processing, it maps to **Transaction ID** in the PayPal Settlement Report. The illustrative Charge has `captured: true` and `paid: true`, and shows a distinct Stripe Charge ID and PayPal payer ID. The capture ID identifies the PayPal transaction. Bank payout arrival requires separate evidence.\n\n## PayPal Settlement Report\n\nIn a PayPal business account, go to **Activity → All Reports → Transactions → Settlement**. Contact PayPal to enable sFTP reporting. The report covers balance-impacting transactions over a 24-hour period and can be used to reconcile movements in the PayPal account against the linked bank account.\n\n## Related\n\n- [[stripe-wallets]] — PayPal wallet and settlement context\n- [[stripe]] — Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-payments-paypal-payout-reconciliation-2026-11-07|November 7, 2026 PayPal reconciliation guide]] — full capture with automatic method selection in its creation example.\n- [[raw/stripe-paypal-reconciliation-2025|May 7, 2026 PayPal reconciliation guide]] — full capture with manual PayPal method selection in its creation example.\n",
+  "quotes": {
+    "payments-paypal-payout-reconciliation": [
+      {
+        "text": "-d \"automatic_payment_methods[enabled]=true\"",
+        "location": "raw/stripe-payments-paypal-payout-reconciliation-2026-11-07.md:27"
+      },
+      {
+        "text": "-d \"payment_method_options[paypal][reference]=my_order_id\"",
+        "location": "raw/stripe-payments-paypal-payout-reconciliation-2026-11-07.md:28"
+      },
+      {
+        "text": "`my_order_id` is reflected as Invoice ID",
+        "location": "raw/stripe-payments-paypal-payout-reconciliation-2026-11-07.md:31"
+      },
+      {
+        "text": "The `transaction_id` is present only if the payment has been captured.",
+        "location": "raw/stripe-payments-paypal-payout-reconciliation-2026-11-07.md:35"
+      },
+      {
+        "text": "an end-to-end view of all balance-impacting transactions within a 24-hour period.",
+        "location": "raw/stripe-payments-paypal-payout-reconciliation-2026-11-07.md:102"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-paypal-payout-reconciliation": [
+      {
+        "text": "payment_method_types: [\"paypal\"]",
+        "location": "raw/stripe-paypal-reconciliation-2025.md:29"
+      },
+      {
+        "text": "reference: \"my_order_id\"",
+        "location": "raw/stripe-paypal-reconciliation-2025.md:32"
+      },
+      {
+        "text": "The `transaction_id` is present only if the payment has been captured.",
+        "location": "raw/stripe-paypal-reconciliation-2025.md:42"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-paypal-payout-reconciliation-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 110
+      }
+    ],
+    "raw/stripe-paypal-reconciliation-2025.md": [
+      {
+        "start": 1,
+        "end": 117
+      }
+    ],
+    "wiki/sources/source-stripe-paypal-reconciliation.md": [
+      {
+        "start": 1,
+        "end": 50
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/3a20d2769052d1e664ca9c30/content.diff": [
+      {
+        "start": 1,
+        "end": 72
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-paypal-payout-reconciliation/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 192
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-paypal-payout-reconciliation/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 36
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "wiki/concepts/stripe-wallets.md": [
+      {
+        "start": 182,
+        "end": 197
+      },
+      {
+        "start": 402,
+        "end": 415
+      }
+    ],
+    "wiki/concepts/stripe-payouts.md": [
+      {
+        "start": 71,
+        "end": 86
+      }
+    ],
+    "wiki/concepts/stripe-paypal.md": [
+      {
+        "start": 7,
+        "end": 13
+      },
+      {
+        "start": 65,
+        "end": 69
+      }
+    ],
+    "raw/stripe-payments-paypal-choose-settlement-preference-2026-11-07.md": [
+      {
+        "start": 13,
+        "end": 21
+      },
+      {
+        "start": 39,
+        "end": 45
+      }
+    ],
+    "raw/stripe-reports-payout-reconciliation-2026-11-07.md": [
+      {
+        "start": 9,
+        "end": 26
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md": [
+      {
+        "start": 187,
+        "end": 193
+      }
+    ]
+  },
+  "answers": {
+    "payments-paypal-payout-reconciliation": {
+      "Q1": "For https://docs.stripe.com/payments/paypal/payout-reconciliation, a merchant who settles PayPal payments to PayPal manually matches processed payments against its PayPal business report or sFTP feed. Stripe handles transaction reconciliation before payout for the Stripe-settlement route. The merchant sets a customer-visible reference at PaymentIntent creation. It appears as Invoice ID after processing and relates subsequent refunds and disputes. When no business order ID is available, the guide recommends the PayPal transaction_id on a captured Charge, which matches Transaction ID (old raw lines 8-54; new raw lines 9-47). The PayPal report covers 24 hours of balance-impacting transactions. source-stripe-paypal-reconciliation.md retains both keys, documents each example’s selection configuration, and scopes the capture ID as a recommended fallback. A created Intent or captured Charge does not establish payout arrival.",
+      "Q2": "For https://docs.stripe.com/payments/paypal/payout-reconciliation, the May 7 Node PaymentIntent create example selects PayPal explicitly, whereas the November 7 cURL example enables automatic payment methods. Both use amount 1099, EUR and the same PayPal reference. source-stripe-paypal-reconciliation.md retains the settings as dated creation examples (old raw lines 17-38 and new raw lines 18-31). Code language, JSON indentation, buyer/customer terminology and report-list numbering are presentation. Retain the capture condition, Invoice ID versus Transaction ID, related refunds/disputes, and PayPal business account or sFTP access (old raw lines 40-117; new raw lines 33-110). Preserve reciprocal wallet and settlement-preference routes and the distinct Stripe payout report route with its own automatic-payout and connected-account qualifiers. General Stripe manual payouts use the Balance report in the cases specified by the report guidance. Stripe cannot identify transaction inclusion for instant payouts (separate Stripe report raw lines 9-26)."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-paypal-payout-reconciliation-settled-on-paypal-mapping",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Reconciliation (PayPal settlement only)**: Two methods — (1) `payment_method_options.paypal.reference` (recommended): merchant order ID appears as Invoice ID in PayPal settlement report, cascades to refunds/disputes; (2) `charge.payment_method_details.paypal.transaction_id` (fallback, only after capture): appears as Transaction ID in settlement report. PayPal Settlement Report: 24-hour view, accessible via paypal.com or sFTP.",
+      "proposed_markdown": "**PayPal transaction reconciliation**. When funds settle on PayPal, match the merchant’s customer-visible reference to **Invoice ID**. Use the PayPal capture ID as the recommended fallback if no business order ID is available. After capture, `Charge.payment_method_details.paypal.transaction_id` matches **Transaction ID**. The PayPal report covers 24 hours of balance-impacting transactions and is available from the business account or through PayPal-enabled sFTP. See [[source-stripe-paypal-reconciliation]] for the dated Stripe creation examples and the separate Stripe payout report scope.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "payments-paypal-payout-reconciliation-dated-reciprocal",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-paypal-reconciliation]] — PayPal reconciliation: reference field (Invoice ID) vs transaction_id (Transaction ID), PayPal settlement report access",
+      "proposed_markdown": "- [[source-stripe-paypal-reconciliation]] — May and November 2026 guides to reconciling transactions settled on PayPal, with the reference and capture ID report keys, dated PaymentIntent creation examples and report access.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ]
+}

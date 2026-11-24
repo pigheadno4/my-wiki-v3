@@ -1,0 +1,142 @@
+--- raw/stripe-link-payment-methods-2025.md
++++ raw/stripe-payments-wallets-link-2026-11-07.md
+@@ -1,59 +1,106 @@
+-# Link payment methods
++# Link
+ 
+-Increase global conversion and reduce costs with Link payment methods.
+-Available in: US
+-Link lets your customers pay with their preferred payment methods. This allows you to reach your global consumers, increasing conversion rates and lowering costs. Link presents these alternative payment methods automatically on your checkout—no integration required.
++Learn about Link's core features.
+ 
+-**Supported payment methods:** [Instant Bank Payments](https://docs.stripe.com/payments/link/instant-bank-payments.md), [Klarna](https://docs.stripe.com/payments/link/klarna.md), [Pix](https://docs.stripe.com/payments/link/pix.md), [UPI](https://docs.stripe.com/payments/link/upi.md), [Stablecoins](https://docs.stripe.com/payments/link/stablecoins.md).
++*Link* (Stripe’s digital wallet. It securely saves and autofills customer address and payment details, with support for cards, US bank accounts, BNPLs, and more) is Stripe’s digital wallet. It lets your customers securely save and reuse payment methods for fast checkout. Where available, your customers can pay with cards, bank accounts, [buy‑now‑pay‑later](https://docs.stripe.com/payments/link/klarna.md) options, and other methods. By offering more ways to pay and a streamlined checkout, you can increase conversion—and when customers pay with lower‑cost alternatives to cards, like [Instant Bank Payments](https://docs.stripe.com/payments/link/instant-bank-payments.md) (available exclusively through Link), you can reduce processing costs.
+ 
+-## How it works
++Link confirms all transactions immediately, and successful payments settle to your Stripe balance on the same timeline as card payments, regardless of the funding method.
+ 
+-Link automatically evaluates and turns on the most relevant payment methods for your customers. You don’t need to make any integration changes or handle any LPM specific configurations.
++Customers can make changes to their account, view their purchase history, or reach out to the Link customer support team by visiting [link.com](https://www.link.com). For information about how your payment integration affects Link, see [Link in different payment integrations](https://docs.stripe.com/payments/link/link-payment-integrations.md).
+ 
+-Link payments appear in your dashboard either as type `link` or type `card` with `brand=link`, depending on your [Link integration](https://docs.stripe.com/payments/link/link-payment-integrations.md). Payments always appear as Link regardless of the underlying payment method your customer used.
++#### Payment method properties
+ 
+-## Eligibility
++- **Customer locations**
+ 
+-Link dynamically evaluates and displays eligible payment methods for each checkout session. Because not every business or transaction qualifies for every payment method, Link handles the routing rules for you.
++  Worldwide except India
+ 
+-During a session, Link filters available payment methods based on several criteria, including:
++- **Presentment currency**
+ 
+-- **Business eligibility**: Some payment methods restrict the types of businesses or industry verticals they support.
+-- **Presentment currency**: Certain payment methods require businesses to present in local currency. To learn how to adapt your checkout pages to host local currencies, see [here](https://docs.stripe.com/payments/currencies/localize-prices.md).
+-- **Transaction limit**: The payment amount must fall within the payment method’s supported minimum and maximum limits.
+-- **Customer location**: The payment method must be available in your customer’s country.
+-- **Recurring payment and subscription support**: Some payment methods don’t support recurring payments or off-session charges.
++  See [supported presentment currencies](https://docs.stripe.com/currencies.md#presentment-currencies)
+ 
+-Link removes this complexity from your integration, so your customers only see payment methods they can use successfully.
++- **Payment confirmation**
+ 
+-> You can still enable payment methods outside of Link in your [payment method settings](https://dashboard.stripe.com/settings/payment_methods). However, this disables the payment method’s Link interface, so your customers can’t save payment details for faster checkout.
++  Customer-initiated
+ 
+-## Buyer experience
++- **Payment method family**
+ 
+-### For new Link customers
++  Wallet
+ 
+-When a customer checks out for the first time with a payment method offered by Link:
++- **Recurring payments**
+ 
+-1. At checkout, the customer enters their email. Link detects their location and shows available payment methods.
+-1. The customer selects their preferred method, signs up for Link, and authenticates the payment. Payment confirms instantly.
+-1. Link saves the details for this payment method for future use across Link-enabled merchants.
++  Yes
+ 
+-### For returning Link customers
++- **Payout timing**
+ 
+-A customer can choose their preferred payment methods and check out faster with Link.
++  Standard payout timing applies
+ 
+-1. Link automatically detects if a customer is enrolled to Link by using their email address, phone number, or browser cookie.
+-1. The customer receives a one-time passcode to authenticate with Link.
+-1. After authentication succeeds, Link autofills their saved payment method details and shipping information.
++- **Connect support**
+ 
+-## Disable Link
++  Yes
+ 
+-To disable payment methods, you must turn off Link entirely. Turning off Link also removes access to Link's accelerated checkout on cards and other saved payment methods, as well as conversion benefits from returning customers.
++- **Dispute support**
+ 
+-> Because BNPL payment methods have higher fees, you can configure them individually on your [Link settings](https://dashboard.stripe.com/settings/link) page.
++  [Yes](https://docs.stripe.com/payments/wallets/link.md#disputes)
++
++- **Manual capture support**
++
++  Yes
++
++- **Refunds or partial refunds**
++
++  [Yes and Yes](https://docs.stripe.com/payments/wallets/link.md#refunds)
++
++#### Business locations
++
++With the exception of India, Stripe accounts worldwide can accept Link payments with local currency settlement. In Thailand or Brazil, Link isn’t supported in the Payment Element.
++
++#### Product support
++
++- Connect
++- Checkout
++- Payment Links
++- Elements1
++
++- Invoicing
++- Billing
++
++1 The Payment Element doesn’t support Link in Thailand or Brazil.
++
++## Payment flow 
++
++The Link payment flow varies depending on the Stripe product that you’re using. To learn more, see [Faster checkout with link](https://docs.stripe.com/payments/link.md).
++
++## Get started 
++
++To use Link, you must enable it under **Wallets** in your [payment method settings](https://dashboard.stripe.com/settings/payment_methods) and integrate it appropriately for your use case. After you’ve enabled and integrated it, Stripe automatically displays Link to your customers for eligible transactions. All Link transactions confirm immediately, and successful payments settle to your Stripe balance on the same timeline as card payments, regardless of the payment method that funds the payment.
++
++You can integrate Link in two ways:
++
++- [As a payment method](https://docs.stripe.com/payments/link/link-payment-integrations.md?link-integrations=link-payment-method): Recommended. This integration works with [dynamic payment methods](https://docs.stripe.com/payments/payment-methods/dynamic-payment-methods.md) and in most cases requires no additional configuration.
++- [Within a card-specific integration](https://docs.stripe.com/payments/link/link-payment-integrations.md?link-integrations=link-card-integrations): Use this integration type instead if you only accept card payments, or if you require access to card details such as the brand or last 4 digits.
++
++Both Link integrations accept all types of payment methods supported by Link, including credit cards, debit cards, [Instant Bank Payments](https://docs.stripe.com/payments/link/instant-bank-payments.md), and [Klarna](https://docs.stripe.com/payments/link/klarna.md).
++
++If you integrate [Link as a payment method](https://docs.stripe.com/payments/link/link-payment-integrations.md?link-integrations=link-payment-method), then each Link transaction has a [PaymentMethod object](https://docs.stripe.com/api/payment_methods/object.md) with a [type](https://docs.stripe.com/api/payment_methods/object.md#payment_method_object-type) of `link` and no `wallet` hash.
++
++If you incorporate [Link into a card-specific integration](https://docs.stripe.com/payments/link/link-payment-integrations.md?link-integrations=link-card-integrations), then each Link transaction has a [PaymentMethod object](https://docs.stripe.com/api/payment_methods/object.md) with a [type](https://docs.stripe.com/api/payment_methods/object.md#payment_method_object-type) of `card` and a `card.wallet` hash with a [type](https://docs.stripe.com/api/payment_methods/object.md#payment_method_object-card-wallet-type) of `link`.
++
++## Refunds
++
++Link supports full and partial refunds. You can initiate refunds through the Stripe Dashboard or API, similar to other payment methods. The refund process is typically completed within 5-10 business days, depending on your bank.
++
++## Disputes 
++
++[Disputes](https://docs.stripe.com/disputes.md) for Link payments follow a similar process to card disputes. You can respond to disputes through the Stripe Dashboard or API. The dispute process and timelines might vary, depending on whether the saved payment method used for the transaction was a card or bank account.
++
++> If you prefer to handle disputes programmatically, you can [respond to disputes](https://docs.stripe.com/disputes/api.md) using the API.
++
++## Supported currencies 
++
++Link supports all [currencies](https://docs.stripe.com/currencies.md) that Stripe supports for card payments.
+ 
+ ## See also
+ 
+-- [Link in different payment integrations](https://docs.stripe.com/payments/link/link-payment-integrations.md)
+ - [Link with Checkout](https://docs.stripe.com/payments/link/checkout-link.md)
+-- [Link with Elements](https://docs.stripe.com/payments/link/elements-link.md)+- [Link with Elements](https://docs.stripe.com/payments/link/elements-link.md)
++- [Link with Invoicing](https://docs.stripe.com/payments/link/invoicing.md)

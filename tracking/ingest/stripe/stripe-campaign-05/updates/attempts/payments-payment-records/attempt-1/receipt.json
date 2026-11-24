@@ -1,0 +1,147 @@
+{
+  "job_id": "payments-payment-records",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Payment Records API\"\ntype: source\ndate_ingested: 2026-04-19\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/payment-records\"\nraw_files:\n  - \"stripe-payments-payment-records-2026-11-07.md\"\n  - \"stripe-payment-records-api-2025.md\"\ntags: [stripe, payment-records, orchestration, multi-processor, off-stripe, reconciliation]\n---\n\n## Summary\n\nThe April 19 and November 7, 2026 guides describe a unified ledger for on-Stripe and external payments. The combined [[stripe-orchestration|Orchestration]] example says Stripe automatically creates a PaymentRecord for each on-Stripe PaymentIntent and the merchant reports external payments. Orchestration is the condition for that automation example. The guide separately describes Checkout entries for Stripe's custom PayPal adapter.\n\nPayment Records support tracking multi-capture and third-party and partner-initiated payments, including Stripe-instructed card transactions. The guide names Subscriptions smart retries, out-of-band Invoice payments and Radar as related uses.\n\n## Three-level history\n\n- **PaymentRecord** tracks a payment across attempts and outcomes. `latest_payment_attempt_record` points to the most recent attempt.\n- **PaymentAttemptRecord** represents an individual processing attempt. One PaymentRecord may have several.\n- **PaymentAttemptRecordEntry** records an individual event in an append-only attempt log. Entries are limited to preview users in both captures. April illustrates `initiated`, `authenticated`, `authorized` and `guaranteed`. The November diagram illustrates declined attempts and a subsequent successful retry. These are examples of event histories, with ordering depending on the attempt. A guaranteed outcome or amount records the reported payment state.\n\n## Report payment activity\n\n| Operation | Documented use |\n| --- | --- |\n| `reportPayment` | Record an external payment with amount, method, processor and timestamps. Stripe creates the first associated attempt. The examples use `outcome=guaranteed` and `processor_details.type=custom`. |\n| `reportPaymentAttemptFailed` | Report the failure time against the existing PaymentRecord ID. |\n| `reportPaymentAttempt` | Report a new attempt on the same PaymentRecord with the same or a different method or processor. |\n| `reportRefund` | Record a previously processed full or partial refund. Omit `amount` to report the entire guaranteed amount. Report multiple partial refunds until the full amount has been reported. |\n\nThe refund operation updates the payment history. The separate November Orchestration overview says third-party processors administer refunds for payments routed to them. Record outcomes and guaranteed amounts do not establish settlement.\n\n## Retrieve records, attempts and entries\n\n- Retrieve a PaymentRecord by its own ID, which is returned in the orchestrated PaymentIntent response. For historical payments, the guide also documents lookup by PaymentIntent ID.\n- Retrieve the latest PaymentAttemptRecord using the ID under `latest_payment_attempt_record`. For historical payments using the Charges API, use the Charge ID to retrieve the PaymentAttemptRecord. To list all attempts, filter by PaymentRecord ID.\n- For preview access, list PaymentAttemptRecordEntries by PaymentAttemptRecord ID. Stripe describes a webhook with the entry object each time an entry is created, for example `payment_attempt_record_entry.initiated`. The Dashboard is another viewing route.\n\n## November custom PayPal Checkout entry outcomes\n\nThis preview entry guidance applies to Checkout Sessions using a custom payment method through Stripe's merchant-hosted PayPal adapter. Find the entries through the Checkout Session's `payment_record`.\n\n| Customer or processor action | Entry outcome |\n| --- | --- |\n| Customer abandons Checkout before entering PayPal or leaves the Session until it expires | `canceled`. Stripe waits for an open Session to expire before treating it as abandoned. |\n| Customer enters PayPal and returns to Checkout without approving | `failed` with `failure_details.code=payment_method_customer_decline`. |\n| Customer attempts payment and PayPal declines | `failed` with `failure_details.code=payment_method_provider_decline`, regardless of the PayPal reason. |\n\nThe [custom PayPal adapter guide](https://docs.stripe.com/payments/payment-methods/custom-payment-methods/paypal) separately describes access during its preview and the merchant-hosted adapter. The above entry classifications describe that integration.\n\n## Detail locators\n\n| Topic | April raw lines | November raw lines |\n| --- | --- | --- |\n| PaymentIntent relationship, hierarchy and examples | 16–46 | 17–133 |\n| Report payment, attempt, retry and refund | 48–143 | 135–187 |\n| Retrieve PaymentRecord and attempts | 145–195 | 189–230 |\n| Entry preview and list examples | 216–265 | 251–310 |\n| Custom PayPal Checkout outcomes | — | 255–263 |\n\n## Related Pages\n\n- [[stripe]] — Stripe company page\n- [[stripe-orchestration]] — Stripe Orchestration concept and Payment Records routes\n- [[source-stripe-orchestration]] — Separate overview and processor responsibilities\n- [[source-stripe-payment-intents]] — PaymentIntents lifecycle\n- [[source-stripe-paypal]] — Standard Stripe PayPal payment method\n- [[payment-reconciliation-reporting]] — Generic reconciliation concept\n\n## Raw Sources\n\n- [[raw/stripe-payments-payment-records-2026-11-07|November 7, 2026 full Payment Records guide]]\n- [[raw/stripe-payment-records-api-2025|April 19, 2026 full Payment Records guide]]\n",
+  "quotes": {
+    "payments-payment-records": [
+      {
+        "text": "PaymentAttemptRecordEntries are currently limited to preview users.",
+        "location": "raw/stripe-payments-payment-records-2026-11-07.md:253"
+      },
+      {
+        "text": "If the session is still open, Stripe waits for it to expire before treating the attempt as abandoned.",
+        "location": "raw/stripe-payments-payment-records-2026-11-07.md:259"
+      },
+      {
+        "text": "Stripe creates a `failed` `PaymentAttemptRecordEntry` with `failure_details.code` set to `payment_method_customer_decline`.",
+        "location": "raw/stripe-payments-payment-records-2026-11-07.md:260"
+      },
+      {
+        "text": "Stripe uses this code for all PayPal declines, regardless of the specific reason.",
+        "location": "raw/stripe-payments-payment-records-2026-11-07.md:261"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-payment-records": [
+      {
+        "text": "To retrieve the PaymentRecord associated with a PaymentIntent that has Orchestration enabled:",
+        "location": "raw/stripe-payment-records-api-2025.md:27"
+      },
+      {
+        "text": "PaymentAttemptRecordEntries are currently limited to preview users.",
+        "location": "raw/stripe-payment-records-api-2025.md:218"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-payment-records-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 312
+      }
+    ],
+    "raw/stripe-payment-records-api-2025.md": [
+      {
+        "start": 1,
+        "end": 267
+      }
+    ],
+    "wiki/sources/source-stripe-payment-records.md": [
+      {
+        "start": 1,
+        "end": 68
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/293ee93f973624f56d0679a5/content.diff": [
+      {
+        "start": 1,
+        "end": 342
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-payment-records/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 176
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-payment-records/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 110
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      },
+      {
+        "start": 48,
+        "end": 53
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 17,
+        "end": 23
+      },
+      {
+        "start": 704,
+        "end": 708
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 290,
+        "end": 290
+      }
+    ],
+    "wiki/concepts/stripe-orchestration.md": [
+      {
+        "start": 72,
+        "end": 97
+      },
+      {
+        "start": 118,
+        "end": 127
+      }
+    ],
+    "raw/stripe-payments-orchestration-2026-11-07.md": [
+      {
+        "start": 29,
+        "end": 41
+      }
+    ],
+    "raw/stripe-payments-payment-methods-custom-payment-methods-paypal-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 19
+      }
+    ]
+  },
+  "answers": {
+    "payments-payment-records": {
+      "Q1": "The November 7 guide at https://docs.stripe.com/payments/payment-records maintains an on-/off-Stripe payment history with one PaymentRecord, multiple PaymentAttemptRecords and append-only entries. With Orchestration enabled Stripe automatically records on-Stripe PaymentIntents, and merchants can report external payments, failed attempts, retries and completed refunds (new raw lines 17-41 and 135-187). Entries remain preview-only. For Checkout with Stripe’s custom PayPal adapter, abandonment before PayPal or expiration produces canceled, with an open Session waiting for expiry. Return from PayPal without approving produces failed with payment_method_customer_decline; PayPal decline produces failed with payment_method_provider_decline (new raw lines 251-263). April described preview entries and webhook/listing but no adapter-specific classification (old raw lines 216-228). source-stripe-payment-records.md now scopes the Orchestration automation example and keeps the adapter-specific events and refund reporting distinct.",
+      "Q2": "At https://docs.stripe.com/payments/payment-records, the substantive November addition is the preview-scoped custom PayPal Checkout distinction between abandonment and customer or provider decline, using entries associated through the Session payment_record (new raw lines 251-263; old raw lines 216-228). The ASCII attempt diagram, curl translations, revised report link and JSON punctuation are illustrative or presentational. Preserve in source-stripe-payment-records.md the dated April hierarchy and Orchestration-scoped automation (old raw lines 16-46; new raw lines 17-43), the preview qualification and historical identifier routes. Keep recording a processor refund distinct from making one (old raw lines 113-143; new raw lines 172-187). Preserve the existing reconciliation route, add a reciprocal Stripe Orchestration concept route, and keep the companion custom-adapter guide and native Stripe PayPal separate."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-payment-records-concept-route",
+      "target_path": "wiki/concepts/stripe-orchestration.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-orchestration-route-payments]] — May and November 2026 implementation guides for private-preview onboarding, sandbox rules, Payment Records, capture webhooks and error prevention.",
+      "proposed_markdown": "- [[source-stripe-orchestration-route-payments]] — May and November 2026 implementation guides for private-preview onboarding, sandbox rules, Payment Records, capture webhooks and error prevention.\n- [[source-stripe-payment-records]] — April and November 2026 Payment Records guides for the payment and attempt history, lookup and external reporting, plus preview entries for the separate custom PayPal Checkout adapter.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "The automatic on-Stripe recording example is Orchestration-scoped. The Checkout adapter classification has its own scope in November raw lines 251–263."
+      ]
+    }
+  ]
+}

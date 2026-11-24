@@ -1,0 +1,44 @@
+--- raw/stripe-pix-automatico-2025.md
++++ raw/stripe-payments-pix-pix-automatico-2026-11-07.md
+@@ -37,7 +37,13 @@
+ The bank generates pre-debit notifications, with no action required from you.
+ 
+ This means that subsequent payments are charged on billing cycle plus 3 days. During the period after the notification is sent, the PaymentIntent is in `processing`. Confirmation for a recurring payment typically happens 3 days after the pre-debit notification is sent, but it can take up to 7 days with retries.
++
+ Example on how subsequent payments are handled on a monthly billing cycle (See full diagram at https://docs.stripe.com/payments/pix/pix-automatico)
++
++```text
++[Initial transactionSept 1st] -- Next billing cycle --> [Payment initiated Customer informed of upcoming paymentAssumed monthly billing. Oct 1st]
++[Payment initiated Customer informed of upcoming paymentAssumed monthly billing. Oct 1st] -- Billing cycle + 3 days --> [Customer account debited Oct 4th]
++```
+ 
+ ### Handle Brazilian consumer tax (IOF)
+ 
+@@ -53,17 +59,17 @@
+ 
+ You can specify these options using the `payment_method_options[pix][mandate_options]` hash in the Stripe API:
+ 
+-| Field name            | Description                                                                                                                                                                                                                                               | Default value                                     |
+-| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+-| `reference`           | The subscription name displayed to customers in their banking app on enrollment.                                                                                                                                                                          | Defaults to the user’s displayable business name. |
+-| `amount`              | The maximum amount that can be charged in a billing cycle. Set this high enough to allow for price changes and any potential currency conversion fees and Stripe Tax liabilities payable by the buyer.                                                    | 400 BRL                                           |
+-| `amount_type`         | Set to `maximum` to authorize payments under the mandate up to the amount. Set it to `fixed` to charge that exact amount under the mandate.                                                                                                               | `maximum`                                         |
+-| `amount_includes_iof` | Whether the customer pays the IOF (default) or you absorb it on behalf of the customer.                                                                                                                                                                   | `never`                                           |
+-| `payment_schedule`    | The frequency at which you can collect payments. A billing cycle defines the possible charge frequency rather than a required cadence. Pix doesn’t allow you to pass a daily billing schedule. If you select a daily billing schedule, all payments fail. | `monthly`                                         |
+-| `end_date`            | The expiration date for the mandate.                                                                                                                                                                                                                      | Doesn’t expire if not provided.                   |
+-| `start_date`          | The start date of the mandate, in YYYY-MM-DD format. The start date should be at least 3 days in the future.                                                                                                                                              | Current date plus 3 days                          |
++| Field name | Description | Default value |
++| --- | --- | --- |
++| `reference` | The subscription name displayed to customers in their banking app on enrollment. | Defaults to the user’s displayable business name. |
++| `amount` | The maximum amount that can be charged in a billing cycle. Set this high enough to allow for price changes and any potential currency conversion fees and Stripe Tax liabilities payable by the customer. | 400 BRL |
++| `amount_type` | Set to `maximum` to authorize payments under the mandate up to the amount. Set it to `fixed` to charge that exact amount under the mandate. | `maximum` |
++| `amount_includes_iof` | Whether the customer pays the IOF (default) or you absorb it on behalf of the customer. | `never` |
++| `payment_schedule` | The frequency at which you can collect payments. A billing cycle defines the possible charge frequency rather than a required cadence. Pix doesn’t allow you to pass a daily billing schedule. If you select a daily billing schedule, all payments fail. | `monthly` |
++| `end_date` | The expiration date for the mandate. | Doesn’t expire if not provided. |
++| `start_date` | The start date of the mandate, in YYYY-MM-DD format. The start date should be at least 3 days in the future. | Current date plus 3 days |
+ 
+-### Retries
++### Retries 
+ 
+ After a recurring payment is scheduled, it moves to a `processing` status. After 3 days, Stripe attempts automatic capture. If the capture fails for a retryable reason (for example, insufficient funds or network failures), we retry the payment once a day for the next 3 days. During this time, the payment stays in `processing` status until it moves to a terminal state (`succeeded` or `failed`). This is enabled by default.
+ 

@@ -1,0 +1,50 @@
+---
+title: "Stripe: Vipps Payments"
+type: source
+date_ingested: 2026-05-08
+date_updated: 2026-11-22
+original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/vipps"
+raw_files:
+  - "stripe-payments-vipps-2026-11-07.md"
+  - "stripe-vipps-2025.md"
+tags: [stripe, wallets, vipps, norway, nok, card-wallet, private-preview, connect, disputes, refunds]
+---
+
+## Overview
+
+The May 8 and November 7, 2026 overviews describe Vipps as a private-preview, single-use card wallet for customers in Norway paying in NOK. Both list the same 29 business-account locations. A customer enters the phone number linked to Vipps and approves the payment in the app after a push notification. Stripe receives the card data from Vipps and processes the underlying transaction using its Visa or Mastercard integration. The card processing is invisible to the merchant integration, and Stripe immediately reports the payment outcome. App authorization, payment confirmation, capture and payout are separate steps.
+
+## Private preview and eligibility
+
+November adds an email access-request route using the registration example identifier `vipps_beta_preview`. Account approval is separate. Both guides require the `vipps_preview=v1` token for API requests that include Vipps. The separately dated May 8 [[source-stripe-vipps-accept-payment|Vipps acceptance guide]] places that token with the API version in its `2026-04-22.preview` example. The November acceptance capture links Checkout, Elements and Direct API.
+
+See the dated **Business locations** lists for eligible merchant-account countries. Both guides introduce the restricted-business list as prohibited and label cryptocurrencies **Restricted** in the first bullet. The other listed categories are stock trade, gambling, betting, bonds, money transfers, debt collection, and multi-level marketing and pyramid schemes. Review [Payment methods settings](https://dashboard.stripe.com/settings/payment_methods) for account-specific eligibility.
+
+## Products and payment outcome
+
+Both overviews document Checkout payment mode, with setup and subscription modes excluded. Vipps supports Payment Links created through the API and Elements excluding Express Checkout Element. The [May Wallets product row](../../raw/stripe-payment-method-support-2025.md#L184-L201) and [November Wallets product row](../../raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md#L188-L206) broadly mark Payment Links supported. The dedicated overviews specify the API creation requirement. The method supports manual capture and lists recurring payments as unsupported.
+
+In the May acceptance guide’s manual-capture flow, authorization leads to `requires_capture` and Stripe supports capture of the full amount only. In the documented `requires_action` timeout path, a five-minute lapse detaches the method and returns the PaymentIntent to `requires_payment_method`. The May Direct API example also allows a different-card retry inside Vipps after an underlying card failure. Use the `payment_intent.succeeded` event for completed payment in that guide. See the separate acceptance source for the dated integration paths and exact state transitions.
+
+## Disputes and refunds
+
+Customers can raise suspected fraud, duplicate payments or an order amount difference with their card issuer. Merchants can submit evidence through Stripe's standard card dispute process. Both guides support full and partial refunds, including multiple partial refunds up to the original charge amount. The overview gives no explicit refund submission window.
+
+## Connect
+
+The overviews list direct charges, destination charges and separate charges and transfers. Connected accounts with full Stripe Dashboard access can enable Vipps in [Payment methods settings](https://dashboard.stripe.com/settings/payment_methods). Accounts without full Dashboard access follow the [Connect payment-method activation route](https://docs.stripe.com/connect/account-capabilities.md). Check the `vipps_payments` capability for `active` in the account capabilities hash from account webhooks or APIs. The customer sees the connected account name during checkout and in Vipps.
+
+## Networks, fees and payout
+
+Stripe processes BankAxept-branded cards through Visa or Mastercard because the BankAxept network itself is unsupported. On a successful transaction, Stripe deducts ordinary card processing fees and applicable taxes from the transaction and credits the remainder to the Stripe balance. Stripe bills the separate Vipps transaction fee daily and deducts it from the Stripe balance. The country's standard payout schedule applies.
+
+## Related
+
+- [[stripe-wallets]] — Stripe wallet and Vipps context
+- [[stripe]] — Stripe company page
+
+## Raw Sources
+
+- [[raw/stripe-payments-vipps-2026-11-07|November 7, 2026 Vipps product overview]] — full capture with the access request and revised demo pointer.
+- [[raw/stripe-vipps-2025|May 8, 2026 Vipps product overview]] — full prior capture with the original local MP4 pointer in **Payment flow**.

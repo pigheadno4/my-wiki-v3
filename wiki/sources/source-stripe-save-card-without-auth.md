@@ -2,41 +2,51 @@
 title: "Stripe — Save a Card Without Bank Authentication"
 type: source
 date_ingested: 2026-05-11
+date_updated: 2026-11-22
 original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/save-card-without-authentication"
 raw_files:
+  - "stripe-payments-save-card-without-authentication-2026-11-07.md"
   - "stripe-save-card-without-auth-2026.md"
-tags: [stripe, saved-payment-methods, legacy, us-canada, error-on-requires-action, card-element, customer, setup-future-usage]
+tags: [stripe, saved-payment-methods, us-canada, error-on-requires-action, card-element, customer, setup-future-usage]
 ---
 
-## Summary
+## Scope and customer agreement
 
-Legacy US/CA-only pattern for saving cards and charging later. Non-compliant in India and other countries requiring auth for card saving. Uses `error_on_requires_action: true`.
+The May 11 and November 7, 2026 captures describe a basic web card-saving integration for businesses operating primarily in the US and Canada. Stripe’s guide says the approach is noncompliant in countries that require authentication when saving cards, and names India as an example. Use [[source-stripe-save-and-reuse-elements|authentication-capable card saving]] for that requirement. An issuer can still require authentication for a later payment. The basic payment flow declines that attempt.
 
-## Flow
+Before saving for future use, display terms explaining the intended use, obtain the customer’s opt-in and keep a written record of their agreement. For charges when the customer is absent, the guide calls for agreement to the specified charges, their expected timing and frequency, how amounts are determined, and a cancellation policy for subscription payments.
 
-1. Client: `elements.create('card')` → `stripe.createPaymentMethod()` → send PM ID to server
-2. Server: `stripe.customers.create({ payment_method })` OR `stripe.paymentMethods.attach(pm_id, { customer })`
-3. Later: `stripe.paymentIntents.create({ customer, payment_method, error_on_requires_action: true, confirm: true })`
+## Collect and save the card
 
-## Key Options
+1. Use a Stripe account and collect the details with Stripe-hosted Elements. Load Stripe.js directly from `js.stripe.com` and serve the live checkout over HTTPS. The guide allows tests without HTTPS. The single-line Card Element collects the postal code. Add a separate postal-code input with split Elements.
+2. Call `stripe.createPaymentMethod` in the browser and send the resulting PaymentMethod ID to the merchant server.
+3. On the server, create a Customers v1 Customer with the PaymentMethod or attach it to an existing Customer. Associate the two IDs with the customer record. For subsequent listing, the Accounts v2 example uses `customer_account` for a customer-configured Account and the Customers v1 example uses `customer`. The attachment and PaymentIntent creation examples use the Customers v1 identity.
 
-- **`setup_future_usage: 'on_session'`**: save + charge in one call without triggering unnecessary auth
-- **CVC re-collection**: use `cardCvc` Element + `stripe.confirmCardPayment({ payment_method_options: { card: { cvc: cardCvcElement } } })`; configure Radar to block on failed CVC
+## Charge a saved card
 
-## Compliance
+The server creates and confirms a PaymentIntent using the saved PaymentMethod and Customer IDs with `confirm: true` and `error_on_requires_action: true`. This flow declines attempts that require customer action. The guide documents an HTTP 402 and directs the merchant to check the Stripe library error or the Intent’s `last_payment_error.decline_code`. Notify the customer, bring them back to the payment form, attach the replacement PaymentMethod and retry. The sandbox examples cover success, `insufficient_funds` and `authentication_required`. PaymentMethod creation and attachment alone leave the later payment outcome unconfirmed.
 
-Must display terms about future charges and get written customer agreement. Keep records.
+If a Customer already exists, the combined save-and-charge example sets `setup_future_usage: on_session` to indicate intended future customer-present reuse. Authentication can still be required for a payment. Use the authentication-capable flow for customers who need to complete that step.
 
-## Limitations
+## Optional CVC re-collection
 
-- Non-compliant in countries requiring auth for saving cards (India etc.)
-- Fails any payment requiring 2FA
+For a customer-present saved-card payment, create a PaymentIntent on the server with amount, currency and Customer. List the customer’s saved PaymentMethods for selection and pass the PaymentIntent client secret to the browser. Collect CVC with a `cardCvc` Element and call `stripe.confirmCardPayment` with the client secret, the selected saved `payment_method`, and `payment_method_options[card][cvc]` set to the CVC Element.
 
-## Related Pages
+Check for `succeeded` before showing success. The browser callback can be lost when the customer closes the page. Use a webhook or plugin listening for `payment_intent.succeeded` for critical post-payment work. A payment can succeed even when CVC verification fails. Configure Radar if failed CVC checks should block payment.
 
-- [[stripe-saved-payment-methods]] — concept page
-- [[source-stripe-payments-without-auth]] — companion guide (payments without auth)
+## Captured example differences
+
+May uses the Dahlia Stripe.js CDN path and Node.js for SDK installation and server examples. November uses the Endive CDN path, Ruby installation and cURL server examples. Both November PaymentIntent creation examples add `return_url` and omit the explicit `payment_method_types: ["card"]` shown in May. Both retain the Customer and PaymentMethod IDs and the confirm and action-required flags. These are dated example differences. Use the relevant integration’s API documentation for parameter requirements.
+
+## Related
+
+- [[stripe-saved-payment-methods]] — saved card methods and future-use scope
+- [[source-stripe-payments-without-auth]] — companion basic card payment guide
+- [[source-stripe-migrate-basic-card-integration]] — upgrade the basic payment flow to handle authentication
+- [[stripe]] — Stripe company page
 
 ## Raw Sources
 
-- [[stripe-save-card-without-auth-2026]] — verbatim save card without auth guide (260 lines)
+- [[raw/stripe-payments-save-card-without-authentication-2026-11-07|November 7, 2026 basic card-saving guide]] — complete web guide with Endive, Ruby installation and cURL samples.
+- [[raw/stripe-save-card-without-auth-2026|May 11, 2026 basic card-saving guide]] — complete web guide with Dahlia and Node examples.

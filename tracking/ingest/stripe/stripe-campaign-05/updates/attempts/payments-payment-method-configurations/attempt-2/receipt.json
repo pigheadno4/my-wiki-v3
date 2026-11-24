@@ -1,0 +1,217 @@
+{
+  "job_id": "payments-payment-method-configurations",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Stripe Docs — Payment method configurations\"\ntype: source\ndate_ingested: 2026-05-08\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/payments/payment-method-configurations\nraw_files:\n  - \"stripe-payments-payment-method-configurations-2026-11-07.md\"\n  - \"stripe-payment-method-configurations-2025.md\"\ntags: [stripe, payment-method-configurations, dynamic-payment-methods, payment-element, checkout, connect, pmc]\n---\n\n## Summary\n\nThe May 8 and November 7, 2026 guides cover named payment method configurations for different checkout scenarios. Both require dynamic payment methods with Payment Element or Checkout. A merchant or platform can use different enabled sets by product, by one-time versus subscription checkout, or to offer connected accounts extra methods for a different subscription fee. The merchant or platform selects a configuration and Stripe filters its enabled methods by payment location, currency and applicable restrictions, then ranks eligible methods to optimize conversion.\n\n## Create and enable a configuration\n\n- The account starts with **Default Config**. Create additional named configurations in Dashboard Payment methods settings or with the Payment Method Configurations API.\n- A newly created Dashboard configuration starts with all methods disabled. Set the configuration status to **Active**, save it, and turn on the desired methods. Configuration status and method enablement are separate settings. The November guide links to the Dashboard **Payment methods review** page, where merchants can review a transaction ID or enter amount and currency.\n- API creation accepts a Dashboard-readable `name` and optional named method fields. Both captures use `affirm` and `klarna` with `display_preference.preference` set to `on`. May uses Node's `stripe.paymentMethodConfigurations.create()`. November shows cURL against `/v1/payment_method_configurations`.\n\n## Apply a configuration\n\nCopy the configuration's `pmc_...` ID from the Dashboard. The examples use dynamic selection without an explicit `payment_method_types` list. The separate November Payment Method Configurations API overview states that boundary explicitly. ([[raw/stripe-api-payment-method-configurations-2026-11-07|November API overview, line 25]])\n\n- **Deferred Web Payment Element** uses `paymentMethodConfiguration` in its client options.\n- **Deferred iOS and Android PaymentSheet** use `paymentMethodConfigurationId` in the intent configuration.\n- **Server creation** uses `payment_method_configuration` on a PaymentIntent or on a Checkout Session without a Payment Element. The PaymentIntent examples explicitly enable `automatic_payment_methods`. Both captures state that the latest API version described there enables it by default. The May server examples use Node and the November examples use cURL for these same fields.\n\nFor Connect account selection, the separate November API overview describes direct configurations for payments created on the merchant or platform’s own Stripe account and child configurations for payments on connected accounts using direct charges or `on_behalf_of`. Dashboard-managed parent configurations set defaults and control connected-account overrides. See that overview for charge-type scope. ([[raw/stripe-api-payment-method-configurations-2026-11-07|November API overview, lines 27–33]])\n\n## Checkout wallet guidance\n\nThe May Checkout section gives Apple Pay enabled and Google Pay disabled as defaults. It says Stripe filters Google Pay if automatic tax is enabled without collecting a shipping address, and specifies that Stripe-hosted Checkout pages need no integration changes to enable either wallet. It says Stripe handles those wallet payments the same way as other card payments. These are dated Checkout statements. Newly created Dashboard configurations start with methods disabled as described above (May lines 148–154 and 29–46).\n\nThe November section says Checkout supports Apple Pay and Google Pay with no integration changes and links to the Checkout Sessions wallet test variant. Its wording omits the May defaults and the automatic-tax condition. The canonical wallet testing index lists separate testing variants. This leaves current defaults, filtering and rendering unresolved for a particular account or integration (November lines 127–132). [[raw/stripe-testing-wallets-2026-11-07|November wallet testing index, lines 5–16]]\n\n## Configurations and transaction-level exclusions\n\nUse configurations for broad categories of transactions and `excluded_payment_method_types` for fine-grained exclusions on PaymentIntents, SetupIntents, Checkout and Payment Element. A configuration and a per-transaction exclusion can be used together. The combined-use sentence in both captures shows the stray spelling `excluded_payment_methods_types`. The surrounding passages and the separate dynamic-payment-methods request example use `excluded_payment_method_types`.\n\nUse the integration-specific `wallets` parameters to control Apple Pay, Google Pay or Link for one transaction. The exclusion field is for other supported methods (May lines 177–194, November lines 149–166). See [[source-stripe-dynamic-payment-methods]] and its November exclusion example. [[raw/stripe-payments-payment-methods-dynamic-payment-methods-2026-11-07|November dynamic payment methods, lines 89–105]]\n\n## CDN Assets\n\n- `raw/assets/stripe-payment-method-configurations.png` is the May Dashboard UI screenshot (168 KB). The November capture references a CDN image.\n\n## Related Pages\n\n- [[stripe-payment-method-configurations]]\n- [[stripe-dynamic-payment-methods]]\n- [[stripe-payment-method-rules]]\n- [[stripe]]\n\n## Raw Sources\n\n- [[raw/stripe-payments-payment-method-configurations-2026-11-07|Payment method configurations, captured 2026-11-07]] — full guide (166 lines) with cURL examples and Checkout wallet testing navigation.\n- [[raw/stripe-payment-method-configurations-2025|Payment method configurations, captured 2026-05-08]] — full guide (194 lines) with Node examples and dated Checkout wallet defaults and filtering.\n",
+  "quotes": {
+    "payments-payment-method-configurations": [
+      {
+        "text": "All payment methods are initially disabled by default.",
+        "location": "raw/stripe-payments-payment-method-configurations-2026-11-07.md:38"
+      },
+      {
+        "text": "A customer sees only payment methods that are turned on and compatible with the payment location and currency.",
+        "location": "raw/stripe-payments-payment-method-configurations-2026-11-07.md:68"
+      },
+      {
+        "text": "paymentMethodConfiguration: 'pmc_234'",
+        "location": "raw/stripe-payments-payment-method-configurations-2026-11-07.md:85"
+      },
+      {
+        "text": "Checkout supports Apple Pay and Google Pay with no integration changes.",
+        "location": "raw/stripe-payments-payment-method-configurations-2026-11-07.md:132"
+      },
+      {
+        "text": "You can’t exclude Apple Pay, Google Pay, or Link on a per-transaction basis using `excluded_payment_method_types`.",
+        "location": "raw/stripe-payments-payment-method-configurations-2026-11-07.md:164"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-payment-method-configurations": [
+      {
+        "text": "By default, Apple Pay is enabled and Google Pay is disabled.",
+        "location": "raw/stripe-payment-method-configurations-2025.md:152"
+      },
+      {
+        "text": "without collecting a shipping address.",
+        "location": "raw/stripe-payment-method-configurations-2025.md:152"
+      },
+      {
+        "text": "Checkout’s Stripe-hosted pages don’t need integration changes to enable Apple Pay or Google Pay.",
+        "location": "raw/stripe-payment-method-configurations-2025.md:154"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-payment-method-configurations-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 166
+      }
+    ],
+    "raw/stripe-payment-method-configurations-2025.md": [
+      {
+        "start": 1,
+        "end": 194
+      }
+    ],
+    "wiki/sources/source-stripe-payment-method-configurations.md": [
+      {
+        "start": 1,
+        "end": 42
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/5afb112509028369301b46f8/content.diff": [
+      {
+        "start": 1,
+        "end": 183
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-payment-method-configurations/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 166
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-payment-method-configurations/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 90
+      }
+    ],
+    "wiki/concepts/stripe-payment-method-configurations.md": [
+      {
+        "start": 1,
+        "end": 61
+      }
+    ],
+    "wiki/concepts/stripe-dynamic-payment-methods.md": [
+      {
+        "start": 1,
+        "end": 70
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 437,
+        "end": 443
+      },
+      {
+        "start": 732,
+        "end": 738
+      }
+    ],
+    "raw/stripe-api-payment-method-configurations-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 5
+      },
+      {
+        "start": 25,
+        "end": 33
+      }
+    ],
+    "raw/stripe-testing-wallets-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 16
+      }
+    ],
+    "raw/stripe-payments-payment-methods-dynamic-payment-methods-2026-11-07.md": [
+      {
+        "start": 89,
+        "end": 105
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md": [
+      {
+        "start": 35,
+        "end": 41
+      }
+    ]
+  },
+  "answers": {
+    "payments-payment-method-configurations": {
+      "Q1": "The 2026-11-07 full guide at https://docs.stripe.com/payments/payment-method-configurations documents merchants using dynamic payment methods with Payment Element or Checkout. The new raw lines 9-70 and 72-166 describe creating or selecting a named configuration, Dashboard activation and per-method enablement. The merchant or platform selects the configuration ID when using dynamic selection without an explicit payment method types list, as the same-date configuration API overview specifies. Stripe filters enabled methods by eligible currency and location and ranks them. The create examples use named fields such as affirm and klarna rather than a literal pm field. Deferred Web Payment Element uses `paymentMethodConfiguration`, while deferred iOS and Android PaymentSheet use `paymentMethodConfigurationId`. Use the REST field `payment_method_configuration` when creating a Checkout Session without a Payment Element or when creating a PaymentIntent on the server (old raw lines 125-144 and 156-175 and new raw lines 113-124 and 134-147). A configuration and per-transaction exclusions can be combined, with separate wallet visibility controls. The old raw lines 8-194 establish the same core flow, but state specific Checkout wallet defaults and tax/shipping behavior. source-stripe-payment-method-configurations.md now dates the wallet wording and distinguishes configuration activation, dynamic selection and the deferred client fields.",
+      "Q2": "At https://docs.stripe.com/payments/payment-method-configurations, old raw lines 148-154 and new raw lines 127-132 differ materially in the scope of wallet documentation. The revised summary preserves May's Apple Pay enabled, Google Pay disabled and automatic-tax-without-shipping filter as dated Checkout evidence. November provides general Checkout support and a testing route without settling current defaults, eligibility or live rendering. The old raw lines 8-194 and new raw lines 9-166 otherwise show equivalent configuration behavior across formatting, Node-to-cURL examples and link changes. source-stripe-payment-method-configurations.md retains both captures, the correctly spelled exclusion key and wallet exception, the distinct deferred client and server fields, named method creation fields, and dynamic selection without an explicit method list. The source and configuration concept route to each other, with the existing Stripe index routes preserved."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-payment-method-configurations-dashboard-state",
+      "target_path": "wiki/concepts/stripe-payment-method-configurations.md",
+      "update_kind": "durable_fact",
+      "anchor": "Payment methods settings → Payment configurations → overflow menu → Create a configuration → name → Save. All PMs initially disabled by default.",
+      "proposed_markdown": "In Dashboard Payment methods settings, create and name the configuration. A new Dashboard configuration starts with all payment methods disabled. Set the configuration status to **Active**, save it, then enable the desired methods. Stripe filters the enabled methods for the payment’s currency and location and ranks the eligible methods.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": [
+        "See old raw lines 29–46 and 78–82, new raw lines 30–47 and 66–70."
+      ]
+    },
+    {
+      "update_id": "payments-payment-method-configurations-checkout-selection",
+      "target_path": "wiki/concepts/stripe-payment-method-configurations.md",
+      "update_kind": "durable_fact",
+      "anchor": "Pass `payment_method_configuration: 'pmc_234'` on:\n- **PaymentIntent**: `stripe.paymentIntents.create({ ..., payment_method_configuration: 'pmc_123' })`\n- **Checkout session**: `stripe.checkout.sessions.create({ ..., payment_method_configuration: 'pmc_234' })`\n- **Payment Element** (deferred intent): `{ mode: 'payment', paymentMethodConfiguration: 'pmc_234' }` (Web); `paymentMethodConfigurationId: \"pmc_234\"` (iOS/Android)",
+      "proposed_markdown": "Choose the configuration ID when using dynamic selection without an explicit `payment_method_types` list.\n\n- **Server** uses `payment_method_configuration` for PaymentIntent creation or for Checkout Session creation without a Payment Element.\n- **Deferred clients** use `paymentMethodConfiguration` on the Web Payment Element and `paymentMethodConfigurationId` in the iOS and Android PaymentSheet intent configuration.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "See old raw lines 84–144 and 156–175, new raw lines 72–124 and 134–147, and the separate November API overview at raw/stripe-api-payment-method-configurations-2026-11-07.md:25."
+      ]
+    },
+    {
+      "update_id": "payments-payment-method-configurations-wallet-doc-scope",
+      "target_path": "wiki/concepts/stripe-payment-method-configurations.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Apple Pay / Google Pay Defaults\n\n- Apple Pay: **enabled by default**\n- Google Pay: **disabled by default**; also filtered when automatic tax enabled without shipping address collection",
+      "proposed_markdown": "## Dated Checkout wallet guidance\n\nThe May 2026 Checkout section describes Apple Pay as enabled by default and Google Pay as disabled by default. It describes Google Pay filtering for automatic tax without a shipping address and says Stripe-hosted Checkout needs no integration changes. The November guide gives general Checkout support for both wallets and links to testing. Current defaults and the automatic-tax filtering behavior remain unresolved from that newer wording.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "See May lines 148–154 and November lines 127–132. The November canonical wallet testing index lists variants only. The wallet description is independent of new Dashboard configuration state at November line 38."
+      ]
+    },
+    {
+      "update_id": "payments-payment-method-configurations-wallet-exclusions",
+      "target_path": "wiki/concepts/stripe-payment-method-configurations.md",
+      "update_kind": "durable_fact",
+      "anchor": "Both can be combined. Apple Pay, Google Pay, and Link cannot be excluded via `excluded_payment_method_types` — use `wallets` hash instead.",
+      "proposed_markdown": "Configurations can be combined with `excluded_payment_method_types`. To control Apple Pay, Google Pay or Link for a transaction, use the integration-specific `wallets` parameters.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "The combined-use sentence has a spelling inconsistency in both captures. Use the field at old raw lines 179 and 192 and new raw lines 151 and 164. The separate November dynamic payment methods example confirms it at raw/stripe-payments-payment-methods-dynamic-payment-methods-2026-11-07.md:89-105."
+      ]
+    },
+    {
+      "update_id": "payments-payment-method-configurations-dated-source-route",
+      "target_path": "wiki/concepts/stripe-payment-method-configurations.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-payment-method-configurations]] — primary: create/manage configs, integration code (Web/iOS/Android), Apple Pay/Google Pay defaults, config vs exclusion decision rule",
+      "proposed_markdown": "- [[source-stripe-payment-method-configurations]] covers the May and November 2026 guides for Dashboard activation, server and deferred client configuration, dated Checkout wallet wording and transaction-level exclusions.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Keep the existing Stripe index routes. Index lines 440 and 735 repeat the May wallet defaults and should point to the dated guidance, with a bounded index edit owned by the coordinator."
+      ]
+    }
+  ]
+}

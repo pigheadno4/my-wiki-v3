@@ -1,0 +1,64 @@
+--- wiki/sources/source-stripe-twint-accept-payment.md
++++ tracking/ingest/stripe/stripe-campaign-05/updates/attempts/payments-twint-accept-a-payment/attempt-1/candidate.md
+@@ -2,34 +2,47 @@
+ title: "Stripe: Accept a TWINT Payment"
+ type: source
+ date_ingested: 2026-05-03
++date_updated: 2026-11-22
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/payments/twint/accept-a-payment"
+ raw_files:
+   - "stripe-twint-accept-payment-2025.md"
+ tags: [stripe, twint, switzerland, chf, checkout, direct-api]
+ ---
+ 
+-## Summary
++## Overview
+ 
+-Integration guide for accepting TWINT payments via Checkout and Direct API (legacy). Checkout path is straightforward; Direct API uses `stripe.confirmTwintPayment()` with redirect.
++The May 3, 2026 guide describes accepting a one-time TWINT payment through Checkout or a legacy Direct API integration. The customer approves with an approved TWINT app, and Stripe documents immediate notification of payment success or failure. The November 7, 2026 capture indexes Checkout, Direct API, iOS and Android without supplying their instructions.
+ 
+-## Key Details
++## May Checkout
+ 
+-### Checkout path
++The one-time guide lists Europe and the UK for business locations and CHF for supported and presentment currency. All line items use CHF. Its compatibility table marks payment mode supported and setup and subscription modes unsupported for this guide. With Dynamic Payment Methods, Stripe evaluates currency and payment method restrictions before display. For manual configuration add `twint` to `payment_method_types`. Both May examples include `['card', 'twint']`. The hosted example uses `success_url`. The embedded example uses `ui_mode: 'embedded_page'` and `return_url`. In the Checkout test, select TWINT and click **Pay**. See May lines 12–110.
+ 
+-- `payment_method_types: ['twint']`, `chf` only, payment mode only (no setup/subscription)
+-- Select 'TWINT' and click Pay to test; no special test numbers
++The separate May setup guide illustrates Checkout's `setup` mode, and the May 13 billing guide illustrates hosted `subscription` mode with card and TWINT. The November cross-method matrix gives a three-mode Checkout default and lists TWINT without a mode exception. Its broader product coverage and the separate November billing selector, which links Stripe-hosted Checkout, Setup Intents API and Subscriptions API, leave the May one-time example's scope intact. See [[source-stripe-twint-set-up-future-payments]], [[source-stripe-subscriptions-twint]] and [[source-stripe-payment-method-support]].
+ 
+-### Direct API path (Legacy)
++## May legacy Direct API
+ 
+-- `stripe.confirmTwintPayment(clientSecret, { payment_method: { billing_details: { name, email } }, return_url })`
+-- Returns redirect URL → customer authorizes on TWINT page
+-- Test: "Authorize test payment" / "Fail test payment" on redirect page
++May labels this route legacy and no longer recommends it for new integration. Create a PaymentIntent on the server with amount, CHF and TWINT. Provide its client secret only to the customer, such as through a server endpoint or a server-rendered checkout form. The legacy Stripe.js example calls `stripe.confirmTwintPayment()` with the client secret and required `return_url`. Billing details such as name and email are optional. Stripe.js handles the redirect and the example checks `result.error`. See May lines 121–162 and 195–278.
+ 
+-### Optional server-side redirect
++For the optional manual route, create and confirm the PaymentIntent on the server with `payment_method_data.type: 'twint'` and `return_url`. When status is `requires_action` and `next_action.type` is `redirect_to_url`, redirect the customer to `next_action.redirect_to_url.url`. The one-time server example omits `mandate_data`. The separate setup and payment-saving examples use `mandate_data` for future use. See May lines 291–351 and [[source-stripe-twint-save-during-payment]].
+ 
+-- `paymentIntents.create({ payment_method_types: ['twint'], confirm: true, payment_method_data: { type: 'twint' }, return_url })`
+-- Returns `requires_action` + `redirect_to_url` next_action
++### Return, testing and fulfillment
++
++Keep the client secret out of logs and merchant-built URLs. Stripe appends `payment_intent` and `payment_intent_client_secret` to the configured return URL for status verification. Verify PaymentIntent status to display the result. On the test redirect page, authenticating moves `requires_action` to `succeeded`. Selecting **Fail test payment** moves it to `requires_payment_method`. Use server-side webhook confirmation such as `payment_intent.succeeded` for fulfillment independently of the browser return. See May lines 250–254, 280–289 and 347–357.
++
++## Related Pages
++
++- [[stripe-twint]] — TWINT payment, setup and subscription routes
++- [[source-stripe-twint]] — TWINT method overview
++- [[source-stripe-twint-set-up-future-payments]] — Setup-only guide
++- [[source-stripe-twint-save-during-payment]] — Saving a method during payment
++- [[source-stripe-subscriptions-twint]] — Dated TWINT subscription guides
++- [[stripe]] — Stripe company page
+ 
+ ## Raw Sources
+ 
+-- [[stripe-twint-accept-payment-2025]] — verbatim webpage content (369 lines, Checkout + Direct API legacy)
++- [[raw/stripe-twint-accept-payment-2025|May 3, 2026 full TWINT acceptance guide]] — 369 lines covering Checkout and legacy Direct API
++
++## Related raw API references
++
++- [[raw/stripe-payments-twint-accept-a-payment-2026-11-07|November 7, 2026 TWINT acceptance variant index]] — Checkout, Direct API, iOS and Android navigation

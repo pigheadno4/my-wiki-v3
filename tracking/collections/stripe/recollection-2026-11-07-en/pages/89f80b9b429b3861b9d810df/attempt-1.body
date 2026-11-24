@@ -1,0 +1,147 @@
+# Fraudulent merchant signal
+
+Detect connected accounts engaging in fraudulent activity.
+
+> #### Availability
+> 
+> The fraudulent merchant signal is available on Radar Standard and higher plans, but what information is available depends on your Radar plan. See [Account risk prevention](https://docs.stripe.com/radar/how-radar-works.md#account-risk-prevention) for plan details.
+
+The fraudulent merchant signal identifies whether a new or existing account poses a fraud risk. The Stripe machine learning models analyze patterns across the Stripe network, including bank account information, business details, transaction activity, disputes, and relationships with other accounts.
+
+You can retrieve account signals for up to 90 days after creation. List requests omit account signals created more than 90 days ago.
+
+## Risk levels 
+
+Each signal returns a `risk_level`. On Radar Plus and Radar Pro, the signal also includes a `probability` score with a value between 0 and 100.
+
+| Risk level | Description |
+| --- | --- |
+| `highest` | Approximately a 90% probability that the account is fraudulent. |
+| `elevated` | Approximately a 50% probability that the account is fraudulent. |
+| `normal` | A low probability that the account is fraudulent. |
+| `unknown` | The risk level couldn’t be determined. |
+
+## Indicators 
+
+Indicators are available on Radar Plus and Radar Pro. The following indicators explain the factors that contributed to the risk assessment. Each indicator also includes an `impact` (`decrease`, `neutral`, `slight_increase`, or `strong_increase`) and an `explanation` of how it contributed to the risk assessment.
+
+| Indicator | Description |
+| --- | --- |
+| `bank_account` | The bank account matches a previously detected fraudulent account. |
+| `business_information_and_account_activity` | We detected a spike in the average order value or payment volume, or suspicious business details. |
+| `disputes` | We detect a spike in disputes. |
+| `failures` | We detect a spike in payment failures. |
+| `geolocation` | We detect account activity in a country that differs from the business location or that’s in a high-risk region. |
+| `other` | The indicator type isn’t supported in the current API version. |
+| `other_related_accounts` | The account is connected to a previously detected fraudulent account. |
+| `other_transaction_activity` | We detect unusual transaction patterns, such as spikes in volume or order value. |
+| `owner_email` | The email address uses a suspicious domain or doesn’t match the business URL. |
+
+## Listen for a new fraudulent merchant signal 
+
+Stripe evaluates the fraudulent merchant signal automatically. You don’t request it on demand. Listen for [v2.signals.account_signal.fraudulent_merchant_ready](https://docs.stripe.com/api/v2/signals/account-signals/event-types.md?api-version=preview#v2_account_signals_event_types-v2.signals.account_signal.fraudulent_merchant_ready) event notifications when a fraud signal is created. This is a thin event: `data` is always `{}`. Use `related_object.id` to fetch the related signal.
+
+```curl
+curl https://api.stripe.com/v2/signals/account_signals/acctsig_61UDQe5wRb3w1JgCP16UDQb80xSQmM6vEqeUAlKES \
+  -H "Authorization: Bearer <<YOUR_SECRET_KEY>>" \
+  -H "Stripe-Version: 2026-10-28.preview"
+```
+
+```json
+{
+  "id": "acctsig_61UDQe5wRb3w1JgCP16UDQb80xSQmM6vEqeUAlKES",
+  "object": "v2.signals.account_signal",
+  "type": "fraudulent_merchant",
+  "account_details": {
+    "account": "acct_1T42eHAZTJIN1MEb"
+  },
+  "created": "2026-02-26T00:43:28.000Z",
+  "fraudulent_merchant": {
+    "risk_level": "elevated",
+    "probability": "53.75",
+    "additional_details": {
+      "indicators": [
+        {
+          "indicator": "owner_email",
+          "impact": "slight_increase",
+          "explanation": "This account shares a matching owner email with at least 1 suspicious account found in the Stripe network."
+        },
+        {
+          "indicator": "geolocation",
+          "impact": "slight_increase",
+          "explanation": "There are mismatches between the merchant country (CA), bank country (CA), and login country (MA), as well as between bank country and login country."
+        }
+      ]
+    }
+  },
+  "livemode": true
+}
+```
+
+`probability` and `additional_details.indicators` are only present on Radar Plus and Radar Pro; they’re absent when the risk level is `unknown`.
+
+## List signals for an account 
+
+Use the [Account Signals API](https://docs.stripe.com/api/v2/signals/account-signals.md?api-version=preview) to list the latest signals for an account. This returns only the most recent signal per requested type.
+
+```curl
+curl -G https://api.stripe.com/v2/signals/account_signals \
+  -H "Authorization: Bearer <<YOUR_SECRET_KEY>>" \
+  -H "Stripe-Version: 2026-10-28.preview" \
+  -d "account_details[account]={{CONNECTEDACCOUNT_ID}}" \
+  -d "type[0]=fraudulent_merchant"
+```
+
+```json
+{
+  "data": [
+    {
+      "id": "acctsig_61UDQe5wRb3w1JgCP16UDQb80xSQmM6vEqeUAlKES",
+      "object": "v2.signals.account_signal",
+      "type": "fraudulent_merchant",
+      "account_details": {
+        "account": "acct_1T42eHAZTJIN1MEb"
+      },
+      "created": "2026-02-26T00:43:28.000Z",
+      "fraudulent_merchant": {
+        "risk_level": "elevated",
+        "probability": "53.75",
+        "additional_details": {
+          "indicators": [
+            {
+              "indicator": "owner_email",
+              "impact": "slight_increase",
+              "explanation": "This account shares a matching owner email with at least 1 suspicious account found in the Stripe network."
+            }
+          ]
+        }
+      },
+      "livemode": true
+    }
+  ],
+  "next_page_url": null,
+  "previous_page_url": null
+}
+```
+
+## Test in a sandbox 
+
+In a sandbox, you can trigger a `fraudulent_merchant` signal without waiting for a real risk evaluation. Append a suffix to the connected account’s `business_profile.name`; Stripe detects the suffix, creates the signal, and sends the webhook.
+
+| Suffix | `risk_level` result |
+| --- | --- |
+| `_fraudulent_merchant:normal` | `normal` |
+| `_fraudulent_merchant:elevated` | `elevated` |
+| `_fraudulent_merchant:highest` | `highest` |
+
+```curl
+curl https://api.stripe.com/v1/accounts/{{CONNECTEDACCOUNT_ID}} \
+  -u "<<YOUR_SECRET_KEY>>:" \
+  --data-urlencode "business_profile[name]=My Test Business_fraudulent_merchant:highest"
+```
+
+> Suffixes only work in a sandbox, and only one can be active on an account at a time.
+
+## Take action on connected accounts
+
+You can respond to the fraudulent merchant signals that you receive for a connected account using the [Radar](https://docs.stripe.com/radar.md) tools. See the list of [available actions](https://docs.stripe.com/radar/account-fraud-prevention.md#take-action).

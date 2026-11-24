@@ -1,0 +1,144 @@
+{
+  "job_id": "payouts-statement-descriptors",
+  "source_target": "wiki/sources/source-stripe-payouts-statement-descriptors.md",
+  "source_before_sha256": "9b29107694a9fa573f3f140e5d1f29a93af1d1dba41757800d5707ecce40edbb",
+  "contributions": [
+    {
+      "job_id": "payouts-statement-descriptors",
+      "canonical_url": "https://docs.stripe.com/payouts/statement-descriptors",
+      "attempt": 1,
+      "raw_path": "raw/stripe-payouts-statement-descriptors-2026-11-07.md",
+      "raw_sha256": "90cdb46043b312dc5d67a97f378ae87ab40e2231606892556f986518a1c168e7",
+      "prior_raw_path": "raw/stripe-payouts-statement-descriptors-2026.md",
+      "prior_raw_sha256": "705539a7347fdc47e9fb1edc0dc76e4903c7dcd11a0743c0f5bb7406d13ddad9",
+      "new_capture_role": "full_captured_page",
+      "proposed_disposition": "source_required_update",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payouts-statement-descriptors/attempt-1/receipt.json",
+      "receipt_sha256": "196eadd0a61eda5041d5754787388e4ab5b97a7a05dcd73ceb6b9f81c9c8ff73",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payouts-statement-descriptors/attempt-1/review.json",
+      "review_sha256": "ce4fe7c50d867a9b8274c0c6457e5454d65058dfa854921b17bc62bf9be9c7b3",
+      "source_assessments": [
+        {
+          "source_target": "wiki/sources/source-stripe-payouts-statement-descriptors.md",
+          "proposed_disposition": "source_required_update",
+          "update_needed": true,
+          "findings": [
+            "The mapped summary already covers configuration levels, payout-level precedence, `STRIPE` fallback, and bank display variability. Add the dated standard US ACH field mapping and silent truncation before submission."
+          ],
+          "conflicts": [
+            "Keep the illustrative echoed descriptor and differing sample amounts separate from the ACH transmission rule."
+          ],
+          "reason": "November introduces a documented scope-specific transmission rule that is absent from the mapped summary."
+        }
+      ],
+      "affected_concepts": [
+        "wiki/concepts/stripe-payouts.md"
+      ],
+      "unresolved_questions": [
+        "The page supplies no bank-specific presentation behavior or evidence of execution for the request and response example. The image references changed location; the captures alone do not establish a change in diagram content."
+      ],
+      "mapped_source_assessment": {
+        "source_target": "wiki/sources/source-stripe-payouts-statement-descriptors.md",
+        "proposed_disposition": "source_required_update",
+        "update_needed": true,
+        "findings": [
+          "The mapped summary already covers configuration levels, payout-level precedence, `STRIPE` fallback, and bank display variability. Add the dated standard US ACH field mapping and silent truncation before submission."
+        ],
+        "conflicts": [
+          "Keep the illustrative echoed descriptor and differing sample amounts separate from the ACH transmission rule."
+        ],
+        "reason": "November introduces a documented scope-specific transmission rule that is absent from the mapped summary."
+      },
+      "findings": [
+        "Both captures describe bank-statement descriptors for connected-account payouts. The account-level setting covers automatic and manual payouts. An individual manual payout can use its own value via the Dashboard balance overview or API `statement_descriptor`. The existing summary records payout-level precedence and `STRIPE` when neither descriptor is set. Beneficiary banks decide how to render received values.",
+        "November adds an output transformation for standard US ACH payouts. The statement descriptor maps to the ACH Company Entry Description field with a NACHA limit of 10 characters. Stripe silently truncates longer values before submitting to its banking partner.",
+        "The separate November Create a payout API reference (`raw/stripe-api-payouts-create-2026-11-07.md`, lines 86–93) establishes a generic API input maximum of 22 characters and an initial `pending` object when creation passes initial checks. The ACH field limit applies at a different stage."
+      ],
+      "substantive_changes": [
+        "Add November’s standard US ACH payout-specific field mapping, maximum transmitted length and silent truncation to the mapped source summary."
+      ],
+      "historical_claims_to_preserve": [
+        "Preserve May’s account-level and per-manual-payout settings, manual Dashboard and API paths, `STRIPE` fallback, and beneficiary-bank display caveat in the dated history."
+      ],
+      "conflicts": [
+        "The illustrative request sends amount 100 but the response shows 1100 in both versions. The response echoes the longer descriptor and represents an initial pending object. Neither example demonstrates the value sent to the banking partner or visible on the statement."
+      ],
+      "expected_read_files": [
+        {
+          "path": "raw/stripe-payouts-statement-descriptors-2026-11-07.md",
+          "sha256": "90cdb46043b312dc5d67a97f378ae87ab40e2231606892556f986518a1c168e7",
+          "lines": 61
+        },
+        {
+          "path": "raw/stripe-payouts-statement-descriptors-2026.md",
+          "sha256": "705539a7347fdc47e9fb1edc0dc76e4903c7dcd11a0743c0f5bb7406d13ddad9",
+          "lines": 64
+        },
+        {
+          "path": "wiki/sources/source-stripe-payouts-statement-descriptors.md",
+          "sha256": "9b29107694a9fa573f3f140e5d1f29a93af1d1dba41757800d5707ecce40edbb",
+          "lines": 42
+        },
+        {
+          "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/c3f67687d13d5f1bec5b996d/content.diff",
+          "sha256": "809f1b9d47a566c896459f14b018485d3ab3c314ab0b0b9fb59ca0377b541291",
+          "lines": 69
+        }
+      ],
+      "original_query_prompts_path": "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md",
+      "original_prompts": "New raw `raw/stripe-payouts-statement-descriptors-2026-11-07.md`. Prior raw `raw/stripe-payouts-statement-descriptors-2026.md`. Current summaries `wiki/sources/source-stripe-payouts-statement-descriptors.md`.\n\n- Q1. For `https://docs.stripe.com/payouts/statement-descriptors`, what documented behavior, prerequisites, actors and state transitions does the complete new capture establish? How do these compare with the matched prior capture and each mapped summary?\n\n- Q2. Which changes are substantive, presentational or navigation-only? Identify the exact dated qualifications, conflicts and reciprocal routes that the proposed disposition should preserve.",
+      "reviewed_answers": {
+        "Q1": "For https://docs.stripe.com/payouts/statement-descriptors, old raw lines 8-64 and new raw lines 7-61 document bank-statement descriptors for connected-account payouts. Account-level configuration in Dashboard payout settings covers automatic and manual payouts. A payout-level descriptor applies to an individual manual payout and can be entered in Dashboard balance overview or with API statement_descriptor. The current source-stripe-payouts-statement-descriptors.md describes payout-level precedence, the STRIPE fallback when neither is defined, and beneficiary-bank display variability. New raw line 13 adds an upstream transformation for standard US ACH payouts. The descriptor maps to ACH Company Entry Description, and Stripe silently truncates over 10 characters before banking-partner submission. The API example depicts pending creation, with final bank display left to the beneficiary bank.",
+        "Q2": "For https://docs.stripe.com/payouts/statement-descriptors, old raw lines 8-64 establish the May configuration, fallback and bank display caveat, and new raw lines 7-61 retain them. The November addition at line 13 is substantive and warrants a dated update to source-stripe-payouts-statement-descriptors.md. Moving the caveat into the lead, changing the example from Node to curl, and relinking diagram images from local references to CDN are presentational or navigational. Both examples echo the long sample descriptor and show different amounts between request and pending response. Those are illustrative snippets with no demonstrated transmission or bank display. The adjacent November payout API reference describes the 22-character input maximum, a different stage from 10-character transmission for standard US ACH. Scope the rule to these payouts, and preserve the provider index route and the reciprocal source and wiki/concepts/stripe-payouts.md links."
+      }
+    }
+  ],
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payouts-statement-descriptors-2026-11-07.md",
+      "sha256": "90cdb46043b312dc5d67a97f378ae87ab40e2231606892556f986518a1c168e7",
+      "lines": 61
+    },
+    {
+      "path": "raw/stripe-payouts-statement-descriptors-2026.md",
+      "sha256": "705539a7347fdc47e9fb1edc0dc76e4903c7dcd11a0743c0f5bb7406d13ddad9",
+      "lines": 64
+    },
+    {
+      "path": "wiki/sources/source-stripe-payouts-statement-descriptors.md",
+      "sha256": "9b29107694a9fa573f3f140e5d1f29a93af1d1dba41757800d5707ecce40edbb",
+      "lines": 42
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/c3f67687d13d5f1bec5b996d/content.diff",
+      "sha256": "809f1b9d47a566c896459f14b018485d3ab3c314ab0b0b9fb59ca0377b541291",
+      "lines": 69
+    }
+  ],
+  "concept_targets": [
+    {
+      "path": "wiki/concepts/stripe-payouts.md",
+      "before_sha256": "9e447afe0122f25a4a5fc35064fd4d2afe811480df402e171119e08a79abb212",
+      "contributing_jobs": [
+        "payments-paypal-payout-reconciliation",
+        "payouts",
+        "payouts-customized-start-of-day",
+        "payouts-instant-payouts",
+        "payouts-instant-payouts-banks",
+        "payouts-minimum-balances-for-automatic-payouts",
+        "payouts-next-day-settlement",
+        "payouts-reconciliation",
+        "payouts-statement-descriptors"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    }
+  ],
+  "state": "worker_running",
+  "attempt": 1,
+  "review_scope": "full",
+  "worker_agent": "/root/s05w2",
+  "reviewer_agent": "/root/s05r5",
+  "role_notes": "tracking/ingest/stripe/stripe-campaign-05/updates/role-notes.md",
+  "worker_output": "/tmp/stripe-s05-ingest/payouts-statement-descriptors-worker.json",
+  "reviewer_output": "/tmp/stripe-s05-ingest/payouts-statement-descriptors-reviewer.json"
+}

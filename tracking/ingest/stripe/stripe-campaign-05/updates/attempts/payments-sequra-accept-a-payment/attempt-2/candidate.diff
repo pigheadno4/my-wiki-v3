@@ -1,0 +1,54 @@
+--- wiki/sources/source-stripe-sequra-accept-payment.md
++++ tracking/ingest/stripe/stripe-campaign-05/updates/attempts/payments-sequra-accept-a-payment/attempt-2/candidate.md
+@@ -2,7 +2,9 @@
+ title: "Stripe: Accept a Payment with SeQura"
+ type: source
+ date_ingested: 2026-05-06
++date_updated: 2026-11-22
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/payments/sequra/accept-a-payment"
+ raw_files:
+   - "stripe-sequra-accept-payment-2025.md"
+ tags: [stripe, bnpl, sequra, buy-now-pay-later, consumer, spain, checkout, payment-intents]
+@@ -10,18 +12,34 @@
+ 
+ ## Summary
+ 
+-Integration guide for SeQura payments across Checkout, Checkout Sessions API, PaymentIntents API, and Direct API. EUR only. return_url required. 7-day manual capture. Clarifies 7-120 day payment terms.
++The 2026-05-06 guide describes SeQura (`sequra`) as a single-use payment method with 7–120 day terms. Customers leave the merchant site or app to authorize with SeQura, then return. The guide describes immediate success or failure notifications. The separate May [[source-stripe-sequra|SeQura overview]] describes Pay in 3 interest-free or up to 12 installments. Duration and installment count measure different things, and the captures leave their precise product mapping open.
+ 
+-## Key Details
++## Dated integration guidance
+ 
+-**API enum**: `sequra`. EUR only. `return_url` required.
++- **Hosted Checkout.** The May guide assumes an existing Checkout integration. Both hosted Checkout and Elements with Checkout Sessions use EUR line items in one currency and support payment mode only. The hosted configuration example lists SeQura on the Checkout Session and uses `success_url`.
++- **Checkout Sessions API with Elements.** The May examples create a Session on the server with `ui_mode: 'elements'`, use its Session client secret and set a Session `return_url` containing `{CHECKOUT_SESSION_ID}`. The browser confirms through the Checkout instance.
++- **Payment Intents API with Elements and Direct API.** The May routes use a server-created PaymentIntent and its client secret. Both default web paths confirm in Stripe.js with `stripe.confirmPayment()` and a PaymentIntent `return_url`. In the optional Direct API path the server calls `stripe.paymentIntents.confirm()` with a `return_url`, checks for `requires_action` and `next_action.type=redirect_to_url`, then sends the customer to `next_action.redirect_to_url.url`. Check verified Intent status for return-page messaging and use `payment_intent.succeeded` for completion workflows.
++- **Optional capture.** The May Payment Intents API with Elements guide shows `capture_method=manual`, a transition to `requires_capture` after successful authorization and an explicit PaymentIntent capture call. Stripe documents cancellation and `payment_intent.canceled` when the payment remains uncaptured for seven days. Merchant cancellation is available before that window elapses where the Intent is eligible.
++- **Sandbox versus live.** The May Checkout Sessions and Payment Intents examples let testers approve or decline on a sandbox test page. Live redirects to SeQura.
+ 
+-**Payment terms**: 7–120 days (per integration guide description — not fixed 3/12 installments as the overview implies).
++The May Checkout compatibility sections label the business location “Europe.” The May Direct API currency mapping lists EUR for ES, and the May method overview explicitly lists Spain as the Stripe account location. Treat these as distinct documented descriptions. The broader Checkout wording leaves actual country eligibility unresolved.
+ 
+-**Manual capture**: `capture_method: 'manual'`; 7-day window.
++## Detail locators
+ 
+-**Error codes**: `payment_intent_invalid_currency`, `payment_intent_authentication_failure`, `payment_intent_redirect_confirmation_without_return_url`.
++- May raw lines 8–85 cover hosted Checkout, eligibility and fulfillment. Lines 87–568 cover Checkout Sessions API with Elements.
++- May raw lines 570–1158 cover Payment Intents API with Elements, including client confirmation, events and optional authorization/capture. Lines 1160–1390 cover Direct API, redirects and country mapping.
++- The May PaymentIntent error tables at lines 1148–1158 and 1380–1390 include `payment_intent_invalid_currency`, `payment_intent_authentication_failure`, and `payment_intent_redirect_confirmation_without_return_url`.
++
++## Related Pages
++
++- [[stripe]] — Stripe company page
++- [[stripe-bnpl#SeQura Details|Stripe BNPL and SeQura]]
++- [[source-stripe-sequra]] — SeQura method overview
+ 
+ ## Raw Sources
+ 
+-- [[stripe-sequra-accept-payment-2025]] — verbatim webpage content (1390 lines); fixed `_Prices_` (×2), `_sandbox_` (×2), `_PaymentIntent_` (×2), `_client secret_` (×2), `_webhook_` (×2); downloaded 1 CDN image to `raw/assets/`
++- [[raw/stripe-sequra-accept-payment-2025|2026-05-06 full SeQura acceptance guide]] — four historical web integration routes
++
++## Related raw API references
++
++- [[raw/stripe-payments-sequra-accept-a-payment-2026-11-07|2026-11-07 SeQura acceptance variant index]] — hosted Checkout, Checkout Sessions API and Payment Intents API with Elements, Direct API, iOS, and Android

@@ -1,0 +1,171 @@
+{
+  "job_id": "payments-paynow-accept-a-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Accept a PayNow Payment\"\ntype: source\ndate_ingested: 2026-05-06\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/paynow/accept-a-payment\"\nraw_files:\n  - \"stripe-paynow-accept-payment-2025.md\"\ntags: [stripe, real-time-payments, paynow, singapore, sgd, qr-code, checkout, direct-api]\n---\n\n## Overview\n\nThe May 6, 2026 acceptance guide covers online single-use PayNow payments through Checkout and Direct API. The November 7, 2026 capture indexes those two variants. For separate product coverage, the May and November [[source-stripe-paynow|PayNow overviews]] describe Elements support with Express Checkout Element excluded. The November overview specifically lists Payment Element. For in-person acceptance, see the separate [[source-stripe-terminal-additional-payment-methods|Terminal guide]].\n\n## May 2026 Checkout\n\nThe May guide documents Singapore businesses, SGD across all line-item prices, and one-time line items in payment mode. The captured PayNow Checkout path excludes setup and subscription modes. The method overview separately describes subscriptions and invoices with `send_invoice`.\n\nStripe can select payment methods dynamically. In the May manual examples, add `paynow` to the Checkout Session's payment method list. Both examples show it alongside `card`. The Stripe-hosted example sets `success_url`. The full embedded example sets `ui_mode: embedded_page` and `return_url`.\n\nThe customer scans the Checkout QR code and completes payment before Checkout redirects to the merchant site. For testing, select PayNow and use **Generate QR code**. Scanning opens a Stripe-hosted page where the tester can authorize or fail the payment. In live mode, customers use a participating banking or payment app. Follow the Checkout fulfillment guidance for order completion.\n\n## May 2026 Direct API\n\nThe merchant needs a Stripe account and creates an SGD PaymentIntent on its server. The May guide tells existing Payment Intents integrations to add `paynow` to their method list. Its create example also sets `payment_method_data.type` to `paynow`. These are fields in the dated example. The server passes the PaymentIntent client secret to the customer’s browser through a single-page app endpoint or server rendering.\n\nIn the captured flow, Stripe.js `confirmPayNowPayment(clientSecret)` displays the QR code inline. The customer scans and authenticates in an app from a participating bank or non-bank financial institution. Keep the page open while awaiting the payment outcome. The browser sample checks for `succeeded` and includes an alternate branch with a modal-closure comment. A QR scan and modal closure each leave the formal PaymentIntent outcome undetermined.\n\nFor fulfillment, verify success on the server. When the customer completes payment, the guide says the PaymentIntent becomes `succeeded` and Stripe emits `payment_intent.succeeded`. The Direct API sandbox QR leads to Stripe’s authorize-or-fail test page. In the live flow, customers scan with their participating app.\n\n## Related\n\n- [[stripe-real-time-payments]] — Stripe real-time methods and PayNow integration scope\n- [[stripe]] — Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-paynow-accept-payment-2025|May 6, 2026 PayNow acceptance guide]] — full Checkout and Direct API capture.\n\n## Related raw API references\n\n- [[raw/stripe-payments-paynow-accept-a-payment-2026-11-07|November 7, 2026 PayNow acceptance variant index]] — navigation to Checkout and Direct API.\n",
+  "quotes": {
+    "payments-paynow-accept-a-payment": [
+      {
+        "text": "Accept online payments with PayNow, a funds transfer service popular in Singapore.",
+        "location": "raw/stripe-payments-paynow-accept-a-payment-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-paynow-accept-a-payment-2026-11-07.md:11"
+      },
+      {
+        "text": "[Checkout](https://docs.stripe.com/payments/paynow/accept-a-payment.md?payment-ui=checkout)",
+        "location": "raw/stripe-payments-paynow-accept-a-payment-2026-11-07.md:13"
+      },
+      {
+        "text": "[Direct API](https://docs.stripe.com/payments/paynow/accept-a-payment.md?payment-ui=direct-api)",
+        "location": "raw/stripe-payments-paynow-accept-a-payment-2026-11-07.md:14"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-paynow-accept-a-payment": [
+      {
+        "text": "payment_method_types: [\"card\", \"paynow\"]",
+        "location": "raw/stripe-paynow-accept-payment-2025.md:75"
+      },
+      {
+        "text": "return_url: \"https://example.com/return\"",
+        "location": "raw/stripe-paynow-accept-payment-2025.md:102"
+      },
+      {
+        "text": "Use `stripe.confirmPayNowPayment` to confirm the payment on the client side.",
+        "location": "raw/stripe-paynow-accept-payment-2025.md:258"
+      },
+      {
+        "text": "Your customers can scan the QR code and authenticate the payment using their preferred banking app or payment app.",
+        "location": "raw/stripe-paynow-accept-payment-2025.md:279"
+      },
+      {
+        "text": "`PaymentIntent` transitions to `succeeded`",
+        "location": "raw/stripe-paynow-accept-payment-2025.md:283"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-paynow-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-paynow-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 289
+      }
+    ],
+    "wiki/sources/source-stripe-paynow-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 30
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/19c01282e8f85493ebf7646f/content.diff": [
+      {
+        "start": 1,
+        "end": 291
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-paynow-accept-a-payment/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 163
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-paynow-accept-a-payment/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 110
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 353,
+        "end": 359
+      },
+      {
+        "start": 746,
+        "end": 750
+      }
+    ],
+    "wiki/concepts/stripe-real-time-payments.md": [
+      {
+        "start": 112,
+        "end": 128
+      },
+      {
+        "start": 214,
+        "end": 220
+      }
+    ],
+    "wiki/sources/source-stripe-paynow.md": [
+      {
+        "start": 29,
+        "end": 43
+      }
+    ],
+    "raw/stripe-paynow-2025.md": [
+      {
+        "start": 64,
+        "end": 85
+      }
+    ],
+    "raw/stripe-payments-paynow-2026-11-07.md": [
+      {
+        "start": 105,
+        "end": 120
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md": [
+      {
+        "start": 147,
+        "end": 153
+      }
+    ]
+  },
+  "answers": {
+    "payments-paynow-accept-a-payment": {
+      "Q1": "For https://docs.stripe.com/payments/paynow/accept-a-payment, new raw lines 5-14 establish only the online PayNow introduction and Checkout and Direct API links. The May 6, 2026 capture documents Singapore businesses using one-time Checkout payment mode with SGD line items, hosted or embedded Checkout, manual or dynamic payment-method selection, and customer QR scanning before Checkout returns to the site in old raw lines 16-117. In old raw lines 129-289 the merchant creates a SGD PaymentIntent on the server, passes the client secret to the customer side, and uses client confirmation to display the inline QR. The customer authenticates in a participating app, and successful completion produces a succeeded PaymentIntent and payment_intent.succeeded for server-side handling. source-stripe-paynow-accept-payment.md now distinguishes the two guide paths from method-level Payment Element support, scopes the Direct API fields to May, and keeps a scan or closure separate from server-verified payment.",
+      "Q2": "For https://docs.stripe.com/payments/paynow/accept-a-payment, new raw lines 5-14 present the two variants as navigation on November 7, 2026. The capture does not establish a substantive behavioral change. Keep the May 6, 2026 conditions and evidence as dated guidance in source-stripe-paynow-accept-payment.md, including Checkout eligibility, currency, one-time mode, returns and simulated versus live QR in old raw lines 16-117, and the Direct API inline QR with server-observed success in old raw lines 129-289. Qualify the two guide variants separately from broader Payment Element support and the Express Checkout Element exclusion documented by the method overviews. The May manual Checkout samples show ['card', 'paynow'], with success_url for hosted and return_url for embedded (old raw lines 54-105). The May Direct API prose adds paynow to the method list, and its sample also sets payment_method_data.type (old raw lines 145-162). Its modal closure comment supplies no formal canceled state (old raw lines 258-283). Preserve the existing concept-to-source route in wiki/concepts/stripe-real-time-payments.md and record the reciprocal route on the acceptance source for later reconciliation."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-paynow-accept-a-payment-acceptance-versus-product",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Integration**: Checkout and Direct API paths — no Elements path. Direct API uses `stripe.confirmPayNowPayment(clientSecret)` (PayNow-specific, not generic `confirmPayment`); renders QR code inline, no redirect. Page must stay open while customer scans; fulfillment via `payment_intent.succeeded` webhook.",
+      "proposed_markdown": "**Integration**. The May 6, 2026 acceptance guide covers Checkout and Direct API. Its Direct API example displays an inline QR using `stripe.confirmPayNowPayment` and verifies successful payment on the server. November links both variants. The separate [[source-stripe-paynow|PayNow method overview]] lists Payment Element and excludes Express Checkout Element. See [[source-stripe-paynow-accept-payment]] for the May return and payment-state boundaries.",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": [
+        "May acceptance lines 18–39, 258–283, May method overview lines 64–85 and November method overview lines 105–113."
+      ]
+    },
+    {
+      "update_id": "payments-paynow-accept-a-payment-dated-reciprocal",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-paynow-accept-payment]] — PayNow integration: Checkout + Direct API, confirmPayNowPayment(), inline QR (no redirect)",
+      "proposed_markdown": "- [[source-stripe-paynow-accept-payment]] — May 2026 Checkout and Direct API guide with dated return, inline QR and verified payment outcome details. November links the two variants.",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": []
+    }
+  ]
+}

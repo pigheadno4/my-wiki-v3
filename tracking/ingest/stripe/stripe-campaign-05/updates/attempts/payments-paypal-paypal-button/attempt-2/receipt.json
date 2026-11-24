@@ -1,0 +1,192 @@
+{
+  "job_id": "payments-paypal-paypal-button",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Stripe: PayPal Button\"\ntype: source\ndate_ingested: 2026-05-07\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/payments/paypal/paypal-button\nraw_files:\n  - \"stripe-payments-paypal-paypal-button-2026-11-07.md\"\n  - \"stripe-paypal-button-2025.md\"\ntags: [stripe, wallets, paypal, paypal-button, express-checkout-element, checkout, billing-address, recurring]\n---\n\n## Summary\n\nThe May 7 and November 7, 2026 guides cover the PayPal button in Express Checkout Element and Stripe Checkout. Stripe chooses whether to show the button or use a PayPal redirect. Merchants can configure the page to improve button availability. Both captures introduce an Express Checkout Element demo and recommend a PayPal Sandbox account for testing. Button display and sandbox setup leave payment completion unverified.\n\n## Express Checkout Element\n\nBoth guides list phone number collection and shipping address collection for recurring payments as scenarios where the PayPal button is unavailable. Their HTML/JavaScript and React examples set `phoneNumberRequired: false` and `shippingAddressRequired: false`, with shipping address collection scoped to one-off payments (May lines 18–46, November lines 19–44).\n\nThe May guide additionally lists billing address collection as a blocker, requires an explicit `billingAddressRequired: false` for recurring payments, and includes that setting in both examples. November omits the billing blocker and the recurring instruction and drops the field from both examples. The omission leaves current billing behavior unresolved.\n\nThe separate April 21, 2026 PaymentIntents integration guide says `billingAddressRequired` defaults to false if certain shipping, contact, Apple Pay, line item or business options are supplied and to true otherwise. It says the Express Checkout Element hides the PayPal button when required billing or phone information is unavailable. The November capture of that integration guide links Checkout Sessions API and Payment Intents API variants. [[source-stripe-express-checkout-element-accept-payment|Express Checkout Element acceptance guide]]\n\n## Stripe Checkout\n\nBoth guides say Checkout supports the PayPal button out of the box, with a redirect in scenarios including:\n\n- Billing address or consent collection.\n- Custom fields.\n- PayPal as the sole payment method type.\n- Phone number collection, shipping address collection on recurring payments, or tax-ID collection.\n\nBoth Checkout Session examples use payment mode, a one-time EUR item, `billing_address_collection: 'auto'` and disabled automatic tax. May's Node example explicitly sets `payment_method_types: ['card', 'paypal']`. November's cURL example omits the field (May lines 48–90, November lines 46–73). Both prose sections preserve the PayPal-only redirect condition. Applicable methods and button display still depend on transaction eligibility and Stripe's presentation decision.\n\nThe separate `2026-09-30.endive` changelog documents that writable `payment_method_types` on Checkout Session creation returns HTTP 400. It provides dynamic payment methods or `allowed_payment_method_types` as migration paths. The latter filters the list for compatibility and returns the subset in the response's `payment_method_types`. The November button example does not specify an API version. [[raw/stripe-changelog-endive-2026-09-30-remove-payment-method-types-checkout-sessions-2026-11-07|Versioned Checkout changelog, lines 7–23]]\n\n## Related Pages\n\n- [[stripe]]\n- [[stripe-wallets]]\n- [[stripe-express-checkout-element]]\n- [[stripe-checkout]]\n- [[source-stripe-paypal]]\n- [[source-stripe-express-checkout-element]]\n- [[source-stripe-express-checkout-element-accept-payment]]\n\n## Raw Sources\n\n- [[raw/stripe-payments-paypal-paypal-button-2026-11-07|PayPal Button, captured 2026-11-07]] — full 73-line guide with the November Express Checkout Element and Checkout examples.\n- [[raw/stripe-paypal-button-2025|PayPal Button, captured 2026-05-07]] — full 90-line guide containing the dated billing-address and Checkout method list examples. No italic fixes were needed.\n",
+  "quotes": {
+    "payments-paypal-paypal-button": [
+      {
+        "text": "Stripe determines whether to present the redirect or the button",
+        "location": "raw/stripe-payments-paypal-paypal-button-2026-11-07.md:9"
+      },
+      {
+        "text": "Shipping address collection is enabled (for recurring payments)",
+        "location": "raw/stripe-payments-paypal-paypal-button-2026-11-07.md:23"
+      },
+      {
+        "text": "PayPal is the only payment method type",
+        "location": "raw/stripe-payments-paypal-paypal-button-2026-11-07.md:55"
+      },
+      {
+        "text": "-d billing_address_collection=auto",
+        "location": "raw/stripe-payments-paypal-paypal-button-2026-11-07.md:71"
+      },
+      {
+        "text": "Phone number collection is enabled",
+        "location": "raw/stripe-payments-paypal-paypal-button-2026-11-07.md:24"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-paypal-paypal-button": [
+      {
+        "text": "For recurring payments with the PayPal button, you must explicitly define `billingAddressRequired` as `false`.",
+        "location": "raw/stripe-paypal-button-2025.md:26"
+      },
+      {
+        "text": "payment_method_types: [\"card\", \"paypal\"]",
+        "location": "raw/stripe-paypal-button-2025.md:87"
+      },
+      {
+        "text": "Billing address collection is enabled",
+        "location": "raw/stripe-paypal-button-2025.md:22"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-paypal-paypal-button-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 73
+      }
+    ],
+    "raw/stripe-paypal-button-2025.md": [
+      {
+        "start": 1,
+        "end": 90
+      }
+    ],
+    "wiki/sources/source-stripe-paypal-button.md": [
+      {
+        "start": 1,
+        "end": 38
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/8f7a039fb81fd921b949ff0f/content.diff": [
+      {
+        "start": 1,
+        "end": 73
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-paypal-paypal-button/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 184
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-paypal-paypal-button/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 136
+      }
+    ],
+    "wiki/concepts/stripe-express-checkout-element.md": [
+      {
+        "start": 140,
+        "end": 155
+      },
+      {
+        "start": 240,
+        "end": 250
+      }
+    ],
+    "wiki/concepts/stripe-wallets.md": [
+      {
+        "start": 165,
+        "end": 187
+      },
+      {
+        "start": 400,
+        "end": 410
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 382,
+        "end": 387
+      }
+    ],
+    "raw/stripe-express-checkout-element-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 5
+      },
+      {
+        "start": 679,
+        "end": 695
+      }
+    ],
+    "raw/stripe-elements-express-checkout-element-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-changelog-endive-2026-09-30-remove-payment-method-types-checkout-sessions-2026-11-07.md": [
+      {
+        "start": 7,
+        "end": 31
+      }
+    ]
+  },
+  "answers": {
+    "payments-paypal-paypal-button": {
+      "Q1": "For https://docs.stripe.com/payments/paypal/paypal-button, Stripe chooses the PayPal button or a redirect. November's Express Checkout Element guidance flags phone collection and recurring shipping collection and illustrates disabling those options. May also lists billing collection as a blocker and explicitly sets billingAddressRequired to false for recurring payments (old raw lines 18-46 and new raw lines 19-44). In Checkout both guides give redirect fallback for billing or consent collection, custom fields, PayPal alone, phone collection, recurring shipping collection or tax-ID collection. November's cURL still sets payment mode, automatic tax false and billing address collection auto, but omits May's explicit card and PayPal list (old raw lines 48-90 and new raw lines 46-73). source-stripe-paypal-button.md now dates May's Express Checkout Element billing instructions, records November's omissions and preserves the shared Checkout fallback conditions. Presentation and Sandbox setup do not establish a successful payment.",
+      "Q2": "For https://docs.stripe.com/payments/paypal/paypal-button, November's omission of ECE billing-address text and both example fields is a substantive documentation difference, while actual ECE support remains unresolved (old raw lines 20-44 and new raw lines 21-42). source-stripe-paypal-button.md dates the May 7 requirement alongside the April PaymentIntents payer-information caveat and the shared Checkout billing condition. November's omission of explicit card and PayPal selection changes the illustrated Checkout request, although switching from Node to cURL is presentational (old raw lines 48-90 and new raw lines 46-73). The revised summary preserves the PayPal-only redirect rule and cites the separate Endive Checkout Session creation field change. It routes to the Wallets and Express Checkout Element concepts and companion guides."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-paypal-paypal-button-wallet-button-scope",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "durable_fact",
+      "anchor": "**PayPal button** (vs redirect): Stripe decides which to show. Button blockers for ECE: billing/shipping/phone collection. Button blockers for Checkout: billing/consent/custom fields/phone/shipping-recurring/tax ID collection, or PayPal as the **only** payment method. Maximize button: set `billing_address_collection: 'auto'`, disable auto-tax, include multiple PM types.",
+      "proposed_markdown": "**PayPal button or redirect.** Stripe decides which to show. In Express Checkout Element both dated guides list phone collection and shipping collection for recurring payments as blockers. May also lists billing collection and requires `billingAddressRequired: false` for recurring payments. November omits that billing guidance. In Stripe Checkout both guides list billing or consent collection, custom fields, phone collection, recurring shipping collection, tax-ID collection and PayPal as the sole method as redirect conditions. Both checkout examples disable automatic tax and use `billing_address_collection: 'auto'`. May explicitly lists card and PayPal, and the November request omits the list. See [[source-stripe-paypal-button]] for the dated options and version-specific method selection.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "May lines 18–46 and November lines 19–44 cover the Express Checkout Element scope. May lines 48–90 and November lines 46–73 cover the Checkout fallback and examples. The separate Endive changelog scopes the writable field change to 2026-09-30.endive Checkout Session Create."
+      ]
+    },
+    {
+      "update_id": "payments-paypal-paypal-button-wallet-source-route",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-paypal-button]] — PayPal button: Stripe decides button vs redirect, blockers list for ECE + Checkout, maximize by disabling billing/tax collection",
+      "proposed_markdown": "- [[source-stripe-paypal-button]] covers the dated May and November 2026 button and redirect conditions for Express Checkout Element and Stripe Checkout, and the Checkout Session examples.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "The source links back to Wallets and Express Checkout Element and distinguishes the two frontends."
+      ]
+    },
+    {
+      "update_id": "payments-paypal-paypal-button-ece-payer-scope",
+      "target_path": "wiki/concepts/stripe-express-checkout-element.md",
+      "update_kind": "durable_fact",
+      "anchor": "**PayPal caveat**: does not provide billing address (except country) or phone. If these are required and unavailable, the PayPal button is hidden.",
+      "proposed_markdown": "**PayPal payer information.** The April 2026 PaymentIntents integration guide says PayPal generally omits the phone number and provides only the country from the billing address. If required details are unavailable, the Express Checkout Element hides the PayPal button. The November capture of that integration guide is a variant selector. The separate May PayPal button guide specifically required `billingAddressRequired: false` for recurring payments. Its November revision omits the billing instructions and retains the phone and recurring shipping scenarios. See [[source-stripe-paypal-button]].",
+      "quote_indexes": [
+        0,
+        1,
+        4
+      ],
+      "warnings": [
+        "April acceptance lines 679–695 and November acceptance selector lines 5–14 are separate from the May and November PayPal button captures. Current billing behavior is unresolved from the omission."
+      ]
+    }
+  ]
+}

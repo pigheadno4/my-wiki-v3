@@ -1,0 +1,64 @@
+--- raw/stripe-revolut-pay-2025.md
++++ raw/stripe-payments-revolut-pay-2026-11-07.md
+@@ -2,9 +2,9 @@
+ 
+ Learn about Revolut Pay, a digital wallet payment method used in the United Kingdom and the European Union.
+ 
+-Revolut Pay, developed by [Revolut](https://www.revolut.com/business/revolut-pay/), a global finance app, is a digital wallet payment method. Revolut Pay uses the customer’s stored balance or cards to fund the payment, and offers the option for non-Revolut customers to save their details after their first purchase.
++Revolut Pay is a real-time payment method for customers who have a [Revolut](https://www.revolut.com/business/revolut-pay/) account. Revolut is a licensed bank with tens of millions of customers across Europe and the UK. With Revolut Pay, customers can pay directly from their Revolut balance or linked cards without re-entering payment details.
+ 
+-When customers select Revolut Pay as their payment method, Stripe redirects them to Revolut Pay’s website, where they have to authenticate with their account details or checkout as a first time user. After authenticating, Revolut Pay redirects customers back to your website.
++When a customer selects Revolut Pay, the checkout flow adapts to their device. On mobile, Stripe opens the Revolut app for the customer to authenticate and confirm the payment. On desktop, Stripe shows the customer a QR code to scan with the Revolut app. After confirming the payment, the customer returns to your site. Revolut Pay is available to businesses in the EU and UK and supports one-time and recurring payments.
+ 
+ #### Payment method properties
+ 
+@@ -92,17 +92,16 @@
+ - Subscriptions
+ - Invoicing
+ 
+-## Payment flow
++## Payment flow 
+ 
+ Below is a demonstration of the Revolut Pay payment flow from your checkout page:
+-![Revolut Pay payment flow demo](assets/stripe-revolut-pay-flow.mp4)
+-
+-## Get started
++![](https://d37ugbyn3rpeym.cloudfront.net/videos/revolut.mp4)
++## Get started 
+ 
+ You don’t have to integrate Revolut Pay and other payment methods individually. If you use our front-end products, Stripe automatically determines the most relevant payment methods to display. Go to the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods) and enable Revolut Pay. To get started with one of our hosted UIs, follow a quickstart:
+ 
+ - [Checkout](https://docs.stripe.com/checkout/quickstart.md): Our prebuilt, hosted checkout page.
+-- [Elements](https://docs.stripe.com/payments/quickstart-checkout-sessions.md): Our drop-in UI components.
++- [Elements](https://docs.stripe.com/payments/quickstart.md): Our drop-in UI components.
+ 
+ ### Other payment products
+ 
+@@ -120,7 +119,7 @@
+ 
+ Revolut Pay supports full and partial refunds. The refund period is up to 180 days after the purchase. Refunds for Revolut Pay payments are asynchronous and take up to 5 minutes to complete. We notify you of the final refund status using the `refund.updated` or `refund.failed` *webhook* (A webhook is a real-time push notification sent to your application as a JSON payload through HTTPS requests) event. When a refund succeeds, the status of the [Refund object](https://docs.stripe.com/api/refunds/object.md) transitions to `succeeded`. If a refund fails, the status of the Refund object transitions to `failed` and we return the amount to your Stripe balance. You then need to arrange an alternative way of providing a refund.
+ 
+-## Disputes
++## Disputes 
+ 
+ Customers must authenticate Revolut Pay payments by logging into their Revolut account. This requirement helps reduce the risk of fraud or unrecognized payments. With [Revolut’s Buyer Protection Policy](https://www.revolut.com/legal/buyer-protection-policy/), customers can file a dispute, which can result in a chargeback and funds being withdrawn from your Stripe account.
+ 
+@@ -131,6 +130,7 @@
+ - Stripe holds back the disputed amount from your balance until Revolut resolves the dispute.
+ 
+ - Stripe requests that you upload compelling evidence that you fulfilled the purchase order [using the Stripe Dashboard](https://docs.stripe.com/disputes/responding.md#respond). This evidence can include:
++
+   - A received return confirmation (for shipped goods returned from the customer to you)
+   - The tracking ID
+   - The shipping date
+@@ -145,7 +145,7 @@
+ 
+ You can create Revolut Pay payments in the currencies that map to your country. Currently, we support `gbp`, `eur`, `ron`, `huf`, `pln`, and `dkk`. The default local currency for Revolut Pay UK customers is `gbp` and for other EU customers it’s `eur`.
+ 
+-| Currency                          | Country                                                                                                                                                                                                                                                                          |
+-| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+-| `gbp`                             | United Kingdom                                                                                                                                                                                                                                                                   |
++| Currency | Country |
++| --- | --- |
++| `gbp` | United Kingdom |
+ | `eur`, `ron`, `huf`, `pln`, `dkk` | Austria, Belgium, Bulgaria, Croatia, Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Ireland, Italy, Latvia, Liechtenstein, Lithuania, Luxembourg, Malta, Netherlands, Norway, Poland, Portugal, Romania, Slovakia, Slovenia, Spain, Sweden |

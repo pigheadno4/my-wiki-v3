@@ -1,0 +1,89 @@
+--- wiki/sources/source-stripe-radar-analytics.md
++++ wiki/sources/source-stripe-radar-analytics.md
+@@ -2,54 +2,58 @@
+ title: "Stripe — Radar Analytics Center"
+ type: source
+ date_ingested: 2026-05-10
++date_updated: 2026-11-22
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/radar/analytics"
+ raw_files:
+   - "stripe-radar-analytics-2026.md"
+ tags: [stripe, radar, analytics, fraud, disputes, benchmarks, monitoring-programs, sigma]
+ ---
+ 
+-## Summary
++## Overview
+ 
+-Radar analytics center in the Dashboard: fraud/dispute/block rate charts with peer benchmarks, rule match breakdowns, and legacy overview. 24-hour data delay.
++The May 10, 2026 guide describes two Dashboard views. It presents Radar Analytics center as the default in Radar Overview and shows how the New overview toggle returns to the legacy view. The November 7, 2026 capture keeps the Dashboard fraud-analysis purpose and links the same two routes. The reporting details below come from May. Fraud Insights, Sigma and Data Pipeline are separate analysis routes. See May lines 8–27 and 159–165.
+ 
+-## New Analytics Center (Default)
++## May Radar Analytics center
+ 
+-**Rate charts**: Fraud, Disputes, Blocks — each with benchmark comparison icon vs comparable Stripe businesses.
++The newer view defaults to the prior 30 days of transaction history after a 24-hour delay. Users can choose their date range, count or payment volume, fraud-arrival date or payment date, retry deduplication per PaymentIntent, and optional SetupIntent inclusion. See May lines 30–48.
+ 
+-**Configurable data set**:
+-- Calculate by transaction volume vs payment count
+-- Calculate fraud rates by fraud arrival date vs payment date
+-- De-duplicate retries per payment intent
+-- Include SetupIntents
++- **Fraud.** The panel distinguishes fraud disputes from early fraud warnings that have yet to escalate to disputes. It shows observed rates and an optional modeled worst-case line based on historical arrival patterns. The estimate toggle may be absent at low fraud volume or when using fraud-arrival date. Late disputes can change observed rates.
++- **Disputes.** Distinguishes fraud from other dispute categories. The May formula is disputed payments of any type divided by successful payments in the same period. Nonfraud reasons do not enter the fraud rate.
++- **Blocks.** Breaks out high-risk and custom-rule blocks. The May newer-view prose divides all blocked payments by successful payments. The legacy view uses attempted payments as its denominator.
+ 
+-**Fraud panel**: disputes vs EFWs breakdown; worst-case fraud rate AI estimate toggle (disabled if low volume or using fraud arrival date mode).
++The panels show comparable-business and regional benchmarks. See May lines 50–102.
+ 
+-**Rule matches**: totals + detail by Blocked (top rules), 3DS (outcomes), Allow (legitimate/disputed/refunded), Review (in review/approved/rejected/failed/disputed).
++**Rule matches** reports actions actually taken on screened transactions. Transactions shows each action's rate, count and volume. Blocked shows top matched block rules, and 3DS shows authentication outcomes. Allow distinguishes legitimate, fraud-disputed or early-fraud-warning, and refunded transactions. Review shows currently in review, approved, rejected, failed and disputed. A filed dispute replaces an earlier in-review or approved classification in this panel. See May lines 104–157.
+ 
+-**Monitoring programs**: tracks rates vs card network thresholds; shows current status.
++## May Legacy Radar overview
+ 
+-## Legacy Overview
++- **Overview Chart.** Shows attempted payments through 3DS challenge outcomes, Radar screening and disputes.
++- **Benchmarks.** Shows regional and, when available, similar-business block, fraudulent-dispute and estimated false-positive rates. Similar-business benchmarks display for cohorts with many dozens of businesses, and inclusion requires a significant number of payments. Each business contributes equal weight for a given benchmark. Contact Stripe to opt out of contributing data. Opted-out businesses can continue to view benchmarks.
++- **Fraud prevention.** Attempted payments count supported screened requests including retries. Legacy block rate divides blocked payments by attempted payments. Legacy counts exclude screened SetupIntents, which the newer chart can optionally display. High-risk and custom-rule blocks have separate counts, rates and volumes. The estimated false-positive rate models Radar blocking a nonfraudulent payment.
++- **Fraudulent disputes and all disputes.** The fraudulent-dispute chart uses payment creation date and, for the trailing 120 days, distinguishes the observed partial rate from the modeled possible maximum. The disputes-received chart uses dispute creation date for successful payments in the selected period. It counts inquiries when they escalate, shows open disputes, disputed volume excluding fees and win rate, and provides a download for the full dispute-reason breakdown.
++- **Manual reviews.** The separate Radar for Fraud Teams panel shows the queue and currently in review, approved, refunded and disputed outcomes, plus the disputed share of approved reviews. A customer's dispute of a payment currently in review automatically closes that review.
+ 
+-- **Overview Chart**: 3DS → Screened by Radar → Disputed flow
+-- **Benchmarks**: Block rate, fraudulent dispute rate, estimated false positive rate vs regional + similar businesses
+-- **Fraud prevention**: attempted payments, blocked (high-risk vs rules), block rate; false positive rate estimate
+-- **Fraudulent disputes chart**: partial rate (solid) + projected maximum (dashed, 120-day window)
+-- **Disputes section**: disputes received by type; win rate
+-- **Manual reviews**: sent to review + outcomes (approved/refunded/disputed)
++The May legacy attempted-payment section says card-present Terminal and recurring Stripe Billing payments are not screened. The separate May Risk evaluations guide says the Radar fraud model scores only the initial payment of a recurring Stripe Billing subscription. Radar evaluates rules for all payments. This leaves the relationship between the legacy reporting wording and the general scoring and rule behavior unresolved. See May analytics lines 163–275 and [[source-stripe-radar-risk-evaluation]].
+ 
+-## Data Details
++## Availability, export and monitoring
+ 
+-- 24-hour delay; computed daily at midnight UTC
+-- New view defaults to prior 30 days; legacy defaults to 6 months
+-- Each chart has CSV download + View in Sigma link
+-- Benchmarks: ≥dozens of businesses per cohort; each business gets 1 vote (opt-out available)
++The May legacy section describes daily computation starting at midnight UTC, data available within 24 hours, a six-month default and daily foreign exchange rates for monetary aggregation in the account's default currency. Each chart offers a CSV download. Users with Sigma access can open the generating SQL through View in Sigma. See May lines 277–293.
++
++May describes Radar analytics comparing fraud and dispute rates with card-network monitoring thresholds and showing current status and program details, including possible penalties. A current program status, an observed rate and a modeled estimate convey different information. See May lines 295–299 and [[stripe-dispute-monitoring-programs]].
+ 
+ ## Related Pages
+ 
+-- [[stripe-radar]] — concept page (updated with analytics section)
+-- [[stripe-dispute-monitoring-programs]] — monitoring program thresholds
+-- [[source-stripe-disputes-measuring]] — dispute activity vs rate
++- [[stripe-radar]] — Radar overview and reporting context
++- [[source-stripe-radar-fraud-insights]] — Separate Fraud Insights workflow
++- [[stripe-dispute-monitoring-programs]] — Card-network monitoring thresholds
++- [[source-stripe-disputes-measuring]] — Dispute activity and rate measurement
++- [[stripe]] — Stripe company page
+ 
+ ## Raw Sources
+ 
+-- [[stripe-radar-analytics-2026]] — verbatim Radar analytics center guide (299 lines, 8 screenshots)
++- [[raw/stripe-radar-analytics-2026|May 10, 2026 full Radar analytics center guide]] — 299 lines with the two embedded Dashboard views and eight screenshots
++
++## Related raw API references
++
++- [[raw/stripe-radar-analytics-2026-11-07|November 7, 2026 Radar Analytics variant index]] — Radar Analytics center and Legacy Radar overview navigation

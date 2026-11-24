@@ -1,0 +1,236 @@
+{
+  "job_id": "payments-payment-methods-dynamic-payment-methods",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Stripe Docs — Dynamic payment methods\"\ntype: source\ndate_ingested: 2026-05-08\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/payments/payment-methods/dynamic-payment-methods\nraw_files:\n  - \"stripe-payments-payment-methods-dynamic-payment-methods-2026-11-07.md\"\n  - \"stripe-dynamic-payment-methods-2025.md\"\ntags: [stripe, dynamic-payment-methods, payment-element, checkout, ai-models, optimized-checkout, automatic-payment-methods]\n---\n\n## Summary\n\nThe May 8 and November 7, 2026 guides describe dynamic payment methods as part of the default [[stripe]] integration. Merchants manage most payment methods in the Dashboard. Stripe selects and orders eligible methods for each customer or checkout session across Payment Element, Checkout, Payment Links and the hosted invoice page.\n\n## Integration and transaction exclusions\n\n- To migrate manually configured Checkout or advanced Payment Element, remove `payment_method_types`. For advanced Payment Element with an API version before August 16, 2023, replace the explicit list with `automatic_payment_methods[enabled]=true`. The November capture corrects the May cURL continuation around the currency and automatic-payment-method arguments. See [[source-stripe-automatic-payment-methods]] for the separate API-version context.\n- For Connect direct charges and charges using `on_behalf_of`, the connected account's settings determine available methods. May links to the dynamic payment methods migration page for platforms. November points to managing payment methods for connected accounts. The target change establishes a navigation update.\n- The exclusion field `excluded_payment_method_types` is listed for PaymentIntents, SetupIntents, Checkout and Payment Element. The May Node example and equivalent November cURL example use enabled automatic methods and exclude `affirm` and `acss_debit` on one PaymentIntent, even if enabled in the Dashboard.\n- For the particular PaymentIntent exclusion flow, use the integration-specific `wallets` settings to control Apple Pay, Google Pay or Link. Passing those wallet types to `excluded_payment_method_types` in this flow produces an error (May lines 87–108, November lines 89–105).\n\n## Eligibility, customization and order\n\nEligibility depends on Dashboard enablement and Stripe account location, product, currency, final amount including discounts and tax, API compatibility, and the customer's country. Incompatible methods can be filtered by settings such as `setup_future_usage` or `capture_method: manual`. Apple Pay and Google Pay use separate criteria.\n\n[[stripe-payment-method-configurations|Payment method configurations]], [[stripe-payment-method-rules|display rules]] such as amount and currency conditions, and [[stripe-ab-testing-payment-methods|A/B tests]] can also affect availability. The guides also describe embedding the payment method settings component for connected-account users. The Optimized Checkout Suite uses more than 100 on-session signals and broader network signals to select and order eligible methods alongside Dashboard rules and code-based logic. Stripe describes using an exploration-exploitation approach to refine ordering. Eligibility, checkout display and payment completion are distinct.\n\n## Dated differences between product examples and support tables\n\n- **Bacs Direct Debit.** Both dynamic guides give Bacs as a Mobile Payment Element exclusion example (May lines 110–114, November lines 107–111). The November support matrix marks the mobile UI supported. A separate footnote excludes creating Bacs SetupIntents with Payment Element and directs readers to Checkout setup mode. The documents differ on mobile UI support, apart from the SetupIntent constraint. [[raw/stripe-payments-payment-methods-payment-method-support-2026-11-07|November support matrix, lines 86–97]]\n- **TWINT.** Both dynamic guides give TWINT as an example of a method without future setup (May lines 132–136, November lines 129–133). The November TWINT method page and the November support matrix list PaymentIntent future setup as supported. The matrix limits supported methods outside the listed card and bank-debit exceptions to `off_session`, which the May TWINT saving example uses. [[raw/stripe-payments-twint-2026-11-07|November TWINT overview, lines 231–236]] · [[raw/stripe-payments-payment-methods-payment-method-support-2026-11-07|November support matrix, lines 320–323 and 339–343]] · [[raw/stripe-twint-save-during-payment-2025|May TWINT saving guide, lines 400–419]]\n- **Swish.** Both dynamic guides cite Swish for no recurring payments (May lines 110–114, November lines 107–111). The November support matrix excludes Checkout subscription/setup modes and lists a Subscriptions cell with the `send_invoice` qualification. November's Swish method overview excludes Billing, Invoicing and `setup_future_usage`. The Subscriptions cell is a dated table label for the `send_invoice` collection method. Automatic recurring collection remains unsupported in the two dynamic guides. [[raw/stripe-payments-payment-methods-payment-method-support-2026-11-07|November support matrix, lines 154–165]] · [[raw/stripe-payments-swish-2026-11-07|November Swish overview, lines 155–182]]\n\n## Related Pages\n\n- [[stripe-dynamic-payment-methods]] — durable concept\n- [[stripe-payment-methods]] — payment methods overview\n- [[source-stripe-automatic-payment-methods]] — August 2023 API change context\n- [[source-stripe-payment-method-support]] — product and API support matrices\n- [[stripe]] — Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-payments-payment-methods-dynamic-payment-methods-2026-11-07|Dynamic payment methods, captured 2026-11-07]] — full guide (153 lines), cURL exclusion example and updated Connect navigation.\n- [[raw/stripe-dynamic-payment-methods-2025|Dynamic payment methods, captured 2026-05-08]] — full guide (156 lines), with the historical Node exclusion example and Connect route.\n",
+  "quotes": {
+    "payments-payment-methods-dynamic-payment-methods": [
+      {
+        "text": "-d \"automatic_payment_methods[enabled]\"=true",
+        "location": "raw/stripe-payments-payment-methods-dynamic-payment-methods-2026-11-07.md:59"
+      },
+      {
+        "text": "If you exclude `apple_pay`, `google_pay`, or `link` using `excluded_payment_method_types` rather than the wallets hash, it generates an error.",
+        "location": "raw/stripe-payments-payment-methods-dynamic-payment-methods-2026-11-07.md:105"
+      },
+      {
+        "text": "For example, Bacs Direct Debit isn’t available in the Mobile Payment Element. Some payment methods, such as Swish, don’t support recurring payments.",
+        "location": "raw/stripe-payments-payment-methods-dynamic-payment-methods-2026-11-07.md:109"
+      },
+      {
+        "text": "Some payment methods, such as TWINT, can’t be set up for future usage.",
+        "location": "raw/stripe-payments-payment-methods-dynamic-payment-methods-2026-11-07.md:129"
+      },
+      {
+        "text": "The final amount, including tax and discounts, is the amount used to determine available payment methods.",
+        "location": "raw/stripe-payments-payment-methods-dynamic-payment-methods-2026-11-07.md:123"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-payment-methods-dynamic-payment-methods": [
+      {
+        "text": "\\-d \"automatic_payment_methods[enabled]\"=true",
+        "location": "raw/stripe-dynamic-payment-methods-2025.md:57"
+      },
+      {
+        "text": "excluded_payment_method_types: [\"affirm\", \"acss_debit\"]",
+        "location": "raw/stripe-dynamic-payment-methods-2025.md:104"
+      },
+      {
+        "text": "Some payment methods, such as TWINT, can’t be set up for future usage.",
+        "location": "raw/stripe-dynamic-payment-methods-2025.md:132"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-payment-methods-dynamic-payment-methods-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 153
+      }
+    ],
+    "raw/stripe-dynamic-payment-methods-2025.md": [
+      {
+        "start": 1,
+        "end": 156
+      }
+    ],
+    "wiki/sources/source-stripe-dynamic-payment-methods.md": [
+      {
+        "start": 1,
+        "end": 34
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/5a01a91e2669e03da8bc6413/content.diff": [
+      {
+        "start": 1,
+        "end": 113
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-payment-methods-dynamic-payment-methods/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 191
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-payment-methods-dynamic-payment-methods/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 108
+      }
+    ],
+    "wiki/concepts/stripe-dynamic-payment-methods.md": [
+      {
+        "start": 1,
+        "end": 70
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 432,
+        "end": 440
+      },
+      {
+        "start": 729,
+        "end": 735
+      }
+    ],
+    "raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md": [
+      {
+        "start": 86,
+        "end": 97
+      },
+      {
+        "start": 154,
+        "end": 165
+      },
+      {
+        "start": 320,
+        "end": 323
+      },
+      {
+        "start": 339,
+        "end": 343
+      }
+    ],
+    "raw/stripe-payments-twint-2026-11-07.md": [
+      {
+        "start": 231,
+        "end": 236
+      }
+    ],
+    "raw/stripe-twint-save-during-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 6
+      },
+      {
+        "start": 400,
+        "end": 419
+      }
+    ],
+    "raw/stripe-payments-swish-2026-11-07.md": [
+      {
+        "start": 155,
+        "end": 182
+      }
+    ]
+  },
+  "answers": {
+    "payments-payment-methods-dynamic-payment-methods": {
+      "Q1": "For https://docs.stripe.com/payments/payment-methods/dynamic-payment-methods, Stripe dynamically displays and orders the eligible methods for the customer while the merchant manages most methods in Dashboard. Checkout and advanced Payment Element migrate by removing payment_method_types, with the pre-2023-08-16 advanced integration replacing it with enabled automatic_payment_methods (new raw lines 7-60 and old raw lines 6-58). Direct charges or on_behalf_of use connected-account settings. Stripe filters using applicable account, product, currency, final amount, API and customer-country constraints plus optional configurations, rules and tests, and orders eligible methods using more than 100 signals plus network data. The per-transaction PaymentIntent exclusion example leaves wallet settings to the integration-specific wallets hash (new raw lines 75-153 and old raw lines 73-156). source-stripe-dynamic-payment-methods.md preserves the core controls and now scopes the wallet error to the PaymentIntent flow and the pre-version migration to advanced Payment Element. The guide covers checkout display eligibility and order, with no successful payment transition established.",
+      "Q2": "For https://docs.stripe.com/payments/payment-methods/dynamic-payment-methods, November 7 reroutes the Connect link, fixes the May 8 cURL argument continuation without changing the documented API setting, and replaces the Node exclusion example with an equivalent cURL request (old raw lines 19-58 and 87-108 and new raw lines 20-60 and 89-105). The wording and table edits are presentational, and the raw shows no change in eligibility policy. source-stripe-dynamic-payment-methods.md retains the two dated guides, the reciprocal concept link and the support matrix route. It records the TWINT and Bacs example disagreements, distinguishes the Swish send_invoice cell from the Checkout exclusion and method product labels, and preserves legacy advanced migration, the PaymentIntent wallet scope and the final amount, country, rules and experiments used for eligibility or display (old raw lines 110-156 and new raw lines 107-153)."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-payment-methods-dynamic-payment-methods-advanced-migration",
+      "target_path": "wiki/concepts/stripe-dynamic-payment-methods.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Payment Element, API ≥ 2023-08-16**: omit `payment_method_types` (Stripe defaults to dynamic mode)\n- **Payment Element, API < 2023-08-16**: replace with `automatic_payment_methods[enabled]=true`",
+      "proposed_markdown": "- **Advanced Payment Element, API on or after 2023-08-16** omits `payment_method_types`.\n- **Advanced Payment Element, API before 2023-08-16** replaces the explicit list with `automatic_payment_methods[enabled]=true`.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The advanced section and version boundary are at May lines 40–58 and November lines 41–60."
+      ]
+    },
+    {
+      "update_id": "payments-payment-methods-dynamic-payment-methods-paymentintent-wallet-error",
+      "target_path": "wiki/concepts/stripe-dynamic-payment-methods.md",
+      "update_kind": "durable_fact",
+      "anchor": "> **Exception**: Apple Pay, Google Pay, and Link must be excluded via the `wallets` hash parameter — using `excluded_payment_method_types` for these generates an error.",
+      "proposed_markdown": "> For the documented per-PaymentIntent exclusion flow, use the integration-specific `wallets` settings to control Apple Pay, Google Pay or Link. Passing those wallet types to `excluded_payment_method_types` in that flow generates an error.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "May line 108 and November line 105 state the wallet exception for the particular PaymentIntent."
+      ]
+    },
+    {
+      "update_id": "payments-payment-methods-dynamic-payment-methods-eligibility-scope",
+      "target_path": "wiki/concepts/stripe-dynamic-payment-methods.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Eligibility Criteria (6 Factors)\n\nA payment method only appears if all 6 criteria are met:",
+      "proposed_markdown": "## Payment method eligibility\n\nThe guides describe the following checks. Payment method configurations, amount or currency rules and A/B tests can also affect availability.",
+      "quote_indexes": [
+        2,
+        4
+      ],
+      "warnings": [
+        "See May lines 73–85 and 144–150 and November lines 75–87 and 141–147. Conditions governing eligibility remain separate from rendering and ranking."
+      ]
+    },
+    {
+      "update_id": "payments-payment-methods-dynamic-payment-methods-dated-bacs-example",
+      "target_path": "wiki/concepts/stripe-dynamic-payment-methods.md",
+      "update_kind": "durable_fact",
+      "anchor": "2. **Product support**: not all PMs available in all products (e.g., Bacs not in Mobile PE)",
+      "proposed_markdown": "2. **Product support** varies by method. The May and November dynamic guides cite Bacs as unavailable in Mobile Payment Element. The November support matrix marks mobile UI support and separately excludes Payment Element creation of Bacs SetupIntents. See [[source-stripe-dynamic-payment-methods]] for the dated discrepancy.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "The matrix value and SetupIntent footnote are at raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md:86-97."
+      ]
+    },
+    {
+      "update_id": "payments-payment-methods-dynamic-payment-methods-dated-twint-example",
+      "target_path": "wiki/concepts/stripe-dynamic-payment-methods.md",
+      "update_kind": "durable_fact",
+      "anchor": "5. **API support**: `setup_future_usage` or `capture_method: manual` auto-filter incompatible PMs",
+      "proposed_markdown": "5. **API support** filters incompatible methods when `setup_future_usage` or `capture_method: manual` is set. The dynamic guides use TWINT as an example of a method without future setup. The November TWINT overview and support matrix list PaymentIntent future setup as supported, and the November matrix footnote limits supported TWINT future setup to `off_session`. The May saving guide shows one `off_session` request. See [[source-stripe-dynamic-payment-methods]] for the dated evidence.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "TWINT overview at raw/stripe-payments-twint-2026-11-07.md:231-236, matrix at raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md:339-343, and May saving example at raw/stripe-twint-save-during-payment-2025.md:400-419."
+      ]
+    },
+    {
+      "update_id": "payments-payment-methods-dynamic-payment-methods-dated-source-route",
+      "target_path": "wiki/concepts/stripe-dynamic-payment-methods.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-dynamic-payment-methods]] — primary: migration guide, exclusion API, eligibility criteria, AI models, customization features",
+      "proposed_markdown": "- [[source-stripe-dynamic-payment-methods]] covers the May and November 2026 guides for advanced migration, transaction exclusions, eligibility and ranking, including dated Bacs, TWINT and Swish qualifications.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The source retains both full captures and the reciprocal methods support route."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,215 @@
+--- raw/stripe-paypay-2025.md
++++ raw/stripe-payments-paypay-2026-11-07.md
+@@ -3,104 +3,159 @@
+ Learn about PayPay, a digital wallet payment method in Japan.
+ 
+ PayPay is a popular digital payment platform and mobile wallet service in Japan.
++Payment method family: Wallets
++Usability: Single-use
++Access type: Instant provisional access
++Payment confirmation timing: Immediate
++Settlement timing: Standard payout schedule
++Pricing: https://stripe.com/jp/pricing/local-payment-methods#paypay
++## Eligibility and availability 
+ 
+-#### Payment method properties
++### Account eligibility
++Business location: JP
++Account type: ✓ Merchant, ✗ Platform or marketplace (Connect)
++Business model: ✓ B2B, ✓ B2C
++Business category: View list of prohibited and restricted business categories
++Your account might be reviewed after activation to confirm eligibility. In addition to meeting the criteria above, you must also provide a website that meets the following requirements in addition to the [Stripe account activation requirements](https://support.stripe.com/questions/business-website-for-account-activation-faq):
+ 
+-- **Customer locations**
++- Business information must match what was provided during onboarding.
++- Must clearly indicate the products or services for sale.
++- Must clearly indicate the payment flow.
++- Must specify if selling digital goods or services.
++- Must have a complete SCTA (Specific Conditions of Transaction Acceptance) page.
+ 
+-  Japan
++You can contact [Stripe support](https://support.stripe.com/) to appeal any PayPay capability restrictions.
+ 
+-- **Presentment currencies**
++Review the list of *merchant category codes* (A Merchant Category Code (MCC) is a four-digit number that classifies the type of goods or services a business offers) that are prohibited or restricted for PayPay.
+ 
+-  JPY
++- **Prohibited**: You can’t use this payment method with these MCCs.
++- **Restricted**: You might be able to use this payment method with these MCCs, but you must provide additional information when you create the account.
+ 
+-- **Payment confirmation**
++| MCC | Description | Type |
++| --- | --- | --- |
++| 6051 | Cryptocurrency exchanges and wallets | Prohibited |
+ 
+-  Customer-initiated
++Stripe accounts in the following countries can accept PayPay payments that settle in a supported currency.
+ 
+-- **Payment method family**
++APAC: JP
+ 
+-  Wallets
++Customers in the following countries can use PayPay.
+ 
+-- **Recurring payments**
++APAC: JP
+ 
+-  No
++### Payment support
++Customer location: JP
++Presentment currency: JPY
++Geographic coverage: ✓ Domestic, ✗ Crossborder
++Transaction limits: Minimum amount: 50 JPY
+ 
+-- **Payout timing**
++Maximum amount: 1,000,000 JPY
++### Payment expiration 
+ 
+-  Standard
++PayPay-side authorization expires 5 minutes after redirect. Separately, Stripe expires the payment attempt 1 hour after payment-attempt creation and reports `payment_intent_payment_attempt_expired`.
+ 
+-- **Connect support**
++## Capabilities 
++Recurring payments: ✗ Not supported
+ 
+-  No
++Payment authorizations:
++  ✗ Extended authorizations
++  ✗ Flexible extended authorizations
++  ✗ Incremental authorizations
++  ✗ Decremental authorizations
++  ✗ Re-authorizations
+ 
+-- **Dispute support**
++Payment captures:
++  ✗ Manual capture
++  ✗ Partial capture
++  ✗ Multi-capture
++  ✗ Over-capture
+ 
+-  No
++Refunds:
++  ✓ Partial refunds
++  ✓ Full refunds
++  Submission window: 1 year
++  Processing time: 0 minutes
+ 
+-- **Manual capture support**
++Disputes:
++  ✗ Partial disputes
++  ✗ Full disputes
++### Refunds 
+ 
+-  No
++PayPay requires that you submit a refund within 365 days from the original payment using the [Dashboard](https://dashboard.stripe.com/payments) or [Refunds API](https://docs.stripe.com/api/refunds/create.md). This is the maximum the payment method allows. Your return policy determines what you offer customers.
+ 
+-- **Refunds / Partial refunds**
++Refunds for PayPay payments complete instantly. You can’t cancel PayPay refunds.
+ 
+-  [ Yes ](https://docs.stripe.com/payments/paypay.md#refunds) / [ Yes ](https://docs.stripe.com/payments/paypay.md#refunds)
++#### Refund process 
+ 
+-#### Business locations
++PayPay refunds are never processed as reversals. PayPay handles the refund directly and returns the funds to the customer’s original payment source, which is either their PayPay balance or linked payment method. The customer sees the refund reflected in their PayPay account or funding source.
+ 
+-Stripe accounts in the following countries can accept PayPay payments that settle in a [supported currency](https://docs.stripe.com/payments/paypay.md#supported-currencies).
++#### Tracking refunds 
+ 
+-- JP
++To check a refund’s status, open the payment in the [Dashboard](https://dashboard.stripe.com/payments) and click **View details** on the refund entry. You can also [retrieve the Refund object](https://docs.stripe.com/api/refunds/retrieve.md) and check its `status` field.
+ 
+-#### Product support
++Stripe notifies you of the final status through a `refund.updated` or `refund.failed` *webhook* (A webhook is a real-time push notification sent to your application as a JSON payload through HTTPS requests) event. [Verify webhook signatures](https://docs.stripe.com/webhooks.md#verify-events) to confirm that events came from Stripe. You can also use Stripe’s [public IP addresses](https://docs.stripe.com/ips.md) for network allowlisting. When a refund succeeds, the [Refund object](https://docs.stripe.com/api/refunds/object.md) status changes to `succeeded`. If the refund fails, the status changes to `failed` and Stripe returns the amount to your Stripe balance. You must refund the customer using another method.
+ 
+-- Payment Links
+-- Checkout1
+-- Elements2
++### Disputes 
+ 
+-1Not supported when using Checkout in subscription mode or setup mode.
++PayPay requires customers to authenticate payments directly with the PayPay app, which reduces the risk of fraud and unrecognized transactions. As a result, PayPay doesn’t support the standard dispute process—customers can’t file a chargeback, and funds are never withdrawn from your Stripe balance because of a dispute.
+ 
+-2Express Checkout Element doesn’t support PayPay.
++If a customer contacts PayPay about a payment, they might be directed back to you. You can then issue a full or partial refund.
+ 
+-## Get started
++## Stripe product support 
++Checkout UIs:
++  ✓ Full page (Recommended)
++  ✓ Payment Links
++  ✓ Embedded form
++  ✓ Payment Element
++  ✗ Express Checkout Element
++  ✗ Payment Method Messaging Element
++  ✓ In-app payments
+ 
+-You don’t have to integrate PayPay and other payment methods individually. If you use our front-end products, Stripe automatically determines the most relevant payment methods to display. Go to the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods) and enable PayPay. To get started with one of our hosted UIs, follow a quickstart:
++Products:
++  ✗ Managed Payments
++  ✗ Billing
++  ✗ Invoicing
++  ✗ Customer Portal
++  ✓ Radar
++  ✗ Terminal
++  ✗ Connect
+ 
+-- [Checkout](https://docs.stripe.com/checkout/quickstart.md): Our prebuilt, hosted checkout page.
+-- [Elements](https://docs.stripe.com/payments/quickstart-checkout-sessions.md): Our drop-in UI components.
++APIs:
++  ✓ Checkout Sessions (Recommended)
++  ✓ Payment Intents
++  ✗ Payment Intents with setup_future_usage
++  ✗ Setup Intents
++  ✗ Off-session payments
++Radar support for PayPay is in private preview. Contact Stripe to request access.
+ 
+-### Other payment products
++## Customer experience 
+ 
+-The following Stripe products also let you add PayPay from the Dashboard:
++#### 1. Choose PayPay
+ 
+-- [Payment Links](https://docs.stripe.com/payment-links.md)
++The customer chooses PayPay at checkout.
+ 
+-If your integration requires manually listing payment methods, learn how to [ configure PayPay](https://docs.stripe.com/payments/paypay/accept-a-payment.md).
++#### 2. Open PayPay
+ 
+-## Payment options
++On desktop, the customer opens PayPay using a QR code or the web. On mobile, the customer opens the PayPay app or uses their browser.
+ 
+-The minimum charge limit is 50 JPY or the equivalent for other supported currencies.
++#### 3. Authorize payment
+ 
+-The maximum charge limit is 1,000,000 JPY or the equivalent for other supported currencies.
++The customer authorizes the payment with PayPay.
+ 
+-## Prohibited and restricted business categories
++#### 4. Return and receive confirmation
+ 
+-In addition to the categories of goods or services sold and businesses [restricted from using Stripe overall](https://stripe.com/restricted-businesses), the following categories are prohibited from using PayPay:
++PayPay returns the customer automatically after a short delay, or the customer chooses to return. Stripe immediately confirms whether the payment succeeded or failed.
+ 
+-- Cryptocurrency exchanges and wallets
+-- Other categories at the discretion of PayPay
++In the standard redirect flow, customers leave your website or app to authorize each payment with PayPay. PayPay returns the customer automatically after a short delay, or the customer chooses to return. An eligible custom integration can instead present a separate custom QR variant while keeping its page open. Stripe immediately confirms whether the payment succeeded or failed.
+ 
+-## Refunds
++### Statement descriptors 
+ 
+-PayPay supports full and partial refunds.
++Stripe sends a computed statement descriptor to its PayPay partner integration, using the payment’s descriptor and applicable account configuration. PayPay controls whether and how that descriptor is displayed.
+ 
+-- The refund period is up to 365 days after the purchase.
+-- Refunds for PayPay payments complete instantly.
++See the PaymentIntent [statement_descriptor parameter](https://docs.stripe.com/api/payment_intents/create.md#create_payment_intent-statement_descriptor), [statement descriptor guidance](https://docs.stripe.com/get-started/account/statement-descriptors.md), and [Connect statement descriptor guidance](https://docs.stripe.com/connect/statement-descriptors.md).
+ 
+-Stripe notifies you of the final refund status using the `refund.updated` or `refund.failed` *webhook* (A webhook is a real-time push notification sent to your application as a JSON payload through HTTPS requests) event. When a refund succeeds, the [Refund](https://docs.stripe.com/api/refunds/object.md) object’s status transitions to `succeeded`. If a refund fails (the `Refund` object’s status transitions to `failed`), then we return the amount to your Stripe balance, and you must arrange an alternative way of providing your customer with a refund.
++## Enable PayPay 
+ 
+-## Supported currencies
++If you use Stripe front-end products, enable PayPay in your [payment method settings](https://dashboard.stripe.com/settings/payment_methods). Stripe automatically determines which payment methods are most relevant to each customer.
+ 
+-You can create PayPay payments in the currencies that map to your country. The default local currency for PayPay is `jpy`.
+-
+-- jpy: JP+If your integration lists payment methods manually, learn how to [configure PayPay as a payment method](https://docs.stripe.com/payments/paypay/accept-a-payment.md).

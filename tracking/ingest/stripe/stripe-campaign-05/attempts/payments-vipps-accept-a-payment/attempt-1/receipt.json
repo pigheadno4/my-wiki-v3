@@ -1,0 +1,171 @@
+{
+  "job_id": "payments-vipps-accept-a-payment",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-vipps-accept-a-payment-2026-11-07.md",
+  "raw_sha256": "d199d75d3931b907647d812b8f3b2f7497a9f9fa140a2e7a47442ea12552dc2f",
+  "prior_raw_path": "raw/stripe-vipps-accept-payment-2025.md",
+  "prior_raw_sha256": "de2eb0505d2938e91d5e78be49379aee6ad4e81078f71bb7d06de66f74df807c",
+  "source_targets": [
+    "wiki/sources/source-stripe-vipps-accept-payment.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-vipps-accept-payment.md": "94ce612d7281f219aa977bd014f8c4b06436962d4c37ab575a2c0f90a9d42eb0"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-vipps-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-vipps-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 1123
+      }
+    ],
+    "wiki/sources/source-stripe-vipps-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 46
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/af34454a5992c88571502106/content.diff": [
+      {
+        "start": 1,
+        "end": 1126
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 11
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 383,
+        "end": 388
+      },
+      {
+        "start": 413,
+        "end": 421
+      }
+    ],
+    "wiki/concepts/stripe-wallets.md": [
+      {
+        "start": 329,
+        "end": 353
+      },
+      {
+        "start": 420,
+        "end": 430
+      }
+    ],
+    "raw/stripe-payments-vipps-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 112,
+        "end": 143
+      }
+    ],
+    "raw/stripe-vipps-2025.md": [
+      {
+        "start": 1,
+        "end": 14
+      },
+      {
+        "start": 54,
+        "end": 96
+      }
+    ],
+    "raw/stripe-api-payment-intents-cancel-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 25
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Learn how to accept Vipps, a common payment method in Norway.",
+      "location": "raw/stripe-payments-vipps-accept-a-payment-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-vipps-accept-a-payment-2026-11-07.md:11"
+    },
+    {
+      "text": "[Checkout](https://docs.stripe.com/payments/vipps/accept-a-payment.md?payment-ui=checkout)",
+      "location": "raw/stripe-payments-vipps-accept-a-payment-2026-11-07.md:13"
+    },
+    {
+      "text": "[Elements](https://docs.stripe.com/payments/vipps/accept-a-payment.md?payment-ui=elements)",
+      "location": "raw/stripe-payments-vipps-accept-a-payment-2026-11-07.md:14"
+    },
+    {
+      "text": "[Direct API](https://docs.stripe.com/payments/vipps/accept-a-payment.md?payment-ui=direct-api)",
+      "location": "raw/stripe-payments-vipps-accept-a-payment-2026-11-07.md:15"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Stripe cancels the PaymentIntent and sends a [payment_intent.canceled](https://docs.stripe.com/api/events/types.md#event_types-payment_intent.canceled) event if the payment isn\u2019t captured during the 7-day window.",
+      "location": "raw/stripe-vipps-accept-payment-2025.md:156"
+    },
+    {
+      "text": "Your customer has 5 minutes to open the redirect URL and authorize the payment in the Vipps app.",
+      "location": "raw/stripe-vipps-accept-payment-2025.md:1035"
+    }
+  ],
+  "proposed_disposition": "raw_reference",
+  "findings": [
+    "The November capture at new raw lines 5-15 identifies Norway and routes Checkout, Elements and Direct API. Its three destinations correspond to the 2026-05-08 full variant bodies at old raw lines 8-265, 266-864 and 865-1123. The `2025` filename suffix does not date the capture.",
+    "Old raw lines 12-65, 67-124 and 387-418 describe a one-time NOK card-backed wallet, customer approval in Vipps, immediate payment-result notification, Checkout payment mode only with NOK line items, dynamic versus manual method selection, hosted success_url, full embedded return_url, and a separate server-created PaymentIntent and client Payment Element for Elements. Old raw lines 541-752 explain client confirmPayment, return and retrieve/status display. The merchant uses a server success event for fulfillment, as distinguished at old raw lines 130-147 and 770-787.",
+    "Old raw lines 886-1035 show a server-created NOK PaymentIntent and `requires_confirmation` in the example, then confirmed with a return URL and a `requires_action` response containing `next_action.redirect_to_url`. Desktop uses a phone-number page and a push to the Vipps app. For mobile the Direct API opens the app if present or falls back to the landing page. Open and authorize within five minutes. The Direct API paragraph's in-app card retry is narrower than the summary's general wording, and the failure sections at old raw lines 252-254, 857-859 and 1117-1119 describe method detachment and `requires_payment_method` on final card failure or timeout. Return navigation provides no proof of payment outcome.",
+    "Old raw lines 154-248, 802-853 and 1062-1113 distinguish the seven-day manual authorization hold from five-minute customer action. Checkout sets `payment_intent_data.capture_method`; Elements and Direct API set it on PaymentIntent. Successful authorization produces `requires_capture` and `payment_intent.amount_capturable_updated`; full capture only. Stripe cancels and emits `payment_intent.canceled` if uncaptured within the seven days. Current source line 36 preserves the main branch but lacks the expiry consequence. Old raw lines 148-152, 788-801 and 1055-1060 separate test-page simulation from live Vipps app approval."
+  ],
+  "substantive_changes": [
+    "New raw lines 9-15 replace the displayed May bodies with a three-route index. No substantive integration behavior change, cancellation change, eligibility change or deprecation follows from this presentation/navigation delta."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain the 2026-05-08 guide as full behavior evidence, with private-preview samples, roles, NOK line-item constraints, redirect fallback and timeouts, retry/final-failure distinction, full manual capture and automatic expiry. The distinct method overview separately confirms private preview in November, scoped to requests that include Vipps.",
+    "The payment-result and authorization branches must stay separate. Verified fulfillment events and status are distinct from client return. Keep the May card-network rules for refunds/disputes (old raw lines 258, 863 and 1123) distinct from the manual full-capture rule."
+  ],
+  "conflicts": [
+    "Old integration raw lines 24-40 list EEA and GB as business locations for Checkout, but the separate dated 2026-05-08 and 2026-11-07 Vipps method profile lists, raw/stripe-vipps-2025.md lines 56-89 and raw/stripe-payments-vipps-2026-11-07.md lines 57-89, omit GB. Current source line 17 presents EEA + GB unconditionally. Preserve the source/date/route disagreement and leave GB eligibility unresolved.",
+    "Old integration raw line 820 (Elements) and line 1080 (Direct API) use `dkk` in manual authorization samples, conflicting with NOK compatibility at old raw lines 26-40 and 888-906 and with the separate November profile at lines 17-23. Do not treat sample DKK as supported.",
+    "Current source lines 13 and 19-21 conflate the May sample's `2026-04-22.preview` API version and general Vipps-specific feature flag. The 2026-11-07 method profile line 13 says private preview and requires `vipps_preview=v1` on requests that include Vipps. It does not establish the precise old sample version across every endpoint or account. The malformed Elements `apiVersion` snippets at old raw lines 413-417 and 489-493 should remain scoped to the May capture rather than presented as runnable.",
+    "Old integration raw lines 248, 853 and 1113 give generic pre-expiry cancellation advice. The separate November PaymentIntent Cancel API, raw/stripe-api-payment-intents-cancel-2026-11-07.md lines 5-25, lists eligible statuses and requires a Checkout Session-bound PaymentIntent to be in `requires_capture` for direct cancellation, otherwise routing to Session expiry. Current source line 38 omits that boundary."
+  ],
+  "unresolved_questions": [
+    "The Vipps country-list discrepancy leaves GB account eligibility unresolved. The three November variant bodies were not read, and account access, newer SDK/API contracts and payment execution were not established."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-wallets.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-vipps-accept-payment.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Current source lines 13-42 retain the three routes and main capture/notification facts. Date and scope the preview example, preserve mobile Direct API fallback and its specific card retry behavior, identify final decline/timeout separately, and add `requires_capture`, full-amount capture and `payment_intent.canceled` expiry support from old raw lines 154-248, 802-859 and 1062-1119. Record the new raw only as navigation and keep full May provenance."
+      ],
+      "conflicts": [
+        "Old integration raw lines 24-40 list EEA and GB as business locations for Checkout, but the separate dated 2026-05-08 and 2026-11-07 Vipps method profile lists, raw/stripe-vipps-2025.md lines 56-89 and raw/stripe-payments-vipps-2026-11-07.md lines 57-89, omit GB. Current source line 17 presents EEA + GB unconditionally. Preserve the source/date/route disagreement and leave GB eligibility unresolved.",
+        "Old integration raw line 820 (Elements) and line 1080 (Direct API) use `dkk` in manual authorization samples, conflicting with NOK compatibility at old raw lines 26-40 and 888-906 and with the separate November profile at lines 17-23. Do not treat sample DKK as supported.",
+        "Current source lines 13 and 19-21 conflate the May sample's `2026-04-22.preview` API version and general Vipps-specific feature flag. The 2026-11-07 method profile line 13 says private preview and requires `vipps_preview=v1` on requests that include Vipps. It does not establish the precise old sample version across every endpoint or account. The malformed Elements `apiVersion` snippets at old raw lines 413-417 and 489-493 should remain scoped to the May capture rather than presented as runnable.",
+        "Old integration raw lines 248, 853 and 1113 give generic pre-expiry cancellation advice. The separate November PaymentIntent Cancel API, raw/stripe-api-payment-intents-cancel-2026-11-07.md lines 5-25, lists eligible statuses and requires a Checkout Session-bound PaymentIntent to be in `requires_capture` for direct cancellation, otherwise routing to Session expiry. Current source line 38 omits that boundary."
+      ],
+      "reason": "Correct consequential baseline overstatements about merchant geography, universal preview version and direct cancellation. Retain root wiki index line 7, Stripe index lines 385 and 416-417, and Wallets concept lines 329-351 and 427-428, with the mapped integration summary linking back to the Wallets concept and separately sourced method overview."
+    }
+  ],
+  "answers": {
+    "Q1": "The 2026-11-07 capture at https://docs.stripe.com/payments/vipps/accept-a-payment identifies Vipps in Norway and indexes Checkout, Elements and Direct API in new raw lines 9-15. The 2026-05-08 full guide, old raw lines 8-1123, describes a single-use NOK card-backed wallet. The merchant prepares a payment-mode Checkout Session or creates a PaymentIntent, and the customer authorizes in Vipps. Elements confirms on the client while Direct API confirms the Intent and redirects from requires_action via next_action. Mobile Direct API can fall back to the Vipps landing page, and desktop uses a phone number and app push. Failure or expiration of the five-minute authorization flow can return to requires_payment_method. Manual authorization reaches requires_capture, and Vipps has a seven-day window for full capture with cancellation if uncaptured. Stripe payment-result events are distinct from browser return. source-stripe-vipps-accept-payment.md preserves the main routes but overgeneralizes preview version, business locations and cancellation eligibility.",
+    "Q2": "At https://docs.stripe.com/payments/vipps/accept-a-payment, new raw lines 9-15 are navigation replacing the presentation of the complete 2026-05-08 variants in old raw lines 8-1123. There is no established change to private-preview requirements, redirect steps, supported currency, or manual capture. Preserve the May `2026-04-22.preview` sample version separately from the Vipps-specific flag, the old NOK-versus-DKK example conflict, and Checkout's May EEA/GB wording versus the separate May and November Vipps profile lists that omit GB. Preserve the November Cancel API's Session-specific requires_capture limit for direct cancellation. source-stripe-vipps-accept-payment.md should route both the dated full guide and the new index and retain reciprocal Stripe index and Stripe Wallets routes."
+  }
+}

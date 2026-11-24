@@ -1,0 +1,117 @@
+{
+  "job_id": "payments-revolut-pay-accept-a-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Accept a Payment with Revolut Pay\"\ntype: source\ndate_ingested: 2026-05-07\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/revolut-pay/accept-a-payment\"\nraw_files:\n  - \"stripe-revolut-pay-accept-payment-2025.md\"\ntags: [stripe, wallets, revolut-pay, checkout, elements, direct-api, ios, android, react-native, redirect, qr-code, manual-capture]\n---\n\n## Summary\n\nRevolut Pay is a reusable, redirect-based payment method on [[stripe]]. The 2026-05-07 acceptance guide covers Checkout, Elements, Direct API, iOS, Android, and React Native. The 2026-11-07 capture is a variant selector. It links those surfaces and lists Checkout Sessions API and Payment Intents API separately under Elements. The May capture supplies the implementation details below.\n\n## Key Details\n\n- **May Checkout.** Start with an existing Checkout integration and use the same currency for all line items in each Session. Stripe can present eligible methods dynamically, or the integration can list `revolut_pay` manually. The guide supports recurring subscription plans (lines 12–40).\n- **May Elements and Direct API.** The merchant creates a PaymentIntent on the server. The client confirms the payment and the customer authenticates. Direct API requires a supported currency and documents an optional manual redirect from `requires_action` via `next_action.redirect_to_url` (lines 129–176, 394–425, 743–745, 830–925 and 946–953).\n- **May Elements web authentication.** The mobile flow describes customer approval or decline in Revolut and a return to the integration. On desktop the customer scans a QR code, which can be refreshed up to 20 times. The authentication section gives a one-hour expiry. The failure section says decline or one hour of inaction after a `requires_action` redirect detaches the PaymentMethod and returns the PaymentIntent to `requires_payment_method` (lines 607–622 and 705–712).\n- **May Elements web testing.** Its testing section describes approval and decline controls on the sandbox test page. The same section describes live-mode automatic approval after mobile redirect or desktop QR scan. Keep this testing description scoped to those May passages. The mobile authentication instructions elsewhere in the May guide describe a customer choice (lines 609–622 and 691–701).\n- **May payment outcome and fulfillment.** The desktop QR paragraph mentions fulfillment after successful authentication and modal closure. The return page separately retrieves the PaymentIntent and inspects its status for display. Use Stripe's `payment_intent.succeeded` event for fulfillment and other business actions. QR modal closure, app or browser return, or a client callback alone does not establish payment success (lines 490–545, 619 and 671–675).\n- **May manual capture.** With `capture_method=manual`, successful authorization moves the PaymentIntent to `requires_capture`. A separate capture request collects the authorized funds. The May Elements authorization section and the general React Native capture section describe a seven-day window and cancellation if the payment remains uncaptured. May native iOS and Android testing also state seven days after successful authorization. May React Native testing specifies ten minutes after successful authorization for an uncaptured test-mode PaymentIntent (lines 623–670, 1248–1254, 1514–1520, 1778–1787 and 1841–1849).\n- **May mobile SDKs.** Each uses a backend PaymentIntent and platform-specific client confirmation and result handling. The native iOS guide allows a custom URL scheme or universal link, while the React Native iOS-only return setup specifies a custom scheme and excludes universal links. The Android overview describes a redirect into the Revolut app and the PaymentLauncher instructions describe a webview. The May capture leaves that Android interface distinction unresolved (lines 1054–1183, 1284, 1350–1450, 1618–1776).\n- **May errors.** The Elements table lists `payment_intent_invalid_currency`, `missing_required_parameter`, `payment_intent_payment_attempt_failed`, and `payment_intent_redirect_confirmation_without_return_url`. The iOS, Android and React Native tables list the latter three (lines 715–722, 1266–1274, 1532–1540 and 1861–1869).\n\n## Related Pages\n\n- [[stripe-revolut-pay]] — payment method concept\n- [[source-stripe-subscriptions-revolut-pay]] — separate Revolut Pay subscriptions guide\n\n## Raw Sources\n\n- [[raw/stripe-revolut-pay-accept-payment-2025|Revolut Pay acceptance guide, captured 2026-05-07]] — 1,869 lines, 15 italic fixes, one CDN image captured (`stripe-revolut-pay-checkout-visible.png`).\n\n## Related raw API references\n\n- [[raw/stripe-payments-revolut-pay-accept-a-payment-2026-11-07|Revolut Pay acceptance variant selector, captured 2026-11-07]] — navigation for Checkout, Elements, Direct API, iOS, Android, and React Native.\n",
+  "quotes": {
+    "payments-revolut-pay-accept-a-payment": [
+      {
+        "text": "Add support for Revolut Pay to your integration.",
+        "location": "raw/stripe-payments-revolut-pay-accept-a-payment-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-revolut-pay-accept-a-payment-2026-11-07.md:11"
+      },
+      {
+        "text": "[Checkout Sessions API](https://docs.stripe.com/payments/revolut-pay/accept-a-payment.md?payment-ui=elements&api-integration=checkout)",
+        "location": "raw/stripe-payments-revolut-pay-accept-a-payment-2026-11-07.md:15"
+      },
+      {
+        "text": "[Payment Intents API](https://docs.stripe.com/payments/revolut-pay/accept-a-payment.md?payment-ui=elements&api-integration=paymentintents)",
+        "location": "raw/stripe-payments-revolut-pay-accept-a-payment-2026-11-07.md:16"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-revolut-pay-accept-a-payment": [
+      {
+        "text": "Make sure all `line_items` use the same currency.",
+        "location": "raw/stripe-revolut-pay-accept-payment-2025.md:40"
+      },
+      {
+        "text": "the uncaptured PaymentIntent auto-expires 10 minutes after successful authorization.",
+        "location": "raw/stripe-revolut-pay-accept-payment-2025.md:1847"
+      },
+      {
+        "text": "After the authorization succeeds, the [PaymentIntent status]",
+        "location": "raw/stripe-revolut-pay-accept-payment-2025.md:653"
+      },
+      {
+        "text": "The payment is automatically approved after the redirect.",
+        "location": "raw/stripe-revolut-pay-accept-payment-2025.md:695"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-revolut-pay-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 21
+      }
+    ],
+    "raw/stripe-revolut-pay-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 1869
+      }
+    ],
+    "wiki/sources/source-stripe-revolut-pay-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 35
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/6392cb8e8fc182fc8b6154a9/content.diff": [
+      {
+        "start": 1,
+        "end": 1878
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 405,
+        "end": 411
+      },
+      {
+        "start": 681,
+        "end": 686
+      }
+    ],
+    "wiki/concepts/stripe-revolut-pay.md": [
+      {
+        "start": 1,
+        "end": 44
+      }
+    ]
+  },
+  "answers": {
+    "payments-revolut-pay-accept-a-payment": {
+      "Q1": "The 2026-11-07 capture of https://docs.stripe.com/payments/revolut-pay/accept-a-payment identifies Revolut Pay acceptance and links Checkout, Elements with Checkout Sessions or Payment Intents APIs, Direct API, and iOS, Android and React Native (new raw lines 5-21). The selector supplies no variant prerequisites, actors or states. The 2026-05-07 guide calls for existing Checkout setup and same-currency line items, and describes dynamic or manual selection and recurring plans (old raw lines 12-40). Elements and Direct API use a merchant server-created PaymentIntent, client confirmation and buyer authentication, with an optional manual redirect on requires_action in Direct API (old raw lines 129-176 and 830-925). The May Elements sections distinguish browser return from verified status and Stripe payment events. Decline or one hour of inaction after redirect from requires_action detaches the PaymentMethod and returns the intent to requires_payment_method. Successful manual authorization yields requires_capture and requires separate capture (old raw lines 607-712). The prior source-stripe-revolut-pay-accept-payment.md generalized web testing and capture timing. The updated summary scopes both to their dated May variant and environment.",
+      "Q2": "For https://docs.stripe.com/payments/revolut-pay/accept-a-payment, November adds presentational and navigational changes, including separate Elements Checkout Sessions API and Payment Intents API routes (new raw lines 9-21). It establishes no substantive payment-behavior change or retirement. Preserve the May guide in source-stripe-revolut-pay-accept-payment.md. Its same-currency Checkout line items are a prerequisite, and recurring plans are supported (old raw lines 21-40). The May Elements mobile-web flow says customers approve or decline, while its testing section offers sandbox approve/decline controls and describes live-mode auto-approval after mobile redirect or desktop QR scan (old raw lines 609-622 and 691-701). Keep those dated contexts with their differing wording. The May desktop QR passage mentions fulfillment after successful authentication and modal closure, while the return page checks intent status and the webhook section directs fulfillment and other business actions to Stripe's payment_intent.succeeded event rather than a client callback (old raw lines 490-545, 607-622 and 671-675). Manual authorization reaches requires_capture and still requires capture (old raw lines 623-670). Retain the React Native test-mode ten-minute expiry alongside its seven-day general passage (old raw lines 1778-1849), the May iOS and Android test-mode seven-day statements (old raw lines 1248-1254 and 1514-1520), and the Android app/webview wording discrepancy. Keep the reciprocal acceptance route with the Revolut Pay concept distinct from the subscriptions guide, and preserve the detailed May raw alongside the November selector."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-revolut-pay-accept-a-payment-acceptance-source-route",
+      "target_path": "wiki/concepts/stripe-revolut-pay.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-subscriptions-revolut-pay]] — May 2026 full three-path Revolut Pay guide, plus November 2026 variant-index navigation; path details remain dated May evidence",
+      "proposed_markdown": "- [[source-stripe-subscriptions-revolut-pay]] — May 2026 full three-path Revolut Pay guide, plus November 2026 variant-index navigation; path details remain dated May evidence\n- [[source-stripe-revolut-pay-accept-payment]] — May 2026 payment acceptance guide and November 2026 implementation selector",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "The November selector carries navigation. May implementation details and the separate subscriptions guide retain their own dated authority."
+      ]
+    }
+  ]
+}

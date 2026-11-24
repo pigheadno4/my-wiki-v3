@@ -1,0 +1,171 @@
+{
+  "job_id": "payouts-minimum-balances-for-automatic-payouts",
+  "source_target": "wiki/sources/source-stripe-payouts-minimum-balance.md",
+  "source_before_sha256": "a01ae25e95c745ea0ab94445b37201bc59952b0e5e887b31cc8d1355e306d013",
+  "contributions": [
+    {
+      "job_id": "payouts-minimum-balances-for-automatic-payouts",
+      "canonical_url": "https://docs.stripe.com/payouts/minimum-balances-for-automatic-payouts",
+      "attempt": 1,
+      "raw_path": "raw/stripe-payouts-minimum-balances-for-automatic-payouts-2026-11-07.md",
+      "raw_sha256": "b06c36a2351024bc7cee42c778df97e288181a02d7b42efadd2be5426bc0e86c",
+      "prior_raw_path": "raw/stripe-payouts-minimum-balance-2026.md",
+      "prior_raw_sha256": "caa0027926a4fd7af74122a0e2b9b064c175bbf7f18daf9995715c4709b5e047",
+      "new_capture_role": "full_captured_page",
+      "proposed_disposition": "no_substantive_update",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payouts-minimum-balances-for-automatic-payouts/attempt-1/receipt.json",
+      "receipt_sha256": "6e875347715d32256d55c648e0a2ffc48c2ef813241e4a4e88e21c3714178dcd",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payouts-minimum-balances-for-automatic-payouts/attempt-1/review.json",
+      "review_sha256": "a3dafceea226b75e1a0a95d2c2bb6b39faf14153fff9e74694ca7b217dd4d0a5",
+      "source_assessments": [
+        {
+          "source_target": "wiki/sources/source-stripe-payouts-minimum-balance.md",
+          "proposed_disposition": "source_required_update",
+          "update_needed": true,
+          "findings": [
+            "Both full captures retain the same automatic payout reserve: ordinarily the schedule disburses all available balance to the linked bank; with a minimum, only funds exceeding it are paid out. It applies to all automatic payout schedules, and when below the minimum Stripe attempts to replenish from the available balance first and incoming funds if there is no available balance. Dashboard access is a prerequisite for Dashboard setup, and use is solely for anticipated refunds, disputes and fees, with Brazil, India and Thailand excluded (old 6–26; new 7–27). Current source lines 13 and 17–20 preserve scope generally, but the unqualified subtraction in line 18 could imply a negative payout below the reserve, where both captures limit payouts to the excess.",
+            "Both captures preserve Dashboard change timing: lower releases funds into the next scheduled payout, higher accumulates from new payments, and zero or toggle-off restores the default available balance disbursement on schedule (old 29–39; new 30–40). Four to five times average daily processing volume is general advice, not minimum requirement. The minimum reduces risk and cannot prevent every negative balance when refunds exceed it (old 41–47, new 42–48). Source 17 and 21 preserve the recommendation and transitions, but omit the negative-balance limitation and disable route.",
+            "Old 49–65 and new 50–66 preserve unchanged reporting timing and the reconciliation example of 30,000 USD balance, 10,000 USD retained, 20,000 USD automatic payout, and negative retained-amount transaction. The source and concept negative USD examples at source 19/concept 60 can be explicitly labeled examples; the guide says other currencies work the same way. Report visibility and API balance transaction information are not confirmation of bank arrival.",
+            "Both captures distinguish setting the platform’s own minimum in Dashboard from configuring an individual connected account with the Balance Settings API. Stripe recommends explaining purpose/effects to connected-account customers first, because payout amounts then differ from displayed balances (old 67–73 and new 68–74). Source 37 and concept 60 use stronger imperative wording than the provider's recommendation, not a stated notification prerequisite.",
+            "Both captures preserve minor-unit currency amounts and connect scope, add via merge without replacing unrelated currencies, update only the supplied currency, delete one by setting its entry to an empty string, delete all by setting the map parameter to an empty string (response map null), and retrieve the connected account configuration. The new cURL illustrates the Stripe-Account header on /v1/balance_settings, equivalent in example account selection to prior Node stripeAccount. May already used cURL for deletions (old 75–244,246–366; new 76–208,210–333). Source 27–35 summarizes the API transitions accurately and retains May Node usage.",
+            "Diff 7–49 changes heading/list formatting and replaces the May local screenshot pointer at old 27 with a CDN image URL at new 28. Diff 63–341 reformats code/JSON and uses cURL for set, add, update and retrieve where May showed Node; deletion calls already used cURL. Observed underlying actions, fields, amount examples and outcomes remain the same. Asset and documentation links are navigation and no additional feature semantics were established."
+          ],
+          "conflicts": [
+            "Source line 18's unconditional arithmetic does not state the below-threshold boundary required by old 8–10 and new 9–11. Describe only the excess being paid out. Neither capture describes a negative payout when the balance is below the minimum.",
+            "Current source line 37 and concept line 60 phrase prior customer outreach as an instruction. Both raw captures label it Stripe's recommendation (old 73 and new 74). Preserve connected-account payout versus displayed-balance rationale without asserting a notification prerequisite.",
+            "The current source's USD transaction at line 19 is the old worked example; old 51–65 and new 52–66 explicitly discuss equivalent mechanics in other currencies. Do not read the example as a USD-only restriction."
+          ],
+          "reason": "Raw changes are presentation. Independently clarify the below-threshold payout condition, refund risk, currency example, and connected-account recommendation in the baseline."
+        }
+      ],
+      "affected_concepts": [
+        "wiki/concepts/stripe-payouts.md"
+      ],
+      "unresolved_questions": [
+        "No account-specific configuration, current permissions or bank payout completion is verified by the captures. Screenshot targets and linked reports are navigation only."
+      ],
+      "mapped_source_assessment": {
+        "source_target": "wiki/sources/source-stripe-payouts-minimum-balance.md",
+        "proposed_disposition": "source_required_update",
+        "update_needed": true,
+        "findings": [
+          "Both full captures retain the same automatic payout reserve: ordinarily the schedule disburses all available balance to the linked bank; with a minimum, only funds exceeding it are paid out. It applies to all automatic payout schedules, and when below the minimum Stripe attempts to replenish from the available balance first and incoming funds if there is no available balance. Dashboard access is a prerequisite for Dashboard setup, and use is solely for anticipated refunds, disputes and fees, with Brazil, India and Thailand excluded (old 6–26; new 7–27). Current source lines 13 and 17–20 preserve scope generally, but the unqualified subtraction in line 18 could imply a negative payout below the reserve, where both captures limit payouts to the excess.",
+          "Both captures preserve Dashboard change timing: lower releases funds into the next scheduled payout, higher accumulates from new payments, and zero or toggle-off restores the default available balance disbursement on schedule (old 29–39; new 30–40). Four to five times average daily processing volume is general advice, not minimum requirement. The minimum reduces risk and cannot prevent every negative balance when refunds exceed it (old 41–47, new 42–48). Source 17 and 21 preserve the recommendation and transitions, but omit the negative-balance limitation and disable route.",
+          "Old 49–65 and new 50–66 preserve unchanged reporting timing and the reconciliation example of 30,000 USD balance, 10,000 USD retained, 20,000 USD automatic payout, and negative retained-amount transaction. The source and concept negative USD examples at source 19/concept 60 can be explicitly labeled examples; the guide says other currencies work the same way. Report visibility and API balance transaction information are not confirmation of bank arrival.",
+          "Both captures distinguish setting the platform’s own minimum in Dashboard from configuring an individual connected account with the Balance Settings API. Stripe recommends explaining purpose/effects to connected-account customers first, because payout amounts then differ from displayed balances (old 67–73 and new 68–74). Source 37 and concept 60 use stronger imperative wording than the provider's recommendation, not a stated notification prerequisite.",
+          "Both captures preserve minor-unit currency amounts and connect scope, add via merge without replacing unrelated currencies, update only the supplied currency, delete one by setting its entry to an empty string, delete all by setting the map parameter to an empty string (response map null), and retrieve the connected account configuration. The new cURL illustrates the Stripe-Account header on /v1/balance_settings, equivalent in example account selection to prior Node stripeAccount. May already used cURL for deletions (old 75–244,246–366; new 76–208,210–333). Source 27–35 summarizes the API transitions accurately and retains May Node usage.",
+          "Diff 7–49 changes heading/list formatting and replaces the May local screenshot pointer at old 27 with a CDN image URL at new 28. Diff 63–341 reformats code/JSON and uses cURL for set, add, update and retrieve where May showed Node; deletion calls already used cURL. Observed underlying actions, fields, amount examples and outcomes remain the same. Asset and documentation links are navigation and no additional feature semantics were established."
+        ],
+        "conflicts": [
+          "Source line 18's unconditional arithmetic does not state the below-threshold boundary required by old 8–10 and new 9–11. Describe only the excess being paid out. Neither capture describes a negative payout when the balance is below the minimum.",
+          "Current source line 37 and concept line 60 phrase prior customer outreach as an instruction. Both raw captures label it Stripe's recommendation (old 73 and new 74). Preserve connected-account payout versus displayed-balance rationale without asserting a notification prerequisite.",
+          "The current source's USD transaction at line 19 is the old worked example; old 51–65 and new 52–66 explicitly discuss equivalent mechanics in other currencies. Do not read the example as a USD-only restriction."
+        ],
+        "reason": "Raw changes are presentation. Independently clarify the below-threshold payout condition, refund risk, currency example, and connected-account recommendation in the baseline."
+      },
+      "findings": [
+        "Both full captures retain the same automatic payout reserve: ordinarily the schedule disburses all available balance to the linked bank; with a minimum, only funds exceeding it are paid out. It applies to all automatic payout schedules, and when below the minimum Stripe attempts to replenish from the available balance first and incoming funds if there is no available balance. Dashboard access is a prerequisite for Dashboard setup, and use is solely for anticipated refunds, disputes and fees, with Brazil, India and Thailand excluded (old 6–26; new 7–27). Current source lines 13 and 17–20 preserve scope generally, but the unqualified subtraction in line 18 could imply a negative payout below the reserve, where both captures limit payouts to the excess.",
+        "Both captures preserve Dashboard change timing: lower releases funds into the next scheduled payout, higher accumulates from new payments, and zero or toggle-off restores the default available balance disbursement on schedule (old 29–39; new 30–40). Four to five times average daily processing volume is general advice, not minimum requirement. The minimum reduces risk and cannot prevent every negative balance when refunds exceed it (old 41–47, new 42–48). Source 17 and 21 preserve the recommendation and transitions, but omit the negative-balance limitation and disable route.",
+        "Old 49–65 and new 50–66 preserve unchanged reporting timing and the reconciliation example of 30,000 USD balance, 10,000 USD retained, 20,000 USD automatic payout, and negative retained-amount transaction. The source and concept negative USD examples at source 19/concept 60 can be explicitly labeled examples; the guide says other currencies work the same way. Report visibility and API balance transaction information are not confirmation of bank arrival.",
+        "Both captures distinguish setting the platform’s own minimum in Dashboard from configuring an individual connected account with the Balance Settings API. Stripe recommends explaining purpose/effects to connected-account customers first, because payout amounts then differ from displayed balances (old 67–73 and new 68–74). Source 37 and concept 60 use stronger imperative wording than the provider's recommendation, not a stated notification prerequisite.",
+        "Both captures preserve minor-unit currency amounts and connect scope, add via merge without replacing unrelated currencies, update only the supplied currency, delete one by setting its entry to an empty string, delete all by setting the map parameter to an empty string (response map null), and retrieve the connected account configuration. The new cURL illustrates the Stripe-Account header on /v1/balance_settings, equivalent in example account selection to prior Node stripeAccount. May already used cURL for deletions (old 75–244,246–366; new 76–208,210–333). Source 27–35 summarizes the API transitions accurately and retains May Node usage.",
+        "Diff 7–49 changes heading/list formatting and replaces the May local screenshot pointer at old 27 with a CDN image URL at new 28. Diff 63–341 reformats code/JSON and uses cURL for set, add, update and retrieve where May showed Node; deletion calls already used cURL. Observed underlying actions, fields, amount examples and outcomes remain the same. Asset and documentation links are navigation and no additional feature semantics were established."
+      ],
+      "substantive_changes": [],
+      "historical_claims_to_preserve": [
+        "Both full captures retain the same automatic payout reserve: ordinarily the schedule disburses all available balance to the linked bank; with a minimum, only funds exceeding it are paid out. It applies to all automatic payout schedules, and when below the minimum Stripe attempts to replenish from the available balance first and incoming funds if there is no available balance. Dashboard access is a prerequisite for Dashboard setup, and use is solely for anticipated refunds, disputes and fees, with Brazil, India and Thailand excluded (old 6–26; new 7–27). Current source lines 13 and 17–20 preserve scope generally, but the unqualified subtraction in line 18 could imply a negative payout below the reserve, where both captures limit payouts to the excess.",
+        "Both captures preserve Dashboard change timing: lower releases funds into the next scheduled payout, higher accumulates from new payments, and zero or toggle-off restores the default available balance disbursement on schedule (old 29–39; new 30–40). Four to five times average daily processing volume is general advice, not minimum requirement. The minimum reduces risk and cannot prevent every negative balance when refunds exceed it (old 41–47, new 42–48). Source 17 and 21 preserve the recommendation and transitions, but omit the negative-balance limitation and disable route.",
+        "Old 49–65 and new 50–66 preserve unchanged reporting timing and the reconciliation example of 30,000 USD balance, 10,000 USD retained, 20,000 USD automatic payout, and negative retained-amount transaction. The source and concept negative USD examples at source 19/concept 60 can be explicitly labeled examples; the guide says other currencies work the same way. Report visibility and API balance transaction information are not confirmation of bank arrival.",
+        "Both captures distinguish setting the platform’s own minimum in Dashboard from configuring an individual connected account with the Balance Settings API. Stripe recommends explaining purpose/effects to connected-account customers first, because payout amounts then differ from displayed balances (old 67–73 and new 68–74). Source 37 and concept 60 use stronger imperative wording than the provider's recommendation, not a stated notification prerequisite.",
+        "Both captures preserve minor-unit currency amounts and connect scope, add via merge without replacing unrelated currencies, update only the supplied currency, delete one by setting its entry to an empty string, delete all by setting the map parameter to an empty string (response map null), and retrieve the connected account configuration. The new cURL illustrates the Stripe-Account header on /v1/balance_settings, equivalent in example account selection to prior Node stripeAccount. May already used cURL for deletions (old 75–244,246–366; new 76–208,210–333). Source 27–35 summarizes the API transitions accurately and retains May Node usage.",
+        "Keep May 11, 2026 raw at source 4–7 and 44–46, including Node examples, and identify the November 7, 2026 full equivalent capture as such if linked. Retain wiki/index.md line 7 → wiki/stripe-index.md 543–551 and 718 → Stripe Payouts concept lines 58–60/90 and its reciprocal source route at source 41. Preserve reconciliation and receiving payouts navigation at source 42 and old 368–370/new 335–337."
+      ],
+      "conflicts": [
+        "Source line 18's unconditional arithmetic does not state the below-threshold boundary required by old 8–10 and new 9–11. Describe only the excess being paid out. Neither capture describes a negative payout when the balance is below the minimum.",
+        "Current source line 37 and concept line 60 phrase prior customer outreach as an instruction. Both raw captures label it Stripe's recommendation (old 73 and new 74). Preserve connected-account payout versus displayed-balance rationale without asserting a notification prerequisite.",
+        "The current source's USD transaction at line 19 is the old worked example; old 51–65 and new 52–66 explicitly discuss equivalent mechanics in other currencies. Do not read the example as a USD-only restriction."
+      ],
+      "expected_read_files": [
+        {
+          "path": "raw/stripe-payouts-minimum-balances-for-automatic-payouts-2026-11-07.md",
+          "sha256": "b06c36a2351024bc7cee42c778df97e288181a02d7b42efadd2be5426bc0e86c",
+          "lines": 337
+        },
+        {
+          "path": "raw/stripe-payouts-minimum-balance-2026.md",
+          "sha256": "caa0027926a4fd7af74122a0e2b9b064c175bbf7f18daf9995715c4709b5e047",
+          "lines": 370
+        },
+        {
+          "path": "wiki/sources/source-stripe-payouts-minimum-balance.md",
+          "sha256": "a01ae25e95c745ea0ab94445b37201bc59952b0e5e887b31cc8d1355e306d013",
+          "lines": 46
+        },
+        {
+          "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/547690f5cb9d12fa14de09f9/content.diff",
+          "sha256": "28d1e4a3622ded6fa48cc0b2a0de67463d81b2491cc87b814cc6e285700af420",
+          "lines": 341
+        }
+      ],
+      "original_query_prompts_path": "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md",
+      "original_prompts": "New raw `raw/stripe-payouts-minimum-balances-for-automatic-payouts-2026-11-07.md`. Prior raw `raw/stripe-payouts-minimum-balance-2026.md`. Current summaries `wiki/sources/source-stripe-payouts-minimum-balance.md`.\n\n- Q1. For `https://docs.stripe.com/payouts/minimum-balances-for-automatic-payouts`, what documented behavior, prerequisites, actors and state transitions does the complete new capture establish? How do these compare with the matched prior capture and each mapped summary?\n\n- Q2. Which changes are substantive, presentational or navigation-only? Identify the exact dated qualifications, conflicts and reciprocal routes that the proposed disposition should preserve.",
+      "reviewed_answers": {
+        "Q1": "Both full captures at https://docs.stripe.com/payouts/minimum-balances-for-automatic-payouts describe automatic payouts of only the excess above an enabled minimum held for anticipated refunds, disputes and fees. Dashboard access is needed for Dashboard configuration, the reserve works for all automatic schedules, and Brazil, India and Thailand are excluded. If below the minimum, Stripe first attempts refill from available funds, then incoming funds when none are available. Lowering releases funds next scheduled payout; raising builds from incoming payments; zero or toggle-off restores normal disbursement. Very large refunds can still leave a negative balance (old raw lines 6-47 and new raw lines 7-48). Reconciliation keeps report timing and shows the retained entry. A platform sets its own reserve in Dashboard, then uses connected-account-scoped Balance Settings requests for per-currency minor-unit add/update, delete-one, delete-all or retrieval. Addition merges, deletion uses an empty string in the applicable field, and the clear-all response example has a null map (old raw lines 49-81 and 121-366, new raw lines 50-89 and 109-333). source-stripe-payouts-minimum-balance.md captures most of that contract, but its formula needs the above-minimum condition and its outreach instruction is a Stripe recommendation. Payout initiation and reconciliation do not establish external bank arrival.",
+        "Q2": "At https://docs.stripe.com/payouts/minimum-balances-for-automatic-payouts, May 11 and November 7, 2026 document the same reserve, payout changes and connected-account setting behavior. November’s heading/list/JSON formatting, CDN screenshot pointer and cURL substitutions for the old Node examples are presentational and navigational. The connected-account targeting and parameters stay the same, including merge and two empty-string delete scopes (old raw lines 17-47 and 67-366, new raw lines 18-48 and 68-333). Preserve the May Node and existing cURL delete examples as dated. In source-stripe-payouts-minimum-balance.md, separately repair the unqualified subtraction, the USD-specific example wording and the connected-account outreach modality. Dashboard access and Brazil/India/Thailand exclusions, up-to-date scheduled disbursement rules, the 4–5× recommendation, the negative balance warning and unchanged reconciliation timing remain applicable as dated documentation. Preserve the root-to-Stripe provider index, the reciprocal Stripe Payouts concept and source links, the Payout Reconciliation Report and receiving-payouts pointers, and historical raw provenance."
+      }
+    }
+  ],
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payouts-minimum-balances-for-automatic-payouts-2026-11-07.md",
+      "sha256": "b06c36a2351024bc7cee42c778df97e288181a02d7b42efadd2be5426bc0e86c",
+      "lines": 337
+    },
+    {
+      "path": "raw/stripe-payouts-minimum-balance-2026.md",
+      "sha256": "caa0027926a4fd7af74122a0e2b9b064c175bbf7f18daf9995715c4709b5e047",
+      "lines": 370
+    },
+    {
+      "path": "wiki/sources/source-stripe-payouts-minimum-balance.md",
+      "sha256": "a01ae25e95c745ea0ab94445b37201bc59952b0e5e887b31cc8d1355e306d013",
+      "lines": 46
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/547690f5cb9d12fa14de09f9/content.diff",
+      "sha256": "28d1e4a3622ded6fa48cc0b2a0de67463d81b2491cc87b814cc6e285700af420",
+      "lines": 341
+    }
+  ],
+  "concept_targets": [
+    {
+      "path": "wiki/concepts/stripe-payouts.md",
+      "before_sha256": "9e447afe0122f25a4a5fc35064fd4d2afe811480df402e171119e08a79abb212",
+      "contributing_jobs": [
+        "payments-paypal-payout-reconciliation",
+        "payouts",
+        "payouts-customized-start-of-day",
+        "payouts-instant-payouts",
+        "payouts-instant-payouts-banks",
+        "payouts-minimum-balances-for-automatic-payouts",
+        "payouts-next-day-settlement",
+        "payouts-reconciliation",
+        "payouts-statement-descriptors"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    }
+  ],
+  "state": "worker_running",
+  "attempt": 2,
+  "review_scope": "targeted",
+  "worker_agent": "/root/s05w6",
+  "reviewer_agent": "/root/s05r5",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-05/updates/attempts/payouts-minimum-balances-for-automatic-payouts/attempt-1/receipt.json",
+  "receipt_sha256": "79c01027df22bd55b2007abd0d893757aa3c4fe013a31632e95e5aec8ac8a6d8",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-05/updates/attempts/payouts-minimum-balances-for-automatic-payouts/attempt-1/review.json",
+  "review_sha256": "5827c3d4748cfae8fee06a08ca72affbdb11bb92c85e67316261732de183fb1a",
+  "role_notes": "tracking/ingest/stripe/stripe-campaign-05/updates/role-notes.md",
+  "worker_output": "/tmp/stripe-s05-ingest/payouts-minimum-balances-for-automatic-payouts-worker.json",
+  "reviewer_output": "/tmp/stripe-s05-ingest/payouts-minimum-balances-for-automatic-payouts-reviewer.json",
+  "prior_attempt_dir": "tracking/ingest/stripe/stripe-campaign-05/updates/attempts/payouts-minimum-balances-for-automatic-payouts/attempt-1"
+}

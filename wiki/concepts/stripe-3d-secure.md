@@ -113,9 +113,9 @@ Check `three_d_secure.authentication_flow` on Charge/SetupAttempt for actual flo
 
 For travel aggregators (Expedia/Sabre) or third-party 3DS providers. Pass cryptogram directly to Payment Intents API.
 
-**Availability**: AU/CA/CH/EU/GB/HK/MX/NZ/SG/US (GA); beta elsewhere; excluded: IN/MY/TH. Raw card path requires PCI DSS validation + Stripe review.
+**Availability**: The May 8 and November 7, 2026 guides list AU/CA/CH/EU/GB/HK/MX/NZ/SG/US as available and exclude IN/MY/TH. Other Stripe card-payment locations are Beta in May and Private preview in November. Raw-card access requires PCI DSS validation, Stripe review and agreement to additional controls.
 
-**Key parameters**: `payment_method_options.card.three_d_secure: { version, electronic_commerce_indicator, cryptogram, transaction_id }`; always `confirm: true` + `error_on_requires_action: true`.
+**Intent paths**: Match the external provider's `three_d_secure` values exactly. The PaymentIntent import directions use `confirm=true` and `error_on_requires_action=true` to prevent a Stripe 3DS request during a soft decline. The non-payment cryptogram path creates and confirms a SetupIntent for future payments. Its example omits the soft-decline flag.
 
 **Exemption import**: `exemption_indicator: 'low_risk'` → Stripe re-assesses via TRA; check `exemption_indicator_applied` on Charge.
 
@@ -154,7 +154,7 @@ Deduplication impact example: raw auth rate 59% → deduped 80% (dedup groups sa
 - [[source-stripe-3d-secure-authentication-flow]] — May and November 2026 Web/mobile authentication-flow guide, manual triggering, sandbox tests, and conditional fraud-dispute liability guidance
 - [[source-stripe-sca-exemptions]] — captured EEA/Swiss/UK SCA request and issuer-approval scope, dated low-value/TRA limits, qualifying MIT, and Data Only network-versus-issuer routing without liability shift
 - [[source-stripe-standalone-3ds]] — Standalone 3DS: separate authentication and authorization, 2026-11-07 feature/workflow detail, dated 2026-05-08 Interchange Plus statement with current tier eligibility unresolved
-- [[source-stripe-3ds-import]] — Import 3DS results: travel/third-party 3DS, confirm+error_on_requires_action, exemption import, Cartes Bancaires cb_avalgo
+- [[source-stripe-3ds-import]] — May and November 2026 guides for importing external 3DS results into PaymentIntents and SetupIntents, with dated availability and exemption guidance
 - [[source-stripe-3ds-sigma-query]] — Sigma authentication_report_attempts: is_final_attempt dedup, auth rate calc, SCA exemption columns, 3 example queries
 - [[source-stripe-sca-readiness]] — SCA readiness: impacted businesses, SCA-ready products, grandfathering rules (EU Dec 2020 / UK Sep 2021), off-session checklist, MIT mandate
 - [[source-stripe-moto]] — MOTO: out-of-scope SCA exemption, PCI compliance required, `moto` parameter on PI/SI, bank has final say

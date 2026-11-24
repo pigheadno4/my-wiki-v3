@@ -1,0 +1,144 @@
+{
+  "job_id": "payouts-instant-payouts-banks",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe — Instant Payouts for Dashboard Users\"\ntype: source\ndate_ingested: 2026-05-11\ndate_updated: 2026-11-22\noriginal_format: webpage\nraw_files:\n  - \"stripe-payouts-instant-payouts-banks-2026-11-07.md\"\n  - \"stripe-payouts-instant-2026.md\"\n  - \"stripe-payouts-instant-banks-2026.md\"\n  - \"stripe-payouts-instant-advance-funding-2026.md\"\ntags: [stripe, payouts, instant-payouts, liquidity, debit-card, api, daily-limit]\n---\n\n## Summary\n\nInstant Payouts give Stripe Dashboard users access to their balance within 30 minutes, any time including weekends. Available in 37 countries; 1–1.5% fee depending on country.\n\n## Key Details\n\n- **Speed**: Within 30 minutes, any day/time\n- **Countries**: 37 (AE, AT, AU, BE, CA, EU countries, GB, HK, MY, NO, NZ, SG, US + more)\n- **Fee**: 1% (CA, EU, UK, SG, NO, HK, MY); 1.5% (US, AU, NZ, AE)\n- **Not compatible with**: multi-currency settlement\n- **Daily limits**: max 10 payouts/day; max amount (check Dashboard); daily reset by region\n- **New users**: not immediately eligible\n\n## Funds Eligibility (`instant_available` balance)\n\n- Card funds: available immediately after charge completion\n- ACH/SEPA: only after full settlement (reversible before then)\n- Only currencies Stripe supports for Instant Payouts in your country\n- Only funds becoming available within ~6 business days\n- Fee pre-deducted from balance shown\n- Capped at remaining daily allowance\n- Withholds pending recovery debits and Stripe Capital repayments\n\n## API\n\n```js\n// Check balance\nconst balance = await stripe.balance.retrieve();\n// balance.instant_available[0].amount\n\n// Create instant payout\nstripe.payouts.create({ amount: 50, currency: 'usd', method: 'instant', destination: '{{CARD_ID}}' })\n```\n\n## Payout Methods by Country\n\nThe [May 11, 2026 Dashboard guide](https://docs.stripe.com/payouts/instant-payouts) groups external destinations as follows.\n\n- **US, GB, European Union (Euro Area), SE, DK, AU, SG**: debit card or eligible bank account\n- **CA, CZ, HU, NO, PL, RO, NZ, MY, AE**: debit card only\n- **HK**: eligible bank accounts only\n\n## Institution and rail directory\n\nThe [institution-support directory](https://docs.stripe.com/payouts/instant-payouts-banks) captured on May 11 and November 7, 2026 covers multiple countries. Eligible Stripe users select the country and destination type and use the local currency. Check whether the applicable table lists all or some debit cards or accounts. The Canadian table covers Visa or PLUS debit cards. UK bank accounts must use Faster Payments, and the directory links the Pay.UK sort-code checker. Applicable European account sections say banks *should* support receiving SEPA Instant Payments and point to the European Payments Council register.\n\nBoth snapshots list some exact US display names under both All and Some within the same destination type. First Bank and First National Bank have conflicting debit-card rows. Bank of America N.A., Citibank Fsb, Wells Fargo Bank and Wells Fargo Bank NA have conflicting account rows. A display-name match alone does not identify the institution or establish eligibility for the specific card or account.\n\nThe November 7 United States account table adds Lead Bank as “Some accounts.” In the Germany debit-card table, N26 GMBH changes from “All debit cards” in May to “Some debit cards” in November. Use the two dated directories below for the exact listings.\n\n## Pricing Table (min/max per currency)\n\nUS: $0.50–$9,999; CA: C$0.60–C$9,999; GB: £0.40–£9,999; EU: €0.40–€9,999; AU: A$0.50–A$9,999; SG: S$0.50–S$9,999; HK: HK$5–HK$9,999; NZ: NZ$0.50–NZ$9,999; MY: MYR2–MYR9,999; AE: AED2–AED9,999; + CZ, DK, HU, NO, PL, RO, SE.\n\n## Related Pages\n\n- [[stripe]] — Stripe company page\n- [[stripe-payouts]] — concept page (updated with Instant Payouts)\n- [[source-stripe-payouts-next-day]] — next-day settlement vs Instant Payouts comparison\n\n## Raw Sources\n\n- [[raw/stripe-payouts-instant-payouts-banks-2026-11-07|November 7, 2026 institution directory]] — exact multicountry debit-card, bank-account and rail lookup\n- [[raw/stripe-payouts-instant-2026|May 11, 2026 Dashboard user guide]] — Instant Payouts, eligibility and payout methods\n- [[raw/stripe-payouts-instant-banks-2026|May 11, 2026 institution directory]] — historical multicountry debit-card, bank-account and rail lookup\n- [[raw/stripe-payouts-instant-advance-funding-2026|May 11, 2026 advance-funding guide]] — advance/advance_funding/payout balance transactions, negative balance recovery, multi-day alignment\n",
+  "quotes": {
+    "payouts-instant-payouts-banks": [
+      {
+        "text": "Instant Payouts in each country must use the local currency.",
+        "location": "raw/stripe-payouts-instant-payouts-banks-2026-11-07.md:9"
+      },
+      {
+        "text": "| Lead Bank | Some accounts |",
+        "location": "raw/stripe-payouts-instant-payouts-banks-2026-11-07.md:6256"
+      },
+      {
+        "text": "| N26 GMBH | Some debit cards |",
+        "location": "raw/stripe-payouts-instant-payouts-banks-2026-11-07.md:7194"
+      },
+      {
+        "text": "Only accounts at UK institutions that use the Faster Payments Service can receive Instant Payouts.",
+        "location": "raw/stripe-payouts-instant-payouts-banks-2026-11-07.md:6797"
+      },
+      {
+        "text": "All banks in the European Union should support receiving SEPA Instant Payments.",
+        "location": "raw/stripe-payouts-instant-payouts-banks-2026-11-07.md:7233"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payouts-instant-payouts-banks": [
+      {
+        "text": "Instant Payouts in each country must use the local currency.",
+        "location": "raw/stripe-payouts-instant-banks-2026.md:8"
+      },
+      {
+        "text": "| N26 GMBH                                                      | All debit cards         |",
+        "location": "raw/stripe-payouts-instant-banks-2026.md:7218"
+      },
+      {
+        "text": "Only accounts at UK institutions that use the Faster Payments Service can receive Instant Payouts.",
+        "location": "raw/stripe-payouts-instant-banks-2026.md:6807"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payouts-instant-payouts-banks-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 8641
+      }
+    ],
+    "raw/stripe-payouts-instant-banks-2026.md": [
+      {
+        "start": 1,
+        "end": 8721
+      }
+    ],
+    "wiki/sources/source-stripe-payouts-instant.md": [
+      {
+        "start": 1,
+        "end": 66
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/768d71817520b03f639c2241/content.diff": [
+      {
+        "start": 1,
+        "end": 17168
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payouts-instant-payouts-banks/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 156
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payouts-instant-payouts-banks/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 160
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 546,
+        "end": 551
+      },
+      {
+        "start": 716,
+        "end": 720
+      }
+    ],
+    "wiki/concepts/stripe-payouts.md": [
+      {
+        "start": 1,
+        "end": 90
+      }
+    ],
+    "raw/stripe-payouts-instant-2026.md": [
+      {
+        "start": 1,
+        "end": 7
+      },
+      {
+        "start": 197,
+        "end": 205
+      }
+    ],
+    "raw/stripe-payouts-instant-advance-funding-2026.md": [
+      {
+        "start": 1,
+        "end": 7
+      }
+    ]
+  },
+  "answers": {
+    "payouts-instant-payouts-banks": {
+      "Q1": "https://docs.stripe.com/payouts/instant-payouts-banks is Stripe’s institution-support directory for eligible Instant Payout users. In both captures the user selects a country and checks the destination type, including all-versus-some debit card or bank account distinctions, and must use the local currency. The Canadian list is for Visa or PLUS debit cards, UK accounts require an institution using Faster Payments, and applicable EU account sections say banks should support receiving SEPA Instant Payments. These are destination-selection rules. The directory records no payout submission, success or settlement transition. Compare old raw lines 4–21, 5671–5677, 6569–6577, 6805–6807 and 7255–7257 with new raw lines 5–20, 5670–5675, 6567–6574, 6795–6797 and 7231–7233. source-stripe-payouts-instant.md is the broader Dashboard guide summary. The revised source routes the multicountry directory and restores the May guide’s Euro Area qualification to the bank-account group.",
+      "Q2": "For https://docs.stripe.com/payouts/instant-payouts-banks, the substantive dated changes are a November 7, 2026 Lead Bank row limited to some US accounts (old raw lines 6254–6261, new raw lines 6252–6260) and a German N26 GMBH debit-card row narrowed from all to some versus May 11, 2026 (old raw lines 7215–7221, new raw lines 7191–7197). Inline tables replacing expandable sections, removed subheadings, and changed Markdown formatting are presentation changes (old raw lines 12–22, new raw lines 13–21). Keep both dated captures and the rail-specific country qualifications, including the UK Faster Payments and EU 'should' language. Both US destination tables retain exact-name All/Some collisions. First Bank or First National Bank debit-card rows (old raw lines 1655–1657, 1798–1800, 5342–5344 and 5358–5360; new raw lines 1654–1656, 1797–1799, 5341–5343 and 5357–5359) and Bank of America N.A., Citibank Fsb and Wells Fargo account rows (old raw lines 5686–5688, 5722–5724, 5886–5891, 5952–5954, 6031–6033 and 6541–6544; new raw lines 5683–5685, 5719–5721, 5883–5888, 5949–5951, 6028–6030 and 6539–6542) cannot resolve a specific destination’s eligibility by display name alone. Preserve the reciprocal source-stripe-payouts-instant.md and stripe-payouts routes. The revised summary labels both records as multicountry lookups and keeps exact institution rows in the dated raw."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payouts-instant-payouts-banks-euro-area-destinations",
+      "target_path": "wiki/concepts/stripe-payouts.md",
+      "update_kind": "durable_fact",
+      "anchor": "Payout methods: debit card (most countries) or eligible bank account (US/GB/EU/SG/AU/HK).",
+      "proposed_markdown": "The May 11, 2026 Dashboard guide lists debit cards or some bank accounts in the US, GB, Euro Area, SE, DK, AU and SG, and some bank accounts only in HK. See [[source-stripe-payouts-instant#Institution and rail directory|the dated institution directory]] for country, rail and destination details.",
+      "quote_indexes": [
+        0,
+        3,
+        4
+      ],
+      "warnings": [
+        "The account-method grouping comes from raw/stripe-payouts-instant-2026.md lines 197–205. The new directory’s qualified SEPA Instant guidance does not establish eligibility for all EU banks or accounts."
+      ]
+    }
+  ]
+}

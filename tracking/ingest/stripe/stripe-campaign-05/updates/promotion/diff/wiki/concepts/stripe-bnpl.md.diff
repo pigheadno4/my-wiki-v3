@@ -1,0 +1,125 @@
+--- wiki/concepts/stripe-bnpl.md
++++ wiki/concepts/stripe-bnpl.md
+@@ -21,9 +21,9 @@
+ | Kriya | `kriya` | — | — | setup_future_usage |
+ | Mondu | `mondu` | EU and UK customers; 14 Stripe-account business locations | 19,999.99 EUR or equivalent in November method overview | Method lists no recurring payments; BNPL matrices list `setup_future_usage` with the `off_session` footnote and mark SetupIntents, Stripe Invoicing, and Stripe Subscriptions Unsupported. |
+ | Scalapay | `scalapay` | — | — | — |
+-| SeQura | `sequra` | — | — | November overview marks `setup_future_usage` Unsupported (May overview marked Supported); Invoicing `send_invoice` only |
+-| Sunbit | `sunbit` | — | — | `setup_future_usage` Supported; no manual capture (both May and November API tables) |
+-| Zip | `zip` | AU, US | AU: 0.01–50k AUD; US: $35–$1.5k | No manual capture, no setup_future_usage |
++| SeQura | `sequra` | Domestic Spain (November 2026) | EUR 29–3,000 | November Connect requires the enabled `sequra_payments` capability on accepting connected accounts. Invoicing uses `send_invoice`. The May BNPL matrix marked `setup_future_usage` Supported and November marks it Unsupported. |
++| Sunbit | `sunbit` | US domestic, B2C | USD 60.00–19,999.99 | BNPL comparison matrices report `setup_future_usage` supported and manual capture unsupported. November method guide reports manual capture supported and excludes `setup_future_usage` and off-session. See [[source-stripe-sunbit]]. |
++| Zip | `zip` | AU, US | AU: Zip Pay up to AUD 1,000, with a conflicting documented minimum. Zip Money AUD 1,000–50,000, subject to approval and retailer availability. US: USD 35–1,500. | No manual capture or `setup_future_usage` |
+ 
+ **Meses sin intereses** (Mexico): credit card installments 3–24 months; min 100 MXN/month.
+ 
+@@ -113,59 +113,45 @@
+ 
+ **Consumer BNPL** — AU and US. AUD/USD. **Connect supported**. **No manual capture**.
+ 
+-**Three products**: Zip Pay (AU, up to $1k AUD, flexible repayment), Zip Money (AU, $1k-$50k AUD, up to 36-month interest-free), Zip Pay In 4 (US, $35-$1.5k USD, 4 installments over 6 weeks).
+-
+-**Disputes**: 180-day customer window. Unique: customer must contact merchant first — **14-day direct resolution** before escalating to Zip. Zip covers fraud losses.
+-
+-**Refunds**: 180-day window.
+-
+-**Additional requirements**: delivery within 60 days; retain records 18 months; no surcharging. US: goods must be in US; no gift cards.
+-
+-**Integration notes**: `return_url` required. No manual capture. Checkout recommended — Direct API uses `stripe.confirmZipPayment()` which is **deprecated** (Stripe may end support).
++**November 2026 payment options.** Zip Pay (AU) reaches AUD 1,000 with flexible repayments. November prose starts at AUD 0.50 and the table at AUD 1. Zip Money (AU) lists AUD 1,000–50,000 subject to approval and retailer availability, with interest-free periods up to 36 months depending on retailer. More than three interest-free months or credit above AUD 5,000 requires retailer qualification. US Pay in 4 lists USD 35–1,500, with the first installment at checkout and three every two weeks.
++
++**November 2026 disputes.** Zip handles US disputes directly. In Australia the customer contacts the merchant first, can open a case if unresolved 14 days after purchase, and has 180 calendar days from purchase to file. Once the dispute is created, the merchant has 12 calendar days to submit evidence to Stripe. May describes fraud coverage and cooperative shipping pauses.
++
++**November 2026 refunds.** Full and partial refunds have a separate 180-day submission window from payment. A pending refund cannot be canceled. Australia credits Zip balance and the US adjusts installments and returns paid amounts as applicable.
++
++**May 2026 terms.** Delivery within 60 days, records retained 18 months, no surcharging, and no cash return credits unless required by law. The US terms included US-located goods and services and excluded gift cards and other prepaid stored-value instruments.
++
++**Integration notes (May 2026 guide)**: Hosted Checkout uses `success_url` in its example, full embedded Checkout uses a Session `return_url`, and legacy Direct API uses a PaymentIntent confirmation `return_url`. Stripe described Direct API as still supported in May and recommended Checkout. The November Zip overview excludes manual capture. See [[source-stripe-zip-accept-payment]].
+ 
+ ## Sunbit Details
+ 
+-**Consumer BNPL** — US only, USD only. Pay in 3, 6, 12, or 18 monthly installments. **Connect supported** (`sunbit_payments` capability). **No manual capture**.
+-
+-**Transaction limits**: min $60, max ~$20,000.
+-
+-**Disputes**: 12-day evidence window.
+-
+-**Refunds**: 180-day window; async (up to 5 min).
+-
+-**Prohibited categories**: ~175 (general retail, services, digital goods, restaurants, travel, healthcare — very broad).
+-
+-**Additional requirements**: no surcharging; financed amount ≤ price of goods delivered.
+-
+-**Integration notes**: `return_url` required. No manual capture. $60–$20k enforced in Checkout Session.
++**Sunbit method guide (November 7, 2026)**: Domestic US B2C BNPL, USD 60.00–19,999.99, with 3, 6, 12 or 18 monthly installments. Provisional access can be followed by review. Connect account-type support is separate from the prohibited MCC list, including MCC 5262. No surcharge and financing is capped at the price of goods or services delivered.
++
++**Dated capture and reuse evidence**: May method guide says no manual capture. The June 24 Dahlia changelog documents authorization then manual capture within the authorization window. November method guide lists manual capture, while the November BNPL API matrix says unsupported. The matrix lists `setup_future_usage` supported where the method guide excludes it and off-session payments. See [[source-stripe-sunbit]].
++
++**Disputes and refunds**: November documents 12 calendar days to submit evidence and a final decision within 35 calendar days of dispute creation. Full or partial refunds are asynchronous, noncancelable and limited to 180 days.
++
++**Acceptance integration (May 2026)**: See [[source-stripe-sunbit-accept-payment]] for the May Checkout bounds and the route-specific return URL fields.
+ 
+ ## SeQura Details
+ 
+-**Consumer BNPL** — Spain (ES) only, EUR only. Pay in 3 interest-free or up to 12 installments. **No Connect support**.
+-
+-**Transaction limits**: min €29. No stated maximum.
+-
+-**Disputes**: 12-day evidence window.
+-
+-**Refunds**: 180-day window; async (up to 5 min).
+-
+-**Prohibited categories**: ~160+ categories — the most extensive prohibited list of any payment method on Stripe. Includes restaurants, doctors, legal services, marketplaces, digital goods, bakeries, and many everyday categories.
+-
+-**Integration notes**: Payment terms 7–120 days (flexible, not fixed installments). `return_url` required. Manual capture: 7-day window.
++**Location and access.** The November 2026 SeQura overview lists domestic Spain, EUR 29–3,000, B2B and B2C, and Connect with `sequra_payments` enabled for accepting connected accounts. Instant provisional access can be reviewed after activation. The Platform or marketplace account type is distinct from the prohibited MCC 5262 Marketplaces category. May lists EU buyers, Spanish Stripe accounts, three interest-free or up to twelve installments, an EUR 29 minimum and no Connect. Its Connect label conflicts with the May BNPL matrix. See [[source-stripe-sequra]].
++
++**Disputes and refunds.** November gives merchants 15 calendar days from dispute creation for one round of evidence, up from May's 12. Buyers have up to 120 calendar days from purchase for one full dispute. Full or partial refunds have a 180-day window and process asynchronously in up to five minutes. See [[source-stripe-sequra]].
++
++**Customer authorization.** The November 2026 SeQura overview gives the buyer 60 minutes to authorize on the hosted page. If the attempt expires, the PaymentIntent returns to `requires_payment_method`. See [[source-stripe-sequra]].
++
++**Integration notes**: The May 6, 2026 acceptance guide describes 7–120 day terms. The separate method overview reports installment counts. The May hosted Checkout example uses `success_url`, while the applicable Elements and PaymentIntent paths use their own `return_url`. The documented seven-day window applies to optional PaymentIntent manual capture. See [[source-stripe-sequra-accept-payment]].
+ 
+ ## Scalapay Details
+ 
+-**Consumer BNPL** — Pay in 3 or 4 installments. **EUR only** across all 28 merchant countries (including US, AU, CA, SG). **No Connect support**.
+-
+-**Transaction limits**: min €5, max ~€5,000.
+-
+-**Allowed categories**: "At discretion of Scalapay" — no published list; approval-based (vs other B2B BNPL's long prohibited lists).
+-
+-**Disputes**: 12-day evidence window.
+-
+-**Refunds**: **90-day** window (shorter than Billie/Kriya/Mondu's 180 days); async (up to 5 min).
+-
+-**Integration notes**: `return_url` required. Manual capture: 7-day window. Checkout path limited to 8 EU countries (IT, FR, ES, DE, NL, BE, IE, FI) despite 28-country merchant base.
++**November 2026 Scalapay.** Single-use B2C Pay in 3 or 4 installments with EUR presentment, separate buyer and merchant country lists, and domestic and cross-border coverage. The guide lists 33 Stripe account locations and nine buyer markets (AT, BE, DE, ES, FI, FR, IT, NL and PT). Access is provisional and subject to category and risk checks. Connect requires `scalapay_payments` on the accepting connected account. The May method guide listed 28 merchant locations and marked Connect No while the May BNPL matrix marked Supported.
++
++**Transaction limits.** The November transaction rows state EUR 5.00–4,999.99. Country option rows display a rounded EUR 5,000 ceiling.
++
++**Disputes and refunds.** The November guide allows a single full dispute within 210 calendar days and one evidence submission within seven calendar days of creation. May gave 12 calendar days for evidence. Full and partial refunds have a 90-day submission window and adjust the installment plan. See [[source-stripe-scalapay]].
++
++**May 2026 acceptance paths.** Hosted Checkout and Elements with Checkout Sessions list IT, FR, ES, DE, NL, BE, IE and FI, with EUR and payment mode only. Hosted Checkout shows `success_url`. Set `return_url` when creating the Checkout Session for Elements with Checkout Sessions, or in the confirmation request for a PaymentIntent. The May Direct API currency map includes non-EUR cases. Optional PaymentIntent manual capture has a seven-day authorization window. See [[source-stripe-scalapay-accept-payment]].
+ 
+ ## Payment on Invoice Details
+ 
+@@ -263,11 +249,11 @@
+ - [[source-stripe-mondu]] — Mondu B2B buyer invoice terms, method-level currencies, November Connect label and early access, dispute filing and evidence deadlines, and asynchronous refunds
+ - [[source-stripe-mondu-accept-payment]] — May 2026 Mondu acceptance guide with route-specific return fields and optional PaymentIntent manual capture; November 2026 variant selector
+ - [[source-stripe-payment-on-invoice]] — Payment on invoice: consumer BNPL DE/AT, 14-day terms, risk-based, branded invoice, T+2 payout
+-- [[source-stripe-scalapay]] — Scalapay: consumer BNPL, EUR-only (all 28 countries), 90-day refund window, approval-based categories
+-- [[source-stripe-scalapay-accept-payment]] — Scalapay integration: return_url required, 7-day capture, Checkout limited to 8 EU countries
+-- [[source-stripe-sequra]] — SeQura: consumer BNPL Spain-only, Pay in 3/12, most extensive prohibited list (~160+ categories)
+-- [[source-stripe-sequra-accept-payment]] — SeQura integration: 7-120 day terms, return_url required, 7-day manual capture
+-- [[source-stripe-sunbit]] — Sunbit: US-only, 3/6/12/18-month installments, Connect supported, no manual capture, $60-$20k
+-- [[source-stripe-sunbit-accept-payment]] — Sunbit integration: return_url required, no manual capture, $60-$20k Checkout enforcement
+-- [[source-stripe-zip]] — Zip: AU+US, 3 products (Zip Pay/Money/Pay-in-4), 14-day direct resolution, 180-day disputes/refunds
+-- [[source-stripe-zip-accept-payment]] — Zip integration: return_url required, no manual capture, Direct API deprecated (confirmZipPayment)
++- [[source-stripe-scalapay]] — May and November Scalapay method guides, with dated buyer and merchant markets, Connect capability, amount and category limits, refunds, disputes and product-surface coverage
++- [[source-stripe-scalapay-accept-payment]] — May 2026 guide for path-specific Scalapay compatibility, return fields and PaymentIntent capture. The November variant index provides navigation.
++- [[source-stripe-sequra]] — May and November 2026 method overviews with dated buyer geography, Connect eligibility, category restrictions, capture, refunds and disputes.
++- [[source-stripe-sequra-accept-payment]] — May 2026 full guide and November variant index for SeQura acceptance. See dated Checkout and PaymentIntent return and capture details.
++- [[source-stripe-sunbit]] — May and November 2026 Sunbit method guides, exact USD limits, eligibility, dated capture and API conflicts, refunds and disputes
++- [[source-stripe-sunbit-accept-payment]] — May 2026 full guide and November variant index for Sunbit acceptance. See dated Checkout limits, return routes, and conflicting manual-capture documentation.
++- [[source-stripe-zip]] — Zip payments in Australia and the US, country-specific disputes and refunds, and dated plan and eligibility details
++- [[source-stripe-zip-accept-payment]] — May 2026 Checkout and legacy Direct API guide, path-specific return fields, and November variant navigation

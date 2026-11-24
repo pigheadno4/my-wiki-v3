@@ -1,0 +1,113 @@
+{
+  "job_id": "payments-sepa-debit-set-up-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Save SEPA Direct Debit Details for Future Payments\"\ntype: source\ndate_ingested: 2026-05-03\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/sepa-debit/set-up-payment\"\nraw_files:\n  - \"stripe-sepa-set-up-payment-2025.md\"\ntags: [stripe, sepa, sepa-debit, eu, eur, iban, checkout, setup-intents, elements, react-native, ios, android, mandates]\n---\n\n## Summary\n\nThe May 3, 2026 guide shows how to collect SEPA Direct Debit details before the final payment amount or date is known. Its examples attach the payment method to a Customers API Customer for reuse. A separate May preface recommends customer-configured Account objects for most use cases and describes Accounts v2 as generally available for Connect users and in public preview for others, with a preview API version for enrolled users. The three examples below use `customer`.\n\n## May setup paths\n\n- **Checkout setup mode.** Create or retrieve the Customer and pass it to a `mode=setup` Checkout Session. The hosted example uses `success_url`. The embedded example uses `return_url` and `ui_mode=embedded_page`. The manual examples pair `sepa_debit` with `card`, and the guide separately illustrates a SEPA-only setup Session in the mandate-prefix section.\n- **Web Elements.** Create a `sepa_debit` SetupIntent on the server with the Customer ID. Pass its client secret to the customer client and keep it out of logs and URLs. The mounted Payment Element collects name, email and IBAN and handles mandate acceptance. The client uses `stripe.confirmSetup`. A successful SetupIntent has status `succeeded` and attaches the PaymentMethod to the supplied Customer. On failure the guide directs the integrator to the returned error. In the Elements section Stripe recommends prebuilt Checkout when using Stripe's Creditor ID.\n- **React Native.** Create a SetupIntent with the Customer on the server. The app collects IBAN and communicates the mandate terms for implicit acceptance, then calls `confirmSetupIntent` with the client secret and `paymentMethodType=SepaDebit`. For IBANs beginning AD, PF, TF, GI, GB, GG, VA, IM, JE, MC, NC, BL, PM, SM, CH or WF, the guide requires `billingDetails.addressCountry` and `billingDetails.addressLine1`. iOS and Android are underlying SDKs of this React Native path. The May mobile test prose points to the web `confirmSepaDebitSetup` and Payment Element, while its integration example uses the React Native SDK and its app form.\n\n## Later debit and test outcomes\n\nSetup success records a saved payment method. The May Checkout section describes delayed notification for a subsequent SEPA Direct Debit payment and gives a typical five-business-day estimate for funds to reach the account. The separate [[stripe-sepa-debit]] concept describes standard T+6 payment success and funds availability. Both describe later payments.\n\nThe three May variant sections give test IBANs and PaymentMethod tokens under 19 country headings. Collection succeeds for the fixtures. Later test charges can move a PaymentIntent from `processing` to `succeeded` or `requires_payment_method`, including delayed cases. Separate fixtures cover disputes, limits and insufficient funds.\n\n## Mandate reference prefix\n\nThe optional `payment_method_options.sepa_debit.mandate_options.reference_prefix` has a maximum of 12 characters and must start with a digit or uppercase letter. It allows uppercase letters, digits, spaces and `.`, `/`, `&`, `-`, `_`, and cannot start with `STRIPE`. Include any desired delimiter. Stripe trims trailing spaces to at most one and produces a unique 24-character reference. The May guide illustrates PaymentIntent, SetupIntent and Checkout Session payment and setup modes.\n\n## Detail locators\n\n| Topic | May raw lines |\n| --- | --- |\n| Accounts v2 preface and Checkout setup | 8–83 |\n| Web SetupIntent, mandate collection and confirmation | 456–723 |\n| React Native SDK dependencies, consent and confirmation | 981–1202 |\n| Test IBANs and later-charge fixtures | 85–338, 724–977, 1204–1457 |\n| Mandate prefix and API examples | 340–454, 1459–1573 |\n\n## Related\n\n- [[stripe-sepa-debit]] — SEPA Direct Debit concept, payment lifecycle and settlement\n- [[source-stripe-sepa-accept-payment]] — Separate guide for accepting a SEPA Direct Debit payment\n- [[stripe]] — Stripe company page\n- [Stripe Connect charges](https://docs.stripe.com/connect/charges.md) — Related reading linked in the May guide\n\n## Related raw API references\n\n- [[raw/stripe-payments-sepa-debit-set-up-payment-2026-11-07|November 7, 2026 variant selector]] — Navigation for Checkout, Elements and mobile React Native.\n\n## Raw Sources\n\n- [[raw/stripe-sepa-set-up-payment-2025|May 3, 2026 full setup guide]] — 1,578 lines covering Checkout, Elements and React Native.\n",
+  "quotes": {
+    "payments-sepa-debit-set-up-payment": [
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-sepa-debit-set-up-payment-2026-11-07.md:11"
+      },
+      {
+        "text": "[Checkout](https://docs.stripe.com/payments/sepa-debit/set-up-payment.md?payment-ui=checkout)",
+        "location": "raw/stripe-payments-sepa-debit-set-up-payment-2026-11-07.md:13"
+      },
+      {
+        "text": "[Elements](https://docs.stripe.com/payments/sepa-debit/set-up-payment.md?payment-ui=elements)",
+        "location": "raw/stripe-payments-sepa-debit-set-up-payment-2026-11-07.md:14"
+      },
+      {
+        "text": "[React Native](https://docs.stripe.com/payments/sepa-debit/set-up-payment.md?payment-ui=mobile&platform=react-native)",
+        "location": "raw/stripe-payments-sepa-debit-set-up-payment-2026-11-07.md:16"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-sepa-debit-set-up-payment": [
+      {
+        "text": "A successful setup will return a `succeeded` value for the SetupIntent’s `status` property.",
+        "location": "raw/stripe-sepa-set-up-payment-2025.md:635"
+      },
+      {
+        "text": "Retrieve the client secret from the SetupIntent you created and call `confirmSetupIntent`.",
+        "location": "raw/stripe-sepa-set-up-payment-2025.md:1163"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-sepa-debit-set-up-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 16
+      }
+    ],
+    "raw/stripe-sepa-set-up-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 1578
+      }
+    ],
+    "wiki/sources/source-stripe-sepa-set-up-payment.md": [
+      {
+        "start": 1,
+        "end": 38
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/e54b6cade068ccbbdf453a9f/content.diff": [
+      {
+        "start": 1,
+        "end": 1582
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 261,
+        "end": 267
+      },
+      {
+        "start": 740,
+        "end": 745
+      }
+    ],
+    "wiki/concepts/stripe-sepa-debit.md": [
+      {
+        "start": 15,
+        "end": 32
+      },
+      {
+        "start": 95,
+        "end": 120
+      }
+    ]
+  },
+  "answers": {
+    "payments-sepa-debit-set-up-payment": {
+      "Q1": "The November 7, 2026 capture of https://docs.stripe.com/payments/sepa-debit/set-up-payment establishes a selector for saving SEPA Direct Debit details and lists Checkout, Elements and Mobile React Native (new raw lines 5-16). May 3, 2026 describes advance collection through Checkout setup mode for an attached Customer, with hosted success_url and embedded return_url, and notes delayed notification and typical five-business-day arrival for a later payment (old raw lines 16-83). The merchant server creates a SEPA SetupIntent for a Customer and hands the client its secret. The mounted web Payment Element collects details and handles mandate acceptance, and confirmSetup establishes setup status and attachment after success (old raw lines 481-567 and 625-723). React Native collects IBAN and communicates mandate terms, then uses confirmSetupIntent and has specified billing address fields for the listed IBAN countries (old raw lines 1061-1202). Later-charge test cases distinguish PaymentIntent processing/success/failure and dispute from successful setup (old raw lines 1204-1223). source-stripe-sepa-set-up-payment.md now separates Checkout, web SetupIntent and React Native, and describes the optional reference prefix. The paired captures support neither independent iOS/Android variants nor the original source's modal and webhook assertions. November contributes navigation only.",
+      "Q2": "At https://docs.stripe.com/payments/sepa-debit/set-up-payment, the November 7, 2026 full-to-index change is presentational and navigation-only. The index points to the same Checkout, Elements and React Native variants marked in the May 3, 2026 guide (new raw lines 9-16, old raw lines 16-18, 456-458, and 981-983). No product removal, addition or capability change is established. Preserve the May hosted/embedded setup, explicit Customer examples separately from Accounts v2 preview guidance, mandate collection and setup-versus-later-debit states, React Native country-specific billing-address condition, and optional prefix validation including its required first character (old raw lines 8-14, 28-83, 1094-1202 and 1459-1474). The revised source-stripe-sepa-set-up-payment.md corrects the platform and confirmation scope, and the dated React Native test prose mismatch (old raw lines 1204-1210) should remain distinct from the demonstrated SDK call (old raw lines 1161-1202). May's Checkout setup discussion gives a typical five-business-day arrival estimate for a later SEPA debit (old raw lines 20-27), while the Stripe SEPA Direct Debit concept records standard T+6 payment success and funds availability (concept lines 19–27). Both are later-payment timing descriptions. Neither changes setup status or establishes a guaranteed account-specific deadline. Preserve the historical raw, root-to-Stripe index route, Stripe SEPA Direct Debit concept link and reciprocal source route, and separate accept-payment and Connect navigation. The linked child variants carry no fresh behavior evidence here."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-sepa-debit-set-up-payment-concept-route",
+      "target_path": "wiki/concepts/stripe-sepa-debit.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-sepa-set-up-payment]] — save for future: Checkout setup mode + SetupIntents (Elements/iOS/Android), same IBAN test table, reference_prefix",
+      "proposed_markdown": "- [[source-stripe-sepa-set-up-payment]] — May 2026 guide to Checkout setup mode, web Elements and React Native SetupIntents, mandate references and later-debit test cases. The November capture links the three variants.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "The May variant headings are at old raw lines 16–18, 456–458 and 981–983. Native SDKs are React Native dependencies at old raw lines 1004–1024. November raw lines 9–16 only route to variants."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+--- wiki/sources/source-stripe-vipps-accept-payment.md
++++ tracking/ingest/stripe/stripe-campaign-05/updates/attempts/payments-vipps-accept-a-payment/attempt-2/candidate.md
+@@ -2,7 +2,9 @@
+ title: "Stripe: Accept a Payment with Vipps"
+ type: source
+ date_ingested: 2026-05-08
++date_updated: 2026-11-22
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/payments/vipps/accept-a-payment"
+ raw_files:
+   - "stripe-vipps-accept-payment-2025.md"
+ tags: [stripe, wallets, vipps, norway, nok, integration, checkout, elements, direct-api, manual-capture, private-preview]
+@@ -10,37 +12,44 @@
+ 
+ ## Summary
+ 
+-Multi-platform guide to accepting Vipps payments through Stripe. Covers Checkout (Stripe-hosted + embedded), Elements (Payment Element with HTML+JS and React), and Direct API. Private preview — requires `vipps_preview=v1` header.
++The 2026-05-08 full guide describes a single-use NOK card wallet for customers in Norway. The customer authorizes in Vipps. The May guide says Stripe processes the underlying card transaction and immediately notifies the merchant whether the payment succeeded or failed. This payment-result notification is separate from the customer’s return and from authorization awaiting a later manual capture. The guide covers hosted and full embedded Checkout, web Elements, and a Direct API path.
+ 
+-## Key Details
++## Eligibility and preview
+ 
+-**NOK only**, EEA + GB business locations. Single-use card wallet with immediate confirmation. Payment mode only — no setup or subscription mode.
++The May Checkout guide lists EEA and GB business locations, NOK line items, and payment mode only. The separate May 8 and November 7, 2026 [[source-stripe-vipps|Vipps method profiles]] list the same 29 business locations and omit both GB and Iceland. The captures leave eligibility for those two locations unresolved.
+ 
+-**Private preview requirements**:
+-- All API requests: `apiVersion: '2026-04-22.preview; vipps_preview=v1'`
+-- Elements (Stripe.js): `betas: 'vipps_pm_beta_1'` + `apiVersion: vipps_preview=v1`
++Both profiles describe Vipps as private preview and require `vipps_preview=v1` on requests that include Vipps. May server examples pair that flag with sample API version `2026-04-22.preview`. The May web Elements examples also show the `vipps_pm_beta_1` beta option and malformed `apiVersion` expressions at raw lines 413–417 and 489–493. Treat these as dated samples whose exact client syntax and universal API-version applicability remain unverified.
+ 
+-**3 integration paths**:
+-1. **Checkout** — Stripe-hosted page or full embedded page (`ui_mode: 'embedded_page'`). Add `vipps` to `payment_method_types`, all line items in NOK
+-2. **Elements** — Payment Element with PaymentIntent. `stripe.confirmPayment()` with `return_url`. HTML+JS and React examples
+-3. **Direct API** — Create PaymentIntent with `payment_method_types: ['vipps']` + `payment_method_data: { type: 'vipps' }` → confirm → `next_action.redirect_to_url`
++## Dated integration guidance
+ 
+-**Two authentication flows**:
+-- **Mobile**: redirect directly to Vipps app for approval
+-- **Desktop**: Vipps landing page → enter phone number → push notification to Vipps app
++- **Checkout.** The May guide documents dynamic or manual method selection. The example manually includes `vipps` and uses `success_url` for hosted Checkout. For the full embedded page it uses `ui_mode: 'embedded_page'` and a Session `return_url`.
++- **Elements.** The server creates the PaymentIntent and supplies its scoped client secret. The Payment Element confirms with `stripe.confirmPayment()` and a `return_url`, then the return page can retrieve Intent status for display.
++- **Direct API.** The May example creates a NOK PaymentIntent, then confirms it with a `return_url`. When the Intent is `requires_action`, redirect the customer to `next_action.redirect_to_url.url`. On desktop, the customer enters their phone number and approves a push in Vipps. On mobile, the app opens if installed and otherwise the Vipps landing page opens. The Direct API guide describes an in-app retry with a different card if the first underlying card charge fails.
++- **Outcome.** The May guide gives the customer five minutes to authenticate. On final card decline or timeout the method detaches and the Intent transitions to `requires_payment_method`. Use verified Stripe payment events such as `payment_intent.succeeded` for fulfillment. Client return provides navigation.
++- **Testing and live use.** The May test redirect goes to a test page with approval or failure controls. In live use, the customer approves or declines in Vipps. Refunds and disputes follow the relevant Visa or Mastercard network rules for the underlying charge.
+ 
+-**5-minute authentication window**: if customer doesn't authorize within 5 minutes, PaymentMethod detaches and PaymentIntent transitions to `requires_payment_method`.
++### Authorization, capture and cancellation
+ 
+-**Card retry**: if underlying card transaction is declined, customer can choose a different card in the Vipps app and retry.
++The May guide documents optional separate authorization and full-amount-only capture. Checkout sets `payment_intent_data.capture_method=manual`, and the Elements and Direct API routes set `capture_method=manual` on the PaymentIntent. Successful authorization enters `requires_capture` and emits `payment_intent.amount_capturable_updated`. Stripe cancels the PaymentIntent and emits `payment_intent.canceled` if it remains uncaptured during the seven-day window. The May Elements and Direct API authorization examples contain `dkk`, which conflicts with the documented NOK compatibility. The example currency establishes no DKK support.
+ 
+-**Manual capture**: `capture_method: 'manual'`, 7-day hold period. **Full amount only** — no partial capture. `payment_intent.amount_capturable_updated` event on successful authorization.
++The May guide gives general pre-expiry cancellation advice. The separate November [Cancel a PaymentIntent API reference](https://docs.stripe.com/api/payment_intents/cancel) permits direct cancellation of a Checkout Session’s PaymentIntent only in `requires_capture`. Otherwise use Session expiration where applicable.
+ 
+-**Cancellation**: cancel PaymentIntent before expiry via API.
++## Detail locators
+ 
+-**Refunds/disputes**: subject to Visa and Mastercard network rules (card rails underneath).
++- May raw lines 8–265 describe Checkout, supported modes, capture and expiry. Lines 266–864 cover Elements, including the dated Stripe.js examples and the manual capture sample at line 820. See May lines 12–14, 270–272 and 869–871 for immediate notification in the three variant introductions.
++- May raw lines 865–1123 cover Direct API. Lines 993–1035 cover confirmation, redirect and in-app retry, and lines 1062–1119 cover capture, cancellation and failure. The manual authorization sample uses `dkk` at line 1080.
++- November method profile raw lines 13 and 17–23 describe the preview flag and Norway/NOK scope. Its lines 57–89 and May method profile lines 56–88 give the separate business lists. The separate November PaymentIntent Cancel API raw lines 5–25 cover API eligibility.
+ 
+-**Testing**: sandbox shows approve/decline test page. Direct API: follow `next_action` redirect URL → authorize or fail. Live mode: phone number → push notification → approve/decline in Vipps app.
++## Related Pages
++
++- [[stripe]] — Stripe company page
++- [[stripe-wallets#Vipps Details|Stripe Wallets and Vipps]]
++- [[source-stripe-vipps]] — Vipps method profile
+ 
+ ## Raw Sources
+ 
+-- [[stripe-vipps-accept-payment-2025]] — verbatim multi-platform guide (1,123 lines); 7 italic fixes
++- [[raw/stripe-vipps-accept-payment-2025|2026-05-08 full Vipps acceptance guide]] — Checkout, Elements and Direct API implementations
++
++## Related raw API references
++
++- [[raw/stripe-payments-vipps-accept-a-payment-2026-11-07|2026-11-07 Vipps acceptance variant index]] — Checkout, Elements and Direct API

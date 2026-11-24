@@ -1,0 +1,185 @@
+{
+  "job_id": "payments-scalapay",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Scalapay Payments\"\ntype: source\ndate_ingested: 2026-05-06\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/scalapay\"\nraw_files:\n  - \"stripe-payments-scalapay-2026-11-07.md\"\n  - \"stripe-scalapay-2025.md\"\ntags: [stripe, bnpl, scalapay, buy-now-pay-later, consumer, installments, europe, eur]\n---\n\n## Overview\n\nThe November 7, 2026 guide describes Scalapay as single-use B2C buy now, pay later in three or four installments. At checkout the customer selects Scalapay, follows the hosted redirect, chooses a plan and authorizes the payment. At the depicted payment-complete step the customer sees confirmation and returns, and Stripe immediately reports success or failure. Verify the completed payment before fulfillment. After success, expand the PaymentIntent’s `latest_charge` and read `latest_charge.payment_method_details.scalapay.transaction_id` for the customer’s Scalapay support reference. The guide separately lists the standard payout schedule. See November lines 9–14 and 240–260.\n\n## November eligibility and limits\n\n- **Buyers.** AT, BE, DE, ES, FI, FR, IT, NL and PT. The matrix shows EUR presentment for domestic and cross-border payments.\n- **Stripe accounts.** AT, AU, BE, CA, CH, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GR, HR, IE, IT, LI, LT, LU, LV, MT, NL, NO, PL, PT, RO, SE, SG, SI, SK and US. Compared with May's 28-country account list, November adds CY, EE, HR, LI, LV and MT and omits HU.\n- **Access and Connect.** The guide labels access “Instant provisional access” and lists merchants and Connect platforms or marketplaces. A connected account accepting Scalapay must have `scalapay_payments` enabled. The business still has to meet the category and risk requirements.\n- **Amount.** The November transaction rows specify EUR 5.00–4,999.99. Country plan rows display EUR 5–5,000, while the explicit eligibility maximum is EUR 4,999.99. The method’s introductory wording refers to country currencies, and its payment support matrix specifies EUR presentment.\n- **Categories.** The November method guide lists prohibited categories in addition to Stripe's restrictions. Examples include automotive dealers, financial services, telecommunications and digital goods, and gambling. An unlisted activity can still be ineligible for risk reasons.\n\nMay labeled buyer location EU and listed EUR for its 28 Stripe account locations. The separate May acceptance guide lists IT, FR, ES, DE, NL, BE, IE and FI for its Checkout compatibility. Those eight business locations belong to that integration and capture date. See November lines 18–62 and 68–127, May lines 12–18, 52–83 and 115–170, and [[source-stripe-scalapay-accept-payment]].\n\n## Integration and capture\n\nNovember recommends full-page Checkout and Checkout Sessions. It also lists Payment Links, embedded checkout, Payment Element, in-app payments, Connect and PaymentIntents. It excludes recurring, Checkout subscription and setup, Express Checkout Element, PaymentIntents with `setup_future_usage` and SetupIntents. The dedicated guide distinguishes Dashboard-managed display from manual integration. See November lines 129–143 and 206–238 and 262–266.\n\nNovember lists manual and partial capture and excludes multicapture, overcapture and the extended, flexible extended, incremental, decremental and re-authorization modes shown in its table. The separate May PaymentIntents acceptance example leaves successful authorization in `requires_capture` until explicit capture and documents automatic cancellation with `payment_intent.canceled` after seven days if uncaptured. Use that dated guide for the capture window and check the payment outcome separately from browser return. See November lines 129–143 and May acceptance lines 1094–1103 and 1122–1138.\n\nThe May method overview marks Connect No, while its aggregate BNPL product matrix marks Supported. The November aggregate matrix and dedicated method both mark Connect supported, with the dedicated capability requirement above. The aggregate matrices change the Mobile Payment Element cell from May Unsupported to November Supported. The dedicated November in-app label and the versioned Android PaymentSheet 23.18.0 announcement cover separate surfaces, with SDK implementation and specific account enablement outside the scope of those labels. Scalapay has no row in either aggregate BNPL API table. See [[source-stripe-bnpl-overview]] and [[stripe-bnpl#Android SDK `23.18.0` Evidence|Android SDK evidence]].\n\n## Refunds and disputes\n\nFull and partial refunds can be requested through Dashboard or API within 90 days of the original payment. The guides describe asynchronous processing of about five minutes. A full refund cancels the buyer's unpaid installments and returns amounts already paid. A partial refund adjusts the installment plan for the reduced total. Check the Refund object's `succeeded` or `failed` status and final `refund.updated` or `refund.failed` event. Failure returns the amount to the Stripe balance, and the merchant must issue the refund another way. See November lines 145–167 and May lines 151–158.\n\nThe November guide allows one full dispute per payment within 210 calendar days of purchase. Stripe immediately holds the disputed amount and notifies the merchant by email, Dashboard and `charge.dispute.created` webhook. The deadline is seven calendar days from dispute creation. Submit evidence once through the Dashboard or Disputes API. Scalapay states it issues a final decision within 30 calendar days of creation. A merchant win restores the held amount to the Stripe balance. A customer win makes the balance charge permanent. The May guide gave 12 calendar days for evidence and described category approval at Scalapay's discretion. See November lines 169–204 and May lines 121–149.\n\n## Related Pages\n\n- [[stripe-bnpl]] — BNPL product and API matrix context\n- [[source-stripe-scalapay-accept-payment]] — Dated integration variants and PaymentIntent manual capture\n- [[stripe]] — Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-payments-scalapay-2026-11-07|November 7, 2026 Scalapay payments]] — Full method guide\n- [[raw/stripe-scalapay-2025|May 6, 2026 Scalapay payments]] — Earlier full guide, including the original video URL\n",
+  "quotes": {
+    "payments-scalapay": [
+      {
+        "text": "Access type: Instant provisional access",
+        "location": "raw/stripe-payments-scalapay-2026-11-07.md:12"
+      },
+      {
+        "text": "Maximum amount: 4,999.99 EUR",
+        "location": "raw/stripe-payments-scalapay-2026-11-07.md:61"
+      },
+      {
+        "text": "You have 7 calendar days after the dispute is created to submit evidence.",
+        "location": "raw/stripe-payments-scalapay-2026-11-07.md:190"
+      },
+      {
+        "text": "Connected accounts must have the `scalapay_payments` capability enabled.",
+        "location": "raw/stripe-payments-scalapay-2026-11-07.md:238"
+      },
+      {
+        "text": "Stripe immediately notifies you whether the payment succeeded or failed.",
+        "location": "raw/stripe-payments-scalapay-2026-11-07.md:256"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-scalapay": [
+      {
+        "text": "You must submit the requested information within 12 calendar days.",
+        "location": "raw/stripe-scalapay-2025.md:149"
+      },
+      {
+        "text": "Other categories at the discretion of Scalapay",
+        "location": "raw/stripe-scalapay-2025.md:125"
+      },
+      {
+        "text": "The maximum charge limit is 4,999,99 EUR or the equivalent for other supported currencies.",
+        "location": "raw/stripe-scalapay-2025.md:119"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-scalapay-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 266
+      }
+    ],
+    "raw/stripe-scalapay-2025.md": [
+      {
+        "start": 1,
+        "end": 170
+      }
+    ],
+    "wiki/sources/source-stripe-scalapay.md": [
+      {
+        "start": 1,
+        "end": 29
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/b57e7b0e0df4410646128ff1/content.diff": [
+      {
+        "start": 1,
+        "end": 424
+      }
+    ],
+    "wiki/concepts/stripe-bnpl.md": [
+      {
+        "start": 29,
+        "end": 41
+      },
+      {
+        "start": 156,
+        "end": 169
+      },
+      {
+        "start": 231,
+        "end": 239
+      },
+      {
+        "start": 264,
+        "end": 268
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 342,
+        "end": 349
+      },
+      {
+        "start": 745,
+        "end": 749
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md": [
+      {
+        "start": 355,
+        "end": 361
+      }
+    ],
+    "raw/stripe-bnpl-overview-2025.md": [
+      {
+        "start": 40,
+        "end": 49
+      },
+      {
+        "start": 58,
+        "end": 73
+      }
+    ],
+    "raw/stripe-payments-buy-now-pay-later-2026-11-07.md": [
+      {
+        "start": 41,
+        "end": 50
+      },
+      {
+        "start": 59,
+        "end": 72
+      }
+    ],
+    "raw/stripe-scalapay-accept-payment-2025.md": [
+      {
+        "start": 18,
+        "end": 35
+      },
+      {
+        "start": 1094,
+        "end": 1103
+      },
+      {
+        "start": 1122,
+        "end": 1138
+      }
+    ]
+  },
+  "answers": {
+    "payments-scalapay": {
+      "Q1": "At https://docs.stripe.com/payments/scalapay the November 7 article describes single-use B2C installments, provisional activation subject to geography, category and risk, and domestic/cross-border EUR payments from 5.00 to 4,999.99 EUR within the listed markets. The merchant and buyer lists are separate. Connect platforms can act for connected accounts with scalapay_payments enabled. The buyer redirects to Scalapay, chooses three or four installments and authorizes. At the November overview’s depicted payment-complete step, Stripe reports success or failure immediately and the merchant can retrieve a transaction ID after success (new raw lines 240-260). November separately lists manual and partial capture (new raw lines 139-143). The May acceptance guide’s manual route leaves a successful authorization in requires_capture until the merchant explicitly captures it, within a documented seven-day window (May acceptance guide lines 1094-1103 and 1122-1136). Browser return after authorization does not establish completion for fulfillment. Standard payout timing is separate. The dedicated overview supports this capture route, with recurring/setup, future usage, multicapture and overcapture excluded. The 90-day refund updates installments and ends in succeeded or failed; a failure returns the amount to Stripe balance and requires another way to refund. A customer may file one full dispute within 210 calendar days, Stripe withholds the amount, the merchant has seven calendar days to submit one evidence packet, and a merchant win restores the held balance while a buyer win makes the charge permanent. May showed a broader EU buyer label, a list of 28 merchant countries, a dedicated No Connect label and 12 days for evidence. source-stripe-scalapay.md now dates those details and explains the November eligibility, payment, refund and dispute scopes (old raw lines 8-53, old raw lines 52-93 and old raw lines 121-158, compared with new raw lines 9-62, new raw lines 129-204 and new raw lines 206-266).",
+      "Q2": "For https://docs.stripe.com/payments/scalapay, source-stripe-scalapay.md now records the nine November buyer countries (AT, BE, DE, ES, FI, FR, IT, NL and PT) and separate merchant geography. The merchant list adds CY, EE, HR, LI, LV and MT and omits May’s HU. Keep EUR presentment and the exact 4,999.99 EUR charge maximum, alongside the rounded 5,000 EUR option rows. Connect capability, prohibited categories with residual risk, and the shift from 12 to seven calendar days for dispute evidence are substantive. Preserve May’s dedicated No Connect versus its aggregate Supported label, the separately dated Checkout acceptance scope and authorized-capture window, and the unchanged 90-day refund lifecycle with new installment detail (old raw lines 35-38, old raw lines 52-83, old raw lines 115-158, new raw lines 18-62, new raw lines 68-127, new raw lines 145-204 and new raw lines 206-238). The separately captured May BNPL product matrix marks Mobile Payment Element Unsupported, while November marks it Supported (May BNPL raw lines 40 and 49, November BNPL raw lines 41 and 50). The dedicated November guide labels in-app payments Supported (new raw lines 206-213). These labels and the dated Android announcement establish no particular SDK implementation or account enablement. The aggregate API rows still omit Scalapay. Reorganized labels and pricing or acceptance links are presentation/navigation. Retain both raw captures and the reciprocal Stripe BNPL concept and acceptance guide routes."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "scalapay-dated-method-scope",
+      "target_path": "wiki/concepts/stripe-bnpl.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Consumer BNPL** — Pay in 3 or 4 installments. **EUR only** across all 28 merchant countries (including US, AU, CA, SG). **No Connect support**.\n\n**Transaction limits**: min €5, max ~€5,000.\n\n**Allowed categories**: \"At discretion of Scalapay\" — no published list; approval-based (vs other B2B BNPL's long prohibited lists).\n\n**Disputes**: 12-day evidence window.\n\n**Refunds**: **90-day** window (shorter than Billie/Kriya/Mondu's 180 days); async (up to 5 min).",
+      "proposed_markdown": "**November 2026 Scalapay.** Single-use B2C Pay in 3 or 4 installments with EUR presentment, separate buyer and merchant country lists, and domestic and cross-border coverage. The guide lists 33 Stripe account locations and nine buyer markets (AT, BE, DE, ES, FI, FR, IT, NL and PT). Access is provisional and subject to category and risk checks. Connect requires `scalapay_payments` on the accepting connected account. The May method guide listed 28 merchant locations and marked Connect No while the May BNPL matrix marked Supported.\n\n**Transaction limits.** The November transaction rows state EUR 5.00–4,999.99. Country option rows display a rounded EUR 5,000 ceiling.\n\n**Disputes and refunds.** The November guide allows a single full dispute within 210 calendar days and one evidence submission within seven calendar days of creation. May gave 12 calendar days for evidence. Full and partial refunds have a 90-day submission window and adjust the installment plan. See [[source-stripe-scalapay]].",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "November raw lines 18–62, 68–127, 145–204 and 236–238 supply method restrictions. May lines 12–18, 35–38, 52–83 and 121–158 retain earlier scope. Keep the separate Scalapay acceptance path note."
+      ]
+    },
+    {
+      "update_id": "scalapay-overview-reciprocal-route",
+      "target_path": "wiki/concepts/stripe-bnpl.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-scalapay]] — Scalapay: consumer BNPL, EUR-only (all 28 countries), 90-day refund window, approval-based categories",
+      "proposed_markdown": "- [[source-stripe-scalapay]] — May and November Scalapay method guides, with dated buyer and merchant markets, Connect capability, amount and category limits, refunds, disputes and product-surface coverage",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "November raw lines 18–62 and 129–238 support the method guide route. The separate May acceptance guide documents path-specific compatibility."
+      ]
+    }
+  ]
+}

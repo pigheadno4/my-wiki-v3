@@ -1,0 +1,88 @@
+--- raw/stripe-paypal-2025.md
++++ raw/stripe-payments-paypal-2026-11-07.md
+@@ -90,43 +90,53 @@
+ - Subscriptions
+ - Invoicing
+ 
+-## Payment flow
+-
+-![](assets/stripe-paypal-flow-checkout.svg)
++## Payment flow 
++![](https://b.stripecdn.com/docs-statics-srv/assets/checkout.4af16ecfd4f0a3f4044c56d6100c4a42.svg)
+ 
+ *Customer* (Customer objects represent customers of your business. They let you reuse payment methods and give you the ability to track multiple payments) selects PayPal at checkout
+-![](assets/stripe-paypal-flow-redirect.svg)
++![](https://b.stripecdn.com/docs-statics-srv/assets/redirect.f6e6ccf58078e0a25815560086204c24.svg)
+ 
+ Customer is redirected to PayPal and enters login details
+-![](assets/stripe-paypal-flow-pincode-sms.svg)
++![](https://b.stripecdn.com/docs-statics-srv/assets/pincode-sms.d10a5a14a3a7e5d3c00942531f9143cd.svg)
+ 
+ Customer completes authorization process
+-![](assets/stripe-paypal-flow-redirect-success.svg)
++![](https://b.stripecdn.com/docs-statics-srv/assets/redirect-success.740e23b33b6f52a746e8ec50285e2805.svg)
+ 
+ Customer is notified that payment is complete
+-![](assets/stripe-paypal-flow-success.svg)
++![](https://b.stripecdn.com/docs-statics-srv/assets/success.1ee3b6d34d944693e654e84f6d1be9f3.svg)
+ 
+ (Optional) Customer returns back to business’s site for payment confirmation
+ 
+-## Connect
++## Connect 
+ 
+ PayPal is available for online marketplaces using [Stripe Connect](https://stripe.com/connect). These online marketplaces include businesses such as Deliveroo and ManoMano that collect payments from customers, and later pay out to sub-accounts or service providers. PayPal isn’t available for platforms that onboard other businesses and enable them to accept payments directly, such as Shopify or Squarespace.
+ 
+-> Online marketplaces need to submit an onboarding request from the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods) to get access to PayPal. Stripe sends email updates about the progress of all requests, and the current status is also reflected on the [Payment Method Settings page](https://dashboard.stripe.com/settings/payment_methods).
++### Request access
++
++To use PayPal for Connect charges, online marketplaces must request access.
++
++1. In the Dashboard, go to [Payment method settings](https://dashboard.stripe.com/settings/payment_methods).
++2. Click **Request access** next to PayPal, and complete the form.
++
++Stripe and PayPal review each request, which can take several weeks. You can track the progress on the **Payment method settings** page.
++
++After your request is approved, you receive instructions for connecting your PayPal account.
++
++Because PayPal doesn’t support direct charges or `on_behalf_of`, you don’t need to enable it on connected accounts’ payment method configurations.
+ 
+ The following [Connect charges](https://docs.stripe.com/connect/charges.md) types, typically used by online marketplaces, are available to businesses using PayPal.
+ 
+-| Destination charges | Separate charges and transfers | Direct charges   | on_behalf_of     |
+-| ------------------- | ------------------------------ | ---------------- | ---------------- |
+-| ✓ Supported         | ✓ Supported                    | ❌ Not supported | ❌ Not supported |
++| Destination charges | Separate charges and transfers | Direct charges | on_behalf_of |
++| --- | --- | --- | --- |
++| ✓ Supported | ✓ Supported | ❌ Not supported | ❌ Not supported |
+ 
+-## Get started
++## Get started 
+ 
+ Add PayPal and other payment methods from the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods) without making updates to your code. For each customer, Stripe determines the list of supported payment methods most likely to drive conversion. Learn how to [accept PayPal and other payment methods automatically](https://docs.stripe.com/payments/accept-a-payment.md) with Checkout or Elements. To accept PayPal and other payment methods without any code, use [Payment Links](https://docs.stripe.com/payment-links.md).
+ 
+ When you’re ready to go live, [activate PayPal payments](https://docs.stripe.com/payments/paypal/activate.md).
+ 
+-## Disputed payments
++## Disputed payments 
+ 
+ Customers must authenticate payments with their PayPal accounts, helping to reduce the risk of fraud or unrecognized payments. However, customers can still dispute transactions after they complete payment. Some common reasons for disputes are customers determining that items weren’t as described, or not receiving items at all. You can submit evidence to contest a dispute directly from the Stripe Dashboard.
+ 
+@@ -134,7 +144,7 @@
+ 
+ For certain dispute types, PayPal enables you communicate directly to customers to try resolving the dispute. Contacting customers directly must be handled through the PayPal dashboard, and not the Stripe Dashboard.
+ 
+-## Refunds
++## Refunds 
+ 
+ PayPal payments can be refunded up to 180 days after the original payment. Stripe uses either your Stripe balance or your PayPal balance to refund the payment, depending on the [settlement preference you selected](https://docs.stripe.com/payments/paypal/choose-settlement-preference.md).
+ 
+@@ -146,7 +156,7 @@
+ 
+ ## Seller protection
+ 
+-PayPal’s Seller Protection program offers coverage for sellers under eligible transactions. It includes scenarios such as unauthorized transactions or buyers’ claims of non-receipt of item. For more information on the Seller Protection program and eligibility, visit [PayPal Seller Protection](https://www.paypal.com/uk/legalhub/seller-protection).
++PayPal’s Seller Protection program offers coverage for sellers under eligible transactions. It includes scenarios such as unauthorized transactions or customers’ claims of non-receipt of item. For more information on the Seller Protection program and eligibility, visit [PayPal Seller Protection](https://www.paypal.com/uk/legalhub/seller-protection).
+ 
+ ## Prohibited business categories
+ 

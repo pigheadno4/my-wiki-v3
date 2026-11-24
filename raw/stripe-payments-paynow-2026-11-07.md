@@ -1,0 +1,213 @@
+<!-- Source URL: https://docs.stripe.com/payments/paynow -->
+<!-- Fetched: 2026-11-07 -->
+<!-- Discovery: reconciled llms.txt,sitemap.xml -->
+
+# PayNow payments
+
+Learn about PayNow, a popular payment method in Singapore.
+
+PayNow is a Singapore-based payment method that allows customers to make payments using their preferred app from participating banks and non-bank financial institutions.
+Payment method family: Real-time payments
+Usability: Single-use
+Access type: Instant provisional access
+Payment confirmation timing: Immediate
+Settlement timing: Standard payout schedule
+Pricing: https://stripe.com/zh-sg/pricing/local-payment-methods#paynow
+## Payout timing 
+
+Funds become available in your Stripe balance 1 day after the transaction. Payouts then follow the payout schedule set on your Stripe account.
+
+For example, a payment completed on Wednesday becomes available in your Stripe balance on Thursday. On an automatic daily payout schedule, the funds are paid out on Thursday. On a weekly Monday payout schedule, the funds are paid out the following Monday.
+
+## Eligibility and availability 
+
+### Account eligibility
+Business location: SG
+Account type: ✓ Merchant, ✓ Platform or marketplace (Connect)
+Business model: ✓ B2B, ✓ B2C
+Business category: View list of prohibited and restricted business categories
+View PayNow’s [prohibited and restricted business categories](https://docs.stripe.com/payments/paynow.md#prohibited-and-restricted-business-categories).
+
+Review the list of *merchant category codes* (A Merchant Category Code (MCC) is a four-digit number that classifies the type of goods or services a business offers) that are prohibited or restricted for PayNow.
+
+- **Prohibited**: You can’t use this payment method with these MCCs.
+- **Restricted**: You might be able to use this payment method with these MCCs, but you must provide additional information when you create the account.
+
+| MCC | Description | Type |
+| --- | --- | --- |
+| 5172 | Petroleum and Petroleum Products | Prohibited |
+| 5541 | Service Stations | Prohibited |
+| 5542 | Automated Fuel Dispensers | Prohibited |
+| 5983 | Fuel Dealers (Non Automotive) | Prohibited |
+
+Stripe accounts in the following countries can accept PayNow payments that settle in a supported currency.
+
+APAC: SG
+
+Customers in the following countries can use PayNow.
+
+APAC: SG
+
+### Payment support
+Customer location: SG
+Presentment currency: SGD
+Geographic coverage: ✓ Domestic, ✗ Crossborder
+Transaction limits: Minimum amount: 0.50 SGD
+
+Maximum amount: 200,000.00 SGD
+[PayNow’s prohibited and restricted business categories](https://docs.stripe.com/payments/paynow.md#prohibited-and-restricted-business-categories) apply in addition to [Stripe’s prohibited and restricted business categories](https://stripe.com/restricted-businesses).
+
+## Capabilities 
+Recurring payments: ✗ Not supported
+
+Payment authorizations:
+  ✗ Extended authorizations
+  ✗ Flexible extended authorizations
+  ✗ Incremental authorizations
+  ✗ Decremental authorizations
+  ✗ Re-authorizations
+
+Payment captures:
+  ✗ Manual capture
+  ✗ Partial capture
+  ✗ Multi-capture
+  ✗ Over-capture
+
+Refunds:
+  ✓ Partial refunds
+  ✓ Full refunds
+  Submission window: 90 days
+  Processing time: 5 minutes
+
+Disputes:
+  ✗ Partial disputes
+  ✗ Full disputes
+### Refunds 
+
+PayNow requires that you submit a refund within 90 days from the original payment using the [Dashboard](https://dashboard.stripe.com/payments) or [Refunds API](https://docs.stripe.com/api/refunds/create.md). This is the maximum the payment method allows. Your return policy determines what you offer customers.
+
+Refunds for PayNow payments are asynchronous and take up to 5 minutes to complete. You can’t cancel PayNow refunds.
+
+#### Refund process 
+
+After you submit a PayNow refund, its status is `pending` while PayNow processes it asynchronously. Use the refund status to track completion.
+
+#### Tracking refunds 
+
+To check a refund’s status, open the payment in the [Dashboard](https://dashboard.stripe.com/payments) and click **View details** on the refund entry. You can also [retrieve the Refund object](https://docs.stripe.com/api/refunds/retrieve.md) and check its `status` field.
+
+Stripe notifies you of the final status through a `refund.updated` or `refund.failed` *webhook* (A webhook is a real-time push notification sent to your application as a JSON payload through HTTPS requests) event. [Verify webhook signatures](https://docs.stripe.com/webhooks.md#verify-events) to confirm that events came from Stripe. You can also use Stripe’s [public IP addresses](https://docs.stripe.com/ips.md) for network allowlisting. When a refund succeeds, the [Refund object](https://docs.stripe.com/api/refunds/object.md) status changes to `succeeded`. If the refund fails, the status changes to `failed` and Stripe returns the amount to your Stripe balance. You must refund the customer using another method.
+
+### Disputes 
+
+PayNow doesn’t support the standard dispute process, because the authentication of each payment through a separate app makes the fraud risk very low. Customers can’t file a chargeback, and funds are never withdrawn from your Stripe balance because of a dispute.
+
+## Stripe product support 
+Checkout UIs:
+  ✓ Full page (Recommended)
+  ✓ Payment Links
+  ✓ Embedded form
+  ✓ Payment Element
+  ✗ Express Checkout Element
+  ✗ Payment Method Messaging Element
+  ✓ In-app payments
+
+Products:
+  ✗ Managed Payments
+  ✓ Billing
+  ✓ Invoicing
+  ✗ Customer Portal
+  ✗ Radar
+  ✓ Terminal
+  ✓ Connect
+
+APIs:
+  ✓ Checkout Sessions (Recommended)
+  ✓ Payment Intents
+  ✗ Payment Intents with setup_future_usage
+  ✗ Setup Intents
+  ✗ Off-session payments
+
+1. Only supports send_invoice collection method.
+Checkout doesn’t support PayNow in subscription mode or setup mode. Invoices and subscriptions only support the [send_invoice](https://docs.stripe.com/api/invoices/object.md#invoice_object-collection_method) collection method for PayNow.
+
+### Get started 
+
+You don’t have to integrate PayNow individually. Enable PayNow and other payment methods in your [payment method settings](https://dashboard.stripe.com/settings/payment_methods), then build your payment integration:
+
+- [Checkout](https://docs.stripe.com/checkout/quickstart.md): Our prebuilt, hosted checkout page.
+- [Elements](https://docs.stripe.com/payments/quickstart.md): Our drop-in UI components.
+
+You can also add PayNow manually when creating [invoices](https://docs.stripe.com/invoicing/no-code-guide.md), [Payment Links](https://docs.stripe.com/payment-links.md), and [subscriptions](https://docs.stripe.com/billing/subscriptions/overview.md) in the Dashboard.
+
+### Billing and invoicing 
+
+Use [Stripe Billing](https://stripe.com/billing) to create subscriptions and invoices that support PayNow. PayNow doesn’t support [automatically charging](https://docs.stripe.com/invoicing/automatic-charging.md) invoices, so you must configure invoices and subscriptions with the `send_invoice` [collection method](https://docs.stripe.com/api/invoices/object.md#invoice_object-collection_method).
+
+### Manual payment method selection, including Terminal 
+
+If needed, you can [manually configure PayNow](https://docs.stripe.com/payments/paynow/accept-a-payment.md). To [accept in-person PayNow payments with Terminal](https://docs.stripe.com/terminal/payments/additional-payment-methods.md), you must manually list PayNow.
+
+> PayNow payments in Terminal are in public preview.
+
+### Connect 
+
+A [Connect platform](https://docs.stripe.com/connect.md) can process PayNow payments for connected accounts. PayNow supports all [Connect charge types](https://docs.stripe.com/connect/charges.md#types).
+
+When using PayNow in a Connect integration, consider the following:
+
+- You need to turn on PayNow in your platform’s [payment method settings](https://dashboard.stripe.com/settings/payment_methods) and [request](https://docs.stripe.com/connect/account-capabilities.md#requesting-unrequesting) the `paynow_payments` capability for connected accounts that accept PayNow payments.
+- Stripe and PayNow use [merchant category codes (MCCs)](https://docs.stripe.com/connect/setting-mcc.md) to identify connected accounts in PayNow’s [prohibited business categories](https://docs.stripe.com/payments/paynow.md#prohibited-and-restricted-business-categories). Make sure that you set correct MCCs for your connected accounts that don’t use the full Stripe Dashboard.
+- The [charge type](https://docs.stripe.com/connect/charges.md) determines whether the platform or connected account is the [merchant of record](https://docs.stripe.com/connect/merchant-of-record.md) for a payment. The merchant name displayed on the PayNow website or app reflects the merchant of record.
+
+## Customer experience 
+
+#### 1. Choose PayNow
+
+The customer selects PayNow at checkout. Stripe displays a PayNow QR code for the payment.
+
+#### 2. Open a participating bank or payment app
+
+If using a computer, the customer scans the QR code with a participating app on their phone. On mobile, the customer saves an image of the QR code, then opens a participating app and uploads the saved image.
+
+#### 3. Authorize the payment
+
+The customer reviews and authorizes the payment in their bank or payment app. They must authorize the transaction within 1 hour, or it expires.
+
+#### 4. Receive payment confirmation
+
+After authorization succeeds, Stripe receives confirmation and informs the customer, then processes the payment.
+
+#### 5. Restart after expiration
+
+If the QR code expires, the customer must return to the payment page and start a new payment, which generates a new QR code.
+
+#### 6. Attempt to reuse a completed QR code
+
+After a successful payment, PayNow rejects further attempts to use the same QR code. If a QR code is rejected, the customer can investigate by checking the notifications from their bank or payment app.
+
+Customers complete PayNow payments with [a participating bank or payment app](https://www.abs.org.sg/consumer-banking/pay-now).
+
+### QR code expiration 
+
+PayNow QR codes are valid for 1 hour. If the customer doesn’t authorize a payment within 1 hour of generating its QR code, the code expires. Attempting to use an expired QR code fails with the `payment_intent_payment_attempt_expired` error code.
+
+Use a webhook to return the customer to the payment page after the QR code expires. The customer must start a new payment session, which creates a new `PaymentIntent` and QR code.
+
+### Repeated payment attempts 
+
+After a PayNow payment successfully completes, further attempts to use its QR code are rejected. Rejection behavior varies by bank and payment app. If a customer contacts you about a repeated payment attempt, advise them to check the notifications from their bank or payment app.
+
+### Statement descriptors 
+
+Customers see `STRIPE PAYMENTS SINGAPORE PTE. LTD.`, the payment amount, and a Stripe-generated reference on their bank statement and in their bank or mobile-app payment details.
+
+PayNow doesn’t support customized statement descriptors, so Stripe ignores the `PaymentIntent`’s [statement_descriptor](https://docs.stripe.com/api/payment_intents/create.md#create_payment_intent-statement_descriptor). You can retrieve the Stripe-generated reference from [charge.payment_method_details.paynow.reference](https://docs.stripe.com/api/charges/object.md#charge_object-payment_method_details-paynow-reference).
+
+For Connect payments, the [charge type](https://docs.stripe.com/connect/charges.md) determines whether the merchant name shown in the customer’s app flow reflects the platform or the connected account.
+
+## Enable PayNow 
+
+If you use Stripe front-end products, enable PayNow in your [payment method settings](https://dashboard.stripe.com/settings/payment_methods). Stripe automatically determines which payment methods are most relevant to each customer.
+
+If your integration lists payment methods manually, learn how to [configure PayNow as a payment method](https://docs.stripe.com/payments/paynow/accept-a-payment.md).

@@ -1,0 +1,96 @@
+--- wiki/sources/source-stripe-vault-and-forward.md
++++ tracking/ingest/stripe/stripe-campaign-05/updates/attempts/payments-vault-and-forward/attempt-2/candidate.md
+@@ -2,63 +2,60 @@
+ title: "Stripe — Vault and Forward API"
+ type: source
+ date_ingested: 2026-05-11
++date_updated: 2026-11-22
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/payments/vault-and-forward"
+ raw_files:
++  - "stripe-payments-vault-and-forward-2026-11-07.md"
+   - "stripe-vault-and-forward-2026.md"
+ tags: [stripe, vault-and-forward, multiprocessor, card-forwarding, pci, adyen, braintree, worldpay, apple-pay, google-pay]
+ ---
+ 
+ ## Summary
+ 
+-Vault and Forward API: tokenize cards in Stripe's PCI vault and forward to 30+ supported third-party processors. Requires Stripe support access request.
++Vault and Forward stores card details in [[stripe|Stripe]]’s PCI-compliant vault. The merchant server sends a ForwardingRequest that references those details. Stripe inserts the card details from its vault and forwards the request to a configured destination, such as a processor or an approved in-house token vault. The 2026-11-07 general guide limits access to businesses with a dedicated Stripe account team and directs those businesses to their team. The 2026-05-11 general guide and the separate November [third-party processor](https://docs.stripe.com/payments/forwarding-third-party-processors) and [own-vault](https://docs.stripe.com/payments/forwarding-token-vault) guides direct readers to Stripe support. These are dated instructions for the corresponding guides, and account-specific enablement remains unresolved.
+ 
+ ## ForwardingRequest API
+ 
+-```js
+-stripe.forwarding.requests.create({
+-  payment_method: 'pm_xxx',
+-  url: 'https://destination/v1/payments',
+-  request: { headers: [...], body: '{"paymentMethod":{"number":"","expiryMonth":"","expiryYear":"","cvc":""}}' },
+-  replacements: ['card_number', 'card_expiry', 'card_cvc', 'cardholder_name']
+-})
+-```
++- Collect card details with Payment Element or create a PaymentMethod from a custom front end. Stripe accepts a PaymentMethod even without a Customer attachment. November explicitly lists accepted `payment_method` IDs as PaymentMethod (`pm_`), card-backed Source (`src_`), Card (`card_`), and Issuing Card (`ic_`).
++- The merchant server supplies the exact configured destination URL, request body, headers and destination credentials. Leave card placeholders blank and match the destination JSON type, using an empty string or numeric zero as appropriate. Stripe inserts the selected replacement values before forwarding. Card Account Updater attempts an update where enabled and available.
++- Use separate idempotency keys at Stripe and the downstream API. Use a new Stripe key when changing `request.body` or `request.header` fields. The guides recommend a fresh Stripe key when retrying an error reaching the destination.
++- CVC expires over time or after forwarding use. SetupIntent validation can consume it, and an expired or consumed CVC can require recollection when the destination requires it. November directs preservation and multi-processor 3DS questions to the account team.
+ 
+-## Replacement Fields
++## Forwarding response and payment outcomes
+ 
+-| Use case | Replacement fields |
+-| --- | --- |
+-| Standard cards | `card_number`, `card_expiry`, `card_cvc`, `cardholder_name` |
+-| Google Pay FPAN | Same as standard cards |
+-| Google Pay/Apple Pay DPAN | `network_token_number`, `network_token_cryptogram`, `network_token_expiry`, `network_token_electronic_commerce_indicator` |
++Stripe documents a synchronous third-party response wait of less than one minute. It redacts identified PCI-sensitive data, stores the redacted response and returns a ForwardingRequest. Both general guides show forwarding HTTP 200 when a destination response is received, including a destination 400 whose code and message are in the forwarded response body. The illustrative object includes `response_details.status`; the specialist third-party example checks it and handles request errors separately. Both own-vault captures say the status code is passed through and give an example with upstream 400 and forwarding HTTP 200. The exact interpretation of that specialist wording remains unresolved.
+ 
+-## Key Rules
++Use the destination’s own result for tokenization and payment outcomes. Forwarding itself does not confirm or capture a Stripe PaymentIntent. A separate Stripe capture after a processor capture can charge twice. For a third-party authorization, handle refunds and disputes with the processor.
+ 
+-- Placeholder values must match destination JSON type (`""` string, `0` numeric)
+-- Stripe always returns 200; actual destination status code is in response body
+-- CVC expires after use; SetupIntent confirmation can consume CVC (contact Stripe for workarounds)
+-- Link payments NOT supported for forwarding
+-- Use new idempotency key when retrying or updating request body/headers
+-- API keys: Stripe only stores hashed+encrypted versions; encrypt with provided PGP key before sharing
++## Wallets and replacement fields
+ 
+-## Wallet Support
++- **Standard cards and Google Pay FPAN.** Use `card_number`, `card_expiry`, `card_cvc`, and `cardholder_name` as applicable.
++- **Google Pay DPAN and Apple Pay DPAN.** The guides use `network_token_number`, `network_token_cryptogram`, `network_token_expiry`, and `network_token_electronic_commerce_indicator`.
++- **Apple Pay MPAN.** May lists DPAN only. November’s support list adds MPAN, while its detection prose says Apple Pay PaymentMethods always use DPAN and its field guidance only covers Apple Pay DPAN. The November guide leaves MPAN detection and replacement procedure unresolved.
++- **Link.** Credentials saved through Link are excluded. Route Link card transactions to Stripe.
+ 
+-- **Apple Pay**: DPAN only (not MPAN)
+-- **Google Pay**: FPAN (standard replacements) and DPAN (network token replacements)
+-- **Link**: NOT supported
++## Configured endpoints and key scope
+ 
+-## Supported Processors (partial list)
++Check the exact destination host and path in the dated guide, then separately check the destination country and the Stripe account’s registration country. The general guide describes HTTPS APIs with JSON or XML requests and responses. November adds Adyen Checkout v72 `payments` and `storedPaymentMethods`, Chase Orbital v4 profile, a second GMO ExecTran hostname, and Yuno sandbox and live endpoints. The lists include mixed endpoint categories. Use the separate configured [[source-stripe-forwarding-token-vault|own-vault path]] when forwarding to an in-house PCI-compliant vault.
+ 
+-Adyen, Braintree, Checkout, CardPointe, Evervault, Fat Zebra, Fiserv, PaymentsOS, ProcessOut, Shift4, Spreedly, TabaPay, TokenEx, VGS, Worldpay, Xsolla, Basis Theory, PCI Vault + others.
++For access and configuration the November general guide requests test account IDs and production endpoint details, including the URL, method, documentation, fields, headers, and encryption keys. Before sharing third-party API keys during configuration, encrypt them with Stripe’s Vault and Forward PGP public key. Supply destination API credentials separately on each forwarding request. Stripe retains hashed and encrypted versions of destination API keys. For a restricted Stripe key, `forwarding_request_write` is required to create requests, and `forwarding_request_read` is optional for retrieving or listing them. Incoming request headers and body are encrypted and appear as `encrypted_request` in the Dashboard.
+ 
+-## Restricted API Keys
++## Detail locators
+ 
+-`forwarding_request_write` (create) + `forwarding_request_read` (retrieve/list).
++- November raw lines 31–108 cover access, collect/forward fields, CVC and idempotency. Lines 110–241 cover wallet support, detection and replacements.
++- November raw lines 243–336 and 713–740 cover forwarding, response handling and logging. May raw lines 245–293 and 748–762 preserve the corresponding historical response and logging wording.
++- November raw lines 338–420 enumerate configured endpoints. Lines 422–547 cover forwarding destination countries, lines 549–596 cover Stripe account registration, and lines 598–711 cover account and key setup. May raw lines 355–429 preserve the previous endpoint list.
+ 
+ ## Related Pages
+ 
+-- [[stripe-vault-and-forward]] — concept page
+-- [[stripe-payment-intents]] — PaymentMethod creation
++- [[stripe-vault-and-forward]] — concept and related forwarding routes
++- [[stripe-payment-intents]] — PaymentIntent confirmation and capture
++- [[source-stripe-forwarding-third-party]] — processor-specific integration and response example
++- [[source-stripe-forwarding-token-vault]] — configured own-vault integration and response guidance
++- [[source-stripe-orchestration]] — the November guide separately offers an email request for Orchestration preview at raw lines 9–22
+ 
+ ## Raw Sources
+ 
+-- [[stripe-vault-and-forward-2026]] — verbatim Vault and Forward API guide (762 lines)
++- [[raw/stripe-payments-vault-and-forward-2026-11-07|2026-11-07 Vault and Forward API guide]]
++- [[raw/stripe-vault-and-forward-2026|2026-05-11 Vault and Forward API guide]]

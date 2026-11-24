@@ -18,37 +18,33 @@ Real-time payment methods let customers directly transfer money from their bank 
 | Pay by Bank (UK/Europe) | `pay_by_bank` | UK, Finland and Ireland generally available. Belgium, France and Germany private preview (2026-11-07 customer bank-account scope) | Yes | No | No | May matrix: No. November matrix: Yes |
 | PayNow | `paynow` | Singapore | No | No | No | Yes |
 | PayTo | `payto` | Australia | No | Yes | Yes | No |
-| Pix | `pix` | Brazil | No | No | No | Yes |
+| Pix | `pix` | Brazil | Bank app has no return redirect. Checkout/Elements can redirect at a terminal intent state. | Yes in the November Pix matrix. See Pix Automático mandate scope. | Yes in the November Pix matrix. See Pix Automático mandate scope. | Yes |
 | PromptPay | `promptpay` | Thailand | No | No | No | Yes |
 | Swish | `swish` | Sweden | Yes | No | No | Yes |
-| UPI | `upi` | India | Yes (mobile) | Unknown | Unknown | Yes |
+| UPI | `upi` | India | November API matrix Yes. Desktop QR and mobile app redirect in the overview. | November matrix Supported | November matrix Supported (`off_session` per its footnote) | Mobile Payment Element Unsupported in November matrix |
 
 **No manual capture** for any real-time payment method.
 
 ## Key Differentiators
 
-**PayTo** (Australia): unique among real-time methods — supports SetupIntents, `setup_future_usage`, and Express Checkout Element. Also supports disputes (final, non-appealable), mandate-based recurring, and Billing. Identity verification required to activate.
+**PayTo** (Australia) supports SetupIntents, `setup_future_usage`, mandate-based recurring payments and Billing, with required identity verification. The May and November cross-method tables and November PayTo profile mark Express Checkout Element unsupported. The November cross-method matrix also lists SetupIntents and future-use support for UPI. See [[source-stripe-payto]] for the separate off-session qualification. The November Pix overview also lists SetupIntents and `setup_future_usage`, with a separate Pix Automático mandate flow.
 
-**PayNow** (Singapore): also supports Terminal.
+**PayNow** (Singapore): the November 2026 overview lists Terminal public preview and requires manual listing.
 
-**Redirect required**: Pay by Bank (UK/Europe) and Swish only.
+**Redirect required.** The November 7, 2026 API support matrix marks Pay by Bank, Swish and UPI as requiring redirect. The direct UPI overview describes customers scanning a QR code in their UPI app on desktop and being redirected to the UPI app on mobile.
 
-**Subscriptions/Invoicing**: Pay by Bank, PayNow, PromptPay, and Swish support subscriptions/invoicing only via `send_invoice` (not `charge_automatically`). For Pay by Bank, this Billing scope is separate from the Bacs-backed Elements/Payment Intents private preview described below. **Pix** supports automatic recurring via **Pix Automático** (mandate-based, charge_automatically). **PayTo** also lists Billing=Yes and Recurring=Yes — whether it supports `charge_automatically` requires verification against the PayTo accept-a-payment guide.
+**Subscriptions/Invoicing**: Pay by Bank, PayNow, and PromptPay support subscriptions/invoicing only via `send_invoice` (not `charge_automatically`). For Swish, the May and November real-time matrices label Subscriptions `send_invoice` only and Invoicing unsupported, while the November method page lists Billing and Invoicing as unsupported. For Pay by Bank, this Billing scope is separate from the Bacs-backed Elements/Payment Intents private preview described below. **Pix** supports automatic recurring via **Pix Automático** (mandate-based, charge_automatically). **PayTo**. The November PayTo profile lists Billing and recurring payments as supported and marks off-session payments unsupported. The separate November payment-method matrix marks future usage supported and footnotes `off_session`-only support for eligible non-card and non-bank-debit methods. Billing `charge_automatically` remains unresolved. See [[source-stripe-payto]] for the dated evidence. The November acceptance capture only indexes variants.
 
 > [!info] Evolving
-> PayTo's billing collection method (`send_invoice` vs `charge_automatically`) is unconfirmed. Verify against the PayTo accept-a-payment guide.
+> PayTo’s Billing collection method (`send_invoice` or `charge_automatically`) remains unresolved. See [[source-stripe-payto]] for the dated PayTo profile and payment-method matrix. The November acceptance selector supplies variant navigation only.
 
 ## Pix Details
 
 **QR code or Pix string** real-time payment — Brazil customers only, BRL currency. Processed via **Ebanx** (Stripe's Brazil partner).
 
-**Business locations**: 35 international merchant countries + BR (invite only, one-time only). Settlement currency varies by account country (BRL/USD/EUR/GBP/CAD/AUD/SGD).
+**Business locations and limits**. The November 7, 2026 Pix overview lists instant provisional access, with Brazilian accounts limited to one-time Pix and BRL settlement. May described Brazilian one-time access as invite-only. November documents a BRL 0.50 minimum and a default per-payment maximum equivalent to USD 3,000, with higher limits for enabled accounts. For Brazilian buyers paying a business outside Brazil, November lists USD 3,000 daily and USD 10,000 monthly per customer per business.
 
-**Transaction limits**: min 0.50 BRL, max 3,000 USD per payment. Single buyer cap: 10,000 USD/month per business.
-
-**Refunds**: 90-day window. Reflected within minutes.
-
-**Disputes**: Limited (fraud, account takeover). **Non-challengeable** — funds removed from Stripe balance automatically.
+**Refunds and disputes**. Request a full or partial refund within 90 days. Refunds return to the original bank account. Refund-request status leaves bank credit unconfirmed. Stripe debits disputed funds after notice of partner acceptance. See [[source-stripe-pix]] for eligibility, timing and dispute conditions.
 
 **IOF tax** (3.5% on international transactions): merchant chooses who pays via `amount_includes_iof` (`never` = customer pays, default; `always` = merchant absorbs). API users must display Ebanx T&C disclosures. Checkout/Elements handle disclosures automatically.
 
@@ -56,15 +52,15 @@ Real-time payment methods let customers directly transfer money from their bank 
 
 **Recurring**: via **Pix Automático** (separate sub-product with mandate-based authorization). Not available for BR accounts.
 
-**Prohibited categories**: crypto businesses, insurance, telehealth/medicine, non-profits/charities.
+**Prohibited categories**. The November 7, 2026 Pix overview lists 12 prohibited MCCs and additional crypto and telehealth or medicine exclusions. It identifies the nonprofit and charity exclusion in Singapore. May used broader category wording. See [[source-stripe-pix]] for dated eligibility and the raw MCC table.
 
 **Connect**: MoR-sensitive. Capability: `pix_payments`.
 
-**Integration**: Checkout, Elements, Direct API. Checkout supports setup mode and subscription mode (redirects to Pix Automático for recurring — unique among real-time methods). `expires_after_seconds` configurable (default 4 hours, max 14 days) via `payment_method_options.pix`. Tax ID (CPF/CNPJ) required by Brazilian law — Elements captures automatically; Direct API must collect explicitly.
+**Integration**. The May 6, 2026 guide documents one-time Pix using Checkout, Elements or Direct API. Checkout’s configurable expiry is up to 14 days, Direct API’s is up to three days, and Elements describes four hours from QR creation. The guide gives CPF/CNPJ requirements for cross-border transactions. See [[source-stripe-pix-accept-payment]] for integration details and the separate Pix Automático route for setup or recurring payments.
 
-**Save/recurring (Pix Automático)**: Checkout and Direct API only (no Elements). Requires `mandate_options` (`amount`, `payment_schedule`) in `payment_method_options.pix`. Direct API uses `stripe.confirmPixSetup()` (SetupIntent) or `stripe.confirmPixPayment()` (PaymentIntent + `setup_future_usage: off_session`). QR data exposed via `next_action.pix_display_qr_code` (`data`, `image_url_svg`, `image_url_png`, `expires_at`, `hosted_instructions_url`). Mandate revocation → `mandate.updated` event → bring customer back on-session.
+**May 2026 save/recurring (Pix Automático).** Checkout and Direct API require a customer-authorized mandate. The save guide illustrates `amount` and `payment_schedule`; the separate customization and subscription guides distinguish defaults from route-specific choices. Direct API uses `stripe.confirmPixSetup()` for setup without charging or `stripe.confirmPixPayment()` with off-session future usage to pay and save. QR instructions are available through the matching Intent's `next_action`. A saved method can charge once per specified cycle, and mandate revocation sends `mandate.updated` and calls for a new on-session mandate. See [[source-stripe-pix-save-payment-details]].
 
-**Pix Automático — recurring mechanics**: customer authorizes mandate (amount + billing cycle) in bank app. Bank sends **3-day pre-debit notification** before each charge — effective billing = schedule + 3 days. PaymentIntent in `processing` during this window; confirmation typically 3 days, up to 7 with retries. Retry on failure: once daily for 3 days. Daily `payment_schedule` prohibited — all payments fail. Default mandate `amount`: 400 BRL. Not available for BR merchant accounts. **Not available for BR-based merchant accounts** (international merchants only).
+**Pix Automático — recurring mechanics**: the customer authorizes the amount and permitted billing cycle in their banking app. After the merchant confirms a recurring PaymentIntent, Stripe triggers the notice process and the bank sends the exact amount and a cancellation option. Stripe waits three days to attempt automatic capture. The PaymentIntent stays `processing` during the wait and retries. Confirmation usually takes three days after notice, up to seven with retries. Stripe retries a retryable capture failure once a day for the next three days by default. An opt-in Stripe Billing retry can run once after one day if the payment never scheduled. The default mandate amount is 400 BRL and a daily schedule causes payments to fail. The separate [[source-stripe-pix|Pix overview]] scopes eligibility to businesses outside Brazil collecting recurring Pix from customers in Brazil. See [[source-stripe-pix-automatico]] for the dated guide and PaymentIntent status scope.
 
 ## PayTo Details
 
@@ -72,17 +68,17 @@ Real-time payment methods let customers directly transfer money from their bank 
 
 **Payment flows**: PayID (unique identifier linked to bank account) or Account + BSB numbers. Customer receives push notification or email to authorize mandate in banking app.
 
-**Delayed notification**: Stripe sends final status within 60 seconds of mandate authorization.
+**Delayed notification**. Stripe typically reports the final payment outcome within 60 seconds after mandate authorization. Check the result for payment success.
 
-**Mandates** via `payment_method_options.payto.mandate_options`: `amount`, `amount_type` (`fixed` or `maximum`), `payment_schedule`, `purpose`, `start_date`, `end_date`, `payments_per_period`. One-off: Stripe auto-sets all fields. Recurring: merchant specifies least permissive terms.
+**Mandates**. Stripe configures a fixed amount and ad hoc cadence for one-off payments, and merchants can override the inferred purpose. Use the least permissive terms for recurring payments. See [[source-stripe-payto]] for the mandate options and cancellation.
 
-**Bank limits**: Several major banks (ANZ, CBA, Westpac, Macquarie) reject mandates over 25,000 AUD and mandates with no maximum amount. Westpac additionally declines high-risk merchant ad-hoc payments over 1,000 AUD. Business account coverage is lower than consumer. 44 supported banks.
+**Bank limits**. Both dated tables list 43 institutions. ANZ, CBA, Westpac and Macquarie reject mandates over AUD 25,000 and mandates without a maximum. Westpac separately declines ad hoc payments over AUD 1,000 for high-risk merchants. Business account coverage is lower than individual-account coverage. Keep bank limits separate from the November AUD 10,000 default account limit and AUD 100,000 method maximum with approval.
 
-**Disputes**: Final and non-appealable. Stripe sends `charge.dispute.created` + `charge.dispute.closed` events.
+**Disputes**. The November PayTo profile supports full disputes only. Disputes are final. Stripe sends `charge.dispute.created` and `charge.dispute.closed`.
 
-**Refunds**: Up to 2 years. Typically minutes; some banks may take several days.
+**Refunds**. Requests can be made up to two years after payment. A PayID refund can fail when the payment billing name differs from the bank-account name. Check refund status. See [[source-stripe-payto]] for the November conditions.
 
-**Connect**: Direct, Destination, Separate charges and transfers. Capability: `payto_payments`.
+**Connect**. The May 6, 2026 PayTo overview lists direct charges, destination charges, and separate charges and transfers. Both dated overviews say the platform requests `payto_payments` for connected accounts using Express or a non-Stripe-hosted Dashboard. The November 7, 2026 overview says that for destination charges the statement uses the platform identity when `on_behalf_of` is omitted and the connected-account identity when it is set.
 
 ## Pay by Bank (UK/Europe) Details
 
@@ -100,27 +96,17 @@ Real-time payment methods let customers directly transfer money from their bank 
 
 ## PayNow Details
 
-**QR code** real-time payment — Singapore customers only, SGD only. SG merchant accounts only. **1.3% pricing** (explicitly stated).
+**QR payments**: Singapore customers and business accounts, domestic SGD. The November 2026 overview lists provisional access and SGD 0.50 to SGD 200,000.00 limits. The May guide quotes 1.3%, and November links to pricing. Stripe balance availability is one day after payment, with bank payout on the account schedule.
 
-**Payout**: T+1 (funds available next day).
+**Refunds**: Full and partial within 90 days. November documents asynchronous `pending` status, processing up to five minutes and no cancellation. Check the Refund object's final status. **Disputes**: Stripe attributes low fraud risk to app authentication and documents no standard dispute or chargeback process.
 
-**Refunds**: **90-day** window. Asynchronous; `refund.updated`/`refund.failed` webhook events.
+**QR authorization**: One-hour expiry. On `payment_intent_payment_attempt_expired`, the guide routes the customer back to create a new PaymentIntent and QR. Reusing a successful QR is rejected.
 
-**QR code expiration**: 1 hour — error `payment_intent_payment_attempt_expired`. Must webhook customer back to create new PaymentIntent/QR code.
+**Billing and UI**: Invoices and subscriptions use `send_invoice`. November lists the Payment Element at product level. Terminal is public preview and requires manual listing.
 
-**Statement descriptor**: **cannot be customized** — `STRIPE PAYMENTS SINGAPORE PTE. LTD.` always shown.
+**Connect and references**: PayNow supports direct, destination and separate charges and transfers. Enable it on the platform, request `paynow_payments` for connected accounts accepting it, and set the correct MCC for accounts without the full Stripe Dashboard under the November guidance. Connect charge type controls the merchant name shown in the app flow. The bank statement has Stripe’s fixed name, amount and Stripe-generated reference. See [[source-stripe-paynow]] for the separate statement field, eligibility and capability rules.
 
-**Duplicate protection**: QR code rejected after first successful use.
-
-**No disputes** — QR authentication prevents chargebacks.
-
-**Billing**: subscriptions and invoices via `send_invoice` only (no auto-charge). Also supports Terminal (in-person, must manually list).
-
-**Prohibited categories**: Petroleum/Fuel Dealers/Service Stations/Automated Fuel Dispensers.
-
-**Connect**: Direct, Destination, Separate charges and transfers. Capability: `paynow_payments`. Must set correct MCC for connected accounts.
-
-**Integration**: Checkout and Direct API paths — no Elements path. Direct API uses `stripe.confirmPayNowPayment(clientSecret)` (PayNow-specific, not generic `confirmPayment`); renders QR code inline, no redirect. Page must stay open while customer scans; fulfillment via `payment_intent.succeeded` webhook.
+**Integration**. The May 6, 2026 acceptance guide covers Checkout and Direct API. Its Direct API example displays an inline QR using `stripe.confirmPayNowPayment` and verifies successful payment on the server. November links both variants. The separate [[source-stripe-paynow|PayNow method overview]] lists Payment Element and excludes Express Checkout Element. See [[source-stripe-paynow-accept-payment]] for the May return and payment-state boundaries.
 
 ## UPI Details
 
@@ -128,29 +114,29 @@ Real-time payment methods let customers directly transfer money from their bank 
 
 **Transaction limits**: 1 INR – 100,000 INR. Recurring max: **15,000 INR**.
 
-**Refunds**: **60-day** window. Asynchronous — up to 7 business days.
+**UPI refunds.** The two 2026 method captures specify a 60-day window and asynchronous processing up to seven business days. Stripe returns a failed refund to the merchant's Stripe balance, and the merchant arranges an alternative refund.
 
 **Disputes**: Supported but **non-contestable** — funds removed from Stripe balance immediately on acceptance.
 
-**Recurring**: UPI AutoPay (e-mandate). Billing: Invoicing, Subscriptions (no `send_invoice` restriction mentioned).
+**Recurring.** UPI AutoPay uses a customer-authorized e-mandate. The May and November direct overviews list Invoicing, Payment Links and Subscriptions without specifying a Billing collection mode.
 
-**36 merchant countries** (US, AU, SG, most of Europe).
+**Business locations.** Both direct overviews list 35 Stripe account countries, separate from India customer location. See [[source-stripe-upi]].
 
 **Connect**: Yes.
 
-**Integration**: 4 paths — Checkout, Checkout Sessions API, Payment Intents API, Direct API. Checkout supports setup mode and subscription mode (e-mandate). QR expires in **5 minutes** (`payment_intent.payment_failed` on expiry). Off-session/recurring notifications are **delayed** (unlike one-time which are immediate).
+**Acceptance (May 6, 2026)**: Checkout, Elements with Checkout Sessions and Elements with Payment Intents. Checkout describes payment, setup and subscription with UPI AutoPay e-mandates and a five-minute QR window with `payment_intent.payment_failed` on expiry. The guide distinguishes immediate one-off and saving-case notifications from delayed off-session or recurring outcomes when the customer is absent. See [[source-stripe-upi-accept-payment]] for acceptance and [[source-stripe-upi-set-up-future-payments]] for the separate Direct API saving paths.
 
-**Save/recurring**: Checkout (setup mode) or Direct API via `stripe.confirmUpiSetup()` (SetupIntent) or PaymentIntent + `setup_future_usage: off_session`. Full billing address required (name, Indian address). `next_action.upi_handle_redirect_or_display_qr_code` (parallel to Swish). On-session saved payments still redirect to UPI app. Detach via `detachPaymentMethod` → `mandate.updated` + `payment_method.detached` events.
+**Save/recurring (May 6, 2026 guide).** With customer permission and a mandate, save UPI through hosted Checkout setup mode, a Direct API SetupIntent confirmed with `stripe.confirmUpiSetup()`, or a UPI PaymentIntent confirmed with `setup_future_usage: 'off_session'` to initiate payment and save. The Direct API samples show a billing name and Indian address, including `line2`, without specifying requiredness for each field. For a later PaymentIntent, reuse the PaymentMethod ID and set `off_session: true` when the customer is outside checkout. On-session payments still redirect to the UPI app. The optional manual flow uses `upi_handle_redirect_or_display_qr_code` when the PaymentIntent requires action. Detach emits `mandate.updated` and `payment_method.detached`. See [[source-stripe-upi-set-up-future-payments]].
 
-**UPI AutoPay (e-mandate) — RBI requirements**: (1) AFA: customer enters UPI PIN to authorize mandate setup. (2) **24-hour pre-debit notification** before each charge (SMS/app with exact amount + cancellation option) — Stripe sends automatically. Initial charge window: 5 minutes after setup. SetupIntent path: Stripe debits then immediately refunds. Mandate defaults: `amount` = 15,000 INR, `amount_type` = `maximum`, `end_date` = 10 years. Scheme max: 40 years. Adaptive Pricing: do NOT pass mandate params.
+**UPI AutoPay (May and November 2026 guides)**: The customer authorizes setup with a UPI PIN. Stripe handles the initial charge window of up to five minutes. A SetupIntent debits and immediately refunds the customer to avoid AFA on the intended later charge. The guides attribute to RBI a requirement that customers receive an SMS or app notice with the exact amount and cancellation option at least 24 hours before each recurring charge. After merchant confirmation of the recurring PaymentIntent, Stripe sends the notice and waits at least 24 hours before attempting the charge. Sending alone leaves delivery and compliance unverified. The default and automatic charge maximum are 15,000 INR. `amount_type` defaults to `maximum`, and expiration defaults to 10 years from creation, with a 40-year scheme maximum from now. For a customer-initiated Adaptive Pricing subscription, automatic creation uses a supported selected currency. Explicit Checkout Session mandate parameters take precedence. See [[source-stripe-upi-autopay]].
 
 ## PromptPay Details
 
-**QR code** real-time payment — Thailand customers only, THB only. TH merchant accounts only. Instant confirmation.
+**PromptPay QR payments.** Thailand customers in THB, with instant Stripe confirmation on completion. May and November list TH as the standard Stripe account location. November separately describes a US-based Stripe-account private-preview waitlist, with Stripe review and contact for eligible applicants. See [[source-stripe-promptpay]].
 
 **Statement descriptor**: ignored — `STRIPE PAYMENTS (THAILAND) LTD` shown with unique reference code.
 
-**Refunds**: customer must provide bank account number for routing — Stripe emails customer to request. Refund fails without it.
+**Refunds.** Stripe writes to the email provided at PaymentIntent confirmation for the number of the account that originally funded the payment, then processes the refund automatically after receiving it. Without that information the refund might fail. See [[source-stripe-promptpay]].
 
 **Duplicate QR risk**: re-scanning a completed QR **can deduct funds again** (unlike PayNow which rejects duplicate scans). Stripe reimburses excess to merchant balance; merchant must refund customer outside Stripe.
 
@@ -160,27 +146,25 @@ Real-time payment methods let customers directly transfer money from their bank 
 
 **Connect**: Yes. No payout timing specified.
 
-**Integration**: Checkout and Direct API only — no Elements path. Direct API uses `stripe.confirmPromptPayPayment()` (PromptPay-specific, parallel to PayNow's `confirmPayNowPayment`); opens inline QR modal. Only requires `billing_details.email` (simpler than PayNow or Pix). Fulfillment via `payment_intent.succeeded` webhook.
+**Integration**: The May 2026 [[source-stripe-promptpay-accept-payment|acceptance guide]] describes Checkout and Direct API. Its Direct API example uses a server-created THB PaymentIntent, client secret and `stripe.confirmPromptPayPayment()`. Email is the only billing-detail field in the new-method example. Confirm completion server-side through `payment_intent.succeeded`. The November acceptance selector links Checkout and Direct API. The separate method overviews list Elements at product level, exclude Express Checkout Element and limit Mobile Payment Element to iOS.
 
 ## Swish Details
 
-**Mobile redirect + desktop QR** — Sweden customers only, SEK only.
+**Mobile redirect or desktop QR** for Swedish customers using Swish and Swedish BankID. The November 2026 overview lists single-use B2C payments of SEK 3–150,000 and a three-minute authorization window. Expiry returns the PaymentIntent to `requires_payment_method` and successful payment reaches `succeeded`. Stripe reports the outcome immediately and follows its standard payout schedule.
 
-**Stripe as merchant of record** — unique among real-time methods: Stripe's name shown as payment recipient in Swish app and as statement descriptor. Merchant name appears in message field only. Factoring addendum in Swish legal terms applies.
+**Stripe is the merchant of record** under the Swish factoring addendum and appears as recipient in the Swish app. The November 2026 overview distinguishes the automatic business-name Message, the conditional PPRO statement-descriptor forwarding of a custom reference, and the provider-returned bank reference. PPRO or the bank can display a different descriptor. See [[source-stripe-swish]] for the field and Connect scope.
 
 **27 merchant countries** — European focus only (no US/AU/SG).
 
-**Refunds**: **365-day** window. Full and partial. Multiple partials supported. Takes a few minutes.
+**Refunds** can be full or partial up to 365 days after payment completion, including multiple partials totaling up to the original payment amount. They usually take a few minutes. Check the asynchronous result using the Refund object's status or `refund.updated`/`refund.failed`.
 
-**No disputes. No recurring. No billing/invoicing.**
-
-**Product support**: Connect, Checkout (not subscription/setup), Elements (not Express Checkout Element), Payment Links only.
+**Product scope** in the November 2026 Swish overview includes Connect, Checkout (payment mode), Payment Links, Embedded form, Payment Element, and in-app payments. It excludes recurring payments, standard disputes, Billing, Invoicing, Express Checkout Element, and Checkout setup/subscription modes. Both dated real-time matrices separately show Payment Links unsupported and Subscriptions `send_invoice` only, with Invoicing unsupported.
 
 **Prohibited categories**: Wine/Champagne producers, alcoholic beverage wholesalers, package liquor stores, pawn shops, art dealers, real estate rental agents, legal services/attorneys, precious metals/jewelry, digital wallet top-ups.
 
 **Connect**: Direct, Destination, Separate charges and transfers.
 
-**Integration**: Checkout, Elements, Direct API, iOS/Android SDK. Direct API requires displaying a legal notice that Stripe is the merchant of record (EN/SE/other languages); Checkout and Elements handle automatically. `next_action.swish_handle_redirect_or_display_qr_code` exposes `hosted_instructions_url`, `qr_code.data`, `qr_code.image_url_png/svg`. Optional `payment_method_options.swish.reference` (order reference shown in Swish app). Desktop QR refreshable up to 20 times. Cancelable before expiry.
+**Integration** — The May 2026 guide covers Checkout, Elements, Direct API, and custom iOS, Android and React Native. Direct API and the custom mobile guides require an on-screen localized claim-acquisition notice before authorization. Stripe displays it for hosted forms and UI components such as Checkout and Payment Element. Direct API gives QR and hosted instructions in `next_action.swish_handle_redirect_or_display_qr_code`, plus an optional Swish order reference. The May desktop Elements QR can be refreshed up to 20 times. The guide describes merchant cancellation before expiry. See [[source-stripe-swish-accept-payment]].
 
 ## Bizum Details
 
@@ -199,22 +183,22 @@ Real-time payment methods let customers directly transfer money from their bank 
 ## Sources
 
 - [[source-stripe-real-time-payments]] — overview: 5 methods, product/API support matrices, PayTo standout
-- [[source-stripe-upi]] — UPI: India QR/redirect, 60-day refunds, 15k INR recurring limit, non-contestable disputes, UPI AutoPay
-- [[source-stripe-upi-accept-payment]] — UPI integration: 4 paths, Checkout setup/subscription mode, 5-min QR expiry, delayed off-session notifications
-- [[source-stripe-upi-set-up-future-payments]] — UPI save/recurring: confirmUpiSetup(), full address required, next_action QR data, on-session still redirects
-- [[source-stripe-upi-autopay]] — UPI AutoPay: RBI AFA + 24-hour pre-debit notification, mandate defaults (15k INR, 10yr), Adaptive Pricing caveat
-- [[source-stripe-pix]] — Pix: Brazil QR/string, Ebanx partner, IOF tax, Pix Automático recurring, non-challengeable disputes
-- [[source-stripe-pix-accept-payment]] — Pix integration: 3 paths, setup/subscription mode in Checkout, expires_after_seconds, CPF/CNPJ required
+- [[source-stripe-upi]] — May and November direct UPI overviews with 35 account locations, app authorization, AutoPay limits, refund outcomes and non-contestable disputes after bank or provider acceptance
+- [[source-stripe-upi-accept-payment]] — May 2026 UPI acceptance guide covering Checkout and two Elements APIs, with November variant navigation
+- [[source-stripe-upi-set-up-future-payments]] — May 2026 UPI setup and payment paths, consent, address examples, later payments and QR handling. The November index links Checkout and Direct API variants.
+- [[source-stripe-upi-autopay]] — May and November UPI AutoPay guides on setup PIN, recurring PaymentIntent notice, mandate limits, and conditional Adaptive Pricing
+- [[source-stripe-pix]] — dated Pix product overviews, including Brazilian QR payments, country and account eligibility, limits, refunds and disputes, cross-border IOF, and Pix Automático mandates.
+- [[source-stripe-pix-accept-payment]] — May 2026 Pix one-time acceptance guide for Checkout, Elements and Direct API, with expiry and cross-border tax-ID scope. November links the variants.
 - [[source-stripe-pix-save-payment-details]] — Pix save/recurring: Checkout + Direct API, confirmPixSetup/confirmPixPayment, next_action.pix_display_qr_code, mandate revocation
-- [[source-stripe-pix-automatico]] — Pix Automático: 3-day pre-debit notification, mandate customization fields, retry logic, daily schedule prohibited
-- [[source-stripe-promptpay]] — PromptPay: TH-only QR, refund requires customer bank input, duplicate QR risk, send_invoice only, iOS Mobile Element
-- [[source-stripe-promptpay-accept-payment]] — PromptPay integration: Checkout + Direct API, confirmPromptPayPayment(), email only, inline QR modal
-- [[source-stripe-swish]] — Swish: SE-only mobile redirect + desktop QR, Stripe as MoR, 365-day refunds, no billing, extensive prohibited categories
-- [[source-stripe-swish-accept-payment]] — Swish integration: 3 paths + mobile SDK, Direct API legal notice required, next_action QR data, 20 QR refreshes, cancelable
-- [[source-stripe-payto]] — PayTo: Australia mandate-based, disputes (final), recurring, 44 banks, mandate field details
+- [[source-stripe-pix-automatico]] — Pix Automático: bank pre-debit notice, mandate defaults, default retries after retryable capture failures and a separate opt-in Billing retry for unscheduled payments (May and November 2026).
+- [[source-stripe-promptpay]] — PromptPay QR payments for Thai customers in THB, standard TH accounts and November US private preview, with refund and duplicate-payment guidance
+- [[source-stripe-promptpay-accept-payment]] — May 2026 Checkout and Direct API implementations for THB QR payments and verified completion. The November capture indexes those two variants.
+- [[source-stripe-swish]] covers the May and November 2026 overviews, Swedish customer eligibility, authorization states, asynchronous refunds, and PPRO reference and product scope.
+- [[source-stripe-swish-accept-payment]] — May 2026 Swish implementation guide with custom-flow notice and authorization outcomes, plus the November 2026 implementation selector.
+- [[source-stripe-payto]] — May and November 2026 Australian PayTo overviews, including 43 listed institutions, mandate terms, refund and dispute conditions, and Connect statement identity.
 - [[source-stripe-pay-by-bank]] — May and November 2026 Pay by Bank overviews for bank-account eligibility, authorized-transfer timeout, refunds, Connect activation and the Bacs-backed recurring private preview.
 - [[source-stripe-pay-by-bank-accept-payment]] — May 2026 Checkout and web Elements/Payment Intents guide with dated configuration and outcome qualifications. November 2026 selector indexes Checkout, both Elements API paths, iOS and Android.
-- [[source-stripe-paynow]] — PayNow: SG-only QR code, 1.3% pricing, T+1 payout, 90-day refunds, no statement descriptor, Terminal support
-- [[source-stripe-paynow-accept-payment]] — PayNow integration: Checkout + Direct API, confirmPayNowPayment(), inline QR (no redirect)
+- [[source-stripe-paynow]] — May and November 2026 PayNow overviews for Singapore SGD QR payments, balance availability and scheduled payout, refunds, Connect and Terminal preview.
+- [[source-stripe-paynow-accept-payment]] — May 2026 Checkout and Direct API guide with dated return, inline QR and verified payment outcome details. November links the two variants.
 - [[source-stripe-bizum]] — Bizum overview, May and November 2026 full captures: Spain customer/EUR scope, identity onboarding, disputes/refunds, and dated Connect No-to-Yes change with platform and connected-account `bizum_payments` capability and charge-type descriptor rules; pending capability is not active acceptance.
 - [[source-stripe-bizum-accept-payment]] — Bizum acceptance: 2026-05-06 detailed Checkout, Elements, Direct API and mobile guide; 2026-11-07 web-variant navigation index only

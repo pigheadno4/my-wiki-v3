@@ -1,0 +1,208 @@
+{
+  "job_id": "payments-vault-and-forward",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-vault-and-forward-2026-11-07.md",
+  "raw_sha256": "183d78a1fef151cfd06afb658b0199f150bca9745b3947817124b0af435b5f43",
+  "prior_raw_path": "raw/stripe-vault-and-forward-2026.md",
+  "prior_raw_sha256": "7a595022e450dd96ef73bac8fa5af948c9492fdce7c9cd7877b0bff209f5dcaa",
+  "source_targets": [
+    "wiki/sources/source-stripe-vault-and-forward.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-vault-and-forward.md": "eae1a6b7eb23a2af79d30bb8073fd667cf98bc7d60171303a9dce25aeba1bf16"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-vault-and-forward-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 740
+      }
+    ],
+    "raw/stripe-vault-and-forward-2026.md": [
+      {
+        "start": 1,
+        "end": 762
+      }
+    ],
+    "wiki/sources/source-stripe-vault-and-forward.md": [
+      {
+        "start": 1,
+        "end": 64
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/a374530293cfb52a74991014/content.diff": [
+      {
+        "start": 1,
+        "end": 537
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 22
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 561,
+        "end": 567
+      },
+      {
+        "start": 574,
+        "end": 581
+      },
+      {
+        "start": 704,
+        "end": 707
+      },
+      {
+        "start": 712,
+        "end": 715
+      }
+    ],
+    "wiki/concepts/stripe-vault-and-forward.md": [
+      {
+        "start": 1,
+        "end": 58
+      }
+    ],
+    "wiki/concepts/stripe-orchestration.md": [
+      {
+        "start": 8,
+        "end": 23
+      }
+    ],
+    "wiki/sources/source-stripe-forwarding-third-party.md": [
+      {
+        "start": 14,
+        "end": 43
+      }
+    ],
+    "wiki/sources/source-stripe-forwarding-token-vault.md": [
+      {
+        "start": 14,
+        "end": 56
+      }
+    ],
+    "raw/stripe-payments-forwarding-token-vault-2026-11-07.md": [
+      {
+        "start": 7,
+        "end": 13
+      },
+      {
+        "start": 107,
+        "end": 120
+      }
+    ],
+    "raw/stripe-forwarding-token-vault-2026.md": [
+      {
+        "start": 8,
+        "end": 12
+      },
+      {
+        "start": 105,
+        "end": 113
+      }
+    ],
+    "raw/stripe-payments-forwarding-third-party-processors-2026-11-07.md": [
+      {
+        "start": 7,
+        "end": 28
+      },
+      {
+        "start": 197,
+        "end": 202
+      },
+      {
+        "start": 244,
+        "end": 256
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "The Vault and Forward API is available only to businesses with a dedicated Stripe account team. Contact your account team to request access.",
+      "location": "raw/stripe-payments-vault-and-forward-2026-11-07.md:33"
+    },
+    {
+      "text": "Accepted object types include: PaymentMethod (`pm_`), Source (`src_`) with an underlying card, Card (`card_`), and Issuing Card (`ic_`).",
+      "location": "raw/stripe-payments-vault-and-forward-2026-11-07.md:72"
+    },
+    {
+      "text": "Device Primary Account Numbers (DPANs) and Merchant Primary Account Numbers (MPANs).",
+      "location": "raw/stripe-payments-vault-and-forward-2026-11-07.md:118"
+    },
+    {
+      "text": "Apple Pay payment methods always use DPANs",
+      "location": "raw/stripe-payments-vault-and-forward-2026-11-07.md:153"
+    },
+    {
+      "text": "The Vault and Forward API treats any response from the destination endpoint as a `success` and returns a `200`",
+      "location": "raw/stripe-payments-vault-and-forward-2026-11-07.md:734"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Apple Pay Merchant Primary Account Numbers (MPANs) aren\u2019t supported.",
+      "location": "raw/stripe-vault-and-forward-2026.md:107"
+    },
+    {
+      "text": "The Vault and Forward API treats any response from the destination endpoint as a `success` and returns a `200`",
+      "location": "raw/stripe-vault-and-forward-2026.md:756"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The merchant can collect a PaymentMethod with Payment Element or directly with a custom frontend. Stripe vaults details and forwarding accepts a PaymentMethod without Customer attachment. For a configured endpoint, the merchant server submits card object ID, exact URL, typed blank placeholders and replacement fields, plus the destination credentials on each API request. Stripe inserts vault card data and sends the outbound request, optionally applying Card Account Updater where enabled/available. It synchronously waits less than one minute for a third-party processor response, redacts identified PCI-sensitive data, stores the redacted response and relays a ForwardingRequest (old 18-28, 42-64, 245-249, 289-293, new 35-54, 68-87, 243-247, 288-292).",
+    "Vault and Forward does not confirm or capture PaymentIntents. The separate attempt on Stripe can cause duplicate capture after an external capture, and direct third-party authorization leaves refunds/disputes with that processor. Destination response and actual tokenization/authorization/capture/settlement are separate observations (old 28, 287-293, 756, new 54, 286-292, 734).",
+    "Link credentials are excluded and Link card payments should be routed to Stripe. A CVC expires with time or use, can be consumed by SetupIntent-confirmation validation, and may need re-collection if required. Google Pay FPAN uses standard card replacements and Google Pay DPAN uses network token replacements (old 30-40, 103-171, new 56-66, 114-182).",
+    "Both captures separate eligible forwarding destinations/countries from where a Stripe account may be registered. Setup needs test account IDs and production destination config. The general endpoint uses HTTPS and JSON/XML request/response and keeps hashed and encrypted versions of destination API keys. Keys shared for endpoint enablement are PGP-protected. Incoming request headers/body are encrypted and shown as encrypted_request in Workbench, and restricted forwarding write and optional read permissions serve different operations (old 355-365, 429-433, 558-562, 607-617, 710-720, 758-762, new 338-348, 420-424, 549-553, 598-608, 701-711, 736-740)."
+  ],
+  "substantive_changes": [
+    "November adds the dedicated account-team prerequisite and moves previously generic support contact instructions for access, endpoint enablement, CVC preservation, wallet forwarding and multi-processor 3DS to the account team (old 14-16, 36-40, 105-110, 287, 355-361, 607-615, new 31-33, 62-66, 116-121, 286, 338-344, 598-606).",
+    "The `payment_method` parameter now explicitly accepts PaymentMethod, card-backed Source, Card and Issuing Card object IDs (old 42-49, new 68-75). This is a new explicit enumeration, without claiming the underlying implementation changed November 7.",
+    "November newly lists Apple Pay MPAN support, while retaining its DPAN-only detection and replacement descriptions (old 103-110 and 140-167, new 114-121 and 151-178). Treat this as a documented eligibility wording change with an unresolved integration detail.",
+    "November adds Adyen Checkout v72 payments and storedPaymentMethods, Chase Orbital v4 profile, a second GMO ExecTran hostname and Yuno sandbox and live forwarding destinations. The endpoint list remains exact-route-based and country restrictions still apply (old 363-429, new 346-420).",
+    "November adds a banner and email request form for the separate Stripe Orchestration preview, describing Stripe-managed integration functions there. This is a navigation/access addition about Orchestration. The new text flow diagram makes the existing vault/server/processor/redaction sequence explicit. Node-to-cURL, JSON/request illustration and formatting revisions do not establish new SDK/API requirements (old 6-20, 65-95, 289-353, new 7-47, 89-106, 288-336)."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep May 11 raw and its support contact, DPAN-only Apple Pay, prior endpoint versions and ordinary example context dated. In November preserve dedicated-team access and no evidence of successful account enablement, and keep the MPAN inconsistency visible.",
+    "Preserve exact typed placeholders, client/server and processor roles, destination key controls, separate idempotency keys and retry conditions, timed CVC expiration/consumption, Link exclusion, optional read permission, destination-response condition, identified-only redaction and payment outcome boundary.",
+    "Root index 7 routes to Stripe index 561-567, 574-581, 704-707 and 712-715. Keep source 57-64 to the Vault and Forward and Payment Intents concepts and May raw, concept 54-58 back to the main source and specialist references, with separate Orchestration navigation. Relevant specialist caveats were checked at their targeted paths above, not generalized beyond their own evidence."
+  ],
+  "conflicts": [
+    "Current source 13 and concept 10 present May's general support access as current. November 31-33 explicitly restricts this general guide to businesses with a dedicated account team, unlike old 14-16. Related November specialist guides still say contact Stripe support for the in-house vault (raw/stripe-payments-forwarding-token-vault-2026-11-07.md:9-13) and third-party processor (raw/stripe-payments-forwarding-third-party-processors-2026-11-07.md:9-13, 197-199). Date and scope all their contact wording and avoid inferring who qualifies in practice.",
+    "Source 32 and 45 and concept 42 reflect May's Apple Pay DPAN-only detection and exclusion (old 103-110 and 140-167). November new 116-121 lists both DPAN and MPAN, but the same raw states Apple Pay PaymentMethods always use DPAN and specifies replacement fields only for Apple Pay DPAN (new 151-178, 201-241). Preserve the new advertised support and intra-capture contradiction, and do not assign MPAN fields, detection or route from the DPAN example.",
+    "Source 37's Stripe always returns 200 is an older summary error. Both raws limit forwarding HTTP 200 to the case where a destination response was received, including the example where a destination returns 400 (old 291-293 and 756, new 290-292 and 734). The general example has response_details.status at new 321-326. Both own-vault captures contain a same-response-code phrase beside an example of upstream 400 to HTTP 200 (raw/stripe-forwarding-token-vault-2026.md:108-110 and raw/stripe-payments-forwarding-token-vault-2026-11-07.md:111-113). Concept 23 correctly preserves the tension. The third-party example checks response_details.status and catches errors separately (raw/stripe-payments-forwarding-third-party-processors-2026-11-07.md:244-256).",
+    "Source 40 makes a general retry instruction. The primary raw explicitly requires a new Stripe key when modifying the requested body or header, recommends a new key for retry after errors reaching the destination, and calls for separate keys at the Stripe and underlying third-party layers (old 95-97 and new 106-108). Source 55 and concept 52 should distinguish required create/write from optional retrieve/list/read (old 714-718 and new 705-709)."
+  ],
+  "unresolved_questions": [
+    "The November capture does not give specific MPAN detection/replacement procedure despite its support list. Account-team guidance and actual eligibility, processor response and successful delivery or payment were not established by this offline comparison."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-vault-and-forward.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-vault-and-forward.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Revise 13 and 15-24 for dedicated account-team prerequisite and accepted object IDs, then expose exact configured destination and separate destination-country versus account-registration scopes (new 31-33, 68-87, 338-420 and 422-597).",
+        "Date Apple Pay differences at source 32 and 45 and expose the new internal support-versus-detection discrepancy. Route the new supported endpoint rows and Orchestration preview separately (new 9-22, 114-121, 151-178 and 352-418).",
+        "Correct baseline transport outcome, idempotency, CVC and restricted-key scope at 34-41 and 53-55, preserve PaymentIntent confirmation/capture and duplicate payment boundary, and keep the reciprocal concept and historical raw route (old 28-40, 95-97, 287-293, 714-718, 756, new 54-66, 106-108, 286-292, 705-709, 734)."
+      ],
+      "conflicts": [
+        "Current source 13 and concept 10 present May's general support access as current. November 31-33 explicitly restricts this general guide to businesses with a dedicated account team, unlike old 14-16. Related November specialist guides still say contact Stripe support for the in-house vault (raw/stripe-payments-forwarding-token-vault-2026-11-07.md:9-13) and third-party processor (raw/stripe-payments-forwarding-third-party-processors-2026-11-07.md:9-13, 197-199). Date and scope all their contact wording and avoid inferring who qualifies in practice.",
+        "Source 32 and 45 and concept 42 reflect May's Apple Pay DPAN-only detection and exclusion (old 103-110 and 140-167). November new 116-121 lists both DPAN and MPAN, but the same raw states Apple Pay PaymentMethods always use DPAN and specifies replacement fields only for Apple Pay DPAN (new 151-178, 201-241). Preserve the new advertised support and intra-capture contradiction, and do not assign MPAN fields, detection or route from the DPAN example.",
+        "Source 37's Stripe always returns 200 is an older summary error. Both raws limit forwarding HTTP 200 to the case where a destination response was received, including the example where a destination returns 400 (old 291-293 and 756, new 290-292 and 734). The general example has response_details.status at new 321-326. Both own-vault captures contain a same-response-code phrase beside an example of upstream 400 to HTTP 200 (raw/stripe-forwarding-token-vault-2026.md:108-110 and raw/stripe-payments-forwarding-token-vault-2026-11-07.md:111-113). Concept 23 correctly preserves the tension. The third-party example checks response_details.status and catches errors separately (raw/stripe-payments-forwarding-third-party-processors-2026-11-07.md:244-256).",
+        "Source 40 makes a general retry instruction. The primary raw explicitly requires a new Stripe key when modifying the requested body or header, recommends a new key for retry after errors reaching the destination, and calls for separate keys at the Stripe and underlying third-party layers (old 95-97 and new 106-108). Source 55 and concept 52 should distinguish required create/write from optional retrieve/list/read (old 714-718 and new 705-709)."
+      ],
+      "reason": "Documented access, accepted object IDs, Apple Pay wording and endpoint changes require a refresh, and the existing always-200 claim needs an independent baseline correction."
+    }
+  ],
+  "answers": {
+    "Q1": "The November 7 capture at https://docs.stripe.com/payments/vault-and-forward describes a business with a dedicated Stripe account team requesting access and configuring an allowed destination, subject to destination and Stripe-account-country boundaries. The merchant collects a PaymentMethod or otherwise references a permitted vault object. Its server sends the Stripe object ID, exact configured URL, typed empty card placeholders and replacements, and destination credentials. Stripe inserts the card data, optionally attempts an enabled Card Account Updater refresh, sends the request, waits synchronously for the third-party response for less than a minute, redacts identified PCI-sensitive data, stores the redacted response and relays a ForwardingRequest. When a destination responds, even with 400, the guide illustrates forwarding HTTP 200 with downstream code and message in the body. The ForwardingRequest example separately shows response_details.status. The server must distinguish these from actual processor or vault outcome. Stripe does not confirm or capture a PaymentIntent in this flow, and the third-party processor handles refunds and disputes for its authorization. CVC may expire or be consumed, and Link credentials are excluded. May describes the same core mechanics with a general support contact; source-stripe-vault-and-forward.md still reflects that access wording and overstates the 200 response (old raw lines 14-40, old raw lines 245-293 and old raw lines 748-762, compared with new raw lines 31-66, new raw lines 243-292 and new raw lines 713-740).",
+    "Q2": "For https://docs.stripe.com/payments/vault-and-forward, source-stripe-vault-and-forward.md needs a dated update. May 11 routes access to Stripe support and lists Apple Pay DPAN only. November 7 requires a dedicated account team, lists PaymentMethod, card-backed Source, Card and Issuing Card object IDs, and lists Apple Pay DPAN and MPAN even though its detection still says always DPAN and replacement instructions cover DPAN only (old raw lines 14-16, old raw lines 42-49, old raw lines 103-110 and old raw lines 140-167, versus new raw lines 31-33, new raw lines 68-75, new raw lines 114-121 and new raw lines 151-178). November adds Adyen v72 payments/storedPaymentMethods, Chase Orbital profile, an additional GMO endpoint and Yuno sandbox/live. Orchestration email request navigation is separate; the flow diagram and cURL/JSON changes illustrate rather than revise forwarding behavior. Restore the pre-existing destination-response qualification on HTTP 200, retain the own-vault wording/example tension and the specialist support wording as dated, and preserve the reciprocal Vault and Forward concept and existing specialist and May raw routes (old raw lines 363-429 and old raw lines 748-762, new raw lines 346-420 and new raw lines 713-740)."
+  }
+}

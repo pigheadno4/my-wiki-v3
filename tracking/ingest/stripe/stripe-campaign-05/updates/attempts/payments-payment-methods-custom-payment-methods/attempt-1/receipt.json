@@ -1,0 +1,163 @@
+{
+  "job_id": "payments-payment-methods-custom-payment-methods",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Docs — Custom payment methods\"\ntype: source\ndate_ingested: 2026-05-08\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/payment-methods/custom-payment-methods\"\nraw_files:\n  - \"stripe-payments-payment-methods-custom-payment-methods-2026-11-07.md\"\n  - \"stripe-custom-payment-methods-2025.md\"\ntags: [stripe, custom-payment-methods, cpmt, third-party, payment-element, connect, compliance]\n---\n\n## Overview\n\nCustom payment methods surface payment options handled by a third-party payment service provider (PSP). The merchant or PSP processes the payment, completes the purchase and reconciles orders. Stripe can receive optional Payment Records for unified reporting. Stripe Billing separately manages subscription states and tracks external payment success while the payment method and charges remain with the external processing flow. Stripe's role in recording or tracking leaves charges, refunds, disputes, settlement and funds flows with the external processor and merchant. See November lines 7–11, 73–75 and 116–129 and May lines 6–10, 78–80 and 131–144.\n\n## Custom types and PaymentMethod instances\n\nCreate the custom payment method type in the Dashboard and store its `cpmt_` ID for later use. The type itself is unavailable through the API. The November guide directs Payment Element users to a preset and custom front ends or Payment Methods API users to a custom display name and logo. The May 8, 2026 guide described more than 50 presets. The November 7, 2026 guide retains presets without specifying the catalog count.\n\nCreate and retrieve custom PaymentMethod instances through the Payment Methods API. At creation pass `type: 'custom'` and the Dashboard type ID in `custom[type]`. The new guide illustrates an HTTP request and the earlier guide shows a Node SDK call with the same type distinction. See November lines 13–55 and May lines 12–66.\n\n## Product support by capture\n\n| Integration | May 8, 2026 | November 7, 2026 |\n| --- | --- | --- |\n| Checkout | Unsupported | Supported at product level |\n| Express Checkout Element | Unsupported | Private preview |\n| Payment Links | Unsupported | Unsupported |\n| Connect, Payment Element, Mobile Payment Element, Subscriptions, Invoicing and Customer Portal | Supported | Supported |\n\nThe November overview says Express Checkout Element can show custom payment method buttons alongside wallets including Apple Pay and Google Pay. It links to the separate implementation section. The product row does not specify which Checkout UIs surface custom methods, and the Express Checkout footnote applies to that Element. See November lines 57–75, May lines 68–80, and [[stripe-express-checkout-element#Custom Payment Methods in v9.14|Express Checkout preview and typed integration]].\n\n## Connect\n\nA platform can create a custom PaymentMethod in a connected account using either the platform's custom type or the connected account's type. The May Node example supplies the connected account ID in the SDK request option `stripeAccount`. November's cURL example sets the HTTP `Stripe-Account` header. Both scope the request to the connected account. See May lines 82–102 and November lines 77–87.\n\n## Merchant and provider responsibilities\n\nThe PSP operates and supports the service. The merchant maintains their own direct PSP integration and active agreement, configures the custom method and redirect if applicable, obtains branding and data rights, and presents the correct PSP to the customer. The guides prohibit the specified crypto methods and other crypto-related methods in Indonesia and Thailand and require adherence to provider Marks guidance, including permission before changing Marks and accurate identification of the underlying method.\n\nIf the PSP agreement ends or Stripe notifies the merchant of a prohibition or documents the prohibition, immediately remove the custom payment method and disable the PSP integration. The guides separately describe Stripe's ability to remove or block a method. If Stripe gives notice of removal, the merchant must immediately remove the method from their code. If they leave it in place, it no longer renders to customers. See May lines 104–149 and November lines 89–134.\n\n## Related Pages\n\n- [[stripe-custom-payment-methods]] — Custom payment methods concept and implementation routes\n- [[source-stripe-payment-element-custom-payment-methods]] — Payment Element implementation\n- [[stripe-express-checkout-element]] — Express Checkout capabilities and dated preview\n- [[source-stripe-subscriptions-third-party]] — Billing with third-party payment processors\n- [[stripe]] — Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-payments-payment-methods-custom-payment-methods-2026-11-07|November 7, 2026 custom payment methods overview]] — Full guide with dated Checkout and Express Checkout coverage\n- [[raw/stripe-custom-payment-methods-2025|May 8, 2026 custom payment methods overview]] — Earlier full guide\n",
+  "quotes": {
+    "payments-payment-methods-custom-payment-methods": [
+      {
+        "text": "You can’t retrieve custom payment method types through the API, so store the type ID in your database for use when creating payment methods.",
+        "location": "raw/stripe-payments-payment-methods-custom-payment-methods-2026-11-07.md:21"
+      },
+      {
+        "text": "1 In private preview.",
+        "location": "raw/stripe-payments-payment-methods-custom-payment-methods-2026-11-07.md:63"
+      },
+      {
+        "text": "The Express Checkout Element can display custom payment method buttons alongside wallets, such as Apple Pay and Google Pay.",
+        "location": "raw/stripe-payments-payment-methods-custom-payment-methods-2026-11-07.md:71"
+      },
+      {
+        "text": "Your platform account can create custom payment methods in its connected accounts using its own custom payment method types, as well as the connected account’s custom payment method types.",
+        "location": "raw/stripe-payments-payment-methods-custom-payment-methods-2026-11-07.md:79"
+      },
+      {
+        "text": "Stripe isn’t responsible for the processing of any transactions with any PSP including, for example, any charges, refunds, disputes, settlements, or funds flows.",
+        "location": "raw/stripe-payments-payment-methods-custom-payment-methods-2026-11-07.md:123"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-payment-methods-custom-payment-methods": [
+      {
+        "text": "Alternatively, use one of over 50 preset methods for common payment methods processed outside of Stripe.",
+        "location": "raw/stripe-custom-payment-methods-2025.md:19"
+      },
+      {
+        "text": "✓ Supported | - Unsupported | - Unsupported | ✓ Supported     | - Unsupported",
+        "location": "raw/stripe-custom-payment-methods-2025.md:72"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-payment-methods-custom-payment-methods-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 134
+      }
+    ],
+    "raw/stripe-custom-payment-methods-2025.md": [
+      {
+        "start": 1,
+        "end": 149
+      }
+    ],
+    "wiki/sources/source-stripe-custom-payment-methods.md": [
+      {
+        "start": 1,
+        "end": 54
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/339ea68e42db420a0633110c/content.diff": [
+      {
+        "start": 1,
+        "end": 159
+      }
+    ],
+    "wiki/concepts/stripe-custom-payment-methods.md": [
+      {
+        "start": 1,
+        "end": 147
+      }
+    ],
+    "wiki/concepts/stripe-express-checkout-element.md": [
+      {
+        "start": 163,
+        "end": 187
+      },
+      {
+        "start": 244,
+        "end": 249
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 430,
+        "end": 435
+      },
+      {
+        "start": 789,
+        "end": 793
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 637,
+        "end": 645
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md": [
+      {
+        "start": 59,
+        "end": 66
+      }
+    ]
+  },
+  "answers": {
+    "payments-payment-methods-custom-payment-methods": {
+      "Q1": "At https://docs.stripe.com/payments/payment-methods/custom-payment-methods, source-stripe-custom-payment-methods.md covers a merchant’s Dashboard-created custom payment method type, stored ID, and a PaymentMethod instance created with type custom and custom[type]. Old raw lines 12–44 and new raw lines 13–32 distinguish non-retrievable types from API-managed instances. Old raw lines 76–109 and new raw lines 65–86 let a Connect platform use its own or the connected account’s type in the connected account and retain Stripe Billing tracking for external payments. Old raw lines 133–142 and new raw lines 118–127 require the merchant to have a direct PSP integration and active agreement. The PSP runs the service and the merchant or PSP completes and reconciles the purchase. On agreement termination or documented or notified Stripe prohibition, the merchant immediately removes the CPM and disables the PSP integration. Old raw lines 106–108 and new raw lines 91–93 separately say Stripe can remove or block availability and that failing to remove a notified method means it does not render. Optional reporting to Stripe in new raw lines 7–11 and Billing tracking are separate from external processing. New raw lines 57–71 add Checkout product support and private-preview Express Checkout buttons, while Payment Links stays excluded.",
+      "Q2": "At https://docs.stripe.com/payments/payment-methods/custom-payment-methods, source-stripe-custom-payment-methods.md preserves the May unsupported Checkout and Express Checkout Element baseline in old raw lines 68–76 and the November matrix change, Express Checkout private-preview footnote and substantive button-display sentence in new raw lines 57–71. A section link routes to implementation and does not establish hosted UI coverage or live account enablement. Old raw lines 14–27 quantify over 50 presets, while new raw lines 15–25 give branding guidance without a count. The Node-to-cURL and layout changes preserve behavior, with old raw lines 86–102 using the SDK account option and new raw lines 79–87 showing the HTTP header. Keep the existing two-way link with wiki/concepts/stripe-custom-payment-methods.md, add the overview’s private-preview button evidence to the Express Checkout concept’s existing discussion, and refresh the source listing in wiki/stripe-index.md and the company’s source route in wiki/companies/stripe.md."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "custom-payment-methods-preset-history",
+      "target_path": "wiki/concepts/stripe-custom-payment-methods.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **50+ presets**: available for common external PMs; or set a custom display name + logo",
+      "proposed_markdown": "- **Presets and branding.** The May 8, 2026 guide counts more than 50 presets for common external methods. November retains preset guidance for the Payment Element and says to provide custom display name and logo for custom front ends or Payment Methods API use. It gives no updated count.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "May raw lines 14–27 and November raw lines 15–25 supply the dated count and branding distinctions."
+      ]
+    },
+    {
+      "update_id": "custom-payment-methods-express-preview",
+      "target_path": "wiki/concepts/stripe-express-checkout-element.md",
+      "update_kind": "durable_fact",
+      "anchor": "> The April 2026 product overview said methods could not be specified, while the November 2026 overview describes `customPaymentMethods` buttons on `stripe.elements()` with valid Dashboard `cpmt_` IDs and a working `handleRender`. The separately captured v9.14 declarations prove a beta typed surface. These snapshots do not prove general runtime rollout, account eligibility, or successful rendering; confirm access and live behavior before offering this path.",
+      "proposed_markdown": "> The April 2026 product overview said methods could not be specified. The November 2026 Express Checkout overview describes `customPaymentMethods` buttons on `stripe.elements()` with valid Dashboard `cpmt_` IDs and a working `handleRender`. The separate November custom payment methods overview marks Express Checkout Element private preview and describes custom buttons alongside wallets such as Apple Pay and Google Pay. The separately captured v9.14 declarations describe the beta typed surface. General rollout, individual account eligibility and successful rendering remain outside these captures. See [[source-stripe-custom-payment-methods]].",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [
+        "November custom payment methods raw lines 57–71 establish the private-preview matrix and button display. The product overview links the implementation separately."
+      ]
+    },
+    {
+      "update_id": "custom-payment-methods-overview-route",
+      "target_path": "wiki/concepts/stripe-custom-payment-methods.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-custom-payment-methods]] — overview: PM API type, integration matrix, marks compliance, Indonesia/Thailand restriction, Stripe disclaimer",
+      "proposed_markdown": "- [[source-stripe-custom-payment-methods]] — May and November custom payment method type and instance boundaries, Checkout and Express Checkout product scope, Connect request examples, and merchant and PSP responsibilities",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "November raw lines 13–32, 57–87 and 89–134 supply the updated scope."
+      ]
+    }
+  ]
+}

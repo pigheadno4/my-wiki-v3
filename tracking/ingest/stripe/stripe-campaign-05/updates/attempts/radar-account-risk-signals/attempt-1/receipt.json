@@ -1,0 +1,221 @@
+{
+  "job_id": "radar-account-risk-signals",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe — Account Risk Signals\"\ntype: source\ndate_ingested: 2026-05-10\ndate_updated: 2026-11-22\noriginal_format: webpage\nraw_files:\n  - \"stripe-radar-account-risk-signals-2026-11-07.md\"\n  - \"stripe-radar-account-risk-signals-2026.md\"\n  - \"stripe-radar-fraudulent-merchant-signal-2026.md\"\n  - \"stripe-radar-merchant-delinquency-signal-2026.md\"\n  - \"stripe-radar-fraudulent-website-signal-2026.md\"\ntags: [stripe, radar, connect, platforms, account-signals, fraud, delinquency, website]\n---\n\n## Summary\n\nThe May 10 and November 7, 2026 captures of https://docs.stripe.com/radar/account-risk-signals describe programmatic risk signals for Connect platforms. Stripe evaluates connected-account activity and sends a webhook when a risk signal changes. The May guide lists three signal types. November adds payment delinquency exposure and illustrates the platform retrieving the signal and deciding how to respond.\n\n## Signal types and retrieval\n\n| Signal | Documented scope |\n| --- | --- |\n| Fraudulent merchant | Risk indicators such as misrepresentation, unauthorized transactions or first-party fraud. Stripe evaluates account activity. |\n| Merchant delinquency risk | Financial distress associated with potential unfulfilled orders, disputes, refunds or negative balances. |\n| Fraudulent website | On-demand evaluation for deceptive or policy-violating websites, including misleading claims or fake storefronts. |\n| Payment delinquency exposure | Added to the November overview. Estimates dollars at risk from potential disputes and refunds if a connected account becomes delinquent. |\n\nNovember says account signals and account evaluations can be retrieved for up to 90 days after creation. List requests omit account signals created more than 90 days ago. The overview states a retrieval and list boundary. The separate delinquency-risk guide's negative balance lasting more than 90 days describes the risk being assessed. [[raw/stripe-radar-merchant-delinquency-risk-2026-11-07|November delinquency risk detail, lines 8–13]]\n\n## Notification and platform response\n\nMay links to the [Core event-types route for `2026-03-25.preview`](https://docs.stripe.com/api/v2/core/events/event-types.md?api-version=2026-03-25.preview). November links to the [Account Signals API with `api-version=preview`](https://docs.stripe.com/api/v2/signals/account-signals.md?api-version=preview). Its diagram shows connected-account payments or disputes feeding Stripe's models, a signal-ready webhook to the platform backend, retrieval by `GET /v2/signals/account_signals/{id}`, and the platform receiving signal level and indicators before deciding whether to review, pause or reject. The notification signals readiness. The separate child guides give the event and payload contract for each signal.\n\nMay's Radar for Platforms action table lists raising a review, pausing payouts, pausing payments, rejecting a confirmed fraudulent account, setting reserves and requesting identity verification. November replaces the table with a route to account fraud prevention. That guide retains the six options, qualifies request identity verification on use of Stripe Identity, directs platforms to Stripe Support to reverse rejection, and names Connect Risk Analyst, Administrator or Super Administrator for risk reviews. These are platform decisions. A signal is an input to that decision and leaves confirmed fraud and action execution unverified. [[source-stripe-radar-for-platforms|Radar for Platforms]] · [[raw/stripe-radar-account-fraud-prevention-2026-11-07|November account fraud prevention, lines 102–126, 140–154 and 162–166]]\n\n## Separately captured November signal details\n\n- **Fraudulent merchant.** The ready event is thin with an empty `data` object. Retrieve the signal using `related_object.id`. The detail guide lists the signal from Radar Standard upward and the returned 0–100 probability only on Plus and Pro. The earlier detailed capture below describes a payload with full details. [[raw/stripe-radar-fraudulent-merchant-2026-11-07|November fraudulent merchant detail, lines 9–24 and 43–51]]\n- **Merchant delinquency risk.** The detail names `v2.signals.account_signal.merchant_delinquency_ready`, compared with the earlier v1 event below, and gives an early-access request. [[raw/stripe-radar-merchant-delinquency-risk-2026-11-07|November delinquency risk detail, lines 8–13 and 60–66]]\n- **Fraudulent website.** On-demand evaluation uses `POST /v2/signals/account_evaluations`, compared with the earlier Core endpoint below. The individual ready event `v2.signals.account_signal.fraudulent_website_ready` and optional `v2.signals.account_evaluation.complete` for multiple signals are thin. Use `related_object.id` to retrieve the resource. The detail allows sandbox testing on any Radar plan and specifies Plus or Pro with 4,000 monthly requests for live use. [[raw/stripe-radar-fraudulent-website-2026-11-07|November fraudulent website detail, lines 9–26 and 63–73]]\n- **Payment delinquency exposure.** The separate guide describes requesting early access and lists `v2.signals.account_signal.payment_delinquency_exposure_ready`. Its conditional monetary estimate is a separate signal from merchant delinquency risk. [[raw/stripe-radar-payment-delinquency-exposure-2026-11-07|November payment delinquency exposure, lines 7–13 and 55–61]]\n\nThe overview's diagram and these child guides leave account-specific entitlement and common delivery semantics across signal types unresolved.\n\n## Related Pages\n\n- [[stripe]]\n- [[stripe-radar]] — concept page\n- [[source-stripe-radar-for-platforms]] — full Radar for Platforms guide (actions, investigation, reject codes)\n\nThe three detailed summaries below describe their May 10, 2026 captures. The separately scoped November changes are above.\n\n## Fraudulent Merchant Signal Detail\n\n**Risk levels**: `highest` (~90%), `elevated` (~50%), `normal`, `low`, `not_assessed`. Returns `risk_level` + `probability` (0–100).\n\n**9 indicators**: `bank_account`, `business_information_and_account_activity`, `disputes`, `failures`, `geo_location`, `other_related_accounts`, `other_transaction_activity`, `owner_email`, `web_presence`.\n\n**Webhook**: `v2.signals.account_signal.fraudulent_merchant_ready` — payload includes `risk_level`, `probability`, `indicators`.\n\n## Merchant Delinquency Risk Signal Detail\n\n**Risk levels**: `highest`, `elevated`, `normal`, `low`, `not_assessed` (same 5 levels as fraudulent merchant).\n\n**16 indicators**: `account_balance`, `aov`, `charge_concentration`, `dispute_window`, `disputes`, `duplicates`, `exposure`, `firmographic`, `lifetime_metrics`, `payment_processing`, `payment_volume`, `payouts`, `refunds`, `related_accounts`, `tenure`, `transfers`.\n\n**Webhook**: `v1.account_signals[delinquency].created` (note: v1 format, unlike fraudulent merchant's v2 format).\n\n## Fraudulent Website Signal Detail\n\n**Key difference from other signals**: on-demand (not continuous) — triggered via `POST /v2/core/account_evaluations`.\n\n**Can evaluate before account exists**: pass `account_data.defaults.profile.business_url` instead of `account` ID.\n\n**Asynchronous** — webhook: `v2.core.account_signals.fraudulent_website_ready`.\n\n**Payload fields**: `risk_level` (`low`/`normal`/`elevated`/`highest`/`unknown`), `details` (LLM-generated plain text description), `evaluation_id`, `signal_id`, `evaluated_at`.\n\n**No indicator table** — LLM generates a `details` text explanation instead. `unknown` returned when URL is invalid or unreachable.\n\n## Raw Sources\n\n- [[raw/stripe-radar-account-risk-signals-2026-11-07|Account risk signals overview, captured 2026-11-07]] — full 36-line overview with the retrieval boundary and platform decision diagram.\n- [[raw/stripe-radar-account-risk-signals-2026|Account risk signals overview, captured 2026-05-10]] — full 40-line overview with dated preview routing and action table\n- [[raw/stripe-radar-fraudulent-merchant-signal-2026]] — verbatim fraudulent merchant signal detail (risk levels, 9 indicators, webhook)\n- [[raw/stripe-radar-merchant-delinquency-signal-2026]] — verbatim merchant delinquency risk signal detail (16 indicators, webhook)\n- [[raw/stripe-radar-fraudulent-website-signal-2026]] — verbatim fraudulent website signal detail (on-demand, LLM details, unknown risk level)\n",
+  "quotes": {
+    "radar-account-risk-signals": [
+      {
+        "text": "You can retrieve account signals and account evaluations for up to 90 days after creation. List requests omit account signals created more than 90 days ago.",
+        "location": "raw/stripe-radar-account-risk-signals-2026-11-07.md:11"
+      },
+      {
+        "text": "Estimate the dollar amount at risk from disputes and refunds if a connected account becomes delinquent.",
+        "location": "raw/stripe-radar-account-risk-signals-2026-11-07.md:19"
+      },
+      {
+        "text": "Webhook event: signal ready",
+        "location": "raw/stripe-radar-account-risk-signals-2026-11-07.md:32"
+      },
+      {
+        "text": "GET /v2/signals/account_signals/{id}",
+        "location": "raw/stripe-radar-account-risk-signals-2026-11-07.md:33"
+      },
+      {
+        "text": "Decide action (for example, review, pause, or reject)",
+        "location": "raw/stripe-radar-account-risk-signals-2026-11-07.md:35"
+      }
+    ]
+  },
+  "old_evidence": {
+    "radar-account-risk-signals": [
+      {
+        "text": "?api-version=2026-03-25.preview",
+        "location": "raw/stripe-radar-account-risk-signals-2026.md:8"
+      },
+      {
+        "text": "using on-demand analysis.",
+        "location": "raw/stripe-radar-account-risk-signals-2026.md:25"
+      },
+      {
+        "text": "Hold funds while you investigate to reduce potential losses.",
+        "location": "raw/stripe-radar-account-risk-signals-2026.md:34"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-radar-account-risk-signals-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 36
+      }
+    ],
+    "raw/stripe-radar-account-risk-signals-2026.md": [
+      {
+        "start": 1,
+        "end": 40
+      }
+    ],
+    "wiki/sources/source-stripe-radar-account-risk-signals.md": [
+      {
+        "start": 1,
+        "end": 70
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/f41023185feb11ecfe792418/content.diff": [
+      {
+        "start": 1,
+        "end": 60
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/radar-account-risk-signals/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 212
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/radar-account-risk-signals/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 162
+      }
+    ],
+    "wiki/concepts/stripe-radar.md": [
+      {
+        "start": 110,
+        "end": 131
+      },
+      {
+        "start": 274,
+        "end": 279
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 528,
+        "end": 537
+      },
+      {
+        "start": 717,
+        "end": 721
+      }
+    ],
+    "wiki/sources/source-stripe-radar-for-platforms.md": [
+      {
+        "start": 10,
+        "end": 35
+      },
+      {
+        "start": 45,
+        "end": 71
+      }
+    ],
+    "raw/stripe-radar-fraudulent-merchant-2026-11-07.md": [
+      {
+        "start": 9,
+        "end": 24
+      },
+      {
+        "start": 43,
+        "end": 51
+      }
+    ],
+    "raw/stripe-radar-merchant-delinquency-risk-2026-11-07.md": [
+      {
+        "start": 8,
+        "end": 13
+      },
+      {
+        "start": 60,
+        "end": 66
+      }
+    ],
+    "raw/stripe-radar-fraudulent-website-2026-11-07.md": [
+      {
+        "start": 9,
+        "end": 26
+      },
+      {
+        "start": 63,
+        "end": 73
+      }
+    ],
+    "raw/stripe-radar-payment-delinquency-exposure-2026-11-07.md": [
+      {
+        "start": 7,
+        "end": 13
+      },
+      {
+        "start": 55,
+        "end": 61
+      }
+    ],
+    "raw/stripe-radar-account-fraud-prevention-2026-11-07.md": [
+      {
+        "start": 102,
+        "end": 126
+      },
+      {
+        "start": 140,
+        "end": 154
+      },
+      {
+        "start": 162,
+        "end": 166
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md": [
+      {
+        "start": 715,
+        "end": 721
+      }
+    ]
+  },
+  "answers": {
+    "radar-account-risk-signals": {
+      "Q1": "For https://docs.stripe.com/radar/account-risk-signals, a connected account's activity feeds Stripe's risk models, and Stripe notifies the platform backend when a signal is ready or changes. The backend fetches the signal and decides whether to review, pause or reject. November documents up to 90 days to retrieve signals and evaluations after creation, omits older account signals from lists, and adds the delinquency exposure estimate to fraudulent merchant, delinquency risk and fraudulent website (old raw lines 8-25 and new raw lines 9-36). source-stripe-radar-account-risk-signals.md preserves May's three types and actions and now records November's four routes, retrieval and list boundaries and separate notification and fetched resource. A signal does not itself establish fraud or execute an enforcement action.",
+      "Q2": "For https://docs.stripe.com/radar/account-risk-signals, the substantive November additions are the separate monetary exposure signal, 90-day lookup and list boundary, and explicit notification followed by resource retrieval (old raw lines 8-25 and new raw lines 9-36). The duplicate signal list was consolidated and the action table was replaced with the account fraud prevention route and a diagram. source-stripe-radar-account-risk-signals.md preserves May's versioned preview link, on-demand website scope and six Radar for Platforms actions (old raw lines 19-40 and new raw lines 23-36). It retains the Radar concept and Platforms routes and adds scoped links to the separately captured action and signal details. November child evidence qualifies old webhook payload and event/endpoint claims and plan or access boundaries, with neither universal eligibility nor full details on every webhook established by the overview."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "radar-account-risk-signals-overview-signal-scope",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "durable_fact",
+      "anchor": "**API signals (private preview)**: account fraud, account insolvency, fraudulent website — webhook-driven via Account Signals API. See [[source-stripe-radar-for-platforms]] and [[source-stripe-radar-account-risk-signals]].",
+      "proposed_markdown": "**Account Signals API.** May 2026 links a dated preview and describes fraudulent merchant, merchant delinquency risk and on-demand fraudulent website evaluations. The November overview adds payment delinquency exposure, a conditional estimate of dispute and refund dollars at risk. It gives a 90-day retrieval window after creation for signals and evaluations, with older account signals omitted from lists. Its diagram shows a Stripe webhook, a platform fetch by ID, and a platform decision about action. See [[source-stripe-radar-account-risk-signals]] for separate contracts and [[source-stripe-radar-for-platforms]] for platform review and actions.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "May overview lines 8–25 give the dated preview and three signal types. November lines 9–35 add the retrieval/list boundary, monetary exposure signal and event-to-fetch sequence. A signal does not execute a review, pause or rejection."
+      ]
+    },
+    {
+      "update_id": "radar-account-risk-signals-overview-source-route",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-radar-account-risk-signals]] — Account Signals API: 3 signal types (fraud/delinquency/website), webhook-driven, actions table",
+      "proposed_markdown": "- [[source-stripe-radar-account-risk-signals]] covers the May and November 2026 overviews, four November signal routes, the 90-day lookup and list scope, and the event, retrieval and platform response sequence.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The overview retains separate routes for Radar for Platforms and independently captured signal details."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+--- raw/stripe-payouts-reconciliation-2026.md
++++ raw/stripe-payouts-reconciliation-2026-11-07.md
+@@ -11,7 +11,7 @@
+ - Retrieve the payout details through the Stripe API as documented in this guide.
+ 
+ > #### Reconciliation for manual payouts
+->
++> 
+ > You control the timing and amount of manual payouts, so Stripe can’t identify which transactions are included in each payout. You’re responsible for reconciling payouts you create against your transaction history.
+ 
+ ## Find the Payout ID
+@@ -38,17 +38,13 @@
+ 
+ Every funds movement in or out of your Stripe account creates a [BalanceTransaction](https://docs.stripe.com/api/balance_transactions.md). Pass the payout ID in your [list BalanceTransaction](https://docs.stripe.com/api/balance_transactions/list.md) request to filter the results by only transactions associated with that payout.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const balanceTransactions = await stripe.balanceTransactions.list({
+-  payout: "po_xxx",
+-});
++```curl
++curl -G https://api.stripe.com/v1/balance_transactions \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d payout=po_xxx
+ ```
+ 
+-If you need more results than the default 10, set the [`limit`](https://docs.stripe.com/api/balance_transactions/list.md#balance_transaction_list-limit) parameter in the request or use Stripe’s [auto-pagination](https://docs.stripe.com/api/pagination/auto.md).
++If you need more results than the default 10, set the [limit](https://docs.stripe.com/api/balance_transactions/list.md#balance_transaction_list-limit) parameter in the request or use Stripe’s [auto-pagination](https://docs.stripe.com/api/pagination/auto.md).
+ 
+ The response returns an array of BalanceTransactions objects for the specified payout:
+ 
+@@ -86,15 +82,11 @@
+ 
+ The `source` property of each BalanceTransaction identifies the underlying object representing the transaction type, such as `ch_xxx` for a Charge or `re_xxx` for a Refund. To retrieve these objects without making extra API calls, update the previous code using [expand](https://docs.stripe.com/expand.md).
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const balanceTransactions = await stripe.balanceTransactions.list({
+-  payout: "po_xxx",
+-  expand: ["data.source"],
+-});
++```curl
++curl -G https://api.stripe.com/v1/balance_transactions \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d payout=po_xxx \
++  -d "expand[]=data.source"
+ ```
+ 
+ The response contains the expanded `source` object for each BalanceTransaction in the payout:
+@@ -126,15 +118,18 @@
+         ...
+       },
+       ...
++    }
++  ]
++}
+ ```
+ 
+ Use the following code to access the `source` object properties such as `id` and `amount`.
+ 
+-#### Node.js
++#### Ruby
+ 
+-```javascript
+-balanceTransactions.data.map((txn) => {
+-  const obj = txn.source;
+-  console.log(obj.id, obj.amount);
+-});
++```ruby
++balance_transactions['data'].each do |txn|
++  obj = txn['source']
++  puts "#{obj['id']} #{obj['amount']}"
++end
+ ```

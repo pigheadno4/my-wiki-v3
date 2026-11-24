@@ -1,0 +1,119 @@
+from pathlib import Path
+from collections import Counter
+import json,hashlib,re,sys,datetime,shutil
+P=Path('tracking/ingest/stripe/stripe-campaign-05');X=Path('/tmp/stripe-s05-review')
+def load(p):return json.loads(Path(p).read_text())
+def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+def save(p,d):Path(p).parent.mkdir(parents=True,exist_ok=True);Path(p).write_text(json.dumps(d,indent=2)+'\n')
+def event(kind,j,detail=None):
+ with(P/'events.jsonl').open('a')as f:f.write(json.dumps({'time':datetime.datetime.now(datetime.timezone.utc).isoformat(),'event':kind,'job_id':j['job_id'],'attempt':j['attempt'],'detail':detail})+'\n')
+def pins(j):
+ for f in j['expected_read_files']:assert sha(f['path'])==f['sha256'],f['path']
+def ranges(d,j,full):
+ for f in j['expected_read_files']:
+  rr=d.get(f['path'],[]);end=0
+  if full:assert rr,('missing full read',f['path'])
+  for r in sorted(rr,key=lambda r:r['start']):
+   assert 1<=r['start']<=r['end']<=f['lines']
+   if full:assert r['start']<=end+1,('read gap',f['path'],end,r)
+   end=max(end,r['end'])
+  if full:assert end==f['lines'],('EOF not read',f['path'],end)
+def quotes(q,path,lo,hi=None):
+ assert isinstance(q,list)and len(q)>=lo and(hi is None or len(q)<=hi);ls=Path(path).read_text().splitlines()
+ for x in q:
+  assert set(x)=={'text','location'};m=re.search(re.escape(path)+r':(\d+)(?:[-–](\d+))?',x['location']);assert m,x['location'];a=int(m[1]);b=int(m[2]or a);assert 1<=a<=b<=len(ls)and x['text']in'\n'.join(ls[a-1:b]),x['location']
+def worker(d,j):
+ assert set(d)==set('job_id attempt raw_path raw_sha256 prior_raw_path prior_raw_sha256 source_targets source_before_sha256 read_ranges quotes old_evidence proposed_disposition findings substantive_changes historical_claims_to_preserve conflicts unresolved_questions affected_concepts source_assessments answers'.split()),set(d)
+ for k in 'job_id attempt raw_path raw_sha256 prior_raw_path prior_raw_sha256 source_targets source_before_sha256'.split():assert d[k]==j[k],k
+ ranges(d['read_ranges'],j,True);quotes(d['quotes'],j['raw_path'],3,5);quotes(d['old_evidence'],j['prior_raw_path'],1);assert d['proposed_disposition']in DISPOSITIONS
+ for k in ['findings','substantive_changes','historical_claims_to_preserve','conflicts','unresolved_questions','affected_concepts']:assert isinstance(d[k],list),k
+ ss=d['source_assessments'];assert len(ss)==len(j['source_targets'])and {s['source_target']for s in ss}==set(j['source_targets'])
+ for s in ss:assert set(s)==set('source_target proposed_disposition update_needed findings conflicts reason'.split())and s['proposed_disposition']in DISPOSITIONS and isinstance(s['update_needed'],bool)and isinstance(s['findings'],list)and isinstance(s['conflicts'],list)and s['reason']
+ assert set(d['answers'])=={'Q1','Q2'}
+ for answer in d['answers'].values():
+  assert len(answer.split())>=35 and j['canonical_url']in answer
+  assert all(Path(p).stem in answer for p in j['source_targets']),('missing answer source route',j['job_id'])
+  assert re.search(r'old raw lines?\s*\d+',answer,re.I)and re.search(r'new raw lines?\s*\d+',answer,re.I),('missing old/new numeric locators',j['job_id'])
+def reviewer(d,j):
+ assert set(d)==set('job_id attempt verdict reason required_changes review_scope retry_review_scope read_ranges source_assessment_decisions'.split()),set(d);assert d['job_id']==j['job_id']and d['attempt']==j['attempt'];assert d['verdict']in{'approved','changes_requested','rejected'}and d['review_scope']==j['expected_review_scope'];ranges(d['read_ranges'],j,d['review_scope']=='full')
+ decisions=d['source_assessment_decisions'];assert len(decisions)==len(j['source_targets'])and {s['source_target']for s in decisions}==set(j['source_targets'])
+ for s in decisions:assert set(s)=={'source_target','verdict','reason'}
+ if d['verdict']=='approved':assert not d['required_changes']and d['retry_review_scope']is None and all(s['verdict']=='approved'for s in decisions)
+ else:assert d['required_changes']and d['retry_review_scope']in{'full','targeted'}
+DISPOSITIONS={'source_required_update','raw_reference','no_substantive_update','unresolved'}
+fixed_audit_jobs=set(load(P/'manifest.json')['audit_job_ids'])
+
+def atomic(p,data):
+ t=p.with_suffix('.tmp')
+ save(t,data)
+ t.replace(p)
+
+def cycle(pool):
+ jobs=load(P/'jobs.json')
+ for j in jobs:
+  if j['state'] not in {'worker_running','review_running'}:continue
+  role='worker' if j['state']=='worker_running' else 'reviewer'
+  suffix='worker' if role=='worker' else 'review'
+  f=X/f"{j['job_id']}-{suffix}.json"
+  m=f.with_suffix('.ready')
+  if not(f.exists() and m.exists() and m.read_text().strip()==str(j['attempt'])):continue
+  a=P/'attempts'/j['job_id']/f"attempt-{j['attempt']}"
+  try:
+   pins(j);d=load(f);ids=load(a/'identities.json');assert ids[role]['agent']==j[role+'_agent']
+   if role=='worker':
+    worker(d,j);save(a/'receipt.json',d)
+    j.update(state='candidate_ready',receipt_path=str(a/'receipt.json'),receipt_sha256=sha(a/'receipt.json'))
+   else:
+    reviewer(d,j);assert ids['worker']['agent']!=ids['reviewer']['agent']
+    save(a/'review.json',d)
+    j.update(state='approved' if d['verdict']=='approved' else 'queued' if d['verdict']=='changes_requested' and j['attempt']<3 else 'failed',
+      review_path=str(a/'review.json'),review_sha256=sha(a/'review.json'))
+    if j['state']=='queued':j['expected_review_scope']=d['retry_review_scope']
+   event('accepted_'+role,j,j['state'])
+  except Exception as e:
+   key=sha(f)+repr(e)
+   if key!=j.get('invalid_key'):
+    j['invalid_key']=key;event('invalid_handoff',j,repr(e))
+    a=X/'lanes'/j[role+'_agent'].split('/')[-1]/'feedback.json'
+    atomic(a,{'job_id':j['job_id'],'attempt':j['attempt'],'error':repr(e),'received_sha256':sha(f)})
+ assignments=[]
+ for role,state in [('reviewer','review_running'),('worker','worker_running')]:
+  busy={j[role+'_agent'] for j in jobs if j['state']==state}
+  free=[v for v in pool[role] if v not in busy]
+  while free:
+   retry=[j for j in jobs if j['state']=='queued' and j['attempt']]
+   pending=sorted((j for j in jobs if j['state']=='queued'),key=lambda j:(not j['attempt'],j['job_id'] not in fixed_audit_jobs,-j['source_packet_lines'],j['job_id']))
+   queue=[j for j in jobs if j['state']=='candidate_ready'] if role=='reviewer' else pending
+   choices=[(j,[v for v in free if (role=='reviewer' and v!=j['worker_agent']) or (role=='worker' and (not j['attempt'] or j['worker_agent'] not in pool[role] or v==j['worker_agent']))]) for j in queue]
+   if not any(valid for j,valid in choices):break
+   j,valid=next((j,valid) for j,valid in choices if valid)
+   agent=j[role+'_agent'] if j[role+'_agent'] in valid else valid[0];free.remove(agent)
+   if role=='worker':j['attempt']+=1
+   j.update(state=state,**{role+'_agent':agent})
+   a=P/'attempts'/j['job_id']/f"attempt-{j['attempt']}"
+   inp=a/'input.json'
+   if role=='worker':
+    query=(P/'proposed-queries.md').read_text().split('## '+j['job_id']+'\n',1)[1].split('\n## ',1)[0]
+    packet={**j,'role':'review_only_comparison','provider_notes':'/tmp/stripe-s05-notes.md','original_query_prompts':query,'worker_output':str(X/f"{j['job_id']}-worker.json"),'worker_ready':str(X/f"{j['job_id']}-worker.ready"),'review_output':str(X/f"{j['job_id']}-review.json"),'review_ready':str(X/f"{j['job_id']}-review.ready"),'accepted_receipt_path':str(a/'receipt.json')}
+    if j['attempt']>1:packet['prior_attempt_dir']=str(a.parent/f"attempt-{j['attempt']-1}")
+   else:packet={**load(inp),'reviewer_agent':agent}
+   save(inp,packet)
+   ids=load(a/'identities.json') if (a/'identities.json').exists() else {}
+   ids[role]={'agent':agent,'model':'gpt-6.2-sol','reasoning_effort':'medium' if role=='worker' else 'high'}
+   save(a/'identities.json',ids)
+   event('dispatch_'+role,j,ids[role])
+   assignments.append((agent,{'agent':agent,'input':str(inp),'job_id':j['job_id'],'attempt':j['attempt'],'role':role}))
+ atomic(P/'jobs.json',jobs)
+ count=dict(Counter(j['state'] for j in jobs))
+ atomic(P/'status.json',{'state':'running_review_only','counts':count,'canonical_writes':0})
+ for agent,order in assignments:atomic(X/'lanes'/agent.split('/')[-1]/'assignment.json',order)
+ return count
+
+if __name__=='__main__' and sys.argv[1]=='pool':
+ import time
+ while True:
+  count=cycle(load(X/'pool.json'))
+  if sum(count.get(s,0) for s in ('approved','failed'))==100:
+   atomic(X/'stop.json',{'counts':count})
+   break
+  time.sleep(3)

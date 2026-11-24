@@ -1,0 +1,263 @@
+{
+  "job_id": "payments-satispay",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Satispay Payments\"\ntype: source\ndate_ingested: 2026-05-08\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/payments/satispay\nraw_files:\n  - \"stripe-payments-satispay-2026-11-07.md\"\n  - \"stripe-satispay-2025.md\"\ntags: [stripe, wallets, satispay, italy, eur, disputes, refunds, connect]\n---\n\n## Summary\n\nSatispay is a stored-value wallet on [[stripe|Stripe]] for customers in Italy, with EUR presentment. The November 7, 2026 guide describes selection at checkout, a redirect to a Satispay-hosted page, identification by phone request or QR code, in-app approval, immediate confirmation and return to the merchant site. Stripe gives immediate outcome notification and pays out on its standard schedule. In a manual-capture integration, verify capture separately from app approval.\n\n## Account and payment eligibility\n\n- **May 8, 2026.** The method guide lists 20 business account locations in the euro area: AT, BE, CY, DE, EE, ES, FI, FR, GR, HR, IE, IT, LT, LU, LV, MT, NL, PT, SI and SK.\n- **November 7, 2026.** The listing adds AU, BG, CA, CH, CZ, DK, GB, HK, HU, JP, LI, NO, PL, RO, SE, SG and US, for 37 locations. The guide lists merchant and Connect platform or marketplace accounts, B2C only, and instant provisional access. It lists domestic and cross-border payments with EUR 0.50 to EUR 999,999.99 limits. Customer location remains Italy. See May lines 12–38 and 52–75, and November lines 9–21 and 64–82 for eligibility and geography.\n\nThe May guide lists 13 named prohibited categories and a discretion catch-all (lines 107–124). The November guide distinguishes prohibited and restricted MCC categories and lists 33 codes, all marked prohibited in the captured table (lines 22–62). The change from labels to codes leaves the current eligibility of omitted May labels, such as Automobile Associations, unresolved.\n\n## Capture and product support\n\nBoth guides list manual capture. November also lists partial capture and excludes multicapture, overcapture, extended and flexible extended authorizations, incremental and decremental authorizations, and reauthorizations (lines 86–97). The November table lists full-page and embedded Checkout, Payment Links, Payment Element and in-app payments. It excludes Express Checkout Element, Payment Method Messaging Element, Managed Payments and Terminal (lines 184–201). Enable Satispay in Stripe payment method settings for Stripe front ends. Use the [[source-stripe-satispay-accept-payment|acceptance guide]] for the separate integration routes.\n\n## Recurring payments and mandates\n\nThe May method guide marked recurring payments unsupported and listed Subscriptions among products where Satispay could be added through the Dashboard (lines 28–30 and 98–105). The May 8 wallet product matrix separately marks Subscriptions, Invoicing and Customer Portal unsupported (header line 184 and Satispay row 199). The May acceptance guide's Checkout and Elements with Checkout Sessions tables specify payment mode and exclude setup and subscription modes (lines 18–32 and 95–109). The November acceptance root lists variants.\n\nThe November 7 method guide lists reusable and recurring support, PaymentIntents with `setup_future_usage`, SetupIntents, off-session payments, Billing, Invoicing and Customer Portal (lines 11, 84 and 194–208). The November 7 wallet product matrix still marks Subscriptions, Invoicing and Customer Portal unsupported (header line 188 and Satispay row 203). Separately, the [[raw/stripe-changelog-dahlia-2026-06-24-satispay-recurring-payments-2026-11-07|2026-06-24.dahlia changelog]] documents on- and off-session saving with Intent APIs and Satispay under Subscription and Invoice `payment_settings.payment_method_types`. Specific Checkout variant modes, Customer Portal behavior and individual account eligibility remain unresolved.\n\nIn the November method guide, the customer authorizes future payments in Satispay. Stripe records the authorization automatically in Checkout or Payment Element and stores a Mandate associated with the PaymentMethod. Satispay collects the authorization directly, and the guide says custom payment flows need no additional mandate language for this method. After a SetupIntent, use its `mandate` ID to retrieve mandate details. After saving through a PaymentIntent, use its `payment_method` ID for future payments. Customer revocation triggers `mandate.updated` and blocks future use of that method. A merchant can instead detach the PaymentMethod to stop future payments. A later charge has its own outcome. See November lines 164–182 and the separate [[raw/stripe-payments-satispay-set-up-future-payments-2026-11-07|future-payment setup routes]].\n\n## Disputes\n\nThe May guide gives merchants 12 calendar days to provide evidence and describes cases such as suspected fraud, duplicate payments and order or amount mismatch. The November guide describes full disputes only. Customers have 120 calendar days from purchase to file. Stripe immediately withholds the disputed amount. Merchants have 15 calendar days from dispute creation to provide evidence, and Satispay makes its final decision within 25 calendar days of creation.\n\nStripe notifies via email, Dashboard and `charge.dispute.created`. Use the Dashboard or the Dispute object's `reason` and `evidence_details.due_by`. Submit evidence through the Dashboard or Disputes API, with supporting files as needed. Examples include shipping and tracking information, proof of purchase and prior refund records. When the merchant wins, Stripe returns the amount to its Stripe balance. A customer win makes the balance charge permanent. See May lines 126–148 and November lines 105–108 and 125–162.\n\n## Refunds\n\nBoth guides describe asynchronous full and partial refunds within 180 days, with processing up to five minutes. The November guide says Satispay refunds cannot be canceled, are never processed as reversals and return to the customer's Satispay wallet balance. Track the result in the Dashboard or on the Refund object's `status`; Stripe sends `refund.updated` or `refund.failed` notifications. A failed refund returns the amount to the merchant's Stripe balance and requires another way to refund the customer. See May lines 150–157 and November lines 99–123.\n\n## Connect\n\nThe May guide requires `satispay_payments` active on the platform and the connected accounts where Satispay is enabled. For direct charges and destination or separate charges using `on_behalf_of`, it identifies the connected account descriptor. For ordinary destination and separate charges and transfers, it identifies the platform descriptor.\n\nNovember ties the descriptor in the Satispay app to charge type and describes overriding the account default using `statement_descriptor` when creating a PaymentIntent or `payment_intent_data.statement_descriptor` for Payment Links and Checkout. The May capability and charge-type table remain dated guidance. See May lines 159–179 and November lines 231–237.\n\n## Related Pages\n\n- [[stripe]] — provider overview\n- [[stripe-wallets#Satispay Details|Satispay in Stripe Wallets]]\n- [[source-stripe-satispay-accept-payment]] — May implementation examples and November variant selector\n- [[source-stripe-payment-method-support]] — dated cross-method wallet product matrices\n\n## Raw Sources\n\n- [[raw/stripe-payments-satispay-2026-11-07]] — November 7, 2026 full Satispay method guide\n- [[raw/stripe-satispay-2025]] — May 8, 2026 full Satispay method guide and captured demonstration\n",
+  "quotes": {
+    "payments-satispay": [
+      {
+        "text": "Business model: ✗ B2B, ✓ B2C",
+        "location": "raw/stripe-payments-satispay-2026-11-07.md:21"
+      },
+      {
+        "text": "Recurring payments: ✓ Supported",
+        "location": "raw/stripe-payments-satispay-2026-11-07.md:84"
+      },
+      {
+        "text": "You have 15 calendar days from dispute creation to submit evidence.",
+        "location": "raw/stripe-payments-satispay-2026-11-07.md:146"
+      },
+      {
+        "text": "Satispay collects this authorization directly from the customer, so you don’t need to display additional mandate language in custom payment flows.",
+        "location": "raw/stripe-payments-satispay-2026-11-07.md:174"
+      },
+      {
+        "text": "| 5933 | Pawn Shops | Prohibited |",
+        "location": "raw/stripe-payments-satispay-2026-11-07.md:34"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-satispay": [
+      {
+        "text": "You must submit the requested information within 12 calendar days.",
+        "location": "raw/stripe-satispay-2025.md:148"
+      },
+      {
+        "text": "  No",
+        "location": "raw/stripe-satispay-2025.md:30"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-satispay-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 243
+      }
+    ],
+    "raw/stripe-satispay-2025.md": [
+      {
+        "start": 1,
+        "end": 185
+      }
+    ],
+    "wiki/sources/source-stripe-satispay.md": [
+      {
+        "start": 1,
+        "end": 55
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/a50b495ce327513a4e6b2764/content.diff": [
+      {
+        "start": 1,
+        "end": 409
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 11
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 383,
+        "end": 387
+      },
+      {
+        "start": 411,
+        "end": 416
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 619,
+        "end": 623
+      }
+    ],
+    "wiki/concepts/stripe-wallets.md": [
+      {
+        "start": 12,
+        "end": 32
+      },
+      {
+        "start": 311,
+        "end": 327
+      },
+      {
+        "start": 422,
+        "end": 427
+      }
+    ],
+    "raw/stripe-payment-method-support-2025.md": [
+      {
+        "start": 1,
+        "end": 5
+      },
+      {
+        "start": 182,
+        "end": 185
+      },
+      {
+        "start": 198,
+        "end": 199
+      }
+    ],
+    "raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 5
+      },
+      {
+        "start": 187,
+        "end": 189
+      },
+      {
+        "start": 202,
+        "end": 204
+      }
+    ],
+    "raw/stripe-changelog-dahlia-2026-06-24-satispay-recurring-payments-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 200
+      }
+    ],
+    "raw/stripe-satispay-accept-payment-2025.md": [
+      {
+        "start": 18,
+        "end": 32
+      },
+      {
+        "start": 95,
+        "end": 109
+      }
+    ],
+    "raw/stripe-payments-satispay-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 20
+      }
+    ],
+    "raw/stripe-payments-satispay-set-up-future-payments-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-api-refunds-object-2026-11-07.md": [
+      {
+        "start": 115,
+        "end": 120
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-satispay/attempt-3/receipt.json": [
+      {
+        "start": 1,
+        "end": 227
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-satispay/attempt-3/review.json": [
+      {
+        "start": 1,
+        "end": 78
+      }
+    ]
+  },
+  "answers": {
+    "payments-satispay": {
+      "Q1": "The November 7, 2026 capture of https://docs.stripe.com/payments/satispay describes a reusable EUR wallet for Italy customers with eligible business accounts in 37 listed places, domestic/cross-border B2C, provisional access, and EUR 0.50–999,999.99 limits. Customers choose Satispay, open its hosted flow, use phone or QR, approve in app and return. The overview depicts immediate confirmation with standard payout; separate manual and partial capture support does not make app authorization proof of capture (old raw lines 8-50, new raw lines 9-21 and 64-108, new raw lines 209-229). Customers authorize future debits directly with Satispay; Stripe records a mandate linked to the PaymentMethod. SetupIntent retrieval uses mandate ID, PaymentIntent saving uses payment_method, and revocation triggers mandate.updated with later use blocked. The merchant can instead detach the method (new raw lines 164-208). November also retains asynchronous refunds and adds wallet-only non-reversal handling and noncancelability. Disputes have a 120-day filing window, 15 days for evidence and a 25-day decision window. The revised source-stripe-satispay.md preserves May's manual capture and refund terms and dates its 20-location, no-recurring and 12-day evidence statements (old raw lines 52-75 and 126-179, new raw lines 99-162).",
+      "Q2": "At https://docs.stripe.com/payments/satispay, substantive November changes are a 20-to-37 business-account list expansion with explicit B2C and domestic/cross-border coverage, amount bounds, recurring and mandate support, partial capture documentation, prohibited MCC table, extended dispute evidence window and new clocks, and refund destination/cancelability/reversal rules (old raw lines 28-75 and 107-157, new raw lines 11-108 and 109-182). May's no-recurring status already coexisted with a Subscriptions link, while the May cross-method wallet matrix lines 184 and 199 mark Subscriptions, Invoicing and Customer Portal unsupported. The November cross-method wallet matrix lines 188 and 203 retains those negatives, in conflict with the November method page's Billing, Invoicing and Customer Portal cells and the June 24 Dahlia versioned Subscriptions and Invoices additions at lines 9-17 (new raw lines 194-208). Specific Checkout variant and individual account eligibility remain unresolved. Preserve the dated May Checkout mode limits from the acceptance guide and the 2026-06-24.dahlia release scope, without applying either uniformly. The November acceptance root provides routes only. Italy/EUR, standard payout, manual capture, 180-day refund and May platform/selected connected account capability and charge-specific descriptor mapping remain dated evidence (old raw lines 32-50 and 150-185, new raw lines 9-14 and 93-123 and 231-237). Reordering, markup and demo or link presentation provide no proof of removal. The revised source-stripe-satispay.md preserves both method raws, the Stripe Wallets concept route, and distinct acceptance and future setup routes."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "satispay-overview-setup-table",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "durable_fact",
+      "anchor": "| Satispay | `satispay` | Yes | No | No |",
+      "proposed_markdown": "| Satispay | `satispay` | Yes | Yes (November 2026 method guide) | No |",
+      "quote_indexes": [
+        1,
+        3
+      ],
+      "warnings": [
+        "November raw lines 203–208 list SetupIntents. Separate Checkout variant modes are unresolved."
+      ]
+    },
+    {
+      "update_id": "satispay-overview-eligibility",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "durable_fact",
+      "anchor": "**20 eurozone merchant countries** (AT, BE, CY, DE, EE, ES, FI, FR, GR, HR, IE, IT, LT, LU, LV, MT, NL, PT, SI, SK).",
+      "proposed_markdown": "The May 2026 method guide lists 20 merchant locations. The November guide lists 37 business account locations for domestic and cross-border B2C payments, with Italy customers and EUR presentment. See [[source-stripe-satispay#Account and payment eligibility]] for dates and limits.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "satispay-overview-disputes-and-refunds",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Manual capture**: Yes. **Disputes**: Yes — 12 calendar days to submit evidence. **Refunds**: full + partial, 180-day window, async up to 5 minutes.",
+      "proposed_markdown": "**Capture**: Both method guides list manual capture, and November also lists partial capture. **Disputes**: May gives 12 calendar days to submit evidence. November gives customers 120 days from purchase to file a full dispute, merchants 15 days from creation to submit evidence, and Satispay 25 days from creation for the final decision. **Refunds**: Full or partial, asynchronous, within 180 days. November documents wallet balance as the refund destination.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "November raw lines 93–123 and 125–162 support the capture, refund and dispute details."
+      ]
+    },
+    {
+      "update_id": "satispay-overview-recurring-and-products",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "durable_fact",
+      "anchor": "**No recurring payments.**\n\n**Product support**: Connect, Payment Links, Checkout, Elements (not Express Checkout Element), Subscriptions.",
+      "proposed_markdown": "**Recurring payments and product support**: The May 2026 method guide marks recurring payments unsupported and links Subscriptions in Dashboard guidance. The November method guide lists recurring, SetupIntents, Billing, Invoicing and Customer Portal. The November wallet matrix still lists Subscriptions, Invoicing and Customer Portal unsupported. The separate June 24 Dahlia changelog documents scoped Intent, Subscription and Invoice support. See [[source-stripe-satispay#Recurring payments and mandates]] for those distinctions and mandate handling.",
+      "quote_indexes": [
+        1,
+        3
+      ],
+      "warnings": [
+        "The November product cells and cross-method matrix are distinct authorities, and the versioned changelog has a separate API scope."
+      ]
+    },
+    {
+      "update_id": "satispay-overview-categories",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "durable_fact",
+      "anchor": "**14 prohibited categories**: automobile associations, gambling/betting, counseling, credit reporting, detective agencies, direct marketing (catalog + telemarketing), door-to-door sales, employment/temp agencies, financial institutions, cryptocurrency exchanges/wallets, pawn shops, security brokers/dealers, plus additional at Satispay's discretion.",
+      "proposed_markdown": "**Prohibited categories**: May lists 13 named categories and a discretion catch-all. November lists 33 prohibited MCC entries. See the dated eligibility section in [[source-stripe-satispay]].",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "satispay-overview-reciprocal",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-satispay]] — Satispay: Italy/EUR only, 20 eurozone merchant countries, 12-day dispute evidence, 180-day refunds, 14 prohibited categories",
+      "proposed_markdown": "- [[source-stripe-satispay]] — May and November 2026 Satispay method guides for Italy/EUR, business-account eligibility, recurring and mandate guidance, and dated dispute and refund rules.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ]
+}

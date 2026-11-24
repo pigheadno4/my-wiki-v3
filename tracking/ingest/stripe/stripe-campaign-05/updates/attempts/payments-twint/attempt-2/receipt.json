@@ -1,0 +1,187 @@
+{
+  "job_id": "payments-twint",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Stripe: TWINT Payments\"\ntype: source\ndate_ingested: 2026-05-03\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/payments/twint\nraw_files:\n  - \"stripe-payments-twint-2026-11-07.md\"\n  - \"stripe-twint-2025.md\"\ntags: [stripe, twint, switzerland, chf, wallet, bank-redirect, recurring, disputes, connect, onboarding]\n---\n\n## Summary\n\n[[stripe]] supports TWINT for Swiss customers paying in CHF through a TWINT app. The November 7, 2026 overview classifies TWINT under Wallets, lists the same 35 eligible business locations as the May 3, 2026 capture, and documents domestic and cross-border business acceptance for B2C transactions with approval. The transaction range is CHF 0.50 to CHF 5,000. Stripe lists immediate payment outcome notification, its standard payout timing, and support for recurring payments.\n\n## Eligibility and onboarding\n\nBefore requesting access in the Dashboard or through the Capabilities API, meet the account and website requirements. The business needs a working, public website with its legal name and form, physical address, terms and conditions, and email or phone contact. Sole proprietors must provide the owner's full name. The address must include the street, house number, postal code, and city. Show CHF by checkout, including when using Adaptive Pricing. If you sell physical goods, make Switzerland available as a shipping destination. The website must avoid deceptive marketing. The `twint_payments` capability stays `pending` until verified. The account may be reviewed after activation to confirm eligibility. TWINT can suspend or terminate access for noncompliance. Contact Stripe Support to appeal capability restrictions.\n\nThe November overview groups prohibited and restricted merchant category codes by business country. Restricted categories require additional information. Iceland, Monaco, and San Marino appear in the 35 locations, and the guide directs businesses there to Stripe Support for MCC requirements.\n\n## Payment flow and result\n\nIn November both mobile and desktop buyers first reach a TWINT-hosted page. On mobile the buyer selects their TWINT app, and on desktop the buyer scans the page's QR code. The buyer approves in the app. The PaymentIntent stays `requires_action` while approval is pending, moves to `succeeded` after success, or returns to `requires_payment_method` after a decline or failure. The latter leaves an incomplete Intent that can be retried. Use the PaymentIntent status to establish the outcome after the browser returns.\n\nThe May 3, 2026 capture classified TWINT as a bank redirect and described the merchant website displaying the desktop QR code. See [[source-stripe-twint-accept-payment]] for the separate acceptance guide.\n\n## Mandates and recurring payments\n\nOne-time payments require no mandate. The customer can authorize a mandate with a SetupIntent or with a PaymentIntent set up for future use. The mandate allows ad hoc off-session payments without a fixed amount or schedule. One active mandate applies per business and customer. For indirect Connect charges using the platform as merchant of record without `on_behalf_of`, a new mandate for that customer revokes the earlier mandate, including across connected accounts.\n\nUse the customer's saved payment methods in the Dashboard to find active mandates. For a specific payment, read `charge.payment_method_details.twint.mandate` on the Charge. The merchant can detach the saved PaymentMethod, the customer can revoke authorization in the app, and TWINT can revoke it. Stripe updates the Mandate status. See [[source-stripe-twint-save-during-payment]], [[source-stripe-twint-set-up-future-payments]], and [[source-stripe-subscriptions-twint]] for the separate implementation guides.\n\n## Refunds and disputes\n\nFull or partial refunds are available for up to 180 days after completion. Multiple partial refunds can total up to the original payment amount, return to the original payment source, and usually complete within a few minutes. The November guide excludes cancellation and reversals. Check the Refund status or `refund.updated` and `refund.failed` for final status. A failed refund returns funds to the Stripe balance, and the merchant needs another method to refund the customer.\n\nCustomers file disputes through their bank. Stripe debits the disputed amount on receipt. The Dashboard provides the reason, evidence deadline, and options to accept or respond. Acceptance or a missed deadline loses the dispute. A win returns the funds to the Stripe balance, while a loss makes the debit permanent. The November matrix supports full disputes and excludes partial disputes. The May capture reported 25–50 disputes per million transactions.\n\n## Products and Connect\n\nThe November matrix lists Stripe-hosted and embedded Checkout, Payment Links, Payment Element and in-app integrations, Billing, Invoicing, Customer Portal, Radar, and Connect. It excludes Express Checkout Element, Payment Method Messaging Element, Managed Payments, and Terminal. It lists Checkout Sessions, PaymentIntents, future use, SetupIntents, and off-session payments, with manual capture, partial capture, multicapture, overcapture, and authorization adjustments unsupported.\n\nThe May overview named direct charges, destination charges, and separate charges and transfers and described self-service enablement for connected accounts with a full Stripe Dashboard. Check the active capability in the API or a webhook. The November guide says to request `twint_payments` for accounts with an Express Dashboard or without a Stripe-hosted Dashboard and confirm that it is active before accepting payments.\n\nStripe forwards a custom `statement_descriptor` to TWINT, which may choose whether to display it. The default name is the connected account for direct charges and charges using `on_behalf_of`, or the platform for destination charges and separate charges and transfers without `on_behalf_of`.\n\n## Related Concepts\n\n- [[stripe-twint]]\n\n## Raw Sources\n\n- [[raw/stripe-payments-twint-2026-11-07|November 7, 2026 TWINT overview]]\n- [[raw/stripe-twint-2025|May 3, 2026 TWINT overview]]\n",
+  "quotes": {
+    "payments-twint": [
+      {
+        "location": "raw/stripe-payments-twint-2026-11-07.md:23",
+        "text": "Business model: ✗ B2B, ✓ B2C"
+      },
+      {
+        "location": "raw/stripe-payments-twint-2026-11-07.md:126",
+        "text": "Transaction limits: Minimum amount: 0.50 CHF"
+      },
+      {
+        "location": "raw/stripe-payments-twint-2026-11-07.md:156",
+        "text": "The total amount of all refunds can’t exceed the amount of the original payment."
+      },
+      {
+        "location": "raw/stripe-payments-twint-2026-11-07.md:245",
+        "text": "On desktop, the customer is redirected to a TWINT-hosted page that displays a QR code."
+      },
+      {
+        "location": "raw/stripe-payments-twint-2026-11-07.md:255",
+        "text": "For Connect payments, direct charges and charges that use `on_behalf_of` use the connected account’s name. Destination charges and separate charges and transfers that don’t use `on_behalf_of` use the platform’s name."
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-twint": [
+      {
+        "text": "Bank redirects",
+        "location": "raw/stripe-twint-2025.md:28"
+      },
+      {
+        "text": "5000.00 CHF",
+        "location": "raw/stripe-twint-2025.md:56"
+      },
+      {
+        "text": "Customers scan a QR code you present on your website using a TWINT app, which allows them to authorize the payment.",
+        "location": "raw/stripe-twint-2025.md:115"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-twint-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 263
+      }
+    ],
+    "raw/stripe-twint-2025.md": [
+      {
+        "start": 1,
+        "end": 179
+      }
+    ],
+    "wiki/sources/source-stripe-twint.md": [
+      {
+        "start": 1,
+        "end": 40
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/78fd6a6293b80e8acc5ac452/content.diff": [
+      {
+        "start": 1,
+        "end": 426
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-twint/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 154
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-twint/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 48
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 283,
+        "end": 290
+      },
+      {
+        "start": 752,
+        "end": 759
+      }
+    ],
+    "wiki/concepts/stripe-twint.md": [
+      {
+        "start": 1,
+        "end": 60
+      }
+    ],
+    "raw/stripe-payments-payment-intents-verifying-status-2026-11-07.md": [
+      {
+        "start": 24,
+        "end": 35
+      }
+    ]
+  },
+  "answers": {
+    "payments-twint": {
+      "Q1": "https://docs.stripe.com/payments/twint describes approval-required B2C payments for Swiss buyers in CHF with the same 35 merchant countries and standard payout schedule. November adds a CHF 0.50 minimum beneath the CHF 5,000 maximum, documents public website and business requirements, and keeps twint_payments pending until verified. On mobile or desktop the buyer reaches a TWINT-hosted page, selects the app or scans its QR, and approves in the app. Pending authorization is requires_action, the successful Intent reaches succeeded, and a declined or failed attempt returns to requires_payment_method, leaving the Intent incomplete and retryable. For later charges the buyer authorizes an ad hoc mandate via SetupIntent or future-use PaymentIntent. An indirect platform-as-MoR second mandate without on_behalf_of revokes the earlier one for the buyer. Refund status and dispute evidence/outcomes are separate. See new raw lines 12-55, 114-128, 154-210 and 237-263, and old raw lines 8-56, 58-96, 109-115 and 134-179. source-stripe-twint.md records the 35-country correction, approval and MCC prerequisites, and distinct payment, mandate, refund and dispute outcomes.",
+      "Q2": "At https://docs.stripe.com/payments/twint, the table and regional presentation reorganize the same country list, but November changes the payment-family label from Bank redirects to Wallets and supplies substantive eligibility and hosted flow details. It adds B2C-only approval, the CHF 0.50 minimum and post-activation review and MCC treatment, then documents Intent attempt outcomes (requires_action while awaiting authorization, succeeded after success and requires_payment_method after decline or failure), mandate replacement and revocation, Connect descriptor names, refund final status and dispute handling (old raw lines 26-28, 54-96, 109-115 and 134-179; new raw lines 12-55, 57-128, 154-210 and 237-263). source-stripe-twint.md retains May 3, 2026’s dispute frequency figure and QR wording, named Connect charge types, original-payment refund cap and November 7’s full overview, with reciprocal stripe-twint and distinct implementation-guide routes. November’s hosted redirect does not prove success or actual account eligibility. The dated verifying-status guide also marks requires_payment_method as incomplete and retryable (raw/stripe-payments-payment-intents-verifying-status-2026-11-07.md lines 24-35)."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "target_path": "wiki/concepts/stripe-twint.md",
+      "update_kind": "durable_fact",
+      "warnings": [
+        "The 35 locations are listed at new raw lines 21 and 116. Approval is identified at line 14. The CHF 5,000 maximum is also documented in May."
+      ],
+      "update_id": "payments-twint-twint-overview-eligibility",
+      "anchor": "**Currency**: CHF only. **Customers**: Switzerland only. **Business**: 36 countries (European focus). **Max**: 5,000 CHF per transaction.",
+      "proposed_markdown": "**Currency**: CHF. **Customers**: Switzerland. **Business locations**: 35. The November 7, 2026 overview lists approval-required B2C payments from CHF 0.50 to CHF 5,000.",
+      "quote_indexes": [
+        0,
+        1
+      ]
+    },
+    {
+      "target_path": "wiki/concepts/stripe-twint.md",
+      "update_kind": "durable_fact",
+      "warnings": [
+        "The full November mobile and desktop flow is at new raw line 245. The dated May desktop wording is at old raw lines 109–115."
+      ],
+      "update_id": "payments-twint-twint-overview-hosted-flow",
+      "anchor": "1. **Mobile**: customer redirected from site/app → TWINT app → authorizes → returns\n2. **Desktop**: QR code displayed on website → customer scans with TWINT app → authorizes",
+      "proposed_markdown": "The November 7, 2026 flow starts at a TWINT-hosted page. On mobile the customer chooses the app. On desktop the customer scans the hosted page’s QR code. The customer authorizes in the app. The May 3, 2026 capture described the merchant website presenting the desktop QR code.",
+      "quote_indexes": [
+        3
+      ]
+    },
+    {
+      "target_path": "wiki/concepts/stripe-twint.md",
+      "update_kind": "durable_fact",
+      "warnings": [
+        "The family and recurring labels are at new raw lines 12–13 and 134–137 and old raw lines 26–33. Product labels are at new raw lines 212–229. Disputes are at new raw lines 168–186 and the historical figure is at old raw line 159."
+      ],
+      "update_id": "payments-twint-twint-overview-support",
+      "anchor": "- **Recurring**: Yes — notable for a bank redirect method\n- **Disputes**: Yes — rare (25–50 per 1,000,000 transactions); filed via customer's bank\n- **Refunds**: 180 days; full and partial; multiple partial refunds allowed\n- **ECE**: not supported; all other products (Checkout, Elements, Payment Links, Subscriptions, Invoicing, Connect) supported",
+      "proposed_markdown": "- **Recurring**: Supported. The May 3, 2026 guide classified TWINT as a bank redirect and the November 7, 2026 guide classifies it under Wallets.\n- **Disputes**: Customers file through their bank. May 3, 2026 reported 25–50 per 1,000,000 transactions.\n- **Refunds**: Full or partial within 180 days, with multiple partial refunds capped at the original amount.\n- **Products**: November lists Checkout, Payment Links, Payment Element, Billing, Invoicing, Customer Portal, Radar, and Connect, and excludes Express Checkout Element, Payment Method Messaging Element, Managed Payments, and Terminal.",
+      "quote_indexes": [
+        2
+      ]
+    },
+    {
+      "target_path": "wiki/concepts/stripe-twint.md",
+      "update_kind": "durable_fact",
+      "warnings": [
+        "The May charge types are at old raw lines 165–179 and forwarded descriptor visibility is qualified at new raw line 253."
+      ],
+      "update_id": "payments-twint-twint-overview-connect",
+      "anchor": "`twint_payments` capability required. Direct, Destination, and Separate charges all supported. Connected account name appears in TWINT app.",
+      "proposed_markdown": "`twint_payments` is required. The May 3, 2026 overview names direct charges, destination charges, and separate charges and transfers. The November 7, 2026 overview gives the default name as the connected account for direct charges and charges using `on_behalf_of`, or the platform for destination and separate charges and transfers without `on_behalf_of`. TWINT may choose whether to display a forwarded custom descriptor.",
+      "quote_indexes": [
+        4
+      ]
+    },
+    {
+      "target_path": "wiki/concepts/stripe-twint.md",
+      "update_kind": "reciprocal_source_link",
+      "warnings": [],
+      "update_id": "payments-twint-twint-overview-reciprocal",
+      "anchor": "- [[source-stripe-twint]] — primary source: payment flows, onboarding requirements, disputes, refunds, Connect",
+      "proposed_markdown": "- [[source-stripe-twint]] — May and November overviews covering eligibility, hosted authorization, mandate lifecycle, refunds, disputes, and Connect.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ]
+    }
+  ]
+}

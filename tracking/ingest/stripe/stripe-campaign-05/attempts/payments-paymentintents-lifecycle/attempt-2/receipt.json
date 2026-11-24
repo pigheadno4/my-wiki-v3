@@ -1,0 +1,186 @@
+{
+  "job_id": "payments-paymentintents-lifecycle",
+  "attempt": 2,
+  "raw_path": "raw/stripe-payments-paymentintents-lifecycle-2026-11-07.md",
+  "raw_sha256": "10c7a2844e87b527d3a8e9f3919bed9d0ce3f6f445b5336021c6317655be9ee1",
+  "prior_raw_path": "raw/stripe-payment-setup-intents-2025.md",
+  "prior_raw_sha256": "4d70ce122b36b7111de9312b57ea011a42e087e57941121181819ba731560a4f",
+  "source_targets": [
+    "wiki/sources/source-stripe-payment-intents.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-payment-intents.md": "e6d7b77b9ecf4bbd389ab69ddc789d3f04a97677b001b36523f5a00a22c8e324"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-paymentintents-lifecycle-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 35
+      }
+    ],
+    "raw/stripe-payment-setup-intents-2025.md": [
+      {
+        "start": 1,
+        "end": 86
+      }
+    ],
+    "wiki/sources/source-stripe-payment-intents.md": [
+      {
+        "start": 1,
+        "end": 111
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/5f1b1fee1853216995e3990e/content.diff": [
+      {
+        "start": 1,
+        "end": 106
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 22
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 17,
+        "end": 25
+      },
+      {
+        "start": 726,
+        "end": 731
+      }
+    ],
+    "wiki/concepts/stripe-payment-intents.md": [
+      {
+        "start": 8,
+        "end": 32
+      },
+      {
+        "start": 130,
+        "end": 145
+      }
+    ],
+    "wiki/concepts/stripe-checkout.md": [
+      {
+        "start": 8,
+        "end": 24
+      },
+      {
+        "start": 83,
+        "end": 83
+      },
+      {
+        "start": 247,
+        "end": 247
+      },
+      {
+        "start": 251,
+        "end": 251
+      },
+      {
+        "start": 254,
+        "end": 254
+      },
+      {
+        "start": 280,
+        "end": 280
+      }
+    ],
+    "raw/stripe-api-payment-intents-cancel-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 28
+      }
+    ],
+    "raw/stripe-setup-intents-api-2025.md": [
+      {
+        "start": 28,
+        "end": 68
+      }
+    ],
+    "raw/stripe-cli-sandbox-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 95
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Setup Intents set up payment credentials but don\u2019t process payments.",
+      "location": "raw/stripe-payments-paymentintents-lifecycle-2026-11-07.md:13"
+    },
+    {
+      "text": "Both Payment Intents and Setup Intents go through the same set of states.",
+      "location": "raw/stripe-payments-paymentintents-lifecycle-2026-11-07.md:23"
+    },
+    {
+      "text": "In that case, attempting to capture the funds moves it to `processing` or `succeeded` depending on the payment method.",
+      "location": "raw/stripe-payments-paymentintents-lifecycle-2026-11-07.md:33"
+    },
+    {
+      "text": "However, cancellation might fail due to a limited and varying cancellation time window.",
+      "location": "raw/stripe-payments-paymentintents-lifecycle-2026-11-07.md:35"
+    },
+    {
+      "text": "A SetupIntent with a `succeeded` status means that the setup is successful.",
+      "location": "raw/stripe-payments-paymentintents-lifecycle-2026-11-07.md:34"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Other payment methods, such as cards, are processed more quickly and don\u2019t go into the `processing` status.",
+      "location": "raw/stripe-payment-setup-intents-2025.md:42"
+    },
+    {
+      "text": "You can cancel a SetupIntent at any point before it\u2019s in a `processing` or `succeeded` state.",
+      "location": "raw/stripe-payment-setup-intents-2025.md:86"
+    }
+  ],
+  "proposed_disposition": "no_substantive_update",
+  "findings": [
+    "Old raw lines 10-23 and new raw lines 9-23 retain the distinct PaymentIntent charge and SetupIntent credential-preparation purposes, applicable 3DS/customer action, and Checkout Sessions with Payment Element recommendation for most integrations. Session secret, React CheckoutElementsProvider and checkout.confirm, and HTML initCheckoutElementsSdk/loadActions remain specific to Checkout Sessions with ui_mode='elements'. Current source lines 24-34 separate this from server creation, payment status and Intent-scoped credentials.",
+    "Old raw lines 29-86 and new raw lines 25-35 retain the amount-known creation recommendation for PaymentIntent, both Intents waiting for attached methods and ready to confirm when customer details are available, the frequently combined attachment and confirmation step, conditional required action, delayed processing, PaymentIntent-only manual capture branch, distinct successes, return to requires_payment_method on failure, and cancellation consequences. Current source lines 48-70 capture the overall flows, and line 64's object-scope ambiguity is a separate baseline finding. The shared-state wording at new raw line 23 describes the common pattern; the payment column in line 33 expressly contains the separate capture branch.",
+    "New raw lines 21-25 add a Dashboard status mapping link and retain the older API alias note at lines 29-32 even though its table row is broken across lines. The April capture is dated 2026-04-19 by old raw line 2 despite the filename suffix. The November capture is dated 2026-11-07 at new raw line 2. Current source lines 7-14 and 93-110 lack the new lifecycle raw route even though wiki/stripe-index.md line 23 already points to a November full lifecycle guide.",
+    "Current source lines 52-64 label both objects in the state table, but the undifferentiated line 64 paragraph can make a reader apply the limited bank-debit processing cancellation window to a SetupIntent and assume it releases held funds. Old raw lines 52-54 and 86 and new raw line 35 scope limited processing cancellation, held-fund release and possible repeated-confirmation auto-cancellation to PaymentIntent. SetupIntent can be canceled before processing or succeeded, and cancellation irreversibly invalidates future setup attempts. Preserve the separate Checkout Session-bound PaymentIntent qualification from the November Cancel API at lines 7-25."
+  ],
+  "substantive_changes": [
+    "No supported change in the documented payment/setup state machine. The new CLI sandbox aside at new raw line 11 is substantive tooling text outside the lifecycle, with the distinct CLI authority caveat below. The side-by-side state table rearranges old raw lines 24-86, and new raw lines 9, 23 and 35 update or add quickstart, Dashboard mapping and BACS destinations. April's explicit faster-card PaymentIntent processing sentence at old raw line 42 is absent from new raw line 33, which still scopes delayed payment processing to asynchronous methods. That omission is not evidence of a changed transition."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain the 2026-04-19 raw and the November full lifecycle raw as separate captures. Old raw lines 38 and 74 and new raw lines 29-32 retain pre-2019-02-11 requires_source/requires_source_action aliases; the April card-processing wording remains date-scoped. Old raw lines 52-54 and 86 and new raw line 35 preserve irreversible, object-specific cancellation, release of held PaymentIntent funds, variable and potentially unsuccessful processing windows for ACH, ACSS, AU BECS, BACS, NZ BECS and SEPA, and possible auto-cancel after too many PaymentIntent confirmations.",
+    "Retain the current source's separation of an Intent's successful state, server-verified event/fulfillment, and asynchronous Charge ledger fields at lines 28-30 and 74-86. Preserve the separate checked November Cancel API passage (raw/stripe-api-payment-intents-cancel-2026-11-07.md lines 7-25) for Checkout Session-bound PaymentIntent direct cancellation in requires_capture and Session expiration otherwise."
+  ],
+  "conflicts": [
+    "New raw line 11 describes a help invocation as provisioning. The separately reviewed 2026-11-07 CLI sandbox reference, raw/stripe-cli-sandbox-2026-11-07.md lines 5-37 and 44-86, describes logged-out create with email or Git identity, temporary test keys, a seven-day expiry and a logged-in Dashboard path. The help invocation is not independently established. Current source line 46 already preserves this distinction for the implementation guide's parallel aside.",
+    "New raw lines 17-19 compress authentication and the future mandate; old raw line 18 uses the same shorthand. The April Setup Intents guide, raw/stripe-setup-intents-api-2025.md lines 28-68, distinguishes future on-session consent, the upfront off-session agreement, applicable authentication and later authentication/recovery. Preserve the existing current source line 70 qualification."
+  ],
+  "unresolved_questions": [
+    "The snapshot does not resolve the lifecycle page's CLI help/provisioning wording for any exact CLI version. It provides no observation of live account, sandbox, payment, ledger or payout state."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-payment-intents.md",
+    "wiki/concepts/stripe-checkout.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-payment-intents.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Current source lines 48-70 correctly summarize the state pattern and distinguish consent from authentication. Add the missing November lifecycle raw to provenance and locators alongside the existing April raw at lines 93 and 107.",
+        "Current source lines 52-64 label both objects in the state table, but the undifferentiated line 64 paragraph can make a reader apply the limited bank-debit processing cancellation window to a SetupIntent and assume it releases held funds. Old raw lines 52-54 and 86 and new raw line 35 scope limited processing cancellation, held-fund release and possible repeated-confirmation auto-cancellation to PaymentIntent. SetupIntent can be canceled before processing or succeeded, and cancellation irreversibly invalidates future setup attempts. Preserve the separate Checkout Session-bound PaymentIntent qualification from the November Cancel API at lines 7-25."
+      ],
+      "conflicts": [
+        "The new lifecycle CLI sidebar conflicts with the detail/qualification of its separate CLI route. Current source line 46 already preserves the qualified interpretation for the parallel sidebar, and current source line 70 already qualifies the 3DS/mandate shorthand."
+      ],
+      "reason": "The provider index explicitly advertises a November full lifecycle guide, but current source lines 7-14 and 93-110 do not connect readers to that evidence. Add the 2026-11-07 lifecycle raw to source provenance and detail locators and date its independent confirmation of the two object-specific cancellation rules. Correct the combined summary's generic cancellation scope at line 64 while preserving the Checkout Session-specific endpoint rule. Retain the 2026-04-19 raw, the separate implementation and async-capture authorities, and the root/provider/concept/summary routes via wiki/index.md line 7, wiki/stripe-index.md lines 23 and 729, wiki/concepts/stripe-payment-intents.md lines 133-142 and current source lines 95-107."
+    }
+  ],
+  "answers": {
+    "Q1": "The 2026-11-07 capture of https://docs.stripe.com/payments/paymentintents/lifecycle distinguishes a merchant's attempt to collect payment through a PaymentIntent from saving credentials without charge through a SetupIntent. New raw lines 13-35 and old raw lines 10-86 describe attaching a payment method, confirming when the customer supplies details, and handling additional customer action such as 3DS when required. Attachment and confirmation are commonly combined. Asynchronous payment methods can remain processing, while a separately authorized PaymentIntent can require capture and then enter processing or succeed. PaymentIntent success completes the payment flow, while SetupIntent success permits attaching the method to a Customer for future use. Failure returns either object to requires_payment_method. Neither lifecycle describes cancellation at succeeded. A PaymentIntent can be canceled before processing or succeeded, with a limited and varying processing exception for ACH, ACSS, AU BECS, BACS, NZ BECS and SEPA. Cancellation irreversibly invalidates future attempts and releases held PaymentIntent funds. Too many PaymentIntent confirmations can also trigger cancellation. A SetupIntent can be canceled before processing or succeeded, and cancellation irreversibly invalidates future setup attempts. Its lifecycle describes no processing exception or held-fund release. source-stripe-payment-intents.md distinguishes creation, verified server fulfillment, SetupIntent reuse and deferred Charge data, and routes Checkout Session-bound cancellation to the separate API authority, but its generic cancellation paragraph should explicitly scope the two Intent types. The guide's Checkout Sessions recommendation is scoped to most integrations, with Session-specific client confirmation in its elements examples.",
+    "Q2": "At https://docs.stripe.com/payments/paymentintents/lifecycle, old raw lines 10-86 from 2026-04-19 and new raw lines 9-35 from 2026-11-07 retain the lifecycle substance. November presents full side-by-side state data and adds or retargets quickstart, Dashboard status and BACS links. Preserve the April card-processing wording as April evidence, the shared pre-2019-02-11 status aliases, the PaymentIntent-specific capture, held-fund release and variable cancellation windows, and SetupIntent success without charge with irreversible cancellation available before processing or succeeded. The new sandbox aside is a tooling addition, with the help/provisioning claim qualified by the separate CLI create/reference requirements. The April consent/agreement boundary and the separate November Checkout Session cancellation API qualification remain in source-stripe-payment-intents.md. The source should link both dated lifecycle raws, and the Stripe index and Stripe Payment Intents concept should keep their reciprocal routes to that source."
+  }
+}

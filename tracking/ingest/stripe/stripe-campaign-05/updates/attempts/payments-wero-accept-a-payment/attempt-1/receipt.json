@@ -1,0 +1,151 @@
+{
+  "job_id": "payments-wero-accept-a-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Accept a Payment with Wero\"\ntype: source\ndate_ingested: 2026-05-05\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/wero/accept-a-payment\"\nraw_files:\n  - \"stripe-wero-accept-payment-2025.md\"\ntags: [stripe, wero, eur, bank-redirect, checkout, elements, payment-intents]\n---\n\n## Summary\n\nThe 2026-05-05 [[stripe]] integration guide covers Checkout, the web Payment Element with Payment Intents, and Direct API including manual server-side confirmation and redirect. Customers approve a payment in their bank-account-linked Wero wallet. The 2026-11-07 capture is a selector for six routes covering Checkout, Elements with either Checkout Sessions or Payment Intents, Direct API, iOS and Android. The details below come from the May integration guide.\n\nThe separate [[source-stripe-wero|Wero payment method profile]] lists Germany for customers in its 2026-05-05 capture and Belgium, France, Germany, Luxembourg and the Netherlands in its 2026-11-07 capture. Both dated profiles list EUR. The November *integration* selector gives navigation. The customer-location list comes from the profile and does not establish an individual account's enrollment.\n\n## May implementation paths\n\n- **Checkout.** Start from an existing Checkout integration and activate Wero in Dashboard payment method settings. Use EUR for every line item and payment mode. The guide describes dynamic method selection and manually adding `wero` to the Checkout Session's `payment_method_types`. The hosted example uses `success_url`, while the `embedded_page` example uses `return_url`. The May guide directs fulfillment to `checkout.session.completed` (lines 8–98).\n- **Elements.** The merchant creates the EUR PaymentIntent on the server. The client confirms with `stripe.confirmPayment`, the Payment Element and a `return_url`. The general return table lists `payment_intent` and `payment_intent_client_secret`. The Wero-specific redirect paragraph additionally names `redirect_pm_type` and `redirect_status` (lines 121–167, 386–492 and 599–605).\n- **Direct API client.** The merchant creates an EUR PaymentIntent. Stripe.js `confirmWeroPayment` uses the PaymentIntent client secret, customer billing details in the example and a `return_url`. Its return table lists `payment_intent`, `payment_intent_client_secret` and `redirect_status` (lines 650–671 and 740–792).\n- **Direct API manual server path.** Set the return URL, create a Wero PaymentMethod with billing details, and confirm the PaymentIntent. When it is in `requires_action` with `next_action.type = redirect_to_url`, redirect the buyer to the corresponding URL. This passage names `payment_intent` and `payment_intent_client_secret` on return (lines 794–850).\n\nThe return fields above reflect the dated passages for each path. Retrieve and inspect the PaymentIntent state. Neither browser return nor `redirect_status` proves payment success. For PaymentIntent routes, the guide uses `payment_intent.succeeded` for post-payment business actions (lines 482–492, 607–611, 786–792 and 851–855).\n\n## Authentication, retry and API version\n\n- **Timing and recovery.** May describes typical completion under ten seconds and separately gives an hour for the authentication session to expire. Failed or expired PaymentIntents transition to `requires_payment_method`. Customers should retry with another method. Card is an example of an additional payment option. In the Direct API sandbox, approval maps `requires_action` to `succeeded` and decline maps it back to `requires_payment_method` (lines 14, 599–605 and 877–887).\n- **Errors.** See the May table for `payment_intent_invalid_currency`, `payment_method_customer_decline`, `payment_intent_payment_attempt_failed` and `payment_intent_redirect_confirmation_without_return_url` (lines 889–898).\n- **Historical manual method lists.** The May PaymentIntent examples write `payment_method_types`. The separate `2026-08-26.preview` changelog removes it from PaymentIntent create, update and confirm requests, with HTTP 400 `payment_method_types_no_longer_supported` if sent. The response property remains read-only. The May Checkout Session parameter belongs to a different resource.\n\n## Related Pages\n\n- [[stripe-wero]] — standalone Wero concept\n- [[source-stripe-wero]] — separately dated Wero payment method profiles\n\n## Raw Sources\n\n- [[raw/stripe-wero-accept-payment-2025|Wero acceptance guide, captured 2026-05-05]] — full 898-line capture for Checkout, Elements and Direct API.\n- [[raw/stripe-changelog-dahlia-2026-08-26-removes-payment-method-types-parameter-from-payment-intents-setup-intents-2026-11-07|Dahlia preview changelog, captured 2026-11-07]] — versioned Intent method-list change at lines 7–34.\n\n## Related raw API references\n\n- [[raw/stripe-payments-wero-accept-a-payment-2026-11-07|Wero acceptance variant selector, captured 2026-11-07]] — navigation for Checkout, both Elements API options, Direct API, iOS and Android.\n",
+  "quotes": {
+    "payments-wero-accept-a-payment": [
+      {
+        "text": "Add support for Wero to your integration.",
+        "location": "raw/stripe-payments-wero-accept-a-payment-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-wero-accept-a-payment-2026-11-07.md:11"
+      },
+      {
+        "text": "[Checkout Sessions API](https://docs.stripe.com/payments/wero/accept-a-payment.md?payment-ui=elements&api-integration=checkout)",
+        "location": "raw/stripe-payments-wero-accept-a-payment-2026-11-07.md:15"
+      },
+      {
+        "text": "[Payment Intents API](https://docs.stripe.com/payments/wero/accept-a-payment.md?payment-ui=elements&api-integration=paymentintents)",
+        "location": "raw/stripe-payments-wero-accept-a-payment-2026-11-07.md:16"
+      },
+      {
+        "text": "[iOS](https://docs.stripe.com/payments/wero/accept-a-payment.md?payment-ui=mobile&platform=ios)",
+        "location": "raw/stripe-payments-wero-accept-a-payment-2026-11-07.md:19"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-wero-accept-a-payment": [
+      {
+        "text": "Checkout must be in payment mode (not subscription or setup mode).",
+        "location": "raw/stripe-wero-accept-payment-2025.md:21"
+      },
+      {
+        "text": "An authentication session expires after 1 hour. If no action is taken, the PaymentIntent’s status transitions back to `requires_payment_method`.",
+        "location": "raw/stripe-wero-accept-payment-2025.md:605"
+      },
+      {
+        "text": "Always present additional payment options such as `card` in your checkout flow.",
+        "location": "raw/stripe-wero-accept-payment-2025.md:887"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-wero-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 20
+      }
+    ],
+    "raw/stripe-wero-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 898
+      }
+    ],
+    "wiki/sources/source-stripe-wero-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 50
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/ffede8452372278e4ab25412/content.diff": [
+      {
+        "start": 1,
+        "end": 906
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 286,
+        "end": 292
+      },
+      {
+        "start": 755,
+        "end": 759
+      }
+    ],
+    "wiki/concepts/stripe-wero.md": [
+      {
+        "start": 1,
+        "end": 53
+      }
+    ],
+    "raw/stripe-wero-2025.md": [
+      {
+        "start": 1,
+        "end": 22
+      }
+    ],
+    "raw/stripe-payments-wero-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 23
+      }
+    ],
+    "raw/stripe-changelog-dahlia-2026-08-26-removes-payment-method-types-parameter-from-payment-intents-setup-intents-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 34
+      }
+    ]
+  },
+  "answers": {
+    "payments-wero-accept-a-payment": {
+      "Q1": "The 2026-11-07 capture of https://docs.stripe.com/payments/wero/accept-a-payment is a six-route index in new raw lines 9-20 for Checkout, two Elements APIs, Direct API, iOS and Android. Old raw lines 8-898 from 2026-05-05 describe the merchant activating Wero and using EUR payment-mode Checkout or creating an EUR PaymentIntent, with customer authorization in their Wero wallet. Elements uses confirmPayment and the client Direct API uses confirmWeroPayment. In the manual Direct API branch the server confirms with a Wero PaymentMethod and redirects from requires_action via next_action.redirect_to_url. A timeout after one hour returns the Intent to requires_payment_method, while a completed payment is verified separately from browser return. source-stripe-wero-accept-payment.md now distinguishes the path-specific return fields and describes card as an example of an additional method while preserving the three May implementations.",
+      "Q2": "At https://docs.stripe.com/payments/wero/accept-a-payment, the 2026-11-07 new raw lines 9-20 replace the displayed 2026-05-05 bodies in old raw lines 8-898 with an index that adds visible Elements Checkout Sessions and mobile routes. It gives no new execution, confirmation or eligibility evidence. Preserve the one-hour expiry and the typical under-ten-second completion as distinct timing statements. Keep each path’s documented return parameters, EUR Checkout restrictions, sandbox state changes and alternative-method recovery. Date the historical PaymentIntent manual method list against the separate preview API change. Preserve the distinct May and November Wero product profiles' geography as Germany and five customer countries respectively. Retain both integration raw routes in source-stripe-wero-accept-payment.md and the reciprocal provider-index and standalone Wero concept routes."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-wero-accept-a-payment-failure-retry",
+      "target_path": "wiki/concepts/stripe-wero.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Auth session**: expires after **1 hour** → PI reverts to `requires_payment_method`. Always offer `card` as fallback.",
+      "proposed_markdown": "**Auth session** — The May 2026 acceptance guide gives one hour for authentication. A failed or expired PaymentIntent returns to `requires_payment_method`. Offer another payment method for retry, with card given as an example. See [[source-stripe-wero-accept-payment]].",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The May guide establishes the expiry, return state and example at lines 599–605 and 883–887. November shows the integration routes."
+      ]
+    },
+    {
+      "update_id": "payments-wero-accept-a-payment-acceptance-source-route",
+      "target_path": "wiki/concepts/stripe-wero.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-wero-accept-payment]] — integration guide: Checkout + Elements + Direct API (confirmWeroPayment), server-side manual path, error codes, 1-hour auth expiry",
+      "proposed_markdown": "- [[source-stripe-wero-accept-payment]] — May 2026 Checkout, web Elements and Direct API guide with return-path and retry details. The November 2026 selector links six implementation routes.",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The separate Wero profile supplies territory evidence. The integration selector supplies navigation."
+      ]
+    }
+  ]
+}

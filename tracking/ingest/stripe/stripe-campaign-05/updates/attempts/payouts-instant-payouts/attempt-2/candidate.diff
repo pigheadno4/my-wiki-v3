@@ -1,0 +1,97 @@
+--- wiki/sources/source-stripe-payouts-instant.md
++++ tracking/ingest/stripe/stripe-campaign-05/updates/attempts/payouts-instant-payouts/attempt-2/candidate.md
+@@ -2,8 +2,10 @@
+ title: "Stripe — Instant Payouts for Dashboard Users"
+ type: source
+ date_ingested: 2026-05-11
++date_updated: 2026-11-22
+ original_format: webpage
+ raw_files:
++  - "stripe-payouts-instant-payouts-2026-11-07.md"
+   - "stripe-payouts-instant-2026.md"
+   - "stripe-payouts-instant-banks-2026.md"
+   - "stripe-payouts-instant-advance-funding-2026.md"
+@@ -12,55 +14,59 @@
+ 
+ ## Summary
+ 
+-Instant Payouts give Stripe Dashboard users access to their balance within 30 minutes, any time including weekends. Available in 37 countries; 1–1.5% fee depending on country.
++The May 11 and [November 7, 2026 Dashboard user guides](https://docs.stripe.com/payouts/instant-payouts) from [[stripe]] list the same 36 account countries. Eligible Dashboard users can request an Instant Payout at any time, including weekends and holidays, with funds typically settling at the payout destination within 30 minutes. Funds left in the balance follow the standard payout schedule.
+ 
+ ## Key Details
+ 
+-- **Speed**: Within 30 minutes, any day/time
+-- **Countries**: 37 (AE, AT, AU, BE, CA, EU countries, GB, HK, MY, NO, NZ, SG, US + more)
+-- **Fee**: 1% (CA, EU, UK, SG, NO, HK, MY); 1.5% (US, AU, NZ, AE)
+-- **Not compatible with**: multi-currency settlement
+-- **Daily limits**: max 10 payouts/day; max amount (check Dashboard); daily reset by region
+-- **New users**: not immediately eligible
++- **Account and balance**: Check individual eligibility in the Dashboard. New users are ineligible immediately after joining. Requests require a positive eligible balance and a configured, eligible payout destination.
++- **Request paths**: Use **Pay out** in the Balances Dashboard, the mobile Dashboard app if eligible for both, or the Payouts API.
++- **Daily limits**: Up to 10 Instant Payouts per day and a separate account-specific daily maximum amount shown in the Dashboard. Each payout counts toward the day it was requested, even if it arrives on a subsequent day. Reset times depend on the account region.
++- **Currencies**: Instant Payouts cannot use multi-currency settlement.
++- **Fee**: The November guide says Stripe charges a fee per payout and pre-deducts it from the eligible balance shown. It omits the May 11, 2026 rates of 1% for CA, EU, UK, SG, NO, HK and MY, and 1.5% for US, AU, NZ and AE.
+ 
+ ## Funds Eligibility (`instant_available` balance)
+ 
+-- Card funds: available immediately after charge completion
+-- ACH/SEPA: only after full settlement (reversible before then)
+-- Only currencies Stripe supports for Instant Payouts in your country
+-- Only funds becoming available within ~6 business days
+-- Fee pre-deducted from balance shown
+-- Capped at remaining daily allowance
+-- Withholds pending recovery debits and Stripe Capital repayments
++The Balances API reports eligible funds before any payout is requested. A completed card charge can count immediately, including funds pending in the payout schedule window, while ACH and SEPA debits count only after full settlement. The balance covers supported payment methods and local Instant Payout currencies. It includes only funds that become available within roughly six business days, based on the payout schedule.
++
++Stripe caps the amount at the remaining daily allowance and pre-deducts the fee. Stripe withholds pending recovery debits and Stripe Capital repayments to prevent negative balances. A positive `instant_available` amount identifies funds eligible to be paid out and does not indicate that a payout has started or arrived.
+ 
+ ## API
++
++Read `instant_available` using the Balances API, then request the payout with `method: 'instant'` and the ID of an eligible debit card or bank account as the destination. The May guide shows Node.js and the November guide shows curl with the same request semantics. Both use a debit card in the creation example.
+ 
+ ```js
+ // Check balance
+ const balance = await stripe.balance.retrieve();
+ // balance.instant_available[0].amount
+ 
+-// Create instant payout
+-stripe.payouts.create({ amount: 50, currency: 'usd', method: 'instant', destination: '{{CARD_ID}}' })
++// Create instant payout using an eligible debit card or bank account ID
++await stripe.payouts.create({
++  amount: 50,
++  currency: 'usd',
++  method: 'instant',
++  destination: eligibleDestinationId,
++});
+ ```
+ 
+ ## Payout Methods by Country
+ 
+-- **US, GB, EU, SE, DK, AU, SG**: debit card or eligible bank account
+-- **CA, CZ, HU, NO, PL, RO, NZ, MY, AE**: debit card only
+-- **HK**: eligible bank accounts only
++- **US, GB, Euro Area, SE, DK, AU, SG** — debit card or eligible bank account
++- **CA, CZ, HU, NO, PL, RO, NZ, MY, AE** — debit card only
++- **HK** — eligible bank accounts only
+ 
+-## Pricing Table (min/max per currency)
++## Minimum and Maximum Transaction Amounts
+ 
+-US: $0.50–$9,999; CA: C$0.60–C$9,999; GB: £0.40–£9,999; EU: €0.40–€9,999; AU: A$0.50–A$9,999; SG: S$0.50–S$9,999; HK: HK$5–HK$9,999; NZ: NZ$0.50–NZ$9,999; MY: MYR2–MYR9,999; AE: AED2–AED9,999; + CZ, DK, HU, NO, PL, RO, SE.
++US USD 0.50–9,999, CA CAD 0.60–9,999, GB GBP 0.40–9,999, Euro Area EUR 0.40–9,999, AU AUD 0.50–9,999, SG SGD 0.50–9,999, HK HKD 5–9,999, NZ NZD 0.50–9,999, MY MYR 2–9,999 and AE AED 2–9,999. The table also lists CZ CZK 10–99,999, DK DKK 5–9,999, HU HUF 200–999,999, NO NOK 5–9,999, PL PLN 2–9,999, RO RON 2–9,999 and SE SEK 5–9,999. Both captures list the same currency amounts.
+ 
+ ## Related Pages
+ 
+-- [[stripe-payouts]] — concept page (updated with Instant Payouts)
+-- [[source-stripe-payouts-next-day]] — next-day settlement vs Instant Payouts comparison
++- [[stripe-payouts]] — Payouts concept and options comparison
++- [[source-stripe-payouts-next-day]] — Next-Day Settlement is automatic and charges a monthly percentage of the previous month's accelerated charges. The November Next-Day guide gives no rate. Instant Payouts are on demand with a fee per payout.
++- [Instant Payouts for Connect](https://docs.stripe.com/connect/instant-payouts) — separate guidance for marketplaces and platforms
+ 
+ ## Raw Sources
+ 
+-- [[stripe-payouts-instant-2026]] — verbatim Instant Payouts guide (223 lines)
++- [[raw/stripe-payouts-instant-payouts-2026-11-07|November 7, 2026 Instant Payouts guide]]
++- [[raw/stripe-payouts-instant-2026|May 11, 2026 Instant Payouts guide]] — verbatim Dashboard guide (223 lines)
+ - [[stripe-payouts-instant-banks-2026]] — US institution support lookup (8,721 lines; thousands of banks/credit unions)
+ - [[stripe-payouts-instant-advance-funding-2026]] — Advance funding mechanics: advance/advance_funding/payout balance transactions, negative balance recovery, multi-day alignment

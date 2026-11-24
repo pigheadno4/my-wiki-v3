@@ -1,0 +1,76 @@
+--- wiki/sources/source-stripe-payment-intents.md
++++ wiki/sources/source-stripe-payment-intents.md
+@@ -5,6 +5,8 @@
+ date_updated: 2026-11-22
+ original_format: webpage
+ raw_files:
++  - "stripe-payments-paymentintents-lifecycle-2026-11-07.md"
++  - "stripe-payments-setup-intents-2026-11-07.md"
+   - "stripe-payments-payment-intents-2026-11-07.md"
+   - "stripe-payments-payment-intents-asynchronous-capture-2026-11-07.md"
+   - "stripe-payment-setup-intents-2025.md"
+@@ -17,7 +19,7 @@
+ 
+ ## Summary
+ 
+-This combined [[stripe|Stripe]] reference brings together the Payment Intents implementation guide, asynchronous capture, and separate April guides for Intent lifecycle, status monitoring, and Setup Intents. A PaymentIntent tracks an attempt to collect payment. Confirmation can require further action, delayed processing, or a separate capture. A SetupIntent prepares payment credentials for future use without an initial charge.
++This combined [[stripe|Stripe]] reference brings together the Payment Intents implementation guide, asynchronous capture, the April and November Intent lifecycle and Setup Intents API guides, and a separate April guide for status monitoring. A PaymentIntent tracks an attempt to collect payment. Confirmation can require further action, delayed processing, or a separate capture. A SetupIntent prepares payment credentials for future use without an initial charge.
+ 
+ ## Payment Intents API implementation guide
+ 
+@@ -43,11 +45,11 @@
+ 
+ ### Dated implementation changes
+ 
+-November uses cURL in place of some Node examples and Ruby/ERB in place of the Express/Handlebars client-secret examples. It changes quickstart navigation and adds a lifecycle link. The coding-agent sandbox aside is separate tooling guidance. It describes a help invocation as provisioning, while the separate November CLI reference documents logged-out provisioning through the create operation with an email or Git identity and seven-day expiry, and a Dashboard management path for logged-in users. Provisioning by help invocation is unverified.
++November uses cURL in place of some Node examples and Ruby/ERB in place of the Express/Handlebars client-secret examples. It changes quickstart navigation and adds a lifecycle link. The sandbox aside in the November implementation and lifecycle guides is separate tooling guidance. It describes a help invocation as provisioning, while the separate November CLI reference documents logged-out provisioning through the create operation with an email or Git identity and seven-day expiry, and a Dashboard management path for logged-in users. Provisioning by help invocation is unverified.
+ 
+ ## Lifecycle and cancellation
+ 
+-The separate lifecycle captures use “immediate charge” to describe the PaymentIntent's purpose. Creation establishes an attempt. Confirmation and authorization can lead to different states before collection completes.
++The 2026-04-19 and 2026-11-07 captures of [How Payment Intents and Setup Intents work](https://docs.stripe.com/payments/paymentintents/lifecycle) use “immediate charge” to describe the PaymentIntent's purpose. Creation establishes an attempt. Confirmation and authorization can lead to different states before collection completes. The November guide presents the two Intent lifecycles side by side and links to the [Dashboard-to-PaymentIntent status mapping](https://docs.stripe.com/payments/payment-intents/verifying-status.md#payment-status-mapping). The April guide explicitly describes typical card processing as quicker and outside `processing`, while the November guide describes the asynchronous branch.
+ 
+ | State | PaymentIntent | SetupIntent |
+ | --- | --- | --- |
+@@ -61,13 +63,17 @@
+ 
+ Versions before 2019-02-11 use `requires_source` and `requires_source_action` for the corresponding statuses. Excessive PaymentIntent confirmations can cause automatic cancellation.
+ 
+-The April lifecycle guidance describes cancellation before `processing` or `succeeded`, with limited, variable processing windows for ACH, ACSS, AU BECS, BACS, NZ BECS, and SEPA. Cancellation invalidates the Intent and releases held funds. The November Cancel API reference lists eligible Intent states and separately says a Checkout Session's PaymentIntent can be directly canceled only in `requires_capture`. Otherwise follow the Session expiration path where applicable. Its request example specifies `2026-10-28.endive` (`raw/stripe-api-payment-intents-cancel-2026-11-07.md`, lines 7–25).
++Both lifecycle captures describe **PaymentIntent cancellation** before `processing` or `succeeded`, with a limited and variable exception during `processing` for ACH, ACSS, AU BECS, BACS, NZ BECS, and SEPA. An attempt during that window can fail. Canceling a PaymentIntent irreversibly prevents future payment attempts on it and releases any held funds. The separate November PaymentIntent Cancel API reference lists eligible states and allows direct cancellation of a Checkout Session’s PaymentIntent only in `requires_capture`. Otherwise follow the Session expiration path where applicable. Its request example specifies `2026-10-28.endive` (`raw/stripe-api-payment-intents-cancel-2026-11-07.md`, lines 7–25).
++
++Both lifecycle captures describe **SetupIntent cancellation** before `processing` or `succeeded`. It irreversibly prevents future setup attempts on that SetupIntent. The limited bank-debit processing exception and held-funds rule above apply to PaymentIntents.
+ 
+ ## Saving a payment method
+ 
+-`SetupIntent.usage` describes intended future use without an initial payment. `PaymentIntent.setup_future_usage` sets intended reuse when saving during a payment. The implementation guide uses `on_session` for later customer-present use only and `off_session` for future off-session use, including when both types are intended.
++The April 19 and November 7, 2026 captures of [The Setup Intents API](https://docs.stripe.com/payments/setup-intents) describe saving credentials for future use without an initial charge. Stripe updates the SetupIntent through any required customer authentication or bank validation. Set `SetupIntent.usage` to `on_session` for customer-present-only use or `off_session` for off-session or mixed use. Omission defaults to `off_session`. `PaymentIntent.setup_future_usage` describes intended reuse when saving during a payment in the separate implementation guide.
+ 
+-The dated lifecycle captures compress the connection between 3DS and a future mandate. The separate April Setup Intents guide distinguishes applicable authentication, explicit consent for future on-session use, and an upfront agreement or mandate for off-session charging. Authentication alone supplies neither that consent nor a guarantee of an SCA exemption. For future customer-facing display the same Setup Intents guide points to `allow_redisplay`. The issuer can still decline a later charge or request authentication, and off-session setup can add upfront friction. Use the separate setup guide for the detailed agreement, `usage`, and recovery guidance.
++For future customer-facing display, obtain explicit consent and use `allow_redisplay` to distinguish methods saved for offline use from methods eligible to appear in checkout. For off-session charging, obtain an upfront agreement or mandate with opt-in terms that cover permission to initiate a payment or series of payments, anticipated frequency, and how the amount is determined. Consent and mandates remain separate from issuer authentication and Stripe's intended-use optimization.
++
++`off_session` can move card authentication into setup and reduce friction later. Properly saved off-session card payments under an agreement can qualify as merchant-initiated transactions, with any SCA exemption conditional. Issuers can still decline or require later authentication. If an off-session card payment requires authentication, bring the customer back online to complete that payment.
+ 
+ ## Asynchronous capture
+ 
+@@ -90,7 +96,10 @@
+ - November implementation raw lines 22–107 and April lines 19–131 cover server creation, reuse, idempotency, scope of client-secret delivery, and server outcomes.
+ - November implementation raw lines 109–171 and April lines 133–211 cover future use, descriptors, and metadata lifecycle.
+ - November asynchronous capture raw lines 9–36 cover creation and handling absent expanded data. Lines 38–76 and 78–108 cover the displayed response version, deferred fields, and event guidance. April lines 8–28, 30–66, and 68–97 preserve the earlier samples and event link.
+-- April lifecycle raw lines 10–86 cover the separate PaymentIntent and SetupIntent sequences and the version aliases. April Setup Intents API raw lines 28–68 cover consent, agreements, and `usage`. April status-monitoring raw lines 62–166 cover webhook and next-action examples.
++- November lifecycle raw lines 13–35 cover payment versus setup, authentication, the Dashboard status mapping route, version aliases, and object-specific states and cancellation. April lifecycle raw lines 10–86 cover the same Intent lifecycles in separate sections.
++- April Setup Intents API raw lines 28–68 cover consent, agreements, and `usage`. April status-monitoring raw lines 62–166 cover webhook and next-action examples.
++
++- The separate Setup Intents API guide covers no-charge setup in April raw lines 8–26 and November lines 9–27, consent and agreements in April lines 28–50 and November lines 29–51, and intended use, defaults and recovery in April lines 52–68 and November lines 53–69. The Node.js and cURL server creation examples are in April lines 70–78 and November lines 71–75.
+ 
+ ## Related Pages
+ 
+@@ -102,6 +111,8 @@
+ 
+ ## Raw Sources
+ 
++- [[raw/stripe-payments-paymentintents-lifecycle-2026-11-07|2026-11-07 Payment Intents and Setup Intents lifecycle guide]]
++- [[raw/stripe-payments-setup-intents-2026-11-07|2026-11-07 Setup Intents API guide]]
+ - [[raw/stripe-payments-payment-intents-2026-11-07|2026-11-07 Payment Intents implementation guide]]
+ - [[raw/stripe-payments-payment-intents-asynchronous-capture-2026-11-07|2026-11-07 Asynchronous capture guide]]
+ - [[raw/stripe-payment-setup-intents-2025|2026-04-19 Payment Intents and Setup Intents lifecycle guide]]

@@ -9,7 +9,7 @@ tags: [stripe, sepa, sepa-debit, eu, eur, iban, bank-debit, mandates, disputes]
 
 SEPA Direct Debit lets businesses in the SEPA region (and 40 global Stripe markets) pull funds from customers' EUR-denominated bank accounts via IBAN. API enum: `sepa_debit`. Business-initiated, delayed notification, reusable. Core scheme (not B2B) — supports both personal and business accounts.
 
-**Currency**: EUR only. **Region**: EU customers (all EUR IBAN accounts in the SEPA zone).
+**Currency** is EUR only. The May and November 2026 method overviews label customer locations as EU and separately list 40 Stripe-account business locations. See [[source-stripe-sepa-debit]] for the list.
 
 ## Limits
 
@@ -24,11 +24,11 @@ SEPA Direct Debit lets businesses in the SEPA region (and 40 global Stripe marke
 
 **Payment timing**: submitted same day if before 10:30 CET cutoff, next business day otherwise. **5-business-day refusal window** after submission — most failures occur here. After refusal window, payment appears successful; rare post-window failures appear as disputes.
 
-> Wait at least 6 business days before considering a SEPA payment as successful. Wait 7 days before refunding.
+> Both method overviews advise waiting at least six business days before considering a SEPA debit successful. See the dated refund advice below.
 
 ## Mandates
 
-Collect customer name + IBAN; customer accepts mandate authorizing Stripe to debit on business's behalf. Mandate ID on `payment_method_details.sepa_debit.mandate` on Charge.
+Collect the customer's name and IBAN and obtain mandate acceptance before debit. The November 2026 method overview adds billing `city`, `postal_code`, `line1` and `country` for payments from an IBAN outside the EEA. The Charge exposes the Mandate ID at `payment_method_details.sepa_debit.mandate`. See [[source-stripe-sepa-debit]].
 
 Customers can cancel at any time via merchant or bank. Stripe only learns of cancellation when a payment attempt fails → sets `inactive` + `mandate.updated` webhook.
 
@@ -46,7 +46,7 @@ Default: Stripe Creditor ID. Creditor Name priority:
 
 - Configure a recognizable statement descriptor to reduce disputes
 - EU-based businesses: use own Creditor ID (reduces disputes, improves UX) — configure on Payment Method Settings page
-- Cannot change Creditor ID after live payments collected (contact support)
+- After collecting live SEPA debits, the Dashboard blocks changing the Creditor ID. Contact Stripe support for migration guidance.
 
 **Connect Creditor ID**:
 
@@ -62,15 +62,15 @@ Default: Stripe Creditor ID. Creditor Name priority:
 
 Required by SEPA rulebook before each debit. Stripe sends automatically (when using Stripe Creditor ID, always auto). Custom emails must include: last 4 digits of account, mandate reference (`sepa_debit[reference]`), amount, Creditor ID, your contact info.
 
-Standard lead time: 14 days. Stripe mandate allows as close as 2 days in advance.
+Standard notice is at least 14 calendar days before payment creation. State any shorter timing in the mandate. The Stripe mandate quoted by both overviews allows notice up to two calendar days before a future payment, including at payment creation. See [[source-stripe-sepa-debit]].
 
 ## Connect
 
-Requires `sepa_debit_payments` capability on connected accounts.
+Enable SEPA Direct Debit on the platform and request `sepa_debit_payments` for connected accounts. The November 2026 guides require a new customer mandate per connected account for destination charges processed on its behalf. Obtain acceptance with a PaymentIntent or SetupIntent that names the connected account in `on_behalf_of`. The guides exclude cloning SEPA payment methods and mandates to connected accounts for destination charges. See [[source-stripe-sepa-debit]] and [[source-stripe-payment-method-connect-support]].
 
 ## Failure Codes
 
-12 failure codes: `refer_to_customer`, `insufficient_funds`, `debit_disputed`, `authorization_revoked`, `debit_not_authorized`, `account_closed`, `bank_account_restricted`, `debit_authorization_not_match`, `recipient_deceased`, `branch_does_not_exist`, `incorrect_account_holder_name`, `invalid_account_number`, `generic_could_not_process`.
+13 failure codes: `refer_to_customer`, `insufficient_funds`, `debit_disputed`, `authorization_revoked`, `debit_not_authorized`, `account_closed`, `bank_account_restricted`, `debit_authorization_not_match`, `recipient_deceased`, `branch_does_not_exist`, `incorrect_account_holder_name`, `invalid_account_number`, `generic_could_not_process`.
 
 ## Disputes
 
@@ -84,8 +84,8 @@ Requires `sepa_debit_payments` capability on connected accounts.
 - Up to 180 days from original payment
 - 3–4 business days to process; arrive within 5 business days
 - Full and partial refunds supported; appear as credit (not labeled "refund") on bank statement
-- **Wait 7 business days before refunding** (ensures refusal window closed)
-- Risk of double-credit if customer disputes after refund
+- May 2026 recommends waiting at least seven business days. November 2026 recommends issuing the refund after the original payment fully settles, confirming processing with the buyer and sharing expected timing.
+- Bank disputes can still proceed after a refund, with potential double credit. See [[source-stripe-sepa-debit]].
 - New accounts: refunds may be temporarily disabled for up to 2-day fraud review
 
 ## Radar
@@ -94,9 +94,9 @@ Real-time ML fraud protection for SEPA, trained specifically for SEPA Direct Deb
 
 ## Integration
 
-**Checkout**: `payment_method_types: ['sepa_debit']`, `eur` currency. Optional `reference_prefix` (12 chars, not starting with `STRIPE`) → 24-char mandate reference. Optional `target_date` (3–15 days).
+**Checkout**. The May 3, 2026 acceptance guide documents EUR prices and dynamic or manual SEPA Direct Debit selection. See [[source-stripe-sepa-accept-payment]] for the optional mandate reference prefix of up to 12 characters and best-effort debit scheduling 3–15 days ahead.
 
-**Payment Element**: `stripe.confirmPayment({ elements, return_url })` — automatically collects IBAN + presents mandate. Webhooks: `payment_intent.processing` / `payment_intent.succeeded` / `payment_intent.payment_failed`. **Wait 6+ business days before considering payment successful.**
+**Payment Element**. The May 3, 2026 acceptance guide uses the Payment Element to collect IBAN and present the mandate. Stripe.js `confirmPayment` submits the existing PaymentIntent. Wait for `payment_intent.succeeded` before fulfilling. See [[source-stripe-sepa-accept-payment]] for processing and decline webhooks, and [[source-stripe-sepa-debit]] for the separate May product guide’s standard T+6 settlement and six-business-day timing guidance.
 
 **Test IBANs**: 19 countries (AT, BE, HR, EE, FI, FR, DE, GI, IE, LI, LT, LU, NL, NO, PT, ES, SE, CH, GB), 8 tokens per country (`pm_success_{cc}`, `pm_successDelayed_{cc}`, `pm_failed_{cc}`, `pm_failedDelayed_{cc}`, `pm_disputed_{cc}`, `pm_exceedsWeeklyVolumeLimit_{cc}`, `pm_exceedsWeeklyTransactionLimit_{cc}`, `pm_insufficientFunds_{cc}`).
 
@@ -110,9 +110,9 @@ Checkout supports: setup fee, inline pricing, existing customer, trials, fixed/d
 
 ## Sources
 
-- [[source-stripe-sepa-debit]] — primary source: settlement, Creditor ID, mandates, failure codes, disputes, refunds, Radar
-- [[source-stripe-sepa-accept-payment]] — integration guide: Checkout + Elements + iOS + Android, 19-country IBAN test table, reference_prefix, target_date
-- [[source-stripe-sepa-set-up-payment]] — save for future: Checkout setup mode + SetupIntents (Elements/iOS/Android), same IBAN test table, reference_prefix
+- [[source-stripe-sepa-debit]] — May and November 2026 method overviews with IBAN and mandate requirements, Connect, timing, refunds, disputes and Billing retries.
+- [[source-stripe-sepa-accept-payment]] — May 2026 acceptance guide for Checkout, web Elements and React Native. The November capture links the three variants.
+- [[source-stripe-sepa-set-up-payment]] — May 2026 guide to Checkout setup mode, web Elements and React Native SetupIntents, mandate references and later-debit test cases. The November capture links the three variants.
 - [[source-stripe-subscriptions-sepa-debit]] — May subscription guide: hosted Checkout and advanced web example, delayed notification, 19 country headings in each IBAN test table (8 scenarios each); November capture is a variant index
 - [[source-stripe-subscriptions-ideal]] — 2026-05-13 iDEAL→SEPA subscription variants: hosted Checkout and Direct API setup with generated_sepa_debit retrieval; setup success differs from the later SEPA payment outcome. 2026-11-07 capture is a variant index only.
 - [[source-stripe-ideal-save-during-payment]] — 2026-05-03 initial iDEAL payment to generated SEPA method and distinct later SEPA intent; mobile mandate examples and asynchronous outcome caveat. 2026-11-07 capture is variant navigation only.

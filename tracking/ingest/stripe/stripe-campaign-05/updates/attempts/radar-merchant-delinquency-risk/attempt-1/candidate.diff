@@ -1,0 +1,67 @@
+--- wiki/sources/source-stripe-radar-account-risk-signals.md
++++ tracking/ingest/stripe/stripe-campaign-05/updates/attempts/radar-merchant-delinquency-risk/attempt-1/candidate.md
+@@ -2,8 +2,10 @@
+ title: "Stripe — Account Risk Signals"
+ type: source
+ date_ingested: 2026-05-10
++date_updated: 2026-11-22
+ original_format: webpage
+ raw_files:
++  - "stripe-radar-merchant-delinquency-risk-2026-11-07.md"
+   - "stripe-radar-account-risk-signals-2026.md"
+   - "stripe-radar-fraudulent-merchant-signal-2026.md"
+   - "stripe-radar-merchant-delinquency-signal-2026.md"
+@@ -13,17 +15,17 @@
+ 
+ ## Summary
+ 
+-Overview of the Account Signals API for Connect platforms: 3 webhook-driven signal types for connected account risk, triggering actions via Radar for Platforms.
++[[stripe|Stripe]] Account Signals provides risk intelligence for Connect platforms. A signal's readiness and a platform operator's choice to take action are separate. The November delinquency guide specifies the risk of carrying a negative balance for more than 90 days.
+ 
+ ## 3 Signal Types
+ 
+ | Signal | Detects | Method |
+ | --- | --- | --- |
+ | Fraudulent merchant | Misrepresentation, unauthorized transactions, first-party fraud | ML model (continuous) |
+-| Merchant delinquency risk | Financial distress → unfulfilled orders, disputes, negative balances | ML model (continuous) |
++| Merchant delinquency risk | May describes financial distress. November specifies risk of carrying a negative balance for more than 90 days. | Risk assessment for a connected account |
+ | Fraudulent website | Deceptive/policy-violating websites, fake storefronts | On-demand analysis |
+ 
+-Signal changes trigger webhook events to your endpoint.
++The May account-risk overview describes continuous evaluation with signal-change notifications. It separately labels the website signal on demand. The November delinquency guide below describes a readiness event after evaluation. Choose any platform action separately.
+ 
+ ## Actions
+ 
+@@ -44,11 +46,19 @@
+ 
+ ## Merchant Delinquency Risk Signal Detail
+ 
+-**Risk levels**: `highest`, `elevated`, `normal`, `low`, `not_assessed` (same 5 levels as fraudulent merchant).
++The May 10 and November 7, 2026 captures at [Merchant delinquency risk](https://docs.stripe.com/radar/merchant-delinquency-risk) describe a Connect platform retrieving Stripe's latest delinquency evaluation, with a risk level and indicators for the connected account. The November guide defines the prediction as risk of carrying a negative balance for more than 90 days. It gives disputes, refunds and failed payouts as examples of events that can contribute to unrecoverable balances. The 90 days is a prediction horizon. The guide describes an email request for early access. Individual access and whether an account is currently delinquent remain separate.
+ 
+-**16 indicators**: `account_balance`, `aov`, `charge_concentration`, `dispute_window`, `disputes`, `duplicates`, `exposure`, `firmographic`, `lifetime_metrics`, `payment_processing`, `payment_volume`, `payouts`, `refunds`, `related_accounts`, `tenure`, `transfers`.
++### November 7, 2026 delinquency guide
+ 
+-**Webhook**: `v1.account_signals[delinquency].created` (note: v1 format, unlike fraudulent merchant's v2 format).
++- Use the linked [Account Signals API](https://docs.stripe.com/api/v2/signals/account-signals.md?api-version=2026-07-29.preview) reference to retrieve the latest assessment. Listen for `v2.signals.account_signal.merchant_delinquency_ready` when a delinquency signal has been evaluated. This guide specifies notification timing and separate latest-result retrieval. It leaves the event body, retrieval parameters and retention period unspecified.
++- Risk levels listed are `highest`, `elevated`, `normal` and `low`. On Radar Plus and Pro the signal also includes a `probability` score from 0 to 100. The separate fraudulent-merchant result list includes `unknown` and omits `low`, and its guide describes a thin-event contract specific to that signal.
++- The November delinquency table lists 15 indicators: `account_balance`, `aov`, `charge_concentration`, `dispute_window`, `disputes`, `exposure`, `firmographic`, `lifetime_metrics`, `payment_processing`, `payment_volume`, `payouts`, `refunds`, `related_accounts`, `tenure` and `transfers`. The table retains `related_accounts` and omits May's `duplicates` row. November also omits `not_assessed` from the displayed risk levels. Field deprecation or equivalence to the separate merchant signal is unverified.
++
++The readiness notification reports when evaluation has occurred. The platform can separately choose an appropriate account action using the [Account Fraud Prevention action guide](https://docs.stripe.com/radar/account-fraud-prevention.md#take-action), such as raising a review, pausing payments or setting reserves. See November raw lines 7–25, 27–58 and 60–66, and the separate action guide at lines 113–126.
++
++### May 10, 2026 delinquency guide
++
++May describes broader financial distress that might lead to unrecoverable negative balances from disputes, refunds or failed payouts. The guide links its `2026-03-25.preview` core event reference for latest-result retrieval, and describes `v1.account_signals[delinquency].created` when evaluated. It lists `highest`, `elevated`, `normal`, `low` and `not_assessed`. May includes 16 indicators, adding `duplicates` to the 15 listed above alongside the separate `related_accounts` row. The previous action route led to Radar for Platforms and Account Risk Signals. See May raw lines 6–24 and 26–55.
+ 
+ ## Fraudulent Website Signal Detail
+ 
+@@ -64,7 +74,8 @@
+ 
+ ## Raw Sources
+ 
++- [[raw/stripe-radar-merchant-delinquency-risk-2026-11-07]] — November 7, 2026 full merchant delinquency risk guide
+ - [[stripe-radar-account-risk-signals-2026]] — verbatim Account Signals API overview
+ - [[stripe-radar-fraudulent-merchant-signal-2026]] — verbatim fraudulent merchant signal detail (risk levels, 9 indicators, webhook)
+-- [[stripe-radar-merchant-delinquency-signal-2026]] — verbatim merchant delinquency risk signal detail (16 indicators, webhook)
++- [[raw/stripe-radar-merchant-delinquency-signal-2026]] — May 10, 2026 merchant delinquency risk guide with 16 indicators and the v1 readiness event
+ - [[stripe-radar-fraudulent-website-signal-2026]] — verbatim fraudulent website signal detail (on-demand, LLM details, unknown risk level)

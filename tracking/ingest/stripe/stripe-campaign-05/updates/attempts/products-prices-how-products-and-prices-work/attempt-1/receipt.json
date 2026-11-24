@@ -1,0 +1,219 @@
+{
+  "job_id": "products-prices-how-products-and-prices-work",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Products and Prices\"\ntype: source\ndate_ingested: 2026-04-20\ndate_updated: 2026-11-22\noriginal_format: webpage\nraw_files:\n  - \"stripe-products-prices-how-products-and-prices-work-2026-11-07.md\"\n  - \"stripe-products-prices-2025.md\"\n  - \"stripe-manage-products-prices-2025.md\"\ntags: [stripe, products, prices, catalog, subscriptions, checkout, invoices, pricing-models]\n---\n\n## Summary\n\nThe April 20 and [November 7, 2026 catalog overviews](https://docs.stripe.com/products-prices/how-products-and-prices-work) explain how [[stripe]] Products describe goods and services and Prices specify amounts, currencies, billing intervals, and tax behavior. Merchants can create them in the Dashboard or import a catalog using the Products and Prices APIs for Checkout, Payment Links, Subscriptions, Invoices, and Quotes.\n\n## Key Takeaways\n\n- **Custom Product IDs** — a merchant can choose a Product ID, including an ID from its own catalog.\n- **Catalog design** — November recommends one Product for each distinct customer-facing option, entitlement, tax code, or separately displayed item. For the same Product, use Prices for different intervals or currencies and a replacement Price when the amount changes. The Starter, Professional, and Enterprise example uses three Products with monthly and annual Prices for each. Checkout, Payment Links, and invoices display the Product name per line item. Items sharing a Product also share its name and description.\n- **Change amounts** — create a new Price and archive the old one using `active: false`. Stripe preserves historical transaction records. The separate April management guide describes updating Price `metadata`, `nickname`, and `active`.\n- **Inline `price_data`** — create inline prices through the API for a specific Checkout Session, Payment Link, Subscription, or invoice. These Prices stay out of Dashboard catalog listings and searches but can be viewed by direct Dashboard URL. Related Products can persist. The April management guide says inline Prices are effectively archived by default and cannot be updated or reused.\n- **Subscription limits** — the maximum recurrence is three years. Outside flexible billing for mixed intervals, all Prices on a Subscription must share both `recurring.interval` and `recurring.interval_count`.\n- **Archive or delete** — both overviews prefer archival to preserve history and describe Dashboard deletion exceptions for a never-used Price or a Product without Prices. The separate April manage guide also documents Product deletion and its associated-Price limits.\n\n## Product vs Price\n\n| | Product | Price |\n| --- | --- | --- |\n| Defines | What you sell | How much and how often |\n| ID | Merchant may choose an ID | Stripe-generated |\n| Creation | Name required | Currency and Product association, with amount parameters depending on billing scheme |\n| Other fields | Description, image, tax code, and the optional `default_price` pointing to a Price | Optional tax behavior and recurring fields when applicable |\n\nFor `POST /v1/prices`, pass an existing Product ID via `product` or create the related Product with `product_data.name`, as shown in the November Invoice Items API example's `createPrice` prerequisite. For non-tiered Prices, the November Prices API reference requires one of `unit_amount`, `unit_amount_decimal`, or `custom_unit_amount`. Tiered Prices use `billing_scheme=tiered`, `tiers`, and `tiers_mode`. Set or change the default Price on the Product.\n\n## Price Types\n\n| Type | Notes |\n| --- | --- |\n| One-time | Single charge |\n| Recurring | Subscription billing with a recurrence interval |\n| Inline (`price_data`) | API-created for a specific resource and excluded from Dashboard catalog listings |\n| Pay-what-you-want | Customer chooses the amount for a one-time payment |\n| Multi-currency | One Price can offer amounts in multiple currencies |\n| Tiered / usage-based | Tiered amounts use volume or graduated tiers. Usage-based prices can charge per unit of reported usage or use tiered billing. |\n\nWhen the merchant explicitly passes amount and currency for an API invoice item or charge, Stripe uses those values. The November catalog overview assigns the choice of localized amount and currency to the merchant in these cases. It recommends `pricing.price` to pass a Price ID for invoice items. Automatic localization is unverified across Price-ID routes.\n\n## Compatibility Table (key entries)\n\nThese entries are the same in the April and November catalog overviews.\n\n| Feature | Checkout | Payment Links | Quotes | Subscriptions | Invoices |\n| --- | --- | --- | --- | --- | --- |\n| Product images | ✓ | ✓ | Ignored | Ignored | Ignored |\n| Recurring prices | ✓ | ✓ | ✓ | ✓ | ✓ |\n| Multi-currency prices | ✓ | ✓ | Ignored | ✓ | Ignored |\n| Tiered prices | ✓ | **Disallowed** | ✓ | ✓ | ✓ |\n| Usage-based prices | ✓ | **Disallowed** | ✓ | ✓ | ✓ |\n| Decimal amounts | ✓ | **Disallowed** | ✓ | ✓ | ✓ |\n| Customer chooses price | ✓ | ✓ | **Disallowed** | **Disallowed** | **Disallowed** |\n\n**Disallowed** means the feature precludes using that Product or Price with the listed API. **Ignored** means the feature has no effect and the Product or Price remains usable.\n\nThe separate November 7 Payment Links create guide lists flat-rate or tiered pricing for recurring products and flat-rate or package pricing for one-off products. Its tiered wording conflicts with the two catalog tables. Its flat-rate request examples document the creation routes below and leave exact tiered support by route, subtype, and version unresolved. They do not establish general support for metering, decimal amounts, or all package combinations. See [[stripe-payment-links]].\n\n## How Each API Uses Prices\n\n- **Checkout** — specify a Price ID per line item or use inline `price_data`. The Session computes totals and shows the Product name and image.\n- **Payment Links** — create the link in the Dashboard or use `POST /v1/payment_links`. The November create guide demonstrates `line_items[][price]` for an existing Price ID or `line_items[][price_data]` with `product_data` to create a Product and Price inline. Both examples include a quantity. The link computes totals and shows the Product name and image.\n- **Subscriptions** — use recurring Prices. Outside flexible billing the intervals and counts have to match. The separate May mixed-interval guide describes flexible billing, interval alignment, and API version requirements. The November mixed-interval selector routes to Dashboard and API variants. See [[stripe-subscriptions]] and [[stripe-subscriptions-mixed-interval]].\n- **Quotes** — specify a Price ID for a one-off invoice or subscription. On customer acceptance Stripe creates the relevant billing objects. Acceptance does not establish collection.\n- **Invoices** — a Price ID can identify the line item's Price. Stripe uses `product.name` when rendering the invoice on the web or as a PDF. The separate November Invoice Items API reference also documents inline `price_data` and the explicit amount and currency fields.\n\n## Related Pages\n\n- [[stripe]] — Stripe company page\n- [[source-stripe-checkout-sessions]] — Checkout Sessions API\n- [[paypal-subscriptions]] — PayPal's equivalent subscription/plan model\n\n## Raw Sources\n\n- [[raw/stripe-products-prices-how-products-and-prices-work-2026-11-07|November 7, 2026 Products and Prices overview]]\n- [[raw/stripe-products-prices-2025|April 20, 2026 Products and Prices overview]] — custom IDs, amount replacement, price_data, compatibility, subscription constraints, and archive rules\n- [[raw/stripe-manage-products-prices-2025|April 20, 2026 Manage Products and Prices guide]] — CRUD operations, lookup_key and transfer_lookup_key, multi-currency per-API rules, rounding per line item, delete rules, one-time copy to live mode, and import synchronization\n",
+  "quotes": {
+    "products-prices-how-products-and-prices-work": [
+      {
+        "text": "The localized price isn’t automatically calculated",
+        "location": "raw/stripe-products-prices-how-products-and-prices-work-2026-11-07.md:52"
+      },
+      {
+        "text": "Create a separate product for each distinct option a customer chooses between.",
+        "location": "raw/stripe-products-prices-how-products-and-prices-work-2026-11-07.md:68"
+      },
+      {
+        "text": "Checkout, Payment Links, and invoices display the **Product name** for each line item.",
+        "location": "raw/stripe-products-prices-how-products-and-prices-work-2026-11-07.md:79"
+      },
+      {
+        "text": "Instead of changing the `unit_amount` on the existing price, you need to create a new price",
+        "location": "raw/stripe-products-prices-how-products-and-prices-work-2026-11-07.md:138"
+      },
+      {
+        "text": "The maximum interval time period of a price is 3 years",
+        "location": "raw/stripe-products-prices-how-products-and-prices-work-2026-11-07.md:170"
+      }
+    ]
+  },
+  "old_evidence": {
+    "products-prices-how-products-and-prices-work": [
+      {
+        "text": "to delete a price that has never been used, or to delete a product that doesn’t have any prices set.",
+        "location": "raw/stripe-products-prices-2025.md:103"
+      },
+      {
+        "text": "The maximum interval time period of a price is 3 years",
+        "location": "raw/stripe-products-prices-2025.md:137"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-products-prices-how-products-and-prices-work-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 174
+      }
+    ],
+    "raw/stripe-products-prices-2025.md": [
+      {
+        "start": 1,
+        "end": 141
+      }
+    ],
+    "wiki/sources/source-stripe-products-prices.md": [
+      {
+        "start": 1,
+        "end": 77
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/fea10acfe8099f622dd160e4/content.diff": [
+      {
+        "start": 1,
+        "end": 104
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/products-prices-how-products-and-prices-work/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 213
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/products-prices-how-products-and-prices-work/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 90
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 16,
+        "end": 22
+      },
+      {
+        "start": 766,
+        "end": 773
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 286,
+        "end": 291
+      }
+    ],
+    "wiki/concepts/stripe-payment-links.md": [
+      {
+        "start": 54,
+        "end": 76
+      }
+    ],
+    "wiki/concepts/stripe-subscriptions.md": [
+      {
+        "start": 8,
+        "end": 38
+      },
+      {
+        "start": 247,
+        "end": 253
+      }
+    ],
+    "wiki/concepts/stripe-subscriptions-mixed-interval.md": [
+      {
+        "start": 8,
+        "end": 41
+      }
+    ],
+    "wiki/sources/source-stripe-payment-links.md": [
+      {
+        "start": 51,
+        "end": 51
+      }
+    ],
+    "raw/stripe-payment-links-create-2026-11-07.md": [
+      {
+        "start": 35,
+        "end": 84
+      }
+    ],
+    "raw/stripe-billing-subscriptions-mixed-interval-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-api-prices-create-2026-11-07.md": [
+      {
+        "start": 37,
+        "end": 121
+      }
+    ],
+    "raw/stripe-api-invoiceitems-create-2026-11-07.md": [
+      {
+        "start": 7,
+        "end": 27
+      },
+      {
+        "start": 65,
+        "end": 116
+      }
+    ],
+    "raw/stripe-manage-products-prices-2025.md": [
+      {
+        "start": 1,
+        "end": 4
+      },
+      {
+        "start": 174,
+        "end": 203
+      },
+      {
+        "start": 296,
+        "end": 327
+      }
+    ]
+  },
+  "answers": {
+    "products-prices-how-products-and-prices-work": {
+      "Q1": "The full 2026-11-07 guide at https://docs.stripe.com/products-prices/how-products-and-prices-work explains that a merchant models what is sold as a Product and the amount, currency and recurrence as Prices. The new raw lines 9-94 and 98-170, compared with old raw lines 8-137, retain creation, reuse, archive and limited deletion, inline API pricing, and recurring and one-time boundaries. November directs merchants to create separate Products for customer-visible tiers and Prices for billing variants. Stripe uses explicit API invoice-item or charge amount and currency supplied by the merchant and does not automatically localize them. Product name is displayed per line item. Customer Quote acceptance creates relevant billing objects, separate from a successful payment. The revised source-stripe-products-prices.md keeps the core model and adds the catalog, localization, field, and archival qualifications. Independently of the amount alternatives and the Product default_price field, `POST /v1/prices` can use an existing Product ID via `product` or create the related Product via `product_data.name`. The November invoice-item API capture lines 13-16 documents the latter as the `createPrice` prerequisite, without passing an existing Product ID. The source documents the Dashboard and Payment Links API creation routes. The old raw lines 81-83 and new raw lines 114-116 describe the Dashboard route. The old raw lines 69-73 and new raw lines 102-106 describe inline `price_data`. The November Payment Links create guide lines 39-41 and 64-82 shows `POST /v1/payment_links` with `line_items[][price]` for a Price ID or `line_items[][price_data]` for inline Product and Price creation, with quantity. The flat-rate examples establish the API routes but leave the separate tiered-compatibility conflict unresolved.",
+      "Q2": "At https://docs.stripe.com/products-prices/how-products-and-prices-work, compare old raw lines 8-137 with new raw lines 9-170. Explicit invoice/charge localization guidance, the invoice-item pricing.price recommendation and how to model tiers and interval or currency variants are substantive. The link split and table formatting are presentation and navigation. The paired tables mark Payment Links tiered, usage-based, and decimal amounts Disallowed, with a separate Ignored classification for features that have no effect. The November Payment Links create guide lists tiered for recurring products and package for one-off products. Exact tiered support remains unresolved. Preserve same interval and count outside flexible billing, the three-year maximum, historical archive and deletion exceptions and the old separate manage-prices source. The revised source-stripe-products-prices.md retains both dated full overviews and provider index/company routes plus relevant Payment Links and Subscriptions concept navigation."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "products-prices-how-products-and-prices-work-payment-links-models",
+      "target_path": "wiki/concepts/stripe-payment-links.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Supported pricing models**: flat rate, tiered, package pricing (recurring + one-off)",
+      "proposed_markdown": "- **Pricing models (November 7, 2026 create guide)**: Flat rate or tiered for recurring products, and flat rate or package for one-off products. The April and November catalog overviews mark tiered, usage-based, and decimal amounts Disallowed for Payment Links. The flat-rate API examples do not resolve the tiered mismatch or establish compatibility for all price subtypes. See [[source-stripe-products-prices]].",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "Catalog compatibility appears at old raw lines 113–128 and new raw lines 146–161. The separate create guide lists its supported models and flat-rate examples at raw/stripe-payment-links-create-2026-11-07.md lines 39–82. Company line 289 carries the older unqualified catalog-only assertion."
+      ]
+    },
+    {
+      "update_id": "products-prices-how-products-and-prices-work-subscriptions-source-route",
+      "target_path": "wiki/concepts/stripe-subscriptions.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-subscriptions-mixed-interval]] — Mixed interval subscriptions: item-level periods, interval alignment rules, cancellation, Checkout limitation",
+      "proposed_markdown": "- [[source-stripe-subscriptions-mixed-interval]] — Mixed interval subscriptions: item-level periods, interval alignment rules, cancellation, Checkout limitation\n- [[source-stripe-products-prices]] — Catalog modeling with recurring Prices, the matching interval and count rule outside flexible billing, and the three-year maximum",
+      "quote_indexes": [
+        1,
+        4
+      ],
+      "warnings": [
+        "General catalog limitations: old raw lines 134–137 and new raw lines 167–170. The dated mixed-interval guide remains the route for implementation constraints."
+      ]
+    },
+    {
+      "update_id": "products-prices-how-products-and-prices-work-mixed-interval-catalog-route",
+      "target_path": "wiki/concepts/stripe-subscriptions-mixed-interval.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-subscriptions-mixed-interval]] — 2026-05-13 full Dashboard/API guide for item periods, interval alignment and limits; 2026-11-07 base capture is a variant index only",
+      "proposed_markdown": "- [[source-stripe-subscriptions-mixed-interval]] — 2026-05-13 full Dashboard/API guide for item periods, interval alignment and limits; 2026-11-07 base capture is a variant index only\n- [[source-stripe-products-prices]] — April and November catalog overviews with the same interval and interval count outside flexible billing and a three-year recurrence maximum",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "The general interval conditions are old raw lines 134–137 and new raw lines 167–170. The November mixed-interval variant index remains separate."
+      ]
+    }
+  ]
+}

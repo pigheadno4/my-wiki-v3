@@ -1,0 +1,163 @@
+{
+  "job_id": "radar-fraudulent-merchant",
+  "attempt": 1,
+  "raw_path": "raw/stripe-radar-fraudulent-merchant-2026-11-07.md",
+  "raw_sha256": "cd143ee5bc07fb4d7a3b72699b463208357628717a41d6261fbb98ec8de75b1a",
+  "prior_raw_path": "raw/stripe-radar-fraudulent-merchant-signal-2026.md",
+  "prior_raw_sha256": "7f022bdbeac71b0153b3ac6075cb188e156935e83739a5bb88896e6d3e1d69c5",
+  "source_targets": [
+    "wiki/sources/source-stripe-radar-account-risk-signals.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-radar-account-risk-signals.md": "8bf3c163d3a37fa36f7dc6b1330a3b16fa3c689926df225b48df714f1f44b15e"
+  },
+  "read_ranges": {
+    "raw/stripe-radar-fraudulent-merchant-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 151
+      }
+    ],
+    "raw/stripe-radar-fraudulent-merchant-signal-2026.md": [
+      {
+        "start": 1,
+        "end": 44
+      }
+    ],
+    "wiki/sources/source-stripe-radar-account-risk-signals.md": [
+      {
+        "start": 1,
+        "end": 70
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/89f80b9b429b3861b9d810df/content.diff": [
+      {
+        "start": 1,
+        "end": 174
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 530,
+        "end": 538
+      },
+      {
+        "start": 716,
+        "end": 721
+      }
+    ],
+    "wiki/concepts/stripe-radar.md": [
+      {
+        "start": 116,
+        "end": 130
+      },
+      {
+        "start": 273,
+        "end": 279
+      }
+    ],
+    "raw/stripe-radar-how-radar-works-2026-11-07.md": [
+      {
+        "start": 15,
+        "end": 24
+      },
+      {
+        "start": 58,
+        "end": 72
+      }
+    ],
+    "raw/stripe-radar-account-fraud-prevention-2026-11-07.md": [
+      {
+        "start": 20,
+        "end": 37
+      },
+      {
+        "start": 113,
+        "end": 126
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "The fraudulent merchant signal is available on Radar Standard and higher plans, but what information is available depends on your Radar plan.",
+      "location": "raw/stripe-radar-fraudulent-merchant-2026-11-07.md:11"
+    },
+    {
+      "text": "List requests omit account signals created more than 90 days ago.",
+      "location": "raw/stripe-radar-fraudulent-merchant-2026-11-07.md:15"
+    },
+    {
+      "text": "This is a thin event: `data` is always `{}`. Use `related_object.id` to fetch the related signal.",
+      "location": "raw/stripe-radar-fraudulent-merchant-2026-11-07.md:46"
+    },
+    {
+      "text": "`probability` and `additional_details.indicators` are only present on Radar Plus and Radar Pro; they\u2019re absent when the risk level is `unknown`.",
+      "location": "raw/stripe-radar-fraudulent-merchant-2026-11-07.md:85"
+    },
+    {
+      "text": "This returns only the most recent signal per requested type.",
+      "location": "raw/stripe-radar-fraudulent-merchant-2026-11-07.md:89"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Each signal returns a `risk_level` and a `probability` score with a value between 0 to 100.",
+      "location": "raw/stripe-radar-fraudulent-merchant-signal-2026.md:12"
+    },
+    {
+      "text": "The event payload includes the `risk_level`, `probability`, and `indicators` for the connected account.",
+      "location": "raw/stripe-radar-fraudulent-merchant-signal-2026.md:40"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "November 7 expands the automatic connected-account signal from the May risk, indicator and webhook description into a plan-qualified fetch/list and sandbox guide. A risk result provides review context rather than proof of fraud or automatic account action (old raw lines 8\u201344; new raw lines 9\u2013151).",
+    "Root index line 7 routes to Stripe index lines 534 and 719. Source lines 32\u201335 and Radar concept lines 128 and 279 provide reciprocal navigation. Keep account actions separate and preserve merchant delinquency, website and overview raw links as distinct sources. The action destination changes to Account Fraud Prevention (old raw lines 42\u201344; new raw lines 149\u2013151)."
+  ],
+  "substantive_changes": [
+    "November adds Standard-or-higher signal access, Plus/Pro-only detail fields excluded for unknown, revises risk vocabulary and documents indicator explanations/impact (old raw lines 10\u201336; new raw lines 9\u201342 and 85).",
+    "The webhook name is retained but the November event is thin with empty data and related_object.id lookup. New retrieval/list limits and versioned example are documented, including latest per requested type and 90-day scope (old raw lines 38\u201340; new raw lines 15 and 44\u2013129).",
+    "November documents automatic production evaluation and controlled sandbox signal generation; distinguishing the created-event notification and signal fetch from a platform-owned account action (new raw lines 44\u201346 and 131\u2013151)."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the dated May evaluation/risk and richer webhook wording as historical, while preserving automatic Stripe analysis for new or existing connected accounts. Risk levels describe approximate fraud probabilities where documented; a result does not establish fraud or apply an action (old raw lines 8\u201320 and 38\u201344; new raw lines 9\u201326 and 44\u201346)."
+  ],
+  "conflicts": [
+    "May's five-level/always-scored payload and November's tiered, four-level retrieved result are distinct capture evidence (old raw lines 10\u201324 and 38\u201340; new raw lines 9\u201330, 44\u201346 and 85). A missing level or indicator in November does not establish a service-wide deprecation.",
+    "The adjacent general account risk scoring page discusses fraud-or-insolvency losses and different terminology (raw/stripe-radar-account-fraud-prevention-2026-11-07.md lines 20\u201333). Do not apply concept line 118 general loss bands to the fraudulent-merchant signal\u2019s approximate fraud probabilities, or concept line 128 global private preview shorthand to this signal\u2019s plan availability and preview-version request example. The plan matrix corroborates Standard/Plus/Pro signal support (raw/stripe-radar-how-radar-works-2026-11-07.md lines 58\u201372)."
+  ],
+  "unresolved_questions": [
+    "Neither capture establishes paid-tier access for a specific account or first effective date of event-contract changes. Mapping removed level labels and threshold differences between distinct account risk systems cannot be inferred."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-radar.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-radar-account-risk-signals.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Source lines 37\u201343 preserve the May risk vocabulary and event payload description but cannot stand as November instructions. November levels are highest, elevated, normal and unknown. It omits the May low/not_assessed rows, with no evidence that unknown maps one-to-one to either. The new guide limits probability and additional_details.indicators to Radar Plus/Pro and excludes those fields when unknown (old raw lines 10\u201324; new raw lines 9\u201330 and 85).",
+        "Source line 43 gives the readiness event as carrying result fields. November retains the same event name but makes it a thin notification with data={} and related_object.id to get the signal. Add version-tagged retrieval, the 90-day window and list latest-only per requested type, separate from historical May event shape (old raw lines 38\u201340; new raw lines 15 and 44\u2013129).",
+        "Source lines 22\u201326 should describe automatic signal evaluation and creation notification, not an on-demand request or a claim about every risk change across all three kinds. November sandbox fixtures use a connected-account business-profile name suffix and create a simulated signal/webhook; one suffix at a time, sandbox only (new raw lines 44\u201346 and 131\u2013147).",
+        "The new guide reorganizes the indicator table (geo_location to geolocation in the shown token, no web_presence row, new other) and adds impact/explanation. Preserve separate dated vocabularies without making the old table universal (old raw lines 22\u201336; new raw lines 28\u201342)."
+      ],
+      "conflicts": [
+        "May's five-level/always-scored payload and November's tiered, four-level retrieved result are distinct capture evidence (old raw lines 10\u201324 and 38\u201340; new raw lines 9\u201330, 44\u201346 and 85). A missing level or indicator in November does not establish a service-wide deprecation.",
+        "The adjacent general account risk scoring page discusses fraud-or-insolvency losses and different terminology (raw/stripe-radar-account-fraud-prevention-2026-11-07.md lines 20\u201333). Do not apply concept line 118 general loss bands to the fraudulent-merchant signal\u2019s approximate fraud probabilities, or concept line 128 global private preview shorthand to this signal\u2019s plan availability and preview-version request example. The plan matrix corroborates Standard/Plus/Pro signal support (raw/stripe-radar-how-radar-works-2026-11-07.md lines 58\u201372)."
+      ],
+      "reason": "Add November fraudulent-merchant-only plan, levels, thin event, retention and sandbox behavior with exact May evidence kept dated; preserve the reciprocal Radar concept and sibling signal scopes."
+    }
+  ],
+  "answers": {
+    "Q1": "The November 7 capture of https://docs.stripe.com/radar/fraudulent-merchant describes Stripe automatically assessing new or existing connected accounts; a platform does not request the merchant signal on demand. It is available with Radar Standard and higher, while probability and indicator details require Plus or Pro and are absent for unknown. Stripe sends v2.signals.account_signal.fraudulent_merchant_ready with empty data; the platform fetches the signal by related_object.id, with up to 90 days of retrieval and only the latest listed signal per requested type (new raw lines 9-30 and 44-119). May assigned risk_level and probability to each signal and described result fields in the event (old raw lines 10-20 and 38-40). source-stripe-radar-account-risk-signals.md retains that May contract and needs the November plan, risk level and retrieval qualifications.",
+    "Q2": "At https://docs.stripe.com/radar/fraudulent-merchant, substantive November changes include signal-versus-detail plan access, revised risk and indicator vocabulary, thin event retrieval, latest-only listing, 90-day retention visibility and sandbox-only signal fixtures (new raw lines 9-46, 85-119 and 131-147). Preserve May's five levels and result-bearing readiness description as dated, alongside November's explicit unknown handling and the stable event name (old raw lines 10-24 and 38-40). The link to Account Fraud Prevention is navigational and result examples do not establish account eligibility or trigger automatic rejection (old raw lines 42-44; new raw lines 149-151). Preserve the reciprocal Radar concept and sibling website and delinquency raw routes in source-stripe-radar-account-risk-signals.md, with those contracts evaluated separately."
+  }
+}

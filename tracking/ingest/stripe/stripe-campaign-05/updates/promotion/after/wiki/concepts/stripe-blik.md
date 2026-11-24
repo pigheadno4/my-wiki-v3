@@ -1,0 +1,65 @@
+---
+title: "BLIK (Stripe)"
+type: concept
+category: technology
+tags: [stripe, blik, poland, pln, bank-debit, authenticated, disputes]
+---
+
+## Definition
+
+BLIK is Poland's dominant online payment method. In the one-time checkout flow, customers generate a 6-digit banking-app code, enter it at checkout, and authenticate that payment; the capture describes immediate notification without a checkout-page redirect. API enum: `blik`. The separate May 2026 recurring setup guide saves a Customer-linked method after mandate authorization, then uses a later off-session PaymentIntent; those steps must not be read as requiring customer initiation of every later charge. See [[source-stripe-blik-set-up-payment]].
+
+**Currency**: PLN only. **Customers**: Poland only. **Business locations**: 35 listed in the November 7, 2026 BLIK overview; the May 3, 2026 capture listed 36, including IS. The prior 37 count was a summary error. A captured list is not an individual account eligibility determination; Stripe may review BLIK eligibility after activation.
+
+## Payment Flow
+
+1. Customer selects BLIK at checkout
+2. Opens banking app → generates 6-digit code (valid 2 minutes)
+3. Enters code in checkout form
+4. Bank sends push notification to customer's phone
+5. Customer approves in banking app (60-second window, typically <10 seconds)
+6. After bank-app approval, verify the PaymentIntent reaches `succeeded` before treating the payment as complete.
+
+**Browser and setup flows (May 2026 guides)**: The one-time method prose describes code entry on the payment form and approval in the banking app, while generic Direct API React sample comments mention leaving the page. The recurring setup guide calls `stripe.confirmSetup` with a `return_url` and says BLIK may use an intermediate authorization site before returning; see [[source-stripe-blik-set-up-payment]]. These captures do not establish one universal browser-navigation outcome. The November setup and acceptance captures are variant indexes only and do not revalidate current variant behavior.
+
+## Key Properties
+
+- **Confirmation**: Customer approves in the bank app within 60 seconds; the November overview calls confirmation immediate but says Stripe normally receives an asynchronous result within 60 seconds. This does not prove payment success or settlement.
+- **Recurring**: The May 3, 2026 BLIK capture said private preview and single use. The November 7 overview marks BLIK reusable and recurring supported: an initial bank-app-authorized mandate attaches to a reusable PaymentMethod. Save during payment with PI `setup_future_usage=off_session` or without an initial payment with SetupIntent `usage=off_session`; a future charge needs valid authorization. The off-session recurring cap is 2,000 PLN per charge. The May bank-redirects matrix marked SetupIntents, future usage, subscriptions and Checkout setup unsupported, although the separate May BLIK setup guide documented no-charge Checkout setup and SetupIntents. The November hub and method page mark recurring/setup support, conditional on bank-app mandate authorization and relevant active Connect capabilities; a support cell or completed setup does not prove a future successful charge.
+- **Deferred intent**: The May 3 BLIK page described client-side confirmation only in private preview. The November BLIK overview excludes collecting details before PI creation in Payment Element, and its same-day bank-redirects guide excludes BLIK's deferred-intent creation path. Keep these route-specific.
+- **UI support**: Express Checkout Element unsupported. The November BLIK overview says "in-app payments" unsupported, while the same-day bank-redirects table says Mobile Payment Element supported; do not equate the labels without an integration-specific guide. That matrix explicitly excludes BLIK when using Elements with the Checkout Sessions API, despite its separate broad Checkout and Payment Element support cells.
+- **Refunds**: Full and partial; submit within 730 days; asynchronous, noncancelable, up to 120 minutes. Check final Refund status or verified webhook. The May 3 page used shorter bank-dependent timing wording.
+
+## Disputes
+
+- Customers can dispute for fraud, double payment, or order/amount mismatch
+- Stripe notifies via email, Dashboard, `charge.dispute.created` webhook
+- Must submit evidence within **12 calendar days**
+- BLIK adjudicates: merchant win → funds returned; customer win → charge becomes permanent
+
+## Connect
+
+- The November 2026 Connect guide requires `blik_payments` active on the platform and each connected account accepting BLIK. For recurring payments, request it before `blik_recurring_payments` on the platform and each applicable connected account, and have both active before using a PaymentIntent with `setup_future_usage=off_session` or a SetupIntent with `usage=off_session`. See [[source-stripe-payment-method-connect-support]].
+- Descriptor source: Direct/`on_behalf_of` → connected account; Destination/separate charge → platform
+
+## Integration
+
+**Checkout and timing (dated guides)**: The May 3, 2026 acceptance guide illustrates `payment_method_types: ['blik']`, PLN payment mode and an Elements Checkout Session example. The separate May recurring setup guide shows a Checkout Session in `setup` mode with BLIK and a Customer to save a PaymentMethod without an initial payment. The same-date bank-redirects table marks BLIK setup/subscription modes and Elements with Checkout Sessions unsupported; these captures leave the path-specific conflicts unresolved. November BLIK and bank-redirects overview tables mark broader recurring, Billing, Invoicing and subscription support, but those broad tables alone do not establish a specific Checkout mode or invoice collection method, and the November acceptance/setup captures are only variant indexes. See [[source-stripe-blik-set-up-payment]]. The May acceptance guide gives a 13-month refund/dispute window; the November BLIK overview separately gives 730 days for refund submission, 12 calendar days for merchant dispute evidence, and a generally 13-month customer notification maximum for unauthorized transactions, subject to statutory exceptions. Keep those clocks distinct.
+
+**Direct API (May 3, 2026 guide)**: The client awaits `stripe.confirmBlikPayment()` with the code in `payment_method_options.blik.code`; Stripe.js polling can be disabled with `handleActions: false`. A valid confirmation can leave the PaymentIntent at `requires_action` with `blik_authorize` while the customer has 60 seconds to approve in the banking app. Treat `succeeded`/`payment_intent.succeeded`, not the confirmation return, as payment success.
+
+**Sandbox failure simulation**: 10 email patterns covering immediate failures, declines (8s delay), and timeouts (60s delay).
+
+## Stripe.js 10.0.0 SetupIntent typing
+
+`@stripe/stripe-js@10.0.0` declares `confirmBlikSetup(clientSecret, data, options?)` returning `Promise<SetupIntentResult>`. The data requires `payment_method_options.blik.code: string` (documented as six digits), allows an existing PaymentMethod ID or BLIK creation data, and optionally disables automatic handling with `handleActions: false`. Comments describe waiting for mandate authorization in the banking app. This is typed setup support, not proof that all merchants/banks can use recurring BLIK, that a setup is a charge, or that authorization succeeded. The private-preview label belongs to the May 3, 2026 BLIK capture; the November 7, 2026 overview describes supported recurring with a mandate and separate capability requirements. SDK typing remains version-specific and does not prove account or bank enablement, setup authorization, or a successful future charge. See [[source-github-stripe-js]] and [[source-stripe-blik]].
+
+## Sources
+
+- [[source-github-stripe-js]] - version-qualified BLIK setup confirmer and required code contract
+
+- [[source-stripe-blik]] — May 3 and November 7, 2026 BLIK overview captures: code payment, reusable mandate setup, refunds, disputes, Connect prerequisites and dated support conflicts
+- [[source-stripe-bank-redirects]] — May 3 and November 7, 2026 matrix changes and conflicting BLIK setup/mobile rows; read with method-specific guides
+- [[source-stripe-blik-accept-payment]] — May 3, 2026 Checkout, Direct API, iOS and Android guide with code/authorization timing, PaymentIntent outcome boundaries and sandbox failures; November 7 variant-index navigation is separate.
+- [[source-stripe-blik-save-during-payment]] — 2026-05-03 BLIK payment-plus-mandate guide for Checkout, Elements, and Direct API: present recurring terms before code entry, attach the saved method to a Customer, and use a separate off-session PaymentIntent (PLN; up to 2000 PLN per later payment). Recurring availability was labeled private preview, banks vary, and final payment/mandate outcomes require status events. The 2026-11-07 canonical capture is a variant index only.
+- [[source-stripe-blik-set-up-payment]] — May 2026 BLIK setup guide: Checkout setup Session, Elements and Direct API mandate authorization without an initial payment; later off-session PaymentIntent is separate. November 2026 capture lists three variant links only

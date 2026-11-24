@@ -1,0 +1,162 @@
+{
+  "job_id": "payments-payment-method-configurations",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-payment-method-configurations-2026-11-07.md",
+  "raw_sha256": "b8969096548d9bccf4377553af33e3382280dc12155d54a15914625e040b7afd",
+  "prior_raw_path": "raw/stripe-payment-method-configurations-2025.md",
+  "prior_raw_sha256": "a65be93bf32e62f6da0f1687e1637e93ce864f35af169f3525116a407a78e529",
+  "source_targets": [
+    "wiki/sources/source-stripe-payment-method-configurations.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-payment-method-configurations.md": "0ae4c0381a45b517eb126fec5c7a2f85412bdfb8c21ed2cb32ccc98f7743c353"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-payment-method-configurations-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 166
+      }
+    ],
+    "raw/stripe-payment-method-configurations-2025.md": [
+      {
+        "start": 1,
+        "end": 194
+      }
+    ],
+    "wiki/sources/source-stripe-payment-method-configurations.md": [
+      {
+        "start": 1,
+        "end": 42
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/5afb112509028369301b46f8/content.diff": [
+      {
+        "start": 1,
+        "end": 183
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 11
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 436,
+        "end": 443
+      },
+      {
+        "start": 733,
+        "end": 738
+      }
+    ],
+    "wiki/concepts/stripe-payment-method-configurations.md": [
+      {
+        "start": 8,
+        "end": 61
+      }
+    ],
+    "wiki/concepts/stripe-dynamic-payment-methods.md": [
+      {
+        "start": 8,
+        "end": 35
+      }
+    ],
+    "raw/stripe-testing-wallets-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 16
+      }
+    ],
+    "raw/stripe-payments-payment-methods-dynamic-payment-methods-2026-11-07.md": [
+      {
+        "start": 65,
+        "end": 106
+      }
+    ],
+    "raw/stripe-api-payment-method-configurations-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "All payment methods are initially disabled by default.",
+      "location": "raw/stripe-payments-payment-method-configurations-2026-11-07.md:38"
+    },
+    {
+      "text": "A customer sees only payment methods that are turned on and compatible with the payment location and currency.",
+      "location": "raw/stripe-payments-payment-method-configurations-2026-11-07.md:68"
+    },
+    {
+      "text": "paymentMethodConfiguration: 'pmc_234'",
+      "location": "raw/stripe-payments-payment-method-configurations-2026-11-07.md:85"
+    },
+    {
+      "text": "Checkout supports Apple Pay and Google Pay with no integration changes.",
+      "location": "raw/stripe-payments-payment-method-configurations-2026-11-07.md:132"
+    },
+    {
+      "text": "You can\u2019t exclude Apple Pay, Google Pay, or Link on a per-transaction basis using `excluded_payment_method_types`.",
+      "location": "raw/stripe-payments-payment-method-configurations-2026-11-07.md:164"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "By default, Apple Pay is enabled and Google Pay is disabled.",
+      "location": "raw/stripe-payment-method-configurations-2025.md:152"
+    },
+    {
+      "text": "without collecting a shipping address.",
+      "location": "raw/stripe-payment-method-configurations-2025.md:152"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Both old raw lines 8-23 and new raw lines 9-24 require dynamic payment methods with Payment Element or Checkout. The merchant/connected-account platform can create named configuration sets for product groups, one-time versus subscription scenarios, or a connected-account offering. Checkout chooses a configuration, and Stripe filters the methods by eligibility and currency/location restrictions and ranks enabled methods to optimize conversion, not guaranteed display.",
+    "Old raw lines 25-82 and new raw lines 26-70 retain the Default Config plus Dashboard and API creation. A new Dashboard configuration initially has methods disabled; the merchant separately activates the configuration and toggles methods. API examples may set per-method `display_preference.preference` to `on`, and `name` is the Dashboard-readable label. The default common Checkout payment methods discussion is separate from new configuration state.",
+    "Old raw lines 84-144 and 156-175 and new raw lines 72-124 and 134-147 preserve selecting the ID: Web deferred Payment Element uses `paymentMethodConfiguration`; iOS/Android deferred PaymentSheet intent configuration samples use `paymentMethodConfigurationId`; Checkout Session without Payment Element or server PaymentIntent creation uses `payment_method_configuration`. `automatic_payment_methods` is described as optional in the capture's latest API, with examples explicitly setting it. Current source lines 18 and 21 can imply every Payment Element flow accepts the ID; scope these client-side samples to deferred intent creation and keep the active/configuration-versus-payment states distinct.",
+    "Both captures distinguish broad reusable configurations from narrow per-transaction exclusions and allow using them together. Excluding Apple Pay, Google Pay or Link uses integration-specific `wallets` parameters (old raw lines 177-194 and new raw lines 149-166). The separate November API configuration endpoint overview at raw/stripe-api-payment-method-configurations-2026-11-07.md lines 25-33 distinguishes own-account direct configurations from connected-account child configurations and Dashboard-managed parents. That is separate authority, not a new behavior of this guide."
+  ],
+  "substantive_changes": [
+    "The meaningful documentation change is wallet scope: November new raw lines 127-132 replaces the specific old raw lines 148-154 Apple Pay/Google Pay defaults, automatic-tax/no-shipping filtering and hosted-page statement with a general Checkout no-integration-changes sentence and wallet testing link. This changes what the page establishes, without showing changed defaults, a wider account entitlement or any rendering result. The main configuration state/selection behavior is retained.",
+    "New raw lines 24, 32-47, 56-62, 80-86, 115-124, 130 and 138-145 retarget Connect and Dashboard review navigation, switch ordinal/image presentation, and replace equivalent Node examples with cURL/form encoding for configuration, Session and Intent creation. No new fields, route eligibility, language requirement or SDK/API behavior follows from those examples."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the 2026-05-08 dated raw, including hosted Checkout-specific Apple Pay/Google Pay defaults and tax/shipping scope and separate historical image, alongside the full 2026-11-07 body. Preserve manual versus dynamic integration distinction, method-specific eligibility and separate active configuration state, per-transaction wallet controls and platform-specific deferred client examples."
+  ],
+  "conflicts": [
+    "Current source line 19 and concept lines 45-48 list Apple Pay on, Google Pay off, and the automatic-tax/no-shipping filter without date. Old raw lines 152-154 make those claims in the Checkout payments section and state no integration change specifically for Stripe-hosted Checkout. New raw line 132 uses general Checkout support wording and links a wallet testing variant but omits defaults and automatic-tax filtering. Preserve May's statements as May documentation and leave current behavior unresolved. Do not use general wallet defaults to override newly created Dashboard configuration state at old raw line 37/new raw line 38. The checked November wallet testing canonical capture (raw/stripe-testing-wallets-2026-11-07.md lines 5-16) only lists variants.",
+    "Old raw line 190 and new raw line 162 use stray `excluded_payment_methods_types` in the combined-use sentence. Both authoritative surrounding passages (old raw lines 179 and 192, new raw lines 151 and 164) and the separate November dynamic-payment-methods raw lines 89-105 use `excluded_payment_method_types`, and the latter gives a literal server-side PaymentIntent example and wallets exception. Treat the pluralized occurrence as a spelling conflict, not another API field."
+  ],
+  "unresolved_questions": [
+    "The November omission leaves current wallet defaults and exact tax/shipping filtering unverified for the linked UI variants, account or market. Config creation/activation, eligible wallet display and payment outcomes are distinct."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-payment-method-configurations.md",
+    "wiki/concepts/stripe-dynamic-payment-methods.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-payment-method-configurations.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Current source lines 17-27 should add the Dashboard configuration active and new-method-disabled prerequisites, clarify deferred client/platform boundaries and date wallet claims and exclusions precisely. Keep both full capture routes. Update or qualify the concept and provider index's historical wallet wording at wiki/concepts/stripe-payment-method-configurations.md lines 45-48 and wiki/stripe-index.md lines 440 and 735."
+      ],
+      "conflicts": [
+        "Current source line 19 and concept lines 45-48 list Apple Pay on, Google Pay off, and the automatic-tax/no-shipping filter without date. Old raw lines 152-154 make those claims in the Checkout payments section and state no integration change specifically for Stripe-hosted Checkout. New raw line 132 uses general Checkout support wording and links a wallet testing variant but omits defaults and automatic-tax filtering. Preserve May's statements as May documentation and leave current behavior unresolved. Do not use general wallet defaults to override newly created Dashboard configuration state at old raw line 37/new raw line 38. The checked November wallet testing canonical capture (raw/stripe-testing-wallets-2026-11-07.md lines 5-16) only lists variants.",
+        "Old raw line 190 and new raw line 162 use stray `excluded_payment_methods_types` in the combined-use sentence. Both authoritative surrounding passages (old raw lines 179 and 192, new raw lines 151 and 164) and the separate November dynamic-payment-methods raw lines 89-105 use `excluded_payment_method_types`, and the latter gives a literal server-side PaymentIntent example and wallets exception. Treat the pluralized occurrence as a spelling conflict, not another API field."
+      ],
+      "reason": "A reader could interpret the old wallet defaults as current across Checkout modes or brand-new PMCs, or pass the deferred client configuration parameter in the wrong flow. Preserve the existing root-index line 7, Stripe index lines 440 and 735, reciprocal PMC concept line 61 and source related routes at lines 33-38."
+    }
+  ],
+  "answers": {
+    "Q1": "The 2026-11-07 full guide at https://docs.stripe.com/payments/payment-method-configurations documents merchants using dynamic payment methods with Payment Element or Checkout. New raw lines 9-70 and 72-166 describe creating or selecting a named configuration, Dashboard activation and per-method enablement, eligible currency and location filtering and Stripe's ranking. Deferred Web and native client setup uses platform-specific configuration fields. A Checkout Session or server-created PaymentIntent takes the REST field. A configuration and per-transaction exclusions can be combined, with separate wallet visibility controls. Old raw lines 8-194 establish the same core flow, but state specific Checkout wallet defaults and tax/shipping behavior. source-stripe-payment-method-configurations.md summarizes the flow but needs dated wallet wording and explicit activation and deferred-platform qualifications.",
+    "Q2": "At https://docs.stripe.com/payments/payment-method-configurations, old raw lines 148-154 and new raw lines 127-132 differ materially in the scope of wallet documentation. Preserve May's Apple Pay enabled, Google Pay disabled and automatic-tax-without-shipping filter as dated Checkout evidence. November provides general Checkout support and a testing route without settling current defaults, eligibility or live rendering. Old raw lines 8-194 and new raw lines 9-166 otherwise show equivalent configuration behavior across formatting, Node-to-cURL examples and link changes. Preserve the correct exclusion key and wallet exception, the different deferred client and server fields, and both capture routes in source-stripe-payment-method-configurations.md with reciprocal Stripe index and configuration concept links."
+  }
+}

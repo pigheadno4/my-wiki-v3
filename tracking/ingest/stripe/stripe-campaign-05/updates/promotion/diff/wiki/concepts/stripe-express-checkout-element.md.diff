@@ -1,0 +1,20 @@
+--- wiki/concepts/stripe-express-checkout-element.md
++++ wiki/concepts/stripe-express-checkout-element.md
+@@ -150,7 +150,7 @@
+ - `billingAddressRequired` — defaults to `true` unless shipping/payer/lineItem options are also passed
+ - `shippingAddressRequired: true` + `allowedShippingCountries` + `shippingRates[]`
+ 
+-**PayPal caveat**: does not provide billing address (except country) or phone. If these are required and unavailable, the PayPal button is hidden.
++**PayPal payer information.** The April 2026 PaymentIntents integration guide says PayPal generally omits the phone number and provides only the country from the billing address. If required details are unavailable, the Express Checkout Element hides the PayPal button. The November capture of that integration guide is a variant selector. The separate May PayPal button guide specifically required `billingAddressRequired: false` for recurring payments. Its November revision omits the billing instructions and retains the phone and recurring shipping scenarios. See [[source-stripe-paypal-button]].
+ 
+ > Browsers may anonymize the shipping address (city/state/postal only) until the customer confirms. Full address appears in the `confirm` event.
+ 
+@@ -170,7 +170,7 @@
+ The `@stripe/stripe-js@9.14.0` type contract allows a `cpmt_` Custom Payment Method to define an `expressCheckout` configuration with `type: 'embedded'`, a required `handleRender(container)` callback, and optional `handleDestroy()` cleanup. The `availablepaymentmethodschange` event can report dynamically keyed custom payment-method IDs alongside the six built-in method keys.
+ 
+ > [!warning] Versioned availability
+-> The April 2026 product overview said methods could not be specified, while the November 2026 overview describes `customPaymentMethods` buttons on `stripe.elements()` with valid Dashboard `cpmt_` IDs and a working `handleRender`. The separately captured v9.14 declarations prove a beta typed surface. These snapshots do not prove general runtime rollout, account eligibility, or successful rendering; confirm access and live behavior before offering this path.
++> The April 2026 product overview said methods could not be specified. The November 2026 Express Checkout overview describes `customPaymentMethods` buttons on `stripe.elements()` with valid Dashboard `cpmt_` IDs and a working `handleRender`. The separate November custom payment methods overview marks Express Checkout Element private preview and describes custom buttons alongside wallets such as Apple Pay and Google Pay. The separately captured v9.14 declarations describe the beta typed surface. General rollout, individual account eligibility and successful rendering remain outside these captures. See [[source-stripe-custom-payment-methods]].
+ 
+ ## Apple Pay Merchant Tokens (MIT)
+ 

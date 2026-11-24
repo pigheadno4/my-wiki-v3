@@ -1,0 +1,152 @@
+{
+  "job_id": "payments-upi-upi-autopay",
+  "source_target": "wiki/sources/source-stripe-upi-autopay.md",
+  "source_before_sha256": "1f78d0720998138cc6596c497b964fb484d78571dbcade2006c380bd495125d9",
+  "contributions": [
+    {
+      "job_id": "payments-upi-upi-autopay",
+      "canonical_url": "https://docs.stripe.com/payments/upi/upi-autopay",
+      "attempt": 1,
+      "raw_path": "raw/stripe-payments-upi-upi-autopay-2026-11-07.md",
+      "raw_sha256": "463aeb7876b1be87a6e3830715b53d9057d4e4a636c3b9141a49b81b544d938c",
+      "prior_raw_path": "raw/stripe-upi-autopay-2025.md",
+      "prior_raw_sha256": "770c021a1ee3b86c16f29b309efa1afb87ed5ccfedf3c13235227288d2c3d6b4",
+      "new_capture_role": "full_captured_page",
+      "proposed_disposition": "no_substantive_update",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-upi-upi-autopay/attempt-1/receipt.json",
+      "receipt_sha256": "19208705ddd6754258d843227aa2c01464ea39049617c8fa8395b7e28a3b2278",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-upi-upi-autopay/attempt-1/review.json",
+      "review_sha256": "0b2fb915b8b2716baa77bc33897acdd294e05f43e555a42e9946aaede5ce0be3",
+      "source_assessments": [
+        {
+          "source_target": "wiki/sources/source-stripe-upi-autopay.md",
+          "proposed_disposition": "source_required_update",
+          "update_needed": true,
+          "findings": [
+            "Correct the setup-versus-later AFA actor/time boundary, document confirmation as the recurring notification trigger, distinguish default and scheme max, and qualify Adaptive Pricing by eligible currency and overriding Checkout Session values."
+          ],
+          "conflicts": [
+            "Source line 21 reverses the time of avoided AFA. Line 34 drops a stated currency condition and override branch. Both errors existed before the November capture."
+          ],
+          "reason": "Both full captures support the same behavior. The existing source requires a separate accuracy correction."
+        }
+      ],
+      "affected_concepts": [
+        "wiki/concepts/stripe-real-time-payments.md"
+      ],
+      "unresolved_questions": [
+        "These dated documents do not establish an exhaustive supported mandate currency list, a merchant's eligibility, charge outcome, or an independent appraisal of regulatory compliance."
+      ],
+      "mapped_source_assessment": {
+        "source_target": "wiki/sources/source-stripe-upi-autopay.md",
+        "proposed_disposition": "source_required_update",
+        "update_needed": true,
+        "findings": [
+          "Correct the setup-versus-later AFA actor/time boundary, document confirmation as the recurring notification trigger, distinguish default and scheme max, and qualify Adaptive Pricing by eligible currency and overriding Checkout Session values."
+        ],
+        "conflicts": [
+          "Source line 21 reverses the time of avoided AFA. Line 34 drops a stated currency condition and override branch. Both errors existed before the November capture."
+        ],
+        "reason": "Both full captures support the same behavior. The existing source requires a separate accuracy correction."
+      },
+      "findings": [
+        "Both captures describe a customer authorizing an e-mandate during initial setup in the UPI app with PIN additional factor authentication. An existing mandate allows future automated charges within its terms. Stripe handles the initial charge window of up to five minutes and, with SetupIntent, debits and instantly refunds to avoid requiring AFA for the intended later charge. This does not remove PIN authorization during mandate setup.",
+        "Merchant confirms a PaymentIntent for a subsequent recurring payment, which triggers Stripe to send the customer an SMS/app notification with exact debit amount and mandate cancellation option, wait at least 24 hours and then charge. No additional merchant actions are documented after confirmation. Notification and waiting are separate from a successful charge outcome.",
+        "Both list the same `payment_method_options[upi][mandate_options]` defaults: customer-visible description Subscription, `amount=1500000` in minor units (15,000 INR maximum for automatic AutoPay charges), amount_type maximum or merchant-selected fixed, and 10-year expiry with a 40-year from-now scheme maximum.",
+        "With a customer-initiated Adaptive Pricing subscription, automatic e-mandate creation in the selected currency is conditional on mandate support for it. If explicit Checkout Session mandate parameters are provided, they override automatically determined values. The guide tells users seeking the local-currency and exchange-rate handling to omit such parameters.",
+        "The rebased capture metadata, numbered list serialization and table padding are presentation. The linked Adaptive Pricing and supported mandate currency authorities remain the same links and supply no independently verified currency list here."
+      ],
+      "substantive_changes": [],
+      "historical_claims_to_preserve": [
+        "Preserve May 6 and November 7 evidence for setup PIN, the initial five-minute window and SetupIntent debit/refund, the later-charge AFA purpose, notification actor/timing, confirmed PaymentIntent prerequisite, mandate fields and conditional Adaptive Pricing behavior."
+      ],
+      "conflicts": [
+        "Mapped source line 21 says the refund avoids AFA on initial setup. Both raws require setup PIN and say the debit/refund prevents AFA when charging later.",
+        "Mapped source lines 19 and 23 and concept line 145 compress the trigger and boundary. The 24-hour notice applies to recurring charges after PaymentIntent confirmation, while the initial mandate flow has its own up-to-five-minute charge window.",
+        "Mapped source line 34 and concept line 145 omit supported selected currency, customer-initiated subscription and explicit override precedence; the current shorthand can be read as unconditional automatic local-currency mandate creation."
+      ],
+      "expected_read_files": [
+        {
+          "path": "raw/stripe-payments-upi-upi-autopay-2026-11-07.md",
+          "sha256": "463aeb7876b1be87a6e3830715b53d9057d4e4a636c3b9141a49b81b544d938c",
+          "lines": 50
+        },
+        {
+          "path": "raw/stripe-upi-autopay-2025.md",
+          "sha256": "770c021a1ee3b86c16f29b309efa1afb87ed5ccfedf3c13235227288d2c3d6b4",
+          "lines": 49
+        },
+        {
+          "path": "wiki/sources/source-stripe-upi-autopay.md",
+          "sha256": "1f78d0720998138cc6596c497b964fb484d78571dbcade2006c380bd495125d9",
+          "lines": 38
+        },
+        {
+          "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/489f1b322761a8145f8a30bb/content.diff",
+          "sha256": "f320dd17d5299c26cc56e2908bfde7d69f60e9cf3da081e07fb6a8bc9eb19c6c",
+          "lines": 32
+        }
+      ],
+      "original_query_prompts_path": "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md",
+      "original_prompts": "New raw `raw/stripe-payments-upi-upi-autopay-2026-11-07.md`. Prior raw `raw/stripe-upi-autopay-2025.md`. Current summaries `wiki/sources/source-stripe-upi-autopay.md`.\n\n- Q1. For `https://docs.stripe.com/payments/upi/upi-autopay`, what documented behavior, prerequisites, actors and state transitions does the complete new capture establish? How do these compare with the matched prior capture and each mapped summary?\n\n- Q2. Which changes are substantive, presentational or navigation-only? Identify the exact dated qualifications, conflicts and reciprocal routes that the proposed disposition should preserve.",
+      "reviewed_answers": {
+        "Q1": "At https://docs.stripe.com/payments/upi/upi-autopay, source-stripe-upi-autopay.md covers a customer authorizing a mandate with a PIN in the UPI app. Old raw lines 12–32 and new raw lines 13–33 establish the same initial charge window of up to five minutes after setup. The SetupIntent debit and instant refund is intended to avoid later charge AFA, while setup still requires PIN authorization. After merchant confirmation of a subsequent recurring PaymentIntent, Stripe notifies the buyer with the exact amount and cancellation option, waits at least 24 hours and then charges. Old raw lines 38–49 and new raw lines 39–50 preserve default and fixed/maximum mandate choices plus conditional Adaptive Pricing automatic creation in a supported selected currency, subject to explicit parameter overrides.",
+        "Q2": "At https://docs.stripe.com/payments/upi/upi-autopay, source-stripe-upi-autopay.md needs baseline corrections even though old raw lines 26–45 and new raw lines 27–46 contain only renumbering and table-format changes. The Adaptive Pricing and mandate-currency links remain navigation. Old raw lines 16–22 and new raw lines 17–23 distinguish mandatory setup PIN from the later AFA purpose of the SetupIntent debit/refund. Old raw lines 47–49 and new raw lines 48–50 limit automatic mandate creation to supported selected currency and give precedence to explicit Checkout Session mandate parameters. Keep both capture dates, add the source’s reciprocal route to wiki/concepts/stripe-real-time-payments.md, update its dated UPI AutoPay paragraph, and refresh the existing Stripe index and company source captions."
+      }
+    }
+  ],
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payments-upi-upi-autopay-2026-11-07.md",
+      "sha256": "463aeb7876b1be87a6e3830715b53d9057d4e4a636c3b9141a49b81b544d938c",
+      "lines": 50
+    },
+    {
+      "path": "raw/stripe-upi-autopay-2025.md",
+      "sha256": "770c021a1ee3b86c16f29b309efa1afb87ed5ccfedf3c13235227288d2c3d6b4",
+      "lines": 49
+    },
+    {
+      "path": "wiki/sources/source-stripe-upi-autopay.md",
+      "sha256": "1f78d0720998138cc6596c497b964fb484d78571dbcade2006c380bd495125d9",
+      "lines": 38
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/489f1b322761a8145f8a30bb/content.diff",
+      "sha256": "f320dd17d5299c26cc56e2908bfde7d69f60e9cf3da081e07fb6a8bc9eb19c6c",
+      "lines": 32
+    }
+  ],
+  "concept_targets": [
+    {
+      "path": "wiki/concepts/stripe-real-time-payments.md",
+      "before_sha256": "189fb766b099bdd8593f12aae4c180da178c148f9dca35ecc65cc306edb64485",
+      "contributing_jobs": [
+        "payments-paynow",
+        "payments-paynow-accept-a-payment",
+        "payments-payto",
+        "payments-pix",
+        "payments-pix-accept-a-payment",
+        "payments-pix-pix-automatico",
+        "payments-pix-save-payment-details",
+        "payments-promptpay",
+        "payments-promptpay-accept-a-payment",
+        "payments-swish",
+        "payments-swish-accept-a-payment",
+        "payments-upi",
+        "payments-upi-accept-a-payment",
+        "payments-upi-set-up-future-payments",
+        "payments-upi-upi-autopay"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    }
+  ],
+  "state": "worker_running",
+  "attempt": 1,
+  "review_scope": "full",
+  "worker_agent": "/root/s05w2",
+  "reviewer_agent": "/root/s05r5",
+  "role_notes": "tracking/ingest/stripe/stripe-campaign-05/updates/role-notes.md",
+  "worker_output": "/tmp/stripe-s05-ingest/payments-upi-upi-autopay-worker.json",
+  "reviewer_output": "/tmp/stripe-s05-ingest/payments-upi-upi-autopay-reviewer.json"
+}

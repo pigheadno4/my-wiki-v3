@@ -1,0 +1,50 @@
+---
+title: "Stripe Docs — Accept a WeChat Pay payment"
+type: source
+date_ingested: 2026-05-08
+date_updated: 2026-11-22
+original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/wechat-pay/accept-a-payment"
+raw_files:
+  - "stripe-wechat-pay-accept-payment-2025.md"
+tags: [stripe, wechat-pay, wallets, china, digital-wallet, payment-intents, checkout]
+---
+
+## Overview
+
+The May 8, 2026 acceptance guide documents two online routes for single-use WeChat Pay, Checkout and Direct API on web. Use the separate [[source-stripe-terminal-additional-payment-methods|Terminal guide]] for in-person payments. The November 7, 2026 acceptance capture links Checkout, Direct API, iOS and Android. The selector supplies these routes. Native implementation details and version requirements remain unverified in this capture.
+
+## May 2026 Checkout
+
+The guide describes dynamic method selection or manual configuration on the Checkout Session. Its manual examples add `wechat_pay` to `payment_method_types` and set `payment_method_options.wechat_pay.client` to `web`. Use `mode: payment` with one-time line items in the same currency. Mixed currencies need separate Sessions. The May guide lists setup and subscription modes as unavailable for WeChat Pay. Its hosted example uses `success_url`. Its full embedded example uses `ui_mode: embedded_page` and `return_url`.
+
+The customer scans the Checkout QR code in WeChat Pay to authorize payment. May Checkout sandbox QR codes lead to a Stripe-hosted authorization simulation. See the May Checkout fulfillment section for the separate order fulfillment guidance.
+
+## May 2026 Direct API web example
+
+The merchant’s server creates a PaymentIntent with an amount and a currency mapped to the account country. The May create example supplies `payment_method_types: ["wechat_pay"]`. The browser receives the PaymentIntent client secret from the server through a single-page app endpoint or server rendering. It calls Stripe.js `confirmWechatPayPayment` with the client secret and the example’s `client: web` configuration.
+
+The merchant displays the QR code from `next_action.wechat_pay_display_qr_code.data` as a generated QR image or uses `image_data_url` directly as an image source. The customer scans it and authenticates in WeChat Pay. Keep the QR page open until the outcome is known. For fulfillment use server-side Stripe payment status or events. In the May guide, the PaymentIntent transitions to `succeeded` and emits `payment_intent.succeeded` on success. On failure, the PaymentIntent emits `payment_intent.payment_failed` and returns to `requires_payment_method`. A browser return or acknowledgement leaves payment unconfirmed. In the sandbox, a normal QR reader opens a Stripe test page that can authorize or fail the test payment.
+
+The [August 26, 2026 Dahlia preview changelog](../../raw/stripe-changelog-dahlia-2026-08-26-removes-payment-method-types-parameter-from-payment-intents-setup-intents-2026-11-07.md#L7-L26) documents HTTP 400 `payment_method_types_no_longer_supported` on affected PaymentIntent create, update and confirm requests under `2026-08-26.preview` or later, with `payment_method_types` still available as a computed read-only field. The May Checkout Session configuration is a separate API object.
+
+## Dated eligibility and mobile scope
+
+The [May Checkout compatibility list](../../raw/stripe-wechat-pay-accept-payment-2025.md#L24) contains 35 business-location codes and 13 presentment currencies (`aud, cad, cny, eur, gbp, hkd, jpy, sgd, usd, dkk, nok, sek, chf`). Its Direct API table maps currencies to account countries and says customers see CNY in the WeChat Pay app. The separate November [[source-stripe-wechat-pay|WeChat Pay product overview]] lists [22 merchant locations](../../raw/stripe-payments-wechat-pay-2026-11-07.md#L19). Each location and currency claim belongs to its stated route and capture date. Check account eligibility and currency support for the integration in use.
+
+The dedicated November product overview marks its `In-app payments` product cell unsupported. The separate November [Wallets product support matrix](../../raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md#L188-L207) marks `Mobile Payment Element` unsupported for WeChat Pay. The dedicated overview also describes a supported native experience where the merchant app opens WeChat Pay and receives the customer back. For custom or native checkout, show success after the merchant server confirms `succeeded`. Its two-hour authorization window is for the desktop QR flow and starts when the payment request is created. After expiration the customer starts a new payment attempt.
+
+The separate [[source-github-stripe-js|Stripe.js 10.1.0 declaration]] types the optional Direct API `client` value as `web` or `mobile_web`. The declared options type has a required boolean `handleActions` whose comment directs callers to set `false` and handle `next_action`. That is the version-specific direct Stripe.js contract. Native SDK behavior, Mobile Payment Element support, Checkout request options and runtime eligibility are outside that declaration’s evidence.
+
+## Related
+
+- [[stripe-wallets]] — Stripe wallet and WeChat Pay integration context
+- [[stripe]] — Stripe company page
+
+## Raw Sources
+
+- [[raw/stripe-wechat-pay-accept-payment-2025|May 8, 2026 WeChat Pay acceptance guide]] — full Checkout and Direct API web bodies.
+
+## Related raw API references
+
+- [[raw/stripe-payments-wechat-pay-accept-a-payment-2026-11-07|November 7, 2026 WeChat Pay acceptance variant index]] — navigation to Checkout, Direct API, iOS and Android.

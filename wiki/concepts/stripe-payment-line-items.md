@@ -26,20 +26,21 @@ Line items are **not returned by default** — expand with `amount_details.line_
 
 Card networks (Visa, Mastercard, AmEx) offer reduced interchange rates when sufficient order data is passed:
 
-| Level | Card Types | Key Required Fields |
+| Program in the November 7, 2026 guide | Card types | Key PaymentIntent fields |
 | --- | --- | --- |
-| L2 | Business, Purchasing, Corporate | `tax[total_tax_amount]`, `order_reference` |
-| L3/Product 3 | Purchasing, Corporate only | + `product_name`, `unit_cost`, `quantity`, `product_code`, `unit_of_measure`, `line_item[tax]` |
+| Mastercard Level 2 | Business, Purchasing, Corporate | Transaction tax and order reference |
+| Mastercard Level 3 | Purchasing and Corporate | Order reference, line-item product name, unit cost, quantity, product code and unit of measure, plus transaction-level or per-item tax |
+| Visa Product 3 | Purchasing, Corporate and Business | Same Level 3/Product 3 field group in the guide |
 
 **Geographic scope**: US domestic (US merchant + US-issued card, no territories) and intra-EU (EU merchant + EU card). **IC+ pricing required.**
 
 AmEx requires a direct network agreement for savings. AmEx receives only the first 4 line items (200 max for Visa/MC).
 
-Visa's US program is now called **Commercial Enhanced Data Program (CEDP)**, replacing the old Level 2/3 programs.
+The November 7, 2026 Stripe guide says US Visa Level 2 ended in April 2026, with Visa savings through **Commercial Enhanced Data Program (CEDP) Product 3**. The guide still prints Visa Level 2 figures for historical context.
 
 Many MCC categories are ineligible (hotels, airlines, car rental, restaurants, direct marketing) — see [[source-stripe-payment-line-items]] for full excluded MCC lists.
 
-> **Mutual exclusivity**: Payment line items and [[stripe-industry-metadata]] (T&E industry-specific data) cannot be sent on the same PaymentIntent. Travel/hospitality merchants must choose one.
+> **Industry metadata.** The May and November 2026 guides say card and PayPal line items cannot be sent alongside [[stripe-industry-metadata|travel-industry metadata]]. Klarna has a separate Extra Merchant Data path in private preview.
 
 ## Klarna and PayPal
 
@@ -48,7 +49,7 @@ Both use line item data in underwriting models to approve more credit-based opti
 - **Klarna**: Stripe derives total amount from `(unit_cost × quantity) − discount + tax` — no explicit amount field
 - **PayPal**: Does not support setting line items during capture (confirmation only)
 
-Payment-method-specific fields nested under `line_item[payment_method_options][klarna|paypal|card]`:
+PaymentIntent method-specific fields go under each `amount_details[line_items][index][payment_method_options][method]` entry, with `klarna`, `paypal`, or `card` for the method:
 
 - **Klarna**: product_url, image_url, reference (shown in app), subscription_reference
 - **PayPal**: description, category (digital_goods / physical_goods / donation), sold_by
@@ -58,34 +59,31 @@ Payment-method-specific fields nested under `line_item[payment_method_options][k
 
 ### Multicapture
 
-Line items work with multicapture (cards only — Klarna/PayPal not supported):
+Multicapture is conditional on payment-method support and excludes Klarna and PayPal. Use manual capture and request multicapture when available.
 
-- Can add `amount_details` at first capture even if absent at creation
-- If set at creation, must include or explicitly unset at first capture
-- Once included in any capture, must continue in all subsequent captures
-- `discount_amount`, `tax.total_tax_amount`, `shipping.amount` are **summed** across captures
-- `shipping.from_postal_code` / `to_postal_code` must not change across captures
-- `line_items` are **aggregated** across captures
-- Partial capture: `amount_to_capture: 0` + `final_capture: true` → `succeeded` with only first-capture items
+- Add `amount_details` or `amount_details[line_items]` on the first capture if absent at creation. Include or explicitly unset each field that was present at creation.
+- The general later-capture rule requires continuing fields previously supplied and prohibits adding fields omitted in preceding captures.
+- Stripe sums `discount_amount`, `tax.total_tax_amount` and `shipping.amount` and aggregates line items. Shipping postal codes are optional and must stay consistent if supplied.
+- A partial nonfinal capture can remain `requires_capture`. The May and November guides illustrate a zero-amount final capture with `final_capture: true` that omits new amount details and returns only the first capture’s items. This example is specific to the illustrated finalization.
 
 ### Overcapture
 
-Pass updated `amount_details` during capture that is consistent with the larger capture amount.
+Pass an `amount_to_capture` up to `maximum_amount_capturable` and update `amount_details` to match the actual larger capture amount.
 
 ### Incremental Authorization
 
-Use `incrementAuthorization()` endpoint. Pass updated `amount_details` consistent with the new total authorized amount after the increment.
+Use `increment_authorization` to increase the authorization up to the payment method’s limit. Pass updated `amount_details` matching the new authorized total. A later capture collects funds.
 
 ### Partial Authorization
 
 If the card partially authorizes a lower amount than requested, the original line items may not match the authorized amount. Stripe sets `amount_details.error.code: amount_details_amount_mismatch`.
 
-- **Fix at capture**: provide reconciled `amount_details` matching the partial amount → error cleared, L2/L3 savings preserved
+- **Fix at capture**: Reconcile `amount_details` to the partially authorized amount. This clears the error and allows Stripe to send card line-item data to networks. Actual L2/L3 savings depend on qualification.
 - **Capture without fix**: error persists, Stripe does not send mismatched line items to card networks → L2/L3 savings lost
 
 ### Surcharge
 
-Pass surcharge via `amount_details[surcharge][amount]`. Do **not** add surcharge as a separate line item — doing so causes a 400 arithmetic error because Stripe validates line items against `amount` exclusive of surcharge. See [[stripe-surcharge]].
+Include the surcharge in the PaymentIntent `amount` and record it under `amount_details[surcharge][amount]`. Adding it as a separate line item as well produces an HTTP 400 in the guide’s incorrect example. The November 7, 2026 guide directs tax with a surcharge to top-level `amount_details[tax][total_tax_amount]`. See [[stripe-surcharge]].
 
 ## Arithmetic Validation
 
@@ -99,5 +97,5 @@ Errors appear in `amount_details.error`. Cards with arithmetic mismatches won't 
 
 ## Sources
 
-- [[source-stripe-payment-line-items]] — full feature guide, field requirements, MCC tables, code samples
+- [[source-stripe-payment-line-items]] — May and November 2026 feature guides with network and MCC eligibility, PaymentIntent and Checkout fields, arithmetic validation, and flexible scenario links.
 - [[source-stripe-payment-line-items-flexible]] — multicapture/overcapture/incremental auth/partial auth/surcharge behavior

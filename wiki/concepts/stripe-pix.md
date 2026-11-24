@@ -81,7 +81,9 @@ Release notes announce Pix PaymentIntent and SetupIntent support in PaymentSheet
 
 - [[source-github-stripe-android]] - native 23.22.0 bindings and PaymentSheet release announcements with explicit implementation limits
 
+- [[source-stripe-pix]] — May and November 2026 Pix product overviews, with buyer and business eligibility, limits, refund and dispute conditions, and Pix Automático mandate scope.
 - [[source-stripe-subscriptions-pix]] — 2026-11-07 Pix subscription variant index and retained 2026-05-13 combined Checkout, SetupIntents and Subscriptions API guide; mandate, payment and sandbox conditions are dated
+- [[source-stripe-pix-save-payment-details]] — May 2026 Checkout and Direct API guide for setup, payment and save, and later charge limits. The November variant index provides navigation.
 
 > [!warning] Contradiction
 > Earlier concept wording treated both mandate options as universal requirements, CPF/CNPJ as universally government-required, and a QR scan as sufficient for direct API activation. The May guide itself says direct API mandate options are optional, limits the stated tax-ID rule to cross-border transactions, and activates after successful payment. The November index does not resolve current variant rules; see [[source-stripe-subscriptions-pix]].

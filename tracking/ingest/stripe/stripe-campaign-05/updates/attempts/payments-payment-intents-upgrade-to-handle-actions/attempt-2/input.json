@@ -1,0 +1,158 @@
+{
+  "job_id": "payments-payment-intents-upgrade-to-handle-actions",
+  "source_target": "wiki/sources/source-stripe-migrate-basic-card-integration.md",
+  "source_before_sha256": "b1fae976db538c8078c5eaf22b1690349f030c81b42b8b0110cfed758d396b52",
+  "contributions": [
+    {
+      "job_id": "payments-payment-intents-upgrade-to-handle-actions",
+      "canonical_url": "https://docs.stripe.com/payments/payment-intents/upgrade-to-handle-actions",
+      "attempt": 1,
+      "raw_path": "raw/stripe-payments-payment-intents-upgrade-to-handle-actions-2026-11-07.md",
+      "raw_sha256": "5b3bcf505768906154426754794f19b6729a190483d156c2d5eebf11d715698c",
+      "prior_raw_path": "raw/stripe-migrate-basic-card-integration-2026.md",
+      "prior_raw_sha256": "c6830fa937dd6d6f0bd475158cf87b176d56d32aa9841840aad92fa7baf7bf11",
+      "new_capture_role": "full_captured_page",
+      "proposed_disposition": "source_required_update",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-payment-intents-upgrade-to-handle-actions/attempt-1/receipt.json",
+      "receipt_sha256": "c58e1410152ef37dea0787fdc14c0a1863f34cb0a5da0c1db9f3fb8c6cb6681a",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-payment-intents-upgrade-to-handle-actions/attempt-1/review.json",
+      "review_sha256": "d462bb03a4b22886f49e289c8af0075308954e02e9fc20443d678c783805c4f6",
+      "source_assessments": [
+        {
+          "source_target": "wiki/sources/source-stripe-migrate-basic-card-integration.md",
+          "proposed_disposition": "source_required_update",
+          "update_needed": true,
+          "findings": [
+            "Source lines 17–18 and 22–30 capture the retained manual confirmation pattern but only cite May. Distinguish May's longer Node/Express examples and explicit use_stripe_sdk setting from November curl and abbreviated status/next_action notes. Link the current API references for use_stripe_sdk scope and keep the source's shared /pay endpoint as illustrative (old raw lines 19–83 and 118–161; new raw lines 18–79 and 81–91).",
+            "Source line 13 says upgrading creates a global integration. Both guides describe upgrading the basic path to handle issuer-requested authentication; neither establishes geographic, bank or merchant availability (old raw lines 4–13; new raw lines 5–14).",
+            "Source's flow lines 22–26 should retain successful authentication → requires_confirmation → server re-confirm of the same PaymentIntent with secret key, timeout back to requires_payment_method, and fulfillment only after payment success. Old generateResponse distinguishes succeeded from requires_action (old raw lines 66–82); November retains the server requirement but replaces handling example with guidance to inspect status and next_action (new raw lines 38–46, 48–83). Do not import automatic confirmation's no-reconfirm behavior (November Confirm API lines 9–17)."
+          ],
+          "conflicts": [
+            "The November creation example omits use_stripe_sdk, as does the first short May snippet, while May's fuller server examples show true and November Create/Confirm API references still describe it for server confirmation with client SDK next-action handling (old raw lines 26–35, 41–64 and 124–160; new raw lines 27–46; companion Create lines 708–709 and Confirm lines 659–660). Preserve the documented condition and sample omission; do not infer removal, universal default or requiredness from one snippet.",
+            "Both guide test tables say the authentication-required card fails with authentication_not_handled 'in this integration' even though the surrounding flow handles authentication (old raw lines 163–171; new raw lines 93–101). The separate no-authentication guide uses the same line for its decline flow (November companion lines 379–386); the distinct migration guide describes authentication required at setup or first transaction (November companion lines 181–190). Keep this fixture wording conflict and avoid promising a passing or failing outcome for the upgraded integration.",
+            "The November sample shows allowed_payment_method_types[]=card with no explicit API-version header (new raw lines 27–36). A separate 2026-07-29.dahlia changelog gives incompatible-type filtering and explicit mutual exclusions. Endive REST shows payment_method_types as read-only and rejects the write parameter with HTTP 400 on linked 2026-09-30.endive endpoints, while Impact references 2026-08-26.preview (companion lines 7–29). Avoid inferring a version-independent rename, a first affected date or account preference from this tutorial sample."
+          ],
+          "reason": "Add the November allowlist example and abbreviated server evidence, preserve the manual auth state machine and scoped use_stripe_sdk, and flag fixture and version ambiguities."
+        }
+      ],
+      "affected_concepts": [
+        "wiki/concepts/stripe-payment-intents.md"
+      ],
+      "unresolved_questions": [
+        "No runtime status, exact first affected REST version, or amended sandbox fixture result is established by these captures."
+      ],
+      "mapped_source_assessment": {
+        "source_target": "wiki/sources/source-stripe-migrate-basic-card-integration.md",
+        "proposed_disposition": "source_required_update",
+        "update_needed": true,
+        "findings": [
+          "Source lines 17–18 and 22–30 capture the retained manual confirmation pattern but only cite May. Distinguish May's longer Node/Express examples and explicit use_stripe_sdk setting from November curl and abbreviated status/next_action notes. Link the current API references for use_stripe_sdk scope and keep the source's shared /pay endpoint as illustrative (old raw lines 19–83 and 118–161; new raw lines 18–79 and 81–91).",
+          "Source line 13 says upgrading creates a global integration. Both guides describe upgrading the basic path to handle issuer-requested authentication; neither establishes geographic, bank or merchant availability (old raw lines 4–13; new raw lines 5–14).",
+          "Source's flow lines 22–26 should retain successful authentication → requires_confirmation → server re-confirm of the same PaymentIntent with secret key, timeout back to requires_payment_method, and fulfillment only after payment success. Old generateResponse distinguishes succeeded from requires_action (old raw lines 66–82); November retains the server requirement but replaces handling example with guidance to inspect status and next_action (new raw lines 38–46, 48–83). Do not import automatic confirmation's no-reconfirm behavior (November Confirm API lines 9–17)."
+        ],
+        "conflicts": [
+          "The November creation example omits use_stripe_sdk, as does the first short May snippet, while May's fuller server examples show true and November Create/Confirm API references still describe it for server confirmation with client SDK next-action handling (old raw lines 26–35, 41–64 and 124–160; new raw lines 27–46; companion Create lines 708–709 and Confirm lines 659–660). Preserve the documented condition and sample omission; do not infer removal, universal default or requiredness from one snippet.",
+          "Both guide test tables say the authentication-required card fails with authentication_not_handled 'in this integration' even though the surrounding flow handles authentication (old raw lines 163–171; new raw lines 93–101). The separate no-authentication guide uses the same line for its decline flow (November companion lines 379–386); the distinct migration guide describes authentication required at setup or first transaction (November companion lines 181–190). Keep this fixture wording conflict and avoid promising a passing or failing outcome for the upgraded integration.",
+          "The November sample shows allowed_payment_method_types[]=card with no explicit API-version header (new raw lines 27–36). A separate 2026-07-29.dahlia changelog gives incompatible-type filtering and explicit mutual exclusions. Endive REST shows payment_method_types as read-only and rejects the write parameter with HTTP 400 on linked 2026-09-30.endive endpoints, while Impact references 2026-08-26.preview (companion lines 7–29). Avoid inferring a version-independent rename, a first affected date or account preference from this tutorial sample."
+        ],
+        "reason": "Add the November allowlist example and abbreviated server evidence, preserve the manual auth state machine and scoped use_stripe_sdk, and flag fixture and version ambiguities."
+      },
+      "findings": [
+        "November 7 is a full, shorter migration guide for an existing basic card integration, retaining the manual server re-confirmation and client modal flow while changing the request example and compressing server handling (old raw lines 19–161; new raw lines 18–91).",
+        "Root index line 7 leads to Stripe index lines 562 and 729; source lines 32–35 link its Payment Intents concept and separate no-auth guide. The Payment Intents concept reciprocates at line 158. Preserve that route, both dated raw guides and the optional related 3DS display context from its distinct concept (lines 72–80)."
+      ],
+      "substantive_changes": [
+        "The example method selector changes from payment_method_types=['card'] to allowed_payment_method_types[]=card (old raw lines 26–35 and 41–53; new raw lines 27–36). This is a substantive example parameter change, with API-version and eligibility conditions corroborated by separate Dahlia and Endive changelogs.",
+        "November abbreviates the server SDK examples, removing the explicit generateResponse and Express request branches and the shown use_stripe_sdk in the full earlier implementation. It substitutes status/next_action guidance and REST re-confirmation. This changes evidence coverage, with no proven API removal (old raw lines 41–83 and 124–161; new raw lines 38–46 and 81–91)."
+      ],
+      "historical_claims_to_preserve": [
+        "Both remove error_on_requires_action for the migration and use manual confirmation; the client handles requires_action with stripe.handleCardAction/client secret, successful action leaves requires_confirmation, and the server needs to re-confirm the same Intent or the attempt returns to requires_payment_method after one hour (old raw lines 19–22, 85–120 and new raw lines 20–23, 48–83).",
+        "The same endpoint strategy is described in both; only May supplies the full Express create-vs-reconfirm branch. Preserve sandbox fake-modal behavior versus live issuer-controlled UI and the ambiguous authentication-required fixture wording (old raw lines 118–171; new raw lines 81–101)."
+      ],
+      "conflicts": [
+        "The November creation example omits use_stripe_sdk, as does the first short May snippet, while May's fuller server examples show true and November Create/Confirm API references still describe it for server confirmation with client SDK next-action handling (old raw lines 26–35, 41–64 and 124–160; new raw lines 27–46; companion Create lines 708–709 and Confirm lines 659–660). Preserve the documented condition and sample omission; do not infer removal, universal default or requiredness from one snippet.",
+        "Both guide test tables say the authentication-required card fails with authentication_not_handled 'in this integration' even though the surrounding flow handles authentication (old raw lines 163–171; new raw lines 93–101). The separate no-authentication guide uses the same line for its decline flow (November companion lines 379–386); the distinct migration guide describes authentication required at setup or first transaction (November companion lines 181–190). Keep this fixture wording conflict and avoid promising a passing or failing outcome for the upgraded integration.",
+        "The November sample shows allowed_payment_method_types[]=card with no explicit API-version header (new raw lines 27–36). A separate 2026-07-29.dahlia changelog gives incompatible-type filtering and explicit mutual exclusions. Endive REST shows payment_method_types as read-only and rejects the write parameter with HTTP 400 on linked 2026-09-30.endive endpoints, while Impact references 2026-08-26.preview (companion lines 7–29). Avoid inferring a version-independent rename, a first affected date or account preference from this tutorial sample."
+      ],
+      "expected_read_files": [
+        {
+          "path": "raw/stripe-payments-payment-intents-upgrade-to-handle-actions-2026-11-07.md",
+          "sha256": "5b3bcf505768906154426754794f19b6729a190483d156c2d5eebf11d715698c",
+          "lines": 101
+        },
+        {
+          "path": "raw/stripe-migrate-basic-card-integration-2026.md",
+          "sha256": "c6830fa937dd6d6f0bd475158cf87b176d56d32aa9841840aad92fa7baf7bf11",
+          "lines": 171
+        },
+        {
+          "path": "wiki/sources/source-stripe-migrate-basic-card-integration.md",
+          "sha256": "b1fae976db538c8078c5eaf22b1690349f030c81b42b8b0110cfed758d396b52",
+          "lines": 39
+        },
+        {
+          "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/5c1fdec862b9dff6283c4245/content.diff",
+          "sha256": "e29f7eae6806a772e1cf91dfb6b3b644864cab3a89c0445762c94ea80a3efae9",
+          "lines": 196
+        }
+      ],
+      "original_query_prompts_path": "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md",
+      "original_prompts": "New raw `raw/stripe-payments-payment-intents-upgrade-to-handle-actions-2026-11-07.md`. Prior raw `raw/stripe-migrate-basic-card-integration-2026.md`. Current summaries `wiki/sources/source-stripe-migrate-basic-card-integration.md`.\n\n- Q1. For `https://docs.stripe.com/payments/payment-intents/upgrade-to-handle-actions`, what documented behavior, prerequisites, actors and state transitions does the complete new capture establish? How do these compare with the matched prior capture and each mapped summary?\n\n- Q2. Which changes are substantive, presentational or navigation-only? Identify the exact dated qualifications, conflicts and reciprocal routes that the proposed disposition should preserve.",
+      "reviewed_answers": {
+        "Q1": "The November guide at https://docs.stripe.com/payments/payment-intents/upgrade-to-handle-actions upgrades an existing basic card integration from failing on bank authentication to handling it. The merchant server removes error_on_requires_action and creates/confirms with confirmation_method=manual. November's curl uses allowed_payment_method_types for card. For requires_action the customer authenticates in the Stripe.js handleCardAction modal using the Intent client secret. Successful action yields requires_confirmation and the merchant server re-confirms the same Intent; without confirmation within one hour the attempt fails back to requires_payment_method. Authentication alone does not establish payment success (new raw lines 18-52 and 54-91). The May guide documents the same flow with Node/Express, older payment_method_types and use_stripe_sdk in its full example (old raw lines 19-83 and 118-161). source-stripe-migrate-basic-card-integration.md retains the May flow and needs both date-scoped examples and conditions.",
+        "Q2": "At https://docs.stripe.com/payments/payment-intents/upgrade-to-handle-actions, the substantive example change is allowed_payment_method_types replacing writable payment_method_types in the shown create request (old raw lines 26-35; new raw lines 27-36). Separate Dahlia and Endive references establish compatibility and API-version limits. Node-to-curl and screenshot changes are presentation, while the omission of full server branches and use_stripe_sdk changes the example's coverage without establishing removal (old raw lines 41-83 and 124-161; new raw lines 38-46 and 81-91). Keep the May and November one-hour manual re-confirmation boundary, the conditional SDK-use field and the sandbox fixture conflict in source-stripe-migrate-basic-card-integration.md. The test table repeats authentication_not_handled even though the guide adds action handling, and the bank controls live modal UI (old raw lines 163-171; new raw lines 93-101). Preserve the reciprocal Payment Intents concept and separate no-authentication guide routes."
+      }
+    }
+  ],
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payments-payment-intents-upgrade-to-handle-actions-2026-11-07.md",
+      "sha256": "5b3bcf505768906154426754794f19b6729a190483d156c2d5eebf11d715698c",
+      "lines": 101
+    },
+    {
+      "path": "raw/stripe-migrate-basic-card-integration-2026.md",
+      "sha256": "c6830fa937dd6d6f0bd475158cf87b176d56d32aa9841840aad92fa7baf7bf11",
+      "lines": 171
+    },
+    {
+      "path": "wiki/sources/source-stripe-migrate-basic-card-integration.md",
+      "sha256": "b1fae976db538c8078c5eaf22b1690349f030c81b42b8b0110cfed758d396b52",
+      "lines": 39
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/5c1fdec862b9dff6283c4245/content.diff",
+      "sha256": "e29f7eae6806a772e1cf91dfb6b3b644864cab3a89c0445762c94ea80a3efae9",
+      "lines": 196
+    }
+  ],
+  "concept_targets": [
+    {
+      "path": "wiki/concepts/stripe-payment-intents.md",
+      "before_sha256": "479fb6d1f161b674d6653ebfbb229c6e8c647e54962391fb1b22feec3fbece46",
+      "contributing_jobs": [
+        "payments-payment-intents-upgrade-to-handle-actions",
+        "payments-payment-methods",
+        "payments-payment-methods-transitioning",
+        "payments-paymentintents-lifecycle",
+        "payments-place-a-hold-on-a-payment-method",
+        "payments-setup-intents",
+        "payments-without-card-authentication"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    }
+  ],
+  "state": "worker_running",
+  "attempt": 2,
+  "review_scope": "targeted",
+  "worker_agent": "/root/s05w3",
+  "reviewer_agent": "/root/s05r1",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-05/updates/attempts/payments-payment-intents-upgrade-to-handle-actions/attempt-1/receipt.json",
+  "receipt_sha256": "ce25578e607e043d0da0e45551998e2bf1f41624bb64526ac1ac94890f13b29b",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-05/updates/attempts/payments-payment-intents-upgrade-to-handle-actions/attempt-1/review.json",
+  "review_sha256": "84dfd57563e478577bcbf5c69d3ecf67e3326da8f8e6e397fa33eb9ced68d91e",
+  "role_notes": "tracking/ingest/stripe/stripe-campaign-05/updates/role-notes.md",
+  "worker_output": "/tmp/stripe-s05-ingest/payments-payment-intents-upgrade-to-handle-actions-worker.json",
+  "reviewer_output": "/tmp/stripe-s05-ingest/payments-payment-intents-upgrade-to-handle-actions-reviewer.json",
+  "prior_attempt_dir": "tracking/ingest/stripe/stripe-campaign-05/updates/attempts/payments-payment-intents-upgrade-to-handle-actions/attempt-1"
+}

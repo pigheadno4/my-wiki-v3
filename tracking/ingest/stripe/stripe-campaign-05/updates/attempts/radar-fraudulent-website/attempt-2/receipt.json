@@ -1,0 +1,164 @@
+{
+  "job_id": "radar-fraudulent-website",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Stripe — Account Risk Signals\"\ntype: source\ndate_ingested: 2026-05-10\ndate_updated: 2026-11-22\noriginal_format: webpage\nraw_files:\n  - \"stripe-radar-fraudulent-website-2026-11-07.md\"\n  - \"stripe-radar-account-risk-signals-2026.md\"\n  - \"stripe-radar-fraudulent-merchant-signal-2026.md\"\n  - \"stripe-radar-merchant-delinquency-signal-2026.md\"\n  - \"stripe-radar-fraudulent-website-signal-2026.md\"\ntags: [stripe, radar, connect, platforms, account-signals, fraud, delinquency, website]\n---\n\n## Summary\n\n[[stripe|Stripe]] Account Signals provides risk intelligence for Connect platforms across fraudulent merchant, merchant delinquency, and fraudulent website signals. Website evaluation is on demand, including for a prospective business.\n\n## 3 Signal Types\n\n| Signal | Detects | Method |\n| --- | --- | --- |\n| Fraudulent merchant | Misrepresentation, unauthorized transactions, first-party fraud | ML model (continuous) |\n| Merchant delinquency risk | Financial distress → unfulfilled orders, disputes, negative balances | ML model (continuous) |\n| Fraudulent website | Deceptive/policy-violating websites, fake storefronts | On-demand analysis |\n\nThe May account-risk overview describes continuous evaluation with signal-change notifications. It separately labels the website signal on demand. The November website guide below describes website evaluation readiness events for that route.\n\n## Actions\n\nAvailable Radar actions for existing connected accounts include raising a review, pausing payouts or payments, rejecting the account, setting reserves, and requesting identity verification when eligible. The website evaluation provides a result for the platform to assess.\n\n## Related Pages\n\n- [[stripe-radar]] — concept page\n- [[source-stripe-radar-for-platforms]] — full Radar for Platforms guide (actions, investigation, reject codes)\n\n## Fraudulent Merchant Signal Detail\n\n**Risk levels**: `highest` (~90%), `elevated` (~50%), `normal`, `low`, `not_assessed`. Returns `risk_level` + `probability` (0–100).\n\n**9 indicators**: `bank_account`, `business_information_and_account_activity`, `disputes`, `failures`, `geo_location`, `other_related_accounts`, `other_transaction_activity`, `owner_email`, `web_presence`.\n\n**Webhook**: `v2.signals.account_signal.fraudulent_merchant_ready` — payload includes `risk_level`, `probability`, `indicators`.\n\n## Merchant Delinquency Risk Signal Detail\n\n**Risk levels**: `highest`, `elevated`, `normal`, `low`, `not_assessed` (same 5 levels as fraudulent merchant).\n\n**16 indicators**: `account_balance`, `aov`, `charge_concentration`, `dispute_window`, `disputes`, `duplicates`, `exposure`, `firmographic`, `lifetime_metrics`, `payment_processing`, `payment_volume`, `payouts`, `refunds`, `related_accounts`, `tenure`, `transfers`.\n\n**Webhook**: `v1.account_signals[delinquency].created` (note: v1 format, unlike fraudulent merchant's v2 format).\n\n## Fraudulent Website Signal Detail\n\nThe May 10 and November 7, 2026 guides at [the fraudulent website signal URL](https://docs.stripe.com/radar/fraudulent-website) describe an on-demand asynchronous evaluation for an existing connected account or a prospective business. An invalid or unreachable website yields `unknown` and an explanation. Risk values are `low`, `normal`, `elevated`, `highest` and `unknown`. The results include an LLM-generated `details` description.\n\n### November 7, 2026 website guide\n\n- **Access.** Sandbox testing is available with any Radar plan. Live use requires Radar Plus or Pro and is limited to 4,000 requests per month. These are website-specific conditions, distinct from the preview API version used in the samples.\n- **Request.** The samples use `POST /v2/signals/account_evaluations` and Stripe API version `2026-10-28.preview`. Request `fraudulent_website` in `requested_signals`. Use `account_details.account` for an existing account. For an evaluation before account creation, use `account_details.data.defaults.profile.business_url`. The business URL is the only required business-data field for that entity-less evaluation. Stripe documents optional additional fields for a more informed assessment.\n- **Readiness and retrieval.** Listen for `v2.signals.account_signal.fraudulent_website_ready` when the individual website signal is ready. When multiple signals were requested, Stripe sends `v2.signals.account_evaluation.complete` after all requested results are ready. Both events are thin and their `data` is always `{}`. Use `related_object.id` to fetch the corresponding object. Both object types are retrievable for up to 90 days after creation.\n- **Result shape.** The fetched `v2.signals.account_signal` example has its own `id` and `created`, an `account_evaluation` reference, and the `fraudulent_website.risk_level` and `fraudulent_website.details` result. The full `v2.signals.account_evaluation` example has its own evaluation ID, requested and pending signals, and `evaluated_signals.fraudulent_website` with the signal reference, `evaluated_at`, risk level, and details.\n- **Sandbox.** Reserved test URLs produce deterministic results without a real crawl. Other URLs in sandbox receive the standard `normal` mock response. The guide shows updating an existing account's business URL using Accounts v1 or v2, or supplying it directly for an entity-less sandbox evaluation. Live mode performs a real evaluation.\n\nSee November raw lines 9–59 for access and request samples, lines 61–130 for webhook and result retrieval, including aggregate retrieval at lines 95–121, and lines 132–210 for sandbox tests. The guide links to [[raw/stripe-radar-account-fraud-prevention-2026-11-07|Account Fraud Prevention]] for separate platform actions on existing connected accounts. The evaluation itself returns risk intelligence, including for a prospective business. Platform operators choose any applicable action on an existing connected account through the documented tools.\n\n### May 10, 2026 website guide\n\nThe earlier example used `POST /v2/core/account_evaluations` with API version `2026-03-25.preview`, `signals`, and either top-level `account` or `account_data.defaults.profile.business_url`. It described the `v2.core.account_signals.fraudulent_website_ready` event as carrying `risk_level`, `details`, `evaluation_id`, `signal_id` and `evaluated_at`. See May raw lines 10–64. The captures describe these contracts on their respective dates. Interoperability between the samples is unverified.\n\n## Raw Sources\n\n- [[raw/stripe-radar-fraudulent-website-2026-11-07]] — November 7, 2026 full fraudulent website signal guide with request, thin events, retrieval and sandbox tests\n- [[stripe-radar-account-risk-signals-2026]] — verbatim Account Signals API overview\n- [[stripe-radar-fraudulent-merchant-signal-2026]] — verbatim fraudulent merchant signal detail (risk levels, 9 indicators, webhook)\n- [[stripe-radar-merchant-delinquency-signal-2026]] — verbatim merchant delinquency risk signal detail (16 indicators, webhook)\n- [[raw/stripe-radar-fraudulent-website-signal-2026]] — May 10, 2026 fraudulent website signal guide and earlier preview contract\n",
+  "quotes": {
+    "radar-fraudulent-website": [
+      {
+        "text": "Sandbox testing is available with any Radar plan. To use the API in live mode, you must have Radar Plus or Radar Pro. Live mode is limited to 4,000 requests per month.",
+        "location": "raw/stripe-radar-fraudulent-website-2026-11-07.md:11"
+      },
+      {
+        "text": "The `business_url` field is the only required field for an entity-less evaluation.",
+        "location": "raw/stripe-radar-fraudulent-website-2026-11-07.md:39"
+      },
+      {
+        "text": "These are thin events: `data` is always `{}`. Use `related_object.id` to fetch the related signal or evaluation.",
+        "location": "raw/stripe-radar-fraudulent-website-2026-11-07.md:68"
+      },
+      {
+        "text": "You can retrieve account signals and account evaluations for up to 90 days after creation.",
+        "location": "raw/stripe-radar-fraudulent-website-2026-11-07.md:70"
+      },
+      {
+        "text": "Reserved URLs only work in a sandbox. Live mode always performs a real website evaluation.",
+        "location": "raw/stripe-radar-fraudulent-website-2026-11-07.md:145"
+      }
+    ]
+  },
+  "old_evidence": {
+    "radar-fraudulent-website": [
+      {
+        "text": "2026-03-25.preview",
+        "location": "raw/stripe-radar-fraudulent-website-signal-2026.md:21"
+      },
+      {
+        "text": "v2.core.account_signals.fraudulent_website_ready",
+        "location": "raw/stripe-radar-fraudulent-website-signal-2026.md:54"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-radar-fraudulent-website-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 214
+      }
+    ],
+    "raw/stripe-radar-fraudulent-website-signal-2026.md": [
+      {
+        "start": 1,
+        "end": 68
+      }
+    ],
+    "wiki/sources/source-stripe-radar-account-risk-signals.md": [
+      {
+        "start": 1,
+        "end": 70
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/46196cd3c313f3dba32f7b9a/content.diff": [
+      {
+        "start": 1,
+        "end": 251
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 11
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 531,
+        "end": 537
+      },
+      {
+        "start": 716,
+        "end": 722
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 729,
+        "end": 734
+      }
+    ],
+    "wiki/concepts/stripe-radar.md": [
+      {
+        "start": 120,
+        "end": 132
+      },
+      {
+        "start": 274,
+        "end": 279
+      }
+    ],
+    "raw/stripe-radar-account-risk-signals-2026.md": [
+      {
+        "start": 1,
+        "end": 29
+      }
+    ],
+    "raw/stripe-radar-account-fraud-prevention-2026-11-07.md": [
+      {
+        "start": 111,
+        "end": 128
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/radar-fraudulent-website/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 160
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/radar-fraudulent-website/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 80
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/updates/attempts/radar-fraudulent-website/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 146
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/updates/attempts/radar-fraudulent-website/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 121
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/updates/attempts/radar-fraudulent-website/attempt-1/candidate.md": [
+      {
+        "start": 53,
+        "end": 71
+      }
+    ]
+  },
+  "answers": {
+    "radar-fraudulent-website": {
+      "Q1": "The November 7 capture of https://docs.stripe.com/radar/fraudulent-website documents an on-demand evaluation for a Connect platform, either for an existing connected account or a prospective business with a business URL. The examples use /v2/signals/account_evaluations, 2026-10-28.preview, requested_signals and account_details (new raw lines 15-59). The thin website-ready event identifies the individual signal. When multiple signals were requested, the thin aggregate completion event arrives after all requested results are ready. The platform uses related_object.id to fetch the corresponding result within 90 days. Invalid or unreachable URLs yield unknown with an explanation (new raw lines 61-130, including aggregate retrieval at lines 95-121). November's sandbox test rules are at new raw lines 132-210. Sandbox is available on any Radar plan, while live use requires Plus or Pro and is limited to 4,000 requests monthly (new raw lines 9-13). The revised source-stripe-radar-account-risk-signals.md keeps the May guide's earlier core namespace, request fields, and result-bearing webhook description under its date (old raw lines 10-64) and explains the separate November thin-event contract.",
+      "Q2": "At https://docs.stripe.com/radar/fraudulent-website, the substantive November changes are the signals endpoint and request shape, 2026-10-28.preview example, thin per-signal and aggregate notifications, up-to-90-day retrieval, live Plus/Pro quota and sandbox-only deterministic results (new raw lines 9-70 and 169-210). The revised source-stripe-radar-account-risk-signals.md dates the May 2026-03-25.preview core request and core-ready event separately (old raw lines 10-64). Keep the existing-versus-prospective account distinction, unknown result and separate operator actions. The new action destination is a navigation change; the expanded request and response examples illustrate the revised contract and do not confer account access (old raw lines 66-68; new raw lines 72-121 and 212-214). The candidate preserves the reciprocal Stripe Radar concept route and distinct merchant fraud and delinquency raw routes."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "radar-fraudulent-website-concept-scope",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "durable_fact",
+      "anchor": "**API signals (private preview)**: account fraud, account insolvency, fraudulent website — webhook-driven via Account Signals API. See [[source-stripe-radar-for-platforms]] and [[source-stripe-radar-account-risk-signals]].",
+      "proposed_markdown": "**API signals**: Account Risk Signals covers merchant fraud, delinquency and on-demand fraudulent website evaluations. For the website signal, the November 2026 guide uses a preview API version, thin readiness events and result retrieval. It documents sandbox testing on any Radar plan and live evaluation on Plus or Pro, limited to 4,000 requests monthly. See [[source-stripe-radar-account-risk-signals#Fraudulent Website Signal Detail]] and [[source-stripe-radar-for-platforms]].",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "The November plan, quota and version apply to the website route. May Account Risk Signals overview lines 14–25 distinguish general signal-change alerts and on-demand website analysis."
+      ]
+    }
+  ]
+}

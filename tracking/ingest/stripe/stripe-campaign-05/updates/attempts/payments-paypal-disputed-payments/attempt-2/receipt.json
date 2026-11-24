@@ -1,0 +1,181 @@
+{
+  "job_id": "payments-paypal-disputed-payments",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Stripe: Disputed PayPal Payments\"\ntype: source\ndate_ingested: 2026-05-07\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/payments/paypal/disputed-payments\nraw_files:\n  - \"stripe-payments-paypal-disputed-payments-2026-11-07.md\"\n  - \"stripe-paypal-disputes-2025.md\"\ntags: [stripe, wallets, paypal, disputes, chargebacks, evidence, testing]\n---\n\n## Summary\n\nThe May 7 and November 7, 2026 [[stripe]] guides describe PayPal dispute management, settlement, and test scenarios. Customers must authenticate PayPal payments with their PayPal account. The guides describe this requirement as reducing fraud and unrecognized-payment risk. Customers can still dispute a purchase, including when goods do not arrive or do not match their description.\n\n## Dispute process\n\n- **Filing window** — customers have up to 180 calendar days from purchase to file on PayPal. They can also file through the original funding provider, such as their bank. The guides give no deadline for that separate route.\n- **Notifications** — Stripe provides email and Dashboard notifications, `charge.dispute.created` if the integration is configured to receive webhooks, and push notifications if subscribed.\n- **Contact and response** — depending on the dispute type and where it was filed, PayPal may let the merchant contact the customer directly. Use PayPal for that contact. If the parties do not reach agreement, the merchant can accept or counter through the Dashboard or API. To counter, submit detailed fulfillment and checkout evidence within 2–19 calendar days, depending on the category.\n- **Outcome** — PayPal aims to decide within 30 calendar days of evidence submission. A merchant win returns the disputed amount, and a loss makes the balance charge permanent. The merchant's settlement preference determines whether dispute funding uses the Stripe or PayPal balance. See [[source-stripe-paypal-settlement]].\n- **Appeals and fees** — PayPal permits some lost disputes to be appealed directly with PayPal. Stripe keeps those cases open until PayPal's final resolution. PayPal sets and may charge a dispute fee. Stripe adds no PayPal dispute fee.\n\nA customer can reopen a PayPal dispute under a new category, such as changing `product_not_received` to `product_unacceptable`. Stripe creates separate dispute records for each category and links them to the same PayPal case. Two same-category Stripe records can also occur if the customer first loses at PayPal and then files through their bank.\n\n## Test scenarios\n\nThe guides show how to simulate disputes by supplying a matching billing email when creating a test PaymentIntent. For the `product_not_received` example, both use `amount=1099`, `currency=eur`, `payment_method_data[type]=paypal`, and `payment_method_data[billing_details][email]=dispute_not_received@example.com`. The request amount is 1,099 euro cents (€10.99). The May 7, 2026 example sends `payment_method_types[]=paypal`. The November 7, 2026 example instead sends `automatic_payment_methods[enabled]=true`.\n\nBoth samples omit an API version header. The separate November-captured [Endive changelog](../../raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07.md#L7-L28) describes removing writable `payment_method_types` on the linked `2026-09-30.endive` PaymentIntent Create endpoint, while its Impact section names `2026-08-26.preview`. The test request comparison establishes the sample change and leaves the first affected version and account eligibility unresolved.\n\nFor Checkout or Payment Links, enter the matching test email in the form. The simulated dispute is created shortly after the test payment completes.\n\n| Email pattern | Dispute category |\n| --- | --- |\n| `.*dispute_credit_not_processed@.*` | Credit not processed |\n| `.*dispute_duplicate@.*` | Duplicate charge |\n| `.*dispute_fraudulent@.*` | Fraudulent transaction |\n| `.*dispute_general@.*` | Uncategorized |\n| `.*dispute_not_received@.*` | Product not received |\n| `.*dispute_product_unacceptable@.*` | Product unacceptable |\n| `.*dispute_subscription_cancelled@.*` | Subscription cancelled |\n\nFor a simulated resolution, use `winning_evidence` to close as won and credit the charge amount, or `losing_evidence` to close as lost without a credit. With the Disputes update API, pass the value in the evidence field `uncategorized_text`. In the Dashboard, enter the value in **Additional information** and click **Submit evidence**.\n\n## Related Pages\n\n- [[stripe-wallets]] — PayPal as a Stripe wallet\n- [[source-stripe-paypal-settlement]] — settlement and the balance used for refunds and disputes\n\n## Raw Sources\n\n- [[raw/stripe-payments-paypal-disputed-payments-2026-11-07|November 7, 2026 Disputed PayPal Payments guide]]\n- [[raw/stripe-paypal-disputes-2025|May 7, 2026 Disputed PayPal Payments guide]] — verbatim dispute management guide (102 lines)\n",
+  "quotes": {
+    "payments-paypal-disputed-payments": [
+      {
+        "text": "Customers can file a dispute on PayPal up to 180 calendar days from the date of purchase.",
+        "location": "raw/stripe-payments-paypal-disputed-payments-2026-11-07.md:22"
+      },
+      {
+        "text": "PayPal aims to make a decision within 30 calendar days of evidence submission.",
+        "location": "raw/stripe-payments-paypal-disputed-payments-2026-11-07.md:33"
+      },
+      {
+        "text": "In some cases, PayPal allows a lost dispute to be appealed.",
+        "location": "raw/stripe-payments-paypal-disputed-payments-2026-11-07.md:43"
+      },
+      {
+        "text": "-d \"automatic_payment_methods[enabled]=true\"",
+        "location": "raw/stripe-payments-paypal-disputed-payments-2026-11-07.md:70"
+      },
+      {
+        "text": "On Stripe, each claim in a specific category is represented by a separate dispute.",
+        "location": "raw/stripe-payments-paypal-disputed-payments-2026-11-07.md:55"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-paypal-disputed-payments": [
+      {
+        "text": "-d \"payment_method_types[]=paypal\"",
+        "location": "raw/stripe-paypal-disputes-2025.md:69"
+      },
+      {
+        "text": "PayPal aims to make a decision within 30 calendar days of evidence submission.",
+        "location": "raw/stripe-paypal-disputes-2025.md:32"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-paypal-disputed-payments-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 103
+      }
+    ],
+    "raw/stripe-paypal-disputes-2025.md": [
+      {
+        "start": 1,
+        "end": 102
+      }
+    ],
+    "wiki/sources/source-stripe-paypal-disputes.md": [
+      {
+        "start": 1,
+        "end": 47
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/686d98bc3cbe571f43c4b59a/content.diff": [
+      {
+        "start": 1,
+        "end": 74
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-paypal-disputed-payments/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 174
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-paypal-disputed-payments/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 48
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 383,
+        "end": 385
+      },
+      {
+        "start": 399,
+        "end": 405
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 605,
+        "end": 615
+      }
+    ],
+    "wiki/concepts/stripe-wallets.md": [
+      {
+        "start": 50,
+        "end": 100
+      },
+      {
+        "start": 161,
+        "end": 195
+      },
+      {
+        "start": 406,
+        "end": 414
+      }
+    ],
+    "raw/stripe-payments-paypal-choose-settlement-preference-2026-11-07.md": [
+      {
+        "start": 16,
+        "end": 29
+      }
+    ],
+    "raw/stripe-changelog-endive-2026-09-30-removes-the-payment-method-types-parameter-from-payment-intents-and-setup-intents-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 36
+      }
+    ],
+    "raw/stripe-api-payment-intents-create-2026-11-07.md": [
+      {
+        "start": 385,
+        "end": 392
+      }
+    ],
+    "raw/stripe-currencies-2026-11-07.md": [
+      {
+        "start": 43,
+        "end": 74
+      },
+      {
+        "start": 91,
+        "end": 91
+      }
+    ]
+  },
+  "answers": {
+    "payments-paypal-disputed-payments": {
+      "Q1": "At https://docs.stripe.com/payments/paypal/disputed-payments, old raw lines 8-48 and new raw lines 9-49 describe the same payment and dispute workflow. Customers must authenticate PayPal payments with their PayPal account, which reduces fraud and unrecognized-payment risk. The customer can file with PayPal within 180 calendar days from purchase or use the funding provider's separate route. The guide gives no deadline for that provider. Stripe notifies the merchant through relevant channels and the merchant can accept or counter with evidence by the category-specific 2–19-calendar-day deadline. PayPal aims to decide within 30 calendar days of evidence submission. In some lost cases it offers an appeal directly with PayPal, and Stripe keeps those cases open until PayPal's final resolution. Funds are returned on a win or the balance charge becomes permanent on a loss, subject to how the merchant settles. Old raw lines 50-60 and new raw lines 51-61 preserve the reopened PayPal case versus separate Stripe record distinction, including a later bank dispute. The revised source-stripe-paypal-disputes.md records the scoped filing window and notifications, the target decision time, conditional appeals and settlement, and the dated test change.",
+      "Q2": "For https://docs.stripe.com/payments/paypal/disputed-payments, old raw lines 60-74 and new raw lines 61-75 contain the substantive dated test request change. The May 7, 2026 sample supplies `payment_method_types[]=paypal`; the November 7 sample uses `automatic_payment_methods[enabled]=true`, with `payment_method_data[type]=paypal` and the same billing-email scenario, `amount=1099`, and `currency=eur` (1099 euro cents). The changed sample establishes request guidance. Neither sample states an API version. The separate Endive changelog describes the linked 2026-09-30.endive PaymentIntent Create endpoint and names 2026-08-26.preview in Impact. The sample change does not establish the first affected version. Old raw lines 76-102 and new raw lines 77-103 keep the same seven test patterns and evidence results with formatting and wording edits. The revised source-stripe-paypal-disputes.md preserves both dated raws, the PayPal filing and appeal qualifications, the decision target, and the Wallets and settlement routes with the existing Stripe company entry. It distinguishes API uncategorized_text from the Dashboard Additional information field and Submit evidence action."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-paypal-disputed-payments-concept-dispute",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Disputes**: 180-day window (same as refund). Can be filed via PayPal or customer's bank. Evidence: 2–19 days to submit; PayPal decides within 30 days. Direct customer contact not supported via Stripe — use PayPal. Appeals not supported via Stripe — use PayPal. Multiple disputes per payment possible: category change = new Stripe dispute (same PayPal dispute). PayPal dispute fees charged by PayPal; Stripe charges none. 7 test email patterns available (`dispute_not_received`, `dispute_fraudulent`, etc.).",
+      "proposed_markdown": "**Disputes (May and November 2026 guides)**: Customers can file on PayPal within 180 calendar days from purchase or use the original funding provider's separate route. Evidence is due in 2–19 calendar days by category. PayPal aims to decide within 30 calendar days of evidence submission. PayPal may offer direct customer contact or allow an appeal of a loss in eligible cases. Stripe keeps an appealed case open pending final PayPal resolution. A category change can reopen one PayPal case and create a new Stripe dispute. PayPal may charge a dispute fee and Stripe adds none. See [[source-stripe-paypal-disputes]] for both guides and the seven test scenarios.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "warnings": [
+        "The filing window, time to submit evidence, and decision target are new raw lines 22–35 and old raw lines 21–34. The company entry at wiki/companies/stripe.md line 613 also states the target too broadly."
+      ]
+    },
+    {
+      "update_id": "payments-paypal-disputed-payments-concept-source",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-paypal-disputes]] — PayPal disputes: 180-day window, 2–19 day evidence, 30-day decision, no Stripe appeals, multiple disputes per payment, 7 test patterns",
+      "proposed_markdown": "- [[source-stripe-paypal-disputes]] — PayPal filing window, evidence deadlines, 30-calendar-day decision aim, eligible PayPal appeals, settlement and dated test examples",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": []
+    }
+  ]
+}

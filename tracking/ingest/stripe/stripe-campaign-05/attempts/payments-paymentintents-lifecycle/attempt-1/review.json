@@ -1,0 +1,125 @@
+{
+  "job_id": "payments-paymentintents-lifecycle",
+  "attempt": 1,
+  "verdict": "changes_requested",
+  "reason": "The lifecycle comparison, dated evidence, navigation changes, and CLI and mandate qualifications are supported. The source assessment overlooks a cancellation scope ambiguity in the existing combined summary, and the lifecycle answer leaves the SetupIntent cancellation guard implicit.",
+  "required_changes": [
+    "In the existing-summary assessment, record the cancellation scope in source-stripe-payment-intents.md lines 52-64 separately from the unchanged raw behavior. The summary\u2019s generic cancellation paragraph does not explicitly say that SetupIntent cannot be canceled in processing or succeeded and uses the generic \u2018Intent\u2019 for release of held funds. A reader asking whether a processing bank-debit SetupIntent may be canceled can reasonably apply the combined summary\u2019s limited processing window to it. In old raw lines 52-54 and 86 and new raw line 35 only PaymentIntent has that exception, releases held funds, and can auto-cancel after too many confirmations. Preserve the existing separate Checkout Session Cancel API qualification and recommend explicit object scopes alongside the November raw route.",
+    "In Q1 distinguish both objects\u2019 cancellation eligibility and consequences explicitly. SetupIntent cancellation is before processing or succeeded, invalidates the setup, and is irreversible. The processing exception, held-fund release and repeated-confirmation auto-cancellation apply to PaymentIntent."
+  ],
+  "review_scope": "full",
+  "retry_review_scope": "targeted",
+  "read_ranges": {
+    "raw/stripe-payments-paymentintents-lifecycle-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 35
+      }
+    ],
+    "raw/stripe-payment-setup-intents-2025.md": [
+      {
+        "start": 1,
+        "end": 86
+      }
+    ],
+    "wiki/sources/source-stripe-payment-intents.md": [
+      {
+        "start": 1,
+        "end": 111
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/5f1b1fee1853216995e3990e/content.diff": [
+      {
+        "start": 1,
+        "end": 106
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md": [
+      {
+        "start": 131,
+        "end": 138
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 17,
+        "end": 25
+      },
+      {
+        "start": 726,
+        "end": 731
+      }
+    ],
+    "wiki/concepts/stripe-payment-intents.md": [
+      {
+        "start": 8,
+        "end": 32
+      },
+      {
+        "start": 130,
+        "end": 145
+      }
+    ],
+    "wiki/concepts/stripe-checkout.md": [
+      {
+        "start": 8,
+        "end": 24
+      },
+      {
+        "start": 83,
+        "end": 83
+      },
+      {
+        "start": 247,
+        "end": 247
+      },
+      {
+        "start": 251,
+        "end": 251
+      },
+      {
+        "start": 254,
+        "end": 254
+      },
+      {
+        "start": 280,
+        "end": 280
+      }
+    ],
+    "raw/stripe-api-payment-intents-cancel-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 28
+      }
+    ],
+    "raw/stripe-setup-intents-api-2025.md": [
+      {
+        "start": 28,
+        "end": 68
+      }
+    ],
+    "raw/stripe-cli-sandbox-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 37
+      },
+      {
+        "start": 44,
+        "end": 86
+      }
+    ]
+  },
+  "source_assessment_decisions": [
+    {
+      "source_target": "wiki/sources/source-stripe-payment-intents.md",
+      "verdict": "changes_requested",
+      "reason": "Retain the dated raw route change, and report the generic cancellation wording in the current summary as a separate object-scope correction."
+    }
+  ]
+}

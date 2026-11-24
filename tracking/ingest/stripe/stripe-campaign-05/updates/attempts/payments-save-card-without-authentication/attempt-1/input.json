@@ -1,0 +1,148 @@
+{
+  "job_id": "payments-save-card-without-authentication",
+  "source_target": "wiki/sources/source-stripe-save-card-without-auth.md",
+  "source_before_sha256": "4bbb09d88661df6d23458040b912014e7c88d330ab9d84c805d746f428dd59c0",
+  "contributions": [
+    {
+      "job_id": "payments-save-card-without-authentication",
+      "canonical_url": "https://docs.stripe.com/payments/save-card-without-authentication",
+      "attempt": 1,
+      "raw_path": "raw/stripe-payments-save-card-without-authentication-2026-11-07.md",
+      "raw_sha256": "4a34119e4972ea7915323dca027f11e2f9da099c8b702be4a2c9341779a8ec81",
+      "prior_raw_path": "raw/stripe-save-card-without-auth-2026.md",
+      "prior_raw_sha256": "3d8ce2ad5e8dac28305befa2b1ac03696843d461c9608ca57e0e4b053a789383",
+      "new_capture_role": "full_captured_page",
+      "proposed_disposition": "raw_reference",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-save-card-without-authentication/attempt-1/receipt.json",
+      "receipt_sha256": "657bf59126839933078fd96929d1d48597b19a84140946cb115259c75da368ef",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-save-card-without-authentication/attempt-1/review.json",
+      "review_sha256": "98bea837b0a22284d721de6d28e48b92a24e3d0700df9d82d0b42abe4a411046",
+      "source_assessments": [
+        {
+          "source_target": "wiki/sources/source-stripe-save-card-without-auth.md",
+          "proposed_disposition": "source_required_update",
+          "update_needed": true,
+          "findings": [
+            "Date both raw captures and their SDK and request example variants. Specify primarily US/Canada as in the provider text, the authentication-capable route for requiring countries, Stripe.js origin and live HTTPS with test allowance, purpose-specific opt-in and stored written terms (source lines 13–28; old raw lines 8–21 and 27–69; new raw lines 9–22 and 28–70).",
+            "Retain Customer attachment, Customers v1 vs Accounts v2 list examples, later PaymentIntent's action-required 402/recovery path, and on_session meaning for the alternative combined save-and-charge route (source lines 17–23; old raw lines 108–222; new raw lines 115–202). This prevents an answer treating attachment or on_session as an off-session authentication exemption.",
+            "Clarify the optional CVC step and the outcome-safe fulfillment path (source line 24; old raw lines 224–256, new raw lines 204–236). Preserve reciprocal concept and companion routes (source lines 35–42; concept line 162)."
+          ],
+          "conflicts": [
+            "The recipe's current shorthand drops test/live and authentication-required distinctions, and the CVC fragment drops required context and outcome conditions. Clarify dated examples and link the existing supported-auth alternative. Treat 'legacy' as a label for the basic integration rather than a formal deprecation claim."
+          ],
+          "reason": "The workflow is stable in the paired docs while samples change. The existing summary independently needs more precise recipient/customer, authorization, security and outcome guidance."
+        }
+      ],
+      "affected_concepts": [
+        "wiki/concepts/stripe-saved-payment-methods.md"
+      ],
+      "unresolved_questions": [
+        "The captures do not establish that any account or card qualifies, that a later off-session charge will succeed, or that the November sample's parameter differences express new requirements."
+      ],
+      "mapped_source_assessment": {
+        "source_target": "wiki/sources/source-stripe-save-card-without-auth.md",
+        "proposed_disposition": "source_required_update",
+        "update_needed": true,
+        "findings": [
+          "Date both raw captures and their SDK and request example variants. Specify primarily US/Canada as in the provider text, the authentication-capable route for requiring countries, Stripe.js origin and live HTTPS with test allowance, purpose-specific opt-in and stored written terms (source lines 13–28; old raw lines 8–21 and 27–69; new raw lines 9–22 and 28–70).",
+          "Retain Customer attachment, Customers v1 vs Accounts v2 list examples, later PaymentIntent's action-required 402/recovery path, and on_session meaning for the alternative combined save-and-charge route (source lines 17–23; old raw lines 108–222; new raw lines 115–202). This prevents an answer treating attachment or on_session as an off-session authentication exemption.",
+          "Clarify the optional CVC step and the outcome-safe fulfillment path (source line 24; old raw lines 224–256, new raw lines 204–236). Preserve reciprocal concept and companion routes (source lines 35–42; concept line 162)."
+        ],
+        "conflicts": [
+          "The recipe's current shorthand drops test/live and authentication-required distinctions, and the CVC fragment drops required context and outcome conditions. Clarify dated examples and link the existing supported-auth alternative. Treat 'legacy' as a label for the basic integration rather than a formal deprecation claim."
+        ],
+        "reason": "The workflow is stable in the paired docs while samples change. The existing summary independently needs more precise recipient/customer, authorization, security and outcome guidance."
+      },
+      "findings": [
+        "The May 11 and November 7, 2026 full captures describe collecting a reusable card in a basic integration for businesses operating primarily in the US and Canada. The guide says this pattern is non-compliant where saving cards requires authentication, such as India, and routes to authentication-capable saving. Its US/Canada qualifier does not promise a bank will never require auth: both show a sandbox auth-required decline branch. For future/offline use display terms and obtain customer opt-in and a written record, including scope, timing/frequency, amount calculation and a subscription cancellation policy when applicable (old raw lines 8–21 and 214–222; new raw lines 9–22 and 194–202).",
+        "The merchant needs a Stripe account. The customer enters card data into Stripe-hosted Elements, with live HTTPS and an HTTP testing allowance, Stripe.js directly from js.stripe.com, and a separate postal code input when split Elements are used. The client creates a PaymentMethod and sends only its ID to the server in the described handoff. Merchant server associates it with a new/existing Customers v1 Customer. Subsequent listing examples separately show customer_account for a customer-configured v2 Account and customer for v1; the attach and payment-create samples in this guide use the v1 Customer route (old raw lines 23–95, 108–169; new raw lines 24–97, 115–157).",
+        "The later server example creates and confirms a new PaymentIntent with the stored PaymentMethod and error_on_requires_action true. With required customer action the attempt declines; the guide describes HTTP 402, error/decline-code inspection, and bringing the customer back to enter and attach a new method before another payment attempt. The optional one-call branch for an already-created Customer sets setup_future_usage to on_session, i.e. intended future customer-present reuse, without a guarantee of exemption or permission to charge off-session. Creating or attaching the method is separate from later success (old raw lines 169–222; new raw lines 157–202).",
+        "The optional CVC path is a separate customer-present browser confirmation using a server-created PaymentIntent client secret, the selected saved PaymentMethod ID and cardCvc Element. Read succeeded and use a payment_intent.succeeded webhook/plugin for critical post-payment actions because the browser callback can be lost. Failed CVC can coexist with a succeeded payment, so Radar settings matter if the merchant wants to block these. The main recipe is not evidence that all branches need no webhooks (old raw lines 224–260; new raw lines 204–240)."
+      ],
+      "substantive_changes": [
+        "November updates the Stripe.js CDN path from Dahlia to Endive, Ruby replaces the Node SDK installation example, and cURL replaces the Node server operation examples. Both November PaymentIntent create samples add a return_url and omit May's explicit payment_method_types: ['card'] while retaining both Customer and saved method IDs, confirm and error_on_requires_action. Compare old raw lines 27–33, 97–135, 143–184 and 193–212 with new raw lines 28–34, 99–131, 139–169 and 177–192. These dated sample deltas do not establish return_url requiredness, changed method defaults, API-version enforcement or SDK deprecation.",
+        "Reflowed compliance blockquotes, markup/table rules, and JavaScript formatting are presentation. They do not change consent, failure and recovery, or the CVC branch."
+      ],
+      "historical_claims_to_preserve": [
+        "Retain both captures dated May 11 and November 7, 2026, with separate code example variants, card-saving prerequisites and regional limitations. Keep the Stripe.js source-origin and live HTTPS conditions distinct from the ability to test without HTTPS (old raw lines 1–10, 27–33, 67–69; new raw lines 1–11, 28–34, 68–70).",
+        "Preserve the original Customer attachment, version-specific listing identity, on_session reuse semantics and failure recovery; retain terms, opt-in and written agreement (old raw lines 14–21, 108–212; new raw lines 15–22, 115–192). Keep optional CVC and business-critical webhook handling separate (old raw lines 224–256; new raw lines 204–236).",
+        "Keep the source's existing reciprocal stripe-saved-payment-methods route and companion source-stripe-payments-without-auth route (source lines 35–42, saved-methods concept lines 112–124 and 151–162)."
+      ],
+      "conflicts": [
+        "Current source lines 13 and 32 make US/CA-only and noncompliance shorthand look unconditional. The guide describes primarily US/Canada businesses and warns about countries requiring authentication for saving; its quoted India example is dated provider guidance. Both captures still show an authentication-required card failing in the sandbox (old raw lines 8–10 and 214–222; new raw lines 9–11 and 194–202). Its source/index/concept 'legacy' shorthand is not an explicit deprecation in either capture.",
+        "Current source line 23 states 'without triggering unnecessary auth' without delineating future customer-present use, and lines 13–19 do not distinguish the attach/setup step from the later PaymentIntent flag and failure recovery. Source line 24 omits the saved PaymentMethod argument and initial client secret/succeeded check and business-critical webhook boundary; note optional CVC check can fail despite payment success (new raw lines 157–192 and 204–236, old raw lines 169–212 and 224–256).",
+        "Source line 28 compresses concrete consent inputs and recordkeeping, and line 17's implementation omits the Stripe-hosted script, live HTTPS/testing and postal code distinctions (old raw lines 14–21, 27–69; new raw lines 15–22, 28–70)."
+      ],
+      "expected_read_files": [
+        {
+          "path": "raw/stripe-payments-save-card-without-authentication-2026-11-07.md",
+          "sha256": "4a34119e4972ea7915323dca027f11e2f9da099c8b702be4a2c9341779a8ec81",
+          "lines": 240
+        },
+        {
+          "path": "raw/stripe-save-card-without-auth-2026.md",
+          "sha256": "3d8ce2ad5e8dac28305befa2b1ac03696843d461c9608ca57e0e4b053a789383",
+          "lines": 260
+        },
+        {
+          "path": "wiki/sources/source-stripe-save-card-without-auth.md",
+          "sha256": "4bbb09d88661df6d23458040b912014e7c88d330ab9d84c805d746f428dd59c0",
+          "lines": 42
+        },
+        {
+          "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/f05f7ece2b2df1f799d37d07/content.diff",
+          "sha256": "4a87728e2dd9a89b4d1ae137939674e354cc5acbb802009ae2c6b119ca6b6579",
+          "lines": 309
+        }
+      ],
+      "original_query_prompts_path": "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md",
+      "original_prompts": "New raw `raw/stripe-payments-save-card-without-authentication-2026-11-07.md`. Prior raw `raw/stripe-save-card-without-auth-2026.md`. Current summaries `wiki/sources/source-stripe-save-card-without-auth.md`.\n\n- Q1. For `https://docs.stripe.com/payments/save-card-without-authentication`, what documented behavior, prerequisites, actors and state transitions does the complete new capture establish? How do these compare with the matched prior capture and each mapped summary?\n\n- Q2. Which changes are substantive, presentational or navigation-only? Identify the exact dated qualifications, conflicts and reciprocal routes that the proposed disposition should preserve.",
+      "reviewed_answers": {
+        "Q1": "https://docs.stripe.com/payments/save-card-without-authentication documents a basic card-saving flow for merchants operating primarily in the US and Canada. In both captures the merchant collects purpose-specific opt-in and written terms, loads Stripe.js from js.stripe.com, and uses HTTPS in production, with an allowance for testing without it. The buyer enters card details with Stripe Elements, the browser hands a PaymentMethod ID to the server and the server attaches it to a Customer. Later the server creates and confirms a PaymentIntent, and required customer action yields a failed attempt and HTTP 402 in the documented flow. Recovery brings the customer back to give a new method. The optional client CVC path checks succeeded and uses a webhook/plugin for critical post-payment work. See new raw lines 9–22, 28–70, 97–192 and 204–240 and old raw lines 8–21, 27–69, 95–212 and 224–260. source-stripe-save-card-without-auth.md needs the security, consent, future session and failure qualifications.",
+        "Q2": "The comparison at https://docs.stripe.com/payments/save-card-without-authentication shows the same captured lifecycle with formatted consent and test text, Dahlia changing to Endive, and Ruby installation and cURL replacing Node SDK examples. New raw lines 157–192 add return_url and omit the explicit card type from both examples versus old raw lines 169–212. This is sample-level evidence and does not establish requiredness or a formal deprecation. Keep the primarily US/Canada scope and regional saving-authentication warning, consent, production Stripe.js/HTTPS and failure/optional CVC qualifications (old raw lines 8–21, 27–69 and 214–260; new raw lines 9–22, 28–70 and 194–240). The old and new dates, matching Customer versus Account scopes, future customer-present on_session usage and the reciprocal stripe-saved-payment-methods and companion route belong in source-stripe-save-card-without-auth.md."
+      }
+    }
+  ],
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payments-save-card-without-authentication-2026-11-07.md",
+      "sha256": "4a34119e4972ea7915323dca027f11e2f9da099c8b702be4a2c9341779a8ec81",
+      "lines": 240
+    },
+    {
+      "path": "raw/stripe-save-card-without-auth-2026.md",
+      "sha256": "3d8ce2ad5e8dac28305befa2b1ac03696843d461c9608ca57e0e4b053a789383",
+      "lines": 260
+    },
+    {
+      "path": "wiki/sources/source-stripe-save-card-without-auth.md",
+      "sha256": "4bbb09d88661df6d23458040b912014e7c88d330ab9d84c805d746f428dd59c0",
+      "lines": 42
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/f05f7ece2b2df1f799d37d07/content.diff",
+      "sha256": "4a87728e2dd9a89b4d1ae137939674e354cc5acbb802009ae2c6b119ca6b6579",
+      "lines": 309
+    }
+  ],
+  "concept_targets": [
+    {
+      "path": "wiki/concepts/stripe-saved-payment-methods.md",
+      "before_sha256": "6f951873975737f2d8fc9501dcd58758f5394e53b58194fab0e2251d8eda1d68",
+      "contributing_jobs": [
+        "payments-save-and-reuse",
+        "payments-save-card-without-authentication",
+        "payments-save-during-payment"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    }
+  ],
+  "state": "worker_running",
+  "attempt": 1,
+  "review_scope": "full",
+  "worker_agent": "/root/s05w1",
+  "reviewer_agent": "/root/s05r1",
+  "role_notes": "tracking/ingest/stripe/stripe-campaign-05/updates/role-notes.md",
+  "worker_output": "/tmp/stripe-s05-ingest/payments-save-card-without-authentication-worker.json",
+  "reviewer_output": "/tmp/stripe-s05-ingest/payments-save-card-without-authentication-reviewer.json"
+}

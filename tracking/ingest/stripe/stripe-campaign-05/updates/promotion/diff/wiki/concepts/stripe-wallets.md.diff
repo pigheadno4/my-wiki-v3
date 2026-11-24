@@ -1,0 +1,309 @@
+--- wiki/concepts/stripe-wallets.md
++++ wiki/concepts/stripe-wallets.md
+@@ -25,25 +25,25 @@
+ | PayPal | `paypal` | Yes | Yes | No |
+ | PayPay | `paypay` | Yes | No | No |
+ | Revolut Pay | `revolut_pay` | Yes | Yes | No |
+-| Samsung Pay | (no enum) | N/A | No | Yes only |
+-| Satispay | `satispay` | Yes | No | No |
++| Samsung Pay | `samsung_pay` in November matrix | Yes (November PaymentIntent row) | No | Supported in November matrix; Checkout payment mode also listed |
++| Satispay | `satispay` | Yes | Yes (November 2026 method guide) | No |
+ | Stablecoins/crypto | `crypto` | Yes | Invite only | No |
+ | Vipps | `vipps` | Yes | No | No |
+-| WeChat Pay | `wechat_pay` | No | No | No |
+-
+-**Waitlist**: MoMo (Vietnam), GCash (Philippines).
++| WeChat Pay | `wechat_pay` | May cross-method matrix No, November Yes. See [[source-stripe-wechat-pay]] for QR and native flow scope. | General overview Unsupported. November cross-method matrix Private preview. | Supported outside Japan in the method overviews. |
++
++**Waitlist**: The November 2026 Wallets hub links an email preview request for MoMo and GCash for one-time and recurring payment interest in Vietnam and the Philippines. The request does not establish approval.
+ 
+ ## Key Constraints
+ 
+-**Samsung Pay**: Terminal only — no online product support at all.
+-
+-**Apple Pay / Google Pay**: No explicit API enum (routed via card). Not displayed for Indian IP addresses. Terminal supported.
+-
+-**Link**: Payment Element doesn't support Link in Brazil or India.
+-
+-**PayPay Connect**: requires invite.
+-
+-**Stablecoins/crypto**: SetupIntents invite-only; no manual capture.
++**Samsung Pay**: May's Wallets hub lists Terminal only. November retains Terminal and lists Checkout excluding setup and subscription modes, plus `samsung_pay` with PaymentIntents and redirect. See [[source-stripe-wallets#Wallet matrix changes]] for the South Korea selector and versioned no-saving qualification.
++
++**Apple Pay / Google Pay**: No separate wallet API enum in the hub. The May table marks both as not displayed for Indian IP addresses. November limits its footnote to Google Pay on India-based Stripe accounts and removes Apple's marker. Both tables list Terminal.
++
++**Link**: The dedicated May and November Link wallet overviews exclude India from general account and customer reach and specify Thailand and Brazil for the Payment Element restriction. The November Wallets hub footnote separately says Brazil or India. See [[stripe-link#Core Properties]] for the dedicated account-geography qualification.
++
++**PayPay Connect**: The May and November method profiles exclude Connect. The May wallets table and the November wallets and payment-method support tables list Connect with a request-an-invite condition. See [[source-stripe-paypay]] for the dated disagreement.
++
++**Stablecoins and crypto**: The November Wallets hub lists Subscriptions, SetupIntents and future-use access as invite only, Customer Portal supported and manual capture unsupported. In the same-date cross-method reference, the dedicated stablecoin product table marks Subscriptions and Customer Portal private preview and Invoicing supported with a `send_invoice` subscription footnote. Its dedicated API row marks SetupIntents and future use private preview and manual capture supported. The cross-method wallet rows use the same labels as the Wallets hub. The method guide marks manual capture unsupported and describes Billing for invoices and subscriptions. See all three scopes in [[source-stripe-wallets#Stablecoin capability references]].
+ 
+ ## Subscription Caveats
+ 
+@@ -164,21 +164,21 @@
+ 
+ **Funding**: PayPal wallet, linked card/bank, or BNPL.
+ 
+-**Connect**: online marketplaces only (Deliveroo/ManoMano type). **NOT** for platforms onboarding other businesses. Requires manual approval. Destination + Separate charges only; Direct and `on_behalf_of` not supported.
++**Connect (online marketplaces).** PayPal is unavailable to platforms that onboard businesses so those businesses can accept payments directly. Eligible marketplaces use destination charges or separate charges and transfers. Direct charges and `on_behalf_of` are excluded. The November 2026 guides describe requesting access in Payment method settings, Stripe and PayPal review that can take several weeks, Dashboard tracking and instructions to link the PayPal account after approval. Connected-account payment method configuration is unnecessary for the supported charge types. The May guide describes progress emails. See [[source-stripe-paypal]] and [[source-stripe-payment-method-connect-support]].
+ 
+ **Recurring**: Yes — may require additional approval.
+ 
+-**Refunds**: **180-day** window. Funding from Stripe or PayPal balance based on settlement preference.
++**Refunds.** The window is 180 days from the original payment. With Stripe settlement, refunds use available Stripe funds. With PayPal settlement, refunds use the PayPal balance or another funding source available on that PayPal account. See [[source-stripe-paypal]].
+ 
+ **Fees**: listed in Balance reports but **not** in Stripe tax invoice — access from PayPal dashboard.
+ 
+-**Disputes**: 180-day window (same as refund). Can be filed via PayPal or customer's bank. Evidence: 2–19 days to submit; PayPal decides within 30 days. Direct customer contact not supported via Stripe — use PayPal. Appeals not supported via Stripe — use PayPal. Multiple disputes per payment possible: category change = new Stripe dispute (same PayPal dispute). PayPal dispute fees charged by PayPal; Stripe charges none. 7 test email patterns available (`dispute_not_received`, `dispute_fraudulent`, etc.).
++**Disputes (May and November 2026 guides)**: Customers can file on PayPal within 180 calendar days from purchase or use the original funding provider's separate route. Evidence is due in 2–19 calendar days by category. PayPal aims to decide within 30 calendar days of evidence submission. PayPal may offer direct customer contact or allow an appeal of a loss in eligible cases. Stripe keeps an appealed case open pending final PayPal resolution. A category change can reopen one PayPal case and create a new Stripe dispute. PayPal may charge a dispute fee and Stripe adds none. See [[source-stripe-paypal-disputes]] for both guides and the seven test scenarios.
+ 
+ **PayPal Seller Protection** applies to eligible transactions.
+ 
+-**PayPal button** (vs redirect): Stripe decides which to show. Button blockers for ECE: billing/shipping/phone collection. Button blockers for Checkout: billing/consent/custom fields/phone/shipping-recurring/tax ID collection, or PayPal as the **only** payment method. Maximize button: set `billing_address_collection: 'auto'`, disable auto-tax, include multiple PM types.
+-
+-**Activation**: EU (except Hungary), Liechtenstein, Norway, UK, Switzerland. Settlement preference chosen at activation (Stripe balance vs PayPal balance). Connect requires separate manual onboarding with PayPal rep. **Account switching disables recurring** — must re-enable and collect mandates again.
++**PayPal button or redirect.** Stripe decides which to show. In Express Checkout Element both dated guides list phone collection and shipping collection for recurring payments as blockers. May also lists billing collection and requires `billingAddressRequired: false` for recurring payments. November omits that billing guidance. In Stripe Checkout both guides list billing or consent collection, custom fields, phone collection, recurring shipping collection, tax-ID collection and PayPal as the sole method as redirect conditions. Both checkout examples disable automatic tax and use `billing_address_collection: 'auto'`. May explicitly lists card and PayPal, and the November request omits the list. See [[source-stripe-paypal-button]] for the dated options and version-specific method selection.
++
++**Activation**: The May and November 2026 guides cover eligible Stripe accounts in the EU except Hungary, plus Liechtenstein, Norway, the UK and Switzerland. Choose Stripe-balance or PayPal-balance settlement, then check status after returning from PayPal. Eligible Connect use has separate onboarding. Connect platforms and connected accounts cannot switch. For supported switches, the previous account continues processing until the new one is connected, and earlier payments remain eligible for refunds and disputes. Switching disables previously enabled recurring payments and requires re-enablement and new customer mandates. See [[source-stripe-paypal-activate]].
+ 
+ **Integration**: Checkout, Direct API, iOS, Android, React Native. **Auth windows**: settlement-to-Stripe = 10 days (Stripe auto-reauthorizes for 10 more = 20 days total); settlement-to-PayPal = 3 days (extends to 3 more; up to 10-day "honor period" via PayPal support). Direct API: `stripe.confirmPayPalPayment(clientSecret, { return_url })` → redirect → handle `payment_intent` + `payment_intent_client_secret` query params on return. Manual server-side: create+confirm with `payment_method_data: { type: 'paypal' }` + `confirm: true` → `next_action.redirect_to_url`. iOS: `STPPaymentMethodPayPalParams` + `STPPaymentHandler.confirmPayment()` (webview). Android: `PaymentLauncher.confirm()`. React Native: `stripe.confirmPayPalPayment()`.
+ 
+@@ -190,15 +190,15 @@
+ 
+ **Settlement to PayPal balance**: Stripe balance transaction amount = 0; funds go to PayPal balance. Fees still recorded. Gross/Net volume charts do not reflect PayPal sales — use Payment methods report. Must maintain positive balance in both accounts for refunds/disputes. Manual reconciliation required (two methods below). Connect users always settle on Stripe (no choice). Changing settlement requires Stripe support ticket.
+ 
+-**Reconciliation (PayPal settlement only)**: Two methods — (1) `payment_method_options.paypal.reference` (recommended): merchant order ID appears as Invoice ID in PayPal settlement report, cascades to refunds/disputes; (2) `charge.payment_method_details.paypal.transaction_id` (fallback, only after capture): appears as Transaction ID in settlement report. PayPal Settlement Report: 24-hour view, accessible via paypal.com or sFTP.
++**PayPal transaction reconciliation**. When funds settle on PayPal, match the merchant’s customer-visible `payment_method_options.paypal.reference` to **Invoice ID**. Refunds and disputes derived from the original payment are associated with that reference. Use the PayPal capture ID as the recommended fallback if no business order ID is available. After capture, `Charge.payment_method_details.paypal.transaction_id` matches **Transaction ID**. The PayPal report covers 24 hours of balance-impacting transactions and is available from the business account or through PayPal-enabled sFTP. See [[source-stripe-paypal-reconciliation]] for the dated Stripe creation examples and the separate Stripe payout report scope.
+ 
+ **Async payment methods**: synchronous only by default; enable by contacting Stripe support.
+ 
+-**Recurring enablement**: auto-enabled at PayPal activation for most users. Manual path: Dashboard → Payment methods → PayPal → Enable (Recurring payments section); takes up to 5 business days; enabled by default in test.
++**Recurring enablement** — The May 2026 guide says PayPal activation automatically enables recurring payments for most users. For those needing manual enablement in the Dashboard, access shows as pending and usually takes up to five business days. Testing environments enable recurring by default. See [[source-stripe-paypal-set-up-future-payments]].
+ 
+ **Save/recurring (Checkout)**: `mode: 'setup'` → `checkout.session.completed` webhook → extract `setup_intent` → retrieve SetupIntent → get `payment_method` ID.
+ 
+-**Save/recurring (Direct API)**: `stripe.confirmPayPalSetup(clientSecret, { return_url, mandate_data })` → billing agreement approval → `setup_intent.succeeded`. Mandate fields: `payer_email`, `payer_id`, `billing_agreement_id` (BAID). Off-session: PaymentIntent with `off_session: true` + `confirm: true`. On-session with saved PM: `confirmPayPalPayment()` — `return_url` not required when PM was set up via SetupIntent or `setup_future_usage`.
++**Save and reuse with Direct API** — The May 2026 guide sends the customer to PayPal with `confirmPayPalSetup` for billing agreement authorization and verifies it with `setup_intent.succeeded`. It places `payer_id` and `billing_agreement_id` on the Mandate and `payer_email` and `payer_id` in `PaymentMethod.paypal`. A later off-session charge uses its own PaymentIntent with `off_session: true` and `confirm: true`. On-session `confirmPayPalPayment` can omit `return_url` for a PayPal method previously set up through a SetupIntent or PaymentIntent `setup_future_usage`. See [[source-stripe-paypal-set-up-future-payments]].
+ 
+ **Fraudnet/Magnes risk libraries**: required for server-side on-session payments with saved PM. Pass `payment_method_options.paypal.risk_correlation_id`; missing → `paypal_risk_correlation_id_missing`. Stripe.js handles Fraudnet automatically.
+ 
+@@ -210,7 +210,7 @@
+ 
+ ## Link Details
+ 
+-**Stripe's payment network** — saves and autofills payment details; also surfaces alternative LPMs (Instant Bank Payments, Klarna, Pix, UPI, Stablecoins) for US merchants with zero integration. Worldwide except India; Payment Element not supported in Thailand or Brazil.
++**Link** saves and autofills customer payment details. The general Link wallet overview gives account and customer reach outside India, with Payment Element excluded for Thailand- or Brazil-based accounts. In an existing Link integration, eligible US Stripe accounts can surface alternative funding. See [[source-stripe-link-payment-methods]] for the separately scoped US guide.
+ 
+ See [[stripe-link]] for full coverage (two integration paths, eligibility criteria, customer flow, Authentication Element).
+ 
+@@ -262,25 +262,25 @@
+ 
+ ## Revolut Pay Details
+ 
+-**UK and EU** — 30 merchant countries. Currencies: EUR, GBP, RON, HUF, PLN, DKK (GBP default for UK, EUR default for EU). Non-Revolut customers can save details after first purchase.
++**Customer and business scope.** The dated overviews list UK and EU customers and 30 Stripe-account business locations. The six currencies are EUR, GBP, RON, HUF, PLN and DKK, with GBP the UK customer default and EUR the default for other EU customers. The May 2026 opening mentions first-time checkout and saving after a first purchase for non-Revolut customers. Both Disputes sections require account login for authentication. The November opening describes account holders confirming in the app. Guest eligibility remains unresolved. See [[source-stripe-revolut-pay]].
+ 
+ **Full feature set**: recurring ✓, Connect ✓, disputes ✓, manual capture ✓.
+ 
+ **Product support**: Connect, Checkout, Payment Links, Elements, Subscriptions, Invoicing.
+ 
+-**Refunds**: full + partial, 180-day window, async up to 5 minutes.
+-
+-**Disputes**: 120-day customer window. Evidence submission: 14 days. Revolut decision: within 35 days. Revolut Buyer Protection Policy applies.
+-
+-**Integration**: Checkout, Elements, Direct API, iOS, Android, React Native. Reusable PM (supports subscriptions). Two auth flows: mobile redirect (1-hour expiry) and desktop QR code (refreshable 20×, 1-hour expiry). Manual capture: 7-day window. Live mode auto-approves after redirect/scan. Failed payments detach PM → `requires_payment_method`.
+-
+-**Save/recurring**: On-session payments always redirect to Revolut app even with saved PM. Authorization text required before first save. Two save paths: (1) SetupIntent + `stripe.confirmRevolutPaySetup()` with `mandate_data`; (2) PaymentIntent + `setup_future_usage: 'off_session'`. Detach triggers `mandate.updated` + `payment_method.detached`. Accounts v2 supported (`customer_account`).
++**Refunds** can be full or partial up to 180 days after purchase. Both overviews describe asynchronous processing up to five minutes and final `refund.updated` or `refund.failed` events. On failure the amount returns to the Stripe balance and the merchant needs another refund method.
++
++**Disputes** follow Revolut’s Buyer Protection Policy. The customer has up to 120 calendar days from purchase. The merchant has 14 calendar days to supply the requested evidence. Revolut decides within 35 calendar days of evidence submission. See [[source-stripe-revolut-pay]].
++
++**Integration**: Checkout, Elements, Direct API, iOS, Android, React Native. Reusable PM (supports subscriptions). Two auth flows: mobile redirect (1-hour expiry) and desktop QR code (refreshable 20×, 1-hour expiry). Manual capture: 7-day window. The May acceptance guide's Elements testing subsections describe live-mode automatic approval after redirect or scan, while its authentication instructions describe customer authorization and the November overview explicitly describes app confirmation. The November acceptance capture is a variant selector. See [[source-stripe-revolut-pay]] and [[source-stripe-revolut-pay-accept-payment]]. Failed payments detach PM → `requires_payment_method`.
++
++**May 2026 save and reuse.** On-session payments redirect to the Revolut app even with a saved method. Obtain opt-in and retain the written agreement. Custom-form sections require authorization notice before confirmation and also say to display it after the first save. Separate SetupIntent setup from PaymentIntent charge-and-save (`setup_future_usage: 'off_session'`) and later charging. May’s Intent examples distinguish Accounts v2 `customer_account` and Customers v1 `customer`. Detach sends `mandate.updated` and `payment_method.detached`. See [[source-stripe-revolut-pay-set-up-future-payments]].
+ 
+ ## PayPay Details
+ 
+ **Japan only** — JP merchants and customers, JPY only. Popular digital wallet in Japan.
+ 
+-**No recurring. No Connect support. No dispute support. No manual capture.**
++**PayPay capabilities (November 7, 2026)**: Single-use only. The method profile excludes recurring payments, standard disputes, and manual capture. Radar is in private preview. The usual authorization flow redirects to PayPay, and eligible custom integrations can instead keep their page open and present a separate QR variant. PayPay authorization expires five minutes after redirect, while Stripe expires the attempt one hour after its creation.
+ 
+ **Refunds**: full and partial, 365-day window, instant.
+ 
+@@ -288,11 +288,11 @@
+ 
+ **Product support**: Payment Links, Checkout (not subscription/setup mode), Elements (not Express Checkout Element).
+ 
+-**Prohibited**: cryptocurrency exchanges/wallets + additional categories at PayPay discretion.
+-
+-**Connect**: requires invite.
+-
+-**Integration**: Checkout, Checkout Sessions API, Payment Intents API, Direct API, iOS, Android. Payment mode only (no setup/subscription). Redirect-based — `return_url` required. Testing: sandbox shows approve/decline page; live mode redirects directly to PayPay with no approve/decline. 5 error codes documented.
++**Prohibited**: The November table lists cryptocurrency exchanges and wallets (MCC 6051). The May profile also mentioned other categories at PayPay's discretion.
++
++**Connect**: Both method profiles exclude it. The May wallets table and November wallets and payment-method support tables show invite-qualified support. The tables and method profiles do not resolve any particular platform's eligibility. See [[source-stripe-paypay]].
++
++**Integration (May 7, 2026)**: Hosted Checkout and Checkout Sessions Elements document payment mode only, with JPY and one currency per Session. The hosted sample uses `success_url`. Elements and Direct API describe `return_url` on their documented paths. iOS configures an app return, while the Android Kotlin sample omits an explicit return URL. The two web Elements paths document the sandbox approve/decline simulation. See [[source-stripe-paypay-accept-payment]] for the surface details and November variant navigation.
+ 
+ ## Alipay Details
+ 
+@@ -312,32 +312,30 @@
+ 
+ **Italy customers only**, EUR only. Stored-value wallet. Redirect to Satispay website for auth. Immediate confirmation.
+ 
+-**20 eurozone merchant countries** (AT, BE, CY, DE, EE, ES, FI, FR, GR, HR, IE, IT, LT, LU, LV, MT, NL, PT, SI, SK).
+-
+-**Manual capture**: Yes. **Disputes**: Yes — 12 calendar days to submit evidence. **Refunds**: full + partial, 180-day window, async up to 5 minutes.
++The May 2026 method guide lists 20 merchant locations. The November guide lists 37 business account locations for domestic and cross-border B2C payments, with Italy customers and EUR presentment. See [[source-stripe-satispay#Account and payment eligibility]] for dates and limits.
++
++**Capture**: Both method guides list manual capture, and November also lists partial capture. **Disputes**: May gives 12 calendar days to submit evidence. November gives customers 120 days from purchase to file a full dispute, merchants 15 days from creation to submit evidence, and Satispay 25 days from creation for the final decision. **Refunds**: Full or partial, asynchronous, within 180 days. November documents wallet balance as the refund destination.
++
++**Recurring payments and product support**: The May 2026 method guide marks recurring payments unsupported and links Subscriptions in Dashboard guidance. The November method guide lists recurring, SetupIntents, Billing, Invoicing and Customer Portal. The November wallet matrix still lists Subscriptions, Invoicing and Customer Portal unsupported. The separate June 24 Dahlia changelog documents scoped Intent, Subscription and Invoice support. See [[source-stripe-satispay#Recurring payments and mandates]] for those distinctions and mandate handling.
++
++**Connect**: `satispay_payments` capability. Standard charge type descriptor rules apply (`on_behalf_of` → connected account).
++
++**Prohibited categories**: May lists 13 named categories and a discretion catch-all. November lists 33 prohibited MCC entries. See the dated eligibility section in [[source-stripe-satispay]].
++
++**Integration (May 8, 2026 guide)**: Checkout and Elements with Checkout Sessions support EUR payment mode and exclude setup and subscription modes. The guide also covers Elements with Payment Intents, Direct API, iOS and Android. For Direct API, Stripe.js `stripe.confirmPayment` handles client-side confirmation and redirect. The optional server-side `stripe.paymentIntents.confirm` path requires the merchant to handle the redirect after `requires_action`. Check the payment status after return. The May method overview marks recurring payments unsupported and lists Subscriptions among Dashboard products where Satispay can be added. That Dashboard listing does not establish recurring Satispay charges. The May acceptance guide documents separate authorization and capture with a seven-day window. See [[source-stripe-satispay-accept-payment]] for the mobile samples, test behavior and November 7 variant navigation.
++
++## Vipps Details
++
++**Vipps** is a private-preview card wallet for customers in Norway paying in NOK. The customer enters a linked phone number and authorizes in the Vipps app after a push notification. API requests that include Vipps use `vipps_preview=v1`. The November overview adds an email access-request path using `vipps_beta_preview` in its registration example. See [[source-stripe-vipps]] for the separate documented activation and payment conditions.
++
++**Underlying mechanism**: Stripe receives card data from Vipps and processes as a Visa/Mastercard card transaction. Processing is invisible to the merchant integration.
++
++**29 European business countries** (AT, BE, BG, CY, CZ, DE, DK, EE, ES, FI, FR, GR, HR, HU, IE, IT, LI, LT, LU, LV, MT, NL, NO, PL, PT, RO, SE, SI, SK).
++
++**Manual capture**: Yes. **Disputes**: Yes — same process as card payments. **Refunds**: full + partial, multiple partials allowed.
+ 
+ **No recurring payments.**
+ 
+-**Product support**: Connect, Payment Links, Checkout, Elements (not Express Checkout Element), Subscriptions.
+-
+-**Connect**: `satispay_payments` capability. Standard charge type descriptor rules apply (`on_behalf_of` → connected account).
+-
+-**14 prohibited categories**: automobile associations, gambling/betting, counseling, credit reporting, detective agencies, direct marketing (catalog + telemarketing), door-to-door sales, employment/temp agencies, financial institutions, cryptocurrency exchanges/wallets, pawn shops, security brokers/dealers, plus additional at Satispay's discretion.
+-
+-**Integration**: Checkout, Checkout Sessions API, Payment Intents API, Direct API, iOS, Android. Payment mode only (no setup/subscription). Redirect-based — `return_url` required. Direct API: `stripe.confirmSatispayPayment()`. iOS: `STPPaymentMethodSatispayParams` + `STPPaymentHandler.confirmPayment()`. Android: `PaymentMethodCreateParams.createSatispay()` + `PaymentLauncher.confirm()`. **Separate auth+capture**: `capture_method: 'manual'`, 7-day window. Accounts v2 supported (`customer_account`). Sandbox: approve/decline test page; live mode redirects directly. 5 error codes documented.
+-
+-## Vipps Details
+-
+-**Norway customers only**, NOK only. Card wallet — **private preview** (requires `vipps_preview=v1` header on all API requests). Phone number entry → push notification → Vipps app authorization.
+-
+-**Underlying mechanism**: Stripe receives card data from Vipps and processes as a Visa/Mastercard card transaction. Processing is invisible to the merchant integration.
+-
+-**29 European business countries** (AT, BE, BG, CY, CZ, DE, DK, EE, ES, FI, FR, GR, HR, HU, IE, IT, LI, LT, LU, LV, MT, NL, NO, PL, PT, RO, SE, SI, SK).
+-
+-**Manual capture**: Yes. **Disputes**: Yes — same process as card payments. **Refunds**: full + partial, multiple partials allowed.
+-
+-**No recurring payments.**
+-
+ **Product support**: Connect (all 3 charge types — Direct, Destination, Separate), Checkout (not subscription/setup mode), Payment Links (API-created only), Elements (not Express Checkout Element).
+ 
+ **Connect**: `vipps_payments` capability. Connected account name shown in Vipps app during checkout.
+@@ -346,31 +344,21 @@
+ 
+ **Fee structure**: Stripe card processing fees + applicable taxes (deducted from transaction, same as standard card) + **Vipps per-transaction fee** (billed daily, not deducted from individual transaction — deducted from Stripe balance once per day).
+ 
+-**8 prohibited categories**: cryptocurrencies (restricted), stock trade, gambling, betting, bonds, money transfers, debt collection, MLM/pyramid schemes.
+-
+-**Integration**: Checkout (Stripe-hosted + embedded), Elements (Payment Element), Direct API. Payment mode only (no setup/subscription). Requires `vipps_preview=v1` header; Elements also requires `betas: 'vipps_pm_beta_1'`. Two auth flows: mobile redirect (directly to Vipps app) and desktop (phone number → push notification). **5-minute authentication window** — PM detaches on expiry. **Separate auth+capture**: `capture_method: 'manual'`, 7-day hold, **full amount only** (no partial capture). Failed card → customer can retry with different card in Vipps app. Refunds/disputes subject to Visa/Mastercard network rules.
++**Restricted business categories**. Both overviews introduce their lists as prohibited and specifically label cryptocurrencies **Restricted** in the first bullet. See [[source-stripe-vipps]] for the exact wording and account eligibility route.
++
++**Integration**: The May 8, 2026 guide covers payment-mode Checkout, Elements and Direct API. It documents desktop phone-number/push approval and mobile app redirection, with a landing-page fallback and card retry described for Direct API. The guide distinguishes a five-minute authentication window from a seven-day hold for optional full-amount manual capture. See [[source-stripe-vipps-accept-payment]] for dated preview configuration, cancellation states and currency qualifications. Visa and Mastercard rules govern refunds and disputes.
+ 
+ ## WeChat Pay Details
+ 
+-**Chinese consumers, overseas Chinese, and Chinese travelers**. Part of WeChat super app (1B+ MAU); WeChat Pay has 800M+ users. Top verticals: gaming, e-commerce, travel, online education, food, nutrition.
+-
+-**13 presentment currencies**: CNY (default, always shown to customer) + AUD, CAD, EUR, GBP, HKD, JPY, SGD, USD, DKK, NOK, SEK, CHF — mapped by merchant country.
+-
+-**22 merchant countries** (AT, AU, BE, CA, CH, DE, DK, ES, FI, FR, GB, HK, IE, IT, JP, LU, NL, NO, PT, SE, SG, US).
+-
+-**No recurring. No manual capture. No disputes** — customer authenticates in WeChat app, low fraud risk, no chargeback process.
+-
+-**Refunds**: full + partial, 180-day window, async. Failed refunds return to Stripe balance.
++**Dated WeChat Pay overview.** May 2026 describes Chinese consumers, overseas Chinese and travelers, with more than 800 million wallet users and more than 1 billion WeChat monthly active users. November lists B2C, CN customer location, 22 Stripe account locations (AT, AU, BE, CA, CH, DE, DK, ES, FI, FR, GB, HK, IE, IT, JP, LU, NL, NO, PT, SE, SG and US), domestic and cross-border payments and account-mapped presentment. CNY is available in all those account locations and is the amount shown to the buyer. Eligibility includes a working website accessible for review and both providers' business rules.
++
++**November capabilities.** Single use in the general overview, with independently gated off-session recurring and mini-program private previews. General Checkout continues to exclude setup and subscription modes. The method has no manual capture or standard chargebacks. Full and partial refunds are asynchronous and noncancelable, within 180 days of payment. Failed refunds return to the Stripe balance. See [[source-stripe-wechat-pay]] for the dated matrix, authorization, refund and Connect details.
+ 
+ **Product support**: Connect (partial), Checkout (not subscription/setup mode), Payment Links, Elements (not Express Checkout/Mobile Payment Element), Invoicing (`send_invoice` only), Terminal (not Japan).
+ 
+ **Connect**: **partial** — Destination + Separate charges GA; Direct + `on_behalf_of` private preview. Capability: `wechat_pay_payments` (private preview for non-Dashboard accounts).
+ 
+-**Integration** (historically collected Checkout + Direct API web guide; later typed extension below):
+-
+-- **Checkout**: add `wechat_pay` to `payment_method_types`, set `payment_method_options.wechat_pay.client = 'web'`, all line items same currency. Supports 37 business locations (more than overview's 22 — adds BG, CY, CZ, EE, GR, HU, LV, LT, MT, PL, RO, SK, SI).
+-- **Direct API**: `stripe.confirmWechatPayPayment()` → QR from `next_action.wechat_pay_display_qr_code.image_data_url` (or `.data`); stay on QR page until webhook confirms. Web only.
+-- **Fulfillment**: `payment_intent.succeeded` / `payment_intent.payment_failed` webhooks.
++**Integration**. The May 8, 2026 Checkout guide uses one-time line items in a single currency and lists 35 business-location codes. Its hosted and full embedded examples configure separate return parameters. The May Direct API web example uses Stripe.js QR display and server-side payment status to decide fulfillment. The November acceptance capture links Checkout, Direct API, iOS and Android. See [[source-stripe-wechat-pay-accept-payment]] for dated request fields and [[source-stripe-wechat-pay]] for the distinct November product overview and its 22-location list.
+ 
+ ### Stripe.js 10.1.0 WeChat client typing
+ 
+@@ -382,9 +370,9 @@
+ ## Sources
+ 
+ - [[source-github-stripe-js]] - WeChat Pay `mobile_web` confirmation typing in 10.1.0, with explicit outcome/availability limits
+-- [[source-stripe-wallets]] — hub page: 17 wallets, product/API matrices, subscription caveats, MoMo/GCash waitlist
++- [[source-stripe-wallets]] — May and November 2026 Wallets hub matrices, preview request and method-specific coverage. Compare the dated Samsung Pay, WeChat Pay, Satispay, stablecoin, MB WAY, TWINT and Alipay qualifications.
+ - [[source-stripe-apple-pay]] — Apple Pay: iOS/RN/Web, Stripe CSR required, domain registration, request-type-dependent merchant-token support, real card test
+-- [[source-stripe-pmd-registration]] — Domain registration guide: 6 PMs requiring it (Apple Pay required, + Amazon Pay/Google Pay/Klarna/Link/PayPal), PaymentMethodDomain API, iframe origin rules, Connect charge-type routing
++- [[source-stripe-pmd-registration]] covers the May 2026 embedded-web guide for six methods, including required Apple Pay domain registration, plus test/live, iframe, enable/disable and Connect account rules. The November capture links Dashboard and API variants.
+ - [[source-stripe-apple-pay-best-practices]] — Apple Pay best practices: certificate renewal (25 mo, new CSR, dual certs in transition), express checkout, default to Apple Pay
+ - [[source-stripe-apple-pay-cartes-bancaires]] — Cartes Bancaires + Apple Pay: EUR only, iOS one-line config, web automatic, Connect on_behalf_of caveat
+ - [[source-github-stripe-react-native]] — React Native `0.74.0` evidence for per-request Apple Pay `supportedNetworks` restriction semantics
+@@ -397,34 +385,34 @@
+ - [[source-stripe-google-pay]] — May 2026 combined Google Pay Android/RN/Web guide: dated DPAN/FPAN/e-commerce token liability scope, domain registration and Sigma card_token_type; November base URL is a navigation index
+ - [[source-stripe-grabpay]] — GrabPay: SG/MY only, OTP redirect, no disputes/recurring/manual capture, mandatory branding guidelines
+ - [[source-stripe-grabpay-accept-payment]] — 2026-05-07 detailed GrabPay acceptance guide for five variants (Checkout, Direct API, iOS, Android, React Native), with dated no-minimum PaymentIntent wording, platform-specific return links and payment outcome bounds; 2026-11-07 root capture is navigation only
+-- [[source-stripe-link]] — Link: two PM type paths (link vs card+wallet), Instant Bank Payments exclusive, Thailand/Brazil Payment Element caveat
+-- [[source-stripe-link-payment-methods]] — Link payment methods (US-only): Instant Bank Payments/Klarna/Pix/UPI/Stablecoins, zero integration, 5 eligibility criteria, customer flow, disabling rules
++- [[source-stripe-link]] — May and November 2026 general Link wallet overviews cover integration and eligibility outside India, with separate Thailand and Brazil Payment Element restrictions.
++- [[source-stripe-link-payment-methods]] — US Link funding guides for an existing Link integration, with session eligibility, Dashboard labels, Charge group fields and dated settings.
+ - [[source-stripe-mb-way]] — May 7 and November 7, 2026 wallet overviews covering eligibility, app authorization, hosted invoice support, disputes and refunds.
+ - [[source-stripe-mb-way-accept-payment]] — May 2026 Checkout, web Payment Element and Direct API guide with app authorization, payment outcome and sandbox boundaries. The November variant index is navigation only. The linked Endive changelogs document HTTP 400 for writable `payment_method_types` on `2026-09-30.endive` Checkout Session and PaymentIntent create. The acceptance source distinguishes MB WAY polling from the May Checkout Session return settings.
+ - [[source-stripe-mobilepay]] — May and November 2026 product overviews for the DK/FI wallet, eligibility, activation, final partial capture, refunds, disputes and dated restrictions.
+ - [[source-stripe-mobilepay-accept-payment]] — 2026-05-07 MobilePay acceptance guide covering Checkout, Elements, Direct API, iOS, Android and React Native, with dated customer authentication and capture guidance. The 2026-11-07 capture indexes the same six variants.
+-- [[source-stripe-paypal]] — PayPal via Stripe: EU merchants, 14 currencies, marketplace Connect only, 180-day refunds, fees not in Stripe tax invoice
+-- [[source-stripe-paypal-button]] — PayPal button: Stripe decides button vs redirect, blockers list for ECE + Checkout, maximize by disabling billing/tax collection
+-- [[source-stripe-paypal-activate]] — PayPal activation: EU (except Hungary), settlement preference, Connect manual onboarding, account switch disables recurring
++- [[source-stripe-paypal]] — Stripe-processed PayPal for 30 listed European business locations, including CH, GB, LI and NO, with dated marketplace approval, 180-day refunds and reporting
++- [[source-stripe-paypal-button]] covers the dated May and November 2026 button and redirect conditions for Express Checkout Element and Stripe Checkout, and the Checkout Session examples.
++- [[source-stripe-paypal-activate]] — PayPal activation for eligible Stripe accounts in the EU except Hungary, plus Liechtenstein, Norway, the UK and Switzerland. See dated settlement, Connect onboarding, cutover and prior-payment servicing.
+ - [[source-stripe-paypal-accept-payment]] — PayPal accept-a-payment: 5 paths (Checkout/Direct API/iOS/Android/RN), auth windows by settlement preference, preferred locale, statement descriptor format, payer details fields
+-- [[source-stripe-paypal-set-up-future-payments]] — PayPal save/recurring: enablement flow, Checkout setup mode, confirmPayPalSetup(), Fraudnet risk_correlation_id, mandate BAID, on-session return_url rules
++- [[source-stripe-paypal-set-up-future-payments]] — May 2026 PayPal setup and reuse guide with agreement lifecycle and risk-library qualifications, plus the November 2026 implementation selector.
+ - [[source-stripe-paypal-settlement]] — PayPal settlement preference: Stripe vs PayPal balance, Dashboard reporting differences, reconciliation, changing requires support ticket
+-- [[source-stripe-paypal-disputes]] — PayPal disputes: 180-day window, 2–19 day evidence, 30-day decision, no Stripe appeals, multiple disputes per payment, 7 test patterns
+-- [[source-stripe-paypal-reconciliation]] — PayPal reconciliation: reference field (Invoice ID) vs transaction_id (Transaction ID), PayPal settlement report access
++- [[source-stripe-paypal-disputes]] — PayPal filing window, evidence deadlines, 30-calendar-day decision aim, eligible PayPal appeals, settlement and dated test examples
++- [[source-stripe-paypal-reconciliation]] — May and November 2026 guides to reconciling transactions settled on PayPal, with the reference and capture ID report keys, dated PaymentIntent creation examples and report access.
+ - [[source-stripe-paypal-import]] — PayPal billing agreement import: billing_agreement_id on SetupIntent, offline mandate, no cancellation webhooks for imported BAIDs
+ - [[source-stripe-amazon-pay]] — May and November 2026 Amazon Pay overviews: worldwide customers, US USD-only currency row, claim-specific dispute deadlines, refund status and optional Charge transaction ID; account and path qualifications apply
+ - [[source-stripe-amazon-pay-accept-payment]] — Amazon Pay integration: 5 paths, 10-min auth window, 7-day manual capture, confirmPayment()
+ - [[source-stripe-amazon-pay-set-up-future-payments]] — Amazon Pay save/recurring: confirmAmazonPaySetup(), redirect_to_url, authorization text required, iOS/Android
+ - [[source-stripe-alipay]] — Alipay overview: 39 merchant countries, November 2026 expanded currency map/eligibility, standard one-time versus recurring preview, refund and Connect state boundaries; dated May currency and traveler context
+ - [[source-stripe-alipay-accept-payment]] — 2026-05-07 Alipay acceptance guide: Checkout, Direct API and three mobile paths; iOS/React Native safepay return handling, Android app-to-app live-mode test limit versus WebView, and web Direct API `confirmAlipayPayment`. The 2026-11-07 canonical capture is a variant index only.
+-- [[source-stripe-revolut-pay]] — Revolut Pay: UK/EU, 6 currencies, full feature set (recurring/Connect/disputes/manual capture), 120-day disputes, 35-day Revolut decision
+-- [[source-stripe-revolut-pay-accept-payment]] — Revolut Pay integration: 6 platforms, mobile redirect + desktop QR (20× refresh), 7-day manual capture, live mode auto-approves
+-- [[source-stripe-revolut-pay-set-up-future-payments]] — Revolut Pay save/recurring: on-session always redirects, confirmRevolutPaySetup(), authorization text required, detach triggers mandate.updated
+-- [[source-stripe-paypay]] — PayPay: Japan/JPY only, no recurring/Connect/disputes, 365-day instant refunds, 50–1M JPY limits
+-- [[source-stripe-paypay-accept-payment]] — PayPay integration: 6 platforms, payment mode only, redirect-based, live mode no approve/decline, 5 error codes
+-- [[source-stripe-satispay]] — Satispay: Italy/EUR only, 20 eurozone merchant countries, 12-day dispute evidence, 180-day refunds, 14 prohibited categories
+-- [[source-stripe-satispay-accept-payment]] — Satispay integration: 4 web paths + iOS/Android, payment mode only, manual capture 7-day, confirmSatispayPayment(), 5 error codes
+-- [[source-stripe-vipps]] — Vipps: Norway/NOK card wallet, private preview, card transaction underneath, daily Vipps fee billing, BankAxept→Visa/MC
+-- [[source-stripe-vipps-accept-payment]] — Vipps integration: 3 paths (Checkout/Elements/Direct API), 5-min auth window, full-amount-only capture, card retry in app
+-- [[source-stripe-wechat-pay]] — WeChat Pay: 800M+ users, CNY+12 currencies, 22 merchant countries, no disputes/recurring/manual capture, partial Connect
+-- [[source-stripe-wechat-pay-accept-payment]] — WeChat Pay integration: Checkout + Direct API (web only), confirmWechatPayPayment(), QR from next_action, 37 business locations
++- [[source-stripe-revolut-pay]] covers the May and November 2026 overviews, customer scope, app and QR confirmation, six currencies, asynchronous refunds and the dispute evidence timeline.
++- [[source-stripe-revolut-pay-accept-payment]] covers the May integration paths, mobile redirect and desktop QR (up to 20 refreshes), dated testing wording and a seven-day manual capture window. The November acceptance capture is a variant selector.
++- [[source-stripe-revolut-pay-set-up-future-payments]] — May 2026 setup, consent wording, later charges and detach. The November variant index provides navigation.
++- [[source-stripe-paypay]] — Japanese JPY wallet, May and November Connect documentation, authorization and expiry, and 365-day refunds
++- [[source-stripe-paypay-accept-payment]] — May 2026 PayPay acceptance and return handling across six surfaces, with November variant navigation
++- [[source-stripe-satispay]] — May and November 2026 Satispay method guides for Italy/EUR, business-account eligibility, recurring and mandate guidance, and dated dispute and refund rules.
++- [[source-stripe-satispay-accept-payment]] — May 2026 Satispay acceptance and manual capture guide for four web and two mobile paths. The November 2026 capture links those variants.
++- [[source-stripe-vipps]] — May and November 2026 Vipps overviews with private-preview access, Stripe card processing, API-created Payment Links, Connect activation and separate daily Vipps fee.
++- [[source-stripe-vipps-accept-payment]] — May 2026 full guide and November variant index for Vipps acceptance. See dated authorization, capture, preview and business-location qualifications.
++- [[source-stripe-wechat-pay]] — May and November WeChat Pay overviews with dated geography and eligibility, desktop and native authorization, independent previews, refunds and Connect reconciliation
++- [[source-stripe-wechat-pay-accept-payment]] — May 2026 Checkout and Direct API web guide with 35 listed Checkout business locations, QR and fulfillment terms. November indexes Checkout, Direct API, iOS and Android.

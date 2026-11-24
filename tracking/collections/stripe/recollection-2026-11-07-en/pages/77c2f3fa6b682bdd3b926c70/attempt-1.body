@@ -1,0 +1,245 @@
+# Swish payments
+
+Learn about Swish, a popular payment method in Sweden.
+
+Swish is a [single-use](https://docs.stripe.com/payments/payment-methods.md#usage) payment method used in Sweden. It allows customers to [authenticate and approve](https://docs.stripe.com/payments/payment-methods.md#customer-actions) payments using the Swish mobile app and the Swedish BankID mobile app.
+
+You get [immediate notification](https://docs.stripe.com/payments/payment-methods.md#payment-notification) on whether the payment succeeded or failed.
+Payment method family: Real-time payments
+Usability: Single-use
+Access type: Instant provisional access
+Payment confirmation timing: Immediate
+Settlement timing: Standard payout schedule
+Pricing: https://stripe.com/en-se/pricing/local-payment-methods#swish
+## Legal terms 
+
+[Swish terms](https://stripe.com/legal/swish) apply, including the factoring addendum.
+
+### Interested in getting access to Swish?
+
+Enter your email to request access.
+
+```bash
+curl https://docs.stripe.com/preview/register \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -H "Referer: https://docs.stripe.com/payments/swish" \
+  -d '{"email": "EMAIL", "preview": "swish_beta_preview"}'
+```
+
+## Eligibility and availability 
+
+### Account eligibility
+Business location: AT, BE, BG, CY, CZ, DE, DK, EE, ES, FI, FR, GR, HR, IE, IS, IT, LI, LT, LU, LV, NL, NO, PL, RO, SE, SI, SK
+Account type: ✓ Merchant, ✓ Platform or marketplace (Connect)
+Business model: ✗ B2B, ✓ B2C
+Business category: View list of prohibited and restricted business categories
+Review the list of *merchant category codes* (A Merchant Category Code (MCC) is a four-digit number that classifies the type of goods or services a business offers) that are prohibited or restricted for Swish.
+
+- **Prohibited**: You can’t use this payment method with these MCCs.
+- **Restricted**: You might be able to use this payment method with these MCCs, but you must provide additional information when you create the account.
+
+| MCC | Description | Type |
+| --- | --- | --- |
+| 0743 | Wine Producers | Prohibited |
+| 0744 | Champagne Producers | Prohibited |
+| 5085 | Industrial Supplies (Not Elsewhere Classified) | Restricted |
+| 5122 | Drugs, Drug Proprietaries, and Druggist Sundries | Restricted |
+| 5715 | Alcoholic Beverage Wholesalers | Prohibited |
+| 5912 | Drug Stores and Pharmacies | Restricted |
+| 5921 | Package Stores-Beer, Wine, and Liquor | Prohibited |
+| 5933 | Pawn Shops | Prohibited |
+| 5947 | Gift, Card, Novelty, and Souvenir Shops | Restricted |
+| 5967 | Adult Content and Services | Restricted |
+| 5971 | Art Dealers and Galleries | Prohibited |
+| 6513 | Real Estate Agents and Managers - Rentals | Prohibited |
+| 7273 | Dating and Escort Services | Prohibited |
+| 7399 | Miscellaneous Business Services | Restricted |
+| 7832 | Motion Picture Theaters | Restricted |
+| 7841 | Video Tape Rental Stores | Restricted |
+| 7911 | Dance Hall, Studios, Schools | Restricted |
+| 7932 | Billiard and Pool Establishments | Restricted |
+| 7933 | Bowling Alleys | Restricted |
+| 7991 | Tourist Attractions and Exhibits | Restricted |
+| 7994 | Video Game Arcades | Restricted |
+| 7996 | Amusement Parks and Carnivals | Restricted |
+| 7998 | Aquariums | Restricted |
+| 7999 | Miscellaneous Recreation Services | Restricted |
+| 8111 | Legal Services, Attorneys | Prohibited |
+| 8211 | Elementary, Secondary Schools | Restricted |
+| 8220 | Colleges, Universities | Restricted |
+| 8241 | Correspondence Schools | Restricted |
+| 8244 | Business and Secretarial Schools | Restricted |
+| 8249 | Vocational and Trade Schools | Restricted |
+| 8299 | Educational Services | Restricted |
+
+Stripe accounts in the following countries can accept Swish payments that settle in a supported currency.
+
+EMEA: AT, BE, BG, CY, CZ, DE, DK, EE, ES, FI, FR, GR, HR, IE, IS, IT, LI, LT, LU, LV, NL, NO, PL, RO, SE, SI, SK
+
+Customers in the following countries can use Swish.
+
+EMEA: SE
+
+### Payment support
+Customer location: SE
+Presentment currency: SEK
+Geographic coverage: ✓ Domestic, ✓ Crossborder
+Transaction limits: Minimum amount: 3.00 SEK
+
+Maximum amount: 150,000.00 SEK
+### Prohibited business categories 
+
+In addition to the industry and business categories listed in [Prohibited and Restricted Businesses](https://stripe.com/restricted-businesses), the following categories aren’t allowed to use Swish:
+
+- Wine producers
+- Champagne producers
+- Alcoholic beverage wholesalers
+- Package Stores - Beer, Wine, and Liquor
+- Pawn Shops and Salvage Yards
+- Art Dealers and Galleries
+- Real Estate Agents and Managers: Rentals
+- Legal Services and Attorneys
+- Precious stones and metals, watches and jewelry
+- Digital wallet top-ups
+
+For more information about Swish eligibility for your account, go to your [Payment methods settings](https://dashboard.stripe.com/settings/payment_methods).
+
+## Capabilities 
+Recurring payments: ✗ Not supported
+
+Payment authorizations:
+  ✗ Extended authorizations
+  ✗ Flexible extended authorizations
+  ✗ Incremental authorizations
+  ✗ Decremental authorizations
+  ✗ Re-authorizations
+
+Payment captures:
+  ✗ Manual capture
+  ✗ Partial capture
+  ✗ Multi-capture
+  ✗ Over-capture
+
+Refunds:
+  ✓ Partial refunds
+  ✓ Full refunds
+  Submission window: 1 year
+  Processing time: 
+
+Disputes:
+  ✗ Partial disputes
+  ✗ Full disputes
+### Refunds 
+
+You can refund Swish charges up to 365 days after the payment completes. Refunds usually take a few minutes to complete. Swish supports full, partial, and multiple partial refunds. The total amount of all refunds can’t exceed the amount of the original payment.
+
+#### Refund process 
+
+Swish refunds are asynchronous. Stripe tracks the refund until Swish reports whether it succeeded or failed.
+
+#### Tracking refunds 
+
+To check a refund’s status, open the payment in the [Dashboard](https://dashboard.stripe.com/payments) and click **View details** on the refund entry. You can also [retrieve the Refund object](https://docs.stripe.com/api/refunds/retrieve.md) and check its `status` field.
+
+Stripe notifies you of the final status through a `refund.updated` or `refund.failed` *webhook* (A webhook is a real-time push notification sent to your application as a JSON payload through HTTPS requests) event. When a refund succeeds, the [Refund object’s](https://docs.stripe.com/api/refunds/object.md) status changes to `succeeded`. If the refund fails, its status changes to `failed` and Stripe returns the amount to your Stripe balance. You must then refund the customer using another method.
+
+### Disputes 
+
+Swish doesn’t support the standard dispute process. If a customer has a concern about a Swish payment, they need to contact you directly.
+
+## Stripe product support 
+Checkout UIs:
+  ✓ Full page (Recommended)
+  ✓ Payment Links
+  ✓ Embedded form
+  ✓ Payment Element
+  ✗ Express Checkout Element
+  ✓ In-app payments
+
+Products:
+  ✗ Managed Payments
+  ✗ Billing
+  ✗ Invoicing
+  ✗ Customer Portal
+  ✗ Radar
+  ✗ Terminal
+  ✓ Connect
+
+APIs:
+  ✓ Checkout Sessions (Recommended)
+  ✓ Payment Intents
+  ✗ Payment Intents with setup_future_usage
+  ✗ Setup Intents
+### Product limitations 
+
+Review these limitations before you add Swish to your integration:
+
+- Checkout doesn’t support Swish in subscription mode or setup mode.
+- Express Checkout Element doesn’t support Swish.
+
+### Connect 
+
+You can use [Stripe Connect](https://docs.stripe.com/connect/how-connect-works.md) with Swish to process payments on behalf of a connected account.
+
+You can use the following charge types:
+
+- [Direct](https://docs.stripe.com/connect/direct-charges.md)
+- [Destination](https://docs.stripe.com/connect/destination-charges.md)
+- [Separate charges and transfers](https://docs.stripe.com/connect/separate-charges-and-transfers.md)
+
+## Customer experience 
+
+#### 1. Select Swish
+
+The customer selects Swish at checkout.
+
+#### 2. Authorize the payment
+
+On mobile, the customer is redirected to the Swish app. On desktop, they scan a QR code with the Swish app. They authenticate with Swedish BankID and authorize within three minutes.
+
+#### 3. Complete the payment
+
+The customer sees a confirmation in the Swish app. On mobile devices, the customer then returns to your site or app, and Stripe immediately notifies you whether the payment succeeded or failed.
+
+### Payment flows 
+
+#### Mobile
+![The customer follows a mobile redirect flow to pay with Swish.](https://d37ugbyn3rpeym.cloudfront.net/docs/payments/swish/mobile-payment-flow-2160.png)
+
+The customer follows a mobile redirect flow to pay with Swish.
+
+#### Desktop
+![The customer scans a QR code to pay with Swish.](https://d37ugbyn3rpeym.cloudfront.net/docs/payments/swish/desktop-payment-flow-2160.png)
+
+The customer scans a QR code to pay with Swish.
+
+Customers pay with Swish by using one of the following methods:
+
+- **Mobile**: Customers follow a mobile redirect from your website or mobile app to the Swish app, where they authorize the payment, then return to your website or mobile app.
+
+- **Desktop**: Customers scan a QR code you present on your website using the Swish app, which allows them to authorize the payment.
+
+Customers must authorize the payment within three minutes. If authorization expires, the PaymentIntent returns to `requires_payment_method`. Successful PaymentIntents transition to `succeeded`.
+
+### Transaction identifiers 
+
+The Swish app’s **Message** field is set automatically to your business name. Stripe prefers your legal entity name and falls back to your displayable business name. For destination charges that use `on_behalf_of`, Stripe uses the connected account’s business name. Stripe removes unsupported characters and truncates the value to 50 characters.
+
+Set a custom payment reference with `payment_method_options[swish][reference]`. The reference must contain 1–35 letters, numbers, or hyphens.
+
+For payments processed through PPRO, Stripe sends this reference to PPRO as the statement descriptor. PPRO or the customer’s bank might display a different value on the bank statement.
+
+For Swish payments, Stripe operates as the merchant of record. Therefore, Stripe’s name appears as the recipient of payments in the Swish app and as the statement descriptor in the customer’s bank statements. Your business name appears in the message field in the Swish app. The factoring addendum in the [Swish terms](https://stripe.com/legal/swish) applies.
+
+Swish’s **Message** field and PPRO reference mapping are set as described above and aren’t controlled by general statement-descriptor settings.
+
+For general Connect statement-descriptor ownership, direct charges use the connected account. For destination charges and separate charges and transfers, charges that use `on_behalf_of` use the connected account; otherwise, they use the platform. These settings don’t control the Swish **Message** field or PPRO reference mapping. Learn more about [statement descriptors with Connect](https://docs.stripe.com/connect/statement-descriptors.md).
+
+After the payment completes, expand `latest_charge` on the PaymentIntent and retrieve the customer’s bank reference from `latest_charge.payment_method_details.swish.payment_reference`. The payment provider returns this identifier, which differs from the custom reference you set in `payment_method_options[swish][reference]`.
+
+## Enable Swish 
+
+If you use the Stripe front-end products, enable Swish in your [payment method settings](https://dashboard.stripe.com/settings/payment_methods). Stripe automatically determines which payment methods are most relevant to each customer.
+
+If your integration requires manually listing payment methods, learn how to [manually configure Swish as a payment method](https://docs.stripe.com/payments/swish/accept-a-payment.md).

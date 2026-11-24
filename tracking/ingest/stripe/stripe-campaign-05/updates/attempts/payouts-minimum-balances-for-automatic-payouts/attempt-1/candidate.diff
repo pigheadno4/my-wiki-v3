@@ -1,0 +1,70 @@
+--- wiki/sources/source-stripe-payouts-minimum-balance.md
++++ tracking/ingest/stripe/stripe-campaign-05/updates/attempts/payouts-minimum-balances-for-automatic-payouts/attempt-1/candidate.md
+@@ -2,45 +2,48 @@
+ title: "Stripe — Minimum Balances for Automatic Payouts"
+ type: source
+ date_ingested: 2026-05-11
++date_updated: 2026-11-22
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/payouts/minimum-balances-for-automatic-payouts"
+ raw_files:
++  - "stripe-payouts-minimum-balances-for-automatic-payouts-2026-11-07.md"
+   - "stripe-payouts-minimum-balance-2026.md"
+ tags: [stripe, payouts, minimum-balance, cash-flow, negative-balance, connect, balance-settings-api]
+ ---
+ 
+ ## Summary
+ 
+-Keep a specified amount in your Stripe account after each automatic payout to cover refunds, disputes, and fees. Not supported in Brazil, India, Thailand.
++The May 11 and November 7, 2026 [[stripe]] guides document the same minimum balance for automatic payouts. It retains funds for anticipated refunds, disputes and fees on every automatic payout schedule. Without a minimum, Stripe disburses the full available balance on the account's schedule. With a minimum, only available funds above it are paid out. If the account falls below the minimum, Stripe first tries to replenish it from available balance and uses incoming funds if none is available. The guides exclude Brazil, India and Thailand.
+ 
+-## Key Details
++## Dashboard setup and changes
+ 
+-- **Recommended amount**: 4–5× average daily processing volume
+-- **How it works**: payout = available balance − minimum balance; if below minimum, Stripe renews from available then incoming funds
+-- **Reconciliation**: minimum balance appears as `-X USD` transaction in Payout Reconciliation Report
+-- **Not supported**: Brazil, India, Thailand
+-- **Raising minimum**: accumulates from incoming payments; **Lowering**: released funds on next payout
++- Dashboard access is required for this setup path. In **Payout Settings → Minimum Balance**, enable the option, set the fixed amount and save.
++- Lowering the amount releases funds into the next scheduled payout. Raising it accumulates the extra reserve from new payments. Setting it to zero or switching it off restores scheduled disbursement of the full available balance.
++- Stripe generally recommends four to five times average daily processing volume, with an amount that covers typical refunds, disputes and fees. A minimum reduces negative-balance risk. Refunds exceeding the reserve can still leave a negative balance (May lines 17–47, November lines 18–48).
+ 
+-## Setup
++## Reconciliation
+ 
+-Dashboard → Payout Settings → Minimum Balance section → toggle on → set fixed amount.
++Report timing remains the same. The Payout Reconciliation Report shows the payout and the retained amount. In the worked USD example, Stripe initiates a 20,000 USD payout from 30,000 USD and the report shows a negative 10,000 USD retained-amount transaction. The guide says the same accounting applies in other currencies. The Balance Transaction API gives details of the hold. Report entries and payout initiation do not confirm bank arrival (May lines 49–65, November lines 50–66).
+ 
+-## Platforms (Connect) — Balance Settings API
++## Platforms and connected accounts
+ 
+-Configure per connected account via `stripe.balanceSettings.update()` with `payments.payouts.minimum_balance_by_currency` (in minor currency units):
++A platform sets its own minimum in the Dashboard to cover negative balances and refunds for connected accounts. For each connected account's own settings, use the account-scoped Balance Settings API and `payments.payouts.minimum_balance_by_currency` with currency amounts in minor units. Stripe recommends contacting the connected-account customer before setting it to explain why payout amounts will differ from the displayed balance (May lines 67–81, November lines 68–82).
+ 
+-- **Set/add**: pass currency code + amount (merge — won't overwrite other currencies)
+-- **Update**: pass same currency code with new amount
+-- **Delete single currency**: pass empty string for that currency code
+-- **Delete all**: pass empty string for entire `minimum_balance_by_currency`
+-- **Retrieve**: `stripe.balanceSettings.retrieve({ stripeAccount: '...' })`
++- **Set or add.** Supply codes and amounts. Adding a currency merges it into the map and preserves existing currencies.
++- **Update.** Supply the same currency code with its replacement amount.
++- **Delete one.** Set that currency's value to an empty string.
++- **Delete all.** Set the entire `minimum_balance_by_currency` parameter to an empty string. The example returns a null map.
++- **Retrieve.** Read the Balance Settings for the selected connected account.
+ 
+-**Warning**: notify connected accounts before setting — their payout amounts will differ from balance shown.
++The May guide uses Node's `stripe.balanceSettings.update()` and `stripe.balanceSettings.retrieve()` with `stripeAccount` for set, add, update and retrieval, plus cURL for deletions. November shows cURL for these operations against `/v1/balance_settings` scoped by the `Stripe-Account` header. Both captures describe the same setting and operations (May lines 75–366, November lines 76–333).
+ 
+ ## Related Pages
+ 
+-- [[stripe-payouts]] — concept page (updated with minimum balance note)
++- [[stripe-payouts]] — payout schedules and balances
+ - [[source-stripe-payouts-reconciliation]] — payout reconciliation report
++- [[source-stripe-payouts]] — receiving payouts
+ 
+ ## Raw Sources
+ 
+-- [[stripe-payouts-minimum-balance-2026]] — verbatim minimum balances guide (370 lines, 1 screenshot)
++- [[raw/stripe-payouts-minimum-balances-for-automatic-payouts-2026-11-07|Minimum balances guide, captured 2026-11-07]] — full guide with cURL examples and CDN screenshot reference.
++- [[raw/stripe-payouts-minimum-balance-2026|Minimum balances guide, captured 2026-05-11]] — full 370-line guide with Node examples, cURL deletion requests and one screenshot.

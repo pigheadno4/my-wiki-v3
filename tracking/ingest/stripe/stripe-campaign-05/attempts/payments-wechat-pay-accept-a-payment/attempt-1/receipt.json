@@ -1,0 +1,170 @@
+{
+  "job_id": "payments-wechat-pay-accept-a-payment",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-wechat-pay-accept-a-payment-2026-11-07.md",
+  "raw_sha256": "c1d7a637fb1c6b3cf2de25ec9dc779f04679aa03ffcb76d9cdb7272f7b3d11a9",
+  "prior_raw_path": "raw/stripe-wechat-pay-accept-payment-2025.md",
+  "prior_raw_sha256": "35c57e91d71cf773b44ff2619bbcd062f83a13f6d3e66c16940471185dc83e4a",
+  "source_targets": [
+    "wiki/sources/source-stripe-wechat-pay-accept-payment.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-wechat-pay-accept-payment.md": "5818c902fb4d65d060548a0c7d59de93bc369b8bbaa9c960c2e7f09c0653c944"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-wechat-pay-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 16
+      }
+    ],
+    "raw/stripe-wechat-pay-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 319
+      }
+    ],
+    "wiki/sources/source-stripe-wechat-pay-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 52
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/c5c9411a6bc63c09b9f88a56/content.diff": [
+      {
+        "start": 1,
+        "end": 323
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 11
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 383,
+        "end": 387
+      },
+      {
+        "start": 415,
+        "end": 420
+      }
+    ],
+    "wiki/concepts/stripe-wallets.md": [
+      {
+        "start": 353,
+        "end": 382
+      },
+      {
+        "start": 426,
+        "end": 430
+      }
+    ],
+    "raw/stripe-payments-wechat-pay-2026-11-07.md": [
+      {
+        "start": 16,
+        "end": 34
+      },
+      {
+        "start": 152,
+        "end": 203
+      }
+    ],
+    "wiki/sources/stripe/github/source-github-stripe-js.md": [
+      {
+        "start": 402,
+        "end": 421
+      }
+    ],
+    "raw/github/stripe/stripe-js/snapshots/2026-10-18-3de39c5/files/types/stripe-js/payment-intents.d.ts": [
+      {
+        "start": 1447,
+        "end": 1488
+      }
+    ],
+    "raw/stripe-changelog-dahlia-2026-08-26-removes-payment-method-types-parameter-from-payment-intents-setup-intents-2026-11-07.md": [
+      {
+        "start": 7,
+        "end": 21
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Use the Payment Intents and Payment Methods APIs to accept WeChat Pay",
+      "location": "raw/stripe-payments-wechat-pay-accept-a-payment-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-wechat-pay-accept-a-payment-2026-11-07.md:11"
+    },
+    {
+      "text": "[Direct API](https://docs.stripe.com/payments/wechat-pay/accept-a-payment.md?payment-ui=direct-api)",
+      "location": "raw/stripe-payments-wechat-pay-accept-a-payment-2026-11-07.md:14"
+    },
+    {
+      "text": "[iOS](https://docs.stripe.com/payments/wechat-pay/accept-a-payment.md?payment-ui=mobile&platform=ios)",
+      "location": "raw/stripe-payments-wechat-pay-accept-a-payment-2026-11-07.md:15"
+    },
+    {
+      "text": "[Android](https://docs.stripe.com/payments/wechat-pay/accept-a-payment.md?payment-ui=mobile&platform=android)",
+      "location": "raw/stripe-payments-wechat-pay-accept-a-payment-2026-11-07.md:16"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "WeChat Pay is currently only available on Web.",
+      "location": "raw/stripe-wechat-pay-accept-payment-2025.md:139"
+    },
+    {
+      "text": "If a customer doesn\u2019t pay, the `PaymentIntent` will emit the [payment_intent.payment_failed](https://docs.stripe.com/api/events/types.md#event_types-payment_intent.payment_failed) webhook event and return to a status of `requires_payment_method`.",
+      "location": "raw/stripe-wechat-pay-accept-payment-2025.md:295"
+    }
+  ],
+  "proposed_disposition": "raw_reference",
+  "findings": [
+    "New raw lines 5-16 identify the integration and index Checkout, Direct API, iOS and Android. Compared with the actual May 8 capture at old raw line 2 and old raw lines 8-319, this adds visible native navigation while replacing the displayed bodies. There are no newly documented mechanics or lifecycle states in the index.",
+    "Old raw lines 8-127 cover online Checkout (hosted and full embedded), dynamic versus manually configured payment methods, one-time same-currency items and `mode: 'payment'`, with neither setup nor subscription. The May manual examples include `wechat_pay` and the literal `client: 'web'`. Hosted Checkout sets `success_url` and full embedded page sets `return_url`. The customer scans the QR in WeChat Pay and authorizes. The May Terminal route is separate.",
+    "Old raw lines 133-303 cover merchant server PaymentIntent creation and scoped secret handoff, client Stripe.js confirmation for the dated web route, merchant QR display from `next_action.wechat_pay_display_qr_code.data` or `.image_data_url`, customer app authentication and independent outcome webhooks. The customer's return or acknowledgement does not prove payment. The historical success path emits payment_intent.succeeded and the failure path emits payment_intent.payment_failed and returns the Intent to requires_payment_method. Old raw lines 124-126 and 297-299 distinguish sandbox QR and test simulation from real payment; old raw lines 301-319 preserve account-currency mapping and CNY display.",
+    "The separate November full method overview lines 183-203 describe a two-hour desktop QR authorization window from payment-request creation, eligible native app launch and return, and merchant server confirmation before custom/native success display. These are overview facts, not mechanics added to this November acceptance index."
+  ],
+  "substantive_changes": [
+    "November changes published navigation from two detailed May bodies to four variant selectors and exposes iOS and Android links. It does not establish a feature launch, a deprecation, country changes or new SDK behavior."
+  ],
+  "historical_claims_to_preserve": [
+    "Preserve the full 2026-05-08 historical online Checkout and Direct API capture and separate in-person route, exact historical manual settings, condition and date qualifiers, account-currency mapping, sandbox boundaries, client secret scope, browser/server separation, and cancellation/failure wording. The 2026-11-07 route index supplies new retrieval paths only."
+  ],
+  "conflicts": [
+    "Current source line 38 says 37 Checkout countries. Old raw line 24 enumerates 35 codes, while the separate November method overview line 19 lists 22 merchant locations. Preserve exact dates and distinct product/country scopes; no shared country/currency Cartesian product or account eligibility follows.",
+    "Current source lines 13, 25 and 40 make the older Direct API web-only description and mobile SDK exclusion universal. Old raw lines 133-139 document May web QR. New raw lines 13-16 list iOS and Android variants and provide no runtime behavior. The separate November method full overview at lines 152-203 excludes in-app payments as a product and describes eligible native flows separately. The separate @stripe/stripe-js 10.1.0 declaration at raw/github/stripe/stripe-js/snapshots/2026-10-18-3de39c5/files/types/stripe-js/payment-intents.d.ts lines 1447-1482 supports an optional web or mobile_web client field for Direct API confirmation, with `handleActions` typed boolean and comment requiring false. That is declaration scope, not native SDK, Mobile Payment Element or Checkout proof.",
+    "Current source line 27's historical PaymentIntent `payment_method_types` write must be dated. The separate November-captured changelog raw/stripe-changelog-dahlia-2026-08-26-removes-payment-method-types-parameter-from-payment-intents-setup-intents-2026-11-07.md lines 7-21 documents `payment_method_types_no_longer_supported` for the affected preview PaymentIntent endpoints while the computed read-side field remains. The May Checkout Session setting is a distinct object."
+  ],
+  "unresolved_questions": [
+    "The iOS and Android variant bodies and current native/web SDK behavior, payment eligibility and outcomes remain unverified. The distinct overview and May integration geography lists need attribution rather than a merged eligibility answer."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-wallets.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-wechat-pay-accept-payment.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Current source lines 13-42 should date the two historical online flows, narrow web/SDK exclusivity, correct the country count, distinguish hosted success_url from embedded return_url, keep general Checkout one-time constraints, and date the PaymentIntent request sample. Add the November index as navigation and retain the separate method overview and exact declaration context."
+      ],
+      "conflicts": [
+        "Current source line 38 says 37 Checkout countries. Old raw line 24 enumerates 35 codes, while the separate November method overview line 19 lists 22 merchant locations. Preserve exact dates and distinct product/country scopes; no shared country/currency Cartesian product or account eligibility follows.",
+        "Current source lines 13, 25 and 40 make the older Direct API web-only description and mobile SDK exclusion universal. Old raw lines 133-139 document May web QR. New raw lines 13-16 list iOS and Android variants and provide no runtime behavior. The separate November method full overview at lines 152-203 excludes in-app payments as a product and describes eligible native flows separately. The separate @stripe/stripe-js 10.1.0 declaration at raw/github/stripe/stripe-js/snapshots/2026-10-18-3de39c5/files/types/stripe-js/payment-intents.d.ts lines 1447-1482 supports an optional web or mobile_web client field for Direct API confirmation, with `handleActions` typed boolean and comment requiring false. That is declaration scope, not native SDK, Mobile Payment Element or Checkout proof.",
+        "Current source line 27's historical PaymentIntent `payment_method_types` write must be dated. The separate November-captured changelog raw/stripe-changelog-dahlia-2026-08-26-removes-payment-method-types-parameter-from-payment-intents-setup-intents-2026-11-07.md lines 7-21 documents `payment_method_types_no_longer_supported` for the affected preview PaymentIntent endpoints while the computed read-side field remains. The May Checkout Session setting is a distinct object."
+      ],
+      "reason": "A reader can choose the wrong integration from the universal web-only text or country count and would risk copying a superseded writable request field. Keep wiki/index.md line 7, Stripe provider index lines 385 and 418-419, Wallets concept lines 369-380 and 429-430, and current source lines 44-52 reciprocal, with the separately captured product overview."
+    }
+  ],
+  "answers": {
+    "Q1": "The full 2026-11-07 capture at https://docs.stripe.com/payments/wechat-pay/accept-a-payment lists Checkout, Direct API, iOS and Android in new raw lines 9-16, without additional behavior. Old raw lines 8-319 from 2026-05-08 describe one-time same-currency Checkout or a merchant-server PaymentIntent with a client secret for direct Stripe.js confirmation. For May web Direct API, the merchant renders the returned QR, the customer authenticates in WeChat, and the server uses Stripe events to distinguish succeeded from failure with requires_payment_method. Sandbox simulations are separate. source-stripe-wechat-pay-accept-payment.md retains the central historical behavior but overstates web-only applicability and the count of eligible Checkout country codes.",
+    "Q2": "At https://docs.stripe.com/payments/wechat-pay/accept-a-payment, new raw lines 9-16 replace the presentation of the full dated old raw lines 8-319 with four navigation links. New iOS and Android routes do not establish when support changed or what those SDKs do. Preserve May's one-time Checkout modes, webhook outcome boundary and 35 listed business codes against the distinct 22-location overview. Preserve the separate November eligible-native description alongside its Mobile Payment Element constraint and the exact Stripe.js mobile_web declaration as its own web contract. Date manual PaymentIntent writes and preserve both integration captures in source-stripe-wechat-pay-accept-payment.md with reciprocal Stripe index and Wallets concept routes and its distinct method overview."
+  }
+}

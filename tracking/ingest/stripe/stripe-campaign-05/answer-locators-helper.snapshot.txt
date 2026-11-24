@@ -1,0 +1,8 @@
+import re
+
+def primary_answer_ranges(answer, version):
+    line = r'\d+(?:\s*[-–—]\s*\d+)?'
+    series = rf'{line}(?:\s*(?:,\s*(?:and\s+)?|and\s+){line})*'
+    groups = re.findall(rf'\b{version} raw lines?\s*({series})', answer, re.I)
+    return [[int(start), int(end or start)] for group in groups
+            for start, end in re.findall(r'(\d+)(?:\s*[-–—]\s*(\d+))?', group)]

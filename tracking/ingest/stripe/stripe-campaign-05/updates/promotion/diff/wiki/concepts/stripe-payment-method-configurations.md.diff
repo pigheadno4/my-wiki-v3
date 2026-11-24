@@ -1,0 +1,40 @@
+--- wiki/concepts/stripe-payment-method-configurations.md
++++ wiki/concepts/stripe-payment-method-configurations.md
+@@ -33,19 +33,18 @@
+ 
+ ### Dashboard
+ 
+-Payment methods settings → Payment configurations → overflow menu → Create a configuration → name → Save. All PMs initially disabled by default.
++In Dashboard Payment methods settings, create and name the configuration. A new Dashboard configuration starts with all payment methods disabled. Set the configuration status to **Active**, save it, then enable the desired methods. Stripe filters the enabled methods for the payment’s currency and location and ranks the eligible methods.
+ 
+ ## Use a Configuration at Checkout
+ 
+-Pass `payment_method_configuration: 'pmc_234'` on:
+-- **PaymentIntent**: `stripe.paymentIntents.create({ ..., payment_method_configuration: 'pmc_123' })`
+-- **Checkout session**: `stripe.checkout.sessions.create({ ..., payment_method_configuration: 'pmc_234' })`
+-- **Payment Element** (deferred intent): `{ mode: 'payment', paymentMethodConfiguration: 'pmc_234' }` (Web); `paymentMethodConfigurationId: "pmc_234"` (iOS/Android)
++Choose the configuration ID when using dynamic selection without an explicit `payment_method_types` list.
+ 
+-## Apple Pay / Google Pay Defaults
++- **Server** uses `payment_method_configuration` for PaymentIntent creation or for Checkout Session creation without a Payment Element.
++- **Deferred clients** use `paymentMethodConfiguration` on the Web Payment Element and `paymentMethodConfigurationId` in the iOS and Android PaymentSheet intent configuration.
+ 
+-- Apple Pay: **enabled by default**
+-- Google Pay: **disabled by default**; also filtered when automatic tax enabled without shipping address collection
++## Dated Checkout wallet guidance
++
++The May 2026 Checkout section describes Apple Pay as enabled by default and Google Pay as disabled by default. It describes Google Pay filtering for automatic tax without a shipping address and says Stripe-hosted Checkout needs no integration changes. The November guide gives general Checkout support for both wallets and links to testing. Current defaults and the automatic-tax filtering behavior remain unresolved from that newer wording.
+ 
+ ## Configs vs `excluded_payment_method_types`
+ 
+@@ -54,8 +53,8 @@
+ | Multiple PMCs | Broad categories (one-time vs subscriptions); consistent offerings across similar transactions |
+ | `excluded_payment_method_types` | Per-transaction fine-grained control; impractical to implement with configs |
+ 
+-Both can be combined. Apple Pay, Google Pay, and Link cannot be excluded via `excluded_payment_method_types` — use `wallets` hash instead.
++Configurations can be combined with `excluded_payment_method_types`. To control Apple Pay, Google Pay or Link for a transaction, use the integration-specific `wallets` parameters.
+ 
+ ## Sources
+ 
+-- [[source-stripe-payment-method-configurations]] — primary: create/manage configs, integration code (Web/iOS/Android), Apple Pay/Google Pay defaults, config vs exclusion decision rule
++- [[source-stripe-payment-method-configurations]] covers the May and November 2026 guides for Dashboard activation, server and deferred client configuration, dated Checkout wallet wording and transaction-level exclusions.

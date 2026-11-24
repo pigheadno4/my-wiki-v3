@@ -1,0 +1,46 @@
+from pathlib import Path
+import hashlib
+import json
+import re
+import runpy
+
+primary_answer_ranges = runpy.run_path('/tmp/stripe-s05-answer-locators.py')['primary_answer_ranges']
+
+P = Path('tracking/ingest/stripe/stripe-campaign-05')
+jobs = json.loads((P / 'jobs.json').read_text())
+prompts = (P / 'proposed-queries.md').read_text()
+sections = dict(re.findall(r'^## (\S+)\n(.+?)(?=^## |\Z)', prompts, re.M | re.S))
+assert set(sections) == {j['job_id'] for j in jobs}
+def read(path):
+    return json.loads(Path(path).read_text())
+def sha(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+results = []
+gaps = []
+for job in jobs:
+    if job['state'] != 'approved':
+        continue
+    receipt, review = (read(job[key]) for key in ('receipt_path', 'review_path'))
+    assert sha(job['receipt_path']) == job['receipt_sha256']
+    assert sha(job['review_path']) == job['review_sha256']
+    assert review['verdict'] == 'approved'
+    first = Path(job['receipt_path']).parents[1] / 'attempt-1' / 'review.json'
+    assert read(first)['review_scope'] == 'full'
+    limits = {p['path']: p['lines'] for p in job['expected_read_files']}
+    for key, answer in receipt['answers'].items():
+        prompt = re.search(r'^- '+key+r'\. (.+)$', sections[job['job_id']], re.M)[1]
+        assert job['canonical_url'] in answer and answer.strip()
+        findings = {}
+        for version, path in [('old', job['prior_raw_path']), ('new', job['raw_path'])]:
+            ranges = primary_answer_ranges(answer, version)
+            if not ranges or not all(1 <= lo <= hi <= limits[path] for lo, hi in ranges):
+                gaps.append({'job_id': job['job_id'], 'key': key, 'version': version, 'ranges': ranges, 'eof': limits[path]})
+            findings[version] = ranges
+        results.append({'job_id': job['job_id'], 'query_id': key, 'original_prompt': prompt,
+                        'raw_locators': findings, 'receipt_sha256': job['receipt_sha256'],
+                        'final_review_sha256': job['review_sha256'], 'first_full_review_sha256': sha(first)})
+out = {'status': 'pass' if len(results) == 200 and not gaps else 'interim' if not gaps else 'requires_correction',
+       'answers_checked': len(results), 'locator_gaps': gaps, 'checks': results,
+       'scope': 'Checks actual fixed prompts, cited primary ranges and exact approved independent review trail. Semantic review retained in each first and final review.'}
+(P / 'answer-audit.json').write_text(json.dumps(out, indent=2) + '\n')
+print({k:v for k,v in out.items() if k != 'checks'})

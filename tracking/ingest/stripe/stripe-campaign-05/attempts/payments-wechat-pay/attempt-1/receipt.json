@@ -1,0 +1,181 @@
+{
+  "job_id": "payments-wechat-pay",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-wechat-pay-2026-11-07.md",
+  "raw_sha256": "389e5cdd5b4e864f71387ecfea386aaa841c95a8b632b323ec434e76c3410a10",
+  "prior_raw_path": "raw/stripe-wechat-pay-2025.md",
+  "prior_raw_sha256": "86c268855b9c3ad2d4980df8e8490106659b187dc0de5aaef5702b6f87384085",
+  "source_targets": [
+    "wiki/sources/source-stripe-wechat-pay.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-wechat-pay.md": "9207a7b62f8bd57abc76483a112f351d6b4d32d26d39be1cc4ff456049b4f435"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-wechat-pay-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 237
+      }
+    ],
+    "raw/stripe-wechat-pay-2025.md": [
+      {
+        "start": 1,
+        "end": 161
+      }
+    ],
+    "wiki/sources/source-stripe-wechat-pay.md": [
+      {
+        "start": 1,
+        "end": 55
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/8fedb0fbf1d38bd89baf7592/content.diff": [
+      {
+        "start": 1,
+        "end": 388
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 11
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 383,
+        "end": 387
+      },
+      {
+        "start": 415,
+        "end": 420
+      }
+    ],
+    "wiki/concepts/stripe-wallets.md": [
+      {
+        "start": 353,
+        "end": 382
+      },
+      {
+        "start": 426,
+        "end": 430
+      }
+    ],
+    "wiki/sources/source-stripe-wechat-pay-accept-payment.md": [
+      {
+        "start": 34,
+        "end": 45
+      }
+    ],
+    "raw/stripe-wechat-pay-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ],
+    "raw/stripe-payments-wechat-pay-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 16
+      }
+    ],
+    "raw/stripe-payment-method-support-2025.md": [
+      {
+        "start": 202,
+        "end": 204
+      },
+      {
+        "start": 334,
+        "end": 336
+      }
+    ],
+    "raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md": [
+      {
+        "start": 207,
+        "end": 209
+      },
+      {
+        "start": 341,
+        "end": 343
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "A social media profile alone doesn\u2019t qualify as your business website.",
+      "location": "raw/stripe-payments-wechat-pay-2026-11-07.md:30"
+    },
+    {
+      "text": "You can\u2019t cancel WeChat Pay refunds.",
+      "location": "raw/stripe-payments-wechat-pay-2026-11-07.md:100"
+    },
+    {
+      "text": "Recurring WeChat Pay payments are in private preview and support off-session use only.",
+      "location": "raw/stripe-payments-wechat-pay-2026-11-07.md:120"
+    },
+    {
+      "text": "For the desktop QR-code flow, customers must complete authorization within two hours after the payment request is created.",
+      "location": "raw/stripe-payments-wechat-pay-2026-11-07.md:203"
+    },
+    {
+      "text": "`latest_charge.payment_method_details.wechat_pay.transaction_id`",
+      "location": "raw/stripe-payments-wechat-pay-2026-11-07.md:223"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "  No",
+      "location": "raw/stripe-wechat-pay-2025.md:36"
+    },
+    {
+      "text": "Payments made with WeChat Pay can only be submitted for refund within 180 days from the date of the original charge.",
+      "location": "raw/stripe-wechat-pay-2025.md:123"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "New raw lines 9-55 establish a single-use wallet, instant provisional access, immediate confirmation, standard payout, B2C not B2B, and distinct merchant/Connect eligibility and customer CN location. Keep the 22-country account list separate from per-account-country presentment currency, with CNY available in every supported country and shown to the buyer. November adds 0.50 USD minimum, explicit domestic and crossborder coverage, applicable Stripe/WeChat business restrictions, complete accessible operational merchant website with products, pricing and checkout and matching business details, and conditional review/reinstatement. Old raw lines 7-55 and 57-83 retain buyer demographic, historical user counts, merchant country list, currency and payout evidence.",
+    "New raw lines 73-116 retain no manual capture or disputes, and specify no partial/multi/over capture or listed extended/adjusted authorization types. Refunds remain full/partial, asynchronous and within 180 days. Same-day requests process immediately, later requests batch daily at noon UTC+8, linked-card receipt can take an additional 2-5 days, and refunds cannot be canceled. WeChat refunds to the original funding source rather than reversing the original transaction. Stripe reports `refund.updated`/`refund.failed`; failure returns the amount to the merchant's Stripe balance and requires refund via another method. Old raw lines 116-123 already describe no standard chargeback and refund status and balance consequences.",
+    "New raw lines 152-203 preserve mode/invoice/Terminal distinctions and give customer desktop QR scan, eligible native flow launch/return, WeChat app authorization and separate payment-confirmation behavior. The desktop QR checkout stays on the QR screen, and two hours run from creation of the payment request, after which the customer must start a new attempt. Hosted instructions indicate payment success only after a successful payment. For a custom or native flow, the merchant server verifies `PaymentIntent.succeeded` before showing success, independently of return or authorization.",
+    "Old raw lines 145-161 and new raw lines 176-177 and 231-237 distinguish destination and separate charges/transfers, private-preview direct and `on_behalf_of` use, standard-Dashboard enablement and platform capability request for connected accounts without standard Dashboard access. November lines 205-223 describe order routing and reconciliation. The settlement merchant's business name, `online` and per-payment descriptor contribute to data sent to WeChat. The platform name applies to destination charges without `on_behalf_of`, the specified connected account with it, and the charge's connected account for direct charges. Buyer-visible registered name and funding statement can differ. Retrieve and expand `latest_charge` and read `latest_charge.payment_method_details.wechat_pay.transaction_id` for reconciliation."
+  ],
+  "substantive_changes": [
+    "The 2026-11-07 full method page adds approval/website/review and crossborder scope, minimum amount, authorization and capture limits, country-qualified product details, richer refund behavior, two independent preview routes, an explicit desktop/native flow and two-hour desktop clock, and statement/reconciliation and Connect account details. Earlier dashboard, basic app-auth and method status guidance remain.",
+    "Section restructuring, table formatting, changed support links and new routes are presentation/navigation where they do not add scope. The November acceptance page at a different canonical URL is navigation only. Removal of historical audience size, the separate Dashboard Subscriptions link or provider marketing text does not establish a change in customer count or a global subscription behavior."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the 2026-05-08 raw date from header line 2, original 22-market country and mapped currency evidence, the standard one-time method/old general recurring NO, older audience descriptions and core Connect/refund boundaries. Keep May method overview's existing Terminal support outside Japan and separately attributed cross-method and Checkout acceptance discrepancies."
+  ],
+  "conflicts": [
+    "Old raw line 36 and the November capabilities and general API labels at lines 73-74 and 171-177 say recurring/setup/future-usage/off-session is unsupported. November lines 118-150 separately document off-session recurring WeChat Pay and mini-programs, independently gated private previews. The November cross-method matrix at raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md lines 207-209 and 341-343 marks Subscriptions `send_invoice`, SetupIntents and future usage as private preview and redirect Yes. Retain the different general and preview labels without inferring GA, preview enrollment, Checkout setup/subscription support, or a universal redirect behavior.",
+    "Old raw lines 18-24 use Chinese consumers, overseas Chinese and Chinese travelers. New raw lines 19 and 44-55 explicitly list CN customer location, domestic and crossborder coverage and 22 business locations. The separate 2026-05-08 Checkout acceptance guide line 24 enumerates 35 business codes, while its older summary and Wallets concept say 37 (wiki/sources/source-stripe-wechat-pay-accept-payment.md line 38, wiki/concepts/stripe-wallets.md line 371). Maintain the dated overview/Checkout scope and correct the count claim without deciding actual country eligibility.",
+    "Old raw lines 85-98 and November lines 152-181 exclude Mobile Payment Element/in-app as a product but document Terminal outside Japan. November lines 183-203 describe supported native mobile integration separately; the distinct November acceptance index lines 9-16 shows iOS and Android routes only, while the older online acceptance guide supports a web QR route. Existing Wallets concept lines 369-380 preserves separate Stripe.js 10.1.0 mobile_web typing, which does not imply native SDK or Mobile Payment Element capability. The old cross-method matrix line 202 also lists Terminal N/A even though the May overview already supports it outside Japan; the November matrix lines 207-209 align with the overview."
+  ],
+  "unresolved_questions": [
+    "Preview enrollment, exact API route for the recurring and mini-program cohorts, merchant/consumer country eligibility across the two documentation scopes, device availability and actual payment/refund/payout execution remain unverified."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-wallets.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-wechat-pay.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Current lines 13-46 retain core geography, mode, Connect and refund status but generalize the old no-recurring label and omit the November website, refund timing and noncancellation, desktop two-hour expiry, native-versus-Mobile-Payment-Element qualification, and Connect statement/reconciliation facts. Date older user counts and retain the no-chargeback scope and actual payment/settlement distinction."
+      ],
+      "conflicts": [
+        "Old raw line 36 and the November capabilities and general API labels at lines 73-74 and 171-177 say recurring/setup/future-usage/off-session is unsupported. November lines 118-150 separately document off-session recurring WeChat Pay and mini-programs, independently gated private previews. The November cross-method matrix at raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md lines 207-209 and 341-343 marks Subscriptions `send_invoice`, SetupIntents and future usage as private preview and redirect Yes. Retain the different general and preview labels without inferring GA, preview enrollment, Checkout setup/subscription support, or a universal redirect behavior.",
+        "Old raw lines 18-24 use Chinese consumers, overseas Chinese and Chinese travelers. New raw lines 19 and 44-55 explicitly list CN customer location, domestic and crossborder coverage and 22 business locations. The separate 2026-05-08 Checkout acceptance guide line 24 enumerates 35 business codes, while its older summary and Wallets concept say 37 (wiki/sources/source-stripe-wechat-pay-accept-payment.md line 38, wiki/concepts/stripe-wallets.md line 371). Maintain the dated overview/Checkout scope and correct the count claim without deciding actual country eligibility.",
+        "Old raw lines 85-98 and November lines 152-181 exclude Mobile Payment Element/in-app as a product but document Terminal outside Japan. November lines 183-203 describe supported native mobile integration separately; the distinct November acceptance index lines 9-16 shows iOS and Android routes only, while the older online acceptance guide supports a web QR route. Existing Wallets concept lines 369-380 preserves separate Stripe.js 10.1.0 mobile_web typing, which does not imply native SDK or Mobile Payment Element capability. The old cross-method matrix line 202 also lists Terminal N/A even though the May overview already supports it outside Japan; the November matrix lines 207-209 align with the overview."
+      ],
+      "reason": "Readers need traceable eligibility, preview and integration distinctions to avoid choosing Checkout setup mode, treating native redirect as payment completion or routing a merchant without preview access. Retain root index line 7 and Stripe index lines 385 and 418-419, the Wallets concept lines 353-380 and 429-430, the mapped source's concept/company links and both dated full raws, with separate acceptance and API-matrix routes."
+    }
+  ],
+  "answers": {
+    "Q1": "The 2026-11-07 full capture at https://docs.stripe.com/payments/wechat-pay documents a wallet whose eligible B2C merchant enables WeChat Pay, with a working business website and applicable restrictions, and whose Chinese customer authorizes in the WeChat app. New raw lines 9-55, 73-150 and 152-237 distinguish desktop QR authorization within two hours from eligible native-mobile return, server-confirmed PaymentIntent success and standard payout. It retains the old 22 merchant locations, account-mapped currencies, no manual capture or chargeback and asynchronous refunds in old raw lines 8-161, and adds refund timing, noncancellation, two separately gated previews, and Connect descriptor and reconciliation details. source-stripe-wechat-pay.md preserves the basic May behavior but its unconditional recurring exclusion and missing November eligibility, preview and operational boundaries need correction.",
+    "Q2": "At https://docs.stripe.com/payments/wechat-pay, old raw lines 8-161 and new raw lines 9-237 separate reorganization and navigation from substantive additions such as website and review conditions, refund batch/receipt timing, two-hour desktop expiry, Connect descriptors and reconciliation, and off-session recurring and mini-program previews. Preserve November's general unsupported recurring/setup/off-session labels alongside the distinct gated preview prose and API matrix. Preserve the overview's 22 markets versus the separate May Checkout eligibility list, and distinguish supported native flows from the Mobile Payment Element restriction. Terminal outside Japan appears in both method overviews. source-stripe-wechat-pay.md should retain both full dated captures, the separate acceptance and matrix routes, and reciprocal Stripe index and Wallets concept links."
+  }
+}

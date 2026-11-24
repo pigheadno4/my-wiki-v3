@@ -1,0 +1,157 @@
+{
+  "job_id": "payments-sunbit-accept-a-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Accept a Payment with Sunbit\"\ntype: source\ndate_ingested: 2026-05-06\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/sunbit/accept-a-payment\"\nraw_files:\n  - \"stripe-sunbit-accept-payment-2025.md\"\ntags: [stripe, bnpl, sunbit, buy-now-pay-later, consumer, us, checkout, payment-intents]\n---\n\n## Summary\n\nThe 2026-05-06 full guide documents Sunbit (`sunbit`) as a single-use payment method for US businesses and USD presentment. Customers choose 3, 6, 12, or 18 installments, authorize with Sunbit, and return to the merchant’s site or app. The guide describes immediate notification of success or failure. Use the relevant Stripe event or independently verified status for fulfillment. A browser return or SDK callback serves the client flow.\n\n## Dated integration guidance\n\n- **Checkout.** The May guide assumes an existing Checkout integration. Checkout supports payment mode only for Sunbit, with a single currency across line items and a total of $60.00–$19,999.99 USD. This is a compatibility condition. The example uses `success_url`. The separate November [Sunbit profile](https://docs.stripe.com/payments/sunbit) retains the US/USD and amount scope.\n- **Checkout Sessions API with Elements.** The May examples create a Session on the server with `ui_mode: 'elements'` and `return_url`, then use its Session-specific client secret. The guide gives separate Stripe.js and React confirmation examples.\n- **Payment Intents API with Elements and Direct API.** The May guides use a server-created PaymentIntent, its client secret, and a confirmation `return_url`. Direct API also shows the optional server-driven redirect when the Intent is `requires_action` and `next_action.type` is `redirect_to_url`. The merchant can retrieve the Intent to display the outcome after return. Stripe documents `payment_intent.succeeded` for successful completion.\n- **iOS and Android.** The May iOS example configures an app return URL and forwards its callback to the SDK for automatic webview dismissal. The May Android Kotlin example uses `PaymentLauncher` and a payment-result callback without an explicit `return_url` argument. Its surrounding text uses iOS-style terminology, so consult the dated sample for the Android path.\n- **Test and live redirects.** The May web examples let a tester choose approval or decline on the sandbox page. The live path redirects to Sunbit.\n\n### API version and manual capture\n\nThe May PaymentIntent REST samples use a writable `payment_method_types` array. The separate [2026-08-26.preview changelog](https://docs.stripe.com/changelog/dahlia/2026-08-26/removes-payment-method-types-parameter-from-payment-intents-setup-intents) documents removal of this input on affected PaymentIntent and SetupIntent endpoints. Checkout Session and Stripe.js Elements options have separate API scopes.\n\nThe acceptance captures supply no manual-capture rule. The May Sunbit profile says manual capture is unsupported. The 2026-11-07 Sunbit profile marks it supported, and the same-date [BNPL API matrix](https://docs.stripe.com/payments/buy-now-pay-later#api-support) marks Sunbit manual capture unsupported. Capture behavior by route, API version, and account remains unresolved. See [[source-stripe-sunbit]] for the method profile.\n\n## Detail locators\n\n- May raw lines 8–85 cover Checkout, eligibility and fulfillment. Lines 87–568 cover Checkout Sessions API with Elements and sandbox versus live.\n- May raw lines 570–1110 cover Payment Intents API with Elements, and lines 1112–1342 cover Direct API. The dated PaymentIntent error locators include `payment_intent_invalid_currency`, `payment_intent_authentication_failure`, and `payment_intent_redirect_confirmation_without_return_url`.\n- May raw lines 1344–1613 cover iOS, and lines 1614–1839 cover Android. These preserve the dated SDK setup and confirmation examples.\n\n## Related Pages\n\n- [[stripe]] — Stripe company page\n- [[stripe-bnpl#Sunbit Details|Stripe BNPL and Sunbit]]\n- [[source-stripe-sunbit]] — Sunbit method profile\n\n## Raw Sources\n\n- [[raw/stripe-sunbit-accept-payment-2025|2026-05-06 full Sunbit acceptance guide]] — Checkout, Elements, Direct API, iOS and Android\n\n## Related raw API references\n\n- [[raw/stripe-payments-sunbit-accept-a-payment-2026-11-07|2026-11-07 Sunbit acceptance variant index]] — Checkout, Checkout Sessions API and Payment Intents API with Elements, Direct API, iOS, and Android\n",
+  "quotes": {
+    "payments-sunbit-accept-a-payment": [
+      {
+        "text": "Learn how to set up your integration with Sunbit.",
+        "location": "raw/stripe-payments-sunbit-accept-a-payment-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-sunbit-accept-a-payment-2026-11-07.md:11"
+      },
+      {
+        "text": "- [Checkout](https://docs.stripe.com/payments/sunbit/accept-a-payment.md?payment-ui=checkout)",
+        "location": "raw/stripe-payments-sunbit-accept-a-payment-2026-11-07.md:13"
+      },
+      {
+        "text": "[Payment Intents API](https://docs.stripe.com/payments/sunbit/accept-a-payment.md?payment-ui=elements&api-integration=paymentintents)",
+        "location": "raw/stripe-payments-sunbit-accept-a-payment-2026-11-07.md:16"
+      },
+      {
+        "text": "[Android](https://docs.stripe.com/payments/sunbit/accept-a-payment.md?payment-ui=mobile&platform=android)",
+        "location": "raw/stripe-payments-sunbit-accept-a-payment-2026-11-07.md:20"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-sunbit-accept-a-payment": [
+      {
+        "text": "The total amount must be between 60.00 USD and 19,999.99 USD.",
+        "location": "raw/stripe-sunbit-accept-payment-2025.md:37"
+      },
+      {
+        "text": "Provide a `return_url` when confirming a PaymentIntent.",
+        "location": "raw/stripe-sunbit-accept-payment-2025.md:1110"
+      },
+      {
+        "text": "Confirm the `PaymentIntent` has a status of `requires_action`. The type for the `next_action` will be `redirect_to_url`.",
+        "location": "raw/stripe-sunbit-accept-payment-2025.md:1294"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-sunbit-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 20
+      }
+    ],
+    "raw/stripe-sunbit-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 1839
+      }
+    ],
+    "wiki/sources/source-stripe-sunbit-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 25
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/4549c9be1e2c0f086581babb/content.diff": [
+      {
+        "start": 1,
+        "end": 1847
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 11
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 344,
+        "end": 350
+      },
+      {
+        "start": 744,
+        "end": 749
+      }
+    ],
+    "wiki/concepts/stripe-bnpl.md": [
+      {
+        "start": 126,
+        "end": 137
+      },
+      {
+        "start": 267,
+        "end": 273
+      }
+    ],
+    "raw/stripe-sunbit-2025.md": [
+      {
+        "start": 40,
+        "end": 47
+      }
+    ],
+    "raw/stripe-payments-sunbit-2026-11-07.md": [
+      {
+        "start": 267,
+        "end": 295
+      }
+    ],
+    "raw/stripe-payments-buy-now-pay-later-2026-11-07.md": [
+      {
+        "start": 57,
+        "end": 72
+      }
+    ],
+    "raw/stripe-changelog-dahlia-2026-08-26-removes-payment-method-types-parameter-from-payment-intents-setup-intents-2026-11-07.md": [
+      {
+        "start": 7,
+        "end": 26
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-sunbit-accept-a-payment/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 194
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-sunbit-accept-a-payment/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 124
+      }
+    ]
+  },
+  "answers": {
+    "payments-sunbit-accept-a-payment": {
+      "Q1": "The 2026-11-07 capture of https://docs.stripe.com/payments/sunbit/accept-a-payment establishes six navigation choices in new raw lines 9-20: Checkout, Checkout Sessions API and Payment Intents API with Elements, Direct API, iOS and Android. It supplies no fresh prerequisites or payment states. The 2026-05-06 full capture, old raw lines 8-1839, describes a single-use US/USD installment method. Checkout is payment-mode only, uses a single currency across line items, and lists a $60.00 to $19,999.99 USD compatibility range. The merchant server creates a Checkout Session or PaymentIntent as appropriate and hands the client the corresponding scoped secret where the integration uses one. The customer authorizes with Sunbit and returns, with success or failure notification. The optional manual redirect uses a PaymentIntent in requires_action with next_action.redirect_to_url, and the success event is distinct from browser return. source-stripe-sunbit-accept-payment.md now preserves all six historical routes and distinguishes the browser and native return parameters, amounts as compatibility conditions, and the separate manual-capture evidence.",
+      "Q2": "At https://docs.stripe.com/payments/sunbit/accept-a-payment the 2026-11-07 index in new raw lines 9-20 replaces the displayed full bodies from 2026-05-06 in old raw lines 8-1839 with selectors. It provides no substantive flow or support change and no removal evidence. Preserve the May Checkout eligibility and amount bounds as compatibility, the different Checkout success_url, Checkout Session return URL examples and PaymentIntent confirmation return_url, the sandbox/live distinction and separate native callbacks. The candidate qualifies the former unconditional no-manual-capture statement in source-stripe-sunbit-accept-payment.md: the May Sunbit profile and November BNPL API matrix mark it unsupported, while the November Sunbit profile marks it supported. The candidate preserves the May raw as full evidence, places November under related navigation, and maintains the root-to-Stripe index and reciprocal Stripe BNPL source route."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-sunbit-accept-a-payment-bnpl-route",
+      "target_path": "wiki/concepts/stripe-bnpl.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-sunbit-accept-payment]] — Sunbit integration: return_url required, no manual capture, $60-$20k Checkout enforcement",
+      "proposed_markdown": "- [[source-stripe-sunbit-accept-payment]] — May 2026 full guide and November variant index for Sunbit acceptance. See dated Checkout limits, return routes, and conflicting manual-capture documentation.",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The May full guide provides Checkout compatibility and object-specific returns. The separate May and November profiles and November BNPL API matrix disagree on manual capture. See the source for precise dated qualifications."
+      ]
+    }
+  ]
+}

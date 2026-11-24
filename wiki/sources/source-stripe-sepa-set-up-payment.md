@@ -2,37 +2,55 @@
 title: "Stripe: Save SEPA Direct Debit Details for Future Payments"
 type: source
 date_ingested: 2026-05-03
+date_updated: 2026-11-22
 original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/sepa-debit/set-up-payment"
 raw_files:
   - "stripe-sepa-set-up-payment-2025.md"
-tags: [stripe, sepa, sepa-debit, eu, eur, iban, checkout, setup-intents, elements, ios, android, mandates]
+tags: [stripe, sepa, sepa-debit, eu, eur, iban, checkout, setup-intents, elements, react-native, ios, android, mandates]
 ---
 
 ## Summary
 
-Guide for saving SEPA Direct Debit payment method details for future payments using Checkout setup mode or SetupIntents (Elements, iOS, Android). Includes same 19-country IBAN test table and mandate reference_prefix as the accept-a-payment source.
+The May 3, 2026 guide shows how to collect SEPA Direct Debit details before the final payment amount or date is known. Its examples attach the payment method to a Customers API Customer for reuse. A separate May preface recommends customer-configured Account objects for most use cases and describes Accounts v2 as generally available for Connect users and in public preview for others, with a preview API version for enrolled users. The three examples below use `customer`.
 
-## Key Details
+## May setup paths
 
-### Checkout setup mode
+- **Checkout setup mode.** Create or retrieve the Customer and pass it to a `mode=setup` Checkout Session. The hosted example uses `success_url`. The embedded example uses `return_url` and `ui_mode=embedded_page`. The manual examples pair `sepa_debit` with `card`, and the guide separately illustrates a SEPA-only setup Session in the mandate-prefix section.
+- **Web Elements.** Create a `sepa_debit` SetupIntent on the server with the Customer ID. Pass its client secret to the customer client and keep it out of logs and URLs. The mounted Payment Element collects name, email and IBAN and handles mandate acceptance. The client uses `stripe.confirmSetup`. A successful SetupIntent has status `succeeded` and attaches the PaymentMethod to the supplied Customer. On failure the guide directs the integrator to the returned error. In the Elements section Stripe recommends prebuilt Checkout when using Stripe's Creditor ID.
+- **React Native.** Create a SetupIntent with the Customer on the server. The app collects IBAN and communicates the mandate terms for implicit acceptance, then calls `confirmSetupIntent` with the client secret and `paymentMethodType=SepaDebit`. For IBANs beginning AD, PF, TF, GI, GB, GG, VA, IM, JE, MC, NC, BL, PM, SM, CH or WF, the guide requires `billingDetails.addressCountry` and `billingDetails.addressLine1`. iOS and Android are underlying SDKs of this React Native path. The May mobile test prose points to the web `confirmSepaDebitSetup` and Payment Element, while its integration example uses the React Native SDK and its app form.
 
-- `mode: 'setup'`, `customer` required, `payment_method_types: ['card', 'sepa_debit']`
-- Stripe-hosted and embedded page variants
+## Later debit and test outcomes
 
-### Elements (SetupIntent) path
+Setup success records a saved payment method. The May Checkout section describes delayed notification for a subsequent SEPA Direct Debit payment and gives a typical five-business-day estimate for funds to reach the account. The separate [[stripe-sepa-debit]] concept describes standard T+6 payment success and funds availability. Both describe later payments.
 
-- Create SetupIntent → pass `clientSecret` → `stripe.confirmSetup()` / `stripe.confirmSepaDebitSetup()` opens IBAN collection modal with mandate
-- SetupIntent webhooks: `setup_intent.succeeded` / `setup_intent.setup_failed`
+The three May variant sections give test IBANs and PaymentMethod tokens under 19 country headings. Collection succeeds for the fixtures. Later test charges can move a PaymentIntent from `processing` to `succeeded` or `requires_payment_method`, including delayed cases. Separate fixtures cover disputes, limits and insufficient funds.
 
-### Mandate reference_prefix
+## Mandate reference prefix
 
-- Same as accept-a-payment: 12 chars max, uppercase/numbers/spaces/`./_/-/&`, not starting with `STRIPE`
-- Applies to PaymentIntent, SetupIntent, Checkout payment mode, Checkout setup mode
+The optional `payment_method_options.sepa_debit.mandate_options.reference_prefix` has a maximum of 12 characters and must start with a digit or uppercase letter. It allows uppercase letters, digits, spaces and `.`, `/`, `&`, `-`, `_`, and cannot start with `STRIPE`. Include any desired delimiter. Stripe trims trailing spaces to at most one and produces a unique 24-character reference. The May guide illustrates PaymentIntent, SetupIntent and Checkout Session payment and setup modes.
 
-### Test IBANs
+## Detail locators
 
-Same 19-country table as [[source-stripe-sepa-accept-payment]] — identical IBAN numbers and tokens.
+| Topic | May raw lines |
+| --- | --- |
+| Accounts v2 preface and Checkout setup | 8–83 |
+| Web SetupIntent, mandate collection and confirmation | 456–723 |
+| React Native SDK dependencies, consent and confirmation | 981–1202 |
+| Test IBANs and later-charge fixtures | 85–338, 724–977, 1204–1457 |
+| Mandate prefix and API examples | 340–454, 1459–1573 |
+
+## Related
+
+- [[stripe-sepa-debit]] — SEPA Direct Debit concept, payment lifecycle and settlement
+- [[source-stripe-sepa-accept-payment]] — Separate guide for accepting a SEPA Direct Debit payment
+- [[stripe]] — Stripe company page
+- [Stripe Connect charges](https://docs.stripe.com/connect/charges.md) — Related reading linked in the May guide
+
+## Related raw API references
+
+- [[raw/stripe-payments-sepa-debit-set-up-payment-2026-11-07|November 7, 2026 variant selector]] — Navigation for Checkout, Elements and mobile React Native.
 
 ## Raw Sources
 
-- [[stripe-sepa-set-up-payment-2025]] — verbatim webpage content (1578 lines, Checkout + Elements + iOS + Android sections)
+- [[raw/stripe-sepa-set-up-payment-2025|May 3, 2026 full setup guide]] — 1,578 lines covering Checkout, Elements and React Native.

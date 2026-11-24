@@ -1,0 +1,51 @@
+--- wiki/concepts/stripe-dynamic-payment-methods.md
++++ wiki/concepts/stripe-dynamic-payment-methods.md
+@@ -15,8 +15,8 @@
+ 
+ Remove `payment_method_types` from code:
+ - **Checkout**: just omit the parameter
+-- **Payment Element, API ≥ 2023-08-16**: omit `payment_method_types` (Stripe defaults to dynamic mode)
+-- **Payment Element, API < 2023-08-16**: replace with `automatic_payment_methods[enabled]=true`
++- **Advanced Payment Element, API on or after 2023-08-16** omits `payment_method_types`.
++- **Advanced Payment Element, API before 2023-08-16** replaces the explicit list with `automatic_payment_methods[enabled]=true`.
+ 
+ ## Excluding Payment Methods Per-Transaction
+ 
+@@ -29,17 +29,17 @@
+ })
+ ```
+ 
+-> **Exception**: Apple Pay, Google Pay, and Link must be excluded via the `wallets` hash parameter — using `excluded_payment_method_types` for these generates an error.
++> For the documented per-PaymentIntent exclusion flow, use the integration-specific `wallets` settings to control Apple Pay, Google Pay or Link. Passing those wallet types to `excluded_payment_method_types` in that flow generates an error.
+ 
+-## Eligibility Criteria (6 Factors)
++## Payment method eligibility
+ 
+-A payment method only appears if all 6 criteria are met:
++The guides describe the following checks. Payment method configurations, amount or currency rules and A/B tests can also affect availability.
+ 
+ 1. **Dashboard enabled**: must be turned on per account
+-2. **Product support**: not all PMs available in all products (e.g., Bacs not in Mobile PE)
++2. **Product support** varies by method. The May and November dynamic guides cite Bacs as unavailable in Mobile Payment Element. The November support matrix marks mobile UI support and separately excludes Payment Element creation of Bacs SetupIntents. See [[source-stripe-dynamic-payment-methods]] for the dated discrepancy.
+ 3. **Presentment currency**: most PMs support only a subset of Stripe's 135+ currencies
+ 4. **Charge amount**: some PMs have min/max limits; final amount (incl. tax + discounts) is used
+-5. **API support**: `setup_future_usage` or `capture_method: manual` auto-filter incompatible PMs
++5. **API support** filters incompatible methods when `setup_future_usage` or `capture_method: manual` is set. The dynamic guides use TWINT as an example of a method without future setup. The November TWINT overview and support matrix list PaymentIntent future setup as supported, and the November matrix footnote limits supported TWINT future setup to `off_session`. The May saving guide shows one `off_session` request. See [[source-stripe-dynamic-payment-methods]] for the dated evidence.
+ 6. **Customer's country**: most PMs are country-specific (e.g., BLIK Poland-only)
+ 
+ > Apple Pay and Google Pay use different eligibility criteria — see wallet-specific docs.
+@@ -59,12 +59,12 @@
+ 
+ | Feature | Purpose |
+ | --- | --- |
+-| [[stripe-payment-method-rules\|Payment method rules]] | Show/hide PMs based on amount or customer location |
++| [[stripe-payment-method-rules\|Payment method rules]] | Set visibility by amount, country, or currency for eligible non-card methods. The November 2026 guide excludes wallets, Hosted Invoice Page, and subscription creation through the listed integrations. |
+ | [[stripe-ab-testing-payment-methods\|A/B testing]] | Roll out PMs to a % of traffic; measure conversion impact |
+ | [[stripe-payment-method-configurations\|Payment method configurations]] | Different PM sets for different checkout scenarios |
+ | Embed PM settings component | Let connected account users manage their own PMs |
+ 
+ ## Sources
+ 
+-- [[source-stripe-dynamic-payment-methods]] — primary: migration guide, exclusion API, eligibility criteria, AI models, customization features
++- [[source-stripe-dynamic-payment-methods]] covers the May and November 2026 guides for advanced migration, transaction exclusions, eligibility and ranking, including dated Bacs, TWINT and Swish qualifications.
+ - [[source-stripe-automatic-payment-methods]] — Aug 2023 API change: omit payment_method_types → Dashboard methods; allow_redirects: never option; Elements migration

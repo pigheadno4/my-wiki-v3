@@ -1,0 +1,151 @@
+{
+  "job_id": "payments-sepa-debit-set-up-payment",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-sepa-debit-set-up-payment-2026-11-07.md",
+  "raw_sha256": "9974b3a2fabf2e422d584e5b6b5d411a082b945c4075020012438b147c382455",
+  "prior_raw_path": "raw/stripe-sepa-set-up-payment-2025.md",
+  "prior_raw_sha256": "951d1ec1a5ecd44b3e4a9a1db4a428bcbec683e253b948fc29b1a61c0b33f6af",
+  "source_targets": [
+    "wiki/sources/source-stripe-sepa-set-up-payment.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-sepa-set-up-payment.md": "06b03597d8202016db30a698f007211316c74988a3664e288a036de7d4f0aef4"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-sepa-debit-set-up-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 16
+      }
+    ],
+    "raw/stripe-sepa-set-up-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 1578
+      }
+    ],
+    "wiki/sources/source-stripe-sepa-set-up-payment.md": [
+      {
+        "start": 1,
+        "end": 38
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/e54b6cade068ccbbdf453a9f/content.diff": [
+      {
+        "start": 1,
+        "end": 1582
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 258,
+        "end": 267
+      },
+      {
+        "start": 739,
+        "end": 746
+      }
+    ],
+    "wiki/concepts/stripe-sepa-debit.md": [
+      {
+        "start": 1,
+        "end": 118
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-sepa-debit-set-up-payment-2026-11-07.md:11"
+    },
+    {
+      "text": "[Checkout](https://docs.stripe.com/payments/sepa-debit/set-up-payment.md?payment-ui=checkout)",
+      "location": "raw/stripe-payments-sepa-debit-set-up-payment-2026-11-07.md:13"
+    },
+    {
+      "text": "[Elements](https://docs.stripe.com/payments/sepa-debit/set-up-payment.md?payment-ui=elements)",
+      "location": "raw/stripe-payments-sepa-debit-set-up-payment-2026-11-07.md:14"
+    },
+    {
+      "text": "[React Native](https://docs.stripe.com/payments/sepa-debit/set-up-payment.md?payment-ui=mobile&platform=react-native)",
+      "location": "raw/stripe-payments-sepa-debit-set-up-payment-2026-11-07.md:16"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "A successful setup will return a `succeeded` value for the SetupIntent\u2019s `status` property.",
+      "location": "raw/stripe-sepa-set-up-payment-2025.md:635"
+    },
+    {
+      "text": "Retrieve the client secret from the SetupIntent you created and call `confirmSetupIntent`.",
+      "location": "raw/stripe-sepa-set-up-payment-2025.md:1163"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "New raw lines 5\u201316 are a canonical variant index for future-details saving. Checkout, Elements and Mobile React Native exactly match old raw section routes at lines 16\u201318, 456\u2013458 and 981\u2013983. Diff 7\u20131579 removes embedded content from this capture and ends with the three variant links (1579\u20131582). This is a navigation-only and presentation change, including the metadata change, with no new setup or payment behavior.",
+    "May 3, 2026 Checkout supports advance collection when the final charge amount or date is decided later, with a Customer association for later reuse. The manual hosted and embedded examples use mode=setup and include sepa_debit with card, using success_url hosted or return_url and ui_mode=embedded_page embedded (old 20\u201383). The examples do not make card required. The same passage calls a later SEPA payment delayed and gives a typically five-business-day arrival estimate, separate from setup. This timing is dated, not a guaranteed deadline and not a replacement for the concept's different T+6 standard settlement statement (concept 19\u201327).",
+    "May's generic Accounts v2 preface recommends customer-configured Accounts for most cases and describes Connect GA versus public preview for other users with a preview version if enrolled (old 8\u201314); the actual three branches shown create/retrieve a Customers API Customer and pass customer, not a customer_account example (old 28\u201342,481\u2013512,1061\u20131092). This matters to interpretation of source line 19. The old Elements section recommends prebuilt Checkout when using Stripe's Creditor ID (old 456\u2013463).",
+    "Old web Elements 497\u2013567 and 625\u2013723 describe a server-created SetupIntent for sepa_debit with a Customer, a carefully handled client secret, a mounted Payment Element collecting name/email/IBAN and displaying/handling mandate acceptance, and stripe.confirmSetup. Success is SetupIntent status succeeded and attaches the PaymentMethod to the supplied Customer, handling a returned error on failure. The paired old and new documents do not give the source's web-confirmation modal claim or its asserted SetupIntent webhook list (source 24\u201325). Stripe.js confirmSepaDebitSetup link only appears in an old React Native test paragraph (1204\u20131210), distinct from the actual React Native client confirmation example (1161\u20131202).",
+    "Old React Native 981\u20131092,1094\u20131130 and 1161\u20131202 uses server SetupIntent creation, app collection of IBAN and mandate terms for implicit acceptance, then confirmSetupIntent with SepaDebit and the client secret. The old guide requires billingDetails addressCountry and addressLine1 for the listed IBAN country codes at line 1167. Native iOS and Android are platform dependencies within React Native (1004\u20131024), not separate variants in either capture, contrary to summary lines 13 and 38 and concept line 115.",
+    "Old 85\u2013338,724\u2013977 and 1204\u20131457 use 19-country test IBAN/PaymentMethod tokens. The test setup collects details successfully; the fixtures describe different outcomes when charged later, including PaymentIntent processing\u2192succeeded or requires_payment_method, delayed cases, dispute and capacity/funds errors. Do not treat these as SetupIntent transitions, geographic product eligibility, or payment success. The neighboring accept-payment source link at summary 34 is useful navigation, but identity with all its raw values is outside this review.",
+    "The optional prefix in old 340\u2013454 and 1459\u20131573 has maximum 12 characters and must start with digit or uppercase letter, use approved uppercase letters/digits/spaces or punctuation, and avoid starting with STRIPE. It forms a 24-character unique reference, with manual delimiter and trailing-space caveat. Source line 29 omits the first-character condition; line 30 correctly lists four illustrated object/mode cases."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "May 3, 2026 Checkout supports advance collection when the final charge amount or date is decided later, with a Customer association for later reuse. The manual hosted and embedded examples use mode=setup and include sepa_debit with card, using success_url hosted or return_url and ui_mode=embedded_page embedded (old 20\u201383). The examples do not make card required. The same passage calls a later SEPA payment delayed and gives a typically five-business-day arrival estimate, separate from setup. This timing is dated, not a guaranteed deadline and not a replacement for the concept's different T+6 standard settlement statement (concept 19\u201327).",
+    "May's generic Accounts v2 preface recommends customer-configured Accounts for most cases and describes Connect GA versus public preview for other users with a preview version if enrolled (old 8\u201314); the actual three branches shown create/retrieve a Customers API Customer and pass customer, not a customer_account example (old 28\u201342,481\u2013512,1061\u20131092). This matters to interpretation of source line 19. The old Elements section recommends prebuilt Checkout when using Stripe's Creditor ID (old 456\u2013463).",
+    "Old web Elements 497\u2013567 and 625\u2013723 describe a server-created SetupIntent for sepa_debit with a Customer, a carefully handled client secret, a mounted Payment Element collecting name/email/IBAN and displaying/handling mandate acceptance, and stripe.confirmSetup. Success is SetupIntent status succeeded and attaches the PaymentMethod to the supplied Customer, handling a returned error on failure. The paired old and new documents do not give the source's web-confirmation modal claim or its asserted SetupIntent webhook list (source 24\u201325). Stripe.js confirmSepaDebitSetup link only appears in an old React Native test paragraph (1204\u20131210), distinct from the actual React Native client confirmation example (1161\u20131202).",
+    "Old React Native 981\u20131092,1094\u20131130 and 1161\u20131202 uses server SetupIntent creation, app collection of IBAN and mandate terms for implicit acceptance, then confirmSetupIntent with SepaDebit and the client secret. The old guide requires billingDetails addressCountry and addressLine1 for the listed IBAN country codes at line 1167. Native iOS and Android are platform dependencies within React Native (1004\u20131024), not separate variants in either capture, contrary to summary lines 13 and 38 and concept line 115.",
+    "Old 85\u2013338,724\u2013977 and 1204\u20131457 use 19-country test IBAN/PaymentMethod tokens. The test setup collects details successfully; the fixtures describe different outcomes when charged later, including PaymentIntent processing\u2192succeeded or requires_payment_method, delayed cases, dispute and capacity/funds errors. Do not treat these as SetupIntent transitions, geographic product eligibility, or payment success. The neighboring accept-payment source link at summary 34 is useful navigation, but identity with all its raw values is outside this review.",
+    "The optional prefix in old 340\u2013454 and 1459\u20131573 has maximum 12 characters and must start with digit or uppercase letter, use approved uppercase letters/digits/spaces or punctuation, and avoid starting with STRIPE. It forms a 24-character unique reference, with manual delimiter and trailing-space caveat. Source line 29 omits the first-character condition; line 30 correctly lists four illustrated object/mode cases.",
+    "Keep the May original raw at source 4\u20137 and 36\u201338 alongside a navigation-only November route. Maintain wiki/index.md 7 to Stripe index 263\u2013265 and 743, the Stripe SEPA concept 95\u2013118 and its source link at 115, and add the reciprocal concept route to the source. Keep accept-a-payment and Connect links as related navigation (old 1575\u20131578)."
+  ],
+  "conflicts": [
+    "Source 13 and 38 and concept 115 name native iOS and Android as if they were independent variants. Old headings at 16,456,981 and November 13\u201316 establish Checkout, Elements and React Native; old 1004\u20131024 explains use of native SDKs inside React Native.",
+    "Source 24 conflates web stripe.confirmSetup and a testing-only confirmSepaDebitSetup reference with an unsubstantiated modal. Source 25 lists SetupIntent webhooks absent from both paired captures. Use evidence at old 514\u2013567,625\u2013723,1161\u20131210 for actual UI/API/status, and require separate authority for any retained event list.",
+    "Old 1204\u20131210 React Native testing prose points to the web confirmSepaDebitSetup and Payment Element even though the main React Native integration uses confirmSetupIntent and its own form (old 1094\u20131163,1170\u20131202). Keep this mismatch dated.",
+    "Source 19 presents the combined card-plus-SEPA array as if required; old 52\u201383 demonstrates that array in sample and old 430\u2013447 has a SEPA-only setup example. Source 29 drops the uppercase-or-numeric first-character condition in old 345\u2013355 and 1463\u20131474.",
+    "Old 26's generic typically-five-business-day arrival estimate and the concept's 23\u201327 standard T+6 timing/readiness guidance give differently scoped descriptions. No account-specific availability or settlement determination follows from this review."
+  ],
+  "unresolved_questions": [
+    "Current eligibility, child content, supported API/SDK versions, exact active settlement timing and successful payment require separate evidence. November child links and the related accept-payment/Connect authority were not read for behavior."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-sepa-debit.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-sepa-set-up-payment.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "New raw lines 5\u201316 are a canonical variant index for future-details saving. Checkout, Elements and Mobile React Native exactly match old raw section routes at lines 16\u201318, 456\u2013458 and 981\u2013983. Diff 7\u20131579 removes embedded content from this capture and ends with the three variant links (1579\u20131582). This is a navigation-only and presentation change, including the metadata change, with no new setup or payment behavior.",
+        "May 3, 2026 Checkout supports advance collection when the final charge amount or date is decided later, with a Customer association for later reuse. The manual hosted and embedded examples use mode=setup and include sepa_debit with card, using success_url hosted or return_url and ui_mode=embedded_page embedded (old 20\u201383). The examples do not make card required. The same passage calls a later SEPA payment delayed and gives a typically five-business-day arrival estimate, separate from setup. This timing is dated, not a guaranteed deadline and not a replacement for the concept's different T+6 standard settlement statement (concept 19\u201327).",
+        "May's generic Accounts v2 preface recommends customer-configured Accounts for most cases and describes Connect GA versus public preview for other users with a preview version if enrolled (old 8\u201314); the actual three branches shown create/retrieve a Customers API Customer and pass customer, not a customer_account example (old 28\u201342,481\u2013512,1061\u20131092). This matters to interpretation of source line 19. The old Elements section recommends prebuilt Checkout when using Stripe's Creditor ID (old 456\u2013463).",
+        "Old web Elements 497\u2013567 and 625\u2013723 describe a server-created SetupIntent for sepa_debit with a Customer, a carefully handled client secret, a mounted Payment Element collecting name/email/IBAN and displaying/handling mandate acceptance, and stripe.confirmSetup. Success is SetupIntent status succeeded and attaches the PaymentMethod to the supplied Customer, handling a returned error on failure. The paired old and new documents do not give the source's web-confirmation modal claim or its asserted SetupIntent webhook list (source 24\u201325). Stripe.js confirmSepaDebitSetup link only appears in an old React Native test paragraph (1204\u20131210), distinct from the actual React Native client confirmation example (1161\u20131202).",
+        "Old React Native 981\u20131092,1094\u20131130 and 1161\u20131202 uses server SetupIntent creation, app collection of IBAN and mandate terms for implicit acceptance, then confirmSetupIntent with SepaDebit and the client secret. The old guide requires billingDetails addressCountry and addressLine1 for the listed IBAN country codes at line 1167. Native iOS and Android are platform dependencies within React Native (1004\u20131024), not separate variants in either capture, contrary to summary lines 13 and 38 and concept line 115.",
+        "Old 85\u2013338,724\u2013977 and 1204\u20131457 use 19-country test IBAN/PaymentMethod tokens. The test setup collects details successfully; the fixtures describe different outcomes when charged later, including PaymentIntent processing\u2192succeeded or requires_payment_method, delayed cases, dispute and capacity/funds errors. Do not treat these as SetupIntent transitions, geographic product eligibility, or payment success. The neighboring accept-payment source link at summary 34 is useful navigation, but identity with all its raw values is outside this review.",
+        "The optional prefix in old 340\u2013454 and 1459\u20131573 has maximum 12 characters and must start with digit or uppercase letter, use approved uppercase letters/digits/spaces or punctuation, and avoid starting with STRIPE. It forms a 24-character unique reference, with manual delimiter and trailing-space caveat. Source line 29 omits the first-character condition; line 30 correctly lists four illustrated object/mode cases."
+      ],
+      "conflicts": [
+        "Source 13 and 38 and concept 115 name native iOS and Android as if they were independent variants. Old headings at 16,456,981 and November 13\u201316 establish Checkout, Elements and React Native; old 1004\u20131024 explains use of native SDKs inside React Native.",
+        "Source 24 conflates web stripe.confirmSetup and a testing-only confirmSepaDebitSetup reference with an unsubstantiated modal. Source 25 lists SetupIntent webhooks absent from both paired captures. Use evidence at old 514\u2013567,625\u2013723,1161\u20131210 for actual UI/API/status, and require separate authority for any retained event list.",
+        "Old 1204\u20131210 React Native testing prose points to the web confirmSepaDebitSetup and Payment Element even though the main React Native integration uses confirmSetupIntent and its own form (old 1094\u20131163,1170\u20131202). Keep this mismatch dated.",
+        "Source 19 presents the combined card-plus-SEPA array as if required; old 52\u201383 demonstrates that array in sample and old 430\u2013447 has a SEPA-only setup example. Source 29 drops the uppercase-or-numeric first-character condition in old 345\u2013355 and 1463\u20131474.",
+        "Old 26's generic typically-five-business-day arrival estimate and the concept's 23\u201327 standard T+6 timing/readiness guidance give differently scoped descriptions. No account-specific availability or settlement determination follows from this review."
+      ],
+      "reason": "November is navigation only. Independently correct the false standalone native variant inventory and inaccurately combined web SetupIntent UI/API claim, qualify the unsourced event list, and restore the important dated Customer, consent, test-state and prefix distinctions."
+    }
+  ],
+  "answers": {
+    "Q1": "The November 7, 2026 capture of https://docs.stripe.com/payments/sepa-debit/set-up-payment establishes a selector for saving SEPA Direct Debit details and lists Checkout, Elements and Mobile React Native (new raw lines 5-16). May 3, 2026 describes advance collection through Checkout setup mode for an attached Customer, with hosted success_url and embedded return_url, and notes delayed notification and typical five-business-day arrival for a later payment (old raw lines 16-83). The merchant server creates a SEPA SetupIntent for a Customer and hands the client its secret. The mounted web Payment Element collects details and handles mandate acceptance, and confirmSetup establishes setup status and attachment after success (old raw lines 481-567 and 625-723). React Native collects IBAN and communicates mandate terms, then uses confirmSetupIntent and has specified billing address fields for the listed IBAN countries (old raw lines 1061-1202). Later-charge test cases distinguish PaymentIntent processing/success/failure and dispute from successful setup (old raw lines 1204-1223). source-stripe-sepa-set-up-payment.md correctly captures the Checkout and SetupIntent distinction and optional reference prefix but wrongly lists independent native iOS/Android paths, conflates web confirmation UI/methods, and assigns webhook evidence absent from these captures. November contributes navigation only.",
+    "Q2": "At https://docs.stripe.com/payments/sepa-debit/set-up-payment, the November 7, 2026 full-to-index change is presentational and navigation-only. The index points to the same Checkout, Elements and React Native variants marked in the May 3, 2026 guide (new raw lines 9-16, old raw lines 16-18, 456-458, and 981-983). No product removal, addition or capability change is established. Preserve the May hosted/embedded setup, explicit Customer examples separately from Accounts v2 preview guidance, mandate collection and setup-versus-later-debit states, React Native country-specific billing-address condition, and optional prefix validation including its required first character (old raw lines 8-14, 28-83, 1094-1202 and 1459-1474). The baseline source-stripe-sepa-set-up-payment.md needs the platform and confirmation corrections, and the dated React Native test prose mismatch should remain distinct from the demonstrated SDK call. Preserve the historical raw, root-to-Stripe index route, Stripe SEPA Direct Debit concept link and reciprocal source route, and separate accept-payment and Connect navigation. The linked child variants carry no fresh behavior evidence here."
+  }
+}

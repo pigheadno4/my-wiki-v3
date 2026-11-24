@@ -1,0 +1,192 @@
+{
+  "job_id": "payments-paypal-payout-reconciliation",
+  "attempt": 2,
+  "raw_path": "raw/stripe-payments-paypal-payout-reconciliation-2026-11-07.md",
+  "raw_sha256": "be3d7e92b07d7423f08d67381fe5664cfede6823039949d4b247d82a6ba1104f",
+  "prior_raw_path": "raw/stripe-paypal-reconciliation-2025.md",
+  "prior_raw_sha256": "fa56f84f62c2468a7c73a700b8f19f380c4b792563eee132e1cc3597f5785737",
+  "source_targets": [
+    "wiki/sources/source-stripe-paypal-reconciliation.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-paypal-reconciliation.md": "03b77f7eaca4a63f8f783e3cdf9a3f4a4ecd2ebbd0546efe9a6f225302e72d59"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-paypal-payout-reconciliation-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 110
+      }
+    ],
+    "raw/stripe-paypal-reconciliation-2025.md": [
+      {
+        "start": 1,
+        "end": 117
+      }
+    ],
+    "wiki/sources/source-stripe-paypal-reconciliation.md": [
+      {
+        "start": 1,
+        "end": 50
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/3a20d2769052d1e664ca9c30/content.diff": [
+      {
+        "start": 1,
+        "end": 72
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 22
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 539,
+        "end": 550
+      },
+      {
+        "start": 761,
+        "end": 766
+      },
+      {
+        "start": 791,
+        "end": 799
+      }
+    ],
+    "wiki/concepts/stripe-wallets.md": [
+      {
+        "start": 161,
+        "end": 194
+      },
+      {
+        "start": 404,
+        "end": 414
+      }
+    ],
+    "wiki/concepts/stripe-paypal.md": [
+      {
+        "start": 1,
+        "end": 68
+      }
+    ],
+    "wiki/concepts/stripe-payouts.md": [
+      {
+        "start": 72,
+        "end": 88
+      }
+    ],
+    "raw/stripe-payments-paypal-choose-settlement-preference-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 21
+      },
+      {
+        "start": 29,
+        "end": 47
+      }
+    ],
+    "raw/stripe-reports-payout-reconciliation-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 27
+      }
+    ],
+    "raw/stripe-paypal-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 7
+      },
+      {
+        "start": 143,
+        "end": 159
+      },
+      {
+        "start": 264,
+        "end": 272
+      }
+    ],
+    "wiki/sources/source-stripe-paypal-settlement.md": [
+      {
+        "start": 11,
+        "end": 45
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "-d \"automatic_payment_methods[enabled]=true\"",
+      "location": "raw/stripe-payments-paypal-payout-reconciliation-2026-11-07.md:27"
+    },
+    {
+      "text": "-d \"payment_method_options[paypal][reference]=my_order_id\"",
+      "location": "raw/stripe-payments-paypal-payout-reconciliation-2026-11-07.md:28"
+    },
+    {
+      "text": "The `transaction_id` is present only if the payment has been captured.",
+      "location": "raw/stripe-payments-paypal-payout-reconciliation-2026-11-07.md:35"
+    },
+    {
+      "text": "an end-to-end view of all balance-impacting transactions within a 24-hour period.",
+      "location": "raw/stripe-payments-paypal-payout-reconciliation-2026-11-07.md:102"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "payment_method_types: [\"paypal\"]",
+      "location": "raw/stripe-paypal-reconciliation-2025.md:29"
+    },
+    {
+      "text": "reference: \"my_order_id\"",
+      "location": "raw/stripe-paypal-reconciliation-2025.md:32"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Both captures say a merchant receiving the transaction funds on PayPal uses PayPal account or sFTP reporting to match Stripe payments to PayPal orders. Stripe reconciles the Stripe-settling PayPal transactions before payout. No account-specific settlement or bank arrival follows from the guide. Related November settlement guidance documents direct businesses choosing and Connect settling with Stripe (old 8-13; new 9-14; related preference guide 13-21,39-45).",
+    "The preferred merchant reference is an order or invoice ID set at PaymentIntent creation under payment_method_options.paypal.reference. Customers can see it; processed payments show the reference as Invoice ID in the PayPal settlement report and derived refunds or disputes are associated with it. The November example sends a PaymentIntent create request with amount=1099 and currency=eur with automatic methods enabled and this exact option, while May's Node example explicitly selects PayPal (old 17-38; new 18-31).",
+    "If a business-generated order ID is unavailable, the fallback uses Charge.payment_method_details.paypal.transaction_id. It is present only after capture and maps the PayPal capture ID to Transaction ID in the settlement report; the example also has captured true and paid true. It is not a payer ID, Stripe Charge ID, or proof that a bank payout arrived (old 40-103; new 33-96).",
+    "PayPal business account Activity \u2192 All Reports \u2192 Transactions \u2192 Settlement, or PayPal-enabled sFTP, gives the report covering balance-impacting transactions over 24 hours to reconcile movements in PayPal against the linked bank account (old 105-117; new 98-110).",
+    "Keep the wallet-concept inbound route wiki/concepts/stripe-wallets.md:191-193,406-414 and clarify the reciprocal wallet and settlement source links missing in source 42-50. The subscription-focused wiki/concepts/stripe-paypal.md:8-12,66-68 and general Stripe payout route wiki/concepts/stripe-payouts.md:74-83 remain separate references."
+  ],
+  "substantive_changes": [
+    "The reference-create example switches from explicit payment_method_types:[paypal] to automatic_payment_methods enabled (old 21-36; new 22-29). This is a substantive delta in the illustrated create request's method-selection configuration; customer-visible reference, report columns, capture condition, and reconciliation requirements are stable."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain May 7, 2026 manual method-selection example alongside the November 7 automatic-method example, and the shared settlement-owner scope, reference visibility and refund/dispute association, capture prerequisite for the alternative and both PayPal report access routes."
+  ],
+  "conflicts": [
+    "Current source lines 21-27 excerpt the historical invariant reference field without either method-selection context. May old lines 21-36 show a server Node create request with payment_method_types containing PayPal; November new lines 22-29 show automatic_payment_methods enabled with the same PayPal options field. Preserve both as dated examples of how the request is composed. Neither illustrates confirmation/capture or proves account eligibility, and November does not prohibit the manual method list.",
+    "Current source lines 13-17 state automatic reconciliation for Stripe settlement. Both captures discuss reconciling PayPal transactions before the Stripe payout, and the separate November settlement guide raw/stripe-payments-paypal-choose-settlement-preference-2026-11-07.md:13-21,39-45 corroborates that distinction and says Connect settles on Stripe while direct businesses choose. Do not extend that to every payout type or report: the separately linked Stripe payout report raw/stripe-reports-payout-reconciliation-2026-11-07.md:9-15,24-26 limits its payout batches to automatic payouts including the connected-account arrangement it specifies, describes Balance reporting for the stated manual-payout cases, and separately excludes identifying instant payout contents. wiki/concepts/stripe-payouts.md:74-83 follows the Stripe-side payout route.",
+    "Current source line 40 makes the no-business-ID condition an absolute use restriction. Old 12-13 and new 13-14 express fallback guidance, while old 42 and new 35 reserve actual presence of transaction_id for a captured payment. Treat the captured sample state, Charge ID, PayPal capture ID and payout settlement/arrival as distinct."
+  ],
+  "unresolved_questions": [
+    "Neither captured example supplies a confirmation or capture request for the reference-create PaymentIntent, or establishes whether PayPal is enabled for a specific merchant. The example Charge does not demonstrate account-specific settlement, the report's delivery time or arrival at a bank."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-wallets.md",
+    "wiki/concepts/stripe-payouts.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-paypal-reconciliation.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Keep report key mapping and settled-on-PayPal scope; add the two dated example method-selection contexts, align the fallback with the provider's recommendation, and add the reciprocal wallet and settlement-preference routes. Preserve the distinct Stripe payout report scope."
+      ],
+      "conflicts": [
+        "Current source lines 21-27 excerpt the historical invariant reference field without either method-selection context. May old lines 21-36 show a server Node create request with payment_method_types containing PayPal; November new lines 22-29 show automatic_payment_methods enabled with the same PayPal options field. Preserve both as dated examples of how the request is composed. Neither illustrates confirmation/capture or proves account eligibility, and November does not prohibit the manual method list.",
+        "Current source lines 13-17 state automatic reconciliation for Stripe settlement. Both captures discuss reconciling PayPal transactions before the Stripe payout, and the separate November settlement guide raw/stripe-payments-paypal-choose-settlement-preference-2026-11-07.md:13-21,39-45 corroborates that distinction and says Connect settles on Stripe while direct businesses choose. Do not extend that to every payout type or report: the separately linked Stripe payout report raw/stripe-reports-payout-reconciliation-2026-11-07.md:9-15,24-26 limits its payout batches to automatic payouts including the connected-account arrangement it specifies, describes Balance reporting for the stated manual-payout cases, and separately excludes identifying instant payout contents. wiki/concepts/stripe-payouts.md:74-83 follows the Stripe-side payout route.",
+        "Current source line 40 makes the no-business-ID condition an absolute use restriction. Old 12-13 and new 13-14 express fallback guidance, while old 42 and new 35 reserve actual presence of transaction_id for a captured payment. Treat the captured sample state, Charge ID, PayPal capture ID and payout settlement/arrival as distinct."
+      ],
+      "reason": "The stable mapping is accurately summarized, but the changed request fields, recommended fallback scope and transaction-versus-payout reconciliation qualification deserve dated documentation."
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/payments/paypal/payout-reconciliation, a merchant who settles PayPal payments to PayPal manually matches processed payments against its PayPal business report or sFTP feed. Stripe handles transaction reconciliation before payout for the Stripe-settlement route. The merchant sets a customer-visible reference at PaymentIntent creation; it appears as Invoice ID after processing and relates subsequent refunds and disputes. When no business order ID is available, the guide recommends the PayPal transaction_id on a captured Charge, which matches Transaction ID (old raw lines 8-54; new raw lines 9-47). The PayPal report covers 24 hours of balance-impacting transactions. source-stripe-paypal-reconciliation.md has the stable keys but should include each example's selection configuration and scope the fallback as a recommendation. A created Intent or captured Charge does not establish payout arrival.",
+    "Q2": "For https://docs.stripe.com/payments/paypal/payout-reconciliation, the May 7 Node PaymentIntent create example selects PayPal explicitly, whereas the November 7 cURL example enables automatic payment methods. Both send the same PayPal reference, so preserve the settings as dated examples in source-stripe-paypal-reconciliation.md without inferring an API requirement or universal PayPal availability (old raw lines 17-38; new raw lines 18-31). Code language, JSON indentation, buyer/customer terminology and report-list numbering are presentation. Retain the capture condition, Invoice ID versus Transaction ID, related refunds/disputes, and PayPal business account or sFTP access (old raw lines 40-117; new raw lines 33-110). Preserve reciprocal wallet and settlement-preference routes and the distinct Stripe payout report route with its own automatic payout qualifications."
+  }
+}

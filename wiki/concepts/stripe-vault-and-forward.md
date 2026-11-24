@@ -7,7 +7,7 @@ tags: [stripe, vault-and-forward, multiprocessor, card-forwarding, pci, adyen, b
 
 ## Overview
 
-Vault and Forward API: store card details in Stripe's PCI-compliant vault and forward to 30+ supported third-party processors. **Requires access request via Stripe support** (not self-serve).
+Vault and Forward stores card details in Stripe’s PCI-compliant vault and forwards them to configured destinations. The November 7, 2026 general guide directs businesses with a dedicated Stripe account team to request access through that team. The earlier general guide and separate November specialist guides direct readers to Stripe support. See [[source-stripe-vault-and-forward]].
 
 ## Use Cases
 
@@ -32,27 +32,27 @@ Vault and Forward API: store card details in Stripe's PCI-compliant vault and fo
 ## Key Rules
 
 - Placeholder values must match destination JSON type (`""` string, `0` numeric)
-- CVC expires after use; SetupIntent confirmation can consume CVC
+- CVC expires with time or forwarding use. SetupIntent confirmation can consume it, so it may need to be recollected if the destination requires it.
 - **Link payments excluded** from forwarding
-- Use new idempotency key when retrying or modifying request
+- Use separate Stripe and destination idempotency keys. Use a fresh Stripe key when changing the body or headers. The guide recommends a fresh Stripe key for retries after an error reaching the destination.
 - Third-party API keys: encrypt with Stripe's PGP key before sharing; Stripe stores only hashed+encrypted versions
 
 ## Wallet Support
 
-- **Apple Pay**: DPAN only (MPAN not supported)
+- **Apple Pay**: The May 2026 guide lists DPAN only. November’s support list also includes MPAN, while its detection and replacement guidance covers DPAN. See [[source-stripe-vault-and-forward#Wallets and replacement fields|dated wallet qualifications]].
 - **Google Pay**: FPAN (standard fields) and DPAN (network token fields)
 - **Link**: NOT supported
 
-## Supported Processors (30+)
+## Configured destinations
 
-Accertify, Adyen, Basis Theory, Braintree, CardPointe, Checkout, Evervault, Expedia, Fat Zebra, Fiserv, FlexPay, GMO, PaymentsOS, PCI Vault, ProcessOut, Rewards Network, Shift4, SoftBank, Spreedly, TabaPay, TokenEx, VGS, Worldpay, Xsolla + own PCI token vault.
+See [[source-stripe-vault-and-forward#Configured endpoints and key scope|the dated exact endpoint and country locators]] to check a destination. The [[source-stripe-forwarding-token-vault|configured own-vault guide]] covers the separate in-house tokenization path.
 
 ## Restricted API Keys
 
-`forwarding_request_write` + `forwarding_request_read`.
+`forwarding_request_write` is required for creation. `forwarding_request_read` is optional for retrieval and listing.
 
 ## Sources
 
-- [[source-stripe-vault-and-forward]] — ForwardingRequest API, replacement fields, wallet support, processor list, PGP key
+- [[source-stripe-vault-and-forward]] — May and November 2026 general guides for access, configured endpoints, forwarding responses, and dated wallet and key qualifications.
 - [[source-stripe-forwarding-third-party]] — May/November 2026 Payment Element multiprocessor guide: manual PaymentMethod creation, server ForwardingRequest, processor-response relay and identified-PCI-data redaction boundary
 - [[source-stripe-forwarding-token-vault]] — own token vault requirements, PCI, CVC rules, webhook updates

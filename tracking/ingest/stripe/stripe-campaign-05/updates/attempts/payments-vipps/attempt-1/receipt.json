@@ -1,0 +1,213 @@
+{
+  "job_id": "payments-vipps",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Vipps Payments\"\ntype: source\ndate_ingested: 2026-05-08\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/vipps\"\nraw_files:\n  - \"stripe-payments-vipps-2026-11-07.md\"\n  - \"stripe-vipps-2025.md\"\ntags: [stripe, wallets, vipps, norway, nok, card-wallet, private-preview, connect, disputes, refunds]\n---\n\n## Overview\n\nThe May 8 and November 7, 2026 overviews describe Vipps as a private-preview, single-use card wallet for customers in Norway paying in NOK. Both list the same 29 business-account locations. A customer enters the phone number linked to Vipps and approves the payment in the app after a push notification. Stripe receives the card data from Vipps and processes the underlying transaction using its Visa or Mastercard integration. The card processing is invisible to the merchant integration, and Stripe immediately reports the payment outcome. App authorization, payment confirmation, capture and payout are separate steps.\n\n## Private preview and eligibility\n\nNovember adds an email access-request route using the registration example identifier `vipps_beta_preview`. Account approval is separate. Both guides require the `vipps_preview=v1` token for API requests that include Vipps. The separately dated May 8 [[source-stripe-vipps-accept-payment|Vipps acceptance guide]] places that token with the API version in its `2026-04-22.preview` example. The November acceptance capture links Checkout, Elements and Direct API.\n\nSee the dated **Business locations** lists for eligible merchant-account countries. Both guides introduce the restricted-business list as prohibited and label cryptocurrencies **Restricted** in the first bullet. The other listed categories are stock trade, gambling, betting, bonds, money transfers, debt collection, and multi-level marketing and pyramid schemes. Review Payment methods settings for account-specific eligibility.\n\n## Products and payment outcome\n\nBoth overviews document Checkout payment mode, with setup and subscription modes excluded. Vipps supports Payment Links created through the API and Elements excluding Express Checkout Element. The [May Wallets product row](../../raw/stripe-payment-method-support-2025.md#L184-L201) and [November Wallets product row](../../raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md#L188-L206) broadly mark Payment Links supported. The dedicated overviews specify the API creation requirement. The method supports manual capture and lists recurring payments as unsupported.\n\nIn the May acceptance guide’s manual-capture flow, authorization leads to `requires_capture` and Stripe supports capture of the full amount only. In the documented `requires_action` timeout path, a five-minute lapse detaches the method and returns the PaymentIntent to `requires_payment_method`. The May Direct API example also allows a different-card retry inside Vipps after an underlying card failure. Use the `payment_intent.succeeded` event for completed payment in that guide. See the separate acceptance source for the dated integration paths and exact state transitions.\n\n## Disputes and refunds\n\nCustomers can raise suspected fraud, duplicate payments or an order amount difference with their card issuer. Merchants can submit evidence through Stripe's standard card dispute process. Both guides support full and partial refunds, including multiple partial refunds up to the original charge amount. The overview gives no explicit refund submission window.\n\n## Connect\n\nThe overviews list direct charges, destination charges and separate charges and transfers. Connected accounts with full Stripe Dashboard access can enable Vipps in Payment methods settings. Accounts without full Dashboard access follow the separately linked Connect payment-method activation route. Check the `vipps_payments` capability for `active` in the account capabilities hash from account webhooks or APIs. The customer sees the connected account name during checkout and in Vipps.\n\n## Networks, fees and payout\n\nStripe processes BankAxept-branded cards through Visa or Mastercard because the BankAxept network itself is unsupported. On a successful transaction, Stripe deducts ordinary card processing fees and applicable taxes from the transaction and credits the remainder to the Stripe balance. Stripe bills the separate Vipps transaction fee daily and deducts it from the Stripe balance. The country's standard payout schedule applies.\n\n## Related\n\n- [[stripe-wallets]] — Stripe wallet and Vipps context\n- [[stripe]] — Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-payments-vipps-2026-11-07|November 7, 2026 Vipps product overview]] — full capture with the access request and revised demo pointer.\n- [[raw/stripe-vipps-2025|May 8, 2026 Vipps product overview]] — full prior capture with the original local MP4 pointer in **Payment flow**.\n",
+  "quotes": {
+    "payments-vipps": [
+      {
+        "text": "Stripe performs a card transaction using the card data we receive from Vipps.",
+        "location": "raw/stripe-payments-vipps-2026-11-07.md:11"
+      },
+      {
+        "text": "While in private preview, you must include the `vipps_preview=v1` header in all API requests that include Vipps.",
+        "location": "raw/stripe-payments-vipps-2026-11-07.md:13"
+      },
+      {
+        "text": "Only supports payment links created through the API.",
+        "location": "raw/stripe-payments-vipps-2026-11-07.md:98"
+      },
+      {
+        "text": "\"preview\": \"vipps_beta_preview\"",
+        "location": "raw/stripe-payments-vipps-2026-11-07.md:109"
+      },
+      {
+        "text": "Cryptocurrencies (Restricted)",
+        "location": "raw/stripe-payments-vipps-2026-11-07.md:148"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-vipps": [
+      {
+        "text": "While in private preview, you must include the `vipps_preview=v1` header in all API requests that include Vipps.",
+        "location": "raw/stripe-vipps-2025.md:12"
+      },
+      {
+        "text": "Customers enter their phone number linked with Vipps and receive a push notification on their Vipps app to authorize the payment.",
+        "location": "raw/stripe-vipps-2025.md:101"
+      },
+      {
+        "text": "Stripe bills the Vipps processing fee once a day",
+        "location": "raw/stripe-vipps-2025.md:171"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-vipps-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 183
+      }
+    ],
+    "raw/stripe-vipps-2025.md": [
+      {
+        "start": 1,
+        "end": 171
+      }
+    ],
+    "wiki/sources/source-stripe-vipps.md": [
+      {
+        "start": 1,
+        "end": 64
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/2a63690182989f346f74203a/content.diff": [
+      {
+        "start": 1,
+        "end": 53
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-vipps/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 205
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-vipps/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 136
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 382,
+        "end": 386
+      },
+      {
+        "start": 414,
+        "end": 418
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 622,
+        "end": 626
+      }
+    ],
+    "wiki/concepts/stripe-wallets.md": [
+      {
+        "start": 328,
+        "end": 352
+      },
+      {
+        "start": 424,
+        "end": 430
+      }
+    ],
+    "raw/stripe-vipps-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 4
+      },
+      {
+        "start": 59,
+        "end": 75
+      },
+      {
+        "start": 227,
+        "end": 254
+      },
+      {
+        "start": 1031,
+        "end": 1039
+      }
+    ],
+    "raw/stripe-payments-vipps-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-payment-method-support-2025.md": [
+      {
+        "start": 184,
+        "end": 184
+      },
+      {
+        "start": 201,
+        "end": 201
+      }
+    ],
+    "raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md": [
+      {
+        "start": 188,
+        "end": 188
+      },
+      {
+        "start": 206,
+        "end": 206
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md": [
+      {
+        "start": 531,
+        "end": 537
+      }
+    ]
+  },
+  "answers": {
+    "payments-vipps": {
+      "Q1": "The November 7, 2026 capture at https://docs.stripe.com/payments/vipps describes a private-preview, single-use NOK card wallet for Norway customers and the same 29 business-account locations as May. Prospective users can request access by email. API requests including Vipps use the documented preview token. The customer enters a linked phone number and approves through Vipps. Stripe takes the received card data, performs the invisible card transaction, and provides immediate success or failure notification. Standard payout timing remains separate. Connect supports direct, destination and separate charge/transfer types with active capability verification and a Dashboard-access-specific activation path (old raw lines 8-50 and 90-120, new raw lines 9-51 and 91-132). Issuer disputes, full and partial refunds and daily separate Vipps fee debit persist (old raw lines 122-171, new raw lines 134-183). The dated May acceptance guide, separate from the November chooser, describes the manual requires_capture path and five-minute expiry to requires_payment_method (May acceptance raw lines 227-254 and 1031-1039). source-stripe-vipps.md now dates both overviews, scopes the preview token to requests including Vipps, and attributes card processing to Stripe. Preview request, approval, wallet authorization, capture and payout are distinct.",
+      "Q2": "At https://docs.stripe.com/payments/vipps, the substantive November 7, 2026 documentation addition is the explicit email access-request path with a preview registration identifier. The method remains in private preview, retaining the Vipps-only API token requirement (old raw lines 8-12 and 90-106, new raw lines 9-13 and 91-118). Moving the media pointer from the May local copy to CDN, heading formatting and links are presentational/navigation. Preserve the May 8 Norway/NOK and 29 business-market scope, API-created Payment Links limitation despite the cross-method positive cell, Checkout and Elements exclusions, individual Connect capability and card-network fallback, exact restricted cryptocurrency wording, card disputes/refunds, and the daily separate Vipps fee with standard payout (old raw lines 90-171 and new raw lines 91-183). The candidate for source-stripe-vipps.md corrects the customer-card processor identity and broad header claim. The May and November cross-method Wallets rows list Payment Links supported (May matrix lines 184 and 201 and November matrix lines 188 and 206). The method-specific overviews qualify creation through API (old raw lines 90-97 and new raw lines 91-98). Preserve both dated raws and the root-to-Stripe provider index and reciprocal Wallets concept/source route, with the separate acceptance path and its May implementation details distinguished from the unread November child links."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-vipps-preview-scope",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Norway customers only**, NOK only. Card wallet — **private preview** (requires `vipps_preview=v1` header on all API requests). Phone number entry → push notification → Vipps app authorization.",
+      "proposed_markdown": "**Vipps** is a private-preview card wallet for customers in Norway paying in NOK. The customer enters a linked phone number and authorizes in the Vipps app after a push notification. API requests that include Vipps use `vipps_preview=v1`. The November overview adds an email access-request path using `vipps_beta_preview` in its registration example. See [[source-stripe-vipps]] for the separate documented activation and payment conditions.",
+      "quote_indexes": [
+        0,
+        1,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "payments-vipps-restricted-business-qualification",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "durable_fact",
+      "anchor": "**8 prohibited categories**: cryptocurrencies (restricted), stock trade, gambling, betting, bonds, money transfers, debt collection, MLM/pyramid schemes.",
+      "proposed_markdown": "**Restricted business categories**. Both overviews introduce their lists as prohibited and specifically label cryptocurrencies **Restricted** in the first bullet. See [[source-stripe-vipps]] for the exact wording and account eligibility route.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "May raw lines 132–145 and November raw lines 144–157."
+      ]
+    },
+    {
+      "update_id": "payments-vipps-dated-reciprocal",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-vipps]] — Vipps: Norway/NOK card wallet, private preview, card transaction underneath, daily Vipps fee billing, BankAxept→Visa/MC",
+      "proposed_markdown": "- [[source-stripe-vipps]] — May and November 2026 Vipps overviews with private-preview access, Stripe card processing, API-created Payment Links, Connect activation and separate daily Vipps fee.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": []
+    }
+  ]
+}

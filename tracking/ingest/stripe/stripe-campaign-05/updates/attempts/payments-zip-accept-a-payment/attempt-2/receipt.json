@@ -1,0 +1,167 @@
+{
+  "job_id": "payments-zip-accept-a-payment",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Stripe: Accept a Zip Payment\"\ntype: source\ndate_ingested: 2026-05-06\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/payments/zip/accept-a-payment\nraw_files:\n  - \"stripe-zip-accept-payment-2025.md\"\ntags: [stripe, bnpl, zip, buy-now-pay-later, consumer, australia, us, checkout, payment-intents]\n---\n\n## Summary\n\n[[stripe]] documents two Zip acceptance paths in the May 6, 2026 guide. Checkout is the recommended path. The May notice labels Direct API Legacy and says Stripe still supported it at that date, with support potentially ending if the product is later deprecated. The November 7, 2026 capture indexes both paths. It contains no variant body from which to determine a support change, deprecation date, account eligibility, or a payment outcome.\n\n## Checkout (May 6, 2026)\n\nThe compatibility table lists Australian and US business locations and AUD or USD prices and presentment. It supports Checkout Sessions in `payment` mode. Setup and subscription modes are unsupported. Dynamic payment methods let Stripe select eligible methods based on currency and other restrictions. With manual configuration, add `zip` to the Session's `payment_method_types` and price all items in AUD or USD.\n\nThe Stripe-hosted Session example sets `success_url`. The full embedded Session example sets `return_url`. The customer authenticates on Zip's site, and the guide describes immediate notification of success or failure.\n\n## Legacy Direct API (May 6, 2026)\n\nThe guide addresses Australian and US Stripe users and specifies AUD in its server-side PaymentIntent examples. Create the Intent with the amount, `aud`, and `zip`, then pass its client secret to the customer client for confirmation. In the Stripe.js path, call `stripe.confirmZipPayment()` with the client secret and the Intent confirmation `return_url`. Billing details are optional in the May example. Stripe.js handles the redirect, and the customer chooses from available payment options on Zip and authenticates there.\n\nFor the optional server-managed redirect, create and confirm a `zip` PaymentIntent with `payment_method_data` and `return_url`. When the PaymentIntent is `requires_action` and `next_action.type` is `redirect_to_url`, redirect the browser to `next_action.redirect_to_url.url`. The return page can use Stripe's `payment_intent` and `payment_intent_client_secret` query parameters to retrieve the Intent and display status. The May test flow moves from `requires_action` to `succeeded` on authentication or to `requires_payment_method` on simulated failure. Confirm completion with the `payment_intent.succeeded` event rather than a browser callback.\n\nThe separate [November 7, 2026 Stripe.js reference](https://docs.stripe.com/js/payment_intents/confirm_zip_payment) documents `confirmZipPayment` and permits omitting additional data when the Intent already has both a `return_url` and a PaymentMethod. The reference documents the method interface and does not establish tested runtime support.\n\n## Market and capture scope\n\nThe separate November [[source-stripe-zip|Zip overview]] lists domestic-only acceptance for Australian and US accounts and customers, with AUD and USD presentment. Its general market scope is distinct from the May Direct API examples using AUD. The November overview excludes manual capture, partial capture, multicapture, and overcapture, as well as recurring payments, SetupIntents, future usage, and off-session payments. The [November BNPL API matrix](https://docs.stripe.com/payments/buy-now-pay-later#api-support) also excludes manual capture, SetupIntents, and future usage for Zip. The May return-parameter table's generic Invoice `confirmation_secret` note does not establish Zip subscription support. See the overview for refunds and disputes and [[stripe-bnpl]] for the payment method comparison.\n\n## Raw Sources\n\n- [[raw/stripe-zip-accept-payment-2025|May 6, 2026 Zip acceptance guide]] — verbatim webpage content (385 lines), with Markdown emphasis normalized for Prices, Legacy, client secret, PaymentMethod, and webhook\n\n## Related raw API references\n\n- [[raw/stripe-payments-zip-accept-a-payment-2026-11-07|November 7, 2026 Zip acceptance variant index]] — navigation to Checkout and Direct API\n",
+  "quotes": {
+    "payments-zip-accept-a-payment": [
+      {
+        "text": "Learn how to accept Zip, a popular buy now, pay later payment method in Australia and the US.",
+        "location": "raw/stripe-payments-zip-accept-a-payment-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-zip-accept-a-payment-2026-11-07.md:11"
+      },
+      {
+        "text": "[Checkout](https://docs.stripe.com/payments/zip/accept-a-payment.md?payment-ui=checkout)",
+        "location": "raw/stripe-payments-zip-accept-a-payment-2026-11-07.md:13"
+      },
+      {
+        "text": "[Direct API](https://docs.stripe.com/payments/zip/accept-a-payment.md?payment-ui=direct-api)",
+        "location": "raw/stripe-payments-zip-accept-a-payment-2026-11-07.md:14"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-zip-accept-a-payment": [
+      {
+        "text": "<!-- Fetched: 2026-05-06 -->",
+        "location": "raw/stripe-zip-accept-payment-2025.md:2"
+      },
+      {
+        "text": "While Stripe still supports this product, this support might end if the product is deprecated.",
+        "location": "raw/stripe-zip-accept-payment-2025.md:127"
+      },
+      {
+        "text": "success_url: \"https://example.com/success\",",
+        "location": "raw/stripe-zip-accept-payment-2025.md:75"
+      },
+      {
+        "text": "// Billing details is optional.",
+        "location": "raw/stripe-zip-accept-payment-2025.md:275"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-zip-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-zip-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 385
+      }
+    ],
+    "wiki/sources/source-stripe-zip-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 27
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/e1cdd6f491338c2faa2be564/content.diff": [
+      {
+        "start": 1,
+        "end": 387
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-zip-accept-a-payment/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 185
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-zip-accept-a-payment/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 94
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 347,
+        "end": 354
+      },
+      {
+        "start": 744,
+        "end": 749
+      }
+    ],
+    "wiki/concepts/stripe-bnpl.md": [
+      {
+        "start": 110,
+        "end": 131
+      },
+      {
+        "start": 268,
+        "end": 273
+      }
+    ],
+    "raw/stripe-js-payment-intents-confirm-zip-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 93
+      }
+    ],
+    "raw/stripe-payments-zip-2026-11-07.md": [
+      {
+        "start": 112,
+        "end": 174
+      },
+      {
+        "start": 248,
+        "end": 256
+      }
+    ],
+    "raw/stripe-payments-buy-now-pay-later-2026-11-07.md": [
+      {
+        "start": 55,
+        "end": 73
+      }
+    ]
+  },
+  "answers": {
+    "payments-zip-accept-a-payment": {
+      "Q1": "The November 7, 2026 capture at https://docs.stripe.com/payments/zip/accept-a-payment identifies Zip as a buy now, pay later method in Australia and the US and indexes Checkout and Direct API (new raw lines 5-14). It supplies no payment steps, prerequisites or state transitions. In the May 6 guide, the merchant can configure an eligible Checkout Session in payment mode with AUD or USD line items and dynamic or manually listed methods. The customer authenticates at Zip and the merchant receives an immediate stated success or failure outcome (old raw lines 12-51). May Direct API starts with a merchant-server PaymentIntent and client secret, then Stripe.js confirmZipPayment with return_url or optional server confirmation. For the manual path, when the PaymentIntent is requires_action and next_action.type is redirect_to_url, send the browser to next_action.redirect_to_url.url. The client can retrieve status on return, and the guide recommends webhooks for completion. Test outcomes move to succeeded or requires_payment_method (old raw lines 123-172 and 241-373). source-stripe-zip-accept-payment.md now records the two routes, dates the still-supported Legacy notice to May, and assigns success_url to hosted Checkout and Session return_url to embedded Checkout (old raw lines 53-104).",
+      "Q2": "The change at https://docs.stripe.com/payments/zip/accept-a-payment is navigation/presentation only (new raw lines 9-14). Neither variant body was captured, so the index cannot establish deprecation or any change in prerequisites. Preserve May 6, 2026 Direct API Legacy, currently supported at that date and no longer recommended, with support potentially ending if later deprecated (old raw lines 123-133). A separate November Stripe.js reference still documents confirmZipPayment, but does not demonstrate tested support or the linked body. The revised source-stripe-zip-accept-payment.md differentiates hosted success_url, embedded Session return_url, and Direct Intent return_url (old raw lines 53-104, 264-301 and 307-329). Keep May Checkout AU/US payment-only eligibility versus the legacy Intent’s stated AUD recipe and avoid reading the generic Invoice footnote as recurring support (old raw lines 22-38, 133-168 and 292-301). Separately, the November method overview and BNPL API matrix mark manual capture unsupported. Preserve root index line 7, Stripe index lines 350-351 and 747, and the BNPL concept route at lines 272-273, with a reciprocal source route and a separate navigation reference."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-zip-accept-a-payment-concept-integration",
+      "target_path": "wiki/concepts/stripe-bnpl.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Integration notes**: `return_url` required. No manual capture. Checkout recommended — Direct API uses `stripe.confirmZipPayment()` which is **deprecated** (Stripe may end support).",
+      "proposed_markdown": "**Integration notes (May 2026 guide)**: Hosted Checkout uses `success_url` in its example, full embedded Checkout uses a Session `return_url`, and legacy Direct API uses a PaymentIntent confirmation `return_url`. Stripe described Direct API as still supported in May and recommended Checkout. The November Zip overview excludes manual capture. See [[source-stripe-zip-accept-payment]].",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": [
+        "The November acceptance capture only indexes the two variants. URL and legacy details are from old raw lines 53–104, 123–133, 264–301 and 307–329. Manual capture is covered separately in raw/stripe-payments-zip-2026-11-07.md:156–170."
+      ]
+    },
+    {
+      "update_id": "payments-zip-accept-a-payment-concept-route",
+      "target_path": "wiki/concepts/stripe-bnpl.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-zip-accept-payment]] — Zip integration: return_url required, no manual capture, Direct API deprecated (confirmZipPayment)",
+      "proposed_markdown": "- [[source-stripe-zip-accept-payment]] — May 2026 Checkout and legacy Direct API guide, path-specific return fields, and November variant navigation",
+      "quote_indexes": [
+        2,
+        3
+      ],
+      "warnings": [
+        "Stripe index line 351 carries the same undated deprecation and universal return_url wording. The approved concept target is stripe-bnpl.md, and the coordinator owns the provider index."
+      ]
+    }
+  ]
+}

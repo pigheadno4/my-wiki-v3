@@ -1,0 +1,73 @@
+--- raw/stripe-paypal-button-2025.md
++++ raw/stripe-payments-paypal-paypal-button-2026-11-07.md
+@@ -16,18 +16,16 @@
+ 
+ In certain scenarios, the Express Checkout Element doesn’t support the PayPal button. These scenarios include:
+ 
+-- Billing address collection is enabled
+ - Shipping address collection is enabled (for recurring payments)
+ - Phone number collection is enabled
+ 
+-To maximize the chance of presenting the PayPal button, we recommend using the following options when [creating](https://docs.stripe.com/js/elements_object/create_express_checkout_element) the Express Checkout Element. For recurring payments with the PayPal button, you must explicitly define `billingAddressRequired` as `false`.
++To maximize the chance of presenting the PayPal button, we recommend using the following options when [creating](https://docs.stripe.com/js/elements_object/create_express_checkout_element) the Express Checkout Element.
+ 
+ #### HTML + JS
+ 
+ ```javascript
+-elements.create("expressCheckout", {
++elements.create('expressCheckout', {
+   phoneNumberRequired: false,
+-  billingAddressRequired: false,
+   shippingAddressRequired: false, // Only supported for one-off payments
+ });
+ ```
+@@ -37,7 +35,6 @@
+ ```jsx
+ const options = {
+   phoneNumberRequired: false,
+-  billingAddressRequired: false,
+   shippingAddressRequired: false, // Only supported for one-off payments
+ };
+ ```
+@@ -58,30 +55,15 @@
+ 
+ The following example generates a Checkout session using options that maximize availability of the PayPal button:
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const session = await stripe.checkout.sessions.create({
+-  automatic_tax: {
+-    enabled: false,
+-  },
+-  line_items: [
+-    {
+-      price_data: {
+-        unit_amount: 1000,
+-        currency: "eur",
+-        product_data: {
+-          name: "Coconut",
+-        },
+-      },
+-      quantity: 1,
+-    },
+-  ],
+-  mode: "payment",
+-  billing_address_collection: "auto",
+-  payment_method_types: ["card", "paypal"],
+-  success_url: "https://example.com/success",
+-});
++```curl
++curl https://api.stripe.com/v1/checkout/sessions \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "automatic_tax[enabled]=false" \
++  -d "line_items[0][price_data][unit_amount]=1000" \
++  -d "line_items[0][price_data][currency]=eur" \
++  -d "line_items[0][price_data][product_data][name]=Coconut" \
++  -d "line_items[0][quantity]=1" \
++  -d mode=payment \
++  -d billing_address_collection=auto \
++  --data-urlencode "success_url=https://example.com/success"
+ ```

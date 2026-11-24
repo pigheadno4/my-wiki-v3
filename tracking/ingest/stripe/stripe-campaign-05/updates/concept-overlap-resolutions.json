@@ -1,0 +1,123 @@
+{
+  "5762d6004278214f7fb4": {
+    "path": "wiki/concepts/stripe-twint.md",
+    "ids": [
+      "payments-twint-save-during-payment-return",
+      "payments-twint-set-up-future-payments-concept-return"
+    ],
+    "baseline": "**return_url**: not required when reusing a previously saved TWINT method.",
+    "replacement": "**Saved TWINT return URL (May 2026)**. The guides make `return_url` optional for reuse when TWINT was previously set up via a SetupIntent or a PaymentIntent with `setup_future_usage`. See [[source-stripe-twint-save-during-payment]] and [[source-stripe-twint-set-up-future-payments]].",
+    "rationale": "Both approved edits describe the same dated prerequisite. Preserve both routes and the shared object conditions in one replacement."
+  },
+  "97e95815922d73319fea": {
+    "path": "wiki/concepts/stripe-pix.md",
+    "ids": [
+      "payments-pix-primary-reciprocal",
+      "pix-save-concept-source-route"
+    ],
+    "baseline": "- [[source-stripe-subscriptions-pix]] — 2026-11-07 Pix subscription variant index and retained 2026-05-13 combined Checkout, SetupIntents and Subscriptions API guide; mandate, payment and sandbox conditions are dated",
+    "replacement": "- [[source-stripe-pix]] — May and November 2026 Pix product overviews, with buyer and business eligibility, limits, refund and dispute conditions, and Pix Automático mandate scope.\n- [[source-stripe-subscriptions-pix]] — 2026-11-07 Pix subscription variant index and retained 2026-05-13 combined Checkout, SetupIntents and Subscriptions API guide; mandate, payment and sandbox conditions are dated\n- [[source-stripe-pix-save-payment-details]] — May 2026 Checkout and Direct API guide for setup, payment and save, and later charge limits. The November variant index provides navigation.",
+    "rationale": "Both approved reciprocal links use the historical subscriptions entry as their insertion anchor. Retain that existing line and add both reviewed links."
+  },
+  "e03ce140ddfdf871b3c1": {
+    "path": "wiki/concepts/stripe-real-time-payments.md",
+    "ids": [
+      "payments-payto-product-support-and-exclusivity",
+      "payments-pix-payto-exclusivity"
+    ],
+    "baseline": "**PayTo** (Australia): unique among real-time methods — supports SetupIntents, `setup_future_usage`, and Express Checkout Element. Also supports disputes (final, non-appealable), mandate-based recurring, and Billing. Identity verification required to activate.",
+    "replacement": "**PayTo** (Australia) supports SetupIntents, `setup_future_usage`, mandate-based recurring payments and Billing, with required identity verification. The May and November cross-method tables and November PayTo profile mark Express Checkout Element unsupported. The November cross-method matrix also lists SetupIntents and future-use support for UPI. See [[source-stripe-payto]] for the separate off-session qualification. The November Pix overview also lists SetupIntents and `setup_future_usage`, with a separate Pix Automático mandate flow.",
+    "rationale": "Use the PayTo profile and cross-method matrices for express checkout and PayTo support. Retain the validated November UPI and Pix evidence as distinct nonexclusive method coverage."
+  },
+  "cbf1e3045e4882e11204": {
+    "path": "wiki/concepts/stripe-sepa-debit.md",
+    "ids": [
+      "connect-support-sepa",
+      "payments-sepa-debit-connect-mandate"
+    ],
+    "baseline": "Requires `sepa_debit_payments` capability on connected accounts.",
+    "replacement": "Enable SEPA Direct Debit on the platform and request `sepa_debit_payments` for connected accounts. The November 2026 guides require a new customer mandate per connected account for destination charges processed on its behalf. Obtain acceptance with a PaymentIntent or SetupIntent that names the connected account in `on_behalf_of`. The guides exclude cloning SEPA payment methods and mandates to connected accounts for destination charges. See [[source-stripe-sepa-debit]] and [[source-stripe-payment-method-connect-support]].",
+    "rationale": "Both November captures support the same platform and destination-charge conditions. Kept both independently reviewed evidence routes."
+  },
+  "4f9ecc1acf5ba56e0901": {
+    "path": "wiki/concepts/stripe-payouts.md",
+    "ids": [
+      "payouts-instant-payouts-concept-fee-comparison",
+      "payouts-next-day-settlement-dated-settlement"
+    ],
+    "baseline": "**US only** (not new users immediately). Domestic transactions except ACH direct debits settle next business day. Fee: **0.6% monthly** (prior month's accelerated charges, auto-debited). Limit: >$1M adds 1 extra day. Toggle on/off in payout settings. vs Instant Payouts: next-day is automatic/continuous (0.6%), Instant is manual/on-demand (within 30 min, higher fee). See [[source-stripe-payouts-next-day]].",
+    "replacement": "The November 2026 guide lists 24 Dashboard-user countries and directs platforms to their account team for connected-account access. Eligible domestic funds become available in the Stripe balance the next business day. On a daily automatic schedule Stripe sends eligible funds to the bank then, with receipt subject to bank timing. The guide gives regional exclusions and thresholds. May listed US-only Dashboard access and a 0.6% monthly fee. November retains a monthly assessment on the previous month’s accelerated charges and gives no percentage. Instant Payouts are on demand and charged per payout. See [[source-stripe-payouts-next-day]] and [[source-stripe-payouts-instant]].",
+    "rationale": "Kept the reviewed next-day regional and bank-receipt scope and the reviewed on-demand comparison. Do not infer a relative fee from historic rates."
+  },
+  "a2a64c1d4e3064b2b92a": {
+    "path": "wiki/concepts/stripe-payouts.md",
+    "ids": [
+      "payouts-instant-payouts-banks-euro-area-destinations",
+      "payouts-instant-payouts-concept-availability"
+    ],
+    "baseline": "Available in 37 countries. Within 30 minutes, any time including weekends. Fee: **1%** (CA/EU/UK/SG/NO/HK/MY) or **1.5%** (US/AU/NZ/AE). Not compatible with multi-currency settlement. Daily limits: max 10/day, daily maximum amount, region-specific reset time. `instant_available` balance: fee pre-deducted, capped by daily limit, card funds immediate (ACH/SEPA only after settlement). Payout methods: debit card (most countries) or eligible bank account (US/GB/EU/SG/AU/HK). API: `method: 'instant'`.",
+    "replacement": "The May and November 2026 Dashboard guides list 36 account countries. For eligible accounts, funds typically settle within 30 minutes, including weekends. The May guide quoted **1%** (CA/EU/UK/SG/NO/HK/MY) or **1.5%** (US/AU/NZ/AE). The November guide retains the per-payout fee and pre-deduction without percentages. Multi-currency settlement is unsupported. Daily limits use request time and regional resets, with up to 10 payouts and a separate daily maximum amount. `instant_available` is capped by the remaining daily limit and includes eligible card funds after charge completion and ACH/SEPA after settlement. The destination table allows debit cards or eligible bank accounts in the US, GB, Euro Area, SE, DK, AU and SG, bank accounts only in HK, and debit cards only in the other listed destination row. Use `method: 'instant'` with an eligible `destination` for API requests. See [[source-stripe-payouts-instant#Institution and rail directory|the dated institution directory]] for country, rail and destination details.",
+    "rationale": "Uses the independently approved guide-level coverage and adds the directory-specific route. Keeps eligibility and exact institution support separate."
+  },
+  "73c53a7c78f8d5a0c693": {
+    "path": "wiki/concepts/stripe-wallets.md",
+    "ids": [
+      "payments-vipps-accept-a-payment-wallets-preview-scope",
+      "payments-vipps-preview-scope"
+    ],
+    "baseline": "**Norway customers only**, NOK only. Card wallet — **private preview** (requires `vipps_preview=v1` header on all API requests). Phone number entry → push notification → Vipps app authorization.",
+    "replacement": "**Vipps** is a private-preview card wallet for customers in Norway paying in NOK. The customer enters a linked phone number and authorizes in the Vipps app after a push notification. API requests that include Vipps use `vipps_preview=v1`. The November overview adds an email access-request path using `vipps_beta_preview` in its registration example. See [[source-stripe-vipps]] for the separate documented activation and payment conditions.",
+    "rationale": "The overview replacement covers the shared preview-header condition and retains the separately documented November request path."
+  },
+  "f2185e4ad4a0f467ce8c": {
+    "path": "wiki/concepts/stripe-wallets.md",
+    "ids": [
+      "connect-support-paypal",
+      "paypal-marketplace-review-flow"
+    ],
+    "baseline": "**Connect**: online marketplaces only (Deliveroo/ManoMano type). **NOT** for platforms onboarding other businesses. Requires manual approval. Destination + Separate charges only; Direct and `on_behalf_of` not supported.",
+    "replacement": "**Connect (online marketplaces).** PayPal is unavailable to platforms that onboard businesses so those businesses can accept payments directly. Eligible marketplaces use destination charges or separate charges and transfers. Direct charges and `on_behalf_of` are excluded. The November 2026 guides describe requesting access in Payment method settings, Stripe and PayPal review that can take several weeks, Dashboard tracking and instructions to link the PayPal account after approval. Connected-account payment method configuration is unnecessary for the supported charge types. The May guide describes progress emails. See [[source-stripe-paypal]] and [[source-stripe-payment-method-connect-support]].",
+    "rationale": "Merged the marketplace scope, charge types and both dated onboarding flows. Preserved both reviewed source routes."
+  },
+  "89559ecb3229d9133719": {
+    "path": "wiki/concepts/stripe-payment-methods.md",
+    "ids": [
+      "payment-methods-overview-reciprocal",
+      "payments-payment-methods-methods-source-route"
+    ],
+    "baseline": "- [[source-stripe-payment-methods-overview]] — primary source: all 8 categories, regional availability tables",
+    "replacement": "- [[source-stripe-payment-methods-overview]] — May and November payment method families, regional use and dated Dashboard activation, with exact eligibility routed to method guides\n- [[source-stripe-payment-methods]] — April and November Payment Methods API guides on PaymentMethod roles, customer actions, immediate versus delayed outcomes, and verified webhook handling",
+    "rationale": "The regional update and API guide insertion share one anchor. Keep the independently reviewed text for both routes."
+  },
+  "9f8099264e3d8b45e150": {
+    "path": "wiki/concepts/stripe-payment-methods.md",
+    "ids": [
+      "payment-integration-manual-parameter-scope",
+      "payment-methods-dashboard-activation-scope"
+    ],
+    "baseline": "**Dynamic payment methods** (recommended): manage via Dashboard, 40+ methods, Stripe handles eligibility. **Manual**: specify `payment_method_types` explicitly.",
+    "replacement": "**Dynamic payment methods.** In the November 2026 overview, merchants using dynamic Checkout, Payment Element, Payment Links or hosted invoices can enable most methods in the Dashboard without code changes. Stripe displays eligible methods, and individual methods can have additional prerequisites. An integration that explicitly lists `payment_method_types` must change its code to add a method.\n\nThe May 2026 comparison described “40+” dynamically displayed methods and used writable `payment_method_types` in its manual examples. The November guide uses the `allowed_payment_method_types` request allowlist for Checkout Session and PaymentIntent creation and returns eligible types in the computed `payment_method_types` response. See [[source-stripe-payment-method-integration-options]] for earlier GA Checkout, Dahlia Intent and Endive endpoint conditions.",
+    "rationale": "The integration-options text includes the exact reviewed Dashboard caption followed by separate May manual and November versioned API behavior."
+  },
+  "d86d98e624d5c5ef14bf": {
+    "path": "wiki/concepts/stripe-radar.md",
+    "ids": [
+      "radar-account-risk-signals-overview-source-route",
+      "radar-fraudulent-merchant-dated-reciprocal"
+    ],
+    "baseline": "- [[source-stripe-radar-account-risk-signals]] — Account Signals API: 3 signal types (fraud/delinquency/website), webhook-driven, actions table",
+    "replacement": "- [[source-stripe-radar-account-risk-signals]] — May and November 2026 Account Signals API overviews, four November signal routes, 90-day lookup and list scope, and separate guides to plan, event and retrieval behavior.",
+    "rationale": "Preserved the four overview routes and scope of the separate November merchant detail, with the same reciprocal summary."
+  },
+  "08319df541a3e439122e": {
+    "path": "wiki/concepts/stripe-radar.md",
+    "ids": [
+      "radar-account-risk-signals-overview-signal-scope",
+      "radar-fraudulent-merchant-signal-contract-scope",
+      "radar-fraudulent-website-concept-scope"
+    ],
+    "baseline": "**API signals (private preview)**: account fraud, account insolvency, fraudulent website — webhook-driven via Account Signals API. See [[source-stripe-radar-for-platforms]] and [[source-stripe-radar-account-risk-signals]].",
+    "replacement": "**Account Signals API.** The May 2026 overview links a dated preview and describes fraudulent merchant, merchant delinquency risk and on-demand fraudulent website evaluations. The November overview adds payment delinquency exposure, a conditional estimate of dispute and refund dollars at risk. It describes a 90-day lookup period after creation for signals and evaluations, omits older signals from lists, and illustrates notification, retrieval and a platform action decision.\n\nThe separate November merchant guide uses `2026-10-28.preview`, documents Radar Standard or higher and limits certain detail fields to Plus and Pro. It shows a thin readiness event followed by an API fetch. The website guide also documents thin events and retrieval. It allows sandbox testing on any Radar plan and specifies Plus or Pro and a 4,000-request monthly limit for live evaluation. See [[source-stripe-radar-account-risk-signals]] for each signal contract and [[source-stripe-radar-for-platforms]] for review and account actions.",
+    "rationale": "Combined the November overview taxonomy and 90-day lookup boundary with the two separately reviewed detailed scope corrections."
+  }
+}

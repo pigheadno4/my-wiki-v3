@@ -1,0 +1,174 @@
+{
+  "job_id": "payments-sepa-debit-accept-a-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Accept a SEPA Direct Debit Payment\"\ntype: source\ndate_ingested: 2026-05-03\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/sepa-debit/accept-a-payment\"\nraw_files:\n  - \"stripe-sepa-accept-payment-2025.md\"\ntags: [stripe, sepa, sepa-debit, eu, eur, iban, checkout, elements, react-native, mandates, test-ibans]\n---\n\n## Overview\n\nThe May 3, 2026 guide documents SEPA Direct Debit acceptance through Checkout, web Elements and React Native. It covers EUR pricing, customer IBAN and mandate acknowledgement, delayed payment outcomes, optional mandate-reference prefixes and scheduled debits. The November 7, 2026 capture links to the three variants.\n\n## Checkout\n\nThe May Checkout guide documents payment, setup and subscription modes. All line-item Prices must use EUR. Dynamic payment methods can select relevant methods automatically, or merchants can manually include `sepa_debit` in the captured `payment_method_types` examples. The Checkout introduction describes funds typically arriving in five business days. For standard settlement measured from submission and the separate six-business-day guidance, see [[source-stripe-sepa-debit]].\n\n## Web Elements and React Native\n\nIn the May examples, the merchant’s server creates an EUR PaymentIntent and the customer supplies an IBAN and acknowledges the mandate. The May Elements guide recommends Stripe’s prebuilt Checkout page to collect mandates when processing with the Stripe Creditor ID.\n\nOn web, the Payment Element collects bank details and presents the mandate. Stripe.js `confirmPayment` submits the existing PaymentIntent using its client secret. In React Native, the merchant collects the IBAN, presents the mandate terms and submits using the React Native SDK’s `confirmPayment`. The React Native guide requires `addressCountry` and `addressLine1` in `billingDetails` for certain IBAN country codes, including GB and CH. See the May guide’s React Native **Submit the payment to Stripe** section for the full list.\n\nStripe moves a successfully submitted PaymentIntent from `requires_confirmation` to `processing`. The May guide uses `payment_intent.processing` to wait, `payment_intent.succeeded` to fulfill, and `payment_intent.payment_failed` to request a different method. For reuse, the guide specifies `setup_future_usage: off_session`. In the web Elements flow, Stripe attaches the PaymentMethod at `processing` to the customer-configured Account passed as `customer_account` (Accounts v2) or the Customer passed as `customer` (Customers v1), regardless of the eventual debit result.\n\n## Mandate references, scheduled debits and servicing\n\n- **Reference prefix**. Optional `payment_method_options.sepa_debit.mandate_options.reference_prefix` accepts up to 12 characters. It must start with a digit or uppercase letter. The remaining characters may be uppercase letters, digits, spaces, or `.`, `/`, `&`, `-` and `_`. The prefix cannot start with `STRIPE`. A valid prefix produces a 24-character reference.\n- **Target debit date**. The May Checkout and Elements sections describe a best-effort `target_date` 3–15 days ahead. A non-business day or a date fewer than three business days ahead defers the debit to the next available business day. The Elements section says a PaymentIntent created with a target date can be canceled up to three business days before that date.\n- **Refunds and disputes**. The May Checkout section summarizes refunds up to 180 days after payment and customer disputes through the bank up to 13 months after payment, with no appeal. See [[source-stripe-sepa-debit]] for the product guide’s dispute-window qualifications.\n\n## Test IBANs\n\nThe May Checkout and Elements tables each cover 19 test-country headings with eight scenarios per heading. They cover success, delayed success, failure, delayed failure, a dispute following success, weekly payment-volume or transaction limits, and insufficient funds. Test fixtures establish test coverage. The exact IBANs, token names and failure codes are in the May capture’s **Test IBANs** sections.\n\n## Related\n\n- [[stripe-sepa-debit]] — Stripe SEPA Direct Debit concept\n- [[source-stripe-sepa-debit]] — payment method, settlement and dispute reference\n- [[source-stripe-sepa-set-up-payment]] — save a payment method for future use\n- [[source-stripe-subscriptions-sepa-debit]] — subscriptions\n- [[stripe]] — Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-sepa-accept-payment-2025|May 3, 2026 SEPA Direct Debit acceptance guide]] — Checkout, web Elements and React Native, including test fixtures and configuration.\n\n## Related raw API references\n\n- [[raw/stripe-payments-sepa-debit-accept-a-payment-2026-11-07|November 7, 2026 acceptance variant index]] — navigation to Checkout, Elements and React Native.\n",
+  "quotes": {
+    "payments-sepa-debit-accept-a-payment": [
+      {
+        "text": "Learn to accept SEPA Direct Debit payments.",
+        "location": "raw/stripe-payments-sepa-debit-accept-a-payment-2026-11-07.md:7"
+      },
+      {
+        "text": "[Checkout](https://docs.stripe.com/payments/sepa-debit/accept-a-payment.md?payment-ui=checkout)",
+        "location": "raw/stripe-payments-sepa-debit-accept-a-payment-2026-11-07.md:13"
+      },
+      {
+        "text": "[Elements](https://docs.stripe.com/payments/sepa-debit/accept-a-payment.md?payment-ui=elements)",
+        "location": "raw/stripe-payments-sepa-debit-accept-a-payment-2026-11-07.md:14"
+      },
+      {
+        "text": "[React Native](https://docs.stripe.com/payments/sepa-debit/accept-a-payment.md?payment-ui=mobile&platform=react-native)",
+        "location": "raw/stripe-payments-sepa-debit-accept-a-payment-2026-11-07.md:16"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-sepa-debit-accept-a-payment": [
+      {
+        "text": "A payment typically takes **5 business days** to arrive in your account.",
+        "location": "raw/stripe-sepa-accept-payment-2025.md:20"
+      },
+      {
+        "text": "This attachment happens whether the payment later succeeds or fails.",
+        "location": "raw/stripe-sepa-accept-payment-2025.md:1283"
+      },
+      {
+        "text": "This parameter operates on a best-effort basis.",
+        "location": "raw/stripe-sepa-accept-payment-2025.md:498"
+      },
+      {
+        "text": "Maximum length: 12 characters",
+        "location": "raw/stripe-sepa-accept-payment-2025.md:377"
+      },
+      {
+        "text": "The Payment Element automatically collects the customer’s name, email, IBAN, and displays the mandate acceptance text:",
+        "location": "raw/stripe-sepa-accept-payment-2025.md:1110"
+      },
+      {
+        "text": "we recommend you use the [prebuilt checkout page]",
+        "location": "raw/stripe-sepa-accept-payment-2025.md:954"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-sepa-debit-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 16
+      }
+    ],
+    "raw/stripe-sepa-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 1678
+      }
+    ],
+    "wiki/sources/source-stripe-sepa-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 51
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/5065aea1eae9d55047361eeb/content.diff": [
+      {
+        "start": 1,
+        "end": 1682
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-sepa-debit-accept-a-payment/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 160
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-sepa-debit-accept-a-payment/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 86
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 260,
+        "end": 267
+      },
+      {
+        "start": 741,
+        "end": 745
+      }
+    ],
+    "wiki/concepts/stripe-sepa-debit.md": [
+      {
+        "start": 44,
+        "end": 118
+      }
+    ],
+    "raw/stripe-sepa-debit-2025.md": [
+      {
+        "start": 1,
+        "end": 7
+      },
+      {
+        "start": 153,
+        "end": 162
+      },
+      {
+        "start": 230,
+        "end": 250
+      }
+    ]
+  },
+  "answers": {
+    "payments-sepa-debit-accept-a-payment": {
+      "Q1": "The 2026-11-07 capture of https://docs.stripe.com/payments/sepa-debit/accept-a-payment identifies SEPA Direct Debit acceptance and links Checkout, Elements and React Native only (new raw lines 5-16). Preconditions, parties and payment states come from the expanded 2026-05-03 capture. Checkout line items use EUR with dynamic or manual method selection and payment, setup and subscription support (old raw lines 12-49). The May Elements guide recommends Stripe's prebuilt Checkout page for mandate collection when using the Stripe Creditor ID (old raw lines 950-958). For Elements and React Native the merchant server creates an EUR PaymentIntent. The buyer provides IBAN and acknowledges the mandate. The Payment Element collects bank details and presents mandate text, while Stripe.js confirmPayment submits the existing intent. React Native has its own confirmPayment call (old raw lines 754-813, 1090-1110 and 1172-1181). Stripe moves a successfully submitted intent from requires_confirmation to processing, then to succeeded on success, with payment_intent.payment_failed on decline (old raw lines 1267-1279). When configured for reuse, Elements attaches the PaymentMethod on processing to the account or customer appropriate to Accounts v2 or Customers v1, even if payment later fails (old raw lines 1281-1287). source-stripe-sepa-accept-payment.md now distinguishes the three dated implementation guides and the November selector and identifies the 19 test-country headings.",
+      "Q2": "The November change at https://docs.stripe.com/payments/sepa-debit/accept-a-payment is presentational and navigational: it links the same three variant families without the May bodies (new raw lines 9-16). No substantive behavior change is established. Preserve the May capture and correct source-stripe-sepa-accept-payment.md to describe Checkout, React Native and Elements (old raw lines 500-509 and 950-958), and 19 test country headings with eight scenarios per table. Preserve the May three-to-fifteen-day best-effort debit date and business-day deferral conditions (old raw lines 487-498 and 1546-1557). Keep the Checkout introduction’s typical five-business-day funds arrival (old raw lines 18-20), the Elements webhook outcome boundary (old raw lines 1267-1287), and the separately sourced May product-reference T+6 standard settlement and six-business-day guidance in their own contexts. Retain the reciprocal SEPA concept route, separate setup and subscription documentation, and May raw alongside November navigation."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-sepa-debit-accept-a-payment-dated-concept-route",
+      "target_path": "wiki/concepts/stripe-sepa-debit.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-sepa-accept-payment]] — integration guide: Checkout + Elements + iOS + Android, 19-country IBAN test table, reference_prefix, target_date",
+      "proposed_markdown": "- [[source-stripe-sepa-accept-payment]] — May 2026 acceptance guide for Checkout, web Elements and React Native. The November capture links the three variants.",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "payments-sepa-debit-accept-a-payment-concept-outcomes",
+      "target_path": "wiki/concepts/stripe-sepa-debit.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Payment Element**: `stripe.confirmPayment({ elements, return_url })` — automatically collects IBAN + presents mandate. Webhooks: `payment_intent.processing` / `payment_intent.succeeded` / `payment_intent.payment_failed`. **Wait 6+ business days before considering payment successful.**",
+      "proposed_markdown": "**Payment Element**. The May 3, 2026 acceptance guide uses the Payment Element to collect IBAN and present the mandate. Stripe.js `confirmPayment` submits the existing PaymentIntent. Wait for `payment_intent.succeeded` before fulfilling. See [[source-stripe-sepa-accept-payment]] for processing and decline webhooks, and [[source-stripe-sepa-debit]] for the separate May product guide’s standard T+6 settlement and six-business-day timing guidance.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "The November capture is navigation. Payment Element collection and outcome details are in the May acceptance guide at lines 1090–1110 and 1172–1181 and 1267–1287. The six-business-day guidance is from the separate May product guide at lines 153–162 and 230–250."
+      ]
+    },
+    {
+      "update_id": "payments-sepa-debit-accept-a-payment-concept-checkout",
+      "target_path": "wiki/concepts/stripe-sepa-debit.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Checkout**: `payment_method_types: ['sepa_debit']`, `eur` currency. Optional `reference_prefix` (12 chars, not starting with `STRIPE`) → 24-char mandate reference. Optional `target_date` (3–15 days).",
+      "proposed_markdown": "**Checkout**. The May 3, 2026 acceptance guide documents EUR prices and dynamic or manual SEPA Direct Debit selection. See [[source-stripe-sepa-accept-payment]] for the optional mandate reference prefix of up to 12 characters and best-effort debit scheduling 3–15 days ahead.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "Historical prerequisites, options and timing are in old raw lines 12–49, 371–386 and 487–498. The November capture only links Checkout."
+      ]
+    }
+  ]
+}

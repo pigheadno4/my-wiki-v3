@@ -1,0 +1,74 @@
+--- raw/stripe-paypal-disputes-2025.md
++++ raw/stripe-payments-paypal-disputed-payments-2026-11-07.md
+@@ -46,54 +46,54 @@
+ 
+ ## Multiple disputes per payment
+ 
+-A buyer can reopen a dispute on PayPal if there are subsequent issues with an order. For example, the buyer might create a dispute because they haven’t received their goods (`product_not_received`). After you counter and win the case, the buyer can change the category of the dispute on PayPal by claiming that the product they received isn’t what they ordered (`product_unacceptable`). This action causes the dispute to reopen on PayPal.
++A customer can reopen a dispute on PayPal if there are subsequent issues with an order. For example, the customer might create a dispute because they haven’t received their goods (`product_not_received`). After you counter and win the case, the customer can change the category of the dispute on PayPal by claiming that the product they received isn’t what they ordered (`product_unacceptable`). This action causes the dispute to reopen on PayPal.
+ 
+ On Stripe, each claim in a specific category is represented by a separate dispute. In contrast, on PayPal, the original dispute is reopened under a different category. This means you might have multiple disputes for a single payment. In the example above, there are two disputes on Stripe: the first one for `product_not_received` and the second one for `product_unacceptable`. Both of these disputes link to the same dispute on PayPal.
+ 
+-In rare cases, you might see two disputes with the same category for the same payment on Stripe. This happens when the buyer first files a dispute on PayPal, loses it, then files the same dispute with their bank.
++In rare cases, you might see two disputes with the same category for the same payment on Stripe. This happens when the customer first files a dispute on PayPal, loses it, then files the same dispute with their bank.
+ 
+ ## Testing your integration
+ 
+ Stripe allows you to simulate a [disputed transaction](https://docs.stripe.com/disputes.md) by specifying `email` values that match the patterns described in [test scenarios](https://docs.stripe.com/payments/paypal/disputed-payments.md#scenarios) when you create a PaymentIntent (as part of the [billing details](https://docs.stripe.com/api/payment_intents/create.md#create_payment_intent-payment_method_data-billing_details)). You can choose from the different test scenarios to simulate disputes of all relevant categories.
+ 
+-For example, creating the PaymentIntent server-side and simulating a disputed transaction where the buyer claims they didn’t receive the product looks like:
++For example, creating the PaymentIntent server-side and simulating a disputed transaction where the customer claims they didn’t receive the product looks like:
+ 
+ ```curl
+ curl https://api.stripe.com/v1/payment_intents \
+   -u "<<YOUR_SECRET_KEY>>:" \
+   -d amount=1099 \
+   -d currency=eur \
+-  -d "payment_method_types[]=paypal" \
++  -d "automatic_payment_methods[enabled]=true" \
+   -d "payment_method_data[type]=paypal" \
+   --data-urlencode "payment_method_data[billing_details][email]=dispute_not_received@example.com"
+ ```
+ 
+ If using [Checkout](https://docs.stripe.com/payments/checkout.md) or [Payment Links](https://docs.stripe.com/no-code/payment-links.md), you can enter the email in the checkout form. Shortly after the payment has been completed, it will be disputed as `product_not_received`.
+ 
+-### Test scenarios
++### Test scenarios 
+ 
+ The table below displays the scenarios available to test. Each scenario produces a dispute shortly after a payment has been completed.
+ 
+ `.*` represents any valid character in an email. For example, the pattern `.*dispute_duplicate@.*` is matched by an email such as `my_dispute_duplicate@mycompany.com`.
+ 
+-| Email pattern                         | Scenario                                                                                                                                                                                                                                                                                    |
+-| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+-| `.*dispute_credit_not_processed@.*`   | Tests a dispute for a payment where the customer claims they’re entitled to a full or partial refund because they returned the purchased product or didn’t fully use it, or the transaction was otherwise canceled or not fully fulfilled, but you haven’t yet provided a refund or credit. |
+-| `.*dispute_duplicate@.*`              | The customer claims they were charged multiple times for the same product or service.                                                                                                                                                                                                       |
+-| `.*dispute_fraudulent@.*`             | The customer claims that the transaction is fraudulent and they didn’t authorize the transaction.                                                                                                                                                                                           |
+-| `.*dispute_general@.*`                | Tests a dispute for a payment where an uncategorized dispute has been opened.                                                                                                                                                                                                               |
+-| `.*dispute_not_received@.*`           | The customer claims that they have not received the product or service they purchased.                                                                                                                                                                                                      |
+-| `.*dispute_product_unacceptable@.*`   | The customer claims that the product or service they purchased was unacceptable or otherwise not as described.                                                                                                                                                                              |
+-| `.*dispute_subscription_cancelled@.*` | The customer claims that they were charged for a subscription after it was canceled.                                                                                                                                                                                                        |
++| Email pattern | Scenario |
++| --- | --- |
++| `.*dispute_credit_not_processed@.*` | Tests a dispute for a payment where the customer claims they’re entitled to a full or partial refund because they returned the purchased product or didn’t fully use it, or the transaction was otherwise canceled or not fully fulfilled, but you haven’t yet provided a refund or credit. |
++| `.*dispute_duplicate@.*` | The customer claims they were charged multiple times for the same product or service. |
++| `.*dispute_fraudulent@.*` | The customer claims that the transaction is fraudulent and they didn’t authorize the transaction. |
++| `.*dispute_general@.*` | Tests a dispute for a payment where an uncategorized dispute has been opened. |
++| `.*dispute_not_received@.*` | The customer claims that they haven’t received the product or service they purchased. |
++| `.*dispute_product_unacceptable@.*` | The customer claims that the product or service they purchased was unacceptable or otherwise not as described. |
++| `.*dispute_subscription_cancelled@.*` | The customer claims that they were charged for a subscription after it was canceled. |
+ 
+-### Evidence
++### Evidence 
+ 
+ To simulate winning or losing the dispute, respond with one of the evidence values from the table below.
+ 
+ - If you [respond using the API](https://docs.stripe.com/disputes/api.md), pass the value from the table as [uncategorized_text](https://docs.stripe.com/api/disputes/update.md#update_dispute-evidence-uncategorized_text).
+ - If you [respond in the Dashboard](https://docs.stripe.com/disputes/responding.md), enter the value from the table in the **Additional information** field. Then, click **Submit evidence**.
+ 
+-| Evidence           | Description                                                                                 |
+-| ------------------ | ------------------------------------------------------------------------------------------- |
++| Evidence | Description |
++| --- | --- |
+ | `winning_evidence` | The dispute is closed and marked as won. Your account is credited the amount of the charge. |
+-| `losing_evidence`  | The dispute is closed and marked as lost. Your account isn’t credited.                      |+| `losing_evidence` | The dispute is closed and marked as lost. Your account isn’t credited. |

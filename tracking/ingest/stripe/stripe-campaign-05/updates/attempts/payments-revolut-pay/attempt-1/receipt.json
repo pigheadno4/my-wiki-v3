@@ -1,0 +1,249 @@
+{
+  "job_id": "payments-revolut-pay",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Revolut Pay Payments\"\ntype: source\ndate_ingested: 2026-05-07\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/payments/revolut-pay\nraw_files:\n  - \"stripe-payments-revolut-pay-2026-11-07.md\"\n  - \"stripe-revolut-pay-2025.md\"\ntags: [stripe, wallets, revolut-pay, uk, eu, gbp, eur, ron, huf, pln, dkk, recurring, disputes, manual-capture]\n---\n\n## Summary\n\nRevolut Pay (`revolut_pay`) is a wallet with customer-initiated confirmation, support for one-time and recurring payments, Connect, disputes, manual capture and full and partial refunds. Both overviews list standard payout timing. The November 7, 2026 overview describes Revolut account holders paying with their balance or a linked card. On mobile Stripe opens the Revolut app for authentication and confirmation. On desktop the customer scans a QR code with the app and returns to the merchant after confirming.\n\n## Dated customer and authorization scope\n\nThe May 7, 2026 opening describes redirection to Revolut's website, with account authentication or first-time checkout, and says non-Revolut customers could save details after their first purchase. The Disputes section on both dates says customers must authenticate by logging in to a Revolut account. The May opening and Disputes section leave the exact guest scope unclear. November's account-holder description leaves subsequent availability of the May option unresolved (May lines 6–10 and 126–130, November lines 7–11 and 126–130).\n\nThe separate May acceptance guide already describes mobile redirect and desktop QR authentication after `confirmPayment`. Its Elements testing subsections also describe live-mode automatic approval after mobile redirect or desktop QR scan, in tension with the guide's customer authorization instructions and the November overview. The November acceptance capture lists implementation variants. The browser return alone serves customer navigation. See [[source-stripe-revolut-pay-accept-payment|May acceptance authentication and testing and November selector]] for these scopes (May acceptance raw lines 607–625 and 691–701, November selector raw lines 9–21).\n\n## Locations, currencies and integration\n\n- **Customer locations** in both properties tables are the UK and EU. The 30 separately listed **Stripe-account business locations** are AT, BE, BG, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GR, HR, HU, IE, IT, LI, LT, LU, LV, MT, NL, NO, PL, PT, RO, SE, SI and SK. The November opening's EU/UK shorthand sits alongside the detailed table, which includes Liechtenstein and Norway. The November support matrix repeats the distinct account and customer scopes. [[raw/stripe-payments-payment-methods-payment-method-support-2026-11-07|November support matrix, line 69]]\n- **Currencies.** Both overviews list EUR, GBP, RON, HUF, PLN and DKK as presentment currencies and describe those six for settlement across the listed accounts, subject to the country table. That table maps GBP to the UK and EUR, RON, HUF, PLN and DKK to the other listed business countries. It gives GBP as the default for UK customers and EUR for other EU customers (May lines 12–97 and 147–154, November lines 13–98 and 148–155).\n- **Products.** Both list Connect, Checkout, Payment Links, Elements, Subscriptions and Invoicing. Enable Revolut Pay in Dashboard payment settings for supported Stripe-managed flows. The manual integration has its own acceptance guide. November changes the Elements quickstart destination and switches the demo from the local May video reference to a CDN URL (May lines 89–120, November lines 90–120).\n\n## Refunds and disputes\n\n- **Refunds.** Full and partial refunds are available up to 180 days after purchase. The overviews describe asynchronous refunds taking up to five minutes and a final status event, `refund.updated` or `refund.failed`. The Refund object moves to `succeeded` or `failed`. On failure Stripe returns the funds to the Stripe balance and the merchant must arrange another refund method (both captures line 124).\n- **Disputes.** Under Revolut's Buyer Protection Policy, customers have up to 120 calendar days from purchase to file. Stripe notifies the merchant by email and Dashboard, and sends `charge.dispute.created` when webhooks are configured. Stripe holds the disputed amount until Revolut resolves the dispute. Merchants have 14 calendar days to submit requested evidence through Dashboard or can respond via API. Evidence examples include return confirmation, tracking ID, shipping date, purchase IP or receipt for intangible items, and phone number or proof of receipt for services or physical goods. Revolut decides within 35 calendar days **of evidence submission**. Stripe returns the disputed amount to the Stripe balance if the merchant wins, or makes the debit permanent if the customer wins (May lines 126–145, November lines 126–146).\n\n## Related Pages\n\n- [[stripe]]\n- [[stripe-wallets]]\n- [[stripe-revolut-pay]]\n- [[source-stripe-revolut-pay-accept-payment]] — acceptance variants and dated implementation guidance\n- [[source-stripe-revolut-pay-set-up-future-payments]] — separate future-payment setup guide\n- [[source-stripe-subscriptions-revolut-pay]] — separate subscription integration\n\n## Raw Sources\n\n- [[raw/stripe-payments-revolut-pay-2026-11-07|Revolut Pay overview, captured 2026-11-07]] — full 155-line overview with the hosted demo reference.\n- [[raw/stripe-revolut-pay-2025|Revolut Pay overview, captured 2026-05-07]] — full 154-line overview with one italic fix for “webhook” and demo saved to `assets/stripe-revolut-pay-flow.mp4`.\n",
+  "quotes": {
+    "payments-revolut-pay": [
+      {
+        "text": "Revolut Pay is a real-time payment method for customers who have a",
+        "location": "raw/stripe-payments-revolut-pay-2026-11-07.md:9"
+      },
+      {
+        "text": "On desktop, Stripe shows the customer a QR code to scan with the Revolut app.",
+        "location": "raw/stripe-payments-revolut-pay-2026-11-07.md:11"
+      },
+      {
+        "text": "Customers must authenticate Revolut Pay payments by logging into their Revolut account.",
+        "location": "raw/stripe-payments-revolut-pay-2026-11-07.md:128"
+      },
+      {
+        "text": "If a refund fails, the status of the Refund object transitions to `failed` and we return the amount to your Stripe balance.",
+        "location": "raw/stripe-payments-revolut-pay-2026-11-07.md:124"
+      },
+      {
+        "text": "Revolut makes a decision within 35 calendar days of evidence submission.",
+        "location": "raw/stripe-payments-revolut-pay-2026-11-07.md:144"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-revolut-pay": [
+      {
+        "text": "offers the option for non-Revolut customers to save their details after their first purchase.",
+        "location": "raw/stripe-revolut-pay-2025.md:8"
+      },
+      {
+        "text": "authenticate with their account details or checkout as a first time user.",
+        "location": "raw/stripe-revolut-pay-2025.md:10"
+      },
+      {
+        "text": "Customers must authenticate Revolut Pay payments by logging into their Revolut account.",
+        "location": "raw/stripe-revolut-pay-2025.md:128"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-revolut-pay-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 155
+      }
+    ],
+    "raw/stripe-revolut-pay-2025.md": [
+      {
+        "start": 1,
+        "end": 154
+      }
+    ],
+    "wiki/sources/source-stripe-revolut-pay.md": [
+      {
+        "start": 1,
+        "end": 35
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/6c40153d972f5fcd73a0410a/content.diff": [
+      {
+        "start": 1,
+        "end": 64
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-revolut-pay/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 190
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-revolut-pay/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 72
+      }
+    ],
+    "wiki/concepts/stripe-revolut-pay.md": [
+      {
+        "start": 1,
+        "end": 44
+      }
+    ],
+    "wiki/concepts/stripe-wallets.md": [
+      {
+        "start": 250,
+        "end": 284
+      },
+      {
+        "start": 414,
+        "end": 425
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 407,
+        "end": 412
+      },
+      {
+        "start": 662,
+        "end": 665
+      },
+      {
+        "start": 682,
+        "end": 686
+      }
+    ],
+    "raw/stripe-revolut-pay-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 4
+      },
+      {
+        "start": 18,
+        "end": 32
+      },
+      {
+        "start": 607,
+        "end": 625
+      },
+      {
+        "start": 691,
+        "end": 701
+      }
+    ],
+    "raw/stripe-payments-revolut-pay-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 9,
+        "end": 21
+      }
+    ],
+    "raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md": [
+      {
+        "start": 65,
+        "end": 76
+      }
+    ]
+  },
+  "answers": {
+    "payments-revolut-pay": {
+      "Q1": "At https://docs.stripe.com/payments/revolut-pay, the November 7 overview describes a Revolut account holder paying from Revolut balance or a linked card. On mobile Stripe opens the app for authentication and confirmation, and desktop customers scan the QR with the app before returning to the site (new raw lines 7-11). The May overview describes website redirection and first-time checkout or saving by non-Revolut users (old raw lines 6-10). The same May overview and the November overview both say in their Disputes section that customers must authenticate by logging into their Revolut account (old raw lines 126-130 and new raw lines 126-130). May's opening and disputes wording therefore leave the historical scope of guest checkout unresolved, and November's revised opening does not establish that the option was withdrawn. The two captures retain the linked Dashboard setup and product support, customer-initiated confirmation, one-time and recurring use, manual capture support, six currencies and the detailed business-country and customer scopes. The refund can succeed or fail asynchronously, with final webhook and failure restoring the amount to Stripe balance. Disputed funds are held pending Revolut's decision (old raw lines 122-154 and new raw lines 122-155). source-stripe-revolut-pay.md now preserves the May wording, dates the shopper and device scopes, and records the refund and dispute outcomes and timing. Return to the merchant is distinct from a verified successful payment.",
+      "Q2": "For https://docs.stripe.com/payments/revolut-pay, November 7 substantively reframes the documented customer scope and adds explicit mobile-app versus desktop QR authentication to the overview (new raw lines 7-11 and old raw lines 6-10). The separate May acceptance guide already describes both device paths and also has dated live-mode automatic-approval language that needs qualification. source-stripe-revolut-pay.md retains May's first-time and non-account saving claims as historical. November's replacement demo URL and Elements quickstart link are navigation and presentation changes (old raw lines 98-120 and new raw lines 99-120). The revised source retains the explicit country table including Liechtenstein and Norway, dated default-currency and settlement/presentment scope, and the refund and dispute deadlines, including the 35 calendar days from evidence submission (old raw lines 122-154 and new raw lines 122-155). It connects the overview with the wallets and Revolut Pay concepts, and routes separately to acceptance, future-payment setup and subscriptions."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-revolut-pay-overview-link",
+      "target_path": "wiki/concepts/stripe-revolut-pay.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "Revolut Pay is a redirect-based payment method on Stripe. Customers authenticate via Revolut's app or web interface.",
+      "proposed_markdown": "Revolut Pay is a wallet with customer-initiated confirmation. The November 2026 method overview describes the mobile-app and desktop QR paths for Revolut account holders. See [[source-stripe-revolut-pay]] for dated customer scope, currencies, refunds and disputes.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The May and November method evidence belongs to the overview source. The existing May subscription implementation and November subscription selector are separate."
+      ]
+    },
+    {
+      "update_id": "payments-revolut-pay-dated-wallet-customer-scope",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "durable_fact",
+      "anchor": "**UK and EU** — 30 merchant countries. Currencies: EUR, GBP, RON, HUF, PLN, DKK (GBP default for UK, EUR default for EU). Non-Revolut customers can save details after first purchase.",
+      "proposed_markdown": "**Customer and business scope.** The dated overviews list UK and EU customers and 30 Stripe-account business locations. The six currencies are EUR, GBP, RON, HUF, PLN and DKK, with GBP the UK customer default and EUR the default for other EU customers. The May 2026 opening mentions first-time checkout and saving after a first purchase for non-Revolut customers. Both Disputes sections require account login for authentication. The November opening describes account holders confirming in the app. Guest eligibility remains unresolved. See [[source-stripe-revolut-pay]].",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "May lines 8–10 and 128 and November lines 9–11 and 128 contain the scope difference and unchanged Disputes clause."
+      ]
+    },
+    {
+      "update_id": "payments-revolut-pay-dated-wallet-outcomes",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Refunds**: full + partial, 180-day window, async up to 5 minutes.\n\n**Disputes**: 120-day customer window. Evidence submission: 14 days. Revolut decision: within 35 days. Revolut Buyer Protection Policy applies.",
+      "proposed_markdown": "**Refunds** can be full or partial up to 180 days after purchase. Both overviews describe asynchronous processing up to five minutes and final `refund.updated` or `refund.failed` events. On failure the amount returns to the Stripe balance and the merchant needs another refund method.\n\n**Disputes** follow Revolut’s Buyer Protection Policy. The customer has up to 120 calendar days from purchase. The merchant has 14 calendar days to supply the requested evidence. Revolut decides within 35 calendar days of evidence submission. See [[source-stripe-revolut-pay]].",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "May lines 122–145 and November lines 122–146 establish these dated boundaries."
+      ]
+    },
+    {
+      "update_id": "payments-revolut-pay-dated-wallet-live-language",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "durable_fact",
+      "anchor": "Live mode auto-approves after redirect/scan.",
+      "proposed_markdown": "The May acceptance guide's Elements testing subsections describe live-mode automatic approval after redirect or scan, while its authentication instructions describe customer authorization and the November overview explicitly describes app confirmation. The November acceptance capture is a variant selector. See [[source-stripe-revolut-pay]] and [[source-stripe-revolut-pay-accept-payment]].",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "May acceptance raw lines 607–625 and 691–701 describe the different passages. The November acceptance selector lists variants at lines 9–21."
+      ]
+    },
+    {
+      "update_id": "payments-revolut-pay-dated-wallet-source-route",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-revolut-pay]] — Revolut Pay: UK/EU, 6 currencies, full feature set (recurring/Connect/disputes/manual capture), 120-day disputes, 35-day Revolut decision",
+      "proposed_markdown": "- [[source-stripe-revolut-pay]] covers the May and November 2026 overviews, customer scope, app and QR confirmation, six currencies, asynchronous refunds and the dispute evidence timeline.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The adjacent acceptance and future-payment links remain separate."
+      ]
+    },
+    {
+      "update_id": "payments-revolut-pay-dated-wallet-acceptance-label",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-revolut-pay-accept-payment]] — Revolut Pay integration: 6 platforms, mobile redirect + desktop QR (20× refresh), 7-day manual capture, live mode auto-approves",
+      "proposed_markdown": "- [[source-stripe-revolut-pay-accept-payment]] covers the May integration paths, mobile redirect and desktop QR (up to 20 refreshes), dated testing wording and a seven-day manual capture window. The November acceptance capture is a variant selector.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": [
+        "The May acceptance guide gives up to 20 desktop QR refreshes and the seven-day manual-capture window at lines 619–625. The live-mode statements are scoped to the May testing subsections at lines 691–701."
+      ]
+    }
+  ]
+}

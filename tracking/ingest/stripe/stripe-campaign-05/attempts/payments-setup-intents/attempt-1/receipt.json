@@ -1,0 +1,157 @@
+{
+  "job_id": "payments-setup-intents",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-setup-intents-2026-11-07.md",
+  "raw_sha256": "9a10cbbd11dd2971627af922fd346e13dd56356edacec6b349b5cd081a4f49b8",
+  "prior_raw_path": "raw/stripe-setup-intents-api-2025.md",
+  "prior_raw_sha256": "4d4523a74256b7a24cccb286f723addd84643cb7937c9312f79bd8be8fda562b",
+  "source_targets": [
+    "wiki/sources/source-stripe-payment-intents.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-payment-intents.md": "e6d7b77b9ecf4bbd389ab69ddc789d3f04a97677b001b36523f5a00a22c8e324"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-setup-intents-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 77
+      }
+    ],
+    "raw/stripe-setup-intents-api-2025.md": [
+      {
+        "start": 1,
+        "end": 80
+      }
+    ],
+    "wiki/sources/source-stripe-payment-intents.md": [
+      {
+        "start": 1,
+        "end": 111
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/66d9ab3fa7e17531fe151c5d/content.diff": [
+      {
+        "start": 1,
+        "end": 89
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 11
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 17,
+        "end": 25
+      },
+      {
+        "start": 726,
+        "end": 731
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 290,
+        "end": 296
+      }
+    ],
+    "wiki/concepts/stripe-payment-intents.md": [
+      {
+        "start": 8,
+        "end": 45
+      },
+      {
+        "start": 139,
+        "end": 149
+      }
+    ],
+    "raw/stripe-api-setup-intents-create-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 23
+      },
+      {
+        "start": 601,
+        "end": 613
+      }
+    ],
+    "raw/stripe-api-setup-intents-cancel-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 26
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "It\u2019s similar to a payment, but no charge is created.",
+      "location": "raw/stripe-payments-setup-intents-2026-11-07.md:9"
+    },
+    {
+      "text": "you must explicitly collect consent from the customer for this specific use.",
+      "location": "raw/stripe-payments-setup-intents-2026-11-07.md:35"
+    },
+    {
+      "text": "Merchant-initiated transactions require an agreement between you and your customer.",
+      "location": "raw/stripe-payments-setup-intents-2026-11-07.md:51"
+    },
+    {
+      "text": "When an off-session card payment requires authentication, bring your customer back online to complete the payment.",
+      "location": "raw/stripe-payments-setup-intents-2026-11-07.md:67"
+    },
+    {
+      "text": "If not specified, `usage` defaults to `off_session`.",
+      "location": "raw/stripe-payments-setup-intents-2026-11-07.md:69"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "If not specified, `usage` defaults to `off_session`.",
+      "location": "raw/stripe-setup-intents-api-2025.md:68"
+    },
+    {
+      "text": "When an off-session card payment requires authentication, bring your customer back online to complete the payment.",
+      "location": "raw/stripe-setup-intents-api-2025.md:66"
+    }
+  ],
+  "proposed_disposition": "no_substantive_update",
+  "findings": [
+    "Both complete captures document SetupIntent's no-charge setup workflow, Stripe updating the object as customer authentication or bank validation may be needed, and future PaymentMethod reuse. The card, SEPA and BECS routes are examples, with separate navigation for saving during Checkout payment.",
+    "Merchant responsibility includes applicable laws and rules, explicit customer consent before future on-session display and upfront off-session agreement plus opt-in terms covering authority to initiate payments, anticipated frequency and how amount is determined. `allow_redisplay` distinguishes methods for offline use from methods eligible to show to the customer. Removing friction from a later card payment and consent are independent.",
+    "Both captures advise `on_session` for customer-present-only use and `off_session` for off-session or mixed use, and default to `off_session` when omitted. The setup optimization can bring SCA into initial setup for cards, may let a properly saved card qualify as merchant-initiated later under an agreement, and leaves later issuer decline or authentication possible. Bring the customer online to complete the later payment when authentication is required.",
+    "The mapped source correctly identifies no-charge SetupIntent and separates `SetupIntent.usage` from PaymentIntent `setup_future_usage`. It omits the default, customer return-to-auth routing and agreement contents. The separate dated Create reference covers attach and confirm after creation, and separately corroborates the usage default. The Cancel reference is separate from the compared guide and remains scoped to that endpoint and Checkout Session path."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "Retain the April 19, 2026 full guide for identical intended-use and consent rules and dated Node example. Preserve separate S04 implementation and async capture authority, lifecycle and April status-monitoring sources.",
+    "Retain SCA as conditional issuer/customer authentication, MIT agreement and applicable exemption qualification, future checkout redisplay consent, no initial charge, and recovery on the later payment.",
+    "Retain the payments intent concept, Stripe index and company source routes and the dated lifecycle/implementation/async boundaries when amending the shared source."
+  ],
+  "conflicts": [],
+  "unresolved_questions": [
+    "Neither Setup Intents API guide enumerates cancellation states or a complete transition graph. Use independent lifecycle/API material for those details; the absence of such states in the recapture supplies no lifecycle change."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-payment-intents.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-payment-intents.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "At Saving a payment method, distinguish SetupIntent's usage default (`off_session` when omitted) and the on-session-only versus mixed/off-session matrix, preserve the option to bring the customer back online when issuer authentication is needed, and summarize initiation permission, frequency and amount determination in off-session opt-in terms. Keep consent and mandate independent of Stripe's intended-use optimization and authentication.",
+        "Give the separate November full Setup Intents API guide both a line locator and raw provenance alongside the April capture. Keep links to the provider company, provider index and Payment Intents concept and retain separate S04 implementation and async, April lifecycle and status references and the independent cancellation assessment."
+      ],
+      "conflicts": [],
+      "reason": "The paired captures provide missing operative qualifications for the mapped multi-source reference, including behavior on omitted `usage` and the recovery step when later authentication is needed. This is bounded existing source coverage work alongside an unchanged raw document."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/setup-intents, old raw lines 8-26 and new raw lines 9-27 establish that the merchant sets up credentials for later payments without creating a charge, with the customer potentially authenticating and Stripe updating the SetupIntent during setup. Old raw lines 28-50 and new raw lines 29-51 preserve explicit on-session redisplay consent, `allow_redisplay`, and an off-session opt-in agreement covering permission, frequency and amount determination. Old raw lines 52-78 and new raw lines 53-75 preserve the same `usage` choices and default, plus the need to bring the customer online when a later off-session charge requires their authentication. source-stripe-payment-intents.md lines 66-70 separates the two Intent use cases and records consent and authentication qualifications but omits the SetupIntent default, the agreement's concrete terms and the customer return step. These guides describe setup behavior without giving a complete state diagram.",
+    "Q2": "For https://docs.stripe.com/payments/setup-intents, old raw lines 28-68 and new raw lines 29-69 have the same policy and usage matrix. The April 19 and November 7, 2026 captures differ in Markdown emphasis, sentence and table formatting, the added `payment-ui=elements` link parameter in the recommended card-mandate route at old raw line 48 and new raw line 49, and the equivalent server create example changed from Node to cURL at old raw lines 70-78 and new raw lines 71-75. No differing product rule or actual authorization result is established. The bounded change to source-stripe-payment-intents.md records paired provenance and omitted setup guardrails while preserving Stripe index and company routes, the reciprocal Payment Intents concept and independent S04 implementation and asynchronous capture authorities. Keep the separate Create/Cancel API references scoped to their endpoints and lifecycle and status guidance independently attributable."
+  }
+}

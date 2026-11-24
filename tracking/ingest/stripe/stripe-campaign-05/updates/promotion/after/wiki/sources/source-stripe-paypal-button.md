@@ -1,0 +1,52 @@
+---
+title: "Stripe: PayPal Button"
+type: source
+date_ingested: 2026-05-07
+date_updated: 2026-11-22
+original_format: webpage
+canonical_url: https://docs.stripe.com/payments/paypal/paypal-button
+raw_files:
+  - "stripe-payments-paypal-paypal-button-2026-11-07.md"
+  - "stripe-paypal-button-2025.md"
+tags: [stripe, wallets, paypal, paypal-button, express-checkout-element, checkout, billing-address, recurring]
+---
+
+## Summary
+
+The May 7 and November 7, 2026 guides cover the PayPal button in Express Checkout Element and Stripe Checkout. Stripe chooses whether to show the button or use a PayPal redirect. Merchants can configure the page to improve button availability. Both captures introduce an Express Checkout Element demo and recommend a PayPal Sandbox account for testing. Button display and sandbox setup leave payment completion unverified.
+
+## Express Checkout Element
+
+Both guides list phone number collection and shipping address collection for recurring payments as scenarios where the PayPal button is unavailable. Their HTML/JavaScript and React examples set `phoneNumberRequired: false` and `shippingAddressRequired: false`, with shipping address collection scoped to one-off payments (May lines 18–46, November lines 19–44).
+
+The May guide additionally lists billing address collection as a blocker, requires an explicit `billingAddressRequired: false` for recurring payments, and includes that setting in both examples. November omits the billing blocker and the recurring instruction and drops the field from both examples. The omission leaves current billing behavior unresolved.
+
+The separate April 21, 2026 PaymentIntents integration guide says `billingAddressRequired` defaults to false if certain shipping, contact, Apple Pay, line item or business options are supplied and to true otherwise. It says the Express Checkout Element hides the PayPal button when required billing or phone information is unavailable. The November capture of that integration guide links Checkout Sessions API and Payment Intents API variants. [[source-stripe-express-checkout-element-accept-payment|Express Checkout Element acceptance guide]]
+
+## Stripe Checkout
+
+Both guides say Checkout supports the PayPal button out of the box, with a redirect in scenarios including:
+
+- Billing address or consent collection.
+- Custom fields.
+- PayPal as the sole payment method type.
+- Phone number collection, shipping address collection on recurring payments, or tax-ID collection.
+
+Both Checkout Session examples use payment mode, a one-time EUR item, `billing_address_collection: 'auto'` and disabled automatic tax. May's Node example explicitly sets `payment_method_types: ['card', 'paypal']`. November's cURL example omits the field (May lines 48–90, November lines 46–73). Both prose sections preserve the PayPal-only redirect condition. Applicable methods and button display still depend on transaction eligibility and Stripe's presentation decision.
+
+The separate `2026-09-30.endive` changelog documents that writable `payment_method_types` on Checkout Session creation returns HTTP 400. It provides dynamic payment methods or `allowed_payment_method_types` as migration paths. The latter filters the list for compatibility and returns the subset in the response's `payment_method_types`. The November button example does not specify an API version. [[raw/stripe-changelog-endive-2026-09-30-remove-payment-method-types-checkout-sessions-2026-11-07|Versioned Checkout changelog, lines 7–23]]
+
+## Related Pages
+
+- [[stripe]]
+- [[stripe-wallets]]
+- [[stripe-express-checkout-element]]
+- [[stripe-checkout]]
+- [[source-stripe-paypal]]
+- [[source-stripe-express-checkout-element]]
+- [[source-stripe-express-checkout-element-accept-payment]]
+
+## Raw Sources
+
+- [[raw/stripe-payments-paypal-paypal-button-2026-11-07|PayPal Button, captured 2026-11-07]] — full 73-line guide with the November Express Checkout Element and Checkout examples.
+- [[raw/stripe-paypal-button-2025|PayPal Button, captured 2026-05-07]] — full 90-line guide containing the dated billing-address and Checkout method list examples. No italic fixes were needed.

@@ -16,7 +16,7 @@ Stripe Custom Payment Methods (CPM) allow merchants to surface third-party payme
 - **Type IDs not API-retrievable**: store the `cpmt_` ID in your own database; retrieve it at payment method creation time
 - **Processing**: completely outside Stripe — merchant handles the actual transaction with their third-party PSP
 - **Recording**: optional — transactions can be reported to Stripe via the Payment Records API
-- **50+ presets**: available for common external PMs; or set a custom display name + logo
+- **Presets and branding.** The May 8, 2026 guide counts more than 50 presets for common external methods. November retains preset guidance for the Payment Element and says to provide custom display name and logo for custom front ends or Payment Methods API use. It gives no updated count.
 
 ## Integration Support
 
@@ -141,7 +141,7 @@ Decision rule:
 ## Sources
 
 - [[source-stripe-payment-element-custom-payment-methods]] — primary reference: setup flow, display types, submit handler, recording pattern, XSS warning
-- [[source-stripe-custom-payment-methods]] — overview: PM API type, integration matrix, marks compliance, Indonesia/Thailand restriction, Stripe disclaimer
+- [[source-stripe-custom-payment-methods]] — May and November custom payment method type and instance boundaries, Checkout and Express Checkout product scope, Connect request examples, and merchant and PSP responsibilities
 - [[source-stripe-paypal-custom-payment-method]] — PayPal as CPM: low-code adapter for Checkout, decision rule (EU→standard PM vs global→CPM adapter)
 - [[source-stripe-subscriptions-third-party]] — May 2026 Billing guide for custom payment methods and PaymentRecords with external processors; November 2026 base capture links two variants only
 - [[source-github-stripe-js]] — `@stripe/stripe-js@9.14.0` embedded Payment Element and beta Express Checkout Custom Payment Method declarations

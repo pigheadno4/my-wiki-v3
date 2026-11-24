@@ -1,0 +1,159 @@
+{
+  "job_id": "payouts",
+  "attempt": 2,
+  "raw_path": "raw/stripe-payouts-2026-11-07.md",
+  "raw_sha256": "a9eef4271e5322e1a55c647ef9e221091b0eb8b2fab2dc5acaa4cdfd5ee5735e",
+  "prior_raw_path": "raw/stripe-payouts-2026.md",
+  "prior_raw_sha256": "34e68865cee85830d3986b0f071db98550c6a2e5aebef5e2ccb5c3f151ad3113",
+  "source_targets": [
+    "wiki/sources/source-stripe-payouts.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-payouts.md": "db7f378799a63c0327b71cb447acdcd54bf198e9970b39a3e5acb88534384342"
+  },
+  "read_ranges": {
+    "raw/stripe-payouts-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 2993
+      }
+    ],
+    "raw/stripe-payouts-2026.md": [
+      {
+        "start": 1,
+        "end": 1634
+      }
+    ],
+    "wiki/sources/source-stripe-payouts.md": [
+      {
+        "start": 1,
+        "end": 74
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/80635951f9badb49cd65260f/content.diff": [
+      {
+        "start": 1,
+        "end": 4002
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 22
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 539,
+        "end": 551
+      },
+      {
+        "start": 715,
+        "end": 721
+      }
+    ],
+    "wiki/concepts/stripe-payouts.md": [
+      {
+        "start": 1,
+        "end": 90
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Virtual bank account services that don\u2019t open accounts in your name, such as Wise and Payoneer, aren\u2019t supported for payouts in Japan.",
+      "location": "raw/stripe-payouts-2026-11-07.md:1014"
+    },
+    {
+      "text": "Choosing a payout schedule doesn\u2019t change how long it takes for your pending balance to become available.",
+      "location": "raw/stripe-payouts-2026-11-07.md:1064"
+    },
+    {
+      "text": "Manual payouts initiated before 5 pm US/Eastern are eligible for same-day manual payouts.",
+      "location": "raw/stripe-payouts-2026-11-07.md:1086"
+    },
+    {
+      "text": "[USD Bank Transfers](https://docs.stripe.com/payments/bank-transfers.md) | 5 business days",
+      "location": "raw/stripe-payouts-2026-11-07.md:1201"
+    },
+    {
+      "text": "When a payout fails, the status might initially show as `paid`, but then change to `failed` within 5 business days.",
+      "location": "raw/stripe-payouts-2026-11-07.md:2980"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Your first payout might take longer, depending on your industry risk level and country of operation.",
+      "location": "raw/stripe-payouts-2026.md:8"
+    },
+    {
+      "text": "Choosing a payout schedule doesn\u2019t change how long it takes for your pending balance to become available.",
+      "location": "raw/stripe-payouts-2026.md:1053"
+    },
+    {
+      "text": "This same-day payout is limited to 10 same-day manual payouts per day, with a maximum transaction amount of 1 million GBP each.",
+      "location": "raw/stripe-payouts-2026.md:1073"
+    },
+    {
+      "text": "Test payouts simulate a live payout but aren\u2019t processed with the bank.",
+      "location": "raw/stripe-payouts-2026.md:1287"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The 2026-11-07 capture explains Stripe payouts from available balance, the successful first live payment prerequisite and typical 7\u201314-day initial window qualified by industry, country and risk, later schedule and settlement timing, and potential further bank delay. Dashboard dates are expected dates, and the Connect platform is routed separately (old 4-14, new 5-21).",
+    "The merchant supplies local bank details and matches payout settings currency. Supported additional settlement currencies require one account per currency and a default. Configured currencies settle without conversion and unconfigured currencies convert to the default. For eligible US businesses, payment proceeds settle in the Stripe financial account and bank information is needed for external payouts (old 1013-1033, new 1016-1036).",
+    "Business-day and calendar-day delay depend on the connected account country when a platform sets delay_days, with Brazil Pix, Boleto, debit and prepaid and Singapore PayNow exceptions. Country and payment-method timing determines balance availability from confirmation/capture, separate from payout cadence and bank credit (old 1088-1194, new 1097-1203). The country table separates initial settlement timing for a first payout from default settlement timing for later payouts. Account risk criteria may prevent the switch to default settlement timing (old 1121-1125, new 1130-1134).",
+    "Balances below country or currency minimum stay in Stripe until sufficient. A persistent negative available balance can generate a bank-account debit, so the external bank account must support credits and debits. Bank return can take up to five additional business days and apparent paid may become failed within five business days. Correct details and the next scheduled interval retry route matter, and inaccurate bank information can send funds to an unrecoverable wrong account (old 1208-1293, 1617-1625, new 1217-1302, 2976-2984).",
+    "Root index line 7 routes to Stripe index lines 539-551 and 715-721, which link the source and concept. Source lines 67-74 and concept lines 80-90 provide the reciprocal links and source/old-raw provenance. Concept lines 8-46 touch the affected timing, schedule, currency and account-type content. Adjacent specialized source routes were inspected as navigation."
+  ],
+  "substantive_changes": [
+    "Same-day manual payouts now have explicit currencies, eligibility cutoffs and cap basis (old 1067-1075, new 1078-1088). US USD at standard T+2 or slower before 5 pm US/Eastern typically otherwise within one business day. GB GBP at standard T+3 or slower before 5 pm Europe/London typically otherwise within two. The new EUR row lists CH, EU, GB, MT and NO at T+3 or slower before 4 pm Europe/Copenhagen, with high-failure recipient bank rails arriving next business day and other manual payouts typically within one business day. The table specifies 10 eligible same-day payouts per day, each up to one million of the indicated currency. The May wording used business hours and did not include EUR or the explicit slower-than-standard language. May described a US account limit of 10 manual payouts per day, whereas November describes 10 same-day manual payouts per day. Node to curl is presentation of the same create-payout endpoint.",
+    "November adds approved Stripe Capital financing payout into the selected Stripe financial account, with funds access within minutes, spending uses and default external-bank alternative, and says new Stripe users are not immediately eligible (new 1038-1044, inserted between old 1033-1035). This is finance proceeds rather than regular payment settlement.",
+    "November explicitly scopes the named futs\u016b or t\u014dza account requirement and exclusion of services without an account in the legal entity's name to Japan (new 1012-1014), in contrast to the May general virtual-account support with a higher-failure warning (old 1007-1011). The separately retained Japan cross-border FXYCS participation requirement is at old 488 and new 493.",
+    "The Japan settlement row now says 7 calendar days initial and 4 business days default, and the payment method table adds 5 business days for USD Bank Transfers, separate from standard ACH Debit at 4 business days (old 1154-1157 and 1181-1192, new 1162-1165 and 1189-1201).",
+    "November describes any applicable non-primary-currency multi-currency fee as charged on settlement, rather than at payout, and says certain non-primary currencies have no settlement fee. May says most non-primary-currency payouts incur fees. Both say Stripe charges no fee to initiate normal payouts (old 1017-1023 and 1627-1629, new 1020-1026 and 2986-2988).",
+    "November supplies country-specific test bank-account values for simulated successful, failed and some ineligible instant payouts, while May has the test instructions without those bank tables. Both include test debit-card fixtures. These are additions to test documentation and establish neither new live country eligibility nor bank processing (old 1283-1299, new 1292-2658, diff 2080-3447).",
+    "Most formatting differences are delimiter widths, emphasis, wording, whitespace and title revisions. Navigation changed to money-management Dashboard settings for bank details/currency, new Connect connected-account and cross-border paths, multi-currency-settlement path, dedicated payout creation and payout failure-code reference. These targets were not used as new behavior evidence (old 8-16, 1029-1033, 1065-1070, 1617-1619, new 9-21, 1032-1036, 1076-1080, 2976-2978)."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain 2026-05-11 raw, general virtual-account and higher-failure statement dated to May, old UK/US same-day business-hours language and Japan timing row as historical context (old 1007-1011, 1067-1075, 1156).",
+    "Retain both capture dates' first live payment and variable risk/country timing, payout cadence versus availability, initiation versus bank deposit, BR/IN daily and JP schedule exceptions plus Thailand default and Connect qualification, eligible Instant Payouts and eligible US 2-day ACH (old 8-14, 1035-1065, 1196-1206, new 9-21, 1046-1076, 1205-1215).",
+    "Retain existing source to Stripe company and payout concept, payout concept back to source, Stripe index discovery and applicable specialized source navigation (source 67-74, concept 80-90, Stripe index 543-551 and 718).",
+    "Both captures explicitly state that account risk criteria can prevent switching to the published default settlement timing for subsequent payouts (old 1121-1125, new 1130-1134). Preserve this qualification separately from the risk effect on the typical first-payout window."
+  ],
+  "conflicts": [
+    "Current source lines 42-47 list virtual banks including Wise generically. May's general statement and higher-failure caveat (old 1007-1011) are historical authority. November's specific rule (new 1012-1014) excludes virtual services that do not open the account in the Japanese legal entity's name and names Wise and Payoneer. It does not show a global virtual-account prohibition.",
+    "May's Japan row describes weekly payouts including payments processed up to four business days earlier (old 1156), although its schedule section permits manual, weekly and monthly (old 1062). November's Japan row specifies 7 calendar days initial and 4 business days default (new 1164), while its schedule section still permits manual, weekly or monthly and excludes daily (new 1073). Preserve the two capture dates and the timing-versus-cadence distinction.",
+    "The source's UK field list at lines 53-54 reads categorically. Both raws qualify the UK-based details by bank currency and Stripe account country (old 955-962, new 960-967). This is a baseline summary issue, not a November requirement change."
+  ],
+  "unresolved_questions": [
+    "Both captures introduce a supported free-currency table without including its data rows (old 1021-1023, new 1024-1026). No country/currency fee matrix follows from this page. The actual qualifying bank or account, eligibility, direct bank credit and production behavior were not tested."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-payouts.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-payouts.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Source lines 15-18 retain the May onset caveat but should make the successful live payment and typical scheduling explicit (old 8-10, new 9-15). Source lines 20-33 capture cadence versus availability, but both raws include Thailand's daily automatic default, the optional weekly/monthly schedules in Japan, and Connect cross-border exceptions (old 1035-1065, new 1046-1076).",
+        "Source lines 35-47 correctly capture the choice of default currency and the conversion distinction in supported countries, but the generic virtual account bullet needs the November Japan exception and Stripe financial accounts are a conditional US proceeds destination rather than a general external-bank account type (old 1007-1033, new 1012-1036). Call out settlement fee versus conversion and normal payout fees at new 1020-1032 and 2986-2988.",
+        "Source lines 49-65 should qualify the UK account format by currency and Stripe account country, which was already present in May (old 955-962, new 960-967). Preserve the raw route for country formats and Connect-only destinations.",
+        "Source lines 11-65 lack discoverable manual same-day eligibility, country and payment-method timing, approved Capital destination, payout minimum versus negative-balance debit, test-only fixtures and reversibility of apparent paid status. Add bounded entries or raw locators (new 1038-1044, 1078-1088, 1097-1203, 1217-1302, 2976-2984). Where the source adds country settlement timing, distinguish initial from subsequent default timing and carry the risk-criteria exception that can prevent an account from switching to the default (old 1121-1125, new 1130-1134)."
+      ],
+      "conflicts": [
+        "Current source lines 42-47 list virtual banks including Wise generically. May's general statement and higher-failure caveat (old 1007-1011) are historical authority. November's specific rule (new 1012-1014) excludes virtual services that do not open the account in the Japanese legal entity's name and names Wise and Payoneer. It does not show a global virtual-account prohibition.",
+        "May's Japan row describes weekly payouts including payments processed up to four business days earlier (old 1156), although its schedule section permits manual, weekly and monthly (old 1062). November's Japan row specifies 7 calendar days initial and 4 business days default (new 1164), while its schedule section still permits manual, weekly or monthly and excludes daily (new 1073). Preserve the two capture dates and the timing-versus-cadence distinction.",
+        "The source's UK field list at lines 53-54 reads categorically. Both raws qualify the UK-based details by bank currency and Stripe account country (old 955-962, new 960-967). This is a baseline summary issue, not a November requirement change."
+      ],
+      "reason": "Material November qualifications and dated differences require a source correction and navigational additions. Separately restore pre-existing UK bank-field and scheduling qualifiers and preserve the reciprocal Stripe payout concept and original raw provenance."
+    }
+  ],
+  "answers": {
+    "Q1": "The 2026-11-07 capture of https://docs.stripe.com/payouts describes payouts by Stripe from available balance to a bank account with matching currency and location-specific details. After the first successful live payment Stripe typically schedules the first payout to complete within 7\u201314 days, with country, industry and risk qualifications. Payment confirmation or capture starts settlement timing, payout schedule controls sending, and the recipient bank can take longer to make funds available. The initial country settlement timing applies to the first payout and the default generally applies to later payouts, but account risk criteria can prevent the switch to the published default. Platforms follow a separate Connect route and can set delay_days on connected accounts under local calendar- or business-day rules. Daily transfers are on business days, weekly/monthly and manual are also documented with country restrictions, and qualified US USD, GB GBP and EUR manual payouts have local cutoffs. Below-minimum balances stay in Stripe and a persistent negative balance can debit the destination bank. A failed bank return can change paid to failed within five business days. Test fixtures use test keys and simulate results without bank processing. Both captures establish the basic mechanics (old raw lines 8-16, old raw lines 1035-1125 and old raw lines 1277-1297, compared with new raw lines 9-21, new raw lines 1046-1134, new raw lines 1286-1302 and new raw lines 2976-2984). source-stripe-payouts.md captures schedules, common bank details and currency conversion but omits material settlement, failure, same-day manual and test boundaries.",
+    "Q2": "For https://docs.stripe.com/payouts, source-stripe-payouts.md needs a substantive update. The May 11 Japan table describes weekly payouts on a selected day covering payments processed up to four business days earlier. The November 7 table lists seven calendar days initial and four business days default. Both schedule sections retain manual as the Japanese default, allow weekly or monthly and exclude daily (old raw lines 1057-1065 and old raw lines 1154-1157, new raw lines 1068-1076 and new raw lines 1162-1165). In both captures, risk criteria can prevent the account from switching to default settlement timing (old raw lines 1121-1125, new raw lines 1130-1134). May describes same-day US and GB manual payouts in business hours at standard T+2 and T+3, respectively, and a US account limit of ten manual payouts per day. November specifies USD in the US at standard T+2 or slower before 5 pm US/Eastern, GBP in GB at standard T+3 or slower before 5 pm Europe/London, and EUR in CH, EU, GB, MT and NO at standard T+3 or slower before 4 pm Europe/Copenhagen, with next-business-day arrival for recipient banks with high same-day rail failure rates. November limits these to ten same-day manual payouts per day, each up to one million in the eligible currency (old raw lines 1067-1075, new raw lines 1078-1088). Other substantive updates cover approved Capital financing destination, Japan named accounts and virtual-service exclusions, USD Bank Transfers at five business days, applicable non-primary-currency settlement fees and test-only bank fixtures. Preserve May's general virtual-account support and higher-failure caveat as historical context. Formatting, the example language, and moved Dashboard, Connect and API links are presentation or navigation. Keep the original raw and reciprocal Stripe payout concept links."
+  }
+}

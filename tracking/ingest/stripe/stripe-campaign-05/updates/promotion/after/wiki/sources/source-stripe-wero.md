@@ -1,0 +1,44 @@
+---
+title: "Stripe: Wero Payments"
+type: source
+date_ingested: 2026-05-05
+date_updated: 2026-11-22
+original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/wero"
+raw_files:
+  - "stripe-payments-wero-2026-11-07.md"
+  - "stripe-wero-2025.md"
+tags: [stripe, wero, germany, eur, bank-redirect, authenticated]
+---
+
+## Overview
+
+Standalone Wero is an authenticated bank transfer in EUR. Customers connect a bank account to their Wero wallet. The May 5, 2026 method overview listed Germany for customers. On November 7 the overview lists Belgium, France, Germany, Luxembourg and the Netherlands. Both list the same 30 European Stripe account locations, a separate business eligibility list. Those locations are AT, BE, BG, CY, CZ, DE, DK, EE, ES, FI, FR, GR, HR, HU, IE, IS, IT, LI, LT, LU, LV, MT, NL, NO, PL, PT, RO, SE, SI and SK. Minimum payment amount is EUR 0.50. The maximum varies by bank and is usually determined by the customer's bank limits. See May lines 8–46, 52–85 and 123–125 and November lines 9–47, 53–86 and 122–124.
+
+The November cross-method overview labels standalone Wero as public preview, alongside the separate iDEAL | Wero entry. The iDEAL | Wero guide sets out its own rebranding and phased switch instructions covering 2026–2027. The Netherlands buyer overlap is distinct from those migration instructions and the separate API payment method identities. The November bank-redirect matrix's unsupported manual-capture cell applies to `ideal`. See [[stripe-ideal]] and [[source-stripe-payment-methods-overview]].
+
+## Customer authorization and payment status
+
+When the customer selects Wero, Stripe redirects them to Wero's authentication page. They scan the QR code, open the Wero app and approve. The method overviews describe payment processing in typically under ten seconds and a redirect back. Standard payout timing is separate. In the scoped May acceptance guide, a failed payment or an authorization session without action for one hour returns the PaymentIntent to `requires_payment_method`. Verify payment status independently of the redirect and use the successful payment event for fulfillment. The November acceptance capture is a variant index. See May overview lines 115–117, November lines 114–116, and May acceptance lines 599–611 and 880–885.
+
+## Product support and onboarding
+
+Both overview captures list Connect, Checkout in payment mode, Payment Links and Elements. Checkout subscription or setup modes and Express Checkout Element are excluded. Neither overview lists recurring payments or disputes as supported. May lists manual capture No. November lists manual capture Yes and supplies no capture workflow, release behavior or authorization window for manual capture. See May lines 28–50 and 87–94 and November lines 29–51 and 88–95.
+
+Both guides describe Dashboard enablement and a separate manual integration route. May invites merchants to submit an interest form to get in touch. November omits that invitation. Preview status and account eligibility still apply. November lists categories prohibited or restricted in addition to Stripe's general rules, including payment facilitators processing for sub-merchants, peer-to-peer transfers, and other named categories. The guide does not classify each bullet as prohibited versus restricted. The category condition qualifies the general Connect support label. See May lines 94–113 and November lines 95–112 and 126–143.
+
+## Refunds
+
+The May guide states a window of up to two years after the original payment. November specifies up to 730 days after the original payment. Both document full and partial refunds, including multiple partial refunds up to the original charge amount. See May lines 119–121 and November lines 118–120.
+
+## Related Pages
+
+- [[stripe-wero]] — Standalone Wero method and dated implementation routes
+- [[source-stripe-wero-accept-payment]] — Wero acceptance guide and November variant index
+- [[stripe-ideal]] — Separate iDEAL | Wero identity and migration evidence
+- [[stripe]] — Stripe company page
+
+## Raw Sources
+
+- [[raw/stripe-payments-wero-2026-11-07|November 7, 2026 Wero payments]] — Full standalone method overview
+- [[raw/stripe-wero-2025|May 5, 2026 Wero payments]] — Earlier full method overview (125 lines)

@@ -4,6 +4,10 @@
 
 Added the full November baseline for hosted MCP, active skills/plugins and checkout benchmarks. Recorded the five package deprecations and preserved the August baseline. Details in [[stripe-log]].
 
+## [2026-11-22] ingest | Stripe S05 approved documentation updates
+
+Updated 93 existing summaries from 99 reviewed documentation captures. Attached 70 full captures as dated evidence, routed one broad Link capture separately, and linked 28 variant selectors. Audited 35 concept pages and updated 34. The recorded source count is 666. The campaign records 198 verified answers and three coordinator audits. Details in [[stripe-log]].
+
 ## [2026-11-22] ingest | Stripe S04 approved documentation updates
 
 Updated 97 existing summaries from 100 reviewed documentation captures. Attached 63 full captures as dated evidence and linked 37 variant selectors. Audited 40 concept pages and updated 39. Kept the recorded source count at 666. The campaign records independently reviewed candidates, 200 query answers and three coordinator audits. Details in [[stripe-log]].

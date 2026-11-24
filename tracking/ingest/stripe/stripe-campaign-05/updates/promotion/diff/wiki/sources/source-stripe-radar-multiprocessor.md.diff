@@ -1,0 +1,79 @@
+--- wiki/sources/source-stripe-radar-multiprocessor.md
++++ wiki/sources/source-stripe-radar-multiprocessor.md
+@@ -2,40 +2,59 @@
+ title: "Stripe — Radar Risk Signals for Multiple Payment Processors"
+ type: source
+ date_ingested: 2026-05-10
++date_updated: 2026-11-22
+ original_format: webpage
++canonical_url: https://docs.stripe.com/radar/multiprocessor
+ raw_files:
++  - "stripe-radar-multiprocessor-2026-11-07.md"
+   - "stripe-radar-multiprocessor-2026.md"
+ tags: [stripe, radar, multiprocessor, payment-evaluation, external-processor, fraudulent-payment, early-fraud-warning]
+ ---
+ 
+ ## Summary
+ 
+-Use Stripe Radar to evaluate non-Stripe-processed payments in real time. Get risk signals at any point in the payment lifecycle via the Payment Evaluation API.
++The May 10, 2026 [[stripe|Stripe]] guide describes real-time Radar evaluation for externally processed payments. The November 7 guide describes evaluation for any processor and adds a path for a separately evaluated payment later processed on Stripe. The business server calls `POST /v1/radar/payment_evaluations` to receive a PaymentEvaluation. The November diagram shows the server then transacting separately with the third-party processor. Evaluation provides risk information at any point in the payment lifecycle. The processor separately determines the transaction outcome.
+ 
+-## Signals
++## Signals and access
+ 
+-| Signal | Status | What it detects |
+-| --- | --- | --- |
+-| `fraudulent_payment` | GA (default) | Payment likely to result in fraud dispute or EFW |
+-| `fraudulent_dispute` | Private preview | Payment likely to result in fraudulent dispute; blocks these payments |
+-| `early_fraud_warning` | Private preview | Payment likely to result in EFW |
++| Signal | Documented scope |
++| --- | --- |
++| `fraudulent_payment` | Default signal for payments likely to result in a fraud-coded dispute or early fraud warning. |
++| `fraudulent_dispute` | Both captures describe predicting a dispute and blocking such payments with a fraudulent reason code. May labels this private preview. |
++| `early_fraud_warning` | Predicts an early fraud warning. May labels this private preview. |
+ 
+-## Prerequisites
++November omits the private-preview labels in the two signal headings and provides a form to request API access or additional capabilities. Approval and availability depend on the scope Stripe grants. The assessment response carries `recommended_action` and separate scores. The guide’s blocking language for `fraudulent_dispute` does not establish automatic blocking by the evaluation API at a third-party processor. See May lines 6–20 and November lines 7–37, 50–59 and 121–127.
+ 
+-- Tokenized PaymentMethod (card type only)
+-- Radar Session token (for advanced risk factors)
+-- Customer email via `billing_details.email` on PaymentMethod or Customer object
++## Evaluation inputs for non-Stripe payments
+ 
+-## API
++The May guide required a tokenized card PaymentMethod, a Radar Session and customer email. The November prerequisite section is specifically for non-Stripe payments and describes these routes.
+ 
+-`POST /v1/radar/payment_evaluations` — evaluate at any point in payment lifecycle.
++- **Tokenized card.** The minimum PaymentEvaluation example supplies a card PaymentMethod, amount, currency, customer email and Radar Session. It omits a Stripe-Version header. The separately worded SAQ D condition concerns creating a PaymentMethod through the API.
++- **Masked card.** The November guide requires separate approval and accepts the first six and last four digits with expiration details. Using these details instead of a tokenized PaymentMethod returns only `fraudulent_payment`. Its sample uses `2026-07-29.preview`.
++- **Raw card.** The November guide requires both separate approval and PCI DSS compliance. It documents card number and expiry, with optional CVC, in the card details object. Its sample also uses `2026-07-29.preview`.
++- **Device details and email.** Stripe recommends a Radar Session where possible. Direct device metadata in lieu of a Radar Session requires separate approval. Collect email using the PaymentMethod's `billing_details.email` or a Customer or customer-configured Account. The examples set `customer_details.email` on the evaluation. The guide also documents optional billing and shipping addresses.
++
++See May lines 22–28 and November lines 39–48 and 61–133. The approval and version conditions belong to their specific routes.
++
++## Result and score boundaries
++
++Stripe returns `recommended_action` and a `signals` object containing each signal name, `evaluated_at`, `risk_level` and `score`. Predictions are scored independently. In the November multiprocessor guide, the fraudulent-payment categories are written as above 65 for elevated and above 75 for high. The blocking recommendation is 75 or above. The same-day [[raw/stripe-radar-transaction-risk-prevention-2026-11-07|Transaction Risk Prevention capture]] uses inclusive thresholds of 65 and 75 for the categories. Classification at the endpoints remains unresolved across these two guides (multiprocessor lines 121–127, transaction risk line 40).
++
++## Stripe processing after a separate evaluation
++
++November says Radar evaluates again by default when Stripe processes a payment that already had a separate PaymentEvaluation. Signals can change between evaluations, and both evaluations are billed. To avoid duplicate evaluations, the guide's `2026-07-29.preview` PaymentIntent confirm example sets `radar_options.payment_evaluation_options.skip_radar=true` and sends the prior evaluation IDs for the same payment. The guide describes including up to five evaluations or setting `skip_radar=false`. An evaluation ID already associated with another payment cannot be reused. The separate [[raw/stripe-api-payment-intents-confirm-2026-11-07|captured Confirm API reference]] lists optional `radar_options` at lines 627–631. The nested reuse options above are documented by the preview example (November multiprocessor lines 135–150).
++
++November also documents sandbox keys and Radar test cards, idempotency keys for retries and expansion of related resources. Payment lifecycle reporting through the Payment Records API requires separate integration access (November lines 152–162).
+ 
+ ## Related Pages
+ 
+-- [[stripe-radar]] — concept page (updated with multiprocessor signals)
+-- [[source-stripe-radar-sessions]] — Radar Sessions (prerequisite)
+-- [[source-stripe-radar-payg-abuse]] — Payment Evaluation API (different use case)
++- [[stripe]] — provider overview
++- [[stripe-radar]] — Radar concept and evaluation routes
++- [[source-stripe-radar-sessions]] — collecting device signals in Radar Sessions
++- [[source-stripe-radar-payg-abuse]] — separate PAYG abuse signal
++- [[source-stripe-payment-records]] — separate payment lifecycle reporting integration
+ 
+ ## Raw Sources
+ 
+-- [[stripe-radar-multiprocessor-2026]] — verbatim multiprocessor risk signals guide
++- [[raw/stripe-radar-multiprocessor-2026-11-07]] — November 7, 2026 full guide to evaluation, approval and payment reuse
++- [[raw/stripe-radar-multiprocessor-2026]] — May 10, 2026 full guide to external payment evaluations

@@ -1,0 +1,54 @@
+--- raw/stripe-promptpay-2025.md
++++ raw/stripe-payments-promptpay-2026-11-07.md
+@@ -64,18 +64,29 @@
+ 
+ 1Not supported when using Checkout in subscription mode or setup mode.2Express Checkout Element doesn’t support PromptPay.3Mobile Payment Element only supports PromptPay on iOS.4Invoices and Subscriptions only support the [send_invoice](https://docs.stripe.com/api/invoices/object.md#invoice_object-collection_method) collection method.
+ 
+-## Payment flow
++### Interested in accepting PromptPay as a US business?
+ 
+-![](assets/stripe-promptpay-flow-checkout.svg)
++PromptPay for US-based Stripe accounts is in private preview. Enter your email address to join the waitlist. We'll review your application and contact you if you're eligible.
++
++```bash
++curl https://docs.stripe.com/preview/register \
++  -X POST \
++  -H "Content-Type: application/json" \
++  -H "Referer: https://docs.stripe.com/payments/promptpay" \
++  -d '{"email": "EMAIL", "preview": "boku_promptpay_preview"}'
++```
++
++## Payment flow 
++![](https://b.stripecdn.com/docs-statics-srv/assets/checkout.4af16ecfd4f0a3f4044c56d6100c4a42.svg)
+ 
+ 1. Selects PromptPay at checkout
+-   ![](assets/stripe-promptpay-flow-scan.svg)
++![](https://b.stripecdn.com/docs-statics-srv/assets/scan.2074e5bcfa4b800f9f8b7414c886cc49.svg)
+ 
+ 2. Scans displayed QR code with preferred app
+-   ![](assets/stripe-promptpay-flow-authorize.svg)
++![](https://b.stripecdn.com/docs-statics-srv/assets/authorize.3d8b09a8035d24ad7cb68d6f57552a1e.svg)
+ 
+ 3. Authorizes payment
+-   ![](assets/stripe-promptpay-flow-success.svg)
++![](https://b.stripecdn.com/docs-statics-srv/assets/success.1ee3b6d34d944693e654e84f6d1be9f3.svg)
+ 
+ 4. Gets notification that payment is complete
+ 
+@@ -84,7 +95,7 @@
+ You don’t have to integrate PromptPay and other payment methods individually. If you use our front-end products, Stripe automatically determines the most relevant payment methods to display. Go to the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods) and enable PromptPay. To get started with one of our hosted UIs, follow a quickstart:
+ 
+ - [Checkout](https://docs.stripe.com/checkout/quickstart.md): Our prebuilt, hosted checkout page.
+-- [Elements](https://docs.stripe.com/payments/quickstart-checkout-sessions.md): Our drop-in UI components.
++- [Elements](https://docs.stripe.com/payments/quickstart.md): Our drop-in UI components.
+ 
+ ### Other payment products
+ 
+@@ -110,6 +121,6 @@
+ 
+ After a customer successfully completes a transaction, any attempt to use the same QR code again can result in having the funds deducted from their bank account. If Stripe receives any excess funds from your customers, we reimburse them to your account balance and notify you. You’ll need to issue the refund to your customers outside of Stripe (for example, with a check, cash, or store credit).
+ 
+-## Disputes
++## Disputes 
+ 
+ PromptPay payments have a low risk of fraud or unrecognized payments because the customer must authenticate the payment through banking apps. However, cases of irregularities similar to disputes, or other unexpected or repeated payments can occur. Stripe reviews these cases, and might contact you or take other action if required.

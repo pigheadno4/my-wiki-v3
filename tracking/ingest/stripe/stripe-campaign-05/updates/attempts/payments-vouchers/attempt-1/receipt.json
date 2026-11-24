@@ -1,0 +1,148 @@
+{
+  "job_id": "payments-vouchers",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Vouchers Overview\"\ntype: source\ndate_ingested: 2026-05-07\ndate_updated: 2026-11-22\ncanonical_url: \"https://docs.stripe.com/payments/vouchers\"\noriginal_format: webpage\nraw_files:\n  - \"stripe-payments-vouchers-2026-11-07.md\"\n  - \"stripe-vouchers-2025.md\"\ntags: [stripe, vouchers, boleto, konbini, multibanco, oxxo, cash, in-person, brazil, japan, portugal, mexico]\n---\n\n## Summary\n\nThe May 7 and November 7, 2026 captures of [[stripe]]'s voucher hub describe Boleto, Konbini, Multibanco and OXXO. A customer selects a voucher method, receives a digital code with transaction details by email or in an app, and pays through a channel supported by the method. Cash payment at an authorized location is common. [[source-stripe-multibanco|Multibanco's method guide]] documents payment by bank transfer through online banking or at an ATM. See [[stripe-vouchers]] for method-specific channels, eligibility, confirmation, and refunds.\n\n## Payment and Fulfillment\n\nThe customer can leave a voucher unpaid. Wait for confirmed payment before fulfilling an order. Both captures give one business day as a possible confirmation delay. Consult each method's documentation for its timing and refund support. Some businesses credit customers through a separate process when their voucher method lacks refund support. Vouchers can reach customers without cards or bank accounts and serve as a fallback where card authorization rates are low. For gift vouchers, the hub points to Checkout promotions and discounts.\n\n## Product and API Support\n\n| Method | API enum | SetupIntents | `setup_future_usage` | Subscriptions | Invoicing |\n| --- | --- | --- | --- | --- | --- |\n| Boleto | `boleto` | Yes | Yes | Yes | Yes |\n| Konbini | `konbini` | No | No | `send_invoice` only | `send_invoice` only |\n| Multibanco | `multibanco` | No | No | `send_invoice` only | `send_invoice` only |\n| OXXO | `oxxo` | No | No | No | No |\n\n- All four methods list Connect, Checkout, Payment Links, Payment Element and Mobile Payment Element. The hub excludes Express Checkout Element for all four. Boleto alone lists Customer Portal. Konbini and OXXO exclude Checkout subscription and setup modes. The November [[source-stripe-boleto|Boleto method guide]] lists setup support and excludes off-session payments.\n- The hub's API matrix lists PaymentIntents for all four, excludes manual capture, and marks all four “No” in its “Requires redirect” column. Its generic footnote says some PaymentIntent confirmations may require a `return_url`. Voucher presentation depends on the integration. The May [[source-stripe-boleto-accept-payment|Boleto Checkout guide]] sends the customer to `hosted_voucher_url` after form submission, when Stripe has created the voucher and still requires customer action.\n- Both hub captures scope the Konbini Connect invite to charges made `on_behalf_of` other accounts. The November [[source-stripe-konbini|Konbini method guide]] separately documents a Japanese platform settling destination charges or separate charges and transfers on its own account with its own Konbini activation and without `on_behalf_of`. The connected account does not need its own activation in that flow.\n- Use method-specific eligibility and account requirements alongside the hub tables. The separate [payment-method support matrix](https://docs.stripe.com/payments/payment-methods/payment-method-support) gives business location and customer country independently.\n\nFor Sources or Tokens integrations, both captures point to [migration to PaymentIntents](https://docs.stripe.com/payments/payment-intents/migration.md).\n\n## Raw Sources\n\n- [[raw/stripe-payments-vouchers-2026-11-07|2026-11-07 vouchers overview]] — full capture with flow, product and API matrices, and migration reference.\n- [[raw/stripe-vouchers-2025|2026-05-07 vouchers overview]] — full capture with the same lifecycle and matrix content and a locally captured SVG flow diagram.\n",
+  "quotes": {
+    "payments-vouchers": [
+      {
+        "text": "it can take 1 business day to receive a payment confirmation.",
+        "location": "raw/stripe-payments-vouchers-2026-11-07.md:18"
+      },
+      {
+        "text": "Not all vouchers support refunds.",
+        "location": "raw/stripe-payments-vouchers-2026-11-07.md:19"
+      },
+      {
+        "text": "pays in-person, often with cash.",
+        "location": "raw/stripe-payments-vouchers-2026-11-07.md:23"
+      },
+      {
+        "text": "Invoices and Subscriptions only support the",
+        "location": "raw/stripe-payments-vouchers-2026-11-07.md:35"
+      },
+      {
+        "text": "If you currently use the Sources or Tokens API",
+        "location": "raw/stripe-payments-vouchers-2026-11-07.md:50"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-vouchers": [
+      {
+        "text": "<!-- Fetched: 2026-05-07 -->",
+        "location": "raw/stripe-vouchers-2025.md:2"
+      },
+      {
+        "text": "pays in-person, often with cash.",
+        "location": "raw/stripe-vouchers-2025.md:22"
+      },
+      {
+        "text": "it can take 1 business day to receive a payment confirmation.",
+        "location": "raw/stripe-vouchers-2025.md:17"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-vouchers-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 50
+      }
+    ],
+    "raw/stripe-vouchers-2025.md": [
+      {
+        "start": 1,
+        "end": 49
+      }
+    ],
+    "wiki/sources/source-stripe-vouchers.md": [
+      {
+        "start": 1,
+        "end": 36
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/825994aa194e0de8d867827b/content.diff": [
+      {
+        "start": 1,
+        "end": 43
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 21
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 365,
+        "end": 376
+      }
+    ],
+    "wiki/concepts/stripe-vouchers.md": [
+      {
+        "start": 1,
+        "end": 125
+      }
+    ],
+    "raw/stripe-payments-multibanco-2026-11-07.md": [
+      {
+        "start": 9,
+        "end": 11
+      }
+    ],
+    "raw/stripe-boleto-accept-payment-2025.md": [
+      {
+        "start": 171,
+        "end": 177
+      }
+    ],
+    "raw/stripe-payments-boleto-2026-11-07.md": [
+      {
+        "start": 87,
+        "end": 92
+      }
+    ],
+    "raw/stripe-payments-konbini-2026-11-07.md": [
+      {
+        "start": 184,
+        "end": 193
+      }
+    ],
+    "raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md": [
+      {
+        "start": 30,
+        "end": 34
+      },
+      {
+        "start": 56,
+        "end": 59
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md": [
+      {
+        "start": 547,
+        "end": 553
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-vouchers/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 201
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-vouchers/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 44
+      }
+    ]
+  },
+  "answers": {
+    "payments-vouchers": {
+      "Q1": "At https://docs.stripe.com/payments/vouchers, a customer selects a voucher method, receives a digital reference and transaction details by email or app, and completes payment through the supported channel. Cash at an authorized location is common. The captures caution that buyers might never pay, confirmation can take one business day, and refunds may require a separate credit process. The flow and use cases are stable (old raw lines 6-23 and new raw lines 7-24). Both captures list Boleto, Konbini, Multibanco and OXXO with Connect, Checkout, Payment Links, Payment Element and Mobile Payment Element, and exclude Express Checkout Element. Boleto alone lists Customer Portal, SetupIntents and future-use setup. Konbini and Multibanco limit Billing to send_invoice, OXXO has no listed Billing support, and Konbini and OXXO exclude Checkout subscription and setup modes. All four list PaymentIntents, no manual capture, and no required redirect in the hub API matrix. Both carry the Konbini on-behalf-of invite footnote, generic return_url qualification, and the Sources/Tokens migration route (old raw lines 25-49 and new raw lines 26-50). source-stripe-vouchers.md retains that scope and clarifies that the pay channel, confirmation timing, refund capability and voucher presentation depend on the method or integration.",
+      "Q2": "The https://docs.stripe.com/payments/vouchers recapture changes discovery metadata, the image destination with the same alt text and table delimiter formatting. The payment flow, matrix entries, footnotes and migration route are unchanged (old raw lines 17-49 and new raw lines 18-50). source-stripe-vouchers.md preserves both factual captures and corrects inherited universal cash, one-day and redirect claims. It dates Multibanco's online banking/ATM route and Boleto's May Checkout redirect to the hosted voucher as separate method evidence. The November method overviews distinguish Boleto setup from off-session collection and Konbini platform own-account settlement from the hub's distinct on-behalf-of invite (old raw lines 27-34 and new raw lines 28-35). The companion support matrix separates business and customer locations. The source links back to stripe-vouchers and the relevant method guides. The concept already links to this hub and preserves both payment channels and actual fulfillment boundaries. The provider index caption at wiki/stripe-index.md:372 still needs its categorical cash and one-day shorthand updated when coordinator refreshes the index."
+    }
+  },
+  "concept_suggestions": []
+}

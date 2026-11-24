@@ -1,0 +1,62 @@
+---
+title: "Stripe Docs — WeChat Pay payments"
+type: source
+date_ingested: 2026-05-08
+date_updated: 2026-11-22
+original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/wechat-pay"
+raw_files:
+  - "stripe-payments-wechat-pay-2026-11-07.md"
+  - "stripe-wechat-pay-2025.md"
+tags: [stripe, wechat-pay, wallets, china, digital-wallet]
+---
+
+## Overview
+
+WeChat Pay is the wallet inside Tencent's WeChat app. The November 7, 2026 overview describes single-use B2C payments with immediate confirmation timing and a standard payout schedule. The May 8, 2026 capture describes Chinese consumers, overseas Chinese and travelers and reports over 800 million wallet users and over 1 billion monthly active users for WeChat. Those figures are historical. See November lines 9–14 and May lines 8–24.
+
+## Account and payment eligibility
+
+The November method overview lists CN customer location, domestic and cross-border coverage and a minimum amount of USD 0.50. It retains the 22 Stripe account locations AT, AU, BE, CA, CH, DE, DK, ES, FI, FR, GB, HK, IE, IT, JP, LU, NL, NO, PT, SE, SG and US, with country-mapped presentment in AUD, CAD, CHF, CNY, DKK, EUR, GBP, HKD, JPY, NOK, SEK, SGD or USD. CNY is available for all listed account countries and is what the buyer sees. The separate May Checkout acceptance example lists 35 business codes for that documented path. See November lines 18–21 and 36–71, May lines 57–83 and 125–143, and [[source-stripe-wechat-pay-accept-payment]].
+
+November labels access “Instant provisional access” for eligible merchants and Connect platforms or marketplaces. Businesses must comply with both Stripe's restricted-business rules and WeChat Pay's Proper Use Rules. The merchant needs an operational website accessible for review, with products or services, prices and working checkout. Its business information must match the information provided to Stripe. A social profile alone is insufficient. If acceptance is restricted or disabled and the merchant believes the decision is incorrect, Stripe Support can review it. Complete requested changes or provide requested information and reply to the notification. Reinstatement depends on that review, which is separate from preview registration. See November lines 12 and 18–34.
+
+## Checkout, native payments and previews
+
+The November method guide recommends full-page Checkout and Checkout Sessions. It also lists Payment Links, embedded Checkout, Payment Element, PaymentIntents, Invoicing (`send_invoice` only), Radar, Connect and Terminal outside Japan. The Dashboard can enable dynamic display and separate manual configuration is available, including the Terminal smart-reader flow. Checkout excludes subscription and setup modes. Express Checkout Element and the general in-app product label are unsupported, and the cross-method matrix marks Mobile Payment Element unsupported. The November acceptance index links Checkout, Direct API, iOS and Android without their instructions. See November lines 152–181 and 225–237 and [[source-stripe-wechat-pay-accept-payment]].
+
+On desktop the customer scans the QR code and authorizes in WeChat. Checkout stays on the QR screen and the authorization window is two hours from payment-request creation. On expiry the customer starts another attempt. In a supported native integration the merchant app opens WeChat Pay, and the customer returns to the merchant app after authorization. Stripe-hosted instructions show success and amount paid after a successful payment. In a custom or native flow the merchant's server confirms `PaymentIntent.status` is `succeeded` before showing success. Application return, payment confirmation and payout have separate meanings. See November lines 183–203.
+
+The May method overview lists no recurring payment support (May lines 33–36). The November general capabilities and API lists exclude recurring payments, SetupIntents, `setup_future_usage` and off-session payments. The same guide describes an independently requested private preview for off-session-only recurring payments and another private preview for mini-program payments. The [November cross-method matrix](https://docs.stripe.com/payments/payment-methods/payment-method-support) lists private preview for Subscriptions with `send_invoice`, SetupIntents and future usage, and its redirect cell says Yes. May's matrix lists supported Subscriptions with `send_invoice`, unsupported SetupIntents and future usage, and a redirect cell of No. The May product matrix lists Terminal N/A, while the November matrix lists Terminal outside Japan, the boundary already documented in both method overviews. These matrix labels describe dated product and API scope. The QR and native flows above supply the method-specific behavior. See November lines 73–74, 118–177 and [[source-stripe-payment-method-support]].
+
+## Refunds and disputes
+
+Full and partial refunds are asynchronous and can be requested within 180 days of the original payment. Stripe processes refunds requested on the same day as the original payment immediately. It processes requests on later days in a daily noon UTC+8 batch. Linked-card receipt can take another two to five days. Refunds cannot be canceled. WeChat returns funds to the original source, such as WeChat balance or a linked payment method, through a refund rather than a reversal. Track the Refund status and final `refund.updated` or `refund.failed` event. A failure returns funds to the merchant's Stripe balance and requires an alternative refund method. See November lines 89–110 and May lines 120–123.
+
+The November guide excludes manual, partial, multiple and over-capture and its listed extended or adjusted authorization types. WeChat Pay has no standard dispute or chargeback process, with in-app authorization required. WeChat may refer customer payment complaints back to the merchant, who can then issue a refund. See November lines 73–97 and 112–116 and May lines 45–55 and 116–118.
+
+## Connect, statement descriptions and reconciliation
+
+Destination charges and separate charges and transfers are generally available. Direct charges and `on_behalf_of` require private-preview access. A connected account with standard Dashboard access can enable the method itself. For other connected accounts the platform requests `capabilities.wechat_pay_payments.requested`, with the capability in private preview. See November lines 176–177 and 231–237 and May lines 145–161.
+
+Stripe sends WeChat the settlement merchant's business name, the text `online` and the payment's statement descriptor. The account supplying the business name depends on the charge.
+
+| Charge | Business name in WeChat order information |
+| --- | --- |
+| Destination without `on_behalf_of` | Platform account |
+| Destination with `on_behalf_of` | Specified connected account |
+| Direct | Connected account on which the payment was created |
+
+The buyer-visible registered merchant name and linked bank or card statement can differ from the order information. For reconciliation, retrieve the PaymentIntent, expand `latest_charge` and read `latest_charge.payment_method_details.wechat_pay.transaction_id`. See November lines 205–223.
+
+## Related Pages
+
+- [[stripe-wallets]] — Wallet payment methods and dated SDK coverage
+- [[source-stripe-wechat-pay-accept-payment]] — Dated acceptance guide and variant index
+- [[source-stripe-payment-method-support]] — Cross-method product and API matrices
+- [[stripe]] — Stripe company page
+
+## Raw Sources
+
+- [[raw/stripe-payments-wechat-pay-2026-11-07|November 7, 2026 WeChat Pay payments]] — Full method overview
+- [[raw/stripe-wechat-pay-2025|May 8, 2026 WeChat Pay payments]] — Earlier full method overview

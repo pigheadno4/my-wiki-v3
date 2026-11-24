@@ -1,0 +1,154 @@
+{
+  "job_id": "payments-payment-intents-three-d-secure-import",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-payment-intents-three-d-secure-import-2026-11-07.md",
+  "raw_sha256": "0fbb56335a4143c31c1079e5dde2bc0be9dccb741b61cdef317d64c16dbfe121",
+  "prior_raw_path": "raw/stripe-3ds-import-2025.md",
+  "prior_raw_sha256": "1fae66e009772e7b83ef7abef03258d9c2c8e9c6ebcf8a9843d947dbc8a27a0b",
+  "source_targets": [
+    "wiki/sources/source-stripe-3ds-import.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-3ds-import.md": "6bd39b88aa6d787dd3056e6ff1bc75ba616789a38aa6609e2a4fa68133495b56"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-payment-intents-three-d-secure-import-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 297
+      }
+    ],
+    "raw/stripe-3ds-import-2025.md": [
+      {
+        "start": 1,
+        "end": 354
+      }
+    ],
+    "wiki/sources/source-stripe-3ds-import.md": [
+      {
+        "start": 1,
+        "end": 63
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/81e8edff311a1bcc1dd1b5e5/content.diff": [
+      {
+        "start": 1,
+        "end": 423
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 454,
+        "end": 469
+      },
+      {
+        "start": 719,
+        "end": 734
+      }
+    ],
+    "wiki/concepts/stripe-3d-secure.md": [
+      {
+        "start": 105,
+        "end": 160
+      }
+    ],
+    "wiki/concepts/stripe-payment-intents.md": [
+      {
+        "start": 74,
+        "end": 95
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "(Private preview) All other countries in which Stripe supports card payments.",
+      "location": "raw/stripe-payments-payment-intents-three-d-secure-import-2026-11-07.md:29"
+    },
+    {
+      "text": "parameters set in the `three_d_secure` object must identically match the values returned by your 3DS provider.",
+      "location": "raw/stripe-payments-payment-intents-three-d-secure-import-2026-11-07.md:37"
+    },
+    {
+      "text": "If you intend to process a payment with a PaymentMethod shortly after tokenizing the card details, use raw card data instead.",
+      "location": "raw/stripe-payments-payment-intents-three-d-secure-import-2026-11-07.md:90"
+    },
+    {
+      "text": "If there\u2019s a mismatch where `exemption_indicator=none` and the bitmap in `cb_exemption` indicates that the applied exemption is a low risk exemption, Stripe rejects the request.",
+      "location": "raw/stripe-payments-payment-intents-three-d-secure-import-2026-11-07.md:222"
+    },
+    {
+      "text": "Agreement to maintain additional controls on top of Stripe\u2019s default security settings",
+      "location": "raw/stripe-payments-payment-intents-three-d-secure-import-2026-11-07.md:289"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "(Beta) All other countries in which Stripe supports card payments.",
+      "location": "raw/stripe-3ds-import-2025.md:28"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Old raw 15\u201334 called other Stripe card-payment countries Beta on 2026-05-08, while new raw 16\u201335 calls them Private preview on 2026-11-07. The enumerated AU/CA/CH/EU/GB/HK/MX/NZ/SG/US list and IN/MY/TH exclusions are unchanged. Neither dated capture labels the named list GA. Current source line 17 needs dated wording and removal of unsupported GA.",
+    "Old 36\u2013122 and new 37\u201399 retain exact matching of imported 3DS provider fields, server-side single-call create-and-confirm PaymentIntent variants using raw card details or an existing PaymentMethod ID, and the instruction to use raw card data shortly after tokenization. Current summary 18\u201326 misses the field-matching and shortly-after-tokenization qualifications. The instruction to set error_on_requires_action=true to prevent a Stripe 3DS request during a soft decline is in the two PaymentIntent flows. The distinct non-payment cryptogram SetupIntent create-and-confirm path uses either card data or PaymentMethod ID, and both SetupIntent examples show confirm=true without error_on_requires_action (old 117\u2013146, new 94\u2013113). Current source line 19 and concept line 118 use unsupported universal wording.",
+    "Old 148\u2013213 and new 115\u2013170 retain the low-risk SCA exemption flag, conditional Stripe real-time risk analysis and exemption request to the issuer, and inspection of expanded latest_charge.payment_method_details.card.three_d_secure.exemption_indicator_applied to learn whether Stripe requested it. Current source line 30 is a compressed route and should keep the conditional issuer request and signal identity explicit.",
+    "Old 215\u2013279 and new 172\u2013222 retain explicit authenticated Cartes Bancaires network, required cb_avalgo, and documented optional fields when available. The cryptogram field guidance applies to both Intent types. Old 273\u2013279 and new 216\u2013222 state the consequences of a granted SCA exemption over 3DS: submit cb_exemption, exemption_indicator, or both, prefer cb_exemption alone if available, and ensure agreement if both are sent. Stripe rejects the described mismatch of exemption_indicator=none and a low-risk cb_exemption bitmap. Current source 32\u201343 lacks this separate requirement and rejection.",
+    "Old 281\u2013336 and new 224\u2013279 retain sandbox authentication-required test fixtures and the conditional low-risk false-test case. Current source lines 45\u201353 list the card ending 6123 under Cartes Bancaires, but old 301 and new 244 also give it for the standard low-risk negative test with exemption_indicator=low_risk.",
+    "Old 338\u2013350 and new 281\u2013293 require PCI DSS validation, Stripe review and agreement to maintain additional controls before raw-card API access, and retain the custom-pricing network-cost pass-through when Stripe is named acquirer in the 3DS request, per the account's agreement. Current source line 18 abbreviates the access prerequisites and drops the additional controls and conditional cost note.",
+    "Diff lines 16\u2013363 mainly show Node.js to cURL examples, example return_url additions, form encoding, a sample expiry change, list/heading/JSON styling and no explicit payment_method_types=card in November examples. The available captures establish neither universal return_url guidance nor a change to payment-method defaults. Diff lines 377\u2013378 refine the low-risk test wording to linked sandbox; both captures already scope integration validation to sandbox (old 283\u2013285, new 226\u2013228). Preserve root index line 7, Stripe index lines 464 and 728, source lines 57\u201363, concept line 157 and the online raw's PaymentIntent 3DS options pointer (old 352\u2013354, new 295\u2013297) as navigation."
+  ],
+  "substantive_changes": [
+    "Old raw 15\u201334 called other Stripe card-payment countries Beta on 2026-05-08, while new raw 16\u201335 calls them Private preview on 2026-11-07. The enumerated AU/CA/CH/EU/GB/HK/MX/NZ/SG/US list and IN/MY/TH exclusions are unchanged. Neither dated capture labels the named list GA. Current source line 17 needs dated wording and removal of unsupported GA."
+  ],
+  "historical_claims_to_preserve": [
+    "Old raw 15\u201334 called other Stripe card-payment countries Beta on 2026-05-08, while new raw 16\u201335 calls them Private preview on 2026-11-07. The enumerated AU/CA/CH/EU/GB/HK/MX/NZ/SG/US list and IN/MY/TH exclusions are unchanged. Neither dated capture labels the named list GA. Current source line 17 needs dated wording and removal of unsupported GA.",
+    "Old 36\u2013122 and new 37\u201399 retain exact matching of imported 3DS provider fields, server-side single-call create-and-confirm PaymentIntent variants using raw card details or an existing PaymentMethod ID, and the instruction to use raw card data shortly after tokenization. Current summary 18\u201326 misses the field-matching and shortly-after-tokenization qualifications. The instruction to set error_on_requires_action=true to prevent a Stripe 3DS request during a soft decline is in the two PaymentIntent flows. The distinct non-payment cryptogram SetupIntent create-and-confirm path uses either card data or PaymentMethod ID, and both SetupIntent examples show confirm=true without error_on_requires_action (old 117\u2013146, new 94\u2013113). Current source line 19 and concept line 118 use unsupported universal wording.",
+    "Old 148\u2013213 and new 115\u2013170 retain the low-risk SCA exemption flag, conditional Stripe real-time risk analysis and exemption request to the issuer, and inspection of expanded latest_charge.payment_method_details.card.three_d_secure.exemption_indicator_applied to learn whether Stripe requested it. Current source line 30 is a compressed route and should keep the conditional issuer request and signal identity explicit.",
+    "Old 215\u2013279 and new 172\u2013222 retain explicit authenticated Cartes Bancaires network, required cb_avalgo, and documented optional fields when available. The cryptogram field guidance applies to both Intent types. Old 273\u2013279 and new 216\u2013222 state the consequences of a granted SCA exemption over 3DS: submit cb_exemption, exemption_indicator, or both, prefer cb_exemption alone if available, and ensure agreement if both are sent. Stripe rejects the described mismatch of exemption_indicator=none and a low-risk cb_exemption bitmap. Current source 32\u201343 lacks this separate requirement and rejection.",
+    "Old 281\u2013336 and new 224\u2013279 retain sandbox authentication-required test fixtures and the conditional low-risk false-test case. Current source lines 45\u201353 list the card ending 6123 under Cartes Bancaires, but old 301 and new 244 also give it for the standard low-risk negative test with exemption_indicator=low_risk.",
+    "Old 338\u2013350 and new 281\u2013293 require PCI DSS validation, Stripe review and agreement to maintain additional controls before raw-card API access, and retain the custom-pricing network-cost pass-through when Stripe is named acquirer in the 3DS request, per the account's agreement. Current source line 18 abbreviates the access prerequisites and drops the additional controls and conditional cost note.",
+    "Preserve the May 8, 2026 raw under its existing filename and do not relabel its Beta availability statement using the November 7 capture. Preserve the summary's standalone 3DS link as a separate authentication workflow."
+  ],
+  "conflicts": [
+    "Current source line 17 and stripe-3d-secure.md line 116 have undated beta wording and an unsupported GA label. Old raw 15\u201334 and new raw 16\u201335 supply exact availability wording by date.",
+    "Current source line 19 and stripe-3d-secure.md line 118 say the two flags are always required, while both captures scope error_on_requires_action to the PaymentIntent import directions and omit it from the documented SetupIntent setup example (old 42\u201344, 83\u201385, 117\u2013146; new 43\u201345, 70\u201372, 94\u2013113).",
+    "Both captures' PaymentIntent confirm prose link to the SetupIntent create confirmation anchor (old 43,84; new 44,71). The surrounding instructions, endpoint/example, and soft-decline flag identify PaymentIntent create and confirm. Preserve this as a shared link-target conflict without treating the SetupIntent link as changing the actor or endpoint."
+  ],
+  "unresolved_questions": [
+    "Neither capture verifies individual preview admission, raw-card API access, compliance, payment authorization, issuer exemption approval, or payment success."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-3d-secure.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-3ds-import.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Old raw 15\u201334 called other Stripe card-payment countries Beta on 2026-05-08, while new raw 16\u201335 calls them Private preview on 2026-11-07. The enumerated AU/CA/CH/EU/GB/HK/MX/NZ/SG/US list and IN/MY/TH exclusions are unchanged. Neither dated capture labels the named list GA. Current source line 17 needs dated wording and removal of unsupported GA.",
+        "Old 36\u2013122 and new 37\u201399 retain exact matching of imported 3DS provider fields, server-side single-call create-and-confirm PaymentIntent variants using raw card details or an existing PaymentMethod ID, and the instruction to use raw card data shortly after tokenization. Current summary 18\u201326 misses the field-matching and shortly-after-tokenization qualifications. The instruction to set error_on_requires_action=true to prevent a Stripe 3DS request during a soft decline is in the two PaymentIntent flows. The distinct non-payment cryptogram SetupIntent create-and-confirm path uses either card data or PaymentMethod ID, and both SetupIntent examples show confirm=true without error_on_requires_action (old 117\u2013146, new 94\u2013113). Current source line 19 and concept line 118 use unsupported universal wording.",
+        "Old 148\u2013213 and new 115\u2013170 retain the low-risk SCA exemption flag, conditional Stripe real-time risk analysis and exemption request to the issuer, and inspection of expanded latest_charge.payment_method_details.card.three_d_secure.exemption_indicator_applied to learn whether Stripe requested it. Current source line 30 is a compressed route and should keep the conditional issuer request and signal identity explicit.",
+        "Old 215\u2013279 and new 172\u2013222 retain explicit authenticated Cartes Bancaires network, required cb_avalgo, and documented optional fields when available. The cryptogram field guidance applies to both Intent types. Old 273\u2013279 and new 216\u2013222 state the consequences of a granted SCA exemption over 3DS: submit cb_exemption, exemption_indicator, or both, prefer cb_exemption alone if available, and ensure agreement if both are sent. Stripe rejects the described mismatch of exemption_indicator=none and a low-risk cb_exemption bitmap. Current source 32\u201343 lacks this separate requirement and rejection.",
+        "Old 281\u2013336 and new 224\u2013279 retain sandbox authentication-required test fixtures and the conditional low-risk false-test case. Current source lines 45\u201353 list the card ending 6123 under Cartes Bancaires, but old 301 and new 244 also give it for the standard low-risk negative test with exemption_indicator=low_risk.",
+        "Old 338\u2013350 and new 281\u2013293 require PCI DSS validation, Stripe review and agreement to maintain additional controls before raw-card API access, and retain the custom-pricing network-cost pass-through when Stripe is named acquirer in the 3DS request, per the account's agreement. Current source line 18 abbreviates the access prerequisites and drops the additional controls and conditional cost note."
+      ],
+      "conflicts": [
+        "Current source line 17 and stripe-3d-secure.md line 116 have undated beta wording and an unsupported GA label. Old raw 15\u201334 and new raw 16\u201335 supply exact availability wording by date.",
+        "Current source line 19 and stripe-3d-secure.md line 118 say the two flags are always required, while both captures scope error_on_requires_action to the PaymentIntent import directions and omit it from the documented SetupIntent setup example (old 42\u201344, 83\u201385, 117\u2013146; new 43\u201345, 70\u201372, 94\u2013113).",
+        "Both captures' PaymentIntent confirm prose link to the SetupIntent create confirmation anchor (old 43,84; new 44,71). The surrounding instructions, endpoint/example, and soft-decline flag identify PaymentIntent create and confirm. Preserve this as a shared link-target conflict without treating the SetupIntent link as changing the actor or endpoint."
+      ],
+      "reason": "The November country availability label is a substantive change. The current summary also independently overstates release status and confirmation flags, compresses raw-card access conditions, and omits the Cartes Bancaires exemption mismatch rejection."
+    }
+  ],
+  "answers": {
+    "Q1": "https://docs.stripe.com/payments/payment-intents/three-d-secure-import documents merchant import of external 3DS authentication from a travel aggregator or third-party 3DS provider. Match the provider's values exactly. A merchant server creates and confirms the PaymentIntent in one call using raw card details or an existing PaymentMethod ID, with confirm=true and error_on_requires_action=true to prevent Stripe from making a 3DS request during a soft decline. Use raw card data shortly after tokenization, subject to PCI DSS validation, Stripe review, and agreement to additional controls. Future payment setup instead creates and confirms a SetupIntent with a non-payment authentication cryptogram and card details or PaymentMethod ID. For an externally obtained low-risk SCA exemption, the merchant flags it and Stripe requests it from the issuer only if Stripe's real-time risk assessment warrants it. The expanded Charge indicator records whether Stripe requested the exemption. Cartes Bancaires needs explicit network selection and cb_avalgo with optional additional fields, and Stripe rejects the specified inconsistent exemption indicators. Sandbox behavior is test-scoped. Imported authentication, confirmation and the exemption request signal do not establish issuer approval or payment success. These paths persist across old raw lines 36-122 and new raw lines 37-113, old raw lines 148-301 and new raw lines 115-244, and old raw lines 338-350 and new raw lines 281-293. source-stripe-3ds-import.md lines 17\u201343 captures the broad paths but overstates the universal flag requirement, omits the short-tokenization and exemption-mismatch conditions, and abbreviates raw PAN access prerequisites. Its availability wording requires the dated November change.",
+    "Q2": "At https://docs.stripe.com/payments/payment-intents/three-d-secure-import, the substantive change is that the May 8, 2026 Beta label in other Stripe card-payment countries becomes Private preview in the November 7, 2026 capture. The named AU/CA/CH/EU/GB/HK/MX/NZ/SG/US locations and IN/MY/TH exclusions persist across old raw lines 15-34 and new raw lines 16-35. Preserve both dated labels and remove the unsupported GA inference in source-stripe-3ds-import.md line 17 and the reciprocal concept. The Node.js-to-cURL conversion, return_url additions and changed values in examples, and markup changes are presentation; they establish no general new parameter requirement or change to defaults. The linked sandbox wording is an environment clarification and navigation, consistent with existing sandbox scope and the retained conditional negative tests (old raw lines 281-336 and new raw lines 224-279). Preserve the separate SetupIntent scope and flag conflict, both captures' mismatched confirm hyperlink, the conditional issuer exemption signal and Cartes Bancaires mismatch rejection, raw PAN prerequisites and custom-pricing note with their dates. Preserve the root wiki index to Stripe index route, the Stripe index and stripe-3d-secure concept reciprocal route with source-stripe-3ds-import.md, the standalone 3DS navigation, and the summary's historical May raw link alongside the November evidence."
+  }
+}

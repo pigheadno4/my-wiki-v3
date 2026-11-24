@@ -1,0 +1,412 @@
+--- raw/stripe-payments-without-auth-2026.md
++++ raw/stripe-payments-without-card-authentication-2026-11-07.md
+@@ -6,27 +6,40 @@
+ 
+ ### How this integration works
+ 
+-Banks in regions such as Europe and India often require two-factor authentication to confirm a purchase. If you primarily do business in the US and Canada, ignoring _card authentication_ (A bank might require the customer to authenticate a card payment before processing. Implementation varies by bank but commonly consists of a customer entering in a security code sent to their phone) can simplify your integration, as banks rarely request it in these regions.
+-
+-When a bank requires authentication, this basic integration immediately declines the payment (similar to a card decline), instead of handling authentication to complete the payment asynchronously. The benefit is that the payment succeeds or declines immediately and payment confirmation happens on the server, so you can handle immediate post-payment actions without a _webhook_ (A webhook is a real-time push notification sent to your application as a JSON payload through HTTPS requests).
++Banks in regions such as Europe and India often require two-factor authentication to confirm a purchase. If you primarily do business in the US and Canada, ignoring *card authentication* (A bank might require the customer to authenticate a card payment before processing. Implementation varies by bank but commonly consists of a customer entering in a security code sent to their phone) can simplify your integration, as banks rarely request it in these regions.
++
++When a bank requires authentication, this basic integration immediately declines the payment (similar to a card decline), instead of handling authentication to complete the payment asynchronously. The benefit is that the payment succeeds or declines immediately and payment confirmation happens on the server, so you can handle immediate post-payment actions without a *webhook* (A webhook is a real-time push notification sent to your application as a JSON payload through HTTPS requests).
+ 
+ ### How it compares to the global integration
+ 
+-| Feature                                                              | This Integration | Global Integration |
+-| -------------------------------------------------------------------- | ---------------- | ------------------ |
+-| Custom payment form                                                  | ✔                | ✔                  |
+-| Sensitive data never touches your server                             | ✔                | ✔                  |
+-| Works for your US and Canada customers                               | ✔                | ✔                  |
+-| Declines payments with incorrect card details or no funds            | ✔                | ✔                  |
+-| Declines payments with bank authentication requests                  | ✔                |                    |
+-| Works for your global customers                                      |                  | ✔                  |
+-| Automatically handles card payments that require bank authentication |                  | ✔                  |
+-| Webhooks recommended for post-payment tasks                          |                  | ✔                  |
+-| Easily scales to other payment methods (for example, bank debits)    |                  | ✔                  |
++| Feature | This Integration | Global Integration |
++| --- | --- | --- |
++| Custom payment form | ✔ | ✔ |
++| Sensitive data never touches your server | ✔ | ✔ |
++| Works for your US and Canada customers | ✔ | ✔ |
++| Declines payments with incorrect card details or no funds | ✔ | ✔ |
++| Declines payments with bank authentication requests | ✔ |  |
++| Works for your global customers |  | ✔ |
++| Automatically handles card payments that require bank authentication |  | ✔ |
++| Webhooks recommended for post-payment tasks |  | ✔ |
++| Easily scales to other payment methods (for example, bank debits) |  | ✔ |
+ 
+ Growing or global businesses should use Stripe’s [global integration](https://docs.stripe.com/payments/accept-a-payment.md) to support bank requests for two-factor authentication and allow customers to pay with more payment methods.
++
+ Payment flow you're integrating (See full diagram at https://docs.stripe.com/payments/without-card-authentication)
+ 
++```text
++[Customer] -- Provides card details and clicks Pay button --> [Client]
++[Client] -- Calls stripe.createPaymentMethod --> [Stripe]
++[Stripe] -- Returns PaymentMethod --> [Client]
++[Client] -- Finalizes payment with order details and PaymentMethod ID --> [Server]
++[Server] -- POST /v1/payment_intents confirm=true --> [Stripe]
++[Stripe] -- Attempts payment --> [Stripe]
++[Stripe] -- If no authentication required, returns new PaymentIntent with status “succeeded” --> [Server]
++[Stripe] -- Attempts payment --> [Stripe]
++[Stripe] -- If authentication required, returns new Error with code “authentication_required” --> [Server]
++```
++
+ ## Build a checkout form [Client-side]
+ 
+ [Elements](https://docs.stripe.com/payments/elements.md), part of Stripe.js, provides drop-in UI components for collecting card information from customers. Stripe hosts them and places them into your payment form as an iframe so your customer’s card details never touch your code.
+@@ -36,12 +49,12 @@
+ First, include the [Stripe.js](https://docs.stripe.com/js.md) script in the head of every page on your site.
+ 
+ ```html
+-<script src="https://js.stripe.com/dahlia/stripe.js"></script>
++<script src="https://js.stripe.com/endive/stripe.js"></script>
+ ```
+ 
+ Including the script on every page of your site lets you take advantage of the Stripe [advanced fraud functionality](https://docs.stripe.com/radar.md) and ability to detect anomalous browsing behavior.
+ 
+-### Security requirements
++### Security requirements 
+ 
+ This script must always load directly from **js.stripe.com** to remain [PCI compliant](https://docs.stripe.com/security/guide.md). You can’t include the script in a bundle or host a copy of it yourself.
+ 
+@@ -49,7 +62,7 @@
+ 
+ The address of the page that contains Elements must also start with **https://** rather than **http://**. For more information about getting SSL certificates and integrating them with your server to enable a secure HTTPS connection, see the [security](https://docs.stripe.com/security.md) documentation.
+ 
+-### Add Elements to your page
++### Add Elements to your page 
+ 
+ Next, you need a Stripe account. [Register now](https://dashboard.stripe.com/register).
+ 
+@@ -59,20 +72,18 @@
+ <form id="payment-form">
+   <div id="card-element"><!-- placeholder for Elements --></div>
+   <button id="card-button">Submit Payment</button>
+-  <p id="payment-result">
+-    <!-- we'll pass the response from the server here -->
+-  </p>
++  <p id="payment-result"><!-- we'll pass the response from the server here --></p>
+ </form>
+ ```
+ 
+ Create an instance of the [Stripe object](https://docs.stripe.com/js.md#stripe-function), providing your publishable [API key](https://docs.stripe.com/keys.md) as the first parameter. Afterwards, create an instance of the [Elements object](https://docs.stripe.com/js.md#stripe-elements) and use it to [mount](https://docs.stripe.com/js.md#element-mount) a Card element in the empty DOM element container on the page.
+ 
+ ```javascript
+-const stripe = Stripe("<<YOUR_PUBLISHABLE_KEY>>");
++const stripe = Stripe('<<YOUR_PUBLISHABLE_KEY>>');
+ 
+ const elements = stripe.elements();
+-const cardElement = elements.create("card");
+-cardElement.mount("#card-element");
++const cardElement = elements.create('card');
++cardElement.mount('#card-element');
+ ```
+ 
+ Use [stripe.createPaymentMethod](https://docs.stripe.com/js/payment_methods/create_payment_method) on your client to collect the card details and create a [PaymentMethod](https://docs.stripe.com/api/payment_methods.md) when the customer submits the payment form. Send the ID of the PaymentMethod to your server.
+@@ -80,22 +91,22 @@
+ ```javascript
+ const form = document.getElementById("payment-form");
+ 
+-var resultContainer = document.getElementById("payment-result");
++var resultContainer = document.getElementById('payment-result');
+ 
+ // cardElement is defined in the previous step
+-cardElement.on("change", function (event) {
++cardElement.on('change', function(event) {
+   if (event.error) {
+     resultContainer.textContent = event.error.message;
+   } else {
+-    resultContainer.textContent = "";
++    resultContainer.textContent = '';
+   }
+ });
+ 
+-form.addEventListener("submit", async (event) => {
++form.addEventListener('submit', async event => {
+   event.preventDefault();
+-  resultContainer.textContent = "";
++  resultContainer.textContent = '';
+   const result = await stripe.createPaymentMethod({
+-    type: "card",
++    type: 'card',
+     card: cardElement,
+   });
+   handlePaymentMethodResult(result);
+@@ -110,7 +121,7 @@
+     const response = await fetch("/pay", {
+       method: "POST",
+       headers: { "Content-Type": "application/json" },
+-      body: JSON.stringify({ payment_method_id: paymentMethod.id }),
++      body: JSON.stringify({ payment_method_id: paymentMethod.id })
+     });
+ 
+     const responseJson = await response.json();
+@@ -119,13 +130,13 @@
+   }
+ };
+ 
+-const handleServerResponse = async (responseJson) => {
++const handleServerResponse = async responseJson => {
+   if (responseJson.error) {
+     // An error happened when charging the card, show it in the payment form
+     resultContainer.textContent = responseJson.error;
+   } else {
+     // Show a success message
+-    resultContainer.textContent = "Success!";
++    resultContainer.textContent = 'Success!';
+   }
+ };
+ ```
+@@ -139,30 +150,30 @@
+ ```
+ 
+ > This guide assumes that you already have a basic working knowledge of React and that you already set up a React project. If you’re new to React, we recommend that you read the React [Getting Started](https://reactjs.org/docs/getting-started.html) guide before continuing.
+->
++> 
+ > If you’re looking for a quick way to try out React Stripe.js without needing to build a new project, start with this [demo in CodeSandbox](https://codesandbox.io/s/react-stripe-official-q1loc?fontsize=14&hidenavigation=1&theme=dark).
+ 
+-### Security requirements
++### Security requirements 
+ 
+ When you use Elements, all payment information is submitted over a secure HTTPS connection.
+ 
+ The address of the page that contains Elements must also start with **https://** rather than **http://**. For more information about getting SSL certificates and integrating them with your server to enable a secure HTTPS connection, see the [security](https://docs.stripe.com/security.md) documentation.
+ 
+-### Load Stripe.js and add Elements to your page
+-
+-To use Elements, wrap the root of your React app in an [Elements](https://docs.stripe.com/sdks/stripejs-react.md#elements-provider) provider. Call [loadStripe](https://github.com/stripe/stripe-js#loadstripe) with your publishable key and pass the returned `Promise` to the `Elements` provider.
++### Load Stripe.js and add Elements to your page 
++
++To use Elements, wrap the root of your React app in an [Elements](https://docs.stripe.com/sdks/stripejs-react.md?ui=elements#elements-provider) provider. Call [loadStripe](https://github.com/stripe/stripe-js#loadstripe) with your publishable key and pass the returned `Promise` to the `Elements` provider.
+ 
+ Import and call `loadStripe` at the root of your React app to take advantage of the Stripe [advanced fraud functionality](https://docs.stripe.com/radar.md) and its ability to detect anomalous browsing behavior.
+ 
+ ```jsx
+-import React from "react";
+-import ReactDOM from "react-dom";
+-import { Elements } from "@stripe/react-stripe-js";
+-import { loadStripe } from "@stripe/stripe-js";
+-
+-import CheckoutForm from "./CheckoutForm";
+-
+-// Make sure to call `loadStripe` outside of a component’s render to avoid
++import React from 'react';
++import ReactDOM from 'react-dom';
++import {Elements} from '@stripe/react-stripe-js';
++import {loadStripe} from '@stripe/stripe-js';
++
++import CheckoutForm from './CheckoutForm';
++
++// Make sure to call `loadStripe` outside of a component's render to avoid
+ // recreating the `Stripe` object on every render.
+ const stripePromise = loadStripe("<<YOUR_PUBLISHABLE_KEY>>");
+ 
+@@ -172,22 +183,22 @@
+       <CheckoutForm />
+     </Elements>
+   );
+-}
+-
+-ReactDOM.render(<App />, document.getElementById("root"));
+-```
+-
+-### Create a PaymentMethod
++};
++
++ReactDOM.render(<App />, document.getElementById('root'));
++```
++
++### Create a PaymentMethod 
+ 
+ Use the `CardElement` and [stripe.createPaymentMethod](https://docs.stripe.com/js/payment_methods/create_payment_method) on your client to collect the card details and create a [PaymentMethod](https://docs.stripe.com/api/payment_methods.md) when the customer submits the payment form. Send the ID of the PaymentMethod to your server.
+ 
+-To call `stripe.createPaymentMethod` from your payment form component, use the [useStripe](https://docs.stripe.com/sdks/stripejs-react.md#usestripe-hook) and [useElements](https://docs.stripe.com/sdks/stripejs-react.md#useelements-hook) hooks. If you prefer traditional class components over hooks, you can instead use an [ElementsConsumer](https://docs.stripe.com/sdks/stripejs-react.md#elements-consumer).
++To call `stripe.createPaymentMethod` from your payment form component, use the [useStripe](https://docs.stripe.com/sdks/stripejs-react.md?ui=elements#usestripe-hook) and [useElements](https://docs.stripe.com/sdks/stripejs-react.md?ui=elements#useelements-hook) hooks. If you prefer traditional class components over hooks, you can instead use an [ElementsConsumer](https://docs.stripe.com/sdks/stripejs-react.md?ui=elements#elements-consumer).
+ 
+ #### Hooks
+ 
+ ```jsx
+-import React from "react";
+-import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
++import React from 'react';
++import {useStripe, useElements, CardElement} from '@stripe/react-stripe-js';
+ 
+ export default function CheckoutForm() {
+   const stripe = useStripe();
+@@ -197,12 +208,13 @@
+     // We don't want to let default form submission happen here,
+     // which would refresh the page.
+     event.preventDefault();
++
+     const result = await stripe.createPaymentMethod({
+-      type: "card",
++      type: 'card',
+       card: elements.getElement(CardElement),
+       billing_details: {
+         // Include any additional collected billing details.
+-        name: "Jenny Rosen",
++        name: 'Jenny Rosen',
+       },
+     });
+ 
+@@ -215,9 +227,9 @@
+       // show `result.error.message` in the payment form.
+     } else {
+       // Otherwise send paymentMethod.id to your server (see Step 3)
+-      const response = await fetch("/pay", {
+-        method: "POST",
+-        headers: { "Content-Type": "application/json" },
++      const response = await fetch('/pay', {
++        method: 'POST',
++        headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify({
+           payment_method_id: result.paymentMethod.id,
+         }),
+@@ -259,11 +271,16 @@
+ 
+ Use an official library to make requests to the Stripe API from your application:
+ 
+-#### Node.js
++#### Ruby
+ 
+ ```bash
+-# Install with npm
+-npm install stripe --save
++# Available as a gem
++sudo gem install stripe
++```
++
++```ruby
++# If you use bundler, you can add this line to your Gemfile
++gem 'stripe'
+ ```
+ 
+ ## Make a payment [Server-side]
+@@ -274,69 +291,27 @@
+ 
+ Always decide how much to charge on the server, a trusted environment, as opposed to the client. This prevents malicious customers from being able to choose their own prices.
+ 
+-Create an HTTP endpoint to respond to the AJAX request from step 1. In that endpoint, and decide how much to charge the customer. To create a payment, create a PaymentIntent using the _PaymentMethod_ (PaymentMethods represent your customer's payment instruments, used with the Payment Intents or Setup Intents APIs) ID from step 1 with the following code:
+-
+-#### Node.js
+-
+-```javascript
+-// Using Express
+-const express = require("express");
+-const app = express();
+-app.use(express.json());
+-const { resolve } = require("path");
+-
+-app.get("/", (req, res) => {
+-  // Display checkout page
+-  const path = resolve("./index.html");
+-  res.sendFile(path);
+-});
+-
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-// Endpoint for when `/pay` is called from client
+-app.post("/pay", async (request, response) => {
+-  try {
+-    // Create the PaymentIntent
+-    let intent = await stripe.paymentIntents.create({
+-      amount: 1099,
+-      currency: "usd",
+-      payment_method: request.body.payment_method_id,
+-
+-      // A PaymentIntent can be confirmed some time after creation,
+-      // but here we want to confirm (collect payment) immediately.
+-      confirm: true,
+-
+-      // If the payment requires any follow-up actions from the
+-      // customer, like two-factor authentication, Stripe will error
+-      // and you will need to prompt them for a new payment method.>
+-      error_on_requires_action: true,
+-    });
+-    return generateResponse(response, intent);
+-  } catch (e) {
+-    if (e.type === "StripeCardError") {
+-      // Display error on client
+-      return response.send({ error: e.message });
+-    } else {
+-      // Something else happened
+-      return response.status(500).send({ error: e.type });
+-    }
+-  }
+-});
+-
+-function generateResponse(response, intent) {
+-  if (intent.status === "succeeded") {
+-    // Handle post-payment fulfillment
+-    return response.send({ success: true });
+-  } else {
+-    // Any other status would be unexpected, so error
+-    return response
+-      .status(500)
+-      .send({ error: "Unexpected status " + intent.status });
+-  }
+-}
+-
+-app.listen(4242, () => console.log(`Node server listening on port ${4242}!`));
++Create an HTTP endpoint to respond to the AJAX request from step 1. In that endpoint, and decide how much to charge the customer. To create a payment, create a PaymentIntent using the *PaymentMethod* (PaymentMethods represent your customer's payment instruments, used with the Payment Intents or Setup Intents APIs) ID from step 1 with the following code:
++
++#### curl
++
++```curl
++# Check the status of the PaymentIntent to make sure it succeeded
++
++curl https://api.stripe.com/v1/payment_intents \
++  -u <<YOUR_SECRET_KEY>>: \
++  -d amount=1099 \
++  -d currency=usd \
++
++# A PaymentIntent can be confirmed some time after creation,
++# but here we want to confirm (collect payment) immediately.
++  -d confirm=true \
++  -d payment_method="{{PAYMENT_METHOD_ID}}" \
++
++# If the payment requires any follow-up actions from the
++# customer, like two-factor authentication, Stripe will error
++# and you will need to prompt them for a new payment method.
++  -d error_on_requires_action=true
+ ```
+ 
+ > If you set [error_on_requires_action](https://docs.stripe.com/api/payment_intents/create.md#create_payment_intent-error_on_requires_action) to `true` when confirming a payment, Stripe automatically fails the payment if it requires two-factor authentication from the user.
+@@ -358,14 +333,14 @@
+         "object": "charge",
+         "amount": 1099,
+         "refunded": false,
+-        "status": "succeeded"
++        "status": "succeeded",
+       }
+     ]
+   },
+   "client_secret": "pi_0FdpcX589O8KAxCGR6tGNyWj_secret_e00tjcVrSv2tjjufYqPNZBKZc",
+   "currency": "usd",
+   "last_payment_error": null,
+-  "status": "succeeded"
++  "status": "succeeded",
+ }
+ ```
+ 
+@@ -398,12 +373,12 @@
+ 
+ ## Test the integration
+ 
+-Stripe provides several test cards you can use in a _sandbox_ (A sandbox is an isolated test environment that allows you to test Stripe functionality in your account without affecting your live integration. Use sandboxes to safely experiment with new features and changes) to make sure this integration is ready. Use them with any CVC, postal code, and future expiration date.
+-
+-| Number           | Description                                                                                                       |
+-| ---------------- | ----------------------------------------------------------------------------------------------------------------- |
+-| 4242424242424242 | Succeeds and immediately processes the payment.                                                                   |
+-| 4000000000009995 | Always fails with a decline code of `insufficient_funds`.                                                         |
++Stripe provides several test cards you can use in a *sandbox* (A sandbox is an isolated test environment that allows you to test Stripe functionality in your account without affecting your live integration. Use sandboxes to safely experiment with new features and changes) to make sure this integration is ready. Use them with any CVC, postal code, and future expiration date.
++
++| Number | Description |
++| --- | --- |
++| 4242424242424242 | Succeeds and immediately processes the payment. |
++| 4000000000009995 | Always fails with a decline code of `insufficient_funds`. |
+ | 4000002500003155 | Requires authentication, which in this integration will fail with a decline code of `authentication_not_handled`. |
+ 
+ See the full list of [test cards](https://docs.stripe.com/testing.md).

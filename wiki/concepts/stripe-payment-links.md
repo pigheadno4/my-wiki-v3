@@ -64,7 +64,7 @@ Stripe's no-code shareable payment URL product. Customers pay on a Stripe-hosted
 - **Subscriptions**: add `subscription_data: { trial_period_days: N }`
 - **Customer-defined price**: set `custom_unit_amount: { enabled: true }` on Price object
 - **Override payment methods**: ordinary Payment Links can specify `payment_method_types`. Managed Payments links use Stripe’s dynamic selection. [[source-stripe-managed-payments-payment-links]]
-- **Supported pricing models**: flat rate, tiered, package pricing (recurring + one-off)
+- **Pricing models (November 7, 2026 create guide)**: Flat rate or tiered for recurring products, and flat rate or package for one-off products. The April and November catalog overviews mark tiered, usage-based, and decimal amounts Disallowed for Payment Links. The flat-rate API examples do not resolve the tiered mismatch or establish compatibility for all price subtypes. See [[source-stripe-products-prices]].
 
 ## PHP 21.3.0 Update Surface
 

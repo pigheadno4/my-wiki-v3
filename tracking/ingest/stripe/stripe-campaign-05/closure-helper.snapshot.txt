@@ -1,0 +1,74 @@
+from pathlib import Path
+from collections import Counter
+import json,hashlib,re,datetime,shutil
+P=Path('tracking/ingest/stripe/stripe-campaign-05')
+def load(f):return json.loads(Path(f).read_text())
+def sha(f):return hashlib.sha256(Path(f).read_bytes()).hexdigest()
+def save(f,d):Path(f).write_text(json.dumps(d,indent=2)+'\n')
+jobs=load(P/'jobs.json');assert len(jobs)==100 and all(j['state']=='approved'for j in jobs)
+validation=load(P/'attempt-validation.json')
+assert validation['state']=='complete' and validation['actual_final_answers_available']==200
+assert not validation['stripe_wiki_drift_from_activation']
+audits=load(P/'coordinator-audits.json');assert len(audits['audits'])==3 and not audits['expansion_triggered']and all(a['final_audit_verdict']=='pass'for a in audits['audits'])
+assert {a['job_id'] for a in audits['audits']}==set(load(P/'manifest.json')['audit_job_ids'])
+by_id={j['job_id']:j for j in jobs}
+for a in audits['audits']:
+ j=by_id[a['job_id']]
+ assert a['receipt_sha256']==j['receipt_sha256'] and a['review_sha256']==j['review_sha256']
+answer_audit = load(P/'answer-audit.json')
+assert answer_audit['status']=='pass' and answer_audit['answers_checked']==200 and not answer_audit['locator_gaps']
+checked = {(a['job_id'], a['query_id']): a for a in answer_audit['checks']}
+assert len(checked)==200
+def navigation_only(path):
+ lines = Path(path).read_text().splitlines()
+ marker = next((n for n,line in enumerate(lines) if line.startswith('This article has multiple variants.')), None)
+ if marker is None:
+  return False
+ assert any(line.strip() == '## Index' for line in lines[:marker])
+ assert len([line for line in lines[:marker] if line and not line.startswith(('#','<!--'))]) <= 3
+ assert all(not line.strip() or line.lstrip().startswith(('- ', '* ')) for line in lines[marker+1:]), path
+ return True
+rows=[];source_groups={};context_groups={};concepts={};answers=[];dispositions=Counter();evidence_roles=Counter()
+for j in jobs:
+ assert all(checked[j['job_id'], q]['receipt_sha256']==j['receipt_sha256']==sha(j['receipt_path']) and checked[j['job_id'], q]['final_review_sha256']==j['review_sha256'] for q in ('Q1','Q2'))
+ assert j['review_sha256']==sha(j['review_path'])
+ d=load(j['receipt_path']);r=load(j['review_path']);assert r['verdict']=='approved'
+ for f in j['expected_read_files']:assert sha(f['path'])==f['sha256']
+ nav=navigation_only(j['raw_path'])
+ assert not nav or d['proposed_disposition'] in {'raw_reference','unresolved'},j['job_id']
+ role='navigation_only_variant_index'if nav else'full_captured_page'
+ evidence_roles[role]+=1;dispositions[d['proposed_disposition']]+=1
+ row={'job_id':j['job_id'],'canonical_url':j['canonical_url'],'attempt':j['attempt'],'raw_path':j['raw_path'],'raw_sha256':j['raw_sha256'],'prior_raw_path':j['prior_raw_path'],'prior_raw_sha256':j['prior_raw_sha256'],'new_capture_role':role,'proposed_disposition':d['proposed_disposition'],'receipt_path':j['receipt_path'],'receipt_sha256':j['receipt_sha256'],'review_path':j['review_path'],'review_sha256':j['review_sha256'],'source_assessments':d['source_assessments'],'affected_concepts':d['affected_concepts'],'unresolved_questions':d['unresolved_questions']}
+ rows.append(row);answers.append({'job_id':j['job_id'],'canonical_url':j['canonical_url'],'source_targets':j['source_targets'],'receipt_sha256':j['receipt_sha256'],'answers':d['answers']})
+ for s in d['source_assessments']:
+  g=context_groups.setdefault(s['source_target'],{'source_target':s['source_target'],'source_before_sha256':j['source_before_sha256'][s['source_target']],'contributions':[]})
+  g['contributions'].append({**row,'mapped_source_assessment':s,'findings':d['findings'],'substantive_changes':d['substantive_changes'],'historical_claims_to_preserve':d['historical_claims_to_preserve'],'conflicts':d['conflicts'],'expected_read_files':j['expected_read_files'],'original_query_prompts_path':str(P/'proposed-queries.md')})
+ for text in d['affected_concepts']:
+  for c in re.findall(r'wiki/concepts/[A-Za-z0-9_/-]+\.md',text):
+   assert Path(c).exists(),c
+   if d['proposed_disposition']!='unresolved' and any(s['update_needed']for s in d['source_assessments']):concepts.setdefault(c,set()).add(j['job_id'])
+source_groups={t:g for t,g in context_groups.items() if any(c['mapped_source_assessment']['update_needed'] and c['proposed_disposition']!='unresolved' for c in g['contributions'])}
+catalog=load(P/'catalog-count-reconciliation.json')
+for group in source_groups.values():
+ group['contributions'] = [c for c in group['contributions'] if c['proposed_disposition']!='unresolved']
+selected_ids=sorted({c['job_id']for g in source_groups.values()for c in g['contributions']});concept_rows=[{'path':c,'before_sha256':sha(c),'contributing_jobs':sorted(js),'scope':'Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite.'}for c,js in sorted(concepts.items())]
+fixed_canonical = [j for j in load(P/'manifest.json')['audit_job_ids'] if j in selected_ids]
+assert len(fixed_canonical)==3, fixed_canonical
+aggregate=['wiki/stripe-index.md','wiki/companies/stripe.md','wiki/stripe-log.md','wiki/log.md']
+assert all(sha(t)==g['source_before_sha256']for t,g in source_groups.items())
+scope={'status':'PREPARED_ONLY_AWAITING_CANONICAL_UPDATE_APPROVAL','campaign_id':'stripe-campaign-05','prepared_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'reviewed_raw_identities':100,'reviewed_existing_sources':94,'selected_raw_contributions':len(selected_ids),'selected_existing_source_targets':len(source_groups),'selected_job_ids':selected_ids,'source_groups':list(source_groups.values()),'concept_audit_targets':concept_rows,'aggregate_paths':[{'path':f,'before_sha256':sha(f)}for f in aggregate],'new_source_pages':0,'source_count_change':0,'historical_count_repair_authorized':False,'recorded_company_count':catalog['recorded_source_count'],'reconciled_owner_source_inventory':catalog['actual_stripe_owned_type_source_pages'],'selected_missing_company_routes':sorted(set(source_groups)&set(catalog['company_missing_owner_pages'])),'selected_missing_catalog_routes':sorted(set(source_groups)&set(catalog['catalog_missing_owner_pages'])),'remaining_changed_outside_s05':62,'new_candidates_deferred':4265,'new_capture_roles_in_review':dict(evidence_roles),'fixed_query_answers_required_in_canonical_phase':2*len(selected_ids),'predetermined_coordinator_audit_jobs':fixed_canonical,'canonical_execution_authorized':False,'collection_authorized':False,'commit_push_authorized':False,'scope_rules':['Read the full old and new captures, current source and relevant concept context before drafting each source update. Preserve every historical raw reference and actual capture date.','Place navigation-only variant indexes in Related raw API references. Use full captures for documented evidence dated to each capture.','Consolidate approved evidence for shared targets and retain the separate source assessment of each contributing raw URL.','Record both the documented change and the accuracy of the existing summary. Preserve all conditional, UI/API/version, Account/Customer, Intent/Session/Invoice/Mandate, merchant/platform and state boundaries.','Carry forward unresolved authority/variant and same-page conflicts explicitly; omission does not prove removal. No unreviewed variant collection or source promotion.','Limit concept work to the listed audits and any supported reciprocal corrections.','Coordinator alone promotes accepted candidates and reconciles selected catalog/company entries. Preserve unrelated PayPal/shared-log work and historical count gaps. Root log append is scoped to this approved round only.','Collection, commit/push, and broad historical count and catalog repair require separate approval.'],'proposed_parallel_contract':{'max_shared_active_children':10,'coordinator_excluded':True,'worker_model':'gpt-6.2-sol','worker_reasoning':'medium','independent_first_reviewer_model':'gpt-6.2-sol','independent_first_reviewer_reasoning':'high','max_attempts':3,'first_review':'Full all pinned new/old raw, existing source(s), generated candidate, full diff, all actual fixed query answers and relevant concept context; no size/schema waiver.','targeted_retries':'Only bounded corrections with unchanged hashes and retained first full proof; otherwise full rereview.','delegate_writes':'Only assigned external candidates/receipts/reviews; repository read-only; no worktrees. Coordinator alone promotes and writes tracking/aggregate pages.','closure':'Validate every source/candidate/old/new hash, exact quotes, fullread/independentrole proof, actual query answers, concept/aggregate scope, 3 predetermined full coordinator audits; material partial/fail expands coordinator audit to all selected contributions. No publication without separate approval.'}}
+save(P/'canonical-update.proposed.json',scope);save(P/'reviewed-dispositions.json',rows);save(P/'actual-query-answers.json',answers)
+result={'state':'review_only_complete_awaiting_canonical_update_approval','reviewed_raw_identities':100,'existing_sources_reviewed':94,'actual_fixed_answers':200,'actual_answers_audited':200,'fixed_coordinator_full_audits':3,'audit_expansion_triggered':False,'dispositions':dict(dispositions),'new_capture_roles':dict(evidence_roles),'proposed_raw_contributions':len(selected_ids),'proposed_existing_source_updates':len(source_groups),'proposed_existing_concept_audits':len(concept_rows),'canonical_writes_by_s05':0,'remaining_changed':62,'new_candidates_deferred':4265,'proposal_sha256':sha(P/'canonical-update.proposed.json'),'unrelated_wiki_drift_preserved':validation['wiki_drift_from_activation']}
+save(P/'results.json',result);save(P/'status.json',result)
+campaign={'intent':'review_only','approved_manifest_sha256':sha(P/'manifest.json'),'approval_path':str(P/'execution-authorization.json')};campaign.update(result);campaign['completed_at']=datetime.datetime.now(datetime.timezone.utc).isoformat();campaign['canonical_execution_authorized']=False;campaign['publication_authorized']=False;save(P/'campaign.json',campaign)
+human=['# Stripe S05 review complete and proposed canonical update','',f'Reviewed **100 raw URL identities and 94 existing summaries**. All independent reviews passed. All **200 actual answers** passed the evidence and independent-review checks. Three fixed coordinator full evidence audits passed. This round produced review artifacts in the campaign directory.','',f'The canonical update proposal covers **{len(selected_ids)} reviewed raw contributions across {len(source_groups)} existing source summaries**, plus bounded audits of **{len(concept_rows)} existing concepts** and selected Stripe catalog, company and log entries. The proposal awaits separate ingestion approval.','',f'The review found {evidence_roles.get("full_captured_page",0)} full captures and {evidence_roles.get("navigation_only_variant_index",0)} navigation-only captures. Recommendations for correcting an older summary are separate from the disposition of its November capture.','', 'The exact source assessments, raw/source SHA pins, findings, dated retention requirements and unresolved questions are in `canonical-update.proposed.json`. Use full captures as dated evidence and list variant indexes under Related raw API references.','', f"The company count records {catalog['recorded_source_count']} sources against a reconciled inventory of {catalog['actual_stripe_owned_type_source_pages']}. The proposed source updates create zero new pages. The scope records gaps in the selected company and index routes.",'', '## Proposed source targets','', '| Existing source | Contributing review | November capture type |','| --- | --- | --- |']
+for t,g in sorted(source_groups.items()):human.append('| '+t+' | '+', '.join(c['job_id']for c in g['contributions'])+' | '+', '.join(c['new_capture_role'].replace('_',' ') for c in g['contributions'])+' |')
+human+=['','## Proposed concept audits','']+[f"- {c['path']} — {', '.join(c['contributing_jobs'])}"for c in concept_rows]
+excluded=[r for r in rows if r['job_id'] not in selected_ids]
+if excluded:
+ human+=['','## Reviews outside this canonical update scope','']+[f"- {r['job_id']} — {r['proposed_disposition']}."for r in excluded]
+human+=['','## Approval and execution boundary','','Approve the exact canonical-update proposal to generate and independently review the scoped source candidates, audit/correct the listed concepts, and let the coordinator promote accepted changes and reconcile selected Stripe catalog/company/log entries. The contract uses up to ten shared child slots with medium workers, different high first reviewers, full evidence reads, maximum three attempts, fixed actual answers, three coordinator audits with all-scope expansion on material partial/fail. Collection and publication have their own approval gates.','','62 changed identities and 4,265 new candidates remain outside S05.']
+(P/'canonical-update-review.md').write_text('\n'.join(human)+'\n')
+(P/'execution-checklist.md').write_text('# Stripe S05 review execution\n\n'+'\n'.join('- [x] '+s for s in ['Verified exact user approval and all 400 activation pins.','All 100 identities and 94 existing summaries fully compared, with separate records for each contribution to shared source targets.','Different independent full first reviews; all corrections within three attempts.','All 200 actual answers audited. Three fixed coordinator full audits passed.','Exhaustive hashes/coverage/quotes/identities/queue validated; catalog/count baseline reconciled.','Closed the review and prepared the exact canonical update proposal for separate approval.'])+'\n')
+for src,name in [('/tmp/stripe-s05-control.py','runtime-controller.snapshot.txt'),('/tmp/stripe-s05-validate.py','validation-helper.snapshot.txt'),('/tmp/stripe-s05-close.py','closure-helper.snapshot.txt'),('/tmp/stripe-s05-answer-audit.py','answer-audit-helper.snapshot.txt'),('/tmp/stripe-s05-answer-locators.py','answer-locators-helper.snapshot.txt')]:shutil.copyfile(src,P/name)
+print(json.dumps(result,indent=2))

@@ -1,0 +1,182 @@
+{
+  "job_id": "payments-pix-save-payment-details",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-pix-save-payment-details-2026-11-07.md",
+  "raw_sha256": "4297d3308f73f4a2d9f5751cf107071f12098b8c96c214a01cebf13374d3e24e",
+  "prior_raw_path": "raw/stripe-pix-save-payment-details-2025.md",
+  "prior_raw_sha256": "3a01e09903cc5ce2c9a06faf87f87d8dce519b745cd25b84569e4bf4d9d24384",
+  "source_targets": [
+    "wiki/sources/source-stripe-pix-save-payment-details.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-pix-save-payment-details.md": "cdb57961e8329f264b26233efca9617dd25c400210666179d970a43e863970d7"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-pix-save-payment-details-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-pix-save-payment-details-2025.md": [
+      {
+        "start": 1,
+        "end": 870
+      }
+    ],
+    "wiki/sources/source-stripe-pix-save-payment-details.md": [
+      {
+        "start": 1,
+        "end": 46
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/732a22d2c3c4d9532e72cc61/content.diff": [
+      {
+        "start": 1,
+        "end": 872
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 357,
+        "end": 361
+      },
+      {
+        "start": 683,
+        "end": 686
+      },
+      {
+        "start": 746,
+        "end": 749
+      }
+    ],
+    "wiki/concepts/stripe-real-time-payments.md": [
+      {
+        "start": 55,
+        "end": 68
+      },
+      {
+        "start": 201,
+        "end": 211
+      }
+    ],
+    "wiki/concepts/stripe-pix.md": [
+      {
+        "start": 8,
+        "end": 66
+      },
+      {
+        "start": 80,
+        "end": 87
+      }
+    ],
+    "raw/stripe-pix-automatico-2025.md": [
+      {
+        "start": 1,
+        "end": 8
+      },
+      {
+        "start": 51,
+        "end": 70
+      }
+    ],
+    "raw/stripe-subscriptions-pix-2026.md": [
+      {
+        "start": 1,
+        "end": 8
+      },
+      {
+        "start": 686,
+        "end": 724
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Learn how to save Pix payment details and charge your customers later.",
+      "location": "raw/stripe-payments-pix-save-payment-details-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-pix-save-payment-details-2026-11-07.md:11"
+    },
+    {
+      "text": "[Checkout](https://docs.stripe.com/payments/pix/save-payment-details.md?payment-ui=checkout)",
+      "location": "raw/stripe-payments-pix-save-payment-details-2026-11-07.md:13"
+    },
+    {
+      "text": "[Direct API](https://docs.stripe.com/payments/pix/save-payment-details.md?payment-ui=direct-api)",
+      "location": "raw/stripe-payments-pix-save-payment-details-2026-11-07.md:14"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "<!-- Fetched: 2026-05-06 -->",
+      "location": "raw/stripe-pix-save-payment-details-2025.md:2"
+    },
+    {
+      "text": "After the customer authorizes the mandate in their banking app, the SetupIntent moves to a `succeeded` state and the PaymentMethod is attached to the Customer.",
+      "location": "raw/stripe-pix-save-payment-details-2025.md:616"
+    },
+    {
+      "text": "If the payment fails after exhausting all of the retries, you can bring your customer back on-session to create a new payment.",
+      "location": "raw/stripe-pix-save-payment-details-2025.md:866"
+    },
+    {
+      "text": "Due to scheme restrictions, you can only charge a Pix payment method once per cycle",
+      "location": "raw/stripe-pix-save-payment-details-2025.md:870"
+    }
+  ],
+  "proposed_disposition": "raw_reference",
+  "findings": [
+    "November 7, 2026 base raw is a two-route selector for Checkout and Direct API (new raw lines 5-14). The exact Checkout and Direct API flows are dated May 6, 2026 (old raw lines 8-12 and 203-207). No November variant bodies were read.",
+    "Diff line 871 joins the last old payment-cycle sentence and first November Checkout plus-line. Verified separately at old raw line 870 and new raw line 13.",
+    "Root index line 7 routes to Stripe index lines 360, 685 and 748. The Real-Time Payments concept links this source at line 208. The separate Pix concept provides dated related mandate/subscription coverage and already records an optionality distinction at lines 16-18 and 48-50. Preserve these routes and add source-to-concept reciprocal routing."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "May save for future recurring use requires a customer-authorized Pix Autom\u00e1tico mandate, and the later charge may fail if mandate options are violated (old raw lines 8-10). May Checkout setup initiates without charging; Checkout payment mode adds Pix-specific off-session future use, with payment and banking-app authorization before attachment (old raw lines 72-145).",
+    "May Direct API saves without charging using SetupIntent and confirmPixSetup, or pays then saves using PaymentIntent and confirmPixPayment with its own client secret. Verify corresponding Intent status; manually rendering displayed instructions using handleActions false does not activate a mandate or settle payment (old raw lines 248-278, 351-380 and 544-803).",
+    "May saved PaymentMethod can fund later attempts subject to mandate conditions, retry and once-per-cycle constraints. Banking app revocation produces mandate.updated and requires a new on-session mandate. Distinguish test authorization/expiry, simulated success/failure, and live Pix-enabled Brazilian bank account for the live flow (old raw lines 147-179 and 805-870)."
+  ],
+  "conflicts": [
+    "Source line 17 and Real-Time Payments concept line 65 turn both illustrated mandate settings into universal required fields. The May 6 save guide requires the customer-authorized Pix Autom\u00e1tico mandate, tells Direct API users to provide mandate options and illustrates amount and payment_schedule on Checkout and Intent paths (old raw lines 8-10, 53-108, 248-278 and 351-380). The May 6 Pix Autom\u00e1tico customization table lists defaults of 400 BRL and monthly (raw/stripe-pix-automatico-2025.md lines 53-67). The separate May 13 direct Subscriptions API guide explicitly makes the options optional and shows a sample with amount only (raw/stripe-subscriptions-pix-2026.md lines 688-722, Pix concept lines 16-18 and 48-50). Preserve the save guide's route-specific instructions and examples without asserting either a universal need to pass both fields or universal optionality.",
+    "Source lines 22-27 should make the customer authorization and status boundaries discoverable. The May SetupIntent path saves only after customer authorization and verified setup; its return verifies SetupIntent, with no initial payment. The pay-and-save path needs success of payment and bank mandate authorization, checks PaymentIntent on return, and sets off-session future usage at creation (old raw lines 72-145, 351-380, 563-616 and 635-689). `next_action` QR data is an intermediate display artifact, not evidence that either succeeded (old raw lines 691-803).",
+    "Source line 37 needs the distinct next-charge conditions, including saved method for the customer, off_session true if the buyer is absent, retry only on failures unrelated to mandate violation, recovery after exhausting retries and the scheme's one-charge-per-specified-cycle limit (old raw lines 147-168, 805-827 and 862-870). A reader attempting a second charge for an add-on in the same cycle must be routed to the stated on-session option.",
+    "Preserve the May representation prerequisite Customer vs customer-configured Account, the dated Accounts v2 preview caveat for non-Connect users, and the Direct API example fields name/email/tax ID with stated cross-border legal scope (old raw lines 27-41, 222-236 and 453-485). The test-time success of a mandate is distinct from a future payment success, including test cases where mandates succeed and later payments expire (old raw lines 170-201 and 829-860)."
+  ],
+  "unresolved_questions": [
+    "The November selector provides no evidence about current mandate defaults or qualifications, account eligibility, or runtime setup/payment outcomes."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-real-time-payments.md",
+    "wiki/concepts/stripe-pix.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-pix-save-payment-details.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "The current source retains the two branches and main methods (lines 13-37), but needs to surface explicit setup/payment verification and saved-charge constraints and date its mandate configuration. Add a reciprocal route and label November navigation separately."
+      ],
+      "conflicts": [
+        "Source line 17 and Real-Time Payments concept line 65 turn both illustrated mandate settings into universal required fields. The May 6 save guide requires the customer-authorized Pix Autom\u00e1tico mandate, tells Direct API users to provide mandate options and illustrates amount and payment_schedule on Checkout and Intent paths (old raw lines 8-10, 53-108, 248-278 and 351-380). The May 6 Pix Autom\u00e1tico customization table lists defaults of 400 BRL and monthly (raw/stripe-pix-automatico-2025.md lines 53-67). The separate May 13 direct Subscriptions API guide explicitly makes the options optional and shows a sample with amount only (raw/stripe-subscriptions-pix-2026.md lines 688-722, Pix concept lines 16-18 and 48-50). Preserve the save guide's route-specific instructions and examples without asserting either a universal need to pass both fields or universal optionality.",
+        "Source lines 22-27 should make the customer authorization and status boundaries discoverable. The May SetupIntent path saves only after customer authorization and verified setup; its return verifies SetupIntent, with no initial payment. The pay-and-save path needs success of payment and bank mandate authorization, checks PaymentIntent on return, and sets off-session future usage at creation (old raw lines 72-145, 351-380, 563-616 and 635-689). `next_action` QR data is an intermediate display artifact, not evidence that either succeeded (old raw lines 691-803).",
+        "Source line 37 needs the distinct next-charge conditions, including saved method for the customer, off_session true if the buyer is absent, retry only on failures unrelated to mandate violation, recovery after exhausting retries and the scheme's one-charge-per-specified-cycle limit (old raw lines 147-168, 805-827 and 862-870). A reader attempting a second charge for an add-on in the same cycle must be routed to the stated on-session option.",
+        "Preserve the May representation prerequisite Customer vs customer-configured Account, the dated Accounts v2 preview caveat for non-Connect users, and the Direct API example fields name/email/tax ID with stated cross-border legal scope (old raw lines 27-41, 222-236 and 453-485). The test-time success of a mandate is distinct from a future payment success, including test cases where mandates succeed and later payments expire (old raw lines 170-201 and 829-860)."
+      ],
+      "reason": "A reader could treat mandatory explicit amount and schedule as universal and attempt repeat off-session add-on charges within a cycle. Correct the May qualification and preserve the separately dated default/optional evidence."
+    }
+  ],
+  "answers": {
+    "Q1": "The November 7, 2026 base capture at https://docs.stripe.com/payments/pix/save-payment-details identifies saving Pix details for a later charge and indexes Checkout and Direct API (new raw lines 5-14). It supplies no implementation prerequisites or state transitions. The May 6, 2026 guide explains that a merchant attaches the method to a Customer or customer-configured Account, and the customer authorizes a Pix Autom\u00e1tico mandate in their banking app (old raw lines 8-10, 27-41 and 53-55). Checkout setup mode or Direct API SetupIntent saves without an initial charge. Checkout payment mode or a Direct API PaymentIntent using off-session future usage needs successful payment and mandate authorization before saving. On the direct return page, check the matching SetupIntent or PaymentIntent status; QR display and browser return do not prove setup or payment (old raw lines 72-145, 248-278, 351-380 and 563-689). Later qualifying attempts use the saved method and revocation emits mandate.updated (old raw lines 805-827). source-stripe-pix-save-payment-details.md identifies the main options but overstates required mandate customization and omits the cycle limit and successful-authorization boundary.",
+    "Q2": "The change at https://docs.stripe.com/payments/pix/save-payment-details is presentational/navigation only (new raw lines 9-14) and supplies no substantive rule change. source-stripe-pix-save-payment-details.md should retain the May 6, 2026 instructions and examples for Pix Autom\u00e1tico, but avoid a universal requirement that amount and payment_schedule be supplied. The May save guide tells Direct API users to provide mandate options and uses both fields in examples (old raw lines 248-278 and 351-380). The May 6 customization document lists 400 BRL and monthly defaults, and the separate May 13 direct Subscriptions API guide calls the options optional (raw/stripe-pix-automatico-2025.md lines 53-67 and raw/stripe-subscriptions-pix-2026.md lines 688-722). Preserve setup without charge versus payment and save, the cross-border CPF/CNPJ scope, revocation, the once-per-cycle limit and on-session recovery after retries or for an add-on (old raw lines 72-145, 453-485 and 825-870). Preserve root index line 7, Stripe index lines 360, 685 and 748, and Real-Time Payments concept line 208. Add the source backlink and separate November navigation from retained May behavior."
+  }
+}

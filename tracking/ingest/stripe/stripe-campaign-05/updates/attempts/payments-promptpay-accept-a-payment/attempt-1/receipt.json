@@ -1,0 +1,173 @@
+{
+  "job_id": "payments-promptpay-accept-a-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Accept a PromptPay Payment\"\ntype: source\ndate_ingested: 2026-05-06\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/payments/promptpay/accept-a-payment\nraw_files:\n  - \"stripe-promptpay-accept-payment-2025.md\"\ntags: [stripe, real-time-payments, promptpay, thailand, thb, checkout, direct-api, qr-code]\n---\n\n## Summary\n\nThe May 6, 2026 [[stripe|Stripe]] acceptance guide contains Checkout and Direct API instructions for PromptPay, a Thai QR-based payment method. The November 7 capture links those same two variants. The May Direct API guide refers readers with an existing Elements implementation to Payment Element migration. See the separate method overviews for Elements and Mobile Payment Element product support.\n\n## Checkout\n\nThe May guide covers Thailand business locations, THB presentment and payment mode with one-time line items in one currency. It excludes setup and subscription modes for these Checkout routes. Stripe can choose dynamic payment methods, or the merchant can include `promptpay` in the Checkout Session's `payment_method_types`. Its hosted example uses a `success_url`; its full embedded example uses a `return_url`. The customer scans the QR, authorizes in a participating app and returns to the merchant site. See May lines 12–103.\n\n## Direct API\n\nThe May guide recommends Stripe's general acceptance integration unless the merchant needs manual server confirmation or a separately presented payment method. In the custom direct flow, the merchant server creates a THB PaymentIntent and passes its client secret to the browser. The May sample explicitly lists `promptpay`. The customer email is the only billing-detail field in this sample's new-method form. The browser calls `stripe.confirmPromptPayPayment(clientSecret, {payment_method: {type: 'promptpay', billing_details: {email}}})` and Stripe.js displays a QR modal. See May lines 122–165 and 230–296.\n\nThe customer scans the code and authorizes in a participating banking or payment app. The May guide says the modal closes automatically a few seconds after successful authentication. It also illustrates a user-close branch without specifying a terminal PaymentIntent state for closure. Fulfill server-side after verified payment completion, such as observing `payment_intent.succeeded` and its corresponding `succeeded` PaymentIntent. A scan, closed modal and browser return are customer steps and signals. See May lines 275–310.\n\nThe separate [[raw/stripe-js-payment-intents-confirm-promptpay-payment-2026-11-07|November Stripe.js reference]] (lines 7–33) describes calling without additional data when a PaymentMethod is already attached. The merchant can handle QR display by passing `handleActions: false`. These are Stripe.js reference details. The November acceptance capture lists the route links.\n\n## Testing\n\nThe May Checkout sandbox uses **Generate QR code**, followed by scanning the test URL to authorize or fail on a Stripe-hosted page. In the May Direct API sandbox with Stripe-displayed QR, **Simulate scan** opens the Stripe-hosted test page. A scan of a manually displayed test QR code opens the same page. In live mode, the customer uses a supported banking or payment app. See May lines 109–115 and 312–318.\n\n## Separate method documentation\n\nThe May and November [[source-stripe-promptpay|PromptPay method overviews]] list Elements product support, exclude Express Checkout Element, and restrict Mobile Payment Element to iOS (May overview lines 56–68, November overview lines 57–69). They document Billing and Invoicing via `send_invoice` separately from the May Checkout mode limits. The November overview describes a reviewed waitlist for US-based Stripe accounts in private preview (lines 71–73).\n\nThe November overview also describes repeated QR use after payment. A rescan can deduct funds again. When Stripe receives excess funds, it returns the amount to the merchant balance and notifies the merchant, who refunds the customer outside Stripe (November overview lines 124–130).\n\n## Related Pages\n\n- [[stripe]] — provider overview\n- [[stripe-real-time-payments#PromptPay Details|PromptPay in Stripe real-time payments]]\n- [[source-stripe-promptpay]] — method eligibility and product support\n\n## Raw Sources\n\n- [[raw/stripe-promptpay-accept-payment-2025]] — May 6, 2026 full Checkout and Direct API guide\n\n## Related raw API references\n\n- [[raw/stripe-payments-promptpay-accept-a-payment-2026-11-07]] — November 7, 2026 selector for Checkout and Direct API\n",
+  "quotes": {
+    "payments-promptpay-accept-a-payment": [
+      {
+        "text": "Accept payments with PromptPay, an instant funds transfer service in Thailand.",
+        "location": "raw/stripe-payments-promptpay-accept-a-payment-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-promptpay-accept-a-payment-2026-11-07.md:11"
+      },
+      {
+        "text": "[Checkout](https://docs.stripe.com/payments/promptpay/accept-a-payment.md?payment-ui=checkout)",
+        "location": "raw/stripe-payments-promptpay-accept-a-payment-2026-11-07.md:13"
+      },
+      {
+        "text": "[Direct API](https://docs.stripe.com/payments/promptpay/accept-a-payment.md?payment-ui=direct-api)",
+        "location": "raw/stripe-payments-promptpay-accept-a-payment-2026-11-07.md:14"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-promptpay-accept-a-payment": [
+      {
+        "text": "<!-- Fetched: 2026-05-06 -->",
+        "location": "raw/stripe-promptpay-accept-payment-2025.md:2"
+      },
+      {
+        "text": "If you’ve already integrated with Elements, see the",
+        "location": "raw/stripe-promptpay-accept-payment-2025.md:126"
+      },
+      {
+        "text": "A few seconds after customers authenticate the payment successfully, the QR code modal closes automatically",
+        "location": "raw/stripe-promptpay-accept-payment-2025.md:306"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-promptpay-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-promptpay-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 318
+      }
+    ],
+    "wiki/sources/source-stripe-promptpay-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 29
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/af88a24f12eaa4948a38ed90/content.diff": [
+      {
+        "start": 1,
+        "end": 320
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 11
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 362,
+        "end": 364
+      },
+      {
+        "start": 746,
+        "end": 749
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 563,
+        "end": 568
+      }
+    ],
+    "wiki/concepts/stripe-real-time-payments.md": [
+      {
+        "start": 146,
+        "end": 166
+      },
+      {
+        "start": 206,
+        "end": 214
+      }
+    ],
+    "raw/stripe-promptpay-2025.md": [
+      {
+        "start": 56,
+        "end": 68
+      }
+    ],
+    "raw/stripe-payments-promptpay-2026-11-07.md": [
+      {
+        "start": 55,
+        "end": 73
+      },
+      {
+        "start": 104,
+        "end": 114
+      },
+      {
+        "start": 124,
+        "end": 130
+      }
+    ],
+    "raw/stripe-js-payment-intents-confirm-promptpay-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 35
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-promptpay-accept-a-payment/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 167
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-promptpay-accept-a-payment/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 116
+      }
+    ]
+  },
+  "answers": {
+    "payments-promptpay-accept-a-payment": {
+      "Q1": "The November 7, 2026 capture at https://docs.stripe.com/payments/promptpay/accept-a-payment identifies PromptPay as a Thai instant-transfer service and links Checkout and Direct API (new raw lines 5-14). The selector provides no integration prerequisites, payment steps or state transitions. The May 6 guide describes a merchant-created Checkout Session for Thai businesses, one-time same-currency THB line items, payment mode only, and dynamic or manual selection (old raw lines 12-50). In Direct API the merchant server creates a PaymentIntent and supplies the client secret. The buyer's email is the billing field in the shown custom form; Stripe.js confirms, displays a QR, and the buyer authenticates the payment in their banking/payment app. Upon completion the PaymentIntent reaches succeeded and emits payment_intent.succeeded for fulfillment (old raw lines 143-165, 230-250 and 275-310). The revised source-stripe-promptpay-accept-payment.md preserves the two bodies and webhook advice, distinguishes scan and modal behavior from verified completion, and dates Elements product support to the separate method overviews.",
+      "Q2": "The November change at https://docs.stripe.com/payments/promptpay/accept-a-payment is presentation/navigation only (new raw lines 9-14) and supplies no substantive product change. Retain May 6, 2026 Checkout compatibility and payment-only scope, THB one-time line items, and the Direct API new-method example's email field, authentication and verified outcome (old raw lines 20-50, 230-250 and 275-310). The revised source-stripe-promptpay-accept-payment.md distinguishes its two acceptance variants from separate May and November Elements product support, including Express Checkout Element exclusion and the iOS-only Mobile Payment Element scope. Keep that overview's send_invoice Invoicing/Subscriptions qualification separate from Checkout modes and the November US account waitlist private preview separate from the May Thai Checkout scope. A QR rescan can deduct funds again in the separate method documentation. The source retains the separate dated navigation reference and adds a backlink to the existing Real-Time Payments concept route."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "promptpay-acceptance-details",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Integration**: Checkout and Direct API only — no Elements path. Direct API uses `stripe.confirmPromptPayPayment()` (PromptPay-specific, parallel to PayNow's `confirmPayNowPayment`); opens inline QR modal. Only requires `billing_details.email` (simpler than PayNow or Pix). Fulfillment via `payment_intent.succeeded` webhook.",
+      "proposed_markdown": "**Integration**: The May 2026 [[source-stripe-promptpay-accept-payment|acceptance guide]] describes Checkout and Direct API. Its Direct API example uses a server-created THB PaymentIntent, client secret and `stripe.confirmPromptPayPayment()`. Email is the only billing-detail field in the new-method example. Confirm completion server-side through `payment_intent.succeeded`. The November acceptance selector links Checkout and Direct API. The separate method overviews list Elements at product level, exclude Express Checkout Element and limit Mobile Payment Element to iOS.",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "May acceptance raw lines 143–165, 230–250 and 275–310 document the sample. Separate May overview lines 56–68 and November overview lines 57–69 establish product scope."
+      ]
+    },
+    {
+      "update_id": "promptpay-acceptance-reciprocal",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-promptpay-accept-payment]] — PromptPay integration: Checkout + Direct API, confirmPromptPayPayment(), email only, inline QR modal",
+      "proposed_markdown": "- [[source-stripe-promptpay-accept-payment]] — May 2026 Checkout and Direct API implementations for THB QR payments and verified completion. The November capture indexes those two variants.",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": []
+    }
+  ]
+}

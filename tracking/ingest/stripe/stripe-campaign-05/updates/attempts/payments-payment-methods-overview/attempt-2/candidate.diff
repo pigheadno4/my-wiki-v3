@@ -1,0 +1,72 @@
+--- wiki/sources/source-stripe-payment-methods-overview.md
++++ tracking/ingest/stripe/stripe-campaign-05/updates/attempts/payments-payment-methods-overview/attempt-2/candidate.md
+@@ -2,27 +2,57 @@
+ title: "Stripe: Supported Payment Methods Overview"
+ type: source
+ date_ingested: 2026-05-01
++date_updated: 2026-11-22
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/payments/payment-methods/overview"
+ raw_files:
++  - "stripe-payments-payment-methods-overview-2026-11-07.md"
+   - "stripe-payment-methods-overview-2025.md"
+ tags: [stripe, payment-methods, cards, bank-debits, bnpl, wallets, vouchers, real-time]
+ ---
+ 
+-## Summary
++## Overview
+ 
+-Comprehensive overview of all 8 payment method categories Stripe supports, with regional availability tables.
++The November 7, 2026 overview describes ten payment method families and routes readers to individual methods, pricing, country and currency eligibility, product support and integration options. The regional tables group methods by common use. Eligibility depends separately on the business, customer, currency, product and API. Public and private previews have limited availability. An integration can usually add another method from the same family with minimal changes. See November lines 9–48 and 165–173 and May lines 8–23 and 124–134.
+ 
+-## Categories (with key methods)
++## Turning on methods
+ 
+-- **Cards**: Visa/MC/Amex/Diners (global); Discover/Interac (US/CA); Cartes Bancaires (EU); eftpos/JCB/CUP/Korean (APAC)
+-- **Bank debits**: ACH/Instant Bank/Canadian PADs (US/CA); Bacs/SEPA (EU); AU/NZ BECS (APAC)
+-- **Bank redirects**: Bancontact/BLIK/EPS/iDEAL|Wero/P24/TWINT (EU); FPX/PayNow/UPI (APAC)
+-- **Bank transfers**: USD/SEPA/UK/Japan Furikomi/Mexico
+-- **BNPL**: Affirm, Afterpay/Clearpay, Klarna, Meses sin intereses (MX), Zip
+-- **Real-time**: Swish (EU invite only), PayTo/PayNow/PromptPay (APAC), Pix (BR)
+-- **Vouchers**: Multibanco (PT), Konbini (JP), OXXO/Boleto (LATAM)
+-- **Wallets**: Apple Pay/Google Pay/Link/SRC/Stablecoins (global); Cash App Pay (US); PayPal/MobilePay/Revolut Pay/Satispay (EU); Alipay/WeChat Pay/GrabPay/Korean wallets (APAC)
++When Checkout, Payment Element, Payment Links or a hosted invoice page uses dynamic payment methods, the merchant can enable most methods in the Dashboard without changing code. Stripe then displays eligible methods to each customer. An integration that lists `payment_method_types` explicitly needs a code change to add one. Check the method's individual requirements before enabling it. See November lines 13–29, [[stripe-dynamic-payment-methods]] and [[source-stripe-payment-method-integration-options]].
++
++## Family behavior and dated regional coverage
++
++| Family | November 7, 2026 overview |
++| --- | --- |
++| Cards | Global and regional card networks for online and in-person payments. The table puts Interac in-person only. Terminal brand availability varies by country and reader. The overview now describes Mexico's Meses sin intereses as a card installment example. |
++| Bank debits | The merchant pulls funds from the customer's account for one-time or recurring payments. Confirmation can take several business days. Examples include ACH, Canadian pre-authorized debits, Instant Bank Payments, Bacs, SEPA and AU/NZ BECS. |
++| Bank redirects | The customer authenticates with their bank and approves the payment. The regional table retains Bancontact, BLIK, EPS, FPX, iDEAL/Wero and P24, with a distinct Wero public-preview route. |
++| Bank transfers | The merchant supplies a virtual bank account number. The customer pushes funds from online banking or a branch, and Stripe reconciles the transfer using that number without exposing the merchant's bank details. Examples include USD, SEPA, UK, Japan Furikomi and Mexico bank transfers. |
++| Buy now, pay later | Customers pay in installments or later, and the overview describes the business as paid in full up front. It separates regional and buyer conditions, including Affirm private preview for UK businesses, Billie business customers, Kriya private preview for UK business customers, Mondu private preview for business customers and SeQura for Spanish businesses. Method and payout details remain in the individual guides. |
++| Real-time payments | Customers send from a bank account or other funding source and authenticate through an intermediary. November includes Bizum, Pay by Bank and Swish (private preview) under Europe, PayNow, PayTo, PromptPay and UPI under Asia Pacific, and Pix under Latin America. |
++| Stablecoin payments | A separate family. Buyers pay from a crypto wallet and completed payments settle in the business's Stripe balance in local currency. |
++| Vouchers | The customer receives voucher details at checkout and pays in person at a local store, bank or other location. Listed examples include Multibanco, Konbini, Boleto and OXXO. |
++| Wallets | Buyers use saved cards or stored balances. November includes TWINT here and adds Japanese private-preview entries AEON Pay, au PAY, d-Barai, Merpay and Rakuten Pay. |
++| Closed-loop gift cards | Stored value redeemable with the business or a related group. The overview lists US-only private preview and settlement outside Stripe. |
++
++See November lines 44–163.
++
++The May 1, 2026 overview grouped eight families and listed stablecoins under wallets, Meses sin intereses under BNPL and TWINT, PayNow and UPI under bank redirects. May also listed PayNow under real-time methods, and labeled Swish invite only. In November TWINT is under wallets and PayNow and UPI under real-time methods. The separate preview Wero row appears alongside the iDEAL/Wero row. These are dated classification and coverage changes. See May lines 8–23, 49–62, 73–97 and 108–122 and November lines 57–59, 71–82, 109–126 and 137–155.
++
++May's bank-transfer description referred to sending funds directly to the merchant's bank account. November describes the virtual account and Stripe reconciliation flow above. The captures document a change in the overview's description. Routing migration, account-specific routing and external bank payout remain separate. The May BNPL overview says paid immediately and in full, while November says paid in full up front. This wording concerns the family payment model, with bank payout timing outside its scope. See May lines 64–85 and November lines 84–107.
++
++The May wallets table marks Apple Pay and Google Pay unavailable in India. November retains the Google Pay label and omits the Apple Pay label. The May Apple Pay method guide excludes India for customer and Stripe account locations, and its November capture is a variant index. The omission leaves eligibility unresolved. For stablecoins, the November separate method guide specifies global customer coverage excluding sanctioned countries, USD presentment with other currencies in private preview, and US businesses plus private preview for those in the European Union, Hong Kong, Mexico and Switzerland. See [[source-stripe-apple-pay]] and [[source-stripe-stablecoin-payments]].
++
++## Related Pages
++
++- [[stripe-payment-methods]] — Payment method families and integration context
++- [[stripe-bank-redirects]] — Dated bank redirect overview and API coverage
++- [[stripe-stablecoin-payments]] — Stablecoin product, account and settlement details
++- [[source-stripe-payment-method-support]] — Country, currency, API and product matrices
++- [[source-stripe-payment-method-integration-options]] — Integration choices
++- [[source-stripe-custom-payment-methods]] — Options for a payment method outside the overview tables
++- [[stripe]] — Stripe company page
+ 
+ ## Raw Sources
+ 
+-- [[stripe-payment-methods-overview-2025]] — verbatim webpage content
++- [[raw/stripe-payments-payment-methods-overview-2026-11-07|November 7, 2026 Add payment methods overview]] — Full ten-family capture with activation and eligibility guidance
++- [[raw/stripe-payment-methods-overview-2025|May 1, 2026 Supported payment methods overview]] — Earlier full eight-family capture

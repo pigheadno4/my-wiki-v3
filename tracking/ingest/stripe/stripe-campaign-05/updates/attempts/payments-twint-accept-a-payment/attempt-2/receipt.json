@@ -1,0 +1,202 @@
+{
+  "job_id": "payments-twint-accept-a-payment",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Stripe: Accept a TWINT Payment\"\ntype: source\ndate_ingested: 2026-05-03\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/twint/accept-a-payment\"\nraw_files:\n  - \"stripe-twint-accept-payment-2025.md\"\ntags: [stripe, twint, switzerland, chf, checkout, direct-api]\n---\n\n## Overview\n\nThe May 3, 2026 guide describes accepting a one-time TWINT payment through Checkout or a legacy Direct API integration. The customer approves with an approved TWINT app, and Stripe documents immediate notification of payment success or failure. The November 7, 2026 capture indexes Checkout, Direct API, iOS and Android without supplying their instructions.\n\n## May Checkout\n\nThe one-time guide lists Europe and the UK for business locations and CHF for supported and presentment currency. All line items use CHF. Its compatibility table marks payment mode supported and setup and subscription modes unsupported for this guide. With Dynamic Payment Methods, Stripe evaluates currency and payment method restrictions before display. For manual configuration add `twint` to `payment_method_types`. Both May examples include `['card', 'twint']`. The hosted example uses `success_url`. The embedded example uses `ui_mode: 'embedded_page'` and `return_url`. In the Checkout test, select TWINT and click **Pay**. See May lines 12–110.\n\nThe separate May setup guide illustrates Checkout's `setup` mode, and the May 13 billing guide illustrates hosted `subscription` mode with card and TWINT. The November cross-method matrix gives a three-mode Checkout default and lists TWINT without a mode exception. Its broader product coverage and the separate November billing selector, which links Stripe-hosted Checkout, Setup Intents API and Subscriptions API, leave the May one-time example's scope intact. See [[source-stripe-twint-set-up-future-payments]], [[source-stripe-subscriptions-twint]] and [[source-stripe-payment-method-support]].\n\n## May legacy Direct API\n\nMay labels this route legacy and no longer recommends it for new integration. Create a PaymentIntent on the server with amount, CHF and TWINT. Provide its client secret only to the customer, such as through a server endpoint or a server-rendered checkout form. The legacy Stripe.js example calls `stripe.confirmTwintPayment()` with the client secret and required `return_url`. Billing details such as name and email are optional. Stripe.js handles the redirect and the example checks `result.error`. See May lines 121–162 and 195–278.\n\nFor the optional manual route, create and confirm the PaymentIntent on the server with `payment_method_data.type: 'twint'` and `return_url`. When status is `requires_action` and `next_action.type` is `redirect_to_url`, redirect the customer to `next_action.redirect_to_url.url`. The one-time server example omits `mandate_data`. The separate setup and payment-saving examples use `mandate_data` for future use. See May lines 291–351 and [[source-stripe-twint-save-during-payment]].\n\n### Return, testing and fulfillment\n\nKeep the client secret out of logs and merchant-built URLs. Stripe appends `payment_intent` and `payment_intent_client_secret` to the configured return URL for status verification. Verify PaymentIntent status to display the result. On the test redirect page, authenticating moves `requires_action` to `succeeded`. Selecting **Fail test payment** moves it to `requires_payment_method`. Use server-side webhook confirmation such as `payment_intent.succeeded` for fulfillment independently of the browser return. See May lines 250–254, 280–289 and 347–357.\n\n## Related Pages\n\n- [[stripe-twint]] — TWINT payment, setup and subscription routes\n- [[source-stripe-twint]] — TWINT method overview\n- [[source-stripe-twint-set-up-future-payments]] — Setup-only guide\n- [[source-stripe-twint-save-during-payment]] — Saving a method during payment\n- [[source-stripe-subscriptions-twint]] — Dated TWINT subscription guides\n- [[stripe]] — Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-twint-accept-payment-2025|May 3, 2026 full TWINT acceptance guide]] — 369 lines covering Checkout and legacy Direct API\n\n## Related raw API references\n\n- [[raw/stripe-payments-twint-accept-a-payment-2026-11-07|November 7, 2026 TWINT acceptance variant index]] — Checkout, Direct API, iOS and Android navigation\n",
+  "quotes": {
+    "payments-twint-accept-a-payment": [
+      {
+        "text": "Learn how to accept TWINT, a popular payment method in Switzerland.",
+        "location": "raw/stripe-payments-twint-accept-a-payment-2026-11-07.md:7"
+      },
+      {
+        "text": "[Checkout](https://docs.stripe.com/payments/twint/accept-a-payment.md?payment-ui=checkout)",
+        "location": "raw/stripe-payments-twint-accept-a-payment-2026-11-07.md:13"
+      },
+      {
+        "text": "[Direct API](https://docs.stripe.com/payments/twint/accept-a-payment.md?payment-ui=direct-api)",
+        "location": "raw/stripe-payments-twint-accept-a-payment-2026-11-07.md:14"
+      },
+      {
+        "text": "[iOS](https://docs.stripe.com/payments/twint/accept-a-payment.md?payment-ui=mobile&platform=ios)",
+        "location": "raw/stripe-payments-twint-accept-a-payment-2026-11-07.md:16"
+      },
+      {
+        "text": "[Android](https://docs.stripe.com/payments/twint/accept-a-payment.md?payment-ui=mobile&platform=android)",
+        "location": "raw/stripe-payments-twint-accept-a-payment-2026-11-07.md:17"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-twint-accept-a-payment": [
+      {
+        "text": "While Stripe still supports this product, this support might end if the product is deprecated.",
+        "location": "raw/stripe-twint-accept-payment-2025.md:125"
+      },
+      {
+        "text": "You must specify the `return_url`, which redirects the user after they complete the payment.",
+        "location": "raw/stripe-twint-accept-payment-2025.md:254"
+      },
+      {
+        "text": "The PaymentIntent transitions from `requires_action` to `requires_payment_method`.",
+        "location": "raw/stripe-twint-accept-payment-2025.md:289"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-twint-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "raw/stripe-twint-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 369
+      }
+    ],
+    "wiki/sources/source-stripe-twint-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 35
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/be0bac51467bc5370a720ed9/content.diff": [
+      {
+        "start": 1,
+        "end": 374
+      }
+    ],
+    "wiki/concepts/stripe-twint.md": [
+      {
+        "start": 34,
+        "end": 62
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 283,
+        "end": 289
+      },
+      {
+        "start": 753,
+        "end": 758
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md": [
+      {
+        "start": 467,
+        "end": 473
+      }
+    ],
+    "raw/stripe-twint-set-up-future-payments-2025.md": [
+      {
+        "start": 97,
+        "end": 133
+      },
+      {
+        "start": 1043,
+        "end": 1074
+      }
+    ],
+    "raw/stripe-twint-save-during-payment-2025.md": [
+      {
+        "start": 1099,
+        "end": 1127
+      }
+    ],
+    "raw/stripe-subscriptions-twint-2026.md": [
+      {
+        "start": 1,
+        "end": 3
+      },
+      {
+        "start": 10,
+        "end": 14
+      },
+      {
+        "start": 53,
+        "end": 70
+      }
+    ],
+    "raw/stripe-billing-subscriptions-twint-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md": [
+      {
+        "start": 84,
+        "end": 84
+      },
+      {
+        "start": 188,
+        "end": 188
+      },
+      {
+        "start": 205,
+        "end": 205
+      }
+    ]
+  },
+  "answers": {
+    "payments-twint-accept-a-payment": {
+      "Q1": "The November 7 capture of https://docs.stripe.com/payments/twint/accept-a-payment only lists Checkout, Direct API, iOS and Android variants. It establishes no integration prerequisites or payment state transition itself (new raw lines 5-17). The May 3, 2026 guide describes a one-time CHF Checkout Session where the customer authorizes in an approved TWINT app. The manual Checkout illustrations include card and TWINT, while Stripe also documents dynamic presentation. The legacy Direct API uses a server-created CHF PaymentIntent and client-side confirmTwintPayment with required return_url and optional billing details. Stripe.js handles the redirect. On the separate manual server route, when the PaymentIntent status is requires_action and next_action.type is redirect_to_url, the merchant redirects the customer to next_action.redirect_to_url.url (old raw lines 316-326 and 347-351). May tests move requires_action to succeeded or requires_payment_method, and verified PaymentIntent status determines the displayed result and server-side webhook confirmation governs fulfillment (old raw lines 12-106, old raw lines 121-162 and old raw lines 231-357). source-stripe-twint-accept-payment.md now distinguishes the two redirect paths and dates the historical behavior.",
+      "Q2": "For https://docs.stripe.com/payments/twint/accept-a-payment, the November change is navigation-only. The May 3 guide embedded Checkout and legacy Direct API. November links to them and exposes iOS and Android navigation without including variant bodies (old raw lines 8-17 and old raw lines 121-129, new raw lines 9-17). Keep source-stripe-twint-accept-payment.md tied to May's one-time CHF flow, its hosted success_url and embedded return_url examples, its legacy Stripe.js route and its separate server redirect example. The May 3 acceptance table excludes setup and subscription modes from this guide (old raw lines 30-34), while the separate May setup guide illustrates setup mode and the May 13 billing guide illustrates hosted subscription mode with card and TWINT. The November support matrix's three-mode default and unqualified TWINT Checkout row are broader product documentation, and November's separate billing selector gives variant links. Keep those dated scopes and the concept and companion routes reciprocal. Scope the mandate_data examples to future use, since the one-time server example omits it. Preserve server-side verification and webhook fulfillment independently of the browser return. The merchant is told to protect the client secret, while Stripe itself appends it on the configured return (old raw lines 195-224, old raw lines 250-289 and old raw lines 291-357)."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "twint-one-time-checkout-scope",
+      "target_path": "wiki/concepts/stripe-twint.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Checkout (one-time payment)**: `payment_method_types: ['twint']`, `chf`, payment mode only.",
+      "proposed_markdown": "**Checkout (May 3, 2026 one-time guide).** Accept in `payment` mode with all line items in `chf`. Enable Dynamic Payment Methods or include `twint` manually. The hosted and embedded examples list `['card', 'twint']` and use `success_url` and `return_url`, respectively. The separate dated setup and hosted subscription guides show their respective Checkout modes. The November cross-method matrix lists support for Checkout under its three-mode default, and the November acceptance and billing selectors provide navigation. See [[source-stripe-twint-accept-payment]] and [[source-stripe-subscriptions-twint]].",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "May acceptance raw lines 12–17 and 24–102 and the separately captured setup, billing and support-matrix evidence establish the dated mode and URL scopes."
+      ]
+    },
+    {
+      "update_id": "twint-manual-redirect-mandates",
+      "target_path": "wiki/concepts/stripe-twint.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Direct API**: `stripe.confirmTwintPayment()` (payment) or `stripe.confirmTwintSetup()` (setup) → redirect. Server-side confirm requires `mandate_data.customer_acceptance.online` (ip_address + user_agent).",
+      "proposed_markdown": "**Direct API.** In the May legacy payment route, `stripe.confirmTwintPayment()` handles the redirect with required `return_url`. The optional one-time server route redirects to `next_action.redirect_to_url.url` when the PaymentIntent requires action and the next action type is `redirect_to_url`. The separate setup route uses `stripe.confirmTwintSetup()` client-side. Manual setup and save-during-payment examples include `mandate_data.customer_acceptance.online` with IP address and user agent. The one-time server example omits mandate data. Verify payment status independently of browser return. See [[source-stripe-twint-accept-payment]].",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "May acceptance lines 231–357 and separate May setup lines 1043–1074 and save-during-payment lines 1099–1127 establish the redirect and mandate scopes."
+      ]
+    },
+    {
+      "update_id": "twint-acceptance-reciprocal-route",
+      "target_path": "wiki/concepts/stripe-twint.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-twint-accept-payment]] — integration guide: Checkout + Direct API legacy, confirmTwintPayment, redirect flow",
+      "proposed_markdown": "- [[source-stripe-twint-accept-payment]] — May 2026 one-time Checkout and legacy Direct API, with distinct redirect and verification paths. The November index links Checkout, Direct API, iOS and Android.",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "May raw lines 8–110 and 121–357 establish the historical integration instructions."
+      ]
+    }
+  ]
+}

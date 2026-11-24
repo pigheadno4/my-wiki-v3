@@ -1,0 +1,158 @@
+{
+  "job_id": "payments-save-and-reuse",
+  "source_target": "wiki/sources/source-stripe-save-and-reuse-elements.md",
+  "source_before_sha256": "0762209d116b09b15e442851cf6ad3bc181ea1d5517e9ef22c7bba3ccbba7772",
+  "contributions": [
+    {
+      "job_id": "payments-save-and-reuse",
+      "canonical_url": "https://docs.stripe.com/payments/save-and-reuse",
+      "attempt": 2,
+      "raw_path": "raw/stripe-payments-save-and-reuse-2026-11-07.md",
+      "raw_sha256": "9b5cd467d20f96d3fdc217fa01813c89816f47469b871cfec11fa56347c78395",
+      "prior_raw_path": "raw/stripe-save-and-reuse-elements-2025.md",
+      "prior_raw_sha256": "46ddb19635318fc84d463bdb5ac3020bc7f5e1dbe14f60f3c400ce87f261efe5",
+      "new_capture_role": "navigation_only_variant_index",
+      "proposed_disposition": "raw_reference",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-save-and-reuse/attempt-2/receipt.json",
+      "receipt_sha256": "c1289108fd006b7a2ed9de5ad785d4c8138614b7aac6ebdb37c892080258ecea",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-save-and-reuse/attempt-2/review.json",
+      "review_sha256": "64440b4f3899fbed9386449594476f03eb1fa905ee0e69ac50f38efa8916d43b",
+      "source_assessments": [
+        {
+          "source_target": "wiki/sources/source-stripe-save-and-reuse-elements.md",
+          "proposed_disposition": "source_required_update",
+          "update_needed": true,
+          "findings": [
+            "Current source lines 13 and 25-32 omit the consent and customer-identity/attachment branches. The unqualified mandatory `attach` step would mislead an existing-customer integration. Record `customer_account` versus `customer`, the automatic/manual attachment conditions, and the separate, failure-capable later payment. Do not treat a successful setup or browser return as a successful payment.",
+            "Current source lines 62-70 mark Checkout Apple Pay merchant tokens, Radar and custom payment-method display as `No` and Link prefill as `Auto`. The paired April Checkout variant (old raw lines 8-238) does not establish these global exclusions or automatic prefill; the feature-specific SetupIntent descriptions are at old raw lines 454-456, 526-545, 620-654 and 666-834. Keep what the SetupIntent route documents and describe the Checkout capture's coverage boundary without deriving product limitations from omission.",
+            "Current source line 32 says only 'new CS' under the setup-mode heading. Old raw lines 183-237 specify that after an off-session HTTP 402 and `requires_payment_method`, the buyer returns to a separate `mode: 'payment'` Checkout Session with the same customer-configured Account or Customer to pay with a replacement method. The direct SetupIntent route instead permits customer-assisted authentication of the declined later PaymentIntent when `authentication_required`, or retrying that PaymentIntent with replacement payment details for other failures (old raw lines 1156-1190). A second setup-only Session would not collect the payment.",
+            "The concept definition at wiki/concepts/stripe-saved-payment-methods.md line 10 says saving occurs during or after a payment. Its reciprocal source link at line 156 and old raw lines 12-14 and 243-245 explicitly cover setup without an initial charge. Preserve that source route and flag the definition for a scoped correction that includes independent setup."
+          ],
+          "conflicts": [
+            "The April date/route matters for REST manual method examples at old raw lines 353-381. The separate changelog, raw/stripe-changelog-dahlia-2026-08-26-removes-payment-method-types-parameter-from-payment-intents-setup-intents-2026-11-07.md lines 7-26 and 30-34, documents `payment_method_types_no_longer_supported` on affected SetupIntent Create/Update and PaymentIntent endpoints in `2026-08-26.preview`, with computed property retained read-only. The November index does not change or resolve those versioned examples.",
+            "Current source lines 62-70 mark Checkout Apple Pay merchant tokens, Radar and custom payment-method display as `No` and Link prefill as `Auto`. The paired April Checkout variant (old raw lines 8-238) does not establish these global exclusions or automatic prefill; the feature-specific SetupIntent descriptions are at old raw lines 454-456, 526-545, 620-654 and 666-834. Keep what the SetupIntent route documents and describe the Checkout capture's coverage boundary without deriving product limitations from omission."
+          ],
+          "reason": "Material baseline errors affect how a reader saves an existing customer's method, obtains permission, and selects an integration for wallets, fraud tooling or stored-payment UI. Retain April source provenance and add the November navigation provenance. Preserve the source's reciprocal route to Stripe Saved Payment Methods at source lines 98-102 and concept lines 151-156, plus the root wiki index line 7 and provider index lines 98 and 777. Keep the separately linked Checkout setup and save-during-payment sources distinct."
+        }
+      ],
+      "affected_concepts": [
+        "wiki/concepts/stripe-saved-payment-methods.md"
+      ],
+      "unresolved_questions": [
+        "The November target variant bodies and current feature availability by Checkout mode, API version and account were not verified. The navigation capture cannot establish eligibility or payment execution."
+      ],
+      "mapped_source_assessment": {
+        "source_target": "wiki/sources/source-stripe-save-and-reuse-elements.md",
+        "proposed_disposition": "source_required_update",
+        "update_needed": true,
+        "findings": [
+          "Current source lines 13 and 25-32 omit the consent and customer-identity/attachment branches. The unqualified mandatory `attach` step would mislead an existing-customer integration. Record `customer_account` versus `customer`, the automatic/manual attachment conditions, and the separate, failure-capable later payment. Do not treat a successful setup or browser return as a successful payment.",
+          "Current source lines 62-70 mark Checkout Apple Pay merchant tokens, Radar and custom payment-method display as `No` and Link prefill as `Auto`. The paired April Checkout variant (old raw lines 8-238) does not establish these global exclusions or automatic prefill; the feature-specific SetupIntent descriptions are at old raw lines 454-456, 526-545, 620-654 and 666-834. Keep what the SetupIntent route documents and describe the Checkout capture's coverage boundary without deriving product limitations from omission.",
+          "Current source line 32 says only 'new CS' under the setup-mode heading. Old raw lines 183-237 specify that after an off-session HTTP 402 and `requires_payment_method`, the buyer returns to a separate `mode: 'payment'` Checkout Session with the same customer-configured Account or Customer to pay with a replacement method. The direct SetupIntent route instead permits customer-assisted authentication of the declined later PaymentIntent when `authentication_required`, or retrying that PaymentIntent with replacement payment details for other failures (old raw lines 1156-1190). A second setup-only Session would not collect the payment.",
+          "The concept definition at wiki/concepts/stripe-saved-payment-methods.md line 10 says saving occurs during or after a payment. Its reciprocal source link at line 156 and old raw lines 12-14 and 243-245 explicitly cover setup without an initial charge. Preserve that source route and flag the definition for a scoped correction that includes independent setup."
+        ],
+        "conflicts": [
+          "The April date/route matters for REST manual method examples at old raw lines 353-381. The separate changelog, raw/stripe-changelog-dahlia-2026-08-26-removes-payment-method-types-parameter-from-payment-intents-setup-intents-2026-11-07.md lines 7-26 and 30-34, documents `payment_method_types_no_longer_supported` on affected SetupIntent Create/Update and PaymentIntent endpoints in `2026-08-26.preview`, with computed property retained read-only. The November index does not change or resolve those versioned examples.",
+          "Current source lines 62-70 mark Checkout Apple Pay merchant tokens, Radar and custom payment-method display as `No` and Link prefill as `Auto`. The paired April Checkout variant (old raw lines 8-238) does not establish these global exclusions or automatic prefill; the feature-specific SetupIntent descriptions are at old raw lines 454-456, 526-545, 620-654 and 666-834. Keep what the SetupIntent route documents and describe the Checkout capture's coverage boundary without deriving product limitations from omission."
+        ],
+        "reason": "Material baseline errors affect how a reader saves an existing customer's method, obtains permission, and selects an integration for wallets, fraud tooling or stored-payment UI. Retain April source provenance and add the November navigation provenance. Preserve the source's reciprocal route to Stripe Saved Payment Methods at source lines 98-102 and concept lines 151-156, plus the root wiki index line 7 and provider index lines 98 and 777. Keep the separately linked Checkout setup and save-during-payment sources distinct."
+      },
+      "findings": [
+        "New raw lines 5-14 provide the objective and two variant routes only. The Checkout Sessions variant is `payment-ui=embedded-components` and Setup Intents is `payment-ui=elements`. The actual old capture date is 2026-04-21 (old raw line 2), despite its filename suffix. November's variant URLs were not read.",
+        "Checkout Sessions, old raw lines 51-148, describes Accounts v2 customer-configured `Account` (`customer_account`) and Customers v1 `Customer` (`customer`), a server-created setup Session with sample `ui_mode: 'elements'`, a completed-Session webhook, `Session.setup_intent` lookup and `SetupIntent.payment_method` extraction. A customer supplied at Session creation receives automatic attachment, while the merchant attaches the method after completion when an existing customer was not supplied. Old raw lines 141-237 describe a separate confirmed off-session PaymentIntent with the matching customer identity and saved PaymentMethod ID. The Checkout recovery example uses a new `mode: 'payment'` Session for a different method under the same applicable customer identity.",
+        "Setup Intents, old raw lines 281-456, 501-518 and 848-1054, describes an enabled supporting method, a server-created SetupIntent and Intent-scoped client secret for Elements, client `stripe.confirmSetup`, conditional redirect and retrieval/status handling. The setup can succeed, process, or require another payment method, and successful confirmation saves the method to the provided customer-configured Account or Customer. Browser return alone supplies neither successful setup nor payment. Old raw lines 1065-1190 describe the later separate off-session PaymentIntent, the documented 402/requires_payment_method branch, customer-assisted authentication using the declined Intent's secret when `authentication_required`, and optional reuse with replacement payment details for other failures.",
+        "Old raw lines 20-34, 251-264, 700-719, 802-834 and 1067-1069 distinguish purpose-specific opt-in, written offline agreement, physically present Terminal flows, and whether attached methods may be redisplayed. CustomerSession is the optional SetupIntent/Payment Element integration for saved-method UI, with a dedicated CustomerSession secret and `allow_redisplay` behavior.",
+        "Current source lines 13 and 25-32 omit the consent and customer-identity/attachment branches. The unqualified mandatory `attach` step would mislead an existing-customer integration. Record `customer_account` versus `customer`, the automatic/manual attachment conditions, and the separate, failure-capable later payment. Do not treat a successful setup or browser return as a successful payment.",
+        "Current source lines 62-70 mark Checkout Apple Pay merchant tokens, Radar and custom payment-method display as `No` and Link prefill as `Auto`. The paired April Checkout variant (old raw lines 8-238) does not establish these global exclusions or automatic prefill; the feature-specific SetupIntent descriptions are at old raw lines 454-456, 526-545, 620-654 and 666-834. Keep what the SetupIntent route documents and describe the Checkout capture's coverage boundary without deriving product limitations from omission.",
+        "Current source line 32 says only 'new CS' under the setup-mode heading. Old raw lines 183-237 specify that after an off-session HTTP 402 and `requires_payment_method`, the buyer returns to a separate `mode: 'payment'` Checkout Session with the same customer-configured Account or Customer to pay with a replacement method. The direct SetupIntent route instead permits customer-assisted authentication of the declined later PaymentIntent when `authentication_required`, or retrying that PaymentIntent with replacement payment details for other failures (old raw lines 1156-1190). A second setup-only Session would not collect the payment.",
+        "The concept definition at wiki/concepts/stripe-saved-payment-methods.md line 10 says saving occurs during or after a payment. Its reciprocal source link at line 156 and old raw lines 12-14 and 243-245 explicitly cover setup without an initial charge. Preserve that source route and flag the definition for a scoped correction that includes independent setup."
+      ],
+      "substantive_changes": [
+        "The November capture shortens the display from the full Checkout Sessions and Setup Intents variants to a two-link index. It establishes no changed setup, payment, wallet, fraud or consent behavior and no removal or deprecation of the omitted details."
+      ],
+      "historical_claims_to_preserve": [
+        "Preserve April's route-specific attachment, status, consent and consequence boundaries and identify November separately as navigation. Keep old raw lines 55-61 and 291-297 Accounts v2 availability wording dated: GA for Connect users, public preview for other Stripe users and a preview-version prerequisite for participants. Keep the two identity parameters separate and do not infer current availability.",
+        "Keep the April SetupIntent default Radar opt-in note, optional Apple Pay deferred merchant-token example, Link email-prefill option and optional CustomerSession/redisplay, with HTML/React/SDK context. Old raw lines 1192-1251 contain test-only examples and delayed genuine payment-state distinctions rather than current payment or settlement confirmation. Wallet domain/account display and regional qualifications are at old raw lines 1292-1301."
+      ],
+      "conflicts": [
+        "The April date/route matters for REST manual method examples at old raw lines 353-381. The separate changelog, raw/stripe-changelog-dahlia-2026-08-26-removes-payment-method-types-parameter-from-payment-intents-setup-intents-2026-11-07.md lines 7-26 and 30-34, documents `payment_method_types_no_longer_supported` on affected SetupIntent Create/Update and PaymentIntent endpoints in `2026-08-26.preview`, with computed property retained read-only. The November index does not change or resolve those versioned examples.",
+        "Current source lines 62-70 mark Checkout Apple Pay merchant tokens, Radar and custom payment-method display as `No` and Link prefill as `Auto`. The paired April Checkout variant (old raw lines 8-238) does not establish these global exclusions or automatic prefill; the feature-specific SetupIntent descriptions are at old raw lines 454-456, 526-545, 620-654 and 666-834. Keep what the SetupIntent route documents and describe the Checkout capture's coverage boundary without deriving product limitations from omission."
+      ],
+      "expected_read_files": [
+        {
+          "path": "raw/stripe-payments-save-and-reuse-2026-11-07.md",
+          "sha256": "9b5cd467d20f96d3fdc217fa01813c89816f47469b871cfec11fa56347c78395",
+          "lines": 14
+        },
+        {
+          "path": "raw/stripe-save-and-reuse-elements-2025.md",
+          "sha256": "46ddb19635318fc84d463bdb5ac3020bc7f5e1dbe14f60f3c400ce87f261efe5",
+          "lines": 1312
+        },
+        {
+          "path": "wiki/sources/source-stripe-save-and-reuse-elements.md",
+          "sha256": "0762209d116b09b15e442851cf6ad3bc181ea1d5517e9ef22c7bba3ccbba7772",
+          "lines": 106
+        },
+        {
+          "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/35917d7c5a7c1df3e5b9aaa0/content.diff",
+          "sha256": "ab28e2a24c59d4817b77d8b1cda394ca337c4297c22bb6567db8b83c13c9fc02",
+          "lines": 1314
+        }
+      ],
+      "original_query_prompts_path": "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md",
+      "original_prompts": "New raw `raw/stripe-payments-save-and-reuse-2026-11-07.md`. Prior raw `raw/stripe-save-and-reuse-elements-2025.md`. Current summaries `wiki/sources/source-stripe-save-and-reuse-elements.md`.\n\n- Q1. For `https://docs.stripe.com/payments/save-and-reuse`, what documented behavior, prerequisites, actors and state transitions does the complete new capture establish? How do these compare with the matched prior capture and each mapped summary?\n\n- Q2. Which changes are substantive, presentational or navigation-only? Identify the exact dated qualifications, conflicts and reciprocal routes that the proposed disposition should preserve.",
+      "reviewed_answers": {
+        "Q1": "The 2026-11-07 capture at https://docs.stripe.com/payments/save-and-reuse provides only two paths in new raw lines 9-14: Checkout Sessions for embedded components and Setup Intents for Elements. In the 2026-04-21 guide, old raw lines 8-237 and 239-1190 describe two ways to save credentials without charging. The merchant gets specific consent and uses a customer-configured Account or Customer as appropriate. Checkout setup mode creates a Session and a successful completion lets the merchant read the linked SetupIntent and PaymentMethod. An existing customer specified at creation receives automatic attachment, while otherwise the merchant attaches the method. In direct Setup Intents the merchant creates the Intent, the buyer completes Elements setup with confirmSetup, and the return page retrieves the Intent and distinguishes succeeded, processing and requires_payment_method. A later server-created off-session PaymentIntent attempts the charge separately. After the Checkout branch's HTTP 402 and requires_payment_method, the buyer returns to a new payment-mode Checkout Session with the same customer identity to pay with a replacement method. In the direct SetupIntent branch the buyer can authenticate the declined later PaymentIntent or replace its payment details, depending on the failure. source-stripe-save-and-reuse-elements.md captures both flows but makes attachment unconditional and omits material identity, consent and status qualifications.",
+        "Q2": "At https://docs.stripe.com/payments/save-and-reuse, new raw lines 9-14 replace presentation of the full 2026-04-21 variants in old raw lines 8-1312 with navigation. No payment behavior change is established. Keep the April Checkout automatic/manual attachment split and Session webhook, Account/Customer and SetupIntent-specific secret distinctions, permission terms and written agreement, setup outcomes and off-session recovery. In old raw lines 183-237, Checkout recovers an HTTP 402 with a new payment-mode Session for the same customer identity. Old raw lines 1156-1190 allow buyer-assisted authentication or replacement details on the later declined PaymentIntent in the direct SetupIntent route. The Saved Payment Methods concept should explicitly include setup independent of an initial charge, as its existing source link already does. Keep April-only Radar, Apple Pay and Link details as scoped documentation, and remove unsupported Checkout-wide exclusions or automatic prefill from source-stripe-save-and-reuse-elements.md. Keep manual SetupIntent method-list examples as historically dated in light of the separately captured 2026-08-26.preview endpoint change. Retain the older full raw, add the November index as navigation, and preserve the reciprocal provider-index and Stripe Saved Payment Methods concept routes."
+      }
+    }
+  ],
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payments-save-and-reuse-2026-11-07.md",
+      "sha256": "9b5cd467d20f96d3fdc217fa01813c89816f47469b871cfec11fa56347c78395",
+      "lines": 14
+    },
+    {
+      "path": "raw/stripe-save-and-reuse-elements-2025.md",
+      "sha256": "46ddb19635318fc84d463bdb5ac3020bc7f5e1dbe14f60f3c400ce87f261efe5",
+      "lines": 1312
+    },
+    {
+      "path": "wiki/sources/source-stripe-save-and-reuse-elements.md",
+      "sha256": "0762209d116b09b15e442851cf6ad3bc181ea1d5517e9ef22c7bba3ccbba7772",
+      "lines": 106
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/35917d7c5a7c1df3e5b9aaa0/content.diff",
+      "sha256": "ab28e2a24c59d4817b77d8b1cda394ca337c4297c22bb6567db8b83c13c9fc02",
+      "lines": 1314
+    }
+  ],
+  "concept_targets": [
+    {
+      "path": "wiki/concepts/stripe-saved-payment-methods.md",
+      "before_sha256": "6f951873975737f2d8fc9501dcd58758f5394e53b58194fab0e2251d8eda1d68",
+      "contributing_jobs": [
+        "payments-save-and-reuse",
+        "payments-save-card-without-authentication",
+        "payments-save-during-payment"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    }
+  ],
+  "state": "worker_running",
+  "attempt": 2,
+  "review_scope": "targeted",
+  "worker_agent": "/root/s05w6",
+  "reviewer_agent": "/root/s05r2",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-05/updates/attempts/payments-save-and-reuse/attempt-1/receipt.json",
+  "receipt_sha256": "78cdcf7623111dc6d5a1220781f78f957b89d07139f7ea0557ccbd3a416909bb",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-05/updates/attempts/payments-save-and-reuse/attempt-1/review.json",
+  "review_sha256": "83cbb47ad4ea6722f0c909944237f82c0bc443145f73d9cfa97e9b2300bf13a4",
+  "role_notes": "tracking/ingest/stripe/stripe-campaign-05/updates/role-notes.md",
+  "worker_output": "/tmp/stripe-s05-ingest/payments-save-and-reuse-worker.json",
+  "reviewer_output": "/tmp/stripe-s05-ingest/payments-save-and-reuse-reviewer.json",
+  "prior_attempt_dir": "tracking/ingest/stripe/stripe-campaign-05/updates/attempts/payments-save-and-reuse/attempt-1"
+}

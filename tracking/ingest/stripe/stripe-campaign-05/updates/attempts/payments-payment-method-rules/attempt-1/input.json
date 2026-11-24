@@ -1,0 +1,159 @@
+{
+  "job_id": "payments-payment-method-rules",
+  "source_target": "wiki/sources/source-stripe-payment-method-rules.md",
+  "source_before_sha256": "0b44cd301ee8810de0c385c5c87f43970be9a95e76d0996415109228dc70b3e7",
+  "contributions": [
+    {
+      "job_id": "payments-payment-method-rules",
+      "canonical_url": "https://docs.stripe.com/payments/payment-method-rules",
+      "attempt": 2,
+      "raw_path": "raw/stripe-payments-payment-method-rules-2026-11-07.md",
+      "raw_sha256": "d1047a2560d35c34287a4a20f805d4026f255b2a4091de48056e4276d70d93ab",
+      "prior_raw_path": "raw/stripe-payment-method-rules-2025.md",
+      "prior_raw_sha256": "d11093d628c5e6069db9de134c512e21c46e94ecfd2185037827879a5db6c108",
+      "new_capture_role": "full_captured_page",
+      "proposed_disposition": "source_required_update",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-payment-method-rules/attempt-2/receipt.json",
+      "receipt_sha256": "e041038f010527da501809d25cb0177253611e916aa1a377a460eaf913df6fd5",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-payment-method-rules/attempt-2/review.json",
+      "review_sha256": "dd573c45fdbc0f459024c6b6e3b487a33b6d90e4ead3f93b86f1504a7720386d",
+      "source_assessments": [
+        {
+          "source_target": "wiki/sources/source-stripe-payment-method-rules.md",
+          "proposed_disposition": "source_required_update",
+          "update_needed": true,
+          "findings": [
+            "Add explicit November non-card/non-wallet scope, Hosted Invoice Page exclusion, and the Connect charge-type distinction. Preserve rule prerequisites, test behavior, A/B compatibility, currency conversion and the historic May Customized tag with dates.",
+            "November’s linked raw/stripe-connect-manage-payment-methods-2026-11-07.md lines 5–16 separately assigns general enablement and payment-method configuration selection by merchant of record. Direct charges and indirect charges with on_behalf_of, including destination charges and separate charges and transfers, use the connected account. Indirect charges without on_behalf_of use the platform. Keep that distinct from the rules guide’s inheritance on direct charges and platform rule application on destination charges."
+          ],
+          "conflicts": [
+            "The unqualified payment methods label and subscription-only exception omit material November scope. The mapped setup gives one Dashboard path without the new account ownership distinction.",
+            "The captures leave the interaction of availability rules and general method configuration selection for a destination charge with on_behalf_of unresolved."
+          ],
+          "reason": "November’s supported surfaces and configuration ownership materially qualify when and where a merchant’s rule can take effect."
+        }
+      ],
+      "affected_concepts": [
+        "wiki/concepts/stripe-payment-method-rules.md",
+        "wiki/concepts/stripe-dynamic-payment-methods.md"
+      ],
+      "unresolved_questions": [
+        "The capture does not establish when the November exclusions began, rule inheritance for separate charges and transfers or particular live display/payment outcomes. The captures leave the interaction of availability rules and general method configuration selection for a destination charge with on_behalf_of unresolved.",
+        "November does not verify that the Customized tag persists or was removed."
+      ],
+      "mapped_source_assessment": {
+        "source_target": "wiki/sources/source-stripe-payment-method-rules.md",
+        "proposed_disposition": "source_required_update",
+        "update_needed": true,
+        "findings": [
+          "Add explicit November non-card/non-wallet scope, Hosted Invoice Page exclusion, and the Connect charge-type distinction. Preserve rule prerequisites, test behavior, A/B compatibility, currency conversion and the historic May Customized tag with dates.",
+          "November’s linked raw/stripe-connect-manage-payment-methods-2026-11-07.md lines 5–16 separately assigns general enablement and payment-method configuration selection by merchant of record. Direct charges and indirect charges with on_behalf_of, including destination charges and separate charges and transfers, use the connected account. Indirect charges without on_behalf_of use the platform. Keep that distinct from the rules guide’s inheritance on direct charges and platform rule application on destination charges."
+        ],
+        "conflicts": [
+          "The unqualified payment methods label and subscription-only exception omit material November scope. The mapped setup gives one Dashboard path without the new account ownership distinction.",
+          "The captures leave the interaction of availability rules and general method configuration selection for a destination charge with on_behalf_of unresolved."
+        ],
+        "reason": "November’s supported surfaces and configuration ownership materially qualify when and where a merchant’s rule can take effect."
+      },
+      "findings": [
+        "Both dates document merchant-set amount/country/currency visibility rules for dynamic payment methods in Payment Element, Express Checkout Element, Checkout and Payment Links. Merchant selects Customize availability and Apply Overrides on the supported method, and Stripe converts a configured limit from one currency at the current rate when evaluating a different presentment currency. A/B testing remains compatible. Availability targeting and test display are separate from an actual payment result.",
+        "November explicitly limits rules to non-card payment methods and excludes wallets including Apple Pay and Google Pay. Hosted Invoice Page is excluded in addition to the retained exclusion when the listed integrations create a subscription. The May general product language is broader; it does not prove cards, wallets or Hosted Invoice Page ever worked.",
+        "November’s payment-method-rules guide lines 33 and 39–45 gives conditional visibility-rule scope: platform templates are inherited without connected-account override for direct charges, and the platform’s direct payment settings govern rules on destination charges. November’s linked raw/stripe-connect-manage-payment-methods-2026-11-07.md lines 5–16 separately assigns general enablement and payment-method configuration selection by merchant of record. Direct charges and indirect charges with on_behalf_of, including destination charges and separate charges and transfers, use the connected account. Indirect charges without on_behalf_of use the platform. The captures leave the interaction of availability rules and general method configuration selection for a destination charge with on_behalf_of unresolved.",
+        "Test Checkout with `customer_email` or a Customer carrying the `+location_XX` suffix using a valid two-letter ISO country code, and Payment Links with prefilled_email or locked_prefilled_email. The URL illustrates eligible method display for a simulated country, and test cards work as usual. Node-to-cURL leaves this behavior intact.",
+        "May mentions the Customized tag and names the specific Checkout, Payment Element and Express Checkout Element sessions that meet targeting criteria; November retains Apply Overrides and also retains Payment Links prerequisites and testing, but omits that tag and result sentence. Preserve as dated rather than inferring a tag or integration removal.",
+        "Illustrative Affirm and iDEAL examples, the retargeted Connect link and Dashboard URL, and screenshot hosting/layout changes leave the underlying documented rules and test behavior unchanged."
+      ],
+      "substantive_changes": [
+        "Make the explicit November non-card and wallet eligibility boundary, Hosted Invoice Page exclusion, and Connect charge-type-specific ownership and inheritance visible."
+      ],
+      "historical_claims_to_preserve": [
+        "May 8 applies the named subscription-creation caveat, dynamic payment methods prerequisite, currency auto-conversion, Dashboard workflow including the then-documented Customized tag, compatible A/B testing and test market simulation. November retains the rules while sharpening scope and charge-type context."
+      ],
+      "conflicts": [
+        "Current summary lines 13–21 and concept lines 10–23 omit the November card and wallet exclusions, Hosted Invoice Page and Connect direct/destination ownership.",
+        "Concept line 23 describes the Customized tag without dating it. November omits the tag text, which provides no verification of the present UI state.",
+        "The rules guide’s direct/destination split is about conditional rule application. Its linked guide’s merchant-of-record and on_behalf_of split is about general method enablement/configuration, including indirect charges. Applying either rule to both operations would hide their unresolved intersection."
+      ],
+      "expected_read_files": [
+        {
+          "path": "raw/stripe-payments-payment-method-rules-2026-11-07.md",
+          "sha256": "d1047a2560d35c34287a4a20f805d4026f255b2a4091de48056e4276d70d93ab",
+          "lines": 85
+        },
+        {
+          "path": "raw/stripe-payment-method-rules-2025.md",
+          "sha256": "d11093d628c5e6069db9de134c512e21c46e94ecfd2185037827879a5db6c108",
+          "lines": 78
+        },
+        {
+          "path": "wiki/sources/source-stripe-payment-method-rules.md",
+          "sha256": "0b44cd301ee8810de0c385c5c87f43970be9a95e76d0996415109228dc70b3e7",
+          "lines": 44
+        },
+        {
+          "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/5818764bdd2acf7970ba484e/content.diff",
+          "sha256": "946a8dd989b750687a381e712738c8c90f1b242d96f33267aacdfd7ffe8c35f5",
+          "lines": 100
+        }
+      ],
+      "original_query_prompts_path": "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md",
+      "original_prompts": "New raw `raw/stripe-payments-payment-method-rules-2026-11-07.md`. Prior raw `raw/stripe-payment-method-rules-2025.md`. Current summaries `wiki/sources/source-stripe-payment-method-rules.md`.\n\n- Q1. For `https://docs.stripe.com/payments/payment-method-rules`, what documented behavior, prerequisites, actors and state transitions does the complete new capture establish? How do these compare with the matched prior capture and each mapped summary?\n\n- Q2. Which changes are substantive, presentational or navigation-only? Identify the exact dated qualifications, conflicts and reciprocal routes that the proposed disposition should preserve.",
+      "reviewed_answers": {
+        "Q1": "At https://docs.stripe.com/payments/payment-method-rules, source-stripe-payment-method-rules.md documents merchant-controlled visibility by amount, country or currency. Old raw lines 8–36 and new raw lines 9–51 require dynamic payment methods and an eligible Checkout, Payment Links, Payment Element or Express Checkout Element integration. The merchant selects Customize availability and Apply Overrides on a supported method, and Stripe uses the current exchange rate to evaluate a configured threshold in another currency. November excludes cards, wallets and the Hosted Invoice Page and keeps the named subscription creation exception. In new raw lines 37–49 the platform template rules govern direct charges and connected accounts inherit them without override. For destination charges the rules guide places conditional rules on the platform’s direct payment-method settings. November’s linked raw/stripe-connect-manage-payment-methods-2026-11-07.md lines 5–16 separately assigns general enablement and payment-method configuration selection by merchant of record. Direct charges and indirect charges with on_behalf_of, including destination charges and separate charges and transfers, use the connected account. Indirect charges without on_behalf_of use the platform. The captures leave the interaction of availability rules and general method configuration selection for a destination charge with on_behalf_of unresolved. Old raw lines 44–78 and new raw lines 59–85 keep location-formatted email testing separate from live payment results.",
+        "Q2": "At https://docs.stripe.com/payments/payment-method-rules, source-stripe-payment-method-rules.md needs the substantive scope and account ownership additions from new raw lines 9–16, 26–33 and 37–49. The new link at line 33 routes to raw/stripe-connect-manage-payment-methods-2026-11-07.md lines 5–16, where Stripe separately determines method enablement/configuration by merchant of record and on_behalf_of for destination charges and separate charges and transfers. Keep that context distinct from condition inheritance and leave interaction on a destination charge with on_behalf_of unresolved. Old raw lines 19–36 retain A/B testing, dynamic enablement, the named subscription scope, currency conversion and the May Customized tag. November omits the tag language without proving removal. Old raw lines 54–78 and new raw lines 69–85 keep the Checkout and Payment Links testing behavior; Node-to-cURL, screenshots, examples and changed documentation references do not change it. Keep the reciprocal route in wiki/concepts/stripe-payment-method-rules.md, qualify the cross-reference in wiki/concepts/stripe-dynamic-payment-methods.md, and refresh the existing Stripe index and company source captions."
+      }
+    }
+  ],
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payments-payment-method-rules-2026-11-07.md",
+      "sha256": "d1047a2560d35c34287a4a20f805d4026f255b2a4091de48056e4276d70d93ab",
+      "lines": 85
+    },
+    {
+      "path": "raw/stripe-payment-method-rules-2025.md",
+      "sha256": "d11093d628c5e6069db9de134c512e21c46e94ecfd2185037827879a5db6c108",
+      "lines": 78
+    },
+    {
+      "path": "wiki/sources/source-stripe-payment-method-rules.md",
+      "sha256": "0b44cd301ee8810de0c385c5c87f43970be9a95e76d0996415109228dc70b3e7",
+      "lines": 44
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/5818764bdd2acf7970ba484e/content.diff",
+      "sha256": "946a8dd989b750687a381e712738c8c90f1b242d96f33267aacdfd7ffe8c35f5",
+      "lines": 100
+    }
+  ],
+  "concept_targets": [
+    {
+      "path": "wiki/concepts/stripe-dynamic-payment-methods.md",
+      "before_sha256": "3ac1f91b9f41a8b947a3a2552a9a141e939b09d65e5dc6d618f3b227b774e0d3",
+      "contributing_jobs": [
+        "payments-payment-method-configurations",
+        "payments-payment-method-rules",
+        "payments-payment-methods-dynamic-payment-methods",
+        "payments-payment-methods-integration-options",
+        "payments-payment-methods-overview"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    },
+    {
+      "path": "wiki/concepts/stripe-payment-method-rules.md",
+      "before_sha256": "aa7bb8523905c14c7a1bddbee59215a2ca4b769c9de52125eb2f84aef4f7ed91",
+      "contributing_jobs": [
+        "payments-payment-method-rules"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    }
+  ],
+  "state": "worker_running",
+  "attempt": 1,
+  "review_scope": "full",
+  "worker_agent": "/root/s05w2",
+  "reviewer_agent": "/root/s05r6",
+  "role_notes": "tracking/ingest/stripe/stripe-campaign-05/updates/role-notes.md",
+  "worker_output": "/tmp/stripe-s05-ingest/payments-payment-method-rules-worker.json",
+  "reviewer_output": "/tmp/stripe-s05-ingest/payments-payment-method-rules-reviewer.json"
+}

@@ -1,0 +1,273 @@
+<!-- Source URL: https://docs.stripe.com/payments/payto -->
+<!-- Fetched: 2026-11-07 -->
+<!-- Discovery: reconciled llms.txt,sitemap.xml -->
+
+# PayTo payments
+
+Learn about PayTo, a real-time payment method in Australia.
+
+PayTo is a real-time payment method in Australia for one-time and recurring payments. Customers authenticate and approve mandates in their mobile banking app or online banking.
+Payment method family: Real-time payments
+Usability: Reusable
+Access type: Approval required
+Payment confirmation timing: Delayed
+Settlement timing: Standard payout schedule
+Pricing: https://stripe.com/au/pricing/local-payment-methods#payto
+## Payment flows 
+
+Customers pay with PayTo using one of the following methods:
+
+- **PayID**: The customer provides a PayID, a unique identifier linked to their bank account.
+- **BSB and account number**: The customer provides their bank account number and Bank-State-Branch (BSB) number.
+
+In both cases, the customer’s bank sends them a request, typically through a push notification or email, to authorize the PayTo mandate.
+
+## Eligibility and availability 
+
+### Account eligibility
+Business location: AU
+Account type: ✓ Merchant, ✓ Platform or marketplace (Connect)
+Business model: ✓ B2B, ✓ B2C
+Business category: View list of prohibited and restricted business categories
+Your account might be reviewed after activation to confirm eligibility. While PayTo doesn’t enforce any additional website requirements, make sure that you provide a website that meets the [Stripe account activation requirements](https://support.stripe.com/questions/business-website-for-account-activation-faq). You can contact [Stripe support](https://support.stripe.com/) to appeal any PayTo capability restrictions.
+
+### Verification requirements 
+
+You must complete additional [identity verification](https://support.stripe.com/questions/common-questions-about-stripe-identity#how-verification-works) before you can accept PayTo payments. Stripe prompts you to complete these steps after you request access in [Payment methods settings](https://dashboard.stripe.com/settings/payment_methods). If you need help, [contact support](https://support.stripe.com/contact).
+
+Review the list of *merchant category codes* (A Merchant Category Code (MCC) is a four-digit number that classifies the type of goods or services a business offers) that are prohibited or restricted for PayTo.
+
+- **Prohibited**: You can’t use this payment method with these MCCs.
+- **Restricted**: You might be able to use this payment method with these MCCs, but you must provide additional information when you create the account.
+
+| MCC | Description | Type |
+| --- | --- | --- |
+| 4829 | Money Orders - Wire Transfers | Prohibited |
+| 6051 | Cryptocurrency exchanges and wallets | Prohibited |
+| 6211 | Security Brokers and Dealers | Prohibited |
+| 6530 | Software | Prohibited |
+| 6540 | Non-FI, Stored Value Card Purchase and Load | Prohibited |
+| 7995 | Betting and Casino Gambling | Prohibited |
+| 8651 | Political Organizations | Prohibited |
+
+Stripe accounts in the following countries can accept PayTo payments that settle in a supported currency.
+
+APAC: AU
+
+Customers in the following countries can use PayTo.
+
+APAC: AU
+
+### Payment support
+Customer location: AU
+Presentment currency: AUD
+Geographic coverage: ✓ Domestic, ✗ Crossborder
+Transaction limits: Minimum amount: 0.50 AUD
+
+Maximum amount: 100,000 AUD (account limits also apply)
+### Transaction limits 
+
+The maximum transaction amount in the Payment support table is the highest amount Stripe supports for PayTo, not your account’s processing limit. Stripe applies a separate per-transaction limit to your account.
+
+- The default per-transaction limit is 10,000 AUD.
+- With approval, you can accept PayTo payments of up to 100,000 AUD.
+
+Payments must also stay within any limits that the customer’s bank applies to the mandate. See [bank limits and other considerations](https://docs.stripe.com/payments/payto.md#bank-limits). If you need a higher limit, [contact Stripe support](https://support.stripe.com/contact).
+
+## Capabilities 
+Recurring payments: ✓ Supported
+
+Payment authorizations:
+  ✗ Extended authorizations
+  ✗ Flexible extended authorizations
+  ✗ Incremental authorizations
+  ✗ Decremental authorizations
+  ✗ Re-authorizations
+
+Payment captures:
+  ✗ Manual capture
+  ✗ Partial capture
+  ✗ Multi-capture
+  ✗ Over-capture
+
+Refunds:
+  ✓ Partial refunds
+  ✓ Full refunds
+  Submission window: 2 years
+  Processing time: Typically minutes, but can take several days
+
+Disputes:
+  ✗ Partial disputes
+  ✓ Full disputes
+### Refunds 
+
+Refund PayTo payments using the [Stripe Dashboard](https://dashboard.stripe.com/payments) or [Refunds API](https://docs.stripe.com/api/refunds.md). You can refund a PayTo payment up to 2 years after the original payment. Customers typically receive refunds in their bank accounts within minutes, but some banks might take several days to process a PayTo refund.
+
+#### Refund process 
+
+PayTo supports full and partial refunds. You can also issue multiple partial refunds up to the amount of the original payment.
+
+When you refund a PayTo payment made using a PayID, `payment_method.billing_details.name` must match the name on the customer’s bank account. A name mismatch can cause the refund to fail.
+
+#### Tracking refunds 
+
+Track refunds in the [Dashboard](https://dashboard.stripe.com/payments), or [retrieve the Refund object](https://docs.stripe.com/api/refunds/retrieve.md) and inspect its `status`.
+
+### Disputes 
+
+#### Dispute process 
+
+When a PayTo dispute is created, Stripe deducts the disputed amount and associated dispute fee from your Stripe balance. All PayTo disputes are final. You can’t submit evidence to challenge them or appeal them.
+
+#### Dispute notifications 
+
+Stripe sends both the [charge.dispute.created](https://docs.stripe.com/api/events/types.md#event_types-charge.dispute.created) and [charge.dispute.closed](https://docs.stripe.com/api/events/types.md#event_types-charge.dispute.closed) webhook events. [Verify webhook signatures](https://docs.stripe.com/webhooks.md#verify-events) to confirm that events came from Stripe.
+
+#### Dispute outcomes 
+
+If you resolve the dispute directly with your customer and they agree to return the funds, they need to make a new payment.
+
+### Mandates 
+
+PayTo [mandates](https://docs.stripe.com/api/mandates.md) are required to collect payments. They specify the amount, cadence, purpose, and allowed period for payments.
+
+#### What customers authorize 
+
+Customers authorize the mandate in their mobile banking app or online banking. You don’t need to present legal mandate text yourself.
+
+#### Collect mandates 
+
+Stripe sets up one-off mandates automatically. You don’t need to specify mandate terms for one-off payments.
+
+For recurring payments, specify `payment_method_options[payto][mandate_options]`. Use the least permissive mandate terms required to collect your payments. Limit the amount on your mandates because several banks [reject mandates without an amount specified](https://docs.stripe.com/payments/payto.md#bank-limits).
+
+#### Manage mandates 
+
+To view mandate details, [retrieve the Mandate object](https://docs.stripe.com/api/mandates/retrieve.md) and inspect its `payment_method_details.payto`.
+
+#### Cancel mandates 
+
+[Detaching the PaymentMethod](https://docs.stripe.com/api/payment_methods/detach.md) cancels the mandate. Customers can also revoke a mandate through their banking app or by contacting their bank.
+
+#### Mandate options 
+
+Specify these fields using [payment_method_options[payto][mandate_options]](https://docs.stripe.com/api/payment_intents/create.md#create_payment_intent-payment_method_options-payto-mandate_options).
+
+| Mandate field | Description | One-off payments behavior | Recurring payments behavior |
+| --- | --- | --- | --- |
+| [amount](https://docs.stripe.com/api/mandates/object.md#mandate_object-payment_method_details-payto-amount) | Amount that you collect. | Stripe sets `amount` to the payment’s amount. You can’t modify it. | Required when `amount_type` is `fixed`. You can modify it. |
+| [amount_type](https://docs.stripe.com/api/mandates/object.md#mandate_object-payment_method_details-payto-amount_type) | The type of amount that you collect. | Stripe sets `amount_type` to `fixed`. You can’t modify it. | You can set it to `fixed` (the charge must equal `amount`) or the default of `maximum` (the charge must be equal to or less than `amount`). |
+| [payment_schedule](https://docs.stripe.com/api/mandates/object.md#mandate_object-payment_method_details-payto-payment_schedule) | The cadence at which you collect payments. | Stripe sets `payment_schedule` to `adhoc`. You can’t modify it. | Defaults to `adhoc`. You can modify it. |
+| [purpose](https://docs.stripe.com/api/mandates/object.md#mandate_object-payment_method_details-payto-purpose) | The payment reason according to your *merchant category code (MCC)* (A Merchant Category Code (MCC) is a four-digit number that classifies the type of goods or services a business offers). | You can override the Stripe-inferred value using any of the [valid values](https://docs.stripe.com/api/payment_intents/create.md#create_payment_intent-payment_method_options-payto-mandate_options-purpose) if the default value doesn’t accurately represent the purpose of the mandate. The mandate contains the default value when you don’t specify an override. |
+| [start_date](https://docs.stripe.com/api/mandates/object.md#mandate_object-payment_method_details-payto-start_date) | Date, in YYYY-MM-DD format, from which payments are collected. | Stripe sets `start_date` to confirmation time. You can’t modify it. |
+| [end_date](https://docs.stripe.com/api/mandates/object.md#mandate_object-payment_method_details-payto-end_date) | Date, in YYYY-MM-DD format, after which payments aren’t collected. | Stripe sets `end_date` to no end date (`nil`). You can’t modify it. | Defaults to no end date (`nil`). You can modify it. |
+| [payments_per_period](https://docs.stripe.com/api/mandates/object.md#mandate_object-payment_method_details-payto-payments_per_period) | The number of payments made during a payment period. | Stripe sets `payments_per_period` to 1. You can’t modify it. | Defaults to 1 except when `payment_schedule` is `adhoc`. In that case, it defaults to no limit (`nil`). You can modify it. |
+
+## Stripe product support 
+Checkout UIs:
+  ✓ Full page (Recommended)
+  ✓ Payment Links
+  ✓ Embedded form
+  ✓ Payment Element
+  ✗ Express Checkout Element
+  ✗ Payment Method Messaging Element
+  ✗ In-app payments
+
+Products:
+  ✗ Managed Payments
+  ✓ Billing
+  ✓ Invoicing
+  ✓ Customer Portal
+  ✓ Radar
+  ✗ Terminal
+  ✓ Connect
+
+APIs:
+  ✓ Checkout Sessions (Recommended)
+  ✓ Payment Intents
+  ✓ Payment Intents with setup_future_usage
+  ✓ Setup Intents
+  ✗ Off-session payments
+## Bank limits and other considerations 
+
+PayTo performs best for recurring payments and payments under 1,000 AUD. PayTo performance might vary depending on the customer’s bank, their account type, and the frequency of payments. Each bank can enforce additional measures to manage risk and prevent fraud.
+
+Business bank account coverage for PayTo is lower than coverage for individual bank accounts, so fewer business customers can use it.
+
+The following table links to each bank’s PayTo documentation.
+
+| Bank name | Additional notes |
+| --- | --- |
+| [ANZ (Australia and New Zealand Banking Group)](https://www.anz.com.au/personal/ways-to-bank/more/pay-to) | Mandates with amounts over 25,000 AUD are rejected. Mandates with no maximum amount are also rejected. View [mandate limits](https://www.anz.com.au/plus/support/payments/payto/payto/#:~:text=PayTo%20payments%20have%20a%20limit,transactions%20larger%20than%20this%20amount.) and [eligible accounts](https://www.anz.com.au/content/dam/anzcomau/documents/pdf/payto-eligible-accounts.pdf). |
+| [CBA (Commonwealth Bank of Australia)](https://www.commbank.com.au/digital-banking/pay-to.html) | Mandates with amounts over 25,000 AUD are rejected. Mandates with no maximum amount are also rejected. Call center approval might be required for mandates with high-risk characteristics (for example, blank creditor field, high amount). View [eligible accounts](https://www.commbank.com.au/digital-banking/pay-to/faqs.html?ei=EligibleAcc#eligible). |
+| [NAB (National Australia Bank)](https://www.nab.com.au/personal/online-banking/digital-payments/payto) |  |
+| [Westpac](https://www.westpac.com.au/personal-banking/mobile-wallets/payto) | Mandates with amounts over 25,000 AUD are rejected. Mandates with no maximum amount are also rejected. For high-risk merchants, ad-hoc payments over 1,000 AUD are declined. View [mandate limits](https://www.westpac.com.au/faq/payto-transaction-limit/) and [eligible accounts](https://www.westpac.com.au/faq/payto-eligible-accounts/). |
+| [Australian Military Bank](https://australianmilitary.bank/) |  |
+| [Australian Mutual Bank](https://australianmutual.bank/banking/access/payto) |  |
+| [Australian Unity Bank](https://www.australianunity.com.au/banking/payto) |  |
+| [Bank Australia Limited](https://www.bankaust.com.au/payto) | View [eligible accounts](https://bankaust.com.au/payto#What-accounts-can't-be-linked-to-a-PayTo). |
+| [BankSA](https://www.banksa.com.au/online-services/ways-to-pay/payto) | View [mandate limits](https://www.banksa.com.au/online-services/ways-to-pay/ways-to-pay-faqs/payto-faqs) and [eligible accounts](https://www.banksa.com.au/online-services/ways-to-pay/payto). |
+| [BankWaW](https://www.bankwaw.com.au/Support/Ways-To-Bank/PayTo) |  |
+| [Bendigo and Adelaide Bank Limited](https://www.bendigobank.com.au/ways-to-bank/payto) |  |
+| [Beyond Bank Australia Limited](https://www.beyondbank.com.au/banking/bank-with-us/payto.html) | View [eligible accounts](https://www.beyondbank.com.au/need-help/are-any-accounts-not-eligible-for-payto.html?faq=are-any-accounts-not-eligible-for-payto). |
+| [Broken Hill Community Credit Union](https://www.bhccu.com.au/) |  |
+| [Central Murray Credit Union](https://www.cmcu.com.au/) |  |
+| [Community First Bank](https://communityfirst.com.au/support/payto) |  |
+| [Credit Union SA](https://www.creditunionsa.com.au/digital-banking/real-time-payments/payto) | View [eligible accounts](https://www.creditunionsa.com.au/help-and-support/faqs/which-accounts-can-i-use-for-a-payto-mandate). |
+| [Defence Bank Limited](https://www.defencebank.com.au/tools-and-advice/payto/) |  |
+| [First Option Bank](https://firstoptionbank.com.au/payto-tcs/) |  |
+| [Geelong Bank](https://www.geelongbank.com.au/) |  |
+| [Goulburn Murray Credit Union](https://www.gmcu.com.au/pages/2-pages/products-a-services/280-payto) |  |
+| [Great Southern Bank](https://www.greatsouthernbank.com.au/digital-banking/payto) | View [eligible accounts](https://www.greatsouthernbank.com.au/__data/assets/pdf_file/0026/5966/RC00015_Terms_and_Conditions_Brochure_230516.pdf). |
+| [Horizon Bank](https://www.horizonbank.com.au/) |  |
+| [Illawarra Credit Union](https://www.illawarracu.com.au/) |  |
+| [ING](https://www.ing.com.au/) |  |
+| [Laboratories Credit Union](https://www.lcu.com.au/tools-payto.html) |  |
+| [Macquarie Bank Limited](https://www.macquarie.com.au/help/personal/payments-transfers-and-deposits/payto/whats-payto-and-how-does-it-work.html) | Mandates with amounts over 25,000 AUD are rejected. Mandates with no maximum amount are also rejected. View [eligible accounts](https://www.macquarie.com.au/help/personal/payments-transfers-and-deposits/payto/whats-payto-and-how-does-it-work.html#tab-panels-0-what-is-payto-). |
+| [Northern Inland Credit Union](https://www.nicu.com.au/) |  |
+| [Orange Credit Union](https://www.orangecu.com.au/) |  |
+| [P&N Bank (Police & Nurses Bank)](https://www.pnbank.com.au/personal-banking/payto/) | View [eligible accounts](https://www.pnbank.com.au/personal-banking/payto/#faq-answer-4). |
+| [People’s Choice Credit Union](https://www.peopleschoice.com.au/help-and-support/faqs/fast-payments/what-is-payto-and-how-can-it-be-used) | View [eligible accounts](https://www.peopleschoice.com.au/help-and-support/faqs/fast-payments/what-accounts-are-eligible-for-payto-payments). |
+| [Police Credit Union](https://www.policecu.com.au/) |  |
+| [Queensland Country Bank Limited](https://www.queenslandcountry.bank/help-info/faqs/payto) |  |
+| [RACQ Bank](https://www.racq.com.au/banking/online-banking/payto) | View [eligible accounts](https://www.racq.com.au/help-contact?category=bank#faqs_q=payto&faqs_e=0). |
+| [RBA (Reserve Bank of Australia)](https://www.rba.gov.au/) |  |
+| [Regional Australia Bank](https://www.regionalaustraliabank.com.au/the-inside-story/articles/introducing-payto) | View [eligible accounts](https://www.regionalaustraliabank.com.au/the-inside-story/articles/introducing-payto). |
+| [South West Slopes Credit Union](https://www.swscu.com.au/) |  |
+| [St. George](https://www.stgeorge.com.au/online-services/ways-to-pay/payto) | View [mandate limits](https://www.stgeorge.com.au/online-services/ways-to-pay/ways-to-pay-faqs/payto-faqs) and [eligible accounts](https://www.stgeorge.com.au/online-services/ways-to-pay/payto). |
+| [Suncorp Australia](https://www.suncorp.com.au/banking/help-support/ways-to-bank/payto.html) | View [eligible accounts](https://www.suncorp.com.au/banking/help-support/ways-to-bank/payto.html#eligible-payto). |
+| [Teachers Mutual Bank Limited](https://www.tmbank.com.au/ways-to-bank/npp-payto/introducing-payto) | View [eligible accounts](https://www.tmbank.com.au/ways-to-bank/npp-payto/getting-started). |
+| [The Mac Credit Union](https://themaccu.com.au/support/faqs/payto-faqs) |  |
+| [Ubank](https://www.ubank.com.au/help/current/app-and-online-banking/payto/which-accounts-are-eligible-for-payto) |  |
+| [Unity Bank](https://www.unitybank.com.au/savings-osko-payments-payto.html) |  |
+| [Warwick Credit Union](https://www.wcu.com.au/) |  |
+
+## Customer experience 
+
+#### 1. Provide bank details
+
+The customer provides their PayID or bank account number and BSB.
+
+#### 2. Authorize the mandate
+
+The customer authenticates and authorizes the PayTo mandate in their mobile banking app or online banking.
+
+#### 3. Wait for confirmation
+
+Stripe typically reports the final payment status within 60 seconds after mandate authorization.
+
+### Statement descriptors 
+
+PayTo includes your business name and a payment reference on the customer’s bank statement. The exact text, order, and truncation depend on the customer’s bank.
+
+For Connect destination charges, this information uses the platform’s identity when you omit `on_behalf_of`, and the connected account’s identity when you set `on_behalf_of`.
+
+Stripe doesn’t provide a separate PayTo network transaction ID.
+
+## Enable PayTo 
+
+If you use Stripe front-end products, enable PayTo in your [payment method settings](https://dashboard.stripe.com/settings/payment_methods). Stripe automatically determines which payment methods are most relevant to each customer.
+
+If your integration lists payment methods manually, learn how to [configure PayTo as a payment method](https://docs.stripe.com/payments/payto/accept-a-payment.md).
+
+To enable PayTo for connected accounts that use the Express Dashboard or a dashboard that isn’t hosted by Stripe, request the `payto_payments` capability using the [Capabilities API](https://docs.stripe.com/api/capabilities.md). See [Enable payment methods for your connected accounts](https://docs.stripe.com/connect/account-capabilities.md).

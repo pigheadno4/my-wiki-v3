@@ -1,0 +1,183 @@
+{
+  "job_id": "payments-payment-methods-pmd-registration",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Docs — Register domains for payment methods\"\ntype: source\ndate_ingested: 2026-05-08\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/payments/payment-methods/pmd-registration\nraw_files:\n  - \"stripe-pmd-registration-2025.md\"\ntags: [stripe, domain-registration, apple-pay, google-pay, link, amazon-pay, klarna, paypal, elements, checkout]\n---\n\n## Summary\n\nThe May 8, 2026 expanded guide covers registering every web domain that displays an applicable payment method in Elements or Checkout's embeddable form. Register each top-level domain and subdomain that displays the method, including `www` when used. Once registered, the domain is ready for other applicable methods enabled later.\n\n## Payment methods and test/live scope\n\nThe May guide lists Apple Pay (registration required), Amazon Pay, Google Pay, Klarna, Link and PayPal (May lines 8–19). The November 7 overview uses Link, Apple Pay and Google Pay as examples and links to the Dashboard and API guide variants.\n\n- For the Web Apple Pay path in this guide, Stripe handles merchant validation and the merchant needs no Apple Merchant ID or certificate signing request (CSR). The separate native iOS flow requires an Apple Merchant ID and a Stripe-provided CSR. [[source-stripe-apple-pay|Apple Pay integration paths]]\n- Register the domains for testing, either directly in a sandbox or by registering in live mode, which also registers them in sandboxes. Register the domains in live mode before launch. For local testing, the May guide suggests an HTTPS tunnel such as ngrok (May lines 21–27).\n\n## Dashboard and API registration\n\nIn **Payment method domains** in the Dashboard, add a new domain, enter its name and save. Repeat for each domain. Direct charges on connected accounts use the API, as described below (May lines 29–48).\n\nThe May PaymentMethodDomain API can create, retrieve, list, disable and re-enable domains. The Node.js examples below show create and disable, with the domain ID supplied for the update.\n\n```js\n// Register\nstripe.paymentMethodDomains.create({ domain_name: 'example.com' })\n\n// Disable\nstripe.paymentMethodDomains.update('{{ID}}', { enabled: false })\n```\n\nDisabling a domain stops affected payment methods from appearing on it in Elements or Checkout's embeddable form. The Dashboard row actions also allow disable and re-enable (May lines 55–61 and 86–106).\n\n## iframe origin and registration\n\n- For Elements in an iframe, match the top-level origin. Same origin means the same protocol, full host and port.\n- The May guidance allows a cross-origin iframe on Safari 17 or later with the `allow=\"payment\"` attribute. Apple Pay in that iframe also requires registering the iframe source domain.\n- If the top-level domain and iframe source domain differ, register both on the associated Stripe account (May lines 50–54 and 81–84).\n\n## Connect account and credentials\n\nRegister the domain on the Stripe account that runs the charge. These are the May guide's account and API credential routes (May lines 35–37 and 109–131).\n\n| Charge type | Registration account and API credentials |\n| --- | --- |\n| Direct charges | Register on the connected account. Use the API with the platform secret key and `Stripe-Account` set to the connected account ID. The platform Dashboard does not manage these connected-account domains. |\n| Destination charges and separate charges and transfers | Register on the platform account. Use the platform secret key and omit `Stripe-Account`. |\n\n## Related Pages\n\n- [[stripe-wallets]] — wallet eligibility and web integration\n- [[stripe-link]] — Link integration paths\n- [[stripe-checkout]] — Checkout UI modes and separate hosted checkout domain settings\n- [[source-stripe-apple-pay]] — separate Web and native Apple Pay setup\n- [[stripe]] — Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-pmd-registration-2025|Domain registration, captured 2026-05-08]] — full 132-line guide, including Dashboard and API procedures.\n\n## Related raw API references\n\n- [[raw/stripe-payments-payment-methods-pmd-registration-2026-11-07|Domain registration selector, captured 2026-11-07]] — variant navigation links for Dashboard and API. The lead names Link, Apple Pay and Google Pay as examples in Elements and Checkout's embeddable form.\n",
+  "quotes": {
+    "payments-payment-methods-pmd-registration": [
+      {
+        "text": "Register domains to use payment methods (including Link, Apple Pay, and Google Pay) in Elements or Checkout's embeddable payment form.",
+        "location": "raw/stripe-payments-payment-methods-pmd-registration-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-payment-methods-pmd-registration-2026-11-07.md:11"
+      },
+      {
+        "text": "[Dashboard](https://docs.stripe.com/payments/payment-methods/pmd-registration.md?dashboard-or-api=dashboard)",
+        "location": "raw/stripe-payments-payment-methods-pmd-registration-2026-11-07.md:13"
+      },
+      {
+        "text": "[API](https://docs.stripe.com/payments/payment-methods/pmd-registration.md?dashboard-or-api=api)",
+        "location": "raw/stripe-payments-payment-methods-pmd-registration-2026-11-07.md:14"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-payment-methods-pmd-registration": [
+      {
+        "text": "This includes registering top-level domains and subdomains.",
+        "location": "raw/stripe-pmd-registration-2025.md:8"
+      },
+      {
+        "text": "the top-level domain and the iframe’s source domain must both be registered payment method domains on the associated account.",
+        "location": "raw/stripe-pmd-registration-2025.md:53"
+      },
+      {
+        "text": "If a domain is disabled, the payment methods no longer appear in Elements or Checkout’s embeddable payment form on that domain.",
+        "location": "raw/stripe-pmd-registration-2025.md:59"
+      },
+      {
+        "text": "The domain where the charge is being run needs to be registered for the user running the charge.",
+        "location": "raw/stripe-pmd-registration-2025.md:111"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-payment-methods-pmd-registration-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-pmd-registration-2025.md": [
+      {
+        "start": 1,
+        "end": 132
+      }
+    ],
+    "wiki/sources/source-stripe-pmd-registration.md": [
+      {
+        "start": 1,
+        "end": 67
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/c1b7c3a7df774635640c51ef/content.diff": [
+      {
+        "start": 1,
+        "end": 134
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-payment-methods-pmd-registration/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 165
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-payment-methods-pmd-registration/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 106
+      }
+    ],
+    "wiki/concepts/stripe-checkout.md": [
+      {
+        "start": 125,
+        "end": 140
+      }
+    ],
+    "wiki/concepts/stripe-link.md": [
+      {
+        "start": 84,
+        "end": 113
+      }
+    ],
+    "wiki/concepts/stripe-wallets.md": [
+      {
+        "start": 373,
+        "end": 391
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 382,
+        "end": 388
+      },
+      {
+        "start": 435,
+        "end": 437
+      }
+    ],
+    "wiki/sources/source-stripe-apple-pay.md": [
+      {
+        "start": 15,
+        "end": 21
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md": [
+      {
+        "start": 107,
+        "end": 114
+      }
+    ]
+  },
+  "answers": {
+    "payments-payment-methods-pmd-registration": {
+      "Q1": "The November capture of https://docs.stripe.com/payments/payment-methods/pmd-registration says domain registration applies to payment methods including Link, Apple Pay and Google Pay in Elements or Checkout's embeddable form, and routes readers to Dashboard and API variants (new raw lines 5-14). It gives no registration steps or account or enabled-state rules. The 2026-05-08 guide covers domains and subdomains showing six listed methods, sandbox and live registration, Stripe web Apple Pay validation, and matching iframe origin with the Safari 17+ permission exception (old raw lines 8-27 and 50-61). For Connect, platforms act in connected-account context for direct charges and platform context for destination/separate charges (old raw lines 109-131). Disabling hides the affected payment methods on that domain in Elements or embedded Checkout, and the domain can be enabled again (old raw lines 55-61 and 86-105). source-stripe-pmd-registration.md now records every displaying domain and subdomain, the enable and disable effects, and the separate November navigation.",
+      "Q2": "At https://docs.stripe.com/payments/payment-methods/pmd-registration, November changes presentation and navigation by replacing the expanded May content with the Dashboard and API selector (new raw lines 9-14 and old raw lines 29-37 and 63-65). No substantive removal or newly verified method or browser behavior follows. The source preserves May's six-method scope, live registration before go-live and sandbox carryover, matching origin or Safari 17+ cross-origin permission, registration of both domains when different, and the Connect account context (old raw lines 8-27, 50-61, 81-105 and 109-131). The Web Apple Pay merchant-validation guidance and native setup have separate routes. source-stripe-pmd-registration.md retains the full May provenance and reciprocal Wallets route alongside the November navigation reference and existing Link and Checkout references."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-payment-methods-pmd-registration-wallets-dated-source-route",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-pmd-registration]] — Domain registration guide: 6 PMs requiring it (Apple Pay required, + Amazon Pay/Google Pay/Klarna/Link/PayPal), PaymentMethodDomain API, iframe origin rules, Connect charge-type routing",
+      "proposed_markdown": "- [[source-stripe-pmd-registration]] covers the May 2026 embedded-web guide for six methods, including required Apple Pay domain registration, plus test/live, iframe, enable/disable and Connect account rules. The November capture links Dashboard and API variants.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "The six-method list and operative details come from the full May guide. The November lead names three examples and its body is a variant selector."
+      ]
+    },
+    {
+      "update_id": "payments-payment-methods-pmd-registration-checkout-dated-domain-scope",
+      "target_path": "wiki/concepts/stripe-checkout.md",
+      "update_kind": "durable_fact",
+      "anchor": "The separate [[source-stripe-pmd-registration|registration guide]] covers domains and subdomains displaying Link in Elements and the embedded Checkout form.",
+      "proposed_markdown": "The separate [[source-stripe-pmd-registration|registration guide]] documents every displaying domain and subdomain for Link in Elements and the embedded Checkout form in its May 2026 capture. In November the lead retains that UI scope and links Dashboard and API variants.",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "May lines 8–19 cover domain and subdomain registration. November lines 7–14 contain the embed scope and variant links. The separate Checkout Link and hosted success URL wording remains in this paragraph."
+      ]
+    },
+    {
+      "update_id": "payments-payment-methods-pmd-registration-link-dated-domain-scope",
+      "target_path": "wiki/concepts/stripe-link.md",
+      "update_kind": "durable_fact",
+      "anchor": "The separate [[source-stripe-pmd-registration|registration guide]] covers Link in Elements and the embeddable Checkout form.",
+      "proposed_markdown": "The separate [[source-stripe-pmd-registration|registration guide]] covers registering each domain and subdomain displaying Link in Elements and the embeddable Checkout form in May 2026. Its November lead retains the UI scope and points to Dashboard and API variants.",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "May lines 8–19 and November lines 7–14 support the respective scope. The following sentence concerns a separate Checkout Link guide."
+      ]
+    }
+  ]
+}

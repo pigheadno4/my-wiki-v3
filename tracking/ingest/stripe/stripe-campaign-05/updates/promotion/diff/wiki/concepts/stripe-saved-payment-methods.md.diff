@@ -1,0 +1,43 @@
+--- wiki/concepts/stripe-saved-payment-methods.md
++++ wiki/concepts/stripe-saved-payment-methods.md
+@@ -7,7 +7,7 @@
+ 
+ ## Definition
+ 
+-Stripe's pattern for saving a customer's payment method during or after a payment so it can be reused in future sessions. Both the Checkout Sessions API and Payment Intents API support this, but with different mechanics.
++Stripe lets businesses save a customer's payment method for future use during or after a payment, or set it up without an initial charge. The separate setup paths use Checkout Sessions in setup mode or the Setup Intents API. See [[source-stripe-save-and-reuse-elements]].
+ 
+ ## When to Save a Payment Method
+ 
+@@ -38,14 +38,14 @@
+ 
+ For an existing identity, use `customer` for a Customers v1 Customer or `customer_account` for a customer-configured Accounts v2 Account. The 2026-04-20 [[source-stripe-accept-a-payment|Accept a payment guide]] describes Accounts v2 as generally available for Connect users and in public preview for other Stripe users; preview participants need a preview API version. These are alternative identity routes, subject to that availability.
+ 
+-- **Supported methods**: card, ACH Direct Debit only (not bank redirects, etc.)
++- **Supported methods**. The April 21, 2026 guide limits saved methods to cards and ACH Direct Debit for Elements with Checkout Sessions.
+ - Payment Element auto-shows consent checkbox when enabled
+ - `elementsOptions.savedPaymentMethod.enableSave: 'auto'` (default) or `'never'` for custom UI
+ - `enableRedisplay: 'auto'` or `'never'` to control redisplay
+ 
+ ## Payment Intents Path
+ 
+-Requires a **CustomerSession** alongside the PaymentIntent:
++For the April 21, 2026 Payment Element saved-method UI, create a **CustomerSession** alongside the PaymentIntent. If CustomerSession creation fails, the guide says to omit its client secret after handling the error. See [[source-stripe-save-during-payment-elements]] for supported saving and redisplay options.
+ 
+ ```js
+ const cs = await stripe.customerSessions.create({
+@@ -152,12 +152,12 @@
+ 
+ - [[source-stripe-checkout-save-during-payment]] — CS path: setup_future_usage, saved_payment_method_options, allow_redisplay semantics
+ - [[source-stripe-payment-element-saved-pms]] — display/management: allow_redisplay values, CVC re-collection, subscription removal warning, unspecified legacy PMs
+-- [[source-stripe-save-during-payment-elements]] — full integration: both API paths, CustomerSession, enableSave/enableRedisplay, Bancontact→SEPA, off-session charging
++- [[source-stripe-save-during-payment-elements]] — April 2026 web save-during-payment guide for Checkout Sessions with Elements and Payment Intents, with consent, redisplay and later charging. November links the two variants.
+ - [[source-stripe-save-and-reuse-elements]] — save without payment: CS mode=setup + Setup Intents, confirmSetup, retrieveSetupIntent, Apple Pay MPANs, Radar note
+ - [[source-stripe-inapp-save-during-payment]] — 2026-04-22 mobile save-during-payment guide, scoped to the `mobile_payment_element` CustomerSession component and initial PaymentIntent `setup_future_usage` for cards and US bank accounts. The web `payment_element` example above is a separate integration. The 2026-11-07 capture is a Payment Sheet variant index.
+ - [[source-stripe-inapp-set-up-future-payments]] — April 2026 mobile setup without charge using a precreated SetupIntent. The seven-method list applies to iOS. The Android and React Native variants list cards, Link, and US bank accounts. The separately documented React Native deferred server-confirmation route names cards and PayPal. See [[source-stripe-inapp-finalize-payments-server]].
+ - [[source-stripe-inapp-customer-sheet]] — CustomerSheet (Payment Method Settings Sheet): app settings PM management UI for iOS/Android/RN; CustomerSession + SetupIntent dual endpoints; retrievePaymentOptionSelection without presenting
+ - [[source-stripe-inapp-save-card-without-auth]] — 2026-04-23 guide to mobile card saving and later charging for merchants doing business primarily in the US and Canada, with authentication limits and optional CVC re-collection. The November capture is platform navigation.
+ - [[source-stripe-payments-existing-customers]] — The retained 2026-05-11 guide covers five on-session routes: hosted, full embedded, and Elements Checkout Sessions; a PaymentIntent with CustomerSession; and Direct API PaymentMethod listing plus PaymentIntent confirmation. Redisplay filters, card prefill and events vary by route. The 2026-11-07 canonical capture is variant navigation only, not refreshed behavior.
+-- [[source-stripe-save-card-without-auth]] — Web legacy save card (US/CA only): createPaymentMethod→attach Customer, error_on_requires_action, setup_future_usage=on_session, CVC re-collection
++- [[source-stripe-save-card-without-auth]] — May and November 2026 basic web card-saving guides for businesses operating primarily in the US and Canada. Includes Customers v1 attachment, action-required decline and recovery, future customer-present reuse, and optional CVC re-collection.
+ - [[source-metronome-guides-customers-billing-optimize-customer-experience-india-e-mandates]] — source-scoped Indian-card SetupIntent mandate creation, activation states, invoice attachment, action-required handling, and Stripe lifecycle ownership

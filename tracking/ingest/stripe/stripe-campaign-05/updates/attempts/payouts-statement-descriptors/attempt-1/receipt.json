@@ -1,0 +1,154 @@
+{
+  "job_id": "payouts-statement-descriptors",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe — Payout Statement Descriptors\"\ntype: source\ndate_ingested: 2026-05-11\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/payouts/statement-descriptors\nraw_files:\n  - \"stripe-payouts-statement-descriptors-2026-11-07.md\"\n  - \"stripe-payouts-statement-descriptors-2026.md\"\ntags: [stripe, payouts, statement-descriptor, bank-statement, connect]\n---\n\n## Summary\n\nThe May 11 and November 7, 2026 guides describe [[stripe]] statement descriptors for connected-account payouts. Stripe sends descriptor information to the beneficiary bank, which decides whether and how to display it.\n\n## Two Levels\n\n| Level | Scope | Set via |\n| --- | --- | --- |\n| Account-level | Automatic and manual payouts for the account | Dashboard payout settings |\n| Payout-level | One manual payout | Dashboard balance overview when creating the payout, or API `statement_descriptor` |\n\nStripe uses the payout-level descriptor if supplied, then the account-level descriptor, then the fallback `STRIPE` if neither is configured.\n\n## Standard US ACH transmission\n\nThe November 7, 2026 guide maps the descriptor for standard US ACH payouts to the ACH Company Entry Description field. The NACHA field limit is 10 characters. Stripe silently truncates longer values before submission to its banking partner. A descriptor of 10 characters or fewer fits that field, and display remains at the beneficiary bank's discretion.\n\nThe separate November [Create a payout API reference](../../raw/stripe-api-payouts-create-2026-11-07.md#L86-L93) documents a generic 22-character maximum for the request field and an initial `pending` Payout object when creation passes its initial checks. The 10-character limit applies to the later standard US ACH transmission.\n\n## API example\n\nThe May guide uses Node.js, and the November guide shows the equivalent cURL request. This is the May example's request shape.\n\n```js\nstripe.payouts.create({ amount: 100, currency: 'usd', statement_descriptor: 'Cactus Payouts 001' })\n```\n\nBoth captures show a `pending` response with the long descriptor echoed and a sample amount of `1100` despite the request's `100`. The illustrative response supplies no evidence of the transmitted value, eventual status, or bank display.\n\n## Related Pages\n\n- [[stripe-payouts]] — payout settings and statement descriptors\n\n## Raw Sources\n\n- [[raw/stripe-payouts-statement-descriptors-2026-11-07|November 7, 2026 payout statement descriptors guide]]\n- [[raw/stripe-payouts-statement-descriptors-2026|May 11, 2026 payout statement descriptors guide]] — verbatim guide with three SVG diagram references\n",
+  "quotes": {
+    "payouts-statement-descriptors": [
+      {
+        "location": "raw/stripe-payouts-statement-descriptors-2026-11-07.md:7",
+        "text": "Understand and manage how Stripe payouts appear on a connected account's bank statements."
+      },
+      {
+        "location": "raw/stripe-payouts-statement-descriptors-2026-11-07.md:9",
+        "text": "Beneficiary banks don’t guarantee that they’ll display statement descriptors."
+      },
+      {
+        "location": "raw/stripe-payouts-statement-descriptors-2026-11-07.md:13",
+        "text": "Stripe silently truncates any descriptor longer than 10 characters before submitting to the banking partner."
+      },
+      {
+        "location": "raw/stripe-payouts-statement-descriptors-2026-11-07.md:26",
+        "text": "Payout-level statement descriptors allow you to configure a unique descriptor for each manual payout."
+      },
+      {
+        "location": "raw/stripe-payouts-statement-descriptors-2026-11-07.md:60",
+        "text": "If you don’t define an account-level or payout-level statement descriptor, we default to ‘STRIPE’ as the descriptor shown on your bank statement."
+      }
+    ]
+  },
+  "old_evidence": {
+    "payouts-statement-descriptors": [
+      {
+        "location": "raw/stripe-payouts-statement-descriptors-2026.md:12",
+        "text": "Beneficiary banks don’t guarantee that they’ll display statement descriptors."
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payouts-statement-descriptors-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 61
+      }
+    ],
+    "raw/stripe-payouts-statement-descriptors-2026.md": [
+      {
+        "start": 1,
+        "end": 64
+      }
+    ],
+    "wiki/sources/source-stripe-payouts-statement-descriptors.md": [
+      {
+        "start": 1,
+        "end": 42
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/c3f67687d13d5f1bec5b996d/content.diff": [
+      {
+        "start": 1,
+        "end": 69
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payouts-statement-descriptors/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 137
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payouts-statement-descriptors/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 86
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 543,
+        "end": 549
+      },
+      {
+        "start": 716,
+        "end": 720
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 740,
+        "end": 744
+      }
+    ],
+    "wiki/concepts/stripe-payouts.md": [
+      {
+        "start": 63,
+        "end": 74
+      },
+      {
+        "start": 80,
+        "end": 87
+      }
+    ],
+    "raw/stripe-api-payouts-create-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 19
+      },
+      {
+        "start": 80,
+        "end": 93
+      }
+    ]
+  },
+  "answers": {
+    "payouts-statement-descriptors": {
+      "Q1": "For https://docs.stripe.com/payouts/statement-descriptors, old raw lines 8-64 and new raw lines 7-61 document bank-statement descriptors for connected-account payouts. Account-level configuration in Dashboard payout settings covers automatic and manual payouts. A payout-level descriptor applies to an individual manual payout and can be entered in Dashboard balance overview or with API statement_descriptor. The revised source-stripe-payouts-statement-descriptors.md retains payout-level precedence, the STRIPE fallback when neither is defined, and beneficiary-bank display variability. New raw lines 9-13 add an upstream transformation for standard US ACH payouts. The descriptor maps to ACH Company Entry Description, and Stripe silently truncates over 10 characters before banking-partner submission. The API example depicts pending creation, with final bank display left to the beneficiary bank.",
+      "Q2": "For https://docs.stripe.com/payouts/statement-descriptors, old raw lines 8-64 establish the May configuration, fallback and bank display caveat, and new raw lines 7-61 retain them. The November addition at line 13 is substantive and is recorded in source-stripe-payouts-statement-descriptors.md. Moving the caveat into the lead, changing the example from Node to curl, and relinking diagram images from local references to CDN are presentational or navigational. Both examples echo the long sample descriptor and show amount 100 in the request and 1100 in the pending response. Those are illustrative snippets with no demonstrated transmission or bank display. The adjacent November payout API reference describes the 22-character input maximum, a different stage from 10-character transmission for standard US ACH. The candidate scopes the new rule to standard US ACH and retains the provider index route and the reciprocal source and wiki/concepts/stripe-payouts.md links."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payouts-statement-descriptors-concept-transmission",
+      "target_path": "wiki/concepts/stripe-payouts.md",
+      "update_kind": "durable_fact",
+      "anchor": "Two levels: **Account-level** (all auto+manual payouts; Dashboard → Payout settings) and **Payout-level** (single manual payout; API `statement_descriptor` field or Dashboard balance overview). Precedence: payout-level → account-level → default `'STRIPE'`. Banks don't guarantee display. See [[source-stripe-payouts-statement-descriptors]].",
+      "proposed_markdown": "Set the account descriptor for automatic and manual payouts in Dashboard payout settings. For a single manual payout, the Dashboard balance overview or API `statement_descriptor` can override it. Stripe falls back to `STRIPE` when neither value is set. The November 7, 2026 guide maps standard US ACH payouts to the 10-character ACH Company Entry Description and says Stripe silently truncates longer values before submission. The generic payout API request maximum is 22 characters. The beneficiary bank decides what appears. See [[source-stripe-payouts-statement-descriptors]].",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The generic input maximum is in raw/stripe-api-payouts-create-2026-11-07.md lines 86–89. The standard US ACH submission rule is in new raw line 13."
+      ]
+    },
+    {
+      "update_id": "payouts-statement-descriptors-concept-source",
+      "target_path": "wiki/concepts/stripe-payouts.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-payouts-statement-descriptors]] — Statement descriptors: 2 levels, precedence order, bank display caveat",
+      "proposed_markdown": "- [[source-stripe-payouts-statement-descriptors]] — May and November guides to configuration precedence, standard US ACH truncation, and beneficiary-bank display",
+      "quote_indexes": [
+        1,
+        2,
+        4
+      ],
+      "warnings": []
+    }
+  ]
+}

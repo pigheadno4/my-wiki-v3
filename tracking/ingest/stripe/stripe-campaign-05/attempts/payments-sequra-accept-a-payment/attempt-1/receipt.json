@@ -1,0 +1,155 @@
+{
+  "job_id": "payments-sequra-accept-a-payment",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-sequra-accept-a-payment-2026-11-07.md",
+  "raw_sha256": "e031b8abc2f8fa6de4e43c7d605ea3d896c00973aa9592556442a2e9ee16e6a1",
+  "prior_raw_path": "raw/stripe-sequra-accept-payment-2025.md",
+  "prior_raw_sha256": "d5050511689237a6c7395dc4b64ffc4ed64ca2da2ffae64e0ab614e449023e55",
+  "source_targets": [
+    "wiki/sources/source-stripe-sequra-accept-payment.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-sequra-accept-payment.md": "578c6c851976c3059428bbb6a31d49f651c27e8b37c181910e19b1617c82de20"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-sequra-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 20
+      }
+    ],
+    "raw/stripe-sequra-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 1390
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/1fcad689aff17af9dd0e421e/content.diff": [
+      {
+        "start": 1,
+        "end": 1398
+      }
+    ],
+    "wiki/sources/source-stripe-sequra-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 27
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 341,
+        "end": 350
+      },
+      {
+        "start": 745,
+        "end": 749
+      }
+    ],
+    "wiki/concepts/stripe-bnpl.md": [
+      {
+        "start": 18,
+        "end": 35
+      },
+      {
+        "start": 135,
+        "end": 158
+      },
+      {
+        "start": 262,
+        "end": 273
+      }
+    ],
+    "raw/stripe-sequra-2025.md": [
+      {
+        "start": 1,
+        "end": 87
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Learn how to set up your integration with SeQura.",
+      "location": "raw/stripe-payments-sequra-accept-a-payment-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+      "location": "raw/stripe-payments-sequra-accept-a-payment-2026-11-07.md:11"
+    },
+    {
+      "text": "- [Checkout](https://docs.stripe.com/payments/sequra/accept-a-payment.md?payment-ui=checkout)",
+      "location": "raw/stripe-payments-sequra-accept-a-payment-2026-11-07.md:13"
+    },
+    {
+      "text": "- [iOS](https://docs.stripe.com/payments/sequra/accept-a-payment.md?payment-ui=mobile&platform=ios)",
+      "location": "raw/stripe-payments-sequra-accept-a-payment-2026-11-07.md:19"
+    },
+    {
+      "text": "- [Android](https://docs.stripe.com/payments/sequra/accept-a-payment.md?payment-ui=mobile&platform=android)",
+      "location": "raw/stripe-payments-sequra-accept-a-payment-2026-11-07.md:20"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "payment terms ranging from 7-120 days.",
+      "location": "raw/stripe-sequra-accept-payment-2025.md:16"
+    },
+    {
+      "text": "To support SeQura payments, a Checkout Session must satisfy all of the following conditions:",
+      "location": "raw/stripe-sequra-accept-payment-2025.md:32"
+    },
+    {
+      "text": "Stripe cancels the PaymentIntent and sends a [payment_intent.canceled](https://docs.stripe.com/api/events/types.md#event_types-payment_intent.canceled) event if the payment isn\u2019t captured during the 7-day window.",
+      "location": "raw/stripe-sequra-accept-payment-2025.md:1096"
+    }
+  ],
+  "proposed_disposition": "raw_reference",
+  "findings": [
+    "The November 7, 2026 parent URL is a variant index with six links: hosted Checkout, Elements with Checkout Sessions or Payment Intents, Direct API, iOS, and Android (new raw lines 5\u201320). Mobile links add discoverability beyond the four inlined May 6, 2026 variants (old raw lines 8\u201310, 87\u201394, 570\u2013574, 1160\u20131164); none of these linked implementations were read as November authority.",
+    "The May guide describes single-use 7\u2013120 day terms and customer authorization at SeQura with redirection back to the merchant. Its Checkout routes require EUR and same-currency line items, use payment mode, and exclude setup and subscription modes. Hosted manual Checkout builds on an existing Checkout integration and adds sequra to payment_method_types, while the Checkout Sessions API on Elements creates the Session on the server, returns its client secret, and confirms from Checkout on the client (old raw lines 10\u201348, 95\u2013130, 153\u2013159, 186\u2013196, 244\u2013253, 488\u2013527).",
+    "In May Elements with Payment Intents and Direct API the server creates the PaymentIntent, using a server-decided amount for Elements, and passes only the client secret for confirmation. The examples distinguish customer_account (Accounts v2) from customer (Customers v1). PaymentIntent confirmation has return_url, and optional server-side manual redirect uses requires_action and next_action.redirect_to_url. Verify intent status after return and use payment_intent.succeeded for completion workflows (old raw lines 799\u2013934, 1076\u20131089, 1179\u20131204, 1287\u20131362).",
+    "Optional manual PaymentIntent capture uses capture_method=manual, proceeds to requires_capture after successful authorization and then an explicit capture request; otherwise Stripe cancels after seven days and emits payment_intent.canceled. In the sandbox the user can approve or decline on the test page; live redirects to SeQura (old raw lines 1094\u20131146, and 564\u2013568 for Checkout Sessions)."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "The old filename ends in 2025, but its fetched header is May 6, 2026 (old raw lines 1\u20134). The November 7, 2026 index is separate evidence of navigation only (new raw lines 1\u201320).",
+    "Retain the May route-specific safeguards: single-use and 7\u2013120 days, checkout eligibility and same-currency line items, payment-only modes, route-specific redirect URLs, payment result verification, sandbox/live distinction, and optional seven-day PaymentIntent capture with cancellation (old raw lines 16\u201348, 95\u2013130, 564\u2013568, 927\u2013934, 1076\u20131158 and 1287\u20131362).",
+    "Keep the existing Stripe BNPL concept's reciprocal source route (concept lines 262\u2013269) and add a discoverable summary-to-concept and related overview route. Retain the linked May raw lines 25\u201327 of the current source and add a distinct November index route."
+  ],
+  "conflicts": [
+    "The May Checkout compatibility sections say supported business locations Europe (old raw lines 18\u201330 and 95\u2013107), while the May Direct API currency mapping lists only EUR: ES (old raw lines 1376\u20131378) and the separate May method overview explicitly lists ES as the Stripe account business location (raw/stripe-sequra-2025.md lines 52\u201356). Preserve this route-specific wording without treating it as an eligibility expansion.",
+    "The May acceptance description gives 7\u2013120 day terms (old raw lines 16 and 1164); the separate May method overview describes Pay in 3 interest-free or up to 12 installments (raw/stripe-sequra-2025.md lines 1\u20138). Duration in days and installment count are different measures, and the evidence does not reconcile their product scope. Current source line 19 treats them too strongly as mutually exclusive.",
+    "Current source lines 13 and 17 overgeneralize return_url. The May hosted Checkout example uses success_url (old raw lines 45\u201370), Checkout Sessions Elements examples use return_url containing CHECKOUT_SESSION_ID (old raw lines 153\u2013159 and 186\u2013196), and PaymentIntent confirmation uses return_url (old raw lines 927\u2013934 and 1287\u20131356). Current lines 13 and 21 should also scope the optional seven-day window to PaymentIntent manual capture."
+  ],
+  "unresolved_questions": [
+    "The linked November variants' actual behavior and the resolution of the May route-specific business-location wording are undetermined by the pinned parent index. The Mobile links do not establish SDK support or released behavior."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-bnpl.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-sequra-accept-payment.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Qualify the blanket return_url and seven-day capture claims at source lines 13\u201321 by route, and date the May implementation. Add November variant navigation without promoting unread links into product support, and surface the Stripe BNPL reciprocal and related method overview routes (source lines 25\u201327; concept lines 142\u2013154 and 268\u2013269). A hosted Checkout implementer using the current blanket return_url could select the wrong field.",
+        "Preserve the three existing PaymentIntent error names as examples of May errors and their raw table routes (old raw lines 1148\u20131158, 1380\u20131390)."
+      ],
+      "conflicts": [
+        "Replace the unsupported inference at source line 19 about duration versus installment counts and expose the May Europe-versus-ES scope discrepancy (old raw lines 18\u201330 and 1376\u20131378; raw/stripe-sequra-2025.md lines 8 and 52\u201356)."
+      ],
+      "reason": "The November raw is navigation only. Independent baseline corrections are needed for route-specific return fields and manual capture, the commercial-terms distinction and dated evidence routing."
+    }
+  ],
+  "answers": {
+    "Q1": "https://docs.stripe.com/payments/sequra/accept-a-payment documents a six-link variant selection at new raw lines 5\u201320. Its four web routes and two Mobile links are navigation. The May 6, 2026 implementation in old raw lines 8\u201348, 95\u2013130, 153\u2013196, 799\u2013934, 1094\u20131146 and 1287\u20131362 covers single-use SeQura, hosted Checkout and Elements, same-currency EUR Checkout line items in payment mode only, server creation of a Checkout Session or PaymentIntent, and client confirmation using the corresponding object and secret. The buyer authorizes with SeQura and returns, then the merchant verifies payment status. On the optional PaymentIntent manual-capture branch, successful authorization reaches requires_capture, capture is explicit, and the uncaptured Intent is canceled after seven days. The prior capture also distinguishes test-page approval or decline from live redirection. source-stripe-sequra-accept-payment.md needs to scope return_url to the applicable Elements or PaymentIntent path, preserve hosted Checkout's success_url example and identify the seven-day rule as optional PaymentIntent capture.",
+    "Q2": "At https://docs.stripe.com/payments/sequra/accept-a-payment, new raw lines 9\u201320 replace inline content with six navigation links, including iOS and Android, and do not establish a substantive payment change or removed web pathway relative to the May 6, 2026 dated material in old raw lines 8\u201348, 87\u2013112, 570\u2013575 and 1160\u20131164. Keep May implementation and November routing separately in source-stripe-sequra-accept-payment.md with the reciprocal stripe-bnpl concept route. Preserve the May Checkout Europe label, Direct API EUR: ES mapping (old raw lines 1376\u20131378) and the related May overview's Spain business listing as differing scopes. Preserve the 7\u2013120 day description alongside the overview\u2019s installment counts. Explain the historic return and optional capture boundaries using old raw lines 45\u201370, 153\u2013196, 927\u2013934 and 1094\u20131141. The November index does not establish eligibility, payment success, deprecation or mobile SDK behavior."
+  }
+}

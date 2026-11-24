@@ -1,0 +1,342 @@
+--- raw/stripe-payment-records-api-2025.md
++++ raw/stripe-payments-payment-records-2026-11-07.md
+@@ -23,14 +23,9 @@
+ 
+ To retrieve the PaymentRecord associated with a PaymentIntent that has Orchestration enabled:
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const paymentRecord = await stripe.paymentRecords.retrieve(
+-  "{{PAYMENTINTENT_ID}}",
+-);
++```curl
++curl https://api.stripe.com/v1/payment_records/{{PAYMENTINTENT_ID}} \
++  -u "<<YOUR_SECRET_KEY>>:"
+ ```
+ 
+ ## Create and manage PaymentRecords
+@@ -40,101 +35,149 @@
+ Each PaymentRecord can have multiple [PaymentAttemptRecords](https://docs.stripe.com/api/payment-attempt-record.md), that each detail a specific attempt to process the payment. This structure allows you to track success, retries, and failures.
+ 
+ Each PaymentAttemptRecord can have multiple PaymentAttemptRecordEntries, that each detail a single event within that attempt, such as initiation, authentication, authorization, or capture. Together, they form an append-only event log you can use to reconstruct the full lifecycle of a payment attempt.
++
+ A sample PaymentRecord with PaymentAttemptRecords and PaymentAttemptRecordEntries (See full diagram at https://docs.stripe.com/payments/payment-records)
+ 
++```text
+++--------------------------------------+
++| PaymentRecord object                 |
+++--------------------------------------+
++| id: pr_123456                        |
++| latest_payment_attempt_record: par_3 |
+++--------------------------------------+
++
+++------------------------------------------------------+
++| PaymentAttemptRecord object                          |
+++------------------------------------------------------+
++| id: par_1                                            |
++| caption: The card was declined on the first attempt. |
+++------------------------------------------------------+
++
+++-------------------------------------------------------+
++| PaymentAttemptRecord object                           |
+++-------------------------------------------------------+
++| id: par_2                                             |
++| caption: The card was declined on the second attempt. |
+++-------------------------------------------------------+
++
+++---------------------------------------------------------------+
++| PaymentAttemptRecord object                                   |
+++---------------------------------------------------------------+
++| id: par_3                                                     |
++| caption: The card was accepted and the payment is guaranteed. |
+++---------------------------------------------------------------+
++
+++----------------------------------+
++| PaymentAttemptRecordEntry object |
+++----------------------------------+
++| id: pare_101                     |
++| type: initiated                  |
+++----------------------------------+
++
+++----------------------------------+
++| PaymentAttemptRecordEntry object |
+++----------------------------------+
++| id: pare_102                     |
++| type: failed                     |
+++----------------------------------+
++
+++----------------------------------+
++| PaymentAttemptRecordEntry object |
+++----------------------------------+
++| id: pare_201                     |
++| type: initiated                  |
+++----------------------------------+
++
+++----------------------------------+
++| PaymentAttemptRecordEntry object |
+++----------------------------------+
++| id: pare_202                     |
++| type: failed                     |
+++----------------------------------+
++
+++----------------------------------+
++| PaymentAttemptRecordEntry object |
+++----------------------------------+
++| id: pare_301                     |
++| type: initiated                  |
+++----------------------------------+
++
+++----------------------------------+
++| PaymentAttemptRecordEntry object |
+++----------------------------------+
++| id: pare_302                     |
++| type: authorized                 |
+++----------------------------------+
++
+++----------------------------------+
++| PaymentAttemptRecordEntry object |
+++----------------------------------+
++| id: pare_303                     |
++| type: guaranteed                 |
+++----------------------------------+
++
++[PaymentRecord object.id] --> [PaymentAttemptRecord object]
++[PaymentRecord object.id] --> [PaymentAttemptRecord object]
++[PaymentRecord object.id] --> [PaymentAttemptRecord object]
++[PaymentAttemptRecord object.id] --> [PaymentAttemptRecordEntry object]
++[PaymentAttemptRecord object.id] --> [PaymentAttemptRecordEntry object]
++[PaymentAttemptRecord object.id] --> [PaymentAttemptRecordEntry object]
++[PaymentAttemptRecord object.id] --> [PaymentAttemptRecordEntry object]
++[PaymentAttemptRecord object.id] --> [PaymentAttemptRecordEntry object]
++[PaymentAttemptRecord object.id] --> [PaymentAttemptRecordEntry object]
++[PaymentAttemptRecord object.id] --> [PaymentAttemptRecordEntry object]
++```
++
+ ### Report a new payment
+ 
+-To [report](https://docs.stripe.com/api/payment-record/report-payment/report.md) an off-Stripe payment, create a PaymentRecord with details about the transaction, including the amount, payment method, processor, and relevant timestamps. Stripe automatically creates an associated PaymentAttemptRecord using the data provided, referenced as the `latest_payment_attempt_record` in the response.
+-
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const paymentRecord = await stripe.paymentRecords.reportPayment({
+-  amount_requested: {
+-    currency: "usd",
+-    value: 1000,
+-  },
+-  initiated_at: 1730253453,
+-  outcome: "guaranteed",
+-  guaranteed: {
+-    guaranteed_at: 1746572320,
+-  },
+-  payment_method_details: {
+-    payment_method: "{{PAYMENTMETHOD_ID}}",
+-  },
+-  processor_details: {
+-    type: "custom",
+-  },
+-});
++To [report](https://docs.stripe.com/api/payment-record/report.md) an off-Stripe payment, create a PaymentRecord with details about the transaction, including the amount, payment method, processor, and relevant timestamps. Stripe automatically creates an associated PaymentAttemptRecord using the data provided, referenced as the `latest_payment_attempt_record` in the response.
++
++```curl
++curl https://api.stripe.com/v1/payment_records/report_payment \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "amount_requested[currency]=usd" \
++  -d "amount_requested[value]=1000" \
++  -d initiated_at=1730253453 \
++  -d outcome=guaranteed \
++  -d "guaranteed[guaranteed_at]=1746572320" \
++  -d "payment_method_details[payment_method]={{PAYMENTMETHOD_ID}}" \
++  -d "processor_details[type]=custom"
+ ```
+ 
+ ### Report a failed payment attempt
+ 
+ Reporting failed payment attempts makes sure Stripe has a complete view of your payment flows, enabling other products to function (for example, [smart retries](https://docs.stripe.com/billing/revenue-recovery/smart-retries.md)). If a payment attempt fails, [report the failure](https://docs.stripe.com/api/payment-record/report-payment-attempt-failed/report.md) by referencing the existing PaymentRecord ID and passing in the time of failure.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const paymentRecord = await stripe.paymentRecords.reportPaymentAttemptFailed(
+-  "{{PAYMENT_RECORD_ID}}",
+-  {
+-    failed_at: 1730253453,
+-  },
+-);
++```curl
++curl https://api.stripe.com/v1/payment_records/{{PAYMENT_RECORD_ID}}/report_payment_attempt_failed \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d failed_at=1730253453
+ ```
+ 
+ ### Retry failed payments
+ 
+ Sometimes users retry failed payments more than once. You can [report a new payment attempt](https://docs.stripe.com/api/payment-record/report-payment-attempt/report.md) using the same PaymentRecord. Retries can use the same or different payment method and processor.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const paymentRecord = await stripe.paymentRecords.reportPaymentAttempt(
+-  "{{PAYMENT_RECORD_ID}}",
+-  {
+-    initiated_at: 1730253825,
+-    payment_method_details: {
+-      payment_method: "{{PAYMENTMETHOD_ID}}",
+-    },
+-  },
+-);
++```curl
++curl https://api.stripe.com/v1/payment_records/{{PAYMENT_RECORD_ID}}/report_payment_attempt \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d initiated_at=1730253825 \
++  -d "payment_method_details[payment_method]={{PAYMENTMETHOD_ID}}"
+ ```
+ 
+ ### Report a refund
+ 
+ If a payment was successfully processed but later refunded (either fully or partially), you can [report the refund](https://docs.stripe.com/api/payment-record/report-refund/report.md) to maintain accurate payment records. This ensures that Stripe has a complete view of the payment lifecycle, including any refunds processed through your payment processor.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const paymentRecord = await stripe.paymentRecords.reportRefund(
+-  "{{PAYMENT_RECORD_ID}}",
+-  {
+-    processor_details: {
+-      type: "custom",
+-      custom: {
+-        refund_reference: "ref_123456",
+-      },
+-    },
+-    outcome: "refunded",
+-    refunded: {
+-      refunded_at: 1730253825,
+-    },
+-    amount: {
+-      value: 1000,
+-      currency: "usd",
+-    },
+-  },
+-);
++```curl
++curl https://api.stripe.com/v1/payment_records/{{PAYMENT_RECORD_ID}}/report_refund \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "processor_details[type]=custom" \
++  -d "processor_details[custom][refund_reference]=ref_123456" \
++  -d outcome=refunded \
++  -d "refunded[refunded_at]=1730253825" \
++  -d "amount[value]=1000" \
++  -d "amount[currency]=usd"
+ ```
+ 
+ If you don’t specify an `amount`, the entire guaranteed amount is refunded. You can report multiple partial refunds on the same PaymentRecord until the full amount is refunded.
+@@ -149,46 +192,37 @@
+ 
+ The latest PaymentAttemptRecord is available on the PaymentRecord and you can retrieve it using the [Payment Attempt Records](https://docs.stripe.com/payments/payment-records.md#retrieve-payment-attempt-record) API. For historical payments that use the Charges API, use the Charge ID to retrieve the PaymentAttemptRecord.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const paymentRecord = await stripe.paymentRecords.retrieve(
+-  "{{PAYMENT_RECORD_ID}}",
+-);
++```curl
++curl https://api.stripe.com/v1/payment_records/{{PAYMENT_RECORD_ID}} \
++  -u "<<YOUR_SECRET_KEY>>:"
+ ```
+ 
+ ```json
+ {
+   "processor_details": {
+-    "type": "processor_a",
++    "type": "processor_a"
+   },
+   "latest_payment_attempt_record": "{{PAYMENT_ATTEMPT_RECORD_ID}}",
+   "amount_guaranteed": {
+     "value": 10000,
+-    "currency": "usd",
++    "currency": "usd"
+   },
+   "payment_method_details": {
+     "payment_method": "{{PAYMENT_METHOD_ID}}",
+-    "type": "card",
+-  },
++    "type": "card"
++  }
+ }
+ ...
+ ```
+ 
+-### Retrieve the PaymentAttemptRecord
++### Retrieve the PaymentAttemptRecord 
+ 
+ In cases where you have multiple payments attempts (for example, a payment failed on a different processor and was retried and succeeded on Stripe), the PaymentRecord includes the latest attempt under `latest_payment_attempt_record`. You can view all attempts by querying the PaymentAttemptRecord:
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const paymentAttemptRecords = await stripe.paymentAttemptRecords.list({
+-  payment_record: "{{PAYMENT_RECORD_ID}}",
+-});
++```curl
++curl -G https://api.stripe.com/v1/payment_attempt_records \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d payment_record={{PAYMENT_RECORD_ID}}
+ ```
+ 
+ ```json
+@@ -198,25 +232,35 @@
+     "id": "par_124",
+     "amount_requested": 10000,
+     "amount_guaranteed": 10000,
+-    "amount_failed": 0,
++    "amount_failed": 0
+   },
+   {
+     "id": "par_123",
+     "amount_requested": 10000,
+     "amount_guaranteed": 0,
+-    "amount_failed": 10000,
++    "amount_failed": 10000
+   }]
+ }
+ ...
+ ```
+ 
+-### Retrieve the PaymentAttemptRecordEntry
++### Retrieve the PaymentAttemptRecordEntry 
+ 
+ > PaymentAttemptRecordEntries are currently limited to preview users. Contact your Stripe account representative or Sales if you’re interested in trying it out.
+ 
++#### Distinguish canceled and failed Checkout attempts 
++
++For a Checkout Session that uses a custom payment method through Stripe’s PayPal adapter, use the `PaymentAttemptRecordEntry` objects associated with the Checkout Session’s `payment_record` to distinguish an abandoned checkout from a failed payment:
++
++- If the customer abandons the Checkout Session before entering the PayPal flow or leaves the session open until it expires, Stripe creates a `canceled` `PaymentAttemptRecordEntry`. If the session is still open, Stripe waits for it to expire before treating the attempt as abandoned.
++- If the customer enters the PayPal flow but returns to Checkout without approving the payment, Stripe creates a `failed` `PaymentAttemptRecordEntry` with `failure_details.code` set to `payment_method_customer_decline`.
++- If the customer attempts the payment but PayPal declines it, Stripe creates a `failed` `PaymentAttemptRecordEntry` with `failure_details.code` set to `payment_method_provider_decline`. Stripe uses this code for all PayPal declines, regardless of the specific reason.
++
+ Stripe sends a webhook event containing the `PaymentAttemptRecordEntry` object each time one is created (for example, payment_attempt_record_entry.initiated). Subscribe to these events to react to payment lifecycle changes in real time.
+ 
+-To view all of the PaymentAttemptRecordEntries within a particular payment attempt at once (for example, initiated, authorized, and guaranteed), list the PaymentAttemptRecordEntries using the ID of the PaymentAttemptRecord:
++
++
++To view all of the PaymentAttemptRecordEntries within a particular payment attempt at once (for example, initiated, authorized, and guaranteed), list the PaymentAttemptRecordEntries using the ID of the PaymentAttemptRecord. 
+ 
+ ```curl
+ curl -G https://api.stripe.com/v1/payment_attempt_record_entries \

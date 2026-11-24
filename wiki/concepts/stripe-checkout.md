@@ -125,13 +125,13 @@ The November 7, 2026 [[source-stripe-elements-advanced-payments|Advanced Element
 - **Adaptive Pricing** — auto local currency in 150+ countries (always enabled for Payment Links; available for Checkout); merchant pays 0%, customer pays 2–4% fee; unlocks 20 local PMs; `presentment_details` in webhook; see [[stripe-adaptive-pricing]]
 - **Subscriptions**: recurring prices → subscription mode
 - **Save payment methods**: `payment_intent_data.setup_future_usage` or `saved_payment_method_options.payment_method_save`
-- **Auth + capture**: `payment_intent_data.capture_method: 'manual'`. The May 11, 2026 [[source-stripe-overcapture|Overcapture guide]] requires `payment_intent_data.capture_method=manual` for hosted and embedded Checkout, although both Session examples omit it. Embedded Session `complete` can precede PaymentIntent capture. Check the PaymentIntent and latest Charge server-side.
+- **Auth + capture**: `payment_intent_data.capture_method: 'manual'`. The April and November 2026 [[source-stripe-auth-and-capture|hold guides]] use the PaymentIntent ID from the Session to capture. The May 11, 2026 [[source-stripe-overcapture|Overcapture guide]] requires `payment_intent_data.capture_method=manual` for hosted and embedded Checkout, although both Session examples omit it. Embedded Session `complete` can precede PaymentIntent capture. Check the PaymentIntent and latest Charge server-side.
 - **Mobile**: iOS (PaymentSheet), Android (PaymentSheet), React Native (`useStripe`)
 
 ## Notable Details
 
 - **Custom domains**: Paid feature for hosted Checkout, Payment Links and the customer portal. The November 7, 2026 [[source-stripe-managed-payments-how-it-works|Managed Payments guide]] excludes custom domains from Managed Payments checkouts.
-- **Link payment-method domains**: The separate [[source-stripe-pmd-registration|registration guide]] covers domains and subdomains displaying Link in Elements and the embedded Checkout form. The May [[source-stripe-checkout-link|Link with Checkout guide]] gave an unqualified registration statement, which its November capture omits. Its Checkout Session examples use the hosted success URL. The embedded flow has its own return URL rules.
+- **Link payment-method domains**: The separate [[source-stripe-pmd-registration|registration guide]] documents every displaying domain and subdomain for Link in Elements and the embedded Checkout form in its May 2026 capture. In November the lead retains that UI scope and links Dashboard and API variants. The May [[source-stripe-checkout-link|Link with Checkout guide]] gave an unqualified registration statement, which its November capture omits. Its Checkout Session examples use the hosted success URL. The embedded flow has its own return URL rules.
 - **Session expiry**: 24h default; configurable 30min–24h via `expires_at`; can also expire manually via API
 - **Mixed cart**: set `mode: 'subscription'` + include both recurring + one-time Price IDs in `line_items`
 - **Save payment methods**: `payment_intent_data.setup_future_usage` (payment mode) or automatic saving in subscription mode can save cards for later charges, but those cards have `allow_redisplay: 'limited'` and don't prefill returning Checkout purchases. With `saved_payment_method_options.payment_method_save: 'enabled'`, an optional customer consent checkbox can save an eligible card with `allow_redisplay: 'always'` for Checkout prefill; Checkout only prefills saved cards.
@@ -245,6 +245,7 @@ The APIs remain private preview. Host visibility/resume and per-controller confi
 - [[source-stripe-checkout-build-subscriptions]] — End-to-end subscription integration: product catalog, Checkout Session, webhooks, portal
 - [[source-stripe-checkout-subscriptions-quickstart]] — May and November 2026 hosted subscription sample; recurring Price lookup key, portal identity and active-status check
 - [[source-stripe-checkout-sessions]] — Checkout Sessions API deep dive
+- [[source-stripe-products-prices]] — Catalog overview and management guides for Product and Price IDs, including how Checkout uses Price IDs.
 - [[source-stripe-accept-a-payment]] — 2026-11-07 variant index plus retained 2026-04-20 guide: hosted and embedded Checkout, Checkout Sessions Elements, separate Payment Intents Elements, mobile PaymentSheet, and test examples
 - [[source-stripe-build-payments-page]] — Checkout Page vs Elements comparison table
 

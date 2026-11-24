@@ -1,0 +1,116 @@
+--- wiki/sources/source-stripe-legacy-apis.md
++++ wiki/sources/source-stripe-legacy-apis.md
+@@ -36,13 +36,13 @@
+ 
+ ## Card-payment flow in the dedicated Charges guide
+ 
+- | Step | Charges API (legacy) | Payment Intents API | 
+- | --- | --- | --- | 
+- | 1 | Collect payment info via Elements | Create PaymentIntent server-side | 
+- | 2 | Tokenize via Stripe.js → token | Send client_secret to client | 
+- | 3 | Send token to server | Collect payment info via Elements | 
+- | 4 | Create Charge server-side | Handle 3DS client-side via Stripe.js | 
+- | 5 | Fulfill on success | Fulfill via webhook on success | 
++ | Step | Charges API (legacy) | Payment Intents API |
++ | --- | --- | --- |
++ | 1 | Collect payment info via Elements | Create PaymentIntent server-side |
++ | 2 | Tokenize via Stripe.js → token | Send client_secret to client |
++ | 3 | Send token to server | Collect payment info via Elements |
++ | 4 | Create Charge server-side | Handle 3DS client-side via Stripe.js |
++ | 5 | Fulfill on success | Fulfill via webhook on success |
+ 
+ Charges API does **not** support: SCA, India businesses, bank-requested card authentication. In the legacy flow, browser Elements data is tokenized by Stripe.js; the token goes to the merchant server for Charge creation, and fulfillment follows **successful payment**, not mere token or Charge request creation. PaymentIntents are created server-side, the client receives a client secret and handles 3DS with Stripe.js/mobile SDK, and the dedicated guide directs fulfillment from success webhooks. These are actor and outcome boundaries, not executable authorization for a new Charges integration.
+ 
+@@ -60,23 +60,23 @@
+ 
+ The use-case table comes from the 2026-04-20 Charges versus Payment Intents comparison. It describes an existing simpler cards use case for merchants with mainly US or Canadian customers, lists both APIs on Web, iOS and Android, and describes legacy Charges as supporting cards and all methods on Sources. The 2026-11-07 capture of that comparison replaces the table with the card-creation deprecation and new-integration bar, names India businesses, bank-requested authentication and SCA as unsupported on Charges, and describes hosted, embedded and Elements-backed Checkout. The historical table supplies no new-integration permission.
+ 
+- |  | Charges API | Payment Intents API | 
+- | --- | --- | --- | 
+- | Use case | Simple card acceptance for mainly US/Canada customers | Multiple methods and cards requiring authentication | 
+- | SCA ready | No | Yes | 
+- | Terminal (in-person) | No | Yes | 
+- | New features | No | Yes (only here) | 
++ |  | Charges API | Payment Intents API |
++ | --- | --- | --- |
++ | Use case | Simple card acceptance for mainly US/Canada customers | Multiple methods and cards requiring authentication |
++ | SCA ready | No | Yes |
++ | Terminal (in-person) | No | Yes |
++ | New features | No | Yes (only here) |
+ 
+ **Charge object read migration.** Both comparison captures advise updating existing Charge readers before incrementally changing payment creation flows. The guide says the two top-level fields `charge.payment_method_details` and `charge.billing_details` are available across API versions for Charges created through either API. The method identifier is the separate `charge.payment_method` field. Availability of those top-level fields establishes neither nested schema parity across versions nor non-null data on a particular Charge.
+ 
+- | Old card/bank-account shape | Old Sources shape | Common Charge read | 
+- | --- | --- | --- | 
+- | `charge.source` | `charge.source` | `charge.payment_method_details` | 
+- | `charge.source.id` | `charge.source.id`, or `charge.source.three_d_secure.card` for a 3DS Source | `charge.payment_method` | 
+- | `charge.source.name` | `charge.source.owner.name` | `charge.billing_details.name` | 
+- | `charge.source.address_zip` | `charge.source.owner.address.postal_code` | `charge.billing_details.address.postal_code` | 
+- | `charge.source.brand: "MasterCard"` | `charge.source.card.brand: "MasterCard"` | `charge.payment_method_details.card.brand: "mastercard"` | 
+- | `charge.source.tokenization_method: "android_pay"` | `charge.source.card.tokenization_method: "android_pay"` | `charge.payment_method_details.card.wallet.type: "google_pay"` | 
++ | Old card/bank-account shape | Old Sources shape | Common Charge read |
++ | --- | --- | --- |
++ | `charge.source` | `charge.source` | `charge.payment_method_details` |
++ | `charge.source.id` | `charge.source.id`, or `charge.source.three_d_secure.card` for a 3DS Source | `charge.payment_method` |
++ | `charge.source.name` | `charge.source.owner.name` | `charge.billing_details.name` |
++ | `charge.source.address_zip` | `charge.source.owner.address.postal_code` | `charge.billing_details.address.postal_code` |
++ | `charge.source.brand: "MasterCard"` | `charge.source.card.brand: "MasterCard"` | `charge.payment_method_details.card.brand: "mastercard"` |
++ | `charge.source.tokenization_method: "android_pay"` | `charge.source.card.tokenization_method: "android_pay"` | `charge.payment_method_details.card.wallet.type: "google_pay"` |
+ 
+ **Historical 3DS row.** Both comparisons place `charge.source.object == 'source' && charge.source.type == 'three_d_secure'` beside `charge.payment_method_details.card.three_d_secure.succeeded`. The former tests the legacy object shape and type. The latter is a historical boolean. The separate [3DS Charge changelog](https://docs.stripe.com/changelog/2020-08-27/updates-3d-scure-charge-object) says `succeeded` and `authenticated` were removed in favor of `result`, and links Charge and SetupAttempt REST definitions for API version `2024-06-20`. See [[source-stripe-3d-secure-authentication-flow]] for the November enum evidence. The Source type check does not establish authentication or equate to `three_d_secure.result=authenticated`. The enum reports authentication outcome. Payment authorization, capture, success and settlement are separate.
+ 
+@@ -88,11 +88,11 @@
+ 
+ **Transition paths** (complexity order):
+ 
+- | Path | Complexity | Server | Client | 
+- | --- | --- | --- | --- | 
+- | Stripe Checkout | Low | Create CheckoutSession | Not needed | 
+- | Payment Element | Medium | Create PaymentIntent | Render Payment Element with client_secret | 
+- | Own form | High | Create PaymentIntent | Custom form + JS SDK | 
++ | Path | Complexity | Server | Client |
++ | --- | --- | --- | --- |
++ | Stripe Checkout | Low | Create CheckoutSession | Not needed |
++ | Payment Element | Medium | Create PaymentIntent | Render Payment Element with client_secret |
++ | Own form | High | Create PaymentIntent | Custom form + JS SDK |
+ 
+ **Key details:**
+ 
+@@ -104,12 +104,12 @@
+ 
+ ## Integration Upgrade Map
+ 
+- | Legacy | Recommended | Key benefit | 
+- | --- | --- | --- | 
+- | Card Element | Payment Element | 100+ payment methods; dynamic presentment by location/currency | 
+- | Legacy Checkout | Checkout or Payment Links | Adaptive Pricing, Dynamic payment methods, embed or redirect | 
+- | Payment Request Button | Express Checkout Element | Apple Pay + Amazon Pay + Google Pay + Link + PayPal simultaneously | 
+- | Manual payment methods | Dynamic payment methods | Dashboard-managed; Stripe selects eligible methods per transaction | 
++ | Legacy | Recommended | Key benefit |
++ | --- | --- | --- |
++ | Card Element | Payment Element | 100+ payment methods; dynamic presentment by location/currency |
++ | Legacy Checkout | Checkout or Payment Links | Adaptive Pricing, Dynamic payment methods, embed or redirect |
++ | Payment Request Button | Express Checkout Element | Apple Pay + Amazon Pay + Google Pay + Link + PayPal simultaneously |
++ | Manual payment methods | Dynamic payment methods | Dashboard-managed; Stripe selects eligible methods per transaction |
+ 
+ The 2026-11-07 [Payment Request Button page](https://docs.stripe.com/stripe-js/elements/payment-request-button) marks the Element deprecated and directs readers to Express Checkout Element and its migration guide. The [2026-09-30 Endive changelog](https://docs.stripe.com/changelog/endive/2026-09-30/deprecate-payment-request-button) says Stripe.js through Dahlia supports the Element and that `elements.create('paymentRequestButton')` throws starting with Endive, including React `PaymentRequestButtonElement` integrations. The change concerns the Element. See [[stripe-express-checkout-element#Migrating from Payment Request Button Element|Express Checkout Element migration]].
+ 
+@@ -124,12 +124,12 @@
+ 
+ 4 characteristics classify every Source object:
+ 
+- | Characteristic | Values | Notes | 
+- | --- | --- | --- | 
+- | Pull vs Push | Pull = merchant debits customer; Push = customer sends funds | Cards = pull; iDEAL/Sofort/ACH Credit = push | 
+- | Flow | none / redirect / code verification / receiver | Determines customer action required before source is chargeable | 
+- | Usage | `single_use` / `reusable` | Single-use → `consumed` after charge; reusable must be attached to Customer | 
+- | Confirmation | synchronous / asynchronous | Async charge starts `pending`; webhook required for fulfillment | 
++ | Characteristic | Values | Notes |
++ | --- | --- | --- |
++ | Pull vs Push | Pull = merchant debits customer; Push = customer sends funds | Cards = pull; iDEAL/Sofort/ACH Credit = push |
++ | Flow | none / redirect / code verification / receiver | Determines customer action required before source is chargeable |
++ | Usage | `single_use` / `reusable` | Single-use → `consumed` after charge; reusable must be attached to Customer |
++ | Confirmation | synchronous / asynchronous | Async charge starts `pending`; webhook required for fulfillment |
+ 
+ **Receiver flow detail**: if not fully charged, funds credited to balance after 60 days. If source becomes chargeable but no charge is made, source is canceled and payment refunded automatically.
+ 

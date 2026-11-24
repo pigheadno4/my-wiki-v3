@@ -1,0 +1,168 @@
+{
+  "job_id": "payments-twint-save-during-payment",
+  "source_target": "wiki/sources/source-stripe-twint-save-during-payment.md",
+  "source_before_sha256": "c4c5427f4bd03acb1fb20671e11da10d1c7328593da22928a4b7b2ffd4e562d0",
+  "contributions": [
+    {
+      "job_id": "payments-twint-save-during-payment",
+      "canonical_url": "https://docs.stripe.com/payments/twint/save-during-payment",
+      "attempt": 2,
+      "raw_path": "raw/stripe-payments-twint-save-during-payment-2026-11-07.md",
+      "raw_sha256": "adbc226b4e3935883ba7fa9efb52e86a95d743951c0d4dda594b920c5c54a409",
+      "prior_raw_path": "raw/stripe-twint-save-during-payment-2025.md",
+      "prior_raw_sha256": "b222983b29d400dcf4327b97c6fe4da32519a4bc7e85ffa64f0e0664ee4e6d0d",
+      "new_capture_role": "navigation_only_variant_index",
+      "proposed_disposition": "raw_reference",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-twint-save-during-payment/attempt-2/receipt.json",
+      "receipt_sha256": "118a7e51439bb6a62bd5b4fe115e6a1a2871219a7497933077213bc41d930246",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-twint-save-during-payment/attempt-2/review.json",
+      "review_sha256": "2442fbafa542b77a488decb3adc6699b2280b156773d7a74f403ca3702f095f0",
+      "source_assessments": [
+        {
+          "source_target": "wiki/sources/source-stripe-twint-save-during-payment.md",
+          "proposed_disposition": "source_required_update",
+          "update_needed": true,
+          "findings": [
+            "New raw 5–15 is a variant selector for saving TWINT details during a payment. It links the same Checkout, Elements and Direct API query identities old raw 8–10, 331–333, and 866–868 marked in the May 3, 2026 full guide. Diff 9–1227 substitutes links for variant bodies, and diff 6–7 changes an apostrophe. This is navigation/presentation, with no new authorization, setup, payment or reuse behavior.",
+            "May requires attaching the method to the matching customer identity before reuse. The merchant models customers as a customer-configured Accounts v2 Account (customer_account) or Customers v1 Customer (customer). For v2, the dated note says GA for Connect users and public preview for other Stripe users, with a preview version for participants (old 29–73, 352–397, 887–931). The current source omits this prerequisite/identity distinction across lines 17–35.",
+            "May hosted Checkout uses a server-created payment-mode Checkout Session with TWINT, CHF line items, customer identity and nested payment_intent_data.setup_future_usage=off_session. The customer authorizes later use; the merchant retrieves the Session's PaymentIntent and its payment_method via the checkout.session.completed webhook or from the success_url's Session ID (old 75–240). The raw explicitly warns that a customer may close the browser and others may access the success URL directly, so source line 20 needs to distinguish lookup from confirmation (old 162–178,242–248).",
+            "May web Elements confirms a PaymentIntent using stripe.confirmPayment and return_url (old 398–440,509–517,659–742). Direct API instead uses stripe.confirmTwintPayment with a PaymentIntent client secret and return_url (old 933–981,1050–1089), or an optional server-confirmed initial PaymentIntent with mandate_data, the example's online IP/user-agent, return_url, requires_action and next_action.redirect_to_url for customer authorization (old 1091–1127). Source 27–31 should surface both branches and scope the online example to the optional manual path.",
+            "In all three May branches the merchant is directed to verify mandate authorization via provider state/events instead of the return, save payment_method on payment_intent.succeeded, and recognize payment_intent.payment_failed with requires_payment_method when authorization fails (old 242–248, 782–788,1129–1135). With test keys, completion versus decline runs requires_action→succeeded or requires_payment_method (old 322–324,862–864,1209–1213). Current source mentions only Elements success at line 25.",
+            "For a subsequent off-session payment, May lists an attached TWINT method and creates/confirms a fresh CHF PaymentIntent using the matching customer identity and saved payment_method, with off_session=true and confirm=true (old 250–320,790–860,1137–1207). The no-return_url exception is specifically a TWINT method previously set up with a SetupIntent or with a PaymentIntent carrying setup_future_usage, as stated in old 320,860,1207. Source 34–35 need that prerequisite and matching customer identity, without implying a guaranteed later charge.",
+            "Direct API test fixtures at old 1209–1222 simulate later saved-payment generic declines and mandate revocations from initial billing email and describe test defaults. Their failure event spelling payment_intent.failed differs from payment_intent.payment_failed in old 1135. Keep this as a dated documentation discrepancy if retaining fixture details; do not infer separate event support or live success."
+          ],
+          "conflicts": [
+            "Source line 13 describes TWINT as the same pattern as Bancontact/iDEAL without evidence from the paired captures; old 212,246,252–255,1133–1141 establish saved TWINT reuse directly. iDEAL/Wero uses a separately identified generated SEPA method in the adjacent Stripe index 281; socializing the analogy as method identity can direct readers to the wrong reused instrument. Use the TWINT-specific retrieval and avoid importing unrelated method behavior.",
+            "Source line 20 lists success URL as retrieval path without raw 162–178 and 242–248's payment/mandate verification warning. Do not treat retrieval via a client return as proof of payment or authorization.",
+            "Source line 35 and concept 49/55 use broadly 'previously saved'; old 320,860,1207 require prior SetupIntent or a PaymentIntent with setup_future_usage for the no-return_url exception.",
+            "Old 1217 and 1220 fixture rows spell payment_intent.failed, while old 1135's general authorization monitor spells payment_intent.payment_failed. Scope the discrepancy and do not use the fixture's event spelling as an event contract."
+          ],
+          "reason": "November is navigation-only. Baseline source should identify the matching customer association, qualify the return_url exception and Checkout redirect, and retain the initial authorization success/failure and Direct API branch boundaries."
+        }
+      ],
+      "affected_concepts": [
+        "wiki/concepts/stripe-twint.md"
+      ],
+      "unresolved_questions": [
+        "The November child links were not read. Merchant eligibility, current Accounts v2 preview/version terms, event spelling in active test fixtures, and live mandate or payment results are outside this comparison."
+      ],
+      "mapped_source_assessment": {
+        "source_target": "wiki/sources/source-stripe-twint-save-during-payment.md",
+        "proposed_disposition": "source_required_update",
+        "update_needed": true,
+        "findings": [
+          "New raw 5–15 is a variant selector for saving TWINT details during a payment. It links the same Checkout, Elements and Direct API query identities old raw 8–10, 331–333, and 866–868 marked in the May 3, 2026 full guide. Diff 9–1227 substitutes links for variant bodies, and diff 6–7 changes an apostrophe. This is navigation/presentation, with no new authorization, setup, payment or reuse behavior.",
+          "May requires attaching the method to the matching customer identity before reuse. The merchant models customers as a customer-configured Accounts v2 Account (customer_account) or Customers v1 Customer (customer). For v2, the dated note says GA for Connect users and public preview for other Stripe users, with a preview version for participants (old 29–73, 352–397, 887–931). The current source omits this prerequisite/identity distinction across lines 17–35.",
+          "May hosted Checkout uses a server-created payment-mode Checkout Session with TWINT, CHF line items, customer identity and nested payment_intent_data.setup_future_usage=off_session. The customer authorizes later use; the merchant retrieves the Session's PaymentIntent and its payment_method via the checkout.session.completed webhook or from the success_url's Session ID (old 75–240). The raw explicitly warns that a customer may close the browser and others may access the success URL directly, so source line 20 needs to distinguish lookup from confirmation (old 162–178,242–248).",
+          "May web Elements confirms a PaymentIntent using stripe.confirmPayment and return_url (old 398–440,509–517,659–742). Direct API instead uses stripe.confirmTwintPayment with a PaymentIntent client secret and return_url (old 933–981,1050–1089), or an optional server-confirmed initial PaymentIntent with mandate_data, the example's online IP/user-agent, return_url, requires_action and next_action.redirect_to_url for customer authorization (old 1091–1127). Source 27–31 should surface both branches and scope the online example to the optional manual path.",
+          "In all three May branches the merchant is directed to verify mandate authorization via provider state/events instead of the return, save payment_method on payment_intent.succeeded, and recognize payment_intent.payment_failed with requires_payment_method when authorization fails (old 242–248, 782–788,1129–1135). With test keys, completion versus decline runs requires_action→succeeded or requires_payment_method (old 322–324,862–864,1209–1213). Current source mentions only Elements success at line 25.",
+          "For a subsequent off-session payment, May lists an attached TWINT method and creates/confirms a fresh CHF PaymentIntent using the matching customer identity and saved payment_method, with off_session=true and confirm=true (old 250–320,790–860,1137–1207). The no-return_url exception is specifically a TWINT method previously set up with a SetupIntent or with a PaymentIntent carrying setup_future_usage, as stated in old 320,860,1207. Source 34–35 need that prerequisite and matching customer identity, without implying a guaranteed later charge.",
+          "Direct API test fixtures at old 1209–1222 simulate later saved-payment generic declines and mandate revocations from initial billing email and describe test defaults. Their failure event spelling payment_intent.failed differs from payment_intent.payment_failed in old 1135. Keep this as a dated documentation discrepancy if retaining fixture details; do not infer separate event support or live success."
+        ],
+        "conflicts": [
+          "Source line 13 describes TWINT as the same pattern as Bancontact/iDEAL without evidence from the paired captures; old 212,246,252–255,1133–1141 establish saved TWINT reuse directly. iDEAL/Wero uses a separately identified generated SEPA method in the adjacent Stripe index 281; socializing the analogy as method identity can direct readers to the wrong reused instrument. Use the TWINT-specific retrieval and avoid importing unrelated method behavior.",
+          "Source line 20 lists success URL as retrieval path without raw 162–178 and 242–248's payment/mandate verification warning. Do not treat retrieval via a client return as proof of payment or authorization.",
+          "Source line 35 and concept 49/55 use broadly 'previously saved'; old 320,860,1207 require prior SetupIntent or a PaymentIntent with setup_future_usage for the no-return_url exception.",
+          "Old 1217 and 1220 fixture rows spell payment_intent.failed, while old 1135's general authorization monitor spells payment_intent.payment_failed. Scope the discrepancy and do not use the fixture's event spelling as an event contract."
+        ],
+        "reason": "November is navigation-only. Baseline source should identify the matching customer association, qualify the return_url exception and Checkout redirect, and retain the initial authorization success/failure and Direct API branch boundaries."
+      },
+      "findings": [
+        "New raw 5–15 is a variant selector for saving TWINT details during a payment. It links the same Checkout, Elements and Direct API query identities old raw 8–10, 331–333, and 866–868 marked in the May 3, 2026 full guide. Diff 9–1227 substitutes links for variant bodies, and diff 6–7 changes an apostrophe. This is navigation/presentation, with no new authorization, setup, payment or reuse behavior.",
+        "May requires attaching the method to the matching customer identity before reuse. The merchant models customers as a customer-configured Accounts v2 Account (customer_account) or Customers v1 Customer (customer). For v2, the dated note says GA for Connect users and public preview for other Stripe users, with a preview version for participants (old 29–73, 352–397, 887–931). The current source omits this prerequisite/identity distinction across lines 17–35.",
+        "May hosted Checkout uses a server-created payment-mode Checkout Session with TWINT, CHF line items, customer identity and nested payment_intent_data.setup_future_usage=off_session. The customer authorizes later use; the merchant retrieves the Session's PaymentIntent and its payment_method via the checkout.session.completed webhook or from the success_url's Session ID (old 75–240). The raw explicitly warns that a customer may close the browser and others may access the success URL directly, so source line 20 needs to distinguish lookup from confirmation (old 162–178,242–248).",
+        "May web Elements confirms a PaymentIntent using stripe.confirmPayment and return_url (old 398–440,509–517,659–742). Direct API instead uses stripe.confirmTwintPayment with a PaymentIntent client secret and return_url (old 933–981,1050–1089), or an optional server-confirmed initial PaymentIntent with mandate_data, the example's online IP/user-agent, return_url, requires_action and next_action.redirect_to_url for customer authorization (old 1091–1127). Source 27–31 should surface both branches and scope the online example to the optional manual path.",
+        "In all three May branches the merchant is directed to verify mandate authorization via provider state/events instead of the return, save payment_method on payment_intent.succeeded, and recognize payment_intent.payment_failed with requires_payment_method when authorization fails (old 242–248, 782–788,1129–1135). With test keys, completion versus decline runs requires_action→succeeded or requires_payment_method (old 322–324,862–864,1209–1213). Current source mentions only Elements success at line 25.",
+        "For a subsequent off-session payment, May lists an attached TWINT method and creates/confirms a fresh CHF PaymentIntent using the matching customer identity and saved payment_method, with off_session=true and confirm=true (old 250–320,790–860,1137–1207). The no-return_url exception is specifically a TWINT method previously set up with a SetupIntent or with a PaymentIntent carrying setup_future_usage, as stated in old 320,860,1207. Source 34–35 need that prerequisite and matching customer identity, without implying a guaranteed later charge.",
+        "Direct API test fixtures at old 1209–1222 simulate later saved-payment generic declines and mandate revocations from initial billing email and describe test defaults. Their failure event spelling payment_intent.failed differs from payment_intent.payment_failed in old 1135. Keep this as a dated documentation discrepancy if retaining fixture details; do not infer separate event support or live success."
+      ],
+      "substantive_changes": [],
+      "historical_claims_to_preserve": [
+        "May requires attaching the method to the matching customer identity before reuse. The merchant models customers as a customer-configured Accounts v2 Account (customer_account) or Customers v1 Customer (customer). For v2, the dated note says GA for Connect users and public preview for other Stripe users, with a preview version for participants (old 29–73, 352–397, 887–931). The current source omits this prerequisite/identity distinction across lines 17–35.",
+        "May hosted Checkout uses a server-created payment-mode Checkout Session with TWINT, CHF line items, customer identity and nested payment_intent_data.setup_future_usage=off_session. The customer authorizes later use; the merchant retrieves the Session's PaymentIntent and its payment_method via the checkout.session.completed webhook or from the success_url's Session ID (old 75–240). The raw explicitly warns that a customer may close the browser and others may access the success URL directly, so source line 20 needs to distinguish lookup from confirmation (old 162–178,242–248).",
+        "May web Elements confirms a PaymentIntent using stripe.confirmPayment and return_url (old 398–440,509–517,659–742). Direct API instead uses stripe.confirmTwintPayment with a PaymentIntent client secret and return_url (old 933–981,1050–1089), or an optional server-confirmed initial PaymentIntent with mandate_data, the example's online IP/user-agent, return_url, requires_action and next_action.redirect_to_url for customer authorization (old 1091–1127). Source 27–31 should surface both branches and scope the online example to the optional manual path.",
+        "In all three May branches the merchant is directed to verify mandate authorization via provider state/events instead of the return, save payment_method on payment_intent.succeeded, and recognize payment_intent.payment_failed with requires_payment_method when authorization fails (old 242–248, 782–788,1129–1135). With test keys, completion versus decline runs requires_action→succeeded or requires_payment_method (old 322–324,862–864,1209–1213). Current source mentions only Elements success at line 25.",
+        "For a subsequent off-session payment, May lists an attached TWINT method and creates/confirms a fresh CHF PaymentIntent using the matching customer identity and saved payment_method, with off_session=true and confirm=true (old 250–320,790–860,1137–1207). The no-return_url exception is specifically a TWINT method previously set up with a SetupIntent or with a PaymentIntent carrying setup_future_usage, as stated in old 320,860,1207. Source 34–35 need that prerequisite and matching customer identity, without implying a guaranteed later charge.",
+        "Direct API test fixtures at old 1209–1222 simulate later saved-payment generic declines and mandate revocations from initial billing email and describe test defaults. Their failure event spelling payment_intent.failed differs from payment_intent.payment_failed in old 1135. Keep this as a dated documentation discrepancy if retaining fixture details; do not infer separate event support or live success.",
+        "Maintain old raw provenance in source 4–7 and 37–39, paired with November variant navigation. Maintain root index 7 → provider index 285–288 and 756 → TWINT concept 39–60 and source route at 55. Add the corresponding source-to-concept route. Keep setup without a payment and the acceptance guide as related routes, distinct from initial-payment saving."
+      ],
+      "conflicts": [
+        "Source line 13 describes TWINT as the same pattern as Bancontact/iDEAL without evidence from the paired captures; old 212,246,252–255,1133–1141 establish saved TWINT reuse directly. iDEAL/Wero uses a separately identified generated SEPA method in the adjacent Stripe index 281; socializing the analogy as method identity can direct readers to the wrong reused instrument. Use the TWINT-specific retrieval and avoid importing unrelated method behavior.",
+        "Source line 20 lists success URL as retrieval path without raw 162–178 and 242–248's payment/mandate verification warning. Do not treat retrieval via a client return as proof of payment or authorization.",
+        "Source line 35 and concept 49/55 use broadly 'previously saved'; old 320,860,1207 require prior SetupIntent or a PaymentIntent with setup_future_usage for the no-return_url exception.",
+        "Old 1217 and 1220 fixture rows spell payment_intent.failed, while old 1135's general authorization monitor spells payment_intent.payment_failed. Scope the discrepancy and do not use the fixture's event spelling as an event contract."
+      ],
+      "expected_read_files": [
+        {
+          "path": "raw/stripe-payments-twint-save-during-payment-2026-11-07.md",
+          "sha256": "adbc226b4e3935883ba7fa9efb52e86a95d743951c0d4dda594b920c5c54a409",
+          "lines": 15
+        },
+        {
+          "path": "raw/stripe-twint-save-during-payment-2025.md",
+          "sha256": "b222983b29d400dcf4327b97c6fe4da32519a4bc7e85ffa64f0e0664ee4e6d0d",
+          "lines": 1222
+        },
+        {
+          "path": "wiki/sources/source-stripe-twint-save-during-payment.md",
+          "sha256": "c4c5427f4bd03acb1fb20671e11da10d1c7328593da22928a4b7b2ffd4e562d0",
+          "lines": 39
+        },
+        {
+          "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/a7d47365c3888f689a09f14b/content.diff",
+          "sha256": "9bce81f7057ce3bfcad4bbffa6cd805db121405b8112c15f2f7c9050045349cd",
+          "lines": 1227
+        }
+      ],
+      "original_query_prompts_path": "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md",
+      "original_prompts": "New raw `raw/stripe-payments-twint-save-during-payment-2026-11-07.md`. Prior raw `raw/stripe-twint-save-during-payment-2025.md`. Current summaries `wiki/sources/source-stripe-twint-save-during-payment.md`.\n\n- Q1. For `https://docs.stripe.com/payments/twint/save-during-payment`, what documented behavior, prerequisites, actors and state transitions does the complete new capture establish? How do these compare with the matched prior capture and each mapped summary?\n\n- Q2. Which changes are substantive, presentational or navigation-only? Identify the exact dated qualifications, conflicts and reciprocal routes that the proposed disposition should preserve.",
+      "reviewed_answers": {
+        "Q1": "The November 7, 2026 capture of https://docs.stripe.com/payments/twint/save-during-payment offers only Checkout, Elements and Direct API routes for saving TWINT details during an initial payment (new raw lines 5-15). The May 3, 2026 guide associates the TWINT method with a Customers v1 Customer or a customer-configured Accounts v2 Account with dated access/version qualifications. Hosted Checkout uses a payment-mode Session with CHF items and nested setup_future_usage=off_session (old raw lines 29-43 and 75-160). Elements uses stripe.confirmPayment, while Direct API uses stripe.confirmTwintPayment or server-side confirmation with mandate_data and requires_action redirect_to_url to let the customer authorize (old raw lines 659-704 and 1050-1127). Verify mandate authorization through Stripe state/events, not a browser return. May describes succeeded with payment_intent.succeeded and requires_payment_method with payment_intent.payment_failed, and the merchant stores the resulting attached payment method on success. A later off-session payment is a separate confirmed PaymentIntent with matching customer and saved method identifiers (old raw lines 1129-1207). source-stripe-twint-save-during-payment.md gets the principal routes and flags but omits the attachment and confirmation boundaries and overcompresses the prior setup condition for the return_url exception. The selector contributes no fresh transaction evidence.",
+        "Q2": "At https://docs.stripe.com/payments/twint/save-during-payment, the November 7, 2026 change is presentational and navigation-only. Its three child routes are the same variants declared in the May 3, 2026 guide (new raw lines 9-15, old raw lines 8-14, 331-337, and 866-872). Preserve dated May Accounts v2/Customers v1 distinctions and the initial customer authorization, redirect-versus-confirmation warning, successful and failed events and saved-method reuse with return_url exemption only for prior SetupIntent or PaymentIntent with setup_future_usage (old raw lines 29-43, 162-178, and 242-324). The Direct API's dated test payment_intent.failed spelling differs from payment_intent.payment_failed in the general monitoring guidance (old raw lines 1129-1135 and 1209-1222). The present source-stripe-twint-save-during-payment.md has baseline scope corrections independent of the raw navigation change. Preserve the May raw, root-to-Stripe provider index, TWINT concept's reciprocal source route and separate setup-only and acceptance navigation. The November links do not reverify linked behavior."
+      }
+    }
+  ],
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payments-twint-save-during-payment-2026-11-07.md",
+      "sha256": "adbc226b4e3935883ba7fa9efb52e86a95d743951c0d4dda594b920c5c54a409",
+      "lines": 15
+    },
+    {
+      "path": "raw/stripe-twint-save-during-payment-2025.md",
+      "sha256": "b222983b29d400dcf4327b97c6fe4da32519a4bc7e85ffa64f0e0664ee4e6d0d",
+      "lines": 1222
+    },
+    {
+      "path": "wiki/sources/source-stripe-twint-save-during-payment.md",
+      "sha256": "c4c5427f4bd03acb1fb20671e11da10d1c7328593da22928a4b7b2ffd4e562d0",
+      "lines": 39
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/a7d47365c3888f689a09f14b/content.diff",
+      "sha256": "9bce81f7057ce3bfcad4bbffa6cd805db121405b8112c15f2f7c9050045349cd",
+      "lines": 1227
+    }
+  ],
+  "concept_targets": [
+    {
+      "path": "wiki/concepts/stripe-twint.md",
+      "before_sha256": "b64ffb90f44a7151457811deeffa1dd614297da88aa855caf15f2c8eb79a0614",
+      "contributing_jobs": [
+        "payments-twint",
+        "payments-twint-accept-a-payment",
+        "payments-twint-save-during-payment",
+        "payments-twint-set-up-future-payments"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    }
+  ],
+  "state": "worker_running",
+  "attempt": 1,
+  "review_scope": "full",
+  "worker_agent": "/root/s05w3",
+  "reviewer_agent": "/root/s05r6",
+  "role_notes": "tracking/ingest/stripe/stripe-campaign-05/updates/role-notes.md",
+  "worker_output": "/tmp/stripe-s05-ingest/payments-twint-save-during-payment-worker.json",
+  "reviewer_output": "/tmp/stripe-s05-ingest/payments-twint-save-during-payment-reviewer.json"
+}

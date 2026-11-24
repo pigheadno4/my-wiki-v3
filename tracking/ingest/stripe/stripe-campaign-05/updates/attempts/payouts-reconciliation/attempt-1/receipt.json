@@ -1,0 +1,118 @@
+{
+  "job_id": "payouts-reconciliation",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe — Payout Reconciliation\"\ntype: source\ndate_ingested: 2026-05-11\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/payouts/reconciliation\nraw_files:\n  - \"stripe-payouts-reconciliation-2026-11-07.md\"\n  - \"stripe-payouts-reconciliation-2026.md\"\ntags: [stripe, payouts, reconciliation, balance-transactions, api, webhook]\n---\n\n## Summary\n\nThe May 11 and November 7, 2026 guides explain how to identify the transactions in a [[stripe]] automatic payout through the Dashboard, the payout reconciliation report, or the Balance Transactions API.\n\n## Key Rules\n\n- **Automatic payouts** — Stripe tracks the transactions included in payouts it makes on the account's payout schedule.\n- **Manual payouts** — the merchant controls timing and amount and reconciles the payout against its own transaction history.\n- **`payout.reconciliation_completed` webhook** — one way to obtain the payout ID for reconciliation.\n\n## API Flow\n\nThe Node.js request examples come from the May guide. The November guide shows the same list and expansion parameters in cURL.\n\n1. Get the payout ID (`po_xxx`) from `payout.reconciliation_completed`, the List Payouts API, or your database. Retrieving that Payout returns properties such as amount, currency, and status. Use the Balance Transactions list for its component entries.\n2. List BalanceTransactions with the automatic payout's ID in the `payout` filter. The default is up to 10 results. Set `limit` to change the page size, and use Stripe's auto-pagination to retrieve every page when reconciling the full payout. See the [November List Balance Transactions API reference](../../raw/stripe-api-balance-transactions-list-2026-11-07.md#L60-L70).\n   ```js\n   stripe.balanceTransactions.list({ payout: 'po_xxx' })\n   ```\n3. Optionally expand source objects inline:\n   ```js\n   stripe.balanceTransactions.list({ payout: 'po_xxx', expand: ['data.source'] })\n   ```\n\n## BalanceTransaction `type` Values\n\nExamples include `charge`, `refund`, `stripe_fee`, and `payout` for the payout itself.\n\n## `source` Property\n\nIdentifies the underlying object, such as `ch_xxx` for a Charge or `re_xxx` for a Refund. Expanding `data.source` includes those objects without a separate retrieval call for each entry.\n\n## Related Pages\n\n- [[stripe-payouts]] — payout reconciliation concept\n- [[source-stripe-payouts]] — payout overview\n\n## Raw Sources\n\n- [[raw/stripe-payouts-reconciliation-2026-11-07|November 7, 2026 payout reconciliation guide]]\n- [[raw/stripe-payouts-reconciliation-2026|May 11, 2026 payout reconciliation guide]] — verbatim payout reconciliation guide\n",
+  "quotes": {
+    "payouts-reconciliation": [
+      {
+        "text": "You control the timing and amount of manual payouts, so Stripe can’t identify which transactions are included in each payout.",
+        "location": "raw/stripe-payouts-reconciliation-2026-11-07.md:19"
+      },
+      {
+        "text": "this won’t include the individual transactions that make up the total amount.",
+        "location": "raw/stripe-payouts-reconciliation-2026-11-07.md:29"
+      },
+      {
+        "text": "If you need more results than the default 10,",
+        "location": "raw/stripe-payouts-reconciliation-2026-11-07.md:51"
+      },
+      {
+        "text": "The `source` property of each BalanceTransaction identifies the underlying object representing the transaction type,",
+        "location": "raw/stripe-payouts-reconciliation-2026-11-07.md:87"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payouts-reconciliation": [
+      {
+        "text": "If you need more results than the default 10,",
+        "location": "raw/stripe-payouts-reconciliation-2026.md:54"
+      },
+      {
+        "text": "this won’t include the individual transactions that make up the total amount.",
+        "location": "raw/stripe-payouts-reconciliation-2026.md:28"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payouts-reconciliation-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 139
+      }
+    ],
+    "raw/stripe-payouts-reconciliation-2026.md": [
+      {
+        "start": 1,
+        "end": 143
+      }
+    ],
+    "wiki/sources/source-stripe-payouts-reconciliation.md": [
+      {
+        "start": 1,
+        "end": 48
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/7b06ba57a718be77b3ca9d74/content.diff": [
+      {
+        "start": 1,
+        "end": 80
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payouts-reconciliation/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 130
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payouts-reconciliation/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 76
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 541,
+        "end": 546
+      },
+      {
+        "start": 716,
+        "end": 720
+      }
+    ],
+    "wiki/concepts/stripe-payouts.md": [
+      {
+        "start": 72,
+        "end": 85
+      }
+    ],
+    "raw/stripe-api-balance-transactions-list-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 7
+      },
+      {
+        "start": 57,
+        "end": 70
+      },
+      {
+        "start": 75,
+        "end": 77
+      }
+    ]
+  },
+  "answers": {
+    "payouts-reconciliation": {
+      "Q1": "At https://docs.stripe.com/payouts/reconciliation, old raw lines 8-54 and new raw lines 9-51 document the same roles and prerequisites. Stripe creates a Payout when funds move from available balance to a bank account and tracks component entries for automatic payouts on a schedule. The merchant reconciles manual payouts against transaction history. Supply `po_xxx` from `payout.reconciliation_completed`, List Payouts, or your database, then list BalanceTransactions filtered by `payout`; Payout retrieval returns properties and the sample shows `paid`, while the membership comes from the list. Old raw lines 79-103 and new raw lines 76-96 preserve type examples and optional `data.source` expansion. The revised source-stripe-payouts-reconciliation.md retains that flow, adds the default page size of 10 and the limit and auto-pagination controls, and separates Payout properties from BalanceTransaction membership.",
+      "Q2": "For https://docs.stripe.com/payouts/reconciliation, old raw lines 42-54 and new raw lines 43-51 keep the same filter and default-10 limit or auto-pagination while switching Node SDK to cURL and changing the linked `limit` formatting. Old raw lines 90-143 and new raw lines 87-139 keep the same expand semantics, switch the request to cURL and the property-access sample from Node to Ruby, and add closing delimiters to an illustrative response that still contains ellipses. These are presentational in the May 11 and November 7, 2026 captures. No substantive product delta or source conflict is evident. The revised source-stripe-payouts-reconciliation.md keeps the May Node example and both dated full captures, and adds the existing pagination and retrieve-versus-list rules. It retains the reciprocal stripe-payouts.md route, related payout overview, and Dashboard, report and API choices."
+    }
+  },
+  "concept_suggestions": []
+}

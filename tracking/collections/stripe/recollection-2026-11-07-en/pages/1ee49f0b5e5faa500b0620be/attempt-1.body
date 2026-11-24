@@ -1,0 +1,158 @@
+# Radar risk signals for any payment processor
+
+Use Radar to evaluate your payments regardless of payment processor.
+
+Using its AI models, [Radar](https://docs.stripe.com/radar.md) can evaluate payments from any processor in real time and return risk signals. You can request a payment evaluation at any time in the payment lifecycle, and not only when you submit to the processor. To access the Payment Evaluation API or additional capabilities, use the [request access](https://docs.stripe.com/radar/multiprocessor.md#request-access) form.
+
+### Fraudulent payment 
+
+The `fraudulent_payment` signal identifies if a payment will likely result in a dispute with a fraudulent reason code or an early fraud warning. Payment evaluations provide this signal by default.
+
+### Fraudulent dispute 
+
+The `fraudulent_dispute` signal identifies if a payment will likely result in a dispute and blocks these payments with a fraudulent reason code.
+
+### Early fraud warning 
+
+The `early_fraud_warning` signal identifies if a payment will likely result in an early fraud warning.
+
+## Request access 
+
+Use the form below to request access to the Payment Evaluation API or additional capabilities, including raw card details, masked card details, and direct client signals.
+
+### Request access to the Payment Evaluation API or additional capabilities.
+
+Enter your email to request access.
+
+```bash
+curl https://docs.stripe.com/preview/register \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -H "Referer: https://docs.stripe.com/radar/multiprocessor" \
+  -d '{"email": "EMAIL", "preview": "radar_api_beta_preview"}'
+```
+
+## Prerequisites
+
+Before you request a payment evaluation on a payment from a non-Stripe processor, you must:
+
+- Provide payment method details using one of the following methods:
+  - Create a [tokenized PaymentMethod](https://docs.stripe.com/api/payment_methods/create.md). We support [card type](https://docs.stripe.com/api/payment_methods/create.md#create_payment_method-type) payment methods.
+  - Pass the first six digits and last four digits of the card number using `first6` / `last4` along with the expiration parameters. If you create a payment evaluation with these parameters instead of a tokenized `PaymentMethod`, Stripe returns only the `fraudulent_payment` signal. This capability requires separate approval. [Request access](https://docs.stripe.com/radar/multiprocessor.md#request-access) to use masked card details.
+  - Pass the raw card details directly in the `payment_details.payment_method_details.card` parameter using `number` along with the expiration parameters. This option requires [PCI DSS compliance](https://support.stripe.com/questions/enabling-access-to-raw-card-data-apis). Raw card details also require separate approval. You can [request access](https://docs.stripe.com/radar/multiprocessor.md#request-access) to use this option.
+- Create a [Radar Session token](https://docs.stripe.com/radar/radar-session.md) which automatically collects [advanced risk factors](https://docs.stripe.com/disputes/prevention/advanced-fraud-detection.md) for each transaction, or pass client details directly using `client_device_metadata_details.data` instead of `client_device_metadata_details.radar_session`. Passing client details directly requires separate approval. You can [request access](https://docs.stripe.com/radar/multiprocessor.md#request-access) to use this option. When possible, use a Radar Session to capture all device-level signals and receive the most accurate scores.
+- Collect the customer email by populating the [billing_details.email](https://docs.stripe.com/api/payment_methods/create.md#create_payment_method-billing_details-email) attribute in the payment method or creating a new customer (either a customer-configured [Account](https://docs.stripe.com/api/v2/core/accounts/create.md#v2_create_accounts-configuration-customer) object or a [Customer](https://docs.stripe.com/api/customers/create.md) object).
+
+The following diagram shows your initial call to create a `PaymentEvaluation` and the real-time response from Stripe with risk signals.
+
+A diagram showing the Payment Evaluation API sequence of interactions for a standard payment. (See full diagram at https://docs.stripe.com/radar/multiprocessor)
+
+```text
+[Business server] -- CREATE PaymentEvaluation --> [Stripe API]
+[Stripe API] -- PaymentEvaluation object containing Radar signals --> [Business server]
+[Business server] -- Transact --> [Third-party processor]
+[Third-party processor] -- Result --> [Business server]
+```
+
+## Create a PaymentEvaluation 
+
+After you collect card details and initiate a [Radar Session](https://docs.stripe.com/radar/radar-session.md), create a PaymentEvaluation to request signals from Stripe. If you don’t have access to the Payment Evaluation API, use the [request access](https://docs.stripe.com/radar/multiprocessor.md#request-access) form. You can provide card details either as a tokenized `PaymentMethod` or as card details directly in the request.
+
+### Provide a payment method 
+
+The following example shows the minimum required payment properties that you must include for a tokenized `PaymentMethod`.
+
+```curl
+curl https://api.stripe.com/v1/radar/payment_evaluations \
+  -u "<<YOUR_SECRET_KEY>>:" \
+  --data-urlencode "payment_details[payment_method_details][payment_method]=pm_****" \
+  -d "payment_details[amount]=100" \
+  -d "payment_details[currency]=usd" \
+  --data-urlencode "customer_details[email]=jane.diaz@stripe.com" \
+  --data-urlencode "client_device_metadata_details[radar_session]=rse_****"
+```
+
+### Provide raw card details 
+
+Passing raw card details requires separate approval. You can [request access](https://docs.stripe.com/radar/multiprocessor.md#request-access) to use this option.
+
+Pass the card number, expiration date, and optionally the CVC in the `payment_details.payment_method_details.card` parameter. This option requires [PCI DSS compliance](https://support.stripe.com/questions/enabling-access-to-raw-card-data-apis).
+
+```curl
+curl https://api.stripe.com/v1/radar/payment_evaluations \
+  -u "<<YOUR_SECRET_KEY>>:" \
+  -H "Stripe-Version: 2026-07-29.preview" \
+  -d "payment_details[payment_method_details][card][number]=4242424242424242" \
+  -d "payment_details[payment_method_details][card][exp_month]=12" \
+  -d "payment_details[payment_method_details][card][exp_year]=2028" \
+  -d "payment_details[payment_method_details][card][cvc]=123" \
+  -d "payment_details[amount]=100" \
+  -d "payment_details[currency]=usd" \
+  --data-urlencode "customer_details[email]=jane.diaz@stripe.com" \
+  --data-urlencode "client_device_metadata_details[radar_session]=rse_****"
+```
+
+### Provide masked card details 
+
+Creating a `PaymentMethod` through the API requires you to prove [PCI DSS compliance](https://stripe.com/guides/pci-compliance) through the SAQ D.
+
+Passing masked card details requires separate approval. You can [request access](https://docs.stripe.com/radar/multiprocessor.md#request-access) to use this option.
+
+You can pass the `first6` and `last4` of the card number and the expiration date in the `payment_details.payment_method_details.card` parameter. Any `PaymentEvaluation` created with these parameters instead of a `PaymentMethod` returns only the `fraudulent_payment` signal.
+
+```curl
+curl https://api.stripe.com/v1/radar/payment_evaluations \
+  -u "<<YOUR_SECRET_KEY>>:" \
+  -H "Stripe-Version: 2026-07-29.preview" \
+  -d "payment_details[payment_method_details][card][first6]=424242" \
+  -d "payment_details[payment_method_details][card][last4]=4242" \
+  -d "payment_details[payment_method_details][card][exp_month]=12" \
+  -d "payment_details[payment_method_details][card][exp_year]=2028" \
+  -d "payment_details[amount]=100" \
+  -d "payment_details[currency]=usd" \
+  --data-urlencode "customer_details[email]=jane.diaz@stripe.com" \
+  --data-urlencode "client_device_metadata_details[radar_session]=rse_****"
+```
+
+### Risk signals
+
+Stripe returns a response with the `recommended_action` property and the `signals` object. The `signals` object includes the name, an `evaluated_at` timestamp, the `risk_level`, and a `score` for each signal. You can [request access](https://docs.stripe.com/radar/multiprocessor.md#request-access) to view the Payment Evaluation API reference.
+
+Stripe uses its [default evaluation thresholds](https://docs.stripe.com/radar/transaction-risk-prevention.md#risk-outcomes) to determine the risk level of the `fraudulent_payment` signal. A score above 65 indicates elevated risk and a score above 75 indicates high risk. The recommended action is based on the Stripe default blocking threshold, where we recommend blocking payments with a score of 75 or above.
+
+You can also use the `fraudulent_dispute` and `early_fraud_warning` signals alongside `fraudulent_payment` for more granular predictions of each outcome type. Each prediction is independently scored.
+
+### Include optional fields
+
+Providing additional payment details in your request can improve fraud detection accuracy. In addition to the required fields above, you can include optional fields, such as billing and shipping addresses.
+
+We recommend sending a subset of advanced risk factors, such as `user_agent` and `remote_ip`, directly in the payment evaluation request. This makes sure you still receive a payment evaluation, in case a Radar Session can’t be created. Sending these signals directly requires separate approval. You can [request access](https://docs.stripe.com/radar/multiprocessor.md#request-access) to use this option.
+
+## Avoid duplicate evaluations when processing payments on Stripe 
+
+If you evaluate a payment with the Payment Evaluation API and then process it with Stripe, Radar evaluates the payment again using the risk signals available at processing time. Because these signals can change, the two evaluations might produce different results.
+
+By default, this results in two separate evaluations that are both billed: one for the Payment Evaluation API and one for Radar’s evaluation during processing. To avoid duplicate evaluations for Stripe-processed payments, include the [radar_options.payment_evaluation_options](https://docs.stripe.com/api/payment_intents/confirm.md#confirm_payment_intent-radar_options-payment_evaluation_options) parameter when you confirm the `PaymentIntent`. Set `skip_radar` to `true` and include the IDs of the `PaymentEvaluation` objects you used to evaluate the payment.
+
+For complex flows that require multiple layers of Radar evaluation, you can include up to five payment evaluations or set `skip_radar` to `false`. You can’t use a `PaymentEvaluation` that has already been associated with another payment.
+
+```curl
+curl https://api.stripe.com/v1/payment_intents/pi_123456789/confirm \
+  -u "<<YOUR_SECRET_KEY>>:" \
+  -H "Stripe-Version: 2026-07-29.preview" \
+  --data-urlencode "payment_method=pm_****" \
+  -d "radar_options[payment_evaluation_options][payment_evaluations][]=peval_123456789" \
+  -d "radar_options[payment_evaluation_options][skip_radar]=true"
+```
+
+## API behavior
+
+The Payment Evaluation endpoints use the following API practices to improve efficiency, security, and performance:
+
+- [Test keys](https://docs.stripe.com/keys.md#test-live-modes): Simulate transactions in a [sandbox](https://docs.stripe.com/sandboxes.md). Use [Radar test cards](https://docs.stripe.com/radar/testing.md) to force specific Payment Evaluation risk levels.
+- [Idempotency keys](https://docs.stripe.com/error-low-level.md#idempotency): Prevent creating duplicate resources for repeated calls.
+- [Expanded resources](https://docs.stripe.com/expand.md): Request the full data definition in the response instead of the stub data that Stripe returns by default.
+
+> #### Payment lifecycle reporting
+> 
+> The Payment Records API requires separate integration access. You can [request access](https://docs.stripe.com/radar/multiprocessor.md#request-access) to enable this integration.

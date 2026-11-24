@@ -1,0 +1,151 @@
+{
+  "job_id": "payments-setup-intents",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe PaymentIntents and SetupIntents Lifecycle\"\ntype: source\ndate_ingested: 2026-04-19\ndate_updated: 2026-11-22\noriginal_format: webpage\nraw_files:\n  - \"stripe-payments-setup-intents-2026-11-07.md\"\n  - \"stripe-payments-payment-intents-2026-11-07.md\"\n  - \"stripe-payments-payment-intents-asynchronous-capture-2026-11-07.md\"\n  - \"stripe-payment-setup-intents-2025.md\"\n  - \"stripe-payment-intents-api-2025.md\"\n  - \"stripe-payment-status-updates-2025.md\"\n  - \"stripe-async-capture-2025.md\"\n  - \"stripe-setup-intents-api-2025.md\"\ntags: [stripe, payment-intents, setup-intents, lifecycle, 3ds, checkout-sessions]\n---\n\n## Summary\n\nThis combined [[stripe|Stripe]] reference brings together the Payment Intents implementation guide, asynchronous capture, and separate April guides for Intent lifecycle, status monitoring, and Setup Intents. A PaymentIntent tracks an attempt to collect payment. Confirmation can require further action, delayed processing, or a separate capture. A SetupIntent prepares payment credentials for future use without an initial charge.\n\n## Payment Intents API implementation guide\n\nThe 2026-04-19 and 2026-11-07 captures of [The Payment Intents API](https://docs.stripe.com/payments/payment-intents) describe the same core integration. Create a PaymentIntent on your server once you know the amount and currency. Associate its ID with the cart or customer session so interrupted checkouts can reuse the Intent, and update the amount when appropriate. Use a cart- or session-based idempotency key when creating the Intent to prevent duplicate Intent creation for that purchase. Multiple attempts can create multiple associated Charge objects. The separate November Payment Intents API reference scopes the at-most-one-successful-Charge rule to a single PaymentIntent (`raw/stripe-api-payment-intents-2026-11-07.md`, lines 80–85).\n\n### Client secret delivery and outcome\n\nThe server creates or retrieves the Intent and gives only the customer its Intent-scoped client secret, through a TLS-protected endpoint for a single-page app or a rendered checkout form. Keep the merchant secret API key and full PaymentIntent object server-side. The Intent secret can complete payment for the amount on the Intent. Keep it out of logs and merchant-built URLs. The separate [[source-stripe-payment-intents-quickstart|April Stripe.js quickstart]] describes a provider-appended return query for retrieving status and displaying a message. It gives no authority for fulfillment or permission to log the secret.\n\nConfirming the Intent attempts payment. Monitor verified server webhook events for success or failure and use them for fulfillment. The April status guide shows signature verification, `last_payment_error.message` for failure, `latest_charge` for the latest attempt, and `next_action` when an advanced integration handles required action directly. It distinguishes `payment_intent.processing`, `payment_intent.succeeded`, `payment_intent.amount_capturable_updated`, and `payment_intent.payment_failed`. It recommends webhooks over polling and shows local forwarding with the Stripe CLI.\n\n### Checkout Sessions and Payment Intents\n\nBoth implementation-guide captures recommend Checkout Sessions with the Payment Element for most integrations and describe Adaptive Pricing as a Checkout Sessions feature. Their Checkout examples use the Checkout **Session** client secret for `ui_mode: 'elements'`. The React example uses `CheckoutElementsProvider` from `@stripe/react-stripe-js/checkout` and `checkout.confirm`. The HTML example uses `stripe.initCheckoutElementsSdk`, mounts a Payment Element, and confirms through actions returned by `loadActions()`. The lower-level Payment Intents path instead initializes Stripe.js Elements with the **PaymentIntent** client secret and uses the Intent flow's client confirmation. See [[stripe-checkout]] for exact SDK versions and [[source-stripe-checkout-sessions]] for the separate captured overview, whose examples retain `ui_mode: 'custom'`.\n\n### Descriptor and metadata boundaries\n\nBoth guide captures' descriptor introductions suggest `statement_descriptor` for a different per-card description. Their explicit note and examples instead use `statement_descriptor_suffix` for card charges and `statement_descriptor` for non-card charges. The November Create reference confirms the non-card parameter errors on card charges (`raw/stripe-api-payment-intents-create-2026-11-07.md`, lines 690–700). For a dynamic card descriptor, the account prefix, asterisk and space separator, and suffix count toward the combined 22-character limit.\n\nThe April descriptor and metadata examples explicitly submit `payment_method_types` on PaymentIntent Create. The November cURL examples omit it without stating an API version or a reason. The separate November-captured Endive changelog documents HTTP 400 with `payment_method_types_no_longer_supported` on the linked `2026-09-30.endive` Create endpoint while retaining the read-only object property. Its Impact section also names `2026-08-26.preview`, leaving the first affected version unresolved. See [[stripe-payment-intents#Server SDK 23.0.0 Endive Boundary|the separate exact-version server SDK boundary]].\n\nUse non-sensitive reference values such as an order ID in metadata. The PaymentIntent copies its metadata to a Charge at Charge creation. Later edits on the Intent leave earlier Charges unchanged. Keep sensitive data, including personally identifiable information and card details, out of metadata and description. The guides separately discuss custom Radar metadata rules. April names **Radar for Fraud Teams**, and November names **Radar Plus**. The names are dated guide wording and leave plan equivalence and eligibility unresolved.\n\n### Dated implementation changes\n\nNovember uses cURL in place of some Node examples and Ruby/ERB in place of the Express/Handlebars client-secret examples. It changes quickstart navigation and adds a lifecycle link. The coding-agent sandbox aside is separate tooling guidance. It describes a help invocation as provisioning, while the separate November CLI reference documents logged-out provisioning through the create operation with an email or Git identity and seven-day expiry, and a Dashboard management path for logged-in users. Provisioning by help invocation is unverified.\n\n## Lifecycle and cancellation\n\nThe separate lifecycle captures use “immediate charge” to describe the PaymentIntent's purpose. Creation establishes an attempt. Confirmation and authorization can lead to different states before collection completes.\n\n| State | PaymentIntent | SetupIntent |\n| --- | --- | --- |\n| `requires_payment_method` | Needs a method, including after a failed attempt | Needs a method, including after failed setup |\n| `requires_confirmation` | Ready to confirm | Ready to confirm |\n| `requires_action` | Needs additional action, such as 3DS | Needs additional action, such as 3DS |\n| `processing` | Can await a delayed payment outcome | Setup is still processing |\n| `requires_capture` | Separate authorization has made funds available for capture. Attempting capture can lead to processing or success. | Payment capture is outside the setup flow |\n| `succeeded` | Payment flow completed. See asynchronous capture for deferred fields. | Setup completed for future use without charging |\n| `canceled` | No further payment attempts on that Intent | No further setup attempts on that Intent |\n\nVersions before 2019-02-11 use `requires_source` and `requires_source_action` for the corresponding statuses. Excessive PaymentIntent confirmations can cause automatic cancellation.\n\nThe April lifecycle guidance describes cancellation before `processing` or `succeeded`, with limited, variable processing windows for ACH, ACSS, AU BECS, BACS, NZ BECS, and SEPA. Cancellation invalidates the Intent and releases held funds. The November Cancel API reference lists eligible Intent states and separately says a Checkout Session's PaymentIntent can be directly canceled only in `requires_capture`. Otherwise follow the Session expiration path where applicable. Its request example specifies `2026-10-28.endive` (`raw/stripe-api-payment-intents-cancel-2026-11-07.md`, lines 7–25).\n\n## Saving a payment method\n\nThe April 19 and November 7, 2026 captures of [The Setup Intents API](https://docs.stripe.com/payments/setup-intents) describe saving credentials for future use without an initial charge. Stripe updates the SetupIntent through any required customer authentication or bank validation. Set `SetupIntent.usage` to `on_session` for customer-present-only use or `off_session` for off-session or mixed use. Omission defaults to `off_session`. `PaymentIntent.setup_future_usage` describes intended reuse when saving during a payment in the separate implementation guide.\n\nFor future customer-facing display, obtain explicit consent and use `allow_redisplay` to distinguish methods saved for offline use from methods eligible to appear in checkout. For off-session charging, obtain an upfront agreement or mandate with opt-in terms that cover permission to initiate a payment or series of payments, anticipated frequency, and how the amount is determined. Consent and mandates remain separate from issuer authentication and Stripe's intended-use optimization.\n\n`off_session` can move card authentication into setup and reduce friction later. Properly saved off-session card payments under an agreement can qualify as merchant-initiated transactions, with any SCA exemption conditional. Issuers can still decline or require later authentication. If an off-session card payment requires authentication, bring the customer back online to complete that payment.\n\n## Asynchronous capture\n\nThe 2026-04-19 and 2026-11-07 captures of [Asynchronous capture](https://docs.stripe.com/payments/payment-intents/asynchronous-capture) describe faster confirmation by finishing capture in the background. April's opening describes setting `capture_method=automatic_async` when confirming. Its opt-in text and Node example place it on PaymentIntent creation with `confirm=true`. November uses the same placement in a form-encoded `POST /v1/payment_intents` create-and-confirm example. Those examples establish the create request. The standalone confirm endpoint's schema is outside their scope. November's example `return_url` and omission of the earlier card array alone establish no new request requirement.\n\nBoth guides call `automatic_async` the default in the API version they describe as latest. The separate 2024-04-10 creation-default changelog documents the default when omitted and links a 2024-06-20 API reference. The async guide's **2022-11-15 or later** qualifier applies to the pictured PaymentIntent response and webhook `latest_charge` shape. It does not date the creation default.\n\nA `succeeded` PaymentIntent and `captured: true` Charge can coexist with a null Charge `balance_transaction`. The initial attached Charge in the API response and the `charge.succeeded` and `payment_intent.succeeded` events can lack that data. November explicitly requires handling this case even when expanding `balance_transaction` directly or `latest_charge.balance_transaction`. Applicable Connect `application_fee` and `transfer` fields can also be deferred. The `charge.updated` example annotates those two fields for destination charges.\n\n| Deferred data | Documented event |\n| --- | --- |\n| Charge `balance_transaction` | `charge.updated` |\n| Applicable Connect application fee | `application_fee.created` |\n| Applicable Connect transfer | `transfer.created` |\n\nApril's link text says `charge.updated` but links to `charge.created`. November corrects the destination to `charge.updated`. Both captures state a one-hour SLA for `charge.updated` after successful confirmation. The SLA covers that event only. The background capture, payment outcome, ledger field availability, settlement, and payout are separate. Manual capture and delayed payment-method processing have their own states.\n\n## Detail Locators\n\n- November implementation raw lines 22–107 and April lines 19–131 cover server creation, reuse, idempotency, scope of client-secret delivery, and server outcomes.\n- November implementation raw lines 109–171 and April lines 133–211 cover future use, descriptors, and metadata lifecycle.\n- November asynchronous capture raw lines 9–36 cover creation and handling absent expanded data. Lines 38–76 and 78–108 cover the displayed response version, deferred fields, and event guidance. April lines 8–28, 30–66, and 68–97 preserve the earlier samples and event link.\n- April lifecycle raw lines 10–86 cover the separate PaymentIntent and SetupIntent sequences and the version aliases. April Setup Intents API raw lines 28–68 cover consent, agreements, and `usage`. April status-monitoring raw lines 62–166 cover webhook and next-action examples.\n\n- The separate Setup Intents API guide covers no-charge setup in April raw lines 8–26 and November lines 9–27, consent and agreements in April lines 28–50 and November lines 29–51, and intended use, defaults and recovery in April lines 52–68 and November lines 53–69. The Node.js and cURL server creation examples are in April lines 70–78 and November lines 71–75.\n\n## Related Pages\n\n- [[stripe]] — Stripe company page\n- [[stripe-payment-intents]] — PaymentIntents concept and version boundaries\n- [[stripe-checkout]] — Checkout Sessions and client SDK distinctions\n- [[stripe-radar]] — Radar rules and metadata\n- [[source-stripe-api-tour]] — Stripe API tour overview\n\n## Raw Sources\n\n- [[raw/stripe-payments-setup-intents-2026-11-07|2026-11-07 Setup Intents API guide]]\n- [[raw/stripe-payments-payment-intents-2026-11-07|2026-11-07 Payment Intents implementation guide]]\n- [[raw/stripe-payments-payment-intents-asynchronous-capture-2026-11-07|2026-11-07 Asynchronous capture guide]]\n- [[raw/stripe-payment-setup-intents-2025|2026-04-19 Payment Intents and Setup Intents lifecycle guide]]\n- [[raw/stripe-setup-intents-api-2025|2026-04-19 Setup Intents API guide]]\n- [[raw/stripe-async-capture-2025|2026-04-19 Asynchronous capture guide]]\n- [[raw/stripe-payment-status-updates-2025|2026-04-19 payment status monitoring guide]]\n- [[raw/stripe-payment-intents-api-2025|2026-04-19 Payment Intents implementation guide]]\n",
+  "quotes": {
+    "payments-setup-intents": [
+      {
+        "text": "It’s similar to a payment, but no charge is created.",
+        "location": "raw/stripe-payments-setup-intents-2026-11-07.md:9"
+      },
+      {
+        "text": "you must explicitly collect consent from the customer for this specific use.",
+        "location": "raw/stripe-payments-setup-intents-2026-11-07.md:35"
+      },
+      {
+        "text": "Merchant-initiated transactions require an agreement between you and your customer.",
+        "location": "raw/stripe-payments-setup-intents-2026-11-07.md:51"
+      },
+      {
+        "text": "When an off-session card payment requires authentication, bring your customer back online to complete the payment.",
+        "location": "raw/stripe-payments-setup-intents-2026-11-07.md:67"
+      },
+      {
+        "text": "If not specified, `usage` defaults to `off_session`.",
+        "location": "raw/stripe-payments-setup-intents-2026-11-07.md:69"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-setup-intents": [
+      {
+        "text": "If not specified, `usage` defaults to `off_session`.",
+        "location": "raw/stripe-setup-intents-api-2025.md:68"
+      },
+      {
+        "text": "When an off-session card payment requires authentication, bring your customer back online to complete the payment.",
+        "location": "raw/stripe-setup-intents-api-2025.md:66"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-setup-intents-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 77
+      }
+    ],
+    "raw/stripe-setup-intents-api-2025.md": [
+      {
+        "start": 1,
+        "end": 80
+      }
+    ],
+    "wiki/sources/source-stripe-payment-intents.md": [
+      {
+        "start": 1,
+        "end": 111
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/66d9ab3fa7e17531fe151c5d/content.diff": [
+      {
+        "start": 1,
+        "end": 89
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-setup-intents/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 157
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-setup-intents/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 96
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 21,
+        "end": 24
+      },
+      {
+        "start": 727,
+        "end": 731
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 291,
+        "end": 295
+      }
+    ],
+    "wiki/concepts/stripe-payment-intents.md": [
+      {
+        "start": 98,
+        "end": 121
+      },
+      {
+        "start": 136,
+        "end": 143
+      }
+    ],
+    "raw/stripe-api-setup-intents-create-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 19
+      },
+      {
+        "start": 604,
+        "end": 612
+      }
+    ],
+    "raw/stripe-api-setup-intents-cancel-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 12
+      }
+    ]
+  },
+  "answers": {
+    "payments-setup-intents": {
+      "Q1": "At https://docs.stripe.com/payments/setup-intents, old raw lines 8-26 and new raw lines 9-27 establish that the merchant sets up credentials for later payments without creating a charge, with the customer potentially authenticating and Stripe updating the SetupIntent during setup. Old raw lines 28-50 and new raw lines 29-51 preserve explicit on-session redisplay consent, `allow_redisplay`, and an off-session opt-in agreement covering permission, frequency and amount determination. Old raw lines 52-78 and new raw lines 53-75 preserve the same `usage` choices and default, plus the need to bring the customer online when a later off-session charge requires their authentication. The revised source-stripe-payment-intents.md separates the two Intent use cases and records the default off_session, the terms of the agreement, and the recovery route for later off-session authentication. These guides describe setup behavior without giving a complete state diagram.",
+      "Q2": "For https://docs.stripe.com/payments/setup-intents, old raw lines 28-68 and new raw lines 29-69 have the same policy and usage matrix. The April 19 and November 7, 2026 captures differ in Markdown emphasis, sentence and table formatting, the added `payment-ui=elements` link parameter in the recommended card-mandate route at old raw line 48 and new raw line 49, and the equivalent server create example changed from Node to cURL at old raw lines 70-78 and new raw lines 71-75. No differing product rule or actual authorization result is established. The bounded change to source-stripe-payment-intents.md records paired provenance and omitted setup guardrails while preserving Stripe index and company routes, the reciprocal Payment Intents concept and independent S04 implementation and asynchronous capture authorities. The separate Create and Cancel API references retain endpoint scope, and the lifecycle and status guidance remains independently attributable."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-setup-intents-concept-saving",
+      "target_path": "wiki/concepts/stripe-payment-intents.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Save Payment Method\n\n```js\n// On create: setup_future_usage: 'off_session'\n// To charge later: off_session: true, confirm: true\n```",
+      "proposed_markdown": "## Save Payment Method\n\n```js\n// On create: setup_future_usage: 'off_session'\n// To charge later: off_session: true, confirm: true\n```\n\nThe April and November 2026 Setup Intents guides separately describe no-charge setup. `SetupIntent.usage` uses `on_session` for customer-present-only reuse and `off_session` for off-session or mixed use. It defaults to `off_session`. Get an agreement for off-session charging and bring the customer back online if the issuer requires authentication on a later off-session card payment. See [[source-stripe-payment-intents#Saving a payment method|the Setup Intents guide summary]].",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The card usage matrix is at new raw lines 61–69 and old raw lines 60–68. This does not change PaymentIntent.setup_future_usage."
+      ]
+    }
+  ]
+}

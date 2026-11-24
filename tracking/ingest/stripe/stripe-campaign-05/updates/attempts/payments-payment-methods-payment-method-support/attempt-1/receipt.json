@@ -1,0 +1,232 @@
+{
+  "job_id": "payments-payment-methods-payment-method-support",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Docs — Payment method support\"\ntype: source\ndate_ingested: 2026-05-08\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/payment-methods/payment-method-support\"\nraw_files:\n  - \"stripe-payments-payment-methods-payment-method-support-2026-11-07.md\"\n  - \"stripe-payment-method-support-2025.md\"\ntags: [stripe, payment-methods, integration-matrix, product-support, api-support, bnpl, wallets, bank-debits]\n---\n\n## Summary\n\nStripe's May 8 and November 7, 2026 support matrices compare presentment currencies, business locations and customer countries, product and Checkout mode, and API capabilities. A method can have additional requirements in its own documentation or payment terms. A connected account's eligibility can differ from its platform's. Stripe describes Link as a reusable payment network and routes missing-method questions to the Dashboard troubleshooting tool.\n\n## Country and currency\n\nThe May geography table has 41 data rows and the November table has 44. The counts describe these tables. A list of currencies and countries does not imply that every listed combination works.\n\n- **Pay by Bank** changes from GBP and GB in May to EUR and GBP with FI, IE and GB business and customer columns in November. The separate November method profile names FI, IE and GB customer bank accounts as generally available and Belgium, France and Germany as private preview.\n- **November additions** include PayTo (AUD and Australia), Revolut Pay (EUR, GBP, RON, HUF, PLN and DKK for listed European and UK locations), and UPI (INR for India customers and the listed business locations).\n- Both dated geography tables list stablecoin payments as USD for US businesses and worldwide customers, Pix as BRL with BR invite-only and US businesses for BR customers, and Zip with invite-only USD/US wording alongside AUD/AU. Alma, Konbini, PayNow, PromptPay and FPX have their own currency and location rows.\n\n## Product and Checkout mode\n\nCheckout modes are payment, subscription and setup. Read the method row together with its footnotes.\n\n| Group | November matrix changes and important scope |\n| --- | --- |\n| Bank debits | The combined Instant Bank Payments/ACH row changes Mobile Payment Element to Unsupported. The separate November Link guide still lists an iOS-linked Mobile Payment Element route for eligible US transactions, with risk constraints and no display when ACH Direct Debit is enabled for the transaction. Bacs uses Checkout setup mode for the documented SetupIntent route. ACSS excludes Checkout subscription mode, deferred Intent creation and Elements with Checkout Sessions. |\n| Bank redirects and transfers | BLIK adds unqualified Checkout, Subscriptions, Invoicing and Customer Portal, while its two Elements limitations remain. The matrix still marks BLIK Mobile Payment Element Supported, while the November BLIK profile marks in-app payments Unsupported. For Bancontact, EPS, FPX and P24 the matrix's `send_invoice` footnote marker is on Subscriptions. Bancontact, EPS and P24 Invoicing separately says Invite only. FPX Invoicing is Supported and Customer Portal Unsupported in both matrices. The November FPX profile also lists Invoicing, a `send_invoice` limitation and B2C-only mobile Payment Sheet. iDEAL/Wero uses the `ideal` enum and its own subscription mode, collection and per-payment authentication qualifications. Bank transfer Checkout remains payment mode and November expressly marks both Subscriptions and Invoicing `send_invoice`. |\n| BNPL | Affirm moves to Subscriptions Unsupported and Customer Portal Supported, while retaining Terminal. Klarna Checkout gains a buyer-country/payment-option qualification in place of the May mode exclusions, Subscriptions loses its `send_invoice` marker, and Terminal becomes private preview. Klarna retains the `send_invoice` Invoicing qualification and the Express Checkout Element saving exclusion. Scalapay and SeQura list Mobile Payment Element, and SeQura adds `send_invoice` Invoicing. Afterpay/Clearpay Invoicing remains private preview. Consult the individual Billie, Kriya, Mondu, Scalapay, SeQura and Sunbit source records for method scope. |\n| Real-time payments | Pay by Bank Mobile Payment Element becomes Supported and UPI gets a product row. The separate Pay by Bank method profile describes preview recurring through Elements and Payment Intents as an initial Pay by Bank payment with a Bacs mandate. Its direct matrix SetupIntent and future-use cells remain Unsupported. |\n| Wallets | Alipay Invoicing changes from Invite only to Supported. Its separate November profile distinguishes one-time Hosted Invoice Page from invitation-only recurring Invoicing or setup and explicitly excludes Mobile Payment Element PaymentSheet despite the support matrix listing it as Supported. Custom native integrations are separate. MB WAY adds Mobile Payment Element and `send_invoice` Subscriptions/Invoicing. Samsung Pay adds Checkout payment mode and retains Terminal. The separate South Korea capture links Checkout and Direct API variants. TWINT moves from bank redirects to wallets and adds all Checkout modes, Subscriptions, Invoicing and Customer Portal. WeChat Pay lists private-preview `send_invoice` Subscriptions and Terminal outside Japan. |\n| Wallet regional footnotes | The May Apple Pay and Google Pay entries refer to Indian IP addresses. November Google Pay refers to India-based Stripe accounts, and the Apple Pay row drops that marker while retaining the embedded-page Safari 17+ and iOS 17+ condition. |\n| Custom methods | The separate custom-method matrix adds Checkout and private-preview Express Checkout Element, while Payment Links remains Unsupported. The method guide describes external processing with separate Stripe records for reporting. |\n\n## API support and differences\n\nThe API matrices list method identifier where applicable, PaymentIntents, SetupIntents, manual capture, `setup_future_usage` and whether redirect is required. The footnote says confirmation might need a `return_url`. It also distinguishes cards and named bank debits supporting both `on_session` and `off_session` from other methods that either lack the feature or support `off_session` only. API cells and redirects describe compatibility, not payment completion.\n\n- **Bank methods.** Bacs PaymentIntent confirmation uses a mandate collected through a Stripe-owned flow, and the SetupIntent footnote points to Checkout setup mode despite the generic SetupIntents cell. November marks Bancontact SetupIntents Unsupported and describes saving customer bank details as a SEPA Direct Debit PaymentMethod. BLIK adds SetupIntents and off-session future usage with a continuing deferred-creation exclusion. Its November profile requires active `blik_payments` followed by active `blik_recurring_payments` on the platform and each accepting account for recurring use.\n- **BNPL and real-time.** November marks SeQura `setup_future_usage` Unsupported where May listed support. The cross-method Sunbit row says manual capture Unsupported while the November Sunbit profile lists manual capture with limits. UPI adds `upi`, PaymentIntents, SetupIntents, future usage and redirect, with manual capture Unsupported.\n- **Wallets.** November adds `samsung_pay` with PaymentIntents and redirect. Alipay and WeChat Pay change to redirect required. WeChat Pay adds private-preview SetupIntents and future usage. Its own November profile marks general recurring, future usage, SetupIntents and off-session Unsupported and separately describes a private-preview off-session recurring path. The TWINT API row moves categories with the same enum, supported PaymentIntents, SetupIntents and future usage, unsupported manual capture and redirect Yes.\n- **Stablecoins.** In both captures the dedicated `crypto` row lists manual capture Supported and SetupIntents/future usage Private preview. The wallets row for the same enum and URL says manual capture Unsupported and SetupIntents/future usage Invite only. Product labels differ too, including private-preview versus invite-only Subscriptions and Customer Portal labeling. Keep the two tables distinct.\n- **Connect.** Bank transfers through `customer_balance` have limited `on_behalf_of` support. PayPal does not support it. The matrix describes private-preview `on_behalf_of` for Alipay and WeChat Pay. Use the separate Connect matrix for account capabilities and charge-type rules.\n\n## Detail locators\n\n| Topic | May raw lines | November raw lines |\n| --- | --- | --- |\n| Country, currency and connected account scope | 22–72 | 23–76 |\n| Product tables and Checkout modes | 74–204 | 78–209 |\n| API tables, redirects and Connect scope | 206–336 | 211–343 |\n| Custom method matrix | 338–344 | 345–353 |\n\n## Related\n\n- [[stripe-payment-methods]] — Payment Methods concept and integration selection\n- [[stripe-wallets]] — Wallet-specific routes and conditions\n- [[stripe-bnpl]] — BNPL product and API support\n- [[source-stripe-payment-methods-overview]] — Payment method catalog\n- [[source-stripe-payment-method-connect-support]] — Separate Connect support matrix\n- [[source-stripe-bank-debits]] — Bank debits guide\n- [[source-stripe-custom-payment-methods]] — External payment methods\n- [[stripe]] — Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-payments-payment-methods-payment-method-support-2026-11-07|November 7, 2026 full matrix]]\n- [[raw/stripe-payment-method-support-2025|May 8, 2026 full matrix]]\n",
+  "quotes": {
+    "payments-payment-methods-payment-method-support": [
+      {
+        "text": "In some cases, not all of the countries listed can accept payments in all of the listed presentment currencies.",
+        "location": "raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md:25"
+      },
+      {
+        "text": "your connected accounts might have different eligibility requirements than your account.",
+        "location": "raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md:29"
+      },
+      {
+        "text": "(Private preview)",
+        "location": "raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md:171"
+      },
+      {
+        "text": "Bancontact supports `setup_future_usage` by saving the customer’s bank details as a SEPA Direct Debit payment method.",
+        "location": "raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md:247"
+      },
+      {
+        "text": "1 In private preview.",
+        "location": "raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md:353"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-payment-methods-payment-method-support": [
+      {
+        "text": "| GBP",
+        "location": "raw/stripe-payment-method-support-2025.md:60"
+      },
+      {
+        "text": "Stripe doesn’t display Apple Pay or Google Pay for IP addresses in India.",
+        "location": "raw/stripe-payment-method-support-2025.md:204"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 353
+      }
+    ],
+    "raw/stripe-payment-method-support-2025.md": [
+      {
+        "start": 1,
+        "end": 344
+      }
+    ],
+    "wiki/sources/source-stripe-payment-method-support.md": [
+      {
+        "start": 1,
+        "end": 63
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/e7b5555fe16533927a3d0cc1/content.diff": [
+      {
+        "start": 1,
+        "end": 611
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-payment-methods-payment-method-support/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 260
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-payment-methods-payment-method-support/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 54
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 430,
+        "end": 438
+      },
+      {
+        "start": 727,
+        "end": 732
+      }
+    ],
+    "wiki/concepts/stripe-payment-methods.md": [
+      {
+        "start": 87,
+        "end": 103
+      }
+    ],
+    "wiki/concepts/stripe-wallets.md": [
+      {
+        "start": 10,
+        "end": 35
+      },
+      {
+        "start": 297,
+        "end": 310
+      },
+      {
+        "start": 353,
+        "end": 384
+      }
+    ],
+    "wiki/concepts/stripe-bnpl.md": [
+      {
+        "start": 14,
+        "end": 34
+      }
+    ],
+    "raw/stripe-payments-blik-2026-11-07.md": [
+      {
+        "start": 144,
+        "end": 181
+      }
+    ],
+    "raw/stripe-payments-fpx-2026-11-07.md": [
+      {
+        "start": 86,
+        "end": 115
+      }
+    ],
+    "raw/stripe-payments-link-instant-bank-payments-2026-11-07.md": [
+      {
+        "start": 120,
+        "end": 137
+      }
+    ],
+    "raw/stripe-payments-payment-methods-custom-payment-methods-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 11
+      },
+      {
+        "start": 57,
+        "end": 75
+      }
+    ],
+    "raw/stripe-payments-pay-by-bank-2026-11-07.md": [
+      {
+        "start": 15,
+        "end": 27
+      },
+      {
+        "start": 61,
+        "end": 63
+      },
+      {
+        "start": 266,
+        "end": 277
+      }
+    ],
+    "raw/stripe-payments-wechat-pay-2026-11-07.md": [
+      {
+        "start": 73,
+        "end": 80
+      },
+      {
+        "start": 118,
+        "end": 124
+      },
+      {
+        "start": 159,
+        "end": 181
+      }
+    ],
+    "raw/stripe-payments-sunbit-2026-11-07.md": [
+      {
+        "start": 281,
+        "end": 295
+      }
+    ],
+    "raw/stripe-payments-samsung-pay-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 12
+      }
+    ],
+    "raw/stripe-payments-alipay-2026-11-07.md": [
+      {
+        "start": 142,
+        "end": 170
+      }
+    ]
+  },
+  "answers": {
+    "payments-payment-methods-payment-method-support": {
+      "Q1": "The full 2026-11-07 capture of https://docs.stripe.com/payments/payment-methods/payment-method-support helps a merchant select a method using three independent scopes: presentment currency and business/customer geography, product and mode, and PaymentIntent, SetupIntent, capture, future-use and redirect capabilities. The customer may need to take a redirect action and an eligible connected account can differ from the platform. New raw lines 9-84 and 211-343 retain those controls from old raw lines 8-80 and 206-336. Bacs confirmation still depends on a Stripe-collected mandate, and Checkout setup mode is the SetupIntent route documented there. The page describes compatibility and prerequisites, without establishing a payment-state transition, activation or actual payment outcome. The November body also changes country/product/API cells and preview limitations. source-stripe-payment-method-support.md now gives the dated geography-row counts, exact API headings and the Pay by Bank, BNPL, TWINT and ACSS scope.",
+      "Q2": "At https://docs.stripe.com/payments/payment-methods/payment-method-support, compare old raw lines 24-344 dated 2026-05-08 with new raw lines 25-353 dated 2026-11-07. Substantive table differences include Pay by Bank EUR and FI/IE, newly listed PayTo, Revolut Pay and UPI geography, BLIK off-session setup and product expansion, Bancontact's SEPA saving distinction, SeQura Invoicing and lost setup_future_usage, Klarna Terminal private preview, Samsung Pay and TWINT product changes, WeChat Pay Terminal and preview API scope, and custom methods Checkout and private-preview Express Checkout. Preserve method-specific conflicts for stablecoin capture, Sunbit capture, combined ACH/Instant Bank mobile support, BLIK and Alipay mobile scope, and general versus preview WeChat support. Formatting, link targets and TWINT's unchanged API row moving from bank redirects to wallets are presentational or navigation. FPX Invoicing remains supported, with the separate method profile's send_invoice qualification. source-stripe-payment-method-support.md should retain both dated full raws and reciprocal Stripe index, Payment Methods concept and separate Connect references."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-payment-methods-payment-method-support-concept-route",
+      "target_path": "wiki/concepts/stripe-payment-methods.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-payment-method-support]] — comprehensive reference: country/currency table (36 PMs), product support matrices by category, API support (setup_future_usage, return_url) per PM; also covers new BNPL: Billie, Kriya, Mondu, Scalapay, SeQura, Sunbit",
+      "proposed_markdown": "- [[source-stripe-payment-method-support]] — May and November 2026 matrices for geography and currency, product and Checkout modes, and Intent, capture, saving and redirect support. Compare method-specific qualifications and documented disagreements.",
+      "quote_indexes": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "warnings": [
+        "May geography has 41 rows and November has 44. The country and currency values are not universal combinations."
+      ]
+    },
+    {
+      "update_id": "payments-payment-methods-payment-method-support-wallet-samsung",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "durable_fact",
+      "anchor": "| Samsung Pay | (no enum) | N/A | No | Yes only |",
+      "proposed_markdown": "| Samsung Pay | `samsung_pay` in November matrix | Yes (November PaymentIntent row) | No | Supported in November matrix; Checkout payment mode also listed |",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "May raw line 198 lists Terminal only. November raw lines 202, 209 and 336 list Checkout payment mode, Terminal and PaymentIntent redirect. The separate South Korea selector lines 5–12 only links Checkout and Direct API."
+      ]
+    }
+  ]
+}

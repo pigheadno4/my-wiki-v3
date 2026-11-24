@@ -1,0 +1,157 @@
+{
+  "job_id": "payments-satispay-accept-a-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Accept a Payment with Satispay\"\ntype: source\ndate_ingested: 2026-05-08\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/satispay/accept-a-payment\"\nraw_files:\n  - \"stripe-satispay-accept-payment-2025.md\"\ntags: [stripe, wallets, satispay, integration, checkout, elements, direct-api, ios, android, manual-capture, accounts-v2]\n---\n\n## Summary\n\nStripe’s May 8, 2026 guide documents six ways to accept Satispay. The customer leaves the merchant site or app to authorize a single-use EUR payment with Satispay and then returns. Stripe describes immediate success or failure notification. The November 7, 2026 base page is a directory of integration variants.\n\n## Key Details\n\n**Checkout compatibility.** The May hosted Checkout and Elements with Checkout Sessions guides list European business locations, EUR presentment, payment mode, and same-currency line items. Use separate Sessions for different currencies. Setup and subscription Checkout modes are unsupported in those two paths. The May [[source-stripe-satispay|method overview]] lists Subscriptions among Dashboard products that can add Satispay and separately marks recurring payments unsupported. The Dashboard listing supplies no evidence of recurring Satispay charges.\n\n1. **Hosted Checkout.** Stripe recommends configuring payment methods in the Dashboard. For existing manual configuration, include `satispay` in the Checkout Session’s `payment_method_types`.\n2. **Elements with Checkout Sessions API.** The merchant server creates a payment-mode Checkout Session (`ui_mode: 'elements'`) and returns its client secret. The client confirms the Session through the Checkout integration.\n3. **Elements with Payment Intents API.** The merchant server creates a PaymentIntent. Stripe.js confirms it on the client with the Payment Element and a `return_url`.\n4. **Direct API.** Create the PaymentIntent on the server. The client calls Stripe.js `stripe.confirmPayment` with the Intent client secret, `payment_method_data.type` set to `satispay`, and a `return_url`. For the optional manual redirect, confirm on the server with `stripe.paymentIntents.confirm`, check `requires_action` and `next_action.type=redirect_to_url`, and send the customer to the supplied URL.\n5. **iOS.** The Swift sample uses `STPPaymentMethodSatispayParams` and `STPPaymentHandler.confirmPayment()`. Pass the return URL at confirmation. A custom URL scheme or universal link, forwarded by the app delegate to the SDK, enables automatic WebView dismissal.\n6. **Android.** The Kotlin sample uses `PaymentMethodCreateParams.createSatispay()` and `PaymentLauncher.confirm()` without specifying a custom URL scheme. The surrounding prose uses different API names. The sample’s generic future-use comment supplies no Satispay recurring support.\n\n**Payment result and fulfillment.** On return, check the PaymentIntent status. For fulfillment, the May guide recommends listening for `payment_intent.succeeded` instead of relying on the browser or app callback.\n\n**Customer association.** The May Elements/Payment Intents examples use `customer_account` for an Accounts v2 customer-configured Account and `customer` for a Customers v1 Customer. The Direct API and mobile sections list the country-to-EUR mappings in the raw guide.\n\n**Manual capture.** Set `capture_method: 'manual'` on the PaymentIntent to authorize only. Successful authorization leads to `requires_capture`. A capture request captures the total by default or a lower `amount_to_capture`. Cancel intentionally if you will not capture. Stripe cancels the Intent and sends `payment_intent.canceled` if it remains uncaptured after seven days.\n\n**Testing.** The May Elements variants describe a sandbox page for approving or declining a test payment. Live mode redirects to Satispay without the sandbox choices.\n\n## Error Codes\n\n| Error code | Action |\n| --- | --- |\n| `payment_intent_invalid_currency` | Enter a supported currency |\n| `missing_required_parameter` | Check the error message for details |\n| `payment_intent_payment_attempt_failed` | Inspect `last_payment_error.code` and the error message |\n| `payment_intent_authentication_failure` | Inspect `last_payment_error.code`. The guide shows this for a manually triggered test failure |\n| `payment_intent_redirect_confirmation_without_return_url` | Provide a `return_url` when confirming the PaymentIntent |\n\n## Detail locators\n\n- May guide lines 12–49 and 95–160 cover Checkout compatibility and configuration. Lines 799–934 cover PaymentIntent creation, customer association and client confirmation.\n- May guide lines 1076–1158 cover fulfillment events, authorization and capture, testing and errors. Lines 1179–1195 and 1268–1378 cover Direct API actors, return flow and country mapping.\n- May guide lines 1565–1642 and 1804–1857 cover iOS return handling, Android sample confirmation and mobile country mappings.\n\n## Related\n\n- [[stripe|Stripe]]\n- [[stripe-wallets|Stripe Wallets]]\n- [[source-stripe-satispay|Satispay method overview]]\n\n## Raw Sources\n\n- [[raw/stripe-satispay-accept-payment-2025|May 8, 2026 Satispay acceptance guide]] — full six-variant capture (1,887 lines, 16 italic fixes, one CDN image downloaded).\n\n## Related raw API references\n\n- [[raw/stripe-payments-satispay-accept-a-payment-2026-11-07|November 7, 2026 Satispay acceptance variant index]] — navigation to Checkout, Elements with Checkout Sessions or Payment Intents, Direct API, iOS and Android.\n",
+  "quotes": {
+    "payments-satispay-accept-a-payment": [
+      {
+        "text": "Learn how to set up your integration with Satispay.",
+        "location": "raw/stripe-payments-satispay-accept-a-payment-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-satispay-accept-a-payment-2026-11-07.md:11"
+      },
+      {
+        "text": "[Checkout Sessions API](https://docs.stripe.com/payments/satispay/accept-a-payment.md?payment-ui=elements&api-integration=checkout)",
+        "location": "raw/stripe-payments-satispay-accept-a-payment-2026-11-07.md:15"
+      },
+      {
+        "text": "[Payment Intents API](https://docs.stripe.com/payments/satispay/accept-a-payment.md?payment-ui=elements&api-integration=paymentintents)",
+        "location": "raw/stripe-payments-satispay-accept-a-payment-2026-11-07.md:16"
+      },
+      {
+        "text": "[Android](https://docs.stripe.com/payments/satispay/accept-a-payment.md?payment-ui=mobile&platform=android)",
+        "location": "raw/stripe-payments-satispay-accept-a-payment-2026-11-07.md:20"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-satispay-accept-a-payment": [
+      {
+        "text": "<!-- Fetched: 2026-05-08 -->",
+        "location": "raw/stripe-satispay-accept-payment-2025.md:2"
+      },
+      {
+        "text": "and call `stripe.confirmPayment` to handle the Satispay redirect.",
+        "location": "raw/stripe-satispay-accept-payment-2025.md:1287"
+      },
+      {
+        "text": "configure a custom URL scheme or universal link and set up your app delegate to forward the URL to the SDK.",
+        "location": "raw/stripe-satispay-accept-payment-2025.md:1567"
+      },
+      {
+        "text": "paymentLauncher.confirm(confirmParams)",
+        "location": "raw/stripe-satispay-accept-payment-2025.md:1846"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-satispay-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 20
+      }
+    ],
+    "raw/stripe-satispay-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 1887
+      }
+    ],
+    "wiki/sources/source-stripe-satispay-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 45
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/38394ecfc474b0c5affa8123/content.diff": [
+      {
+        "start": 1,
+        "end": 1895
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 384,
+        "end": 386
+      },
+      {
+        "start": 411,
+        "end": 415
+      }
+    ],
+    "wiki/concepts/stripe-wallets.md": [
+      {
+        "start": 315,
+        "end": 331
+      },
+      {
+        "start": 422,
+        "end": 428
+      }
+    ],
+    "raw/stripe-satispay-2025.md": [
+      {
+        "start": 27,
+        "end": 31
+      },
+      {
+        "start": 95,
+        "end": 106
+      }
+    ],
+    "wiki/sources/source-stripe-satispay.md": [
+      {
+        "start": 17,
+        "end": 26
+      }
+    ]
+  },
+  "answers": {
+    "payments-satispay-accept-a-payment": {
+      "Q1": "The November 7, 2026 capture at https://docs.stripe.com/payments/satispay/accept-a-payment indexes six variants (new raw lines 5-20). The revised source-stripe-satispay-accept-payment.md dates behavior to May 8, 2026. In that guide a single-use EUR payment sends the buyer to Satispay to authorize, then returns the buyer to the merchant site or app. Checkout and Elements with Checkout Sessions allow payment mode with same-currency lines and exclude setup and subscription modes (old raw lines 12-49 and 95-130). In the Elements/Payment Intents and Direct API flows, the server creates a PaymentIntent. In Direct API the client uses Stripe.js confirmPayment with the client secret, Satispay method type and return URL, or the server can separately call paymentIntents.confirm and handle requires_action and redirect_to_url manually. Check Intent status on return and use payment_intent.succeeded for fulfillment (old raw lines 799-934 and 1179-1362). The May guide distinguishes iOS automatic WebView dismissal via a custom URL scheme or universal link with forwarding from the Android Kotlin sample using PaymentLauncher.confirm without a custom scheme shown (old raw lines 1565-1603 and 1804-1853). Authorized manual-capture payments enter requires_capture and require a capture call within seven days or Stripe cancels the Intent and emits payment_intent.canceled (old raw lines 1094-1140).",
+      "Q2": "At https://docs.stripe.com/payments/satispay/accept-a-payment, the November 7 base snapshot supplies navigation to six variants (new raw lines 9-20). source-stripe-satispay-accept-payment.md keeps the May 8 full guide as behavioral provenance and links the November variant index in Related raw API references. It fixes inherited confirmation actor/API and mobile return claims (old raw lines 1268-1356, 1565-1603 and 1804-1853), dates the Dashboard-versus-manual recommendation and Checkout payment-mode limits (old raw lines 12-49 and 95-113), and preserves authorization/capture and environment-specific tests (old raw lines 1094-1158). The separate May overview's Dashboard Subscriptions mention does not substantiate Satispay recurring charges. Its recurring entry is No, and the two acceptance Checkout compatibility tables exclude subscription and setup modes. The candidate links Stripe Wallets, and bounded suggestions replace the outdated Wallets integration paragraph and reciprocal source label while retaining its method-overview route. The root and provider index routes remain available and the coordinator owns the provider index text."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-satispay-accept-a-payment-integration",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Integration**: Checkout, Checkout Sessions API, Payment Intents API, Direct API, iOS, Android. Payment mode only (no setup/subscription). Redirect-based — `return_url` required. Direct API: `stripe.confirmSatispayPayment()`. iOS: `STPPaymentMethodSatispayParams` + `STPPaymentHandler.confirmPayment()`. Android: `PaymentMethodCreateParams.createSatispay()` + `PaymentLauncher.confirm()`. **Separate auth+capture**: `capture_method: 'manual'`, 7-day window. Accounts v2 supported (`customer_account`). Sandbox: approve/decline test page; live mode redirects directly. 5 error codes documented.",
+      "proposed_markdown": "**Integration (May 8, 2026 guide)**: Checkout and Elements with Checkout Sessions support EUR payment mode and exclude setup and subscription modes. The guide also covers Elements with Payment Intents, Direct API, iOS and Android. For Direct API, Stripe.js `stripe.confirmPayment` handles client-side confirmation and redirect. The optional server-side `stripe.paymentIntents.confirm` path requires the merchant to handle the redirect after `requires_action`. Check the payment status after return. The May method overview marks recurring payments unsupported and lists Subscriptions among Dashboard products where Satispay can be added. That Dashboard listing does not establish recurring Satispay charges. The May acceptance guide documents separate authorization and capture with a seven-day window. See [[source-stripe-satispay-accept-payment]] for the mobile samples, test behavior and November 7 variant navigation.",
+      "quote_indexes": [
+        0,
+        1,
+        3
+      ],
+      "warnings": [
+        "Behavior comes from the May 8 full raw (lines 18–35, 95–113, 1094–1140 and 1268–1362), not the November selector. May overview raw lines 28–30 and 98–105 distinguish recurring status from the product-list mention."
+      ]
+    },
+    {
+      "update_id": "payments-satispay-accept-a-payment-backlink",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-satispay-accept-payment]] — Satispay integration: 4 web paths + iOS/Android, payment mode only, manual capture 7-day, confirmSatispayPayment(), 5 error codes",
+      "proposed_markdown": "- [[source-stripe-satispay-accept-payment]] — May 2026 Satispay acceptance and manual capture guide for four web and two mobile paths. The November 2026 capture links those variants.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Use the May 8 full guide for implementation behavior and the November 7 index for navigation."
+      ]
+    }
+  ]
+}

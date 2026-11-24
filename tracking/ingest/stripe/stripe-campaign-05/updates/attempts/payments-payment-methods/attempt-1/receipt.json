@@ -1,0 +1,173 @@
+{
+  "job_id": "payments-payment-methods",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Payment Methods API\"\ntype: source\ndate_ingested: 2026-04-19\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/payments/payment-methods\nraw_files:\n  - \"stripe-payments-payment-methods-2026-11-07.md\"\n  - \"stripe-payment-methods-api-2025.md\"\ntags: [stripe, payment-methods, webhooks, ach, sepa, bank-debit, customer-actions]\n---\n\n## Summary\n\nThe April 19 and November 7, 2026 [[stripe]] Payment Methods API guides describe instrument details, customer actions, immediate and delayed outcomes, reusable and single-use methods, and server-side status tracking. Use a PaymentMethod with a PaymentIntent to take payment, or with a SetupIntent and Customer to save payment details for later.\n\n## PaymentMethod and customer actions\n\nA PaymentMethod contains instrument and billing details, including the `type` and matching type-specific hash. The payment amount and currency belong to the payment. Stripe recommends creating PaymentMethods with Stripe.js to handle sensitive payment data and customer actions. The Dashboard enables methods available to the account. Both captures say activation is generally immediate without additional contracts and point to a separate guide for geographic availability.\n\nWhen the PaymentIntent requires a customer action, its `next_action` specifies the action. Card payments without 3D Secure illustrate a flow without extra authentication beyond collecting card details.\n\n| Action | Example |\n| --- | --- |\n| Redirect to bank | Customer approves and authenticates in the bank's online service |\n| One-time code | Customer supplies a code to verify account ownership, and the merchant sends it to the Stripe API |\n| Push funds | Customer sends a transfer through the bank's online service |\n\n## Immediate and delayed notification\n\n| Notification | Example | PaymentIntent outcome |\n| --- | --- | --- |\n| Immediate | Card payment without additional authentication | `succeeded` on success or `requires_payment_method` after a failed attempt |\n| Delayed | ACH Direct Debit | `processing` until a result, then `succeeded` on success or `requires_payment_method` after a failed attempt that can be retried |\n\nWhile the PaymentIntent is `processing`, November recommends keeping the merchant order pending and waiting for verified success before fulfillment.\n\nThe April capture described `succeeded` as guaranteeing receipt of funds. November defines it as successful completion under the method's processing flow and says funds remain subject to refund, dispute, return, or reversal. The separate November [lifecycle guide](../../raw/stripe-payments-paymentintents-lifecycle-2026-11-07.md#L33-L34) uses funds-in-account and fulfillment language. The November [verifying-status guide](../../raw/stripe-payments-payment-intents-verifying-status-2026-11-07.md#L30-L34) places later refunds, disputes, and outcomes on the Charge even when the PaymentIntent remains `succeeded`. Verified success supports fulfillment. Balance detail and payout timing are separate, and some Charge balance data can be deferred under asynchronous capture.\n\n## Single-use and reusable methods\n\nSet up a reusable method, such as a card or bank debit, during a payment or in a separate setup without charging. This reduces later payment friction, including authentication and declines. Some bank transfers are single-use, are consumed after an attempt, and cannot be attached to a Customer.\n\n## PaymentMethod object structure\n\nThis abbreviated SEPA example illustrates the type and matching hash.\n\n```json\n{\n  \"id\": \"pm_123\",\n  \"type\": \"sepa_debit\",\n  \"billing_details\": { \"email\": \"...\", \"name\": \"...\" },\n  \"sepa_debit\": { \"bank_code\": \"...\", \"last4\": \"3000\", \"country\": \"FR\" }\n}\n```\n\n## Webhook events\n\nFor methods that require customer action or report the outcome later, configure an event destination. The November Payment Methods API guide explicitly directs merchants to verify webhook signatures to authenticate Stripe as the sender. The companion Intent lifecycle documentation already covers verified webhooks.\n\n| Event | Meaning | Merchant action |\n| --- | --- | --- |\n| `payment_intent.processing` | Submitted for a method with delayed notification | Keep the order pending and wait for the outcome |\n| `payment_intent.succeeded` | Payment completed successfully | Fulfill on verified success |\n| `payment_intent.payment_failed` | Payment attempt failed | Ask the customer for another payment method |\n\nOther tracking options include the Dashboard for low-volume delayed payments, rate-limited API polling with lower reliability at scale, and a partner application.\n\n## Related Pages\n\n- [[stripe]] — Stripe company page\n- [[source-stripe-payment-intents]] — PaymentIntents and SetupIntents lifecycle, verified webhooks, and asynchronous capture\n- [[stripe-payment-methods]] — payment-method selection, regional availability, and integration routes\n- [[stripe-payment-intents]] — PaymentIntent states and verification\n\n## Raw Sources\n\n- [[raw/stripe-payments-payment-methods-2026-11-07|November 7, 2026 Payment Methods API overview]]\n- [[raw/stripe-payment-methods-api-2025|April 19, 2026 Payment Methods API overview]] — instrument roles, customer actions, notification timing, reuse, and webhooks\n",
+  "quotes": {
+    "payments-payment-methods": [
+      {
+        "text": "With a [SetupIntent]",
+        "location": "raw/stripe-payments-payment-methods-2026-11-07.md:12"
+      },
+      {
+        "text": "`PaymentIntent` object’s `next_action` property specifies the customer action.",
+        "location": "raw/stripe-payments-payment-methods-2026-11-07.md:22"
+      },
+      {
+        "text": "funds can still be refunded, disputed, returned, or reversed.",
+        "location": "raw/stripe-payments-payment-methods-2026-11-07.md:36"
+      },
+      {
+        "text": "Verify [webhook signatures]",
+        "location": "raw/stripe-payments-payment-methods-2026-11-07.md:52"
+      },
+      {
+        "text": "`payment_intent.succeeded`",
+        "location": "raw/stripe-payments-payment-methods-2026-11-07.md:59"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-payment-methods": [
+      {
+        "text": "A status of `succeeded` guarantees that you’ll receive the funds from your customers.",
+        "location": "raw/stripe-payment-methods-api-2025.md:35"
+      },
+      {
+        "text": "a [webhook endpoint or other type of event destination]",
+        "location": "raw/stripe-payment-methods-api-2025.md:51"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-payment-methods-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 105
+      }
+    ],
+    "raw/stripe-payment-methods-api-2025.md": [
+      {
+        "start": 1,
+        "end": 95
+      }
+    ],
+    "wiki/sources/source-stripe-payment-methods.md": [
+      {
+        "start": 1,
+        "end": 74
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/3fdd82926db434384e6441cf/content.diff": [
+      {
+        "start": 1,
+        "end": 118
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-payment-methods/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 188
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-payment-methods/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 100
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 19,
+        "end": 23
+      },
+      {
+        "start": 727,
+        "end": 732
+      }
+    ],
+    "wiki/concepts/stripe-payment-methods.md": [
+      {
+        "start": 76,
+        "end": 103
+      }
+    ],
+    "wiki/concepts/stripe-payment-intents.md": [
+      {
+        "start": 77,
+        "end": 96
+      },
+      {
+        "start": 140,
+        "end": 158
+      }
+    ],
+    "wiki/sources/source-stripe-payment-intents.md": [
+      {
+        "start": 29,
+        "end": 31
+      },
+      {
+        "start": 50,
+        "end": 60
+      },
+      {
+        "start": 74,
+        "end": 78
+      }
+    ],
+    "raw/stripe-payments-paymentintents-lifecycle-2026-11-07.md": [
+      {
+        "start": 30,
+        "end": 35
+      }
+    ],
+    "raw/stripe-payments-payment-intents-verifying-status-2026-11-07.md": [
+      {
+        "start": 24,
+        "end": 35
+      }
+    ]
+  },
+  "answers": {
+    "payments-payment-methods": {
+      "Q1": "For https://docs.stripe.com/payments/payment-methods, a PaymentMethod contains payment instrument details, including billing details and a type-specific hash. A PaymentIntent takes payment, while a SetupIntent and Customer save details for later use. The buyer takes any bank approval, one-time-code, or push-funds action indicated by PaymentIntent.next_action. Cards without additional authentication illustrate immediate succeeded or requires_payment_method outcomes, while ACH debit illustrates processing with the merchant holding the order pending. A verified succeeded webhook supports fulfillment, and payment_intent.payment_failed prompts the merchant to request another method (old raw lines 8-63; new raw lines 9-68). November defines succeeded as completed processing with possible later refund, dispute, return, or reversal. source-stripe-payment-methods.md retains the earlier object roles, dates the superseded guaranteed-funds wording and distinguishes merchant order status from Intent status and later Charge outcomes.",
+      "Q2": "For https://docs.stripe.com/payments/payment-methods, the substantive November 7 change is the explicit removal of the April 19 guaranteed-funds wording in favor of successful method processing with later refunds, disputes, returns or reversals possible. November also expressly recommends pending-order handling and webhook-signature verification (old raw lines 33-39 and old raw lines 49-57; new raw lines 34-40 and new raw lines 50-60). The new event-destination URL, title and table formatting, separated tracking subsection, and reformatted SEPA example are navigation or representation, with the event semantics and PaymentMethod field roles preserved. The revised source-stripe-payment-methods.md preserves the dated April wording and separate Charge outcomes, connects the methods and Intent lifecycle routes, and keeps the regional-methods overview as a separate route. Signature verification is new to the November snapshot of this guide. The April Intent status guidance already discusses it (old raw lines 59-95; new raw lines 62-105)."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-payment-methods-methods-source-route",
+      "target_path": "wiki/concepts/stripe-payment-methods.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-payment-methods-overview]] — primary source: all 8 categories, regional availability tables",
+      "proposed_markdown": "- [[source-stripe-payment-methods-overview]] — primary source: all 8 categories, regional availability tables\n- [[source-stripe-payment-methods]] — April and November Payment Methods API guides on PaymentMethod roles, customer actions, immediate versus delayed outcomes, and verified webhook handling",
+      "quote_indexes": [
+        0,
+        1,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "payments-payment-methods-intents-source-route",
+      "target_path": "wiki/concepts/stripe-payment-intents.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-payment-intents-quickstart]] — Full quickstart: server setup, Elements wiring, confirmPayment, return page, Stripe Tax, email receipts, off-session charging",
+      "proposed_markdown": "- [[source-stripe-payment-methods]] — April and November Payment Methods API guides on pending orders, verified success for fulfillment, and possible later financial outcomes after PaymentIntent success\n- [[source-stripe-payment-intents-quickstart]] — Full quickstart: server setup, Elements wiring, confirmPayment, return page, Stripe Tax, email receipts, off-session charging",
+      "quote_indexes": [
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The later Charge outcomes and continuing Intent status are described in raw/stripe-payments-payment-intents-verifying-status-2026-11-07.md lines 30–34. The existing lifecycle source route remains separate."
+      ]
+    }
+  ]
+}

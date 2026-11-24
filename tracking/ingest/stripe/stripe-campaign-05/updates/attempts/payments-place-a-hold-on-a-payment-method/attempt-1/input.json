@@ -1,0 +1,189 @@
+{
+  "job_id": "payments-place-a-hold-on-a-payment-method",
+  "source_target": "wiki/sources/source-stripe-auth-and-capture.md",
+  "source_before_sha256": "d278568951828fca6f4a6df1b4b2e8f429fcf9256b635f9d5081de23b9ab67ad",
+  "contributions": [
+    {
+      "job_id": "payments-place-a-hold-on-a-payment-method",
+      "canonical_url": "https://docs.stripe.com/payments/place-a-hold-on-a-payment-method",
+      "attempt": 2,
+      "raw_path": "raw/stripe-payments-place-a-hold-on-a-payment-method-2026-11-07.md",
+      "raw_sha256": "3d8f66947e8f9e56b9ac3c75c27f63769743f3156e06c6a7068877a7e6fd2a25",
+      "prior_raw_path": "raw/stripe-auth-and-capture-2025.md",
+      "prior_raw_sha256": "6f69ef76d17b0fd89238640d464e7da1ac2a886c3d569c86ce67989208adc2bf",
+      "new_capture_role": "full_captured_page",
+      "proposed_disposition": "source_required_update",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-place-a-hold-on-a-payment-method/attempt-2/receipt.json",
+      "receipt_sha256": "b6a073c18be4732117d5c5c701b41b97b1ace30a998256bb41f9637cb458ed3a",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-place-a-hold-on-a-payment-method/attempt-2/review.json",
+      "review_sha256": "9187b58e1e88e19c0c90618f673025a0112aa1de69acdf7215c56cc446fb9d35",
+      "source_assessments": [
+        {
+          "source_target": "wiki/sources/source-stripe-auth-and-capture.md",
+          "proposed_disposition": "source_required_update",
+          "update_needed": true,
+          "findings": [
+            "Update source 35-37 and 99-113 with the dated Japan qualification and preview fields/conditions. Add the mixed allowed_payment_method_types example boundary at source 69-77 without claiming a universal API change.",
+            "Correct baseline source 47 to an extension attempt and qualify 85-90 for eligible multicapture. Add discoverable Charge capture_before, expiry/release and PaymentIntent amount_capturable/event context near source 79-91. Preserve reciprocal Payment Intents and Checkout routes and April provenance.",
+            "Source line 37 and Stripe index line 101 omit qualifiers shared by both guide captures: the account must be based in Japan, and the hold is up to 30 days for JPY transactions from Visa, Mastercard, JCB, Diners Club and Discover (old 42-46 and new 43-45). Keep the separate wording change for non-JPY and American Express.",
+            "Source line 43 presents the Affirm down payment as unconditional. Both guides say Affirm may require it for very large orders and then charges it at authorization and refunds it if not captured; the remaining balance must be captured within 30 days (old 54-57 and new 53-57).",
+            "Source lines 93-97 give generic PaymentIntent cancel code; the hold articles refer to canceling an authorization via its PaymentIntent (old 192-194, new 157-159). The separate November 7 Cancel API states that a Checkout Session-linked PaymentIntent is directly cancellable only in requires_capture, with other cases routed to Session expiration (raw/stripe-api-payment-intents-cancel-2026-11-07.md:5-11). Keep the operation and its authority separately scoped."
+          ],
+          "conflicts": [
+            "Source 35-37 should date April's blanket standard seven-day sentence for Japan-based non-JPY and AmEx transactions. November points to transaction/network-specific standard windows for those cases, without changing the qualified up-to-30-day JPY list for Japan-based accounts (old 42-46, new 19-45).",
+            "Source 47 says Stripe auto-extends PayPal from 10 to 20 days. Both raws say it automatically attempts the extra 10 days and that settlement preference might affect the period (old raw line 60, new raw line 60). This is the same baseline correction across both captures.",
+            "Source 85 and 89-90 should scope release of the remainder and generally one capture to the ordinary flow. The general guide flags eligibility for multicapture near the partial-capture statement (old 172-186, new 141-151); the reciprocal context in the dedicated multicapture concept lines 25-35 describes final_capture=false retaining the remainder and expiry scope, so a universal release/cancel statement would mislead.",
+            "Current source 99-113 presents only the April capture_delay_days field. November retains private preview but documents capture_by and nested capture_delay (old 196-243, new 161-213). Preserve both dates and avoid inferring a migration, removed field, preview entitlement, or unspecified handling when a 30-day target exceeds the authorization window.",
+            "Source line 37 and Stripe index line 101 omit qualifiers shared by both guide captures: the account must be based in Japan, and the hold is up to 30 days for JPY transactions from Visa, Mastercard, JCB, Diners Club and Discover (old 42-46 and new 43-45). Keep the separate wording change for non-JPY and American Express.",
+            "Source line 43 presents the Affirm down payment as unconditional. Both guides say Affirm may require it for very large orders and then charges it at authorization and refunds it if not captured; the remaining balance must be captured within 30 days (old 54-57 and new 53-57).",
+            "Source lines 93-97 give generic PaymentIntent cancel code; the hold articles refer to canceling an authorization via its PaymentIntent (old 192-194, new 157-159). The separate November 7 Cancel API states that a Checkout Session-linked PaymentIntent is directly cancellable only in requires_capture, with other cases routed to Session expiration (raw/stripe-api-payment-intents-cancel-2026-11-07.md:5-11). Keep the operation and its authority separately scoped."
+          ],
+          "reason": "November documents new private-preview timing controls, changes the explicit mixed-method request sample and qualifies Japanese standard windows. Baseline PayPal and capture-state phrasing also need tightening."
+        }
+      ],
+      "affected_concepts": [
+        "wiki/concepts/stripe-payment-intents.md",
+        "wiki/concepts/stripe-checkout.md"
+      ],
+      "unresolved_questions": [
+        "Neither capture identifies every account's private preview eligibility or the runtime relationship between April's capture_delay_days and November's controls. No field compatibility, entitlement or actual capture was verified."
+      ],
+      "mapped_source_assessment": {
+        "source_target": "wiki/sources/source-stripe-auth-and-capture.md",
+        "proposed_disposition": "source_required_update",
+        "update_needed": true,
+        "findings": [
+          "Update source 35-37 and 99-113 with the dated Japan qualification and preview fields/conditions. Add the mixed allowed_payment_method_types example boundary at source 69-77 without claiming a universal API change.",
+          "Correct baseline source 47 to an extension attempt and qualify 85-90 for eligible multicapture. Add discoverable Charge capture_before, expiry/release and PaymentIntent amount_capturable/event context near source 79-91. Preserve reciprocal Payment Intents and Checkout routes and April provenance.",
+          "Source line 37 and Stripe index line 101 omit qualifiers shared by both guide captures: the account must be based in Japan, and the hold is up to 30 days for JPY transactions from Visa, Mastercard, JCB, Diners Club and Discover (old 42-46 and new 43-45). Keep the separate wording change for non-JPY and American Express.",
+          "Source line 43 presents the Affirm down payment as unconditional. Both guides say Affirm may require it for very large orders and then charges it at authorization and refunds it if not captured; the remaining balance must be captured within 30 days (old 54-57 and new 53-57).",
+          "Source lines 93-97 give generic PaymentIntent cancel code; the hold articles refer to canceling an authorization via its PaymentIntent (old 192-194, new 157-159). The separate November 7 Cancel API states that a Checkout Session-linked PaymentIntent is directly cancellable only in requires_capture, with other cases routed to Session expiration (raw/stripe-api-payment-intents-cancel-2026-11-07.md:5-11). Keep the operation and its authority separately scoped."
+        ],
+        "conflicts": [
+          "Source 35-37 should date April's blanket standard seven-day sentence for Japan-based non-JPY and AmEx transactions. November points to transaction/network-specific standard windows for those cases, without changing the qualified up-to-30-day JPY list for Japan-based accounts (old 42-46, new 19-45).",
+          "Source 47 says Stripe auto-extends PayPal from 10 to 20 days. Both raws say it automatically attempts the extra 10 days and that settlement preference might affect the period (old raw line 60, new raw line 60). This is the same baseline correction across both captures.",
+          "Source 85 and 89-90 should scope release of the remainder and generally one capture to the ordinary flow. The general guide flags eligibility for multicapture near the partial-capture statement (old 172-186, new 141-151); the reciprocal context in the dedicated multicapture concept lines 25-35 describes final_capture=false retaining the remainder and expiry scope, so a universal release/cancel statement would mislead.",
+          "Current source 99-113 presents only the April capture_delay_days field. November retains private preview but documents capture_by and nested capture_delay (old 196-243, new 161-213). Preserve both dates and avoid inferring a migration, removed field, preview entitlement, or unspecified handling when a 30-day target exceeds the authorization window.",
+          "Source line 37 and Stripe index line 101 omit qualifiers shared by both guide captures: the account must be based in Japan, and the hold is up to 30 days for JPY transactions from Visa, Mastercard, JCB, Diners Club and Discover (old 42-46 and new 43-45). Keep the separate wording change for non-JPY and American Express.",
+          "Source line 43 presents the Affirm down payment as unconditional. Both guides say Affirm may require it for very large orders and then charges it at authorization and refunds it if not captured; the remaining balance must be captured within 30 days (old 54-57 and new 53-57).",
+          "Source lines 93-97 give generic PaymentIntent cancel code; the hold articles refer to canceling an authorization via its PaymentIntent (old 192-194, new 157-159). The separate November 7 Cancel API states that a Checkout Session-linked PaymentIntent is directly cancellable only in requires_capture, with other cases routed to Session expiration (raw/stripe-api-payment-intents-cancel-2026-11-07.md:5-11). Keep the operation and its authority separately scoped."
+        ],
+        "reason": "November documents new private-preview timing controls, changes the explicit mixed-method request sample and qualifies Japanese standard windows. Baseline PayPal and capture-state phrasing also need tightening."
+      },
+      "findings": [
+        "Both captures explain an eligible payment method authorization as a hold that reserves funds. The Charge card capture_before field is the specific authorization expiry. Successful manual authorization leaves the Intent requires_capture, emits payment_intent.amount_capturable_updated when the customer completes the manual-capture payment process, and allows inspection of amount_capturable. Capture uses a PaymentIntent ID, including for Checkout, and defaults to the authorized amount. If an entirely uncaptured authorization expires, release and canceled follow, and merchant cancellation uses the PaymentIntent (old 8-12, 166-194, new 9-13, 135-159).",
+        "The merchant can initiate manual authorization in Dashboard or by setting Checkout Session payment_intent_data.capture_method or the PaymentIntent’s capture_method. Method-level capture_method on card lets only cards take a hold while other eligible payment methods can still be used with their own behavior. After attaching card details/confirming the PaymentIntent, verify authorization rather than inferring from Checkout creation, method selection or a successful API request (old 62-77, 101-166, new 62-77, 91-135).",
+        "The dated standard online Visa CIT is 7 days and MIT is listed as five days, exact 4 days 18 hours. Visa in-person is also exact 4 days 18 hours. Other listed brands' online windows are seven days and Mastercard/AmEx/Discover card-present windows two days. CIT/MIT classification depends on participation signals rather than off_session alone. Both captures reserve eligible extended authorization and online-card overcapture/multicapture qualifications. Per-method hold windows and initial Affirm/Afterpay down-payment/installment treatment remain method-specific (old 18-60, 172-190, new 19-60, 141-155).",
+        "Wiki root line 7 and Stripe index 98-104, 727-731 route to the source and Payment Intents concept. Source 115-123 and Payment Intents concept line 150 are reciprocal, with related Checkout concept line 128 and Multicapture concept 19-36 providing scoped context. Maintain the existing Checkout and prior raw routes. Payment Intents concept lines 127-131 hold separate versioned request-field evidence. These standalone guide examples do not themselves identify the required API version.",
+        "Source line 37 and Stripe index line 101 omit qualifiers shared by both guide captures: the account must be based in Japan, and the hold is up to 30 days for JPY transactions from Visa, Mastercard, JCB, Diners Club and Discover (old 42-46 and new 43-45). Keep the separate wording change for non-JPY and American Express.",
+        "Source line 43 presents the Affirm down payment as unconditional. Both guides say Affirm may require it for very large orders and then charges it at authorization and refunds it if not captured; the remaining balance must be captured within 30 days (old 54-57 and new 53-57).",
+        "Source lines 93-97 give generic PaymentIntent cancel code; the hold articles refer to canceling an authorization via its PaymentIntent (old 192-194, new 157-159). The separate November 7 Cancel API states that a Checkout Session-linked PaymentIntent is directly cancellable only in requires_capture, with other cases routed to Session expiration (raw/stripe-api-payment-intents-cancel-2026-11-07.md:5-11). Keep the operation and its authority separately scoped."
+      ],
+      "substantive_changes": [
+        "November replaces the documented private-preview capture_delay_days example with capture_by and nested capture_delay. November's auth_expiry default captures before expiry (about six hours early fallback); end_of_day uses UTC; target_delay takes days or hours and both can be combined up to 30 total days. If the hold expires sooner than the specified delay, Stripe prioritizes capture before authorization expiry. Both dates allow manual capture/cancel before automatic capture. The new early-access form requests follow-up only (old 196-243, new 161-213).",
+        "November replaces the explicit mixed card/SEPA create example's payment_method_types with allowed_payment_method_types while retaining payment-method-specific manual card capture. Other sample changes include cURL and automatic_payment_methods on create, which alone prove neither changed generic capture behavior nor a universal field migration (old 101-158, new 91-127).",
+        "November points non-JPY and AmEx for a Japan-based account to the standard transaction-specific windows rather than April's flat seven-day prose. The JPY brand list, Japan-based account condition and up-to-30-day qualifier remain. The removed April 14, 2024 Visa history note is historical context while November’s Visa tables retain the exact durations (old 18-46, new 19-45).",
+        "Numbering, Markdown fences, emphasis, Node-to-cURL, and moved Affirm and save-during-payment links are presentation or navigation in unchanged instructions (old 55-66, 79-97, 176-186, new 55-67, 79-87, 145-151)."
+      ],
+      "historical_claims_to_preserve": [
+        "Keep the April 22, 2026 actual fetch date, including the dated Visa April 14, 2024 CNP MIT shortening and Terminal lengthening, earlier Japan wording, payment_method_types sample and private-preview capture_delay_days shape.",
+        "Retain the Charge expiry, PaymentIntent requires_capture/canceled and amount_capturable event/field distinctions, Dashboard and API paths, eligible overcapture/extended authorization/multicapture, and per-method PayPal extension attempt.",
+        "Preserve Stripe index and Payment Intents reciprocal links, Checkout concept route and original raw provenance."
+      ],
+      "conflicts": [
+        "Source 35-37 should date April's blanket standard seven-day sentence for Japan-based non-JPY and AmEx transactions. November points to transaction/network-specific standard windows for those cases, without changing the qualified up-to-30-day JPY list for Japan-based accounts (old 42-46, new 19-45).",
+        "Source 47 says Stripe auto-extends PayPal from 10 to 20 days. Both raws say it automatically attempts the extra 10 days and that settlement preference might affect the period (old raw line 60, new raw line 60). This is the same baseline correction across both captures.",
+        "Source 85 and 89-90 should scope release of the remainder and generally one capture to the ordinary flow. The general guide flags eligibility for multicapture near the partial-capture statement (old 172-186, new 141-151); the reciprocal context in the dedicated multicapture concept lines 25-35 describes final_capture=false retaining the remainder and expiry scope, so a universal release/cancel statement would mislead.",
+        "Current source 99-113 presents only the April capture_delay_days field. November retains private preview but documents capture_by and nested capture_delay (old 196-243, new 161-213). Preserve both dates and avoid inferring a migration, removed field, preview entitlement, or unspecified handling when a 30-day target exceeds the authorization window.",
+        "Source line 37 and Stripe index line 101 omit qualifiers shared by both guide captures: the account must be based in Japan, and the hold is up to 30 days for JPY transactions from Visa, Mastercard, JCB, Diners Club and Discover (old 42-46 and new 43-45). Keep the separate wording change for non-JPY and American Express.",
+        "Source line 43 presents the Affirm down payment as unconditional. Both guides say Affirm may require it for very large orders and then charges it at authorization and refunds it if not captured; the remaining balance must be captured within 30 days (old 54-57 and new 53-57).",
+        "Source lines 93-97 give generic PaymentIntent cancel code; the hold articles refer to canceling an authorization via its PaymentIntent (old 192-194, new 157-159). The separate November 7 Cancel API states that a Checkout Session-linked PaymentIntent is directly cancellable only in requires_capture, with other cases routed to Session expiration (raw/stripe-api-payment-intents-cancel-2026-11-07.md:5-11). Keep the operation and its authority separately scoped."
+      ],
+      "expected_read_files": [
+        {
+          "path": "raw/stripe-payments-place-a-hold-on-a-payment-method-2026-11-07.md",
+          "sha256": "3d8f66947e8f9e56b9ac3c75c27f63769743f3156e06c6a7068877a7e6fd2a25",
+          "lines": 218
+        },
+        {
+          "path": "raw/stripe-auth-and-capture-2025.md",
+          "sha256": "6f69ef76d17b0fd89238640d464e7da1ac2a886c3d569c86ce67989208adc2bf",
+          "lines": 248
+        },
+        {
+          "path": "wiki/sources/source-stripe-auth-and-capture.md",
+          "sha256": "d278568951828fca6f4a6df1b4b2e8f429fcf9256b635f9d5081de23b9ab67ad",
+          "lines": 123
+        },
+        {
+          "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/f70a54f1d023076bb0443b74/content.diff",
+          "sha256": "27771f380ab33d48a1094d142ee1a09fffbbe34f1bd312c248f42696d72fdf98",
+          "lines": 356
+        }
+      ],
+      "original_query_prompts_path": "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md",
+      "original_prompts": "New raw `raw/stripe-payments-place-a-hold-on-a-payment-method-2026-11-07.md`. Prior raw `raw/stripe-auth-and-capture-2025.md`. Current summaries `wiki/sources/source-stripe-auth-and-capture.md`.\n\n- Q1. For `https://docs.stripe.com/payments/place-a-hold-on-a-payment-method`, what documented behavior, prerequisites, actors and state transitions does the complete new capture establish? How do these compare with the matched prior capture and each mapped summary?\n\n- Q2. Which changes are substantive, presentational or navigation-only? Identify the exact dated qualifications, conflicts and reciprocal routes that the proposed disposition should preserve.",
+      "reviewed_answers": {
+        "Q1": "At https://docs.stripe.com/payments/place-a-hold-on-a-payment-method, both captures describe merchant authorization of an eligible payment method to hold funds, followed by capture before the Charge’s capture_before deadline. Successful manual authorization leaves the PaymentIntent requires_capture. The customer completion flow emits payment_intent.amount_capturable_updated, and you can inspect amount_capturable. An entirely uncaptured expiry releases the funds and changes status to canceled. Dashboard and Checkout Session payment_intent_data manual paths remain, while the direct PaymentIntent permits method-level manual capture for cards in a mixed-method flow. Capture the PaymentIntent, not the Session, with the full amount by default. Ordinary partial capture releases the remainder, with eligible multicapture governed separately. The hold guide links canceling an authorization via its PaymentIntent. The separate November 7 Cancel API limits direct cancellation of a Checkout Session-linked Intent to requires_capture and directs other cases to Session expiration (old raw lines 192-194, new raw lines 157-159 and separate Cancel API lines 5-11). Both hold guides say Affirm may require a down payment for very large orders. If it does, it collects it at authorization and refunds it if the payment is not captured, with 30 days to capture the remaining balance (old raw lines 54-57, new raw lines 53-57). November also describes the private-preview card automatic_delayed capture before expiry, with capture_by timing and earlier hold expiry taking precedence. source-stripe-auth-and-capture.md covers the central flow but still has April’s timing control and overstates PayPal’s extension from ten to twenty days as automatic rather than an attempt subject to the settlement preference qualification, while omitting the expiry locator and capture-ready event (old raw lines 8-60, old raw lines 101-194 and old raw lines 196-243, compared with new raw lines 9-60, new raw lines 91-159 and new raw lines 161-213).",
+        "Q2": "For https://docs.stripe.com/payments/place-a-hold-on-a-payment-method, update source-stripe-auth-and-capture.md with November's private-preview capture_by modes auth_expiry by default, end_of_day in UTC and target_delay using a capture_delay hash of days/hours, which may combine to no more than 30 days. Preserve April’s capture_delay_days example as dated. Both captures override an overlong delay to capture before the authorization expires, describe an approximately six-hour backup and allow prior manual capture or cancellation. The early-access form only requests contact (old raw lines 196-243, new raw lines 161-213). November replaces payment_method_types with allowed_payment_method_types in the explicit mixed-method example, while the per-method option stays the same (old raw lines 118-158, new raw lines 104-127). For Japan-based accounts, the up-to-30-day JPY treatment for Visa, Mastercard, JCB, Diners Club and Discover stays, but November points non-JPY/AmEx to the applicable standard windows instead of the April seven-day wording. Preserve the dated Visa history and unchanged exact table durations (old raw lines 18-46, new raw lines 19-45). cURL and changed link targets otherwise illustrate or navigate. Retain the original raw, the reciprocal Payment Intents concept link and the Checkout concept route."
+      }
+    }
+  ],
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payments-place-a-hold-on-a-payment-method-2026-11-07.md",
+      "sha256": "3d8f66947e8f9e56b9ac3c75c27f63769743f3156e06c6a7068877a7e6fd2a25",
+      "lines": 218
+    },
+    {
+      "path": "raw/stripe-auth-and-capture-2025.md",
+      "sha256": "6f69ef76d17b0fd89238640d464e7da1ac2a886c3d569c86ce67989208adc2bf",
+      "lines": 248
+    },
+    {
+      "path": "wiki/sources/source-stripe-auth-and-capture.md",
+      "sha256": "d278568951828fca6f4a6df1b4b2e8f429fcf9256b635f9d5081de23b9ab67ad",
+      "lines": 123
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/f70a54f1d023076bb0443b74/content.diff",
+      "sha256": "27771f380ab33d48a1094d142ee1a09fffbbe34f1bd312c248f42696d72fdf98",
+      "lines": 356
+    }
+  ],
+  "concept_targets": [
+    {
+      "path": "wiki/concepts/stripe-checkout.md",
+      "before_sha256": "a5336ff4c7cfc0defe821f33b582f0a845922d44bd75edd93fa35a2ce915c2cd",
+      "contributing_jobs": [
+        "payments-payment-methods-pmd-registration",
+        "payments-paymentintents-lifecycle",
+        "payments-place-a-hold-on-a-payment-method",
+        "products-prices-manage-prices"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    },
+    {
+      "path": "wiki/concepts/stripe-payment-intents.md",
+      "before_sha256": "479fb6d1f161b674d6653ebfbb229c6e8c647e54962391fb1b22feec3fbece46",
+      "contributing_jobs": [
+        "payments-payment-intents-upgrade-to-handle-actions",
+        "payments-payment-methods",
+        "payments-payment-methods-transitioning",
+        "payments-paymentintents-lifecycle",
+        "payments-place-a-hold-on-a-payment-method",
+        "payments-setup-intents",
+        "payments-without-card-authentication"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    }
+  ],
+  "state": "worker_running",
+  "attempt": 1,
+  "review_scope": "full",
+  "worker_agent": "/root/s05w3",
+  "reviewer_agent": "/root/s05r6",
+  "role_notes": "tracking/ingest/stripe/stripe-campaign-05/updates/role-notes.md",
+  "worker_output": "/tmp/stripe-s05-ingest/payments-place-a-hold-on-a-payment-method-worker.json",
+  "reviewer_output": "/tmp/stripe-s05-ingest/payments-place-a-hold-on-a-payment-method-reviewer.json"
+}

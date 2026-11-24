@@ -1,0 +1,171 @@
+{
+  "job_id": "payments-upi-accept-a-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Accept a UPI Payment\"\ntype: source\ndate_ingested: 2026-05-06\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/upi/accept-a-payment\"\nraw_files:\n  - \"stripe-upi-accept-payment-2025.md\"\ntags: [stripe, real-time-payments, upi, india, inr, checkout, elements, recurring, e-mandate]\n---\n\n## Summary\n\nThe May 6, 2026 acceptance guide covers three surfaces for UPI in India: Checkout, Elements with the Checkout Sessions API and Elements with the Payment Intents API. The customer authenticates on their mobile device and approves the payment or future charges. The May Checkout and Payment Intents Elements sections describe immediate success or failure notification for one-off payments and cases where the method is saved for future use, and delayed notification for off-session or recurring payments when the customer is absent.\n\n## May integration paths\n\n- **Checkout.** The guide lists US, EU, CA, GB, AU, SG and CH business locations and requires INR for all line items. It describes payment, setup and subscription modes and recurring UPI AutoPay e-mandates. Dynamic configuration is available. For manual configuration, add `upi` to `payment_method_types`. The hosted example uses `success_url`, and the embedded-page example uses `return_url`. The Checkout section says a QR code expires five minutes after creation, at which point Stripe emits `payment_intent.payment_failed` and the expired code cannot complete the payment.\n- **Elements with Checkout Sessions API.** The merchant's server creates the Session and returns its client secret. All line items use INR. The guide describes dynamic Dashboard management and manual method listing. The May HTML/JS example initializes `initCheckoutElementsSdk` and the React example uses `CheckoutElementsProvider`. The client confirms via the Checkout instance or its actions. This section describes a 24-hour Checkout Session lifetime, separate from the five-minute UPI QR window.\n- **Elements with Payment Intents API.** The server sets the amount and currency on a PaymentIntent and provides its client secret to Elements. The client uses `stripe.confirmPayment` with `return_url`. On return, retrieve the PaymentIntent and inspect its status. The status-display examples handle `succeeded`, `processing` and `requires_payment_method`; the redirect itself does not determine the outcome.\n\nThe May Checkout and Checkout Sessions Elements tests use a QR code that opens a Stripe-hosted test page with authorize or expire choices. The May Payment Intents Elements branch ends at the instruction to use test API keys. A separate May guide documents Direct API setup and charge-and-save flows under [[source-stripe-upi-set-up-future-payments]].\n\n## Detail locators\n\n| Topic | May raw lines |\n| --- | --- |\n| Checkout configuration, modes, QR expiry and test | 8–115 |\n| Checkout Sessions create, client SDK and test | 116–581 |\n| Server PaymentIntent, client confirmation and status display | 582–1081 |\n\n## Related\n\n- [[stripe-real-time-payments]] — UPI integration context\n- [[source-stripe-upi]] — UPI product overview\n- [[source-stripe-upi-set-up-future-payments]] — Separate UPI future payments guide, including its Direct API branch\n- [[source-stripe-upi-autopay]] — Separate recurring e-mandate guide\n- [[stripe]] — Stripe company page\n\n## Related raw API references\n\n- [[raw/stripe-payments-upi-accept-a-payment-2026-11-07|November 7, 2026 variant selector]] — Navigation for Checkout and both Elements APIs.\n\n## Raw Sources\n\n- [[raw/stripe-upi-accept-payment-2025|May 6, 2026 acceptance capture]] — 1,081 lines across Checkout, Checkout Sessions Elements and Payment Intents Elements.\n",
+  "quotes": {
+    "payments-upi-accept-a-payment": [
+      {
+        "text": "Use the Payment Intents and Payment Methods APIs to accept UPI payments, a common payment method in India.",
+        "location": "raw/stripe-payments-upi-accept-a-payment-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-payments-upi-accept-a-payment-2026-11-07.md:11"
+      },
+      {
+        "text": "[Checkout Sessions API](https://docs.stripe.com/payments/upi/accept-a-payment.md?payment-ui=elements&api-integration=checkout)",
+        "location": "raw/stripe-payments-upi-accept-a-payment-2026-11-07.md:15"
+      },
+      {
+        "text": "[Payment Intents API](https://docs.stripe.com/payments/upi/accept-a-payment.md?payment-ui=elements&api-integration=paymentintents)",
+        "location": "raw/stripe-payments-upi-accept-a-payment-2026-11-07.md:16"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-upi-accept-a-payment": [
+      {
+        "text": "<!-- Fetched: 2026-05-06 -->",
+        "location": "raw/stripe-upi-accept-payment-2025.md:2"
+      },
+      {
+        "text": "UPI QR codes expire 5 minutes after creation.",
+        "location": "raw/stripe-upi-accept-payment-2025.md:106"
+      },
+      {
+        "text": "For off-session or recurring payments where the customer isn’t present, you get a delayed notification.",
+        "location": "raw/stripe-upi-accept-payment-2025.md:20"
+      },
+      {
+        "text": "To test a successful payment on your UPI integration, use your",
+        "location": "raw/stripe-upi-accept-payment-2025.md:1081"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-upi-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 16
+      }
+    ],
+    "raw/stripe-upi-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 1081
+      }
+    ],
+    "wiki/sources/source-stripe-upi-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 31
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/c67862bc81b2f99c9ae3ccf9/content.diff": [
+      {
+        "start": 1,
+        "end": 1085
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-upi-accept-a-payment/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 167
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-upi-accept-a-payment/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 98
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 10
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 365,
+        "end": 370
+      },
+      {
+        "start": 746,
+        "end": 750
+      }
+    ],
+    "wiki/concepts/stripe-real-time-payments.md": [
+      {
+        "start": 11,
+        "end": 29
+      },
+      {
+        "start": 121,
+        "end": 147
+      },
+      {
+        "start": 199,
+        "end": 206
+      }
+    ],
+    "raw/stripe-upi-set-up-future-payments-2025.md": [
+      {
+        "start": 1,
+        "end": 6
+      },
+      {
+        "start": 109,
+        "end": 121
+      },
+      {
+        "start": 341,
+        "end": 374
+      }
+    ],
+    "wiki/sources/source-stripe-upi-set-up-future-payments.md": [
+      {
+        "start": 13,
+        "end": 27
+      }
+    ]
+  },
+  "answers": {
+    "payments-upi-accept-a-payment": {
+      "Q1": "The November 7, 2026 capture at https://docs.stripe.com/payments/upi/accept-a-payment identifies UPI acceptance in India using Payment Intents and Payment Methods APIs and indexes Checkout, Elements with Checkout Sessions, and Elements with Payment Intents (new raw lines 5-16). It contains no detailed prerequisites or state transitions. The May 6 guide says the customer authenticates on mobile and approves a payment or future charges. Checkout uses INR line items, supports payment, setup and subscription, and refers to UPI AutoPay e-mandates. The merchant gets immediate stated success/failure notification for one-off and saving cases and a delayed notification for absent-customer off-session or recurring payments (old raw lines 18-49). In May Checkout, the QR expires after five minutes and triggers the failure event (old raw lines 104-114). In the May Elements routes, the merchant server creates either a Session or an Intent; the client uses the matching object and client secret to confirm, and the Intent route retrieves status on return. A return may show succeeded, processing or a failed state and does not itself verify payment (old raw lines 139-174, 502-541, 603-647, 866-868 and 962-1017). source-stripe-upi-accept-payment.md now retains these three acceptance routes and links the separate future-payments Direct API guide.",
+      "Q2": "At https://docs.stripe.com/payments/upi/accept-a-payment, the November change is presentational and navigational (new raw lines 9-16), with no substantive operation or prerequisite demonstrated. source-stripe-upi-accept-payment.md now lists the three captured paths (old raw lines 8-115, 116-581 and 582-1081). Retain the distinct May Direct API evidence for saving UPI in raw/stripe-upi-set-up-future-payments-2025.md lines 109-121 and 341-374. It does not show a missing November acceptance body or a removed integration. Preserve May INR and e-mandate mode limits, immediate one-off and saving versus delayed absent-customer notifications, the five-minute Checkout QR and failure event, and the independent 24-hour Session lifespan in the Elements with Checkout Sessions guide (old raw lines 18-49, 104-114 and 139-143). Preserve the root index line 7, Stripe index lines 367 and 748, and Real-Time Payments concept line 203 routes, add the source backlink and keep the November raw as navigation. The concept's dated future-payments evidence should remain visible alongside the separate table's unspecified labels."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-upi-accept-a-payment-concept-integration",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Integration**: 4 paths — Checkout, Checkout Sessions API, Payment Intents API, Direct API. Checkout supports setup mode and subscription mode (e-mandate). QR expires in **5 minutes** (`payment_intent.payment_failed` on expiry). Off-session/recurring notifications are **delayed** (unlike one-time which are immediate).",
+      "proposed_markdown": "**Acceptance (May 6, 2026)**: Checkout, Elements with Checkout Sessions and Elements with Payment Intents. Checkout describes payment, setup and subscription with UPI AutoPay e-mandates and a five-minute QR window with `payment_intent.payment_failed` on expiry. The guide distinguishes immediate one-off and saving-case notifications from delayed off-session or recurring outcomes when the customer is absent. See [[source-stripe-upi-accept-payment]] for acceptance and [[source-stripe-upi-set-up-future-payments]] for the separate Direct API saving paths.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Behavior is dated to May raw lines 18–49, 104–114 and 586–588. The November capture is a selector."
+      ]
+    },
+    {
+      "update_id": "payments-upi-accept-a-payment-concept-route",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-upi-accept-payment]] — UPI integration: 4 paths, Checkout setup/subscription mode, 5-min QR expiry, delayed off-session notifications",
+      "proposed_markdown": "- [[source-stripe-upi-accept-payment]] — May 2026 UPI acceptance guide covering Checkout and two Elements APIs, with November variant navigation",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": []
+    }
+  ]
+}

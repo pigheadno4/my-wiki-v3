@@ -49,7 +49,7 @@ Cannot change after setting.
 
 ## Feature Compatibility
 
-- ✓ Payment Line Items
+- ✓ Payment Line Items. The [[source-stripe-payment-line-items-flexible|flexible payment scenarios guide]] covers surcharge and line-item tax field placement.
 - ✓ Multicapture (per-capture surcharge; sum ≤ confirmed surcharge)
 - ✓ Incremental Authorization (can only decrease surcharge at capture)
 - ✗ Autocapture with partial authorizations

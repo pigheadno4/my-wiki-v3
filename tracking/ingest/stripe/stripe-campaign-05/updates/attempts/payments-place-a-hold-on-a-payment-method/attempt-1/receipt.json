@@ -1,0 +1,169 @@
+{
+  "job_id": "payments-place-a-hold-on-a-payment-method",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Place a Hold on a Payment Method\"\ntype: source\ndate_ingested: 2026-04-22\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: https://docs.stripe.com/payments/place-a-hold-on-a-payment-method\nraw_files:\n  - \"stripe-payments-place-a-hold-on-a-payment-method-2026-11-07.md\"\n  - \"stripe-auth-and-capture-2025.md\"\ntags: [stripe, auth-capture, capture-method, manual-capture, payment-intents, checkout-sessions, authorization-window, automatic-delayed]\n---\n\n## Summary\n\nThe April 22 and November 7, 2026 [[stripe|Stripe]] guides describe authorizing an eligible payment method to reserve funds and capturing them later. The Charge field `payment_method_details.card.capture_before` identifies when that card authorization expires. If a wholly uncaptured authorization expires, the funds are released and the payment changes to `canceled`.\n\n## Authorization Validity Windows\n\nBoth captures give these standard card windows.\n\n| Card brand | Card-not-present CIT | Card-not-present MIT | Card-present |\n| --- | --- | --- | --- |\n| Visa | 7 days | 5 days (exactly 4 days 18 hours) | 5 days (exactly 4 days 18 hours) |\n| Mastercard | 7 days | 7 days | 2 days |\n| American Express | 7 days | 7 days | 2 days |\n| Discover | 7 days | 7 days | 2 days |\n\nStripe and the network use cardholder participation signals to classify a transaction as customer-initiated (CIT) or merchant-initiated (MIT). For example, a supplied CVC can still result in CIT classification when `off_session=true`. The April guide records that on April 14, 2024, Visa shortened its online MIT window from seven days to five and lengthened its in-person window from two days to five. The November table retains the durations and omits the history note. Eligible online and Terminal authorizations may have extended windows.\n\n### Japan\n\nFor accounts based in Japan, both guides document up to 30 days for JPY transactions from Visa, Mastercard, JCB, Diners Club, and Discover. The April text gave a standard seven-day window for non-JPY and American Express transactions. The November guide refers those transactions to the applicable standard window by brand and transaction type. See April lines 18–46 and November lines 19–45.\n\n## Payment method capture windows\n\n| Payment method | Documented window and conditions |\n| --- | --- |\n| Affirm | Affirm may require a down payment for very large orders. If required, Affirm collects it at authorization and refunds it if the payment is uncaptured. Capture the remaining balance within 30 days. |\n| Afterpay / Clearpay | The customer pays the first installment at authorization, and Afterpay refunds it if the payment is never captured. Capture the remaining balance within 13 days. |\n| Cash App Pay | Capture within 7 days. |\n| Klarna | Capture by midnight of the 28th calendar day after the charge request. |\n| PayPal | The hold is 10 days. Stripe automatically attempts to extend it by a further 10 days, and the chosen settlement preference may affect the window. |\n\nACH Direct Debit and iDEAL do not support separate authorization and capture. See April lines 48–60 and November lines 47–60. The Affirm link moves to the direct API variant in November while the down-payment conditions remain.\n\n## Authorize and capture\n\n- **Dashboard.** Create a one-time payment and select **More options** then **Capture funds later**. The Dashboard shows the payment as **Uncaptured**. Capture from the payment details page.\n- **Checkout Sessions.** Create the Session with `payment_intent_data.capture_method=manual` for eligible methods. Use the PaymentIntent ID returned on the Checkout Session when capturing.\n- **Payment Intents.** Set `capture_method=manual` on the PaymentIntent to use only eligible methods. To offer methods with differing capture support, set `payment_method_options[card][capture_method]=manual` to place only card payments on hold. Both guides show an automatic payment methods path. The explicit mixed card and SEPA Direct Debit create example uses `payment_method_types` in April and `allowed_payment_method_types` in November. These are guide examples. The [[stripe-payment-intents#Server SDK 23.0.0 Endive Boundary|separate versioned API and SDK evidence]] defines the scoped request-field boundary.\n- **Verify authorization.** Attach the method and confirm the direct PaymentIntent to authorize. Successful manual authorization leaves it in `requires_capture`. The customer completing the manual-capture payment flow triggers `payment_intent.amount_capturable_updated`. Inspect `amount_capturable` and the card Charge's `capture_before` for the available amount and deadline.\n- **Capture.** The PaymentIntent capture request captures the total authorized amount by default. Use `amount_to_capture` for a partial capture or eligible [[source-stripe-overcapture|online card overcapture]]. Most payments support one capture, and an ordinary partial capture releases the rest. For eligible multicapture, the [[stripe-multicapture|dedicated guide]] describes `final_capture=false` retaining the remainder and the distinct finalization rules.\n- **Cancel.** The hold guides route cancellation of an authorization through its PaymentIntent. The separate [[raw/stripe-api-payment-intents-cancel-2026-11-07|November 7 PaymentIntent Cancel API reference]] (lines 5–11) says to directly cancel a Checkout Session-linked PaymentIntent only in `requires_capture`. It directs other cases to Checkout Session expiration.\n\nFor API setup, see April lines 73–158 and November lines 73–127. For capture and cancellation, see April lines 160–194 and November lines 129–159.\n\n## Automatic delayed card capture (private preview)\n\nBoth guides set the PaymentIntent card option `payment_method_options[card][capture_method]=automatic_delayed`. Stripe describes the default as capture before authorization expires, with a backup trigger about six hours before expiry. Manual capture or cancellation can occur first.\n\n- **April 22, 2026.** The example sets `payment_method_options[card][capture_delay_days]=3` to target three days after a successful authorization.\n- **November 7, 2026.** The guide documents `payment_method_options[card][capture_by]`. Its default `auth_expiry` captures before expiration, `end_of_day` uses UTC, and `target_delay` takes a nested `capture_delay` with `days`, `hours`, or both, up to 30 days total. The sample sets `capture_by=target_delay` and `capture_delay[days]=3`.\n\nBoth guides prioritize capture before expiry when the authorization window is shorter than the target delay. The November form requests early-access follow-up. The captures establish the options independently as dated preview documentation, with compatibility and account access unverified. See April lines 196–243 and November lines 161–213.\n\n## Related Pages\n\n- [[stripe]] — provider overview\n- [[stripe-payment-intents]] and [[source-stripe-payment-intents]] — PaymentIntent states and capture\n- [[stripe-checkout]] — Checkout Sessions\n- [[stripe-multicapture]] — partial and final capture on eligible payments\n- [[source-stripe-extended-authorization]] — eligible online card holds\n\n## Raw Sources\n\n- [[raw/stripe-payments-place-a-hold-on-a-payment-method-2026-11-07]] — November 7, 2026 full hold and capture guide\n- [[raw/stripe-auth-and-capture-2025]] — April 22, 2026 full guide, with Visa history and the earlier private preview example\n",
+  "quotes": {
+    "payments-place-a-hold-on-a-payment-method": [
+      {
+        "text": "If the authorization expires before you capture the funds, the funds are released and the payment status changes to `canceled`.",
+        "location": "raw/stripe-payments-place-a-hold-on-a-payment-method-2026-11-07.md:13"
+      },
+      {
+        "text": "Alternatively, you can list `card` and `sepa_debit` using [allowed_payment_method_types]",
+        "location": "raw/stripe-payments-place-a-hold-on-a-payment-method-2026-11-07.md:117"
+      },
+      {
+        "text": "If you’re using the Checkout Sessions API, make sure you use the [PaymentIntent ID]",
+        "location": "raw/stripe-payments-place-a-hold-on-a-payment-method-2026-11-07.md:139"
+      },
+      {
+        "text": "`end_of_day`: Captures funds at the end of the day (UTC).",
+        "location": "raw/stripe-payments-place-a-hold-on-a-payment-method-2026-11-07.md:183"
+      },
+      {
+        "text": "You can set both `days` and `hours` as long as the total delay doesn’t exceed 30 days.",
+        "location": "raw/stripe-payments-place-a-hold-on-a-payment-method-2026-11-07.md:199"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-place-a-hold-on-a-payment-method": [
+      {
+        "text": "You can specify a custom delay period for capture by including the `capture_delay_days` parameter.",
+        "location": "raw/stripe-auth-and-capture-2025.md:221"
+      },
+      {
+        "text": "Non-JPY and American Express transactions expire after the standard 7-day window.",
+        "location": "raw/stripe-auth-and-capture-2025.md:44"
+      },
+      {
+        "text": "Alternatively, you can list `card` and `sepa_debit` using [payment method types]",
+        "location": "raw/stripe-auth-and-capture-2025.md:141"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-place-a-hold-on-a-payment-method-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 218
+      }
+    ],
+    "raw/stripe-auth-and-capture-2025.md": [
+      {
+        "start": 1,
+        "end": 248
+      }
+    ],
+    "wiki/sources/source-stripe-auth-and-capture.md": [
+      {
+        "start": 1,
+        "end": 123
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/f70a54f1d023076bb0443b74/content.diff": [
+      {
+        "start": 1,
+        "end": 356
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 11
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 98,
+        "end": 104
+      },
+      {
+        "start": 727,
+        "end": 731
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 367,
+        "end": 371
+      }
+    ],
+    "wiki/concepts/stripe-payment-intents.md": [
+      {
+        "start": 85,
+        "end": 112
+      },
+      {
+        "start": 124,
+        "end": 158
+      }
+    ],
+    "wiki/concepts/stripe-checkout.md": [
+      {
+        "start": 119,
+        "end": 133
+      }
+    ],
+    "wiki/concepts/stripe-multicapture.md": [
+      {
+        "start": 19,
+        "end": 36
+      }
+    ],
+    "raw/stripe-api-payment-intents-cancel-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 28
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-place-a-hold-on-a-payment-method/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 189
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-place-a-hold-on-a-payment-method/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 60
+      }
+    ]
+  },
+  "answers": {
+    "payments-place-a-hold-on-a-payment-method": {
+      "Q1": "At https://docs.stripe.com/payments/place-a-hold-on-a-payment-method, both captures describe merchant authorization of an eligible payment method to hold funds, followed by capture before the Charge’s capture_before deadline. Successful manual authorization leaves the PaymentIntent requires_capture. The customer completion flow emits payment_intent.amount_capturable_updated, and you can inspect amount_capturable. An entirely uncaptured expiry releases the funds and changes status to canceled. Dashboard and Checkout Session payment_intent_data manual paths remain, while the direct PaymentIntent permits method-level manual capture for cards in a mixed-method flow. Capture uses the PaymentIntent ID and captures the authorized amount by default. Ordinary partial capture releases the remainder, with eligible multicapture governed separately. The hold guide links canceling an authorization via its PaymentIntent. The separate November 7 Cancel API limits direct cancellation of a Checkout Session-linked Intent to requires_capture and directs other cases to Session expiration (old raw lines 192-194, new raw lines 157-159 and separate Cancel API lines 5-11). Both hold guides say Affirm may require a down payment for very large orders. If it does, it collects it at authorization and refunds it if the payment is not captured, with 30 days to capture the remaining balance (old raw lines 54-57, new raw lines 53-57). November also describes the private-preview card automatic_delayed capture before expiry, with capture_by timing and earlier hold expiry taking precedence. The revised source-stripe-auth-and-capture.md preserves both timing controls by date, the PayPal extension attempt and settlement qualification, and the Charge expiry and PaymentIntent capture-ready event (old raw lines 8-60, 101-194 and 196-243, new raw lines 9-60, 91-159 and 161-213).",
+      "Q2": "For https://docs.stripe.com/payments/place-a-hold-on-a-payment-method, the revised source-stripe-auth-and-capture.md documents November's private-preview capture_by modes auth_expiry by default, end_of_day in UTC and target_delay using a capture_delay hash of days/hours, which may combine to no more than 30 days. It preserves April’s capture_delay_days example as dated. Both captures override an overlong delay to capture before the authorization expires, describe an approximately six-hour backup and allow prior manual capture or cancellation. The early-access form only requests contact (old raw lines 196-243, new raw lines 161-213). November replaces payment_method_types with allowed_payment_method_types in the explicit mixed-method example, while the per-method option stays the same (old raw lines 118-158, new raw lines 104-127). For Japan-based accounts, the up-to-30-day JPY treatment for Visa, Mastercard, JCB, Diners Club and Discover stays, but November points non-JPY/AmEx to the applicable standard windows instead of the April seven-day wording. The candidate preserves the dated Visa history and unchanged exact table durations (old raw lines 18-46, new raw lines 19-45). cURL and changed link targets otherwise illustrate or navigate. Both full captures, the reciprocal Payment Intents concept link, the Checkout concept route and the separate versioned contract remain discoverable."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "place-hold-payment-intents-reciprocal",
+      "target_path": "wiki/concepts/stripe-payment-intents.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-auth-and-capture]] — Auth+capture: validity windows per card brand, per-PM capture rules, capture_method=manual vs automatic_delayed (private preview), partial capture",
+      "proposed_markdown": "- [[source-stripe-auth-and-capture]] — April and November 2026 guide to manual capture, Charge card expiry, eligible multicapture and method-specific windows. November adds private-preview timing controls and changes the mixed card/SEPA Direct Debit create example. See the separate versioned API and SDK evidence above.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "place-hold-checkout-reciprocal",
+      "target_path": "wiki/concepts/stripe-checkout.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- **Auth + capture**: `payment_intent_data.capture_method: 'manual'`. The May 11, 2026 [[source-stripe-overcapture|Overcapture guide]] requires `payment_intent_data.capture_method=manual` for hosted and embedded Checkout, although both Session examples omit it. Embedded Session `complete` can precede PaymentIntent capture. Check the PaymentIntent and latest Charge server-side.",
+      "proposed_markdown": "- **Auth + capture**: `payment_intent_data.capture_method: 'manual'`. The April and November 2026 [[source-stripe-auth-and-capture|hold guides]] use the PaymentIntent ID from the Session to capture. The May 11, 2026 [[source-stripe-overcapture|Overcapture guide]] requires `payment_intent_data.capture_method=manual` for hosted and embedded Checkout, although both Session examples omit it. Embedded Session `complete` can precede PaymentIntent capture. Check the PaymentIntent and latest Charge server-side.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The Checkout capture ID is in the assigned November hold guide at lines 137–141. The existing May overcapture qualification is separate and retained."
+      ]
+    }
+  ]
+}

@@ -2,36 +2,47 @@
 title: "Stripe Docs — Payment method support for platforms and marketplaces"
 type: source
 date_ingested: 2026-05-08
+date_updated: 2026-11-22
 original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/payment-methods/payment-method-connect-support"
 raw_files:
+  - "stripe-payments-payment-methods-payment-method-connect-support-2026-11-07.md"
   - "stripe-payment-method-connect-support-2025.md"
 tags: [stripe, connect, payment-methods, platforms, marketplaces, capabilities, merchant-of-record]
 ---
 
 ## Summary
 
-Comprehensive Connect-specific reference for 31 payment methods. Covers capability names, merchant of record / statement descriptor behavior by charge type, cloning rules, and notable restrictions for each PM.
+The 2026-05-08 and 2026-11-07 guides document payment-method support for [[stripe|Stripe]] Connect platforms and marketplaces. Each has 30 method sections, including one combined Afterpay/Clearpay section. Availability, activation actors, statement descriptors, and mandate use depend on the method, account, Dashboard access, charge type, country, and business model.
 
-## Common Pattern
+## Activation and descriptors
 
-Most PMs follow this pattern:
-1. Request capability (e.g., `billie_payments`, `scalapay_payments`) on platform + connected accounts
-2. Descriptor source depends on charge type: Direct → connected account; Destination/Separate → platform; with `on_behalf_of` → connected account
+Apply the activation instructions for each method. Affirm must be enabled in platform settings, with its capability requested for accounts accepting it. The Billie and Scalapay sections describe capabilities active on the platform and applicable connected accounts. For Klarna and MB WAY, connected accounts with full Dashboard access can enable the method and platforms can verify capability status. Platform capability requests apply to the documented accounts without full Dashboard access. Pix requires connected-account activation for direct and `on_behalf_of` charges and varies by Dashboard access.
+
+Some method tables, including Billie, use the connected account’s descriptor for direct and `on_behalf_of` charges and the platform descriptor for ordinary destination and separate charges. Cash App Pay retains the platform descriptor for destination or separate `on_behalf_of` charges when the method was saved on the platform without `on_behalf_of`. The connected-account descriptor applies to the corresponding charges with a method that was not platform-saved.
 
 ## Notable PM-Specific Connect Rules
 
 | PM | Key Connect Restriction |
 | --- | --- |
-| **ACH Direct Debit** | Mandate cloning supported; app fee auto-refunded on failed destination charges; settlement control by account type |
+| **ACH Direct Debit** | Both captures describe limited platform-collected mandate cloning and automatic application-fee refunds for a failed ACH destination charge. May separately tabulates descriptor and settlement controllers by account and charge type. |
 | **Alipay** | Direct + `on_behalf_of` private preview only |
-| **Alma** | Online marketplaces only (not platforms like Shopify/Squarespace); Destination + Separate charges only; requires Dashboard onboarding request |
-| **Bank transfers** | `on_behalf_of` not supported |
+| **Alma** | Available only to online marketplaces. Platforms that onboard other businesses so they can accept payments directly are ineligible. Marketplaces submit an onboarding request in the Stripe Dashboard. Both tables mark destination charges, separate charges and transfers, direct charges, and `on_behalf_of` supported for eligible businesses. |
+| **Bank transfers** | The general bank-transfer section excludes `on_behalf_of`. Direct charges require the connected account itself to activate the method. Unmet requirements leave the capability `inactive` and populate `requirements.currently_due` and `requirements.disabled_reason`. With those resolved, it becomes `active` unless general account activation remains blocked. |
 | **Cash App Pay** | Cannot clone PMs across connected accounts when connected account is business of record |
 | **iDEAL** | Connected account name must map to actual business (regulatory compliance) |
-| **Indonesian bank transfers** | `on_behalf_of` not supported; no cross-border flows (e.g., Indonesian platform + non-Indonesian connected account) |
-| **PayPal** | Online marketplaces only (Destination + Separate charges); no Direct or `on_behalf_of`; requires Dashboard onboarding request |
+| **Indonesian bank transfers** | The country-specific section excludes destination charges with `on_behalf_of` and cross-border funds flows to or from Indonesia. |
+| **PayPal** | Online marketplace access only. Destination and separate charges/transfers supported. Direct and `on_behalf_of` are unsupported. See the dated request and account-linking steps below. |
 | **Pix** | Eligibility determined by MoR's country — charge type determines whether platform or connected account is MoR |
 | **WeChat Pay** | Direct + `on_behalf_of` private preview only |
+
+## Dated Connect conditions
+
+- **Recurring BLIK.** The November guide requires requesting `blik_payments` before `blik_recurring_payments` on the platform and each connected account accepting recurring payments. Both must be active before using a PaymentIntent with `setup_future_usage=off_session` or a SetupIntent with `usage=off_session`.
+- **SEPA Direct Debit.** Enable SEPA on the platform and request its capability for connected accounts. For a destination charge using `on_behalf_of`, the connected account is merchant of record. The November guide requires a fresh customer mandate via a PaymentIntent or SetupIntent naming that account and excludes copying SEPA payment methods and mandates to connected accounts for destination charges.
+- **PayPal marketplace onboarding.** The November guide adds a Dashboard request form, joint Stripe and PayPal review that can take several weeks, Dashboard progress tracking and linking instructions after approval. It says connected-account payment method configurations need no PayPal enablement for these charge types. The separate November [[source-stripe-paypal-activate|PayPal activation guide]] describes representative-led document onboarding. Application, approval and linking are distinct.
+- **ACH Direct Debit.** Both guides describe platform-collected PaymentMethod cloning with duplicated mandate authorization and no new confirmation email. Tell the customer the authorization extends to the relevant connected accounts. A mandate authorized through an Intent on behalf of one connected account cannot be used for another. The May descriptor and settlement tables are preserved as historical documentation. Their omission in November establishes no change in allocation.
+- **PayNow.** The November MCC guidance applies to connected accounts without the full Stripe Dashboard. It retains platform enablement and capability requests for connected accounts that accept PayNow.
 
 ## Capability Name Reference
 
@@ -41,7 +52,7 @@ Most PMs follow this pattern:
 | Affirm | `affirm_payments` |
 | Alipay | `alipay_payments` |
 | Billie | `billie_payments` |
-| BLIK | `blik_payments` |
+| BLIK | `blik_payments`; `blik_recurring_payments` for recurring use |
 | Cash App Pay | `cashapp_payments` |
 | Klarna | `klarna_payments` |
 | Kriya | `kriya_payments` |
@@ -60,12 +71,21 @@ Most PMs follow this pattern:
 | TWINT | `twint_payments` |
 | WeChat Pay | `wechat_pay_payments` |
 
+## Detail locators
+
+- May raw lines 18–63 and November lines 19–45 cover ACH. The May descriptor table is at lines 28–44 and the account-type settlement table at lines 54–63.
+- November raw lines 77–113 cover Alipay, Alma and bank transfers, 137–191 cover BLIK and Cash App Pay, and 197–208 cover Indonesian bank transfers.
+- November raw lines 328–369 describe PayNow and PayPal, lines 383–401 cover Pix, lines 469–477 cover SEPA mandates, and lines 503–519 describe WeChat Pay.
+
 ## Related Pages
 
 - [[stripe-payment-methods]] — payment methods concept page
 - [[source-stripe-payment-method-support]] — product + API support matrices (non-Connect)
 - [[stripe]] — Stripe company page
+- [[stripe-blik#Connect|BLIK Connect]] and [[stripe-sepa-debit#Connect|SEPA Direct Debit Connect]] — recurring and mandate requirements
+- [[stripe-ach-direct-debit#Connect|ACH Direct Debit Connect]] and [[stripe-wallets#PayPal (via Stripe) Details|PayPal on Stripe Connect]] — dated payment and onboarding scope
 
 ## Raw Sources
 
-- [[stripe-payment-method-connect-support-2025]] — verbatim webpage content (518 lines)
+- [[raw/stripe-payments-payment-methods-payment-method-connect-support-2026-11-07|2026-11-07 Connect payment method support guide]]
+- [[raw/stripe-payment-method-connect-support-2025|2026-05-08 Connect payment method support guide]]

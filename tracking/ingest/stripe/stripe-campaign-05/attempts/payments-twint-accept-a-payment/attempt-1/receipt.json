@@ -1,0 +1,173 @@
+{
+  "job_id": "payments-twint-accept-a-payment",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-twint-accept-a-payment-2026-11-07.md",
+  "raw_sha256": "5f493b8daedda84527163846d0bd0324b1aaa47e97d3bc121dc92540ae231f7b",
+  "prior_raw_path": "raw/stripe-twint-accept-payment-2025.md",
+  "prior_raw_sha256": "a6528fecc70832ba23d913e8c8da54fc93cc689fb01bf70e9c2b51b28b15b291",
+  "source_targets": [
+    "wiki/sources/source-stripe-twint-accept-payment.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-twint-accept-payment.md": "a136176d7638f3273060d42575cf1a703bd9ab5c50aa9d8c197bf5ac95f9bfa8"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-twint-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "raw/stripe-twint-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 369
+      }
+    ],
+    "wiki/sources/source-stripe-twint-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 35
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/be0bac51467bc5370a720ed9/content.diff": [
+      {
+        "start": 1,
+        "end": 374
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 22
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 283,
+        "end": 289
+      },
+      {
+        "start": 753,
+        "end": 758
+      }
+    ],
+    "wiki/concepts/stripe-twint.md": [
+      {
+        "start": 1,
+        "end": 60
+      }
+    ],
+    "raw/stripe-twint-set-up-future-payments-2025.md": [
+      {
+        "start": 97,
+        "end": 133
+      },
+      {
+        "start": 1043,
+        "end": 1077
+      }
+    ],
+    "raw/stripe-twint-save-during-payment-2025.md": [
+      {
+        "start": 1099,
+        "end": 1127
+      }
+    ],
+    "wiki/sources/source-stripe-twint-set-up-future-payments.md": [
+      {
+        "start": 11,
+        "end": 51
+      }
+    ],
+    "wiki/sources/source-stripe-twint-save-during-payment.md": [
+      {
+        "start": 11,
+        "end": 39
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Learn how to accept TWINT, a popular payment method in Switzerland.",
+      "location": "raw/stripe-payments-twint-accept-a-payment-2026-11-07.md:7"
+    },
+    {
+      "text": "[Checkout](https://docs.stripe.com/payments/twint/accept-a-payment.md?payment-ui=checkout)",
+      "location": "raw/stripe-payments-twint-accept-a-payment-2026-11-07.md:13"
+    },
+    {
+      "text": "[Direct API](https://docs.stripe.com/payments/twint/accept-a-payment.md?payment-ui=direct-api)",
+      "location": "raw/stripe-payments-twint-accept-a-payment-2026-11-07.md:14"
+    },
+    {
+      "text": "[iOS](https://docs.stripe.com/payments/twint/accept-a-payment.md?payment-ui=mobile&platform=ios)",
+      "location": "raw/stripe-payments-twint-accept-a-payment-2026-11-07.md:16"
+    },
+    {
+      "text": "[Android](https://docs.stripe.com/payments/twint/accept-a-payment.md?payment-ui=mobile&platform=android)",
+      "location": "raw/stripe-payments-twint-accept-a-payment-2026-11-07.md:17"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "While Stripe still supports this product, this support might end if the product is deprecated.",
+      "location": "raw/stripe-twint-accept-payment-2025.md:125"
+    },
+    {
+      "text": "You must specify the `return_url`, which redirects the user after they complete the payment.",
+      "location": "raw/stripe-twint-accept-payment-2025.md:254"
+    },
+    {
+      "text": "The PaymentIntent transitions from `requires_action` to `requires_payment_method`.",
+      "location": "raw/stripe-twint-accept-payment-2025.md:289"
+    }
+  ],
+  "proposed_disposition": "raw_reference",
+  "findings": [
+    "November's canonical body is only the purpose statement plus Checkout and Direct API variant links and mobile iOS and Android routes (new 5-17). May 3, 2026 is the actual fetch date of its embedded Checkout and Direct API guide (old 2, 8-17 and 121-129). The November mobile links expand navigation and establish neither body content nor fresh SDK support, deprecation or runtime behavior.",
+    "In the May one-time Checkout route the merchant enables Dynamic Payment Methods or manually lists TWINT, uses payment mode and CHF for all line items, and the buyer approves through an approved TWINT app. May lists Europe/UK business scope at Checkout. The hosted example uses success_url, embedded_page uses return_url, and the guide refers fulfillment separately (old 12-106).",
+    "In May's explicitly legacy and no-longer-recommended Direct API path, the merchant creates a CHF PaymentIntent with TWINT, sends the client secret to the customer-facing client, and uses confirmTwintPayment with required return_url and optional billing details. Stripe.js handles the redirect. In the other server-driven path, the merchant confirms with payment_method_data type twint and follows next_action.redirect_to_url.url if requires_action (old 121-162, 231-285, 291-351).",
+    "May test success authenticates at the redirect and transitions requires_action to succeeded. Selecting Fail test payment transitions requires_action to requires_payment_method. On return Stripe appends PaymentIntent ID and client secret for recovery, while the guide warns against merchant logging or embedding the secret and recommends verifying Intent status and listening for payment_intent.succeeded rather than relying on a browser callback (old 250-254, 280-289, 347-357).",
+    "Root index line 7 links to Stripe index 283-289 and 753-758, then to the overview/acceptance and TWINT concept. Concept 51-60 links acceptance, save, setup and subscription paths; source 33-35 only routes to the May raw. Keep the old raw and restore a reciprocal TWINT link in the historical source correction."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "Retain May 3 full guide, its date and legacy warning for Direct API. Scope Checkout payment mode and CHF to this documented one-time path, keep hosted/embedded URL distinctions, and preserve separate mandate-saving and setup sources.",
+    "Keep dated client Stripe.js redirect handling versus optional server next_action, actual test states, immediate result notification, return/status verification and server webhook fulfillment. The November links are variant routing without fetched variants."
+  ],
+  "conflicts": [
+    "Current source 19 and concept 41 show ['twint'] without identifying this as a manual option. May recommends dynamic presentation as a separate route and its hosted/embedded manual examples both list ['card','twint'], while requiring TWINT inclusion and all-CHF line items. Preserve documented inclusion and example configuration without forbidding a TWINT-only list (old 12-17, 36-49, 58-102).",
+    "Source 25 ascribes returning a redirect URL to Stripe.js confirmTwintPayment. May says the client helper handles the redirect, and its example handles result.error. The optional separate server-driven example exposes next_action.redirect_to_url.url on the PaymentIntent in requires_action, which the merchant follows. Billing name/email are optional in the client example, and return_url is required there (old 231-285, 291-351).",
+    "May one-time Checkout calls its acceptance path payment mode only (old 22-38). The separately dated setup-only guide explicitly shows Checkout mode setup (raw/stripe-twint-set-up-future-payments-2025.md:97-133). The TWINT concept's 41-47 must distinguish these scopes, and its unqualified mandate_data phrase for server-side confirmation does not describe the one-time server example (old 291-317), which omits it. It does appear in separately scoped setup-only and save-during-payment examples (raw/stripe-twint-set-up-future-payments-2025.md:1043-1074 and raw/stripe-twint-save-during-payment-2025.md:1099-1127). No universal Checkout mode or mandate field rule follows from these examples.",
+    "Source 26 names an Authorize test payment button, but old 287-289 says authenticate on the test redirect page for success and explicitly names only Fail test payment. Keep actual test transition and verified action wording."
+  ],
+  "unresolved_questions": [
+    "November's linked variants were not read in this job. The selector does not confirm routes' current exact API shape or SDK versions, account eligibility, mandate requirements or actual payment results."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-twint.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-twint-accept-payment.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Independent of the November navigation delta, repair lines 19 and 24-26 for dynamic/manual method selection, optional billing, who redirects and the documented test control. Old 12-17, 36-49, 58-102 and 231-289.",
+        "Add status verification and webhook boundary at 28-31, scope the old one-time Checkout and legacy Direct API routes to May, preserve May raw, and add the reciprocal TWINT concept link (old 121-129, 280-289, 316-357 and concept 39-60)."
+      ],
+      "conflicts": [
+        "Current source 19 and concept 41 show ['twint'] without identifying this as a manual option. May recommends dynamic presentation as a separate route and its hosted/embedded manual examples both list ['card','twint'], while requiring TWINT inclusion and all-CHF line items. Preserve documented inclusion and example configuration without forbidding a TWINT-only list (old 12-17, 36-49, 58-102).",
+        "Source 25 ascribes returning a redirect URL to Stripe.js confirmTwintPayment. May says the client helper handles the redirect, and its example handles result.error. The optional separate server-driven example exposes next_action.redirect_to_url.url on the PaymentIntent in requires_action, which the merchant follows. Billing name/email are optional in the client example, and return_url is required there (old 231-285, 291-351).",
+        "May one-time Checkout calls its acceptance path payment mode only (old 22-38). The separately dated setup-only guide explicitly shows Checkout mode setup (raw/stripe-twint-set-up-future-payments-2025.md:97-133). The TWINT concept's 41-47 must distinguish these scopes, and its unqualified mandate_data phrase for server-side confirmation does not describe the one-time server example (old 291-317), which omits it. It does appear in separately scoped setup-only and save-during-payment examples (raw/stripe-twint-set-up-future-payments-2025.md:1043-1074 and raw/stripe-twint-save-during-payment-2025.md:1099-1127). No universal Checkout mode or mandate field rule follows from these examples.",
+        "Source 26 names an Authorize test payment button, but old 287-289 says authenticate on the test redirect page for success and explicitly names only Fail test payment. Keep actual test transition and verified action wording."
+      ],
+      "reason": "November remains a raw navigation reference. The existing May summary separately misstates which integration exposes a redirect URL and needs the historical prerequisites and payment state boundaries."
+    }
+  ],
+  "answers": {
+    "Q1": "The November 7 capture of https://docs.stripe.com/payments/twint/accept-a-payment only lists Checkout, Direct API, iOS and Android variants. It establishes no integration prerequisites or payment state transition itself (new raw lines 5-17). The May 3, 2026 guide describes a one-time CHF Checkout Session where the customer approves with an approved TWINT app. The manual Checkout illustrations include card and TWINT, while Stripe also documents dynamic presentation. The legacy Direct API uses a server-created CHF PaymentIntent and client-side confirmTwintPayment with required return_url and optional billing details. Stripe.js handles the redirect. On the separate manual server route, requires_action exposes next_action.redirect_to_url.url. May tests move requires_action to succeeded or requires_payment_method, and payment status or a webhook is the fulfillment authority (old raw lines 12-106, old raw lines 121-162 and old raw lines 231-357). source-stripe-twint-accept-payment.md preserves the routes but conflates the two redirect behaviors and needs a dated correction.",
+    "Q2": "For https://docs.stripe.com/payments/twint/accept-a-payment, the November change is navigation-only. The previous May 3 guide embedded Checkout and legacy Direct API; November links to them and exposes iOS and Android navigation without including variant bodies (old raw lines 8-17 and old raw lines 121-129, new raw lines 9-17). Keep source-stripe-twint-accept-payment.md tied to the May one-time CHF flow, hosted success_url and embedded return_url examples, legacy Stripe.js recommendation and optional server redirect. Keep payment status verification separate from browser return. The general TWINT concept should scope setup-mode and mandate examples to the distinct future-use guides; May\u2019s one-time server example omits mandate_data, and its client helper handles redirects rather than presenting the manual next_action URL (old raw lines 58-102, old raw lines 250-289 and old raw lines 291-357). Preserve raw provenance and the reciprocal TWINT concept and companion guide routes."
+  }
+}

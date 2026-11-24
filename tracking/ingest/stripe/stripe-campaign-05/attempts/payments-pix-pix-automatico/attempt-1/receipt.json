@@ -1,0 +1,186 @@
+{
+  "job_id": "payments-pix-pix-automatico",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-pix-pix-automatico-2026-11-07.md",
+  "raw_sha256": "3e7ccd4d9d95de69c2ce31a0c3aaf5b934230e22cfca70a1b4286c9281ac901d",
+  "prior_raw_path": "raw/stripe-pix-automatico-2025.md",
+  "prior_raw_sha256": "27b81514a6321892ff388fd6f99d41ab7d36870eea5c5658ef8b84fec5ed3825",
+  "source_targets": [
+    "wiki/sources/source-stripe-pix-automatico.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-pix-automatico.md": "ae64beee33b812736dbf64abee1a896ea79672845f62ca7c1bfca01c8ce24dbd"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-pix-pix-automatico-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 86
+      }
+    ],
+    "raw/stripe-pix-automatico-2025.md": [
+      {
+        "start": 1,
+        "end": 79
+      }
+    ],
+    "wiki/sources/source-stripe-pix-automatico.md": [
+      {
+        "start": 1,
+        "end": 45
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/40e1304ec1cd372cbc86370c/content.diff": [
+      {
+        "start": 1,
+        "end": 44
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 11
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 356,
+        "end": 362
+      }
+    ],
+    "wiki/companies/stripe.md": [
+      {
+        "start": 559,
+        "end": 566
+      }
+    ],
+    "wiki/concepts/stripe-real-time-payments.md": [
+      {
+        "start": 47,
+        "end": 68
+      },
+      {
+        "start": 206,
+        "end": 211
+      }
+    ],
+    "raw/stripe-pix-2025.md": [
+      {
+        "start": 90,
+        "end": 97
+      }
+    ],
+    "raw/stripe-payments-pix-2026-11-07.md": [
+      {
+        "start": 55,
+        "end": 64
+      },
+      {
+        "start": 146,
+        "end": 166
+      },
+      {
+        "start": 195,
+        "end": 206
+      }
+    ],
+    "raw/stripe-payments-pix-save-payment-details-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-billing-subscriptions-pix-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-changelog-dahlia-2026-04-22-pix-recurring-payments-support-2026-11-07.md": [
+      {
+        "start": 5,
+        "end": 24
+      }
+    ],
+    "raw/stripe-api-payment-intents-object-2026-11-07.md": [
+      {
+        "start": 713,
+        "end": 726
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "For subscriptions where there\u2019s no initial payment (free trials), the mandate is created without an initial charge.",
+      "location": "raw/stripe-payments-pix-pix-automatico-2026-11-07.md:25"
+    },
+    {
+      "text": "Your customer\u2019s bank notifies them 3 days before issuing a charge with the exact debit amount and an option to cancel the payment.",
+      "location": "raw/stripe-payments-pix-pix-automatico-2026-11-07.md:39"
+    },
+    {
+      "text": "Customer account debited Oct 4th",
+      "location": "raw/stripe-payments-pix-pix-automatico-2026-11-07.md:49"
+    },
+    {
+      "text": "A billing cycle defines the possible charge frequency rather than a required cadence.",
+      "location": "raw/stripe-payments-pix-pix-automatico-2026-11-07.md:72"
+    },
+    {
+      "text": "Stripe Billing can retry once after 1 day.",
+      "location": "raw/stripe-payments-pix-pix-automatico-2026-11-07.md:80"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Confirmation for a recurring payment typically happens 3 days after the pre-debit notification is sent, but it can take up to 7 days with retries.",
+      "location": "raw/stripe-pix-automatico-2025.md:42"
+    },
+    {
+      "text": "once a day for the next 3 days",
+      "location": "raw/stripe-pix-automatico-2025.md:71"
+    }
+  ],
+  "proposed_disposition": "no_substantive_update",
+  "findings": [
+    "Both full guides establish bank-app authorization of the mandate, the amount and eligible cycle, the initial charge only where applicable, and merchant confirmation of the recurring PaymentIntent. Stripe initiates the notification process, the bank generates a notice containing amount and cancellation option, and the scheduled PaymentIntent stays `processing` through the wait and retries.",
+    "Both captures document a typical three-day delay after notice and up to seven days with retries. Stripe attempts automatic capture and retryable failed captures retry once each of the next three days by default. Distinguish the opt-in Stripe Billing retry once after one day when a payment was never scheduled, and the guide's plain-language failure outcome versus the API status enum.",
+    "The added illustration shows September 1 transaction, October 1 billing/notice, and October 4 debit. It illustrates the existing schedule-plus-three-days model, without adding new timing or retries. The table changed in presentation and buyer/customer word choice only. Defaults and all related guide routes stay the same."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "Retain both dates and the older authoritative prose. Preserve November's diagram as an illustration if cited, and keep the paid initial mandate and free-trial setup paths distinct.",
+    "Preserve seven field defaults from the captures: business display name, 400 BRL, `maximum`, `never`, monthly, no expiry, and current date plus three days. Keep fixed versus maximum, a no-daily rule and eligible non-Brazil business scope from its independent overview. Preserve standalone save/subscription and one-time accept routes."
+  ],
+  "conflicts": [
+    "Both guides say the payment leaves processing for `succeeded` or `failed`. The general November PaymentIntent object API enumerates `succeeded` and does not expose a `failed` status enum. Preserve the guide's failure outcome as wording, without presenting it as a literal PaymentIntent state or assigning the exact failure state from this evidence alone.",
+    "The Brazil-domiciled business restriction shown in the current source and concept comes from the adjacent Pix overview (May line 94 and November lines 57-61, 146-148, and 200), outside the paired standalone guide. The 2026-04-22.dahlia changelog separately refers to Brazil customers and versioned mandate options. Distinguish buyer country and business domicile and keep the restriction and API scope separately attributed.",
+    "`amount` is a mandate bound (`maximum`, default) or exact amount (`fixed`), not a required billing cadence. `never` for `amount_includes_iof` means customer-paid where IOF applies. The adjacent Pix November overview lines 202\u2013206 limits IOF to foreign exchange transactions and warns the rate can change."
+  ],
+  "unresolved_questions": [
+    "The guide's exhausted retry outcome is documented without exact PaymentIntent API failure-state or webhook mapping. The captures do not verify merchant account eligibility or changes to rollout."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-real-time-payments.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-pix-automatico.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add the paired November raw provenance and source links to the separate Pix overview, mandate setup, subscription and one-time acceptance and the real-time concept. Distinguish notification initiation from bank delivery, default retryable capture retries from opt-in Billing scheduling retry, and the non-enum failure language from PaymentIntent status. Make the scope of the mandate amount, permitted interval, and Brazil-domicile/IOF support independently attributable."
+      ],
+      "conflicts": [
+        "Both guides say the payment leaves processing for `succeeded` or `failed`. The general November PaymentIntent object API enumerates `succeeded` and does not expose a `failed` status enum. Preserve the guide's failure outcome as wording, without presenting it as a literal PaymentIntent state or assigning the exact failure state from this evidence alone.",
+        "The Brazil-domiciled business restriction shown in the current source and concept comes from the adjacent Pix overview (May line 94 and November lines 57-61, 146-148, and 200), outside the paired standalone guide. The 2026-04-22.dahlia changelog separately refers to Brazil customers and versioned mandate options. Distinguish buyer country and business domicile and keep the restriction and API scope separately attributed.",
+        "`amount` is a mandate bound (`maximum`, default) or exact amount (`fixed`), not a required billing cadence. `never` for `amount_includes_iof` means customer-paid where IOF applies. The adjacent Pix November overview lines 202\u2013206 limits IOF to foreign exchange transactions and warns the rate can change."
+      ],
+      "reason": "The same behavioral rules remain in the full recapture. Source coverage should correct broad retry wording and clarify API states and underlying authority for existing domicile and tax qualifications. The concept may use the same bounded wording."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/payments/pix/pix-automatico, old raw lines 8-42 and new raw lines 9-43 describe the same customer bank-app mandate amount and cycle, initial payment when applicable or setup alone on a free trial, and merchant confirmation of a later PaymentIntent. Stripe triggers a pre-debit notification and the bank issues the notice with the amount and a cancellation option. The payment waits in `processing` and automatic capture is attempted after three days. Old raw lines 69-73 and new raw lines 76-80 retain daily default retries for retryable capture failure and the separate optional Billing retry of an unscheduled payment. source-stripe-pix-automatico.md covers the timing and field defaults but should condition capture retries, distinguish the guide\u2019s failure description from an API status, and attribute merchant domicile scope to the separate Pix overview.",
+    "Q2": "For https://docs.stripe.com/payments/pix/pix-automatico, old raw lines 36-43 and new raw lines 37-50 preserve the May 6 and November 7, 2026 pre-debit rule, with November newly illustrating a September 1 initial payment, October 1 notice and October 4 debit. The illustration introduces no new timing rule. Old raw lines 53-79 and new raw lines 60-86 keep all mandate values, retry qualifications and related routes, with formatting and buyer/customer wording edits. Preserve paid versus no-charge mandate creation, per-recurring-transaction IOF subject to the independent Pix FX scope, and no daily schedule. source-stripe-pix-automatico.md should retain both dated raws and link reciprocally through the real-time concept, provider and company listings, with independent Pix overview and implementation selector routes."
+  }
+}

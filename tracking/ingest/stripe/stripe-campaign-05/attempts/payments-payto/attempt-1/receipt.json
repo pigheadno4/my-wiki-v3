@@ -1,0 +1,182 @@
+{
+  "job_id": "payments-payto",
+  "attempt": 1,
+  "raw_path": "raw/stripe-payments-payto-2026-11-07.md",
+  "raw_sha256": "e2695e7b48d12f1223f49930bc3682e92e731602f45d84f4bfd77f2ffc820d32",
+  "prior_raw_path": "raw/stripe-payto-2025.md",
+  "prior_raw_sha256": "525ec63fed136971507399b83be95c4b6e6b0a66bf07d4135bc4c823a01103f5",
+  "source_targets": [
+    "wiki/sources/source-stripe-payto.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-payto.md": "4e16bfd3f78b5890d24fc37512c2111dd10c9ccb241cb21a90de3a07891f1130"
+  },
+  "read_ranges": {
+    "raw/stripe-payments-payto-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 273
+      }
+    ],
+    "raw/stripe-payto-2025.md": [
+      {
+        "start": 1,
+        "end": 180
+      }
+    ],
+    "wiki/sources/source-stripe-payto.md": [
+      {
+        "start": 1,
+        "end": 42
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/7c62721ef45f6f7d6955f375/content.diff": [
+      {
+        "start": 1,
+        "end": 443
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 11
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 352,
+        "end": 362
+      },
+      {
+        "start": 746,
+        "end": 750
+      }
+    ],
+    "wiki/concepts/stripe-real-time-payments.md": [
+      {
+        "start": 68,
+        "end": 102
+      },
+      {
+        "start": 207,
+        "end": 220
+      }
+    ],
+    "raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md": [
+      {
+        "start": 156,
+        "end": 164
+      },
+      {
+        "start": 292,
+        "end": 301
+      }
+    ],
+    "raw/stripe-payments-upi-2026-11-07.md": [
+      {
+        "start": 9,
+        "end": 13
+      },
+      {
+        "start": 29,
+        "end": 42
+      }
+    ],
+    "raw/stripe-payments-payto-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-payments-payto-save-during-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-payments-payto-set-up-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "The default per-transaction limit is 10,000 AUD.",
+      "location": "raw/stripe-payments-payto-2026-11-07.md:72"
+    },
+    {
+      "text": "A name mismatch can cause the refund to fail.",
+      "location": "raw/stripe-payments-payto-2026-11-07.md:110"
+    },
+    {
+      "text": "cancels the mandate. Customers can also revoke a mandate through their banking app or by contacting their bank.",
+      "location": "raw/stripe-payments-payto-2026-11-07.md:150"
+    },
+    {
+      "text": "\u2717 Off-session payments",
+      "location": "raw/stripe-payments-payto-2026-11-07.md:190"
+    },
+    {
+      "text": "Stripe typically reports the final payment status within 60 seconds after mandate authorization.",
+      "location": "raw/stripe-payments-payto-2026-11-07.md:257"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Stripe typically sends a notification of the final status of the payment within 60 seconds of the mandate authorization.",
+      "location": "raw/stripe-payto-2025.md:10"
+    },
+    {
+      "text": "Stripe sets up one-off mandates automatically.",
+      "location": "raw/stripe-payto-2025.md:88"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Old raw lines 8-75 and new raw lines 9-36, 53-75 and 245-257 describe a real-time AUD method with approved Australian merchant and customer scope, one-time and recurring payments, additional identity verification following an access request, and bank mandate authentication with PayID or BSB/account number. The bank prompts the customer, typically by push or email. Stripe usually reports final success or failure within 60 seconds of mandate authorization, separately from authorization and standard payouts. New raw lines 12 and 27-51 add explicit approval, possible post-activation review, merchant/platform or marketplace and B2B/B2C labels, and seven prohibited MCCs.",
+    "New raw lines 61-75 distinguish AUD 0.50 minimum, AUD 10,000 default account per-transaction maximum and up to AUD 100,000 with approval, still subject to bank mandate limits. Old raw lines 128-180 and new raw lines 191-244 retain bank/account performance caveats and the bank-specific examples. ANZ, CBA, Westpac and Macquarie reject amounts over AUD 25,000 and mandates with no maximum; Westpac can decline high-risk-merchant ad-hoc payments over AUD 1,000. The below-AUD-1,000 guidance addresses performance rather than a universal limit.",
+    "Old raw lines 84-102 and new raw lines 130-164 describe required bank-authorized mandates. Stripe automatically configures a one-off mandate with fixed payment amount, ad hoc cadence and one payment, and the inferred purpose can be overridden. A recurring merchant specifies the least permissive terms; fixed amount requires an amount and payment equality, maximum defaults apply, and dated bank caps still matter. New raw lines 134-150 clarify the customer authorizes at their bank, the merchant need not present its own legal mandate text for this method, and PaymentMethod detachment cancels the mandate while customer bank revocation is another path.",
+    "Old raw lines 104-114 and new raw lines 93-128 cover full and partial refunds within two years, typically minutes with bank-dependent delays, and final disputes. November specifically says billing name must match the bank-account name for refunds of PayID payments, since mismatch can cause failure, and clarifies single full dispute support, no evidence or appeal, Stripe balance deduction and two dispute webhooks. To return funds after resolving with the customer, the customer makes a new payment. Use refund status for outcome.",
+    "Old raw lines 78-81 and 116-126 and new raw lines 166-190 and 259-273 distinguish Checkout Sessions, Payment Element, Payment Links, Billing and separate API routes, old direct, destination, and separate charge/transfer Connect types, and `payto_payments` capability requests for Express or non-Stripe dashboards. New raw lines 259-265 add bank statement business name/reference with bank-dependent display, destination-charge platform identity without `on_behalf_of` versus connected-account identity with it, and absence of a separate PayTo network transaction ID. The November acceptance, save-during and setup captures are variant routes alone."
+  ],
+  "substantive_changes": [
+    "November's eligibility and limits text, domestic-only and MCC scope, explicit authorization/product/API labels, refund name matching, mandate cancellation and retrieval, and descriptor/reconciliation rules augment the May full overview. Preserve directly stated dispute details and the recurring/off-session tension instead of treating connected-account eligibility or charges as verified.",
+    "Section reorganization, table padding, retargeted guidance, and the Horizon Credit Union-to-Horizon Bank name and link display depend on the capture. The 44 bank-table rows and principal account/risk caveats remain. The November overview has a full body, with links to separate navigation-only acceptance, save-during and setup captures."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the 2026-05-06 and 2026-11-07 recaptures distinct, using raw header dates, especially historical Connect charge types absent as a general list in November, dated bank caps and recurring mandate defaults, plus the distinction among merchant eligibility, bank authorization, eventual payment outcome and payout. Keep old raw lines 116-126 and new raw lines 259-273 object/charge-type scopes."
+  ],
+  "conflicts": [
+    "New raw lines 78, 130-164 and 185-190 describe recurring, PaymentIntent future usage and Setup Intents as supported but mark Off-session payments unsupported. The separate November payment-method support matrix (raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md lines 292-301) marks PayTo future usage Supported and footnotes non-card/non-bank-debit methods as off_session-only when supported. Preserve this documented tension, including that neither matrix resolves Billing `charge_automatically`, and avoid inferring a working off-session flow from a mandate or product label.",
+    "Current source line 21 and concept line 75 promise a final status within 60 seconds. Old raw lines 8-10 and new raw lines 245-257 both say typically. Current source line 25 and concept line 77 say Stripe auto-sets all one-off fields, but old raw line 99 and new raw line 161 allow overriding the inferred purpose. Flag both baseline errors independently of raw changes.",
+    "Current source line 13 calls PayTo unique among real-time methods. The 2026-11-07 UPI method profile (raw/stripe-payments-upi-2026-11-07.md lines 9-13 and 29-35) independently describes a real-time method with recurring mandates. Use direct positive PayTo facts instead of a broad exclusivity claim."
+  ],
+  "unresolved_questions": [
+    "The compared documentation does not resolve concrete off-session or automatic Billing collection capability across versions and routes, or actual merchant approval, mandates, payment outcomes, bank statement strings and funds. The target pages listed in variant indexes were not read."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-real-time-payments.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-payto.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Current source lines 13-38 capture the basic historical flow, but the 60-second promise, all-fields-auto wording, uniqueness and missing November eligibility/actor, refund-name, mandate lifecycle, and statement descriptor details require correction. Keep both raw routes, capability status and actual payment proof separate."
+      ],
+      "conflicts": [
+        "New raw lines 78, 130-164 and 185-190 describe recurring, PaymentIntent future usage and Setup Intents as supported but mark Off-session payments unsupported. The separate November payment-method support matrix (raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md lines 292-301) marks PayTo future usage Supported and footnotes non-card/non-bank-debit methods as off_session-only when supported. Preserve this documented tension, including that neither matrix resolves Billing `charge_automatically`, and avoid inferring a working off-session flow from a mandate or product label.",
+        "Current source line 21 and concept line 75 promise a final status within 60 seconds. Old raw lines 8-10 and new raw lines 245-257 both say typically. Current source line 25 and concept line 77 say Stripe auto-sets all one-off fields, but old raw line 99 and new raw line 161 allow overriding the inferred purpose. Flag both baseline errors independently of raw changes.",
+        "Current source line 13 calls PayTo unique among real-time methods. The 2026-11-07 UPI method profile (raw/stripe-payments-upi-2026-11-07.md lines 9-13 and 29-35) independently describes a real-time method with recurring mandates. Use direct positive PayTo facts instead of a broad exclusivity claim."
+      ],
+      "reason": "A reader must be able to distinguish method maximum from default merchant and bank limits, understand a potentially failed PayID refund, interpret a delayed payment result, and avoid building an off-session flow solely from general recurring capability. Keep root wiki index line 7, provider index lines 357 and 748, and Real-Time Payments concept lines 69-85 and 214 reciprocal."
+    }
+  ],
+  "answers": {
+    "Q1": "The 2026-11-07 overview at https://docs.stripe.com/payments/payto documents approved, domestic Australian AUD payments using PayID or a BSB and account number. New raw lines 9-190 and 245-273 show identity verification, customer-bank mandate authorization, Stripe's typically delayed final result within 60 seconds of authorization, one-off automatic mandates, restricted recurring terms, and separate settlement. The ordinary account limit is AUD 10,000, with approved higher limits to AUD 100,000 and separate bank mandate caps. Old raw lines 8-180 already cover the core flow, historical dispute finality, refunds and bank caps. November adds PayID refund-name matching, cancellation by PaymentMethod detachment or customer bank revocation, and destination-charge statement identity. source-stripe-payto.md preserves the older flow but overstates timing and one-off mandate defaults and omits the new operational qualifications.",
+    "Q2": "At https://docs.stripe.com/payments/payto, old raw lines 8-180 and new raw lines 9-273 preserve the dated AU mandate, verification, typically delayed result and final-dispute behavior. New limits, approval and MCC detail, refund and mandate conditions, and Connect statement identity are substantive. The reordered sections, bank link labels and separate variant links are presentational or navigation changes. Preserve the new recurring and Setup Intent support alongside the off-session unsupported cell and the separate matrix's future-usage footnote. Retain May's listed Connect charge types and the bank-specific exceptions while adding the full November raw to source-stripe-payto.md and maintaining the Stripe index and Real-Time Payments concept routes."
+  }
+}

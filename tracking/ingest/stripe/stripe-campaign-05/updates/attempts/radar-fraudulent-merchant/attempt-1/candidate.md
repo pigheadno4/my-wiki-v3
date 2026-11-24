@@ -1,0 +1,98 @@
+---
+title: "Stripe — Account Risk Signals"
+type: source
+date_ingested: 2026-05-10
+date_updated: 2026-11-22
+original_format: webpage
+raw_files:
+  - "stripe-radar-fraudulent-merchant-2026-11-07.md"
+  - "stripe-radar-account-risk-signals-2026.md"
+  - "stripe-radar-fraudulent-merchant-signal-2026.md"
+  - "stripe-radar-merchant-delinquency-signal-2026.md"
+  - "stripe-radar-fraudulent-website-signal-2026.md"
+tags: [stripe, radar, connect, platforms, account-signals, fraud, delinquency, website]
+---
+
+## Summary
+
+The Account Signals API supplies risk intelligence for Connect platforms about potential merchant fraud, financial distress and website legitimacy. The platform can review a signal and choose an account action in Radar. See the dated contract for each signal.
+
+## 3 Signal Types
+
+| Signal | Detects | Method |
+| --- | --- | --- |
+| Fraudulent merchant | Misrepresentation, unauthorized transactions, first-party fraud | Stripe evaluates new and existing connected accounts automatically |
+| Merchant delinquency risk | Financial distress → unfulfilled orders, disputes, negative balances | ML model (continuous) |
+| Fraudulent website | Deceptive/policy-violating websites, fake storefronts | On-demand analysis |
+
+Readiness or creation events and their payloads are signal-specific. The November fraudulent-merchant guide describes a notification when Stripe creates that signal.
+
+## Actions
+
+Raise review, pause payouts, pause payments, reject account, set reserves, request identity verification — all via Radar for Platforms.
+
+## Related Pages
+
+- [[stripe-radar]] — concept page
+- [[source-stripe-radar-for-platforms]] — Radar for Platforms actions and investigation
+- [November Account Fraud Prevention actions](../../raw/stripe-radar-account-fraud-prevention-2026-11-07.md#L113) — the action route linked from the November merchant signal guide
+- [[stripe]] — Stripe company page
+
+## Fraudulent merchant signal
+
+### November 7, 2026 guide
+
+Stripe automatically evaluates the signal for new or existing connected accounts. Radar Standard and higher include the signal. Plus and Pro can receive the 0–100 `probability` score and `additional_details.indicators`. Both details are absent if the risk level is `unknown`.
+
+| Risk level | November meaning |
+| --- | --- |
+| `highest` | Approximately 90% probability that the account is fraudulent |
+| `elevated` | Approximately 50% probability that the account is fraudulent |
+| `normal` | Low probability of fraud |
+| `unknown` | Stripe could not determine a risk level |
+
+These are fraudulent-merchant signal probabilities. General Radar account scoring separately estimates platform financial loss from fraud or insolvency. Use the signal as evidence for review and decide on any account action separately.
+
+November’s indicators each carry an `impact` (`decrease`, `neutral`, `slight_increase` or `strong_increase`) and an `explanation`. The dated table uses `geolocation`, includes `other` for a type the API version does not support, and omits May’s `web_presence` row. See the November **Indicators** table for the exact vocabulary.
+
+#### Event and retrieval
+
+Stripe sends `v2.signals.account_signal.fraudulent_merchant_ready` when it creates a signal. The November event is thin with `data: {}`. Use `related_object.id` to fetch that signal. The dated fetch and list samples use `Stripe-Version: 2026-10-28.preview` with `/v2/signals/account_signals`. Fetch appends the signal ID. List filters with `account_details[account]` and the requested type, with `type[0]=fraudulent_merchant` in the example. It returns only the latest signal per requested type. Signals can be retrieved for up to 90 days after creation. List results omit older signals.
+
+Both response examples nest `risk_level`, `probability` and `additional_details.indicators` under `fraudulent_merchant`. The example serializes the score as the JSON string `"53.75"`. The guide describes the 0–100 score range. The example gives the wire representation for that sample.
+
+#### Sandbox
+
+To simulate a signal, the November guide adds a suffix to the connected account’s `business_profile.name`. Stripe creates a signal and sends the same readiness webhook. The supplied fixtures cover `normal`, `elevated` and `highest`, with one suffix active per account, in a sandbox only. See the dated **Test in a sandbox** section for the exact fixture values.
+
+### May 10, 2026 guide
+
+May listed `highest` (approximately 90%), `elevated` (approximately 50%), `normal`, `low` and `not_assessed`. It said each signal returned `risk_level` and a 0–100 `probability`, and described the same readiness event as carrying `risk_level`, `probability` and `indicators`. The May indicator table listed `bank_account`, `business_information_and_account_activity`, `disputes`, `failures`, `geo_location`, `other_related_accounts`, `other_transaction_activity`, `owner_email` and `web_presence`. The paired captures leave any mapping between May’s omitted levels and November’s `unknown` unresolved.
+
+## Merchant Delinquency Risk Signal Detail
+
+**Risk levels in the separate May 10, 2026 delinquency guide**: `highest`, `elevated`, `normal`, `low`, `not_assessed`.
+
+**16 indicators**: `account_balance`, `aov`, `charge_concentration`, `dispute_window`, `disputes`, `duplicates`, `exposure`, `firmographic`, `lifetime_metrics`, `payment_processing`, `payment_volume`, `payouts`, `refunds`, `related_accounts`, `tenure`, `transfers`.
+
+**Webhook**: `v1.account_signals[delinquency].created` (note: v1 format, unlike fraudulent merchant's v2 format).
+
+## Fraudulent Website Signal Detail
+
+**Key difference from other signals**: on-demand (not continuous) — triggered via `POST /v2/core/account_evaluations`.
+
+**Can evaluate before account exists**: pass `account_data.defaults.profile.business_url` instead of `account` ID.
+
+**Asynchronous** — webhook: `v2.core.account_signals.fraudulent_website_ready`.
+
+**Payload fields**: `risk_level` (`low`/`normal`/`elevated`/`highest`/`unknown`), `details` (LLM-generated plain text description), `evaluation_id`, `signal_id`, `evaluated_at`.
+
+**No indicator table** — LLM generates a `details` text explanation instead. `unknown` returned when URL is invalid or unreachable.
+
+## Raw Sources
+
+- [[raw/stripe-radar-fraudulent-merchant-2026-11-07|November 7, 2026 fraudulent merchant guide]] — plan-specific details, thin event, fetch/list and sandbox.
+- [[raw/stripe-radar-account-risk-signals-2026|May 10, 2026 Account Signals API overview]] — three signal types and platform actions.
+- [[raw/stripe-radar-fraudulent-merchant-signal-2026|May 10, 2026 fraudulent merchant guide]] — historical levels, indicators and event wording.
+- [[raw/stripe-radar-merchant-delinquency-signal-2026|May 10, 2026 merchant delinquency guide]] — separate indicator and event scope.
+- [[raw/stripe-radar-fraudulent-website-signal-2026|May 10, 2026 fraudulent website guide]] — separate on-demand evaluation and response.

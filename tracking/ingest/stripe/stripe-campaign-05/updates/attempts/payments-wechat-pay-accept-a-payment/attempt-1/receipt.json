@@ -1,0 +1,195 @@
+{
+  "job_id": "payments-wechat-pay-accept-a-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Docs — Accept a WeChat Pay payment\"\ntype: source\ndate_ingested: 2026-05-08\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/wechat-pay/accept-a-payment\"\nraw_files:\n  - \"stripe-wechat-pay-accept-payment-2025.md\"\ntags: [stripe, wechat-pay, wallets, china, digital-wallet, payment-intents, checkout]\n---\n\n## Overview\n\nThe May 8, 2026 acceptance guide documents two online routes for single-use WeChat Pay, Checkout and Direct API on web. Use the separate [[source-stripe-terminal-additional-payment-methods|Terminal guide]] for in-person payments. The November 7, 2026 acceptance capture links Checkout, Direct API, iOS and Android. The selector supplies these routes. Native implementation details and version requirements remain unverified in this capture.\n\n## May 2026 Checkout\n\nThe guide describes dynamic method selection or manual configuration on the Checkout Session. Its manual examples add `wechat_pay` to `payment_method_types` and set `payment_method_options.wechat_pay.client` to `web`. Use `mode: payment` with one-time line items in the same currency. Mixed currencies need separate Sessions. The May guide lists setup and subscription modes as unavailable for WeChat Pay. Its hosted example uses `success_url`. Its full embedded example uses `ui_mode: embedded_page` and `return_url`.\n\nThe customer scans the Checkout QR code in WeChat Pay to authorize payment. May Checkout sandbox QR codes lead to a Stripe-hosted authorization simulation. See the May Checkout fulfillment section for the separate order fulfillment guidance.\n\n## May 2026 Direct API web example\n\nThe merchant’s server creates a PaymentIntent with an amount and a currency mapped to the account country. The May create example supplies `payment_method_types: [\"wechat_pay\"]`. The browser receives the PaymentIntent client secret from the server through a single-page app endpoint or server rendering. It calls Stripe.js `confirmWechatPayPayment` with the client secret and the example’s `client: web` configuration.\n\nThe merchant displays the QR code from `next_action.wechat_pay_display_qr_code.data` as a generated QR image or uses `image_data_url` directly as an image source. The customer scans it and authenticates in WeChat Pay. Keep the QR page open until the outcome is known. For fulfillment use server-side Stripe payment status or events. In the May guide, `payment_intent.succeeded` corresponds to `succeeded`, and `payment_intent.payment_failed` returns the intent to `requires_payment_method`. A browser return or acknowledgement leaves payment unconfirmed. In the sandbox, a normal QR reader opens a Stripe test page that can authorize or fail the test payment.\n\nThe [August 26, 2026 Dahlia preview changelog](../../raw/stripe-changelog-dahlia-2026-08-26-removes-payment-method-types-parameter-from-payment-intents-setup-intents-2026-11-07.md#L7-L26) documents HTTP 400 `payment_method_types_no_longer_supported` on affected PaymentIntent create, update and confirm requests under `2026-08-26.preview` or later, with `payment_method_types` still available as a computed read-only field. The May Checkout Session configuration is a separate API object.\n\n## Dated eligibility and mobile scope\n\nThe May Checkout compatibility list contains 35 business-location codes and 13 presentment currencies (`aud, cad, cny, eur, gbp, hkd, jpy, sgd, usd, dkk, nok, sek, chf`). Its Direct API table maps currencies to account countries and says customers see CNY in the WeChat Pay app. The separate November [[source-stripe-wechat-pay|WeChat Pay product overview]] lists 22 merchant locations. Each location and currency claim belongs to its stated route and capture date. Check account eligibility and currency support for the integration in use.\n\nThe November product overview marks in-app payments unsupported in its product matrix and describes a separate supported native experience where the merchant app opens WeChat Pay and receives the customer back. For custom or native checkout, show success after the merchant server confirms `succeeded`. Its two-hour authorization window is for the desktop QR flow and starts when the payment request is created. After expiration the customer starts a new payment attempt.\n\nThe separate [[source-github-stripe-js|Stripe.js 10.1.0 declaration]] types the optional Direct API `client` value as `web` or `mobile_web`. The declared options type has a required boolean `handleActions` whose comment directs callers to set `false` and handle `next_action`. That is the version-specific direct Stripe.js contract. Native SDK behavior, Mobile Payment Element support, Checkout request options and runtime eligibility are outside that declaration’s evidence.\n\n## Related\n\n- [[stripe-wallets]] — Stripe wallet and WeChat Pay integration context\n- [[stripe]] — Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-wechat-pay-accept-payment-2025|May 8, 2026 WeChat Pay acceptance guide]] — full Checkout and Direct API web bodies.\n\n## Related raw API references\n\n- [[raw/stripe-payments-wechat-pay-accept-a-payment-2026-11-07|November 7, 2026 WeChat Pay acceptance variant index]] — navigation to Checkout, Direct API, iOS and Android.\n",
+  "quotes": {
+    "payments-wechat-pay-accept-a-payment": [
+      {
+        "text": "Use the Payment Intents and Payment Methods APIs to accept WeChat Pay",
+        "location": "raw/stripe-payments-wechat-pay-accept-a-payment-2026-11-07.md:7"
+      },
+      {
+        "text": "[Checkout](https://docs.stripe.com/payments/wechat-pay/accept-a-payment.md?payment-ui=checkout)",
+        "location": "raw/stripe-payments-wechat-pay-accept-a-payment-2026-11-07.md:13"
+      },
+      {
+        "text": "[Direct API](https://docs.stripe.com/payments/wechat-pay/accept-a-payment.md?payment-ui=direct-api)",
+        "location": "raw/stripe-payments-wechat-pay-accept-a-payment-2026-11-07.md:14"
+      },
+      {
+        "text": "[iOS](https://docs.stripe.com/payments/wechat-pay/accept-a-payment.md?payment-ui=mobile&platform=ios)",
+        "location": "raw/stripe-payments-wechat-pay-accept-a-payment-2026-11-07.md:15"
+      },
+      {
+        "text": "[Android](https://docs.stripe.com/payments/wechat-pay/accept-a-payment.md?payment-ui=mobile&platform=android)",
+        "location": "raw/stripe-payments-wechat-pay-accept-a-payment-2026-11-07.md:16"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-wechat-pay-accept-a-payment": [
+      {
+        "text": "**Supported business locations**: AU, AT, BE, BG, CA, CY, CZ, DK, EE, FI, FR, DE, GR, HK, HU, IE, IT, JP, LV, LT, LU, MT, NL, NO, PL, PT, RO, SG, SK, SI, ES, SE, CH, GB, US",
+        "location": "raw/stripe-wechat-pay-accept-payment-2025.md:24"
+      },
+      {
+        "text": "success_url: \"https://example.com/success\"",
+        "location": "raw/stripe-wechat-pay-accept-payment-2025.md:82"
+      },
+      {
+        "text": "return_url: \"https://example.com/return\"",
+        "location": "raw/stripe-wechat-pay-accept-payment-2025.md:113"
+      },
+      {
+        "text": "WeChat Pay is currently only available on Web.",
+        "location": "raw/stripe-wechat-pay-accept-payment-2025.md:139"
+      },
+      {
+        "text": "return to a status of `requires_payment_method`.",
+        "location": "raw/stripe-wechat-pay-accept-payment-2025.md:295"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-wechat-pay-accept-a-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 16
+      }
+    ],
+    "raw/stripe-wechat-pay-accept-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 319
+      }
+    ],
+    "wiki/sources/source-stripe-wechat-pay-accept-payment.md": [
+      {
+        "start": 1,
+        "end": 52
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/c5c9411a6bc63c09b9f88a56/content.diff": [
+      {
+        "start": 1,
+        "end": 323
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-wechat-pay-accept-a-payment/attempt-1/receipt.json": [
+      {
+        "start": 1,
+        "end": 170
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-wechat-pay-accept-a-payment/attempt-1/review.json": [
+      {
+        "start": 1,
+        "end": 90
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 382,
+        "end": 389
+      },
+      {
+        "start": 416,
+        "end": 422
+      }
+    ],
+    "wiki/concepts/stripe-wallets.md": [
+      {
+        "start": 360,
+        "end": 390
+      },
+      {
+        "start": 421,
+        "end": 430
+      }
+    ],
+    "wiki/sources/source-stripe-wechat-pay.md": [
+      {
+        "start": 1,
+        "end": 40
+      }
+    ],
+    "wiki/sources/stripe/github/source-github-stripe-js.md": [
+      {
+        "start": 402,
+        "end": 421
+      }
+    ],
+    "raw/stripe-payments-wechat-pay-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 26
+      },
+      {
+        "start": 150,
+        "end": 204
+      }
+    ],
+    "raw/github/stripe/stripe-js/snapshots/2026-10-18-3de39c5/files/types/stripe-js/payment-intents.d.ts": [
+      {
+        "start": 1447,
+        "end": 1482
+      }
+    ],
+    "raw/stripe-changelog-dahlia-2026-08-26-removes-payment-method-types-parameter-from-payment-intents-setup-intents-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 28
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md": [
+      {
+        "start": 579,
+        "end": 585
+      }
+    ]
+  },
+  "answers": {
+    "payments-wechat-pay-accept-a-payment": {
+      "Q1": "The full 2026-11-07 capture at https://docs.stripe.com/payments/wechat-pay/accept-a-payment lists Checkout, Direct API, iOS and Android in new raw lines 9-16, without additional behavior. Old raw lines 8-319 from 2026-05-08 describe one-time same-currency Checkout or a merchant-server PaymentIntent with a client secret for direct Stripe.js confirmation. For May web Direct API, the merchant renders the returned QR, the customer authenticates in WeChat, and the server uses Stripe events to distinguish succeeded from failure with requires_payment_method. Sandbox simulations are separate. source-stripe-wechat-pay-accept-payment.md dates the historical web example, counts the 35 May Checkout location codes, and distinguishes the November route index and separate product overview.",
+      "Q2": "At https://docs.stripe.com/payments/wechat-pay/accept-a-payment, new raw lines 9-16 replace the presentation of the full dated old raw lines 8-319 with four navigation links. New iOS and Android routes do not establish when support changed or what those SDKs do. Preserve May's one-time Checkout modes, webhook outcome boundary and 35 listed business codes against the distinct 22-location overview. Preserve the separate November eligible-native description alongside its Mobile Payment Element constraint and the exact Stripe.js mobile_web declaration as its own web contract. Date the May direct PaymentIntent write (old raw lines 154-169) and retain the separate August 26 preview removal with a readable computed field (changelog lines 7-26). Keep the May hosted and embedded Checkout Session settings distinct from that version change (old raw lines 48-116). Preserve both integration captures in source-stripe-wechat-pay-accept-payment.md with reciprocal Stripe index and Wallets concept routes and its distinct method overview."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-wechat-pay-accept-a-payment-dated-implementation",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Integration** (historically collected Checkout + Direct API web guide; later typed extension below):\n\n- **Checkout**: add `wechat_pay` to `payment_method_types`, set `payment_method_options.wechat_pay.client = 'web'`, all line items same currency. Supports 37 business locations (more than overview's 22 — adds BG, CY, CZ, EE, GR, HU, LV, LT, MT, PL, RO, SK, SI).\n- **Direct API**: `stripe.confirmWechatPayPayment()` → QR from `next_action.wechat_pay_display_qr_code.image_data_url` (or `.data`); stay on QR page until webhook confirms. Web only.\n- **Fulfillment**: `payment_intent.succeeded` / `payment_intent.payment_failed` webhooks.",
+      "proposed_markdown": "**Integration**. The May 8, 2026 Checkout guide uses one-time line items in a single currency and lists 35 business-location codes. Its hosted and full embedded examples configure separate return parameters. The May Direct API web example uses Stripe.js QR display and server-side payment status to decide fulfillment. The November acceptance capture links Checkout, Direct API, iOS and Android. See [[source-stripe-wechat-pay-accept-payment]] for dated request fields and [[source-stripe-wechat-pay]] for the distinct November product overview and its 22-location list.",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "May raw lines 20–40, 48–116 and 133–295 are the dated Checkout and web evidence. The separate November product overview provides the 22-location list at line 19."
+      ]
+    },
+    {
+      "update_id": "payments-wechat-pay-accept-a-payment-dated-reciprocal",
+      "target_path": "wiki/concepts/stripe-wallets.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-wechat-pay-accept-payment]] — WeChat Pay integration: Checkout + Direct API (web only), confirmWechatPayPayment(), QR from next_action, 37 business locations",
+      "proposed_markdown": "- [[source-stripe-wechat-pay-accept-payment]] — May 2026 Checkout and Direct API web guide with 35 listed Checkout business locations, QR and fulfillment terms. November indexes Checkout, Direct API, iOS and Android.",
+      "quote_indexes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ]
+}

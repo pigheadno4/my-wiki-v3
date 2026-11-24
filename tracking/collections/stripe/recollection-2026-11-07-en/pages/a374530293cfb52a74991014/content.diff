@@ -1,0 +1,537 @@
+--- raw/stripe-vault-and-forward-2026.md
++++ raw/stripe-payments-vault-and-forward-2026-11-07.md
+@@ -2,30 +2,55 @@
+ 
+ Use the Vault and Forward API to securely share card details across multiple processors.
+ 
+-The Vault and Forward API allows you to tokenize and store card details in Stripe’s PCI-compliant vault and route that data to supported processors or endpoints. Leverage the API to:
++> #### Process on a third-party PSP without building the integration
++> 
++> With [Stripe Orchestration](https://docs.stripe.com/payments/orchestration.md), Stripe manages the full processor integration on your behalf—routing, authentication, capture, refunds, and 3DS across multiple PSPs. Same Payment Intents API, no PSP-specific code. [Share your email address to request access.](https://docs.stripe.com/payments/vault-and-forward.md#orchestration_preview)
++
++### Want access to Orchestration?
++
++Enter your email to request access.
++
++```bash
++curl https://docs.stripe.com/preview/register \
++  -X POST \
++  -H "Content-Type: application/json" \
++  -H "Referer: https://docs.stripe.com/payments/vault-and-forward" \
++  -d '{"email": "EMAIL", "preview": "orchestration_preview"}'
++```
++
++The Vault and Forward API allows you to tokenize and store card details in Stripe’s PCI-compliant vault and route that data to supported processors or endpoints. Use the API to:
+ 
+ - Use the [Payment Element](https://docs.stripe.com/payments/payment-element.md) [across multiple processors](https://docs.stripe.com/payments/forwarding-third-party-processors.md).
+ - Use Stripe as your primary vault for card details across processors.
+ - Route card details to your own [PCI compliant token vault](https://docs.stripe.com/payments/forwarding-token-vault.md).
+ 
+ > #### Request access
+->
+-> To gain access to use Stripe’s forwarding service, contact [Stripe support](https://dashboard.stripe.com/login?redirect=https%3A%2F%2Fsupport.stripe.com%2Fcontact%2Femail%3Fquestion%3Dother%26topic%3Dpayment_apis%26subject%3DHow%2520can%2520I%2520access%2520the%2520Vault%2520and%2520Forward%2520API%3F%26body%3DWhat%2520endpoint%28s%29%2520would%2520you%2520like%2520to%2520forward%2520card%2520details%2520to%3F).
++> 
++> The Vault and Forward API is available only to businesses with a dedicated Stripe account team. Contact your account team to request access.
+ 
+ ## Forward requests to destination endpoints and populate card details from Stripe’s vault
+ 
+ API flows for forwarding card details (See full diagram at https://docs.stripe.com/payments/vault-and-forward)
+ 
++```text
++[Server] -- Create a PaymentMethod --> [Stripe]
++[Stripe] -- Stripe returns a PaymentMethod object --> [Server]
++[Server] -- Call the Vault and Forward API with the PaymentMethod you provide --> [Stripe]
++[Stripe] -- Stripe forwards the request with card data --> [Destination endpoint]
++[Destination endpoint] -- Destination endpoint returns a response --> [Stripe]
++[Stripe] -- Stripe redacts identified PCI sensitive data and relays the response --> [Server]
++```
++
+ ## Collect card details and create a PaymentMethod
+ 
+-To collect card details, use the Payment Element to create [a PaymentMethod](https://docs.stripe.com/payments/finalize-payments-on-the-server-legacy.md?type=payment#create-pm). After you create a PaymentMethod, we automatically store card details in Stripe’s PCI compliant vault. If you have your own frontend, you can still use the Vault and Forward API by [creating a PaymentMethod directly](https://docs.stripe.com/api/payment_methods/create.md).
++To collect card details, use the Payment Element to create [a PaymentMethod](https://docs.stripe.com/payments/finalize-payments-on-the-server-legacy.md?type=payment#create-pm). After you create a PaymentMethod, we automatically store card details in Stripe’s PCI compliant vault. If you have your own front end, you can still use the Vault and Forward API by [creating a PaymentMethod directly](https://docs.stripe.com/api/payment_methods/create.md).
+ 
+ Typically, you can only reuse PaymentMethods by attaching them to a Customer. However, the Vault and Forward API accepts all PaymentMethod objects, including those not attached to a customer.
+ 
+ Similarly, the Vault and Forward API doesn’t [confirm](https://docs.stripe.com/api/payment_intents/confirm.md) or [capture](https://docs.stripe.com/api/payment_intents/capture.md) PaymentIntents. As a result, you might unintentionally use them to capture a payment on Stripe that was already captured on another processor.
+ 
+ > #### Link transactions
+->
++> 
+ > The consumer payment credentials saved with Link transactions can’t be transferred between payment processors. Any credentials saved through Link are excluded from forwarding.
+ 
+ CVCs expire automatically after a certain time period and also expire when used with the Vault and Forward API. If you require a CVC after either of these conditions are met, you must re-collect the card details.
+@@ -34,63 +59,48 @@
+ 
+ If you use [SetupIntents](https://docs.stripe.com/api/setup_intents.md) to collect card details before forwarding, card validation during SetupIntent confirmation can consume the CVC. When this happens, subsequent Forwarding API calls won’t include the CVC, which can cause failures with processors that require it.
+ 
+-To access options for preserving CVC availability when using SetupIntents with the Forwarding API, contact [Stripe support](https://dashboard.stripe.com/login?redirect=https%3A%2F%2Fsupport.stripe.com%2Fcontact%2Femail%3Fquestion%3Dother%26topic%3Dpayment_apis%26subject%3DPreserve%2520CVC%2520with%2520SetupIntents%2520and%2520Forwarding%2520API).
++Contact your account team for options to preserve CVC availability when using `SetupIntents` with the Vault and Forward API.
+ 
+ ## Create a ForwardingRequest
+ 
+ To send card details from Stripe’s vault, you must [Create a ForwardingRequest](https://docs.stripe.com/api/forwarding/forwarding_requests/create.md) and include the following parameters:
+ 
+-- `payment_method`: Object that enables Stripe to identify your customer’s card details within Stripe’s vault and insert that data into the request body.
++- `payment_method`: The ID of the object containing the card details in Stripe’s vault. Accepted object types include: PaymentMethod (`pm_`), Source (`src_`) with an underlying card, Card (`card_`), and Issuing Card (`ic_`).
+ - `url`: The exact destination endpoint of your request.
+ - `request.body`: The API request body that you want to send to the destination endpoint (for example, the payments request you send to another processor). Leave any field where you normally input your customer’s card details blank.
+ - `replacements`: Fields that you want Stripe to substitute in the `request.body`. The [available fields](https://docs.stripe.com/api/forwarding/forwarding_requests/create.md#forwarding_request_create-replacements) that we recommend always setting are `card_number`, `card_expiry`, `card_cvc`, and `cardholder_name`. For example, including `card_number` in the `replacements` array replaces the appropriate card number field for your destination endpoint in the `request.body`.
+ 
+ > The placeholder value for each card field in `request.body` must match the JSON type that the destination endpoint expects. Use `""` for string fields and `0` for numeric fields. For example, if your destination endpoint requires `expiryMonth` and `expiryYear` as integers, set them to `0` instead of `""`:
+->
++> 
+ > ```json
+ > "paymentMethod": {"number": "", "expiryMonth": 0, "expiryYear": 0, "cvc": "", "holderName": ""}
+ > ```
+ 
+-````
+-
+-> Stripe might be more lenient than other processors in validating the cardholder name field. If you use the `cardholder_name` replacements field, you’re responsible for making sure that the names you use pass any validation enforced by the destination endpoint. For example, if the destination endpoint expects all names to only contain the letters A-Z with no accent marks or other writing systems, you must make sure the card details you forward meet this requirement. An alternative is to not use the `cardholder_name` replacements field and specify the cardholder name in your request body directly in your request.
++Stripe might be more lenient than other processors in validating the cardholder name field. If you use the `cardholder_name` replacements field, you’re responsible for making sure that the names you use pass any validation enforced by the destination endpoint. For example, if the destination endpoint expects all names to only contain the letters A-Z with no accent marks or other writing systems, you must make sure the card details you forward meet this requirement. An alternative is to not use the `cardholder_name` replacements field and specify the cardholder name in your request body directly in your request.
+ 
+ You must format your request based on the data that the destination endpoint expects. In the example below, the destination endpoint expects an `Idempotency-Key` header and accepts a JSON body with the payment details.
+ 
+ We require you to pass API keys for the destination endpoint on each API request. Stripe forwards the request using the API keys you provide, and only retains hashed and encrypted versions of destination endpoint API keys.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require('stripe')('<<YOUR_SECRET_KEY>>');
+-
+-const request = await stripe.forwarding.requests.create(
+-  {
+-    payment_method: '{{PAYMENTMETHOD_ID}}',
+-    url: 'https://endpoint-url/v1/payments',
+-    request: {
+-      headers: [
+-        {
+-          name: 'Destination-API-Key',
+-          value: '{{DESTINATION_API_KEY}}',
+-        },
+-        {
+-          name: 'Destination-Idempotency-Key',
+-          value: '{{DESTINATION_IDEMPOTENCY_KEY}}',
+-        },
+-      ],
+-      body: '{"amount":{"value":1000,"currency":"usd"},"paymentMethod":{"number":"","expiryMonth":"","expiryYear":"","cvc":"","holderName":""},"reference":"{{REFERENCE_ID}}"}',
+-    },
+-    replacements: ['card_number', 'card_expiry', 'card_cvc', 'cardholder_name'],
+-  },
+-  {
+-    idempotencyKey: '{{IDEMPOTENCYKEY_ID}}',
+-  }
+-);
+-````
++```curl
++curl https://api.stripe.com/v1/forwarding/requests \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -H "Idempotency-Key: {{IDEMPOTENCYKEY_ID}}" \
++  -d "payment_method={{PAYMENTMETHOD_ID}}" \
++  --data-urlencode "url=https://endpoint-url/v1/payments" \
++  -d "request[headers][0][name]=Destination-API-Key" \
++  -d "request[headers][0][value]={{DESTINATION_API_KEY}}" \
++  -d "request[headers][1][name]=Destination-Idempotency-Key" \
++  -d "request[headers][1][value]={{DESTINATION_IDEMPOTENCY_KEY}}" \
++  --data-urlencode "request[body]={\"amount\":{\"value\":1000,\"currency\":\"usd\"},\"paymentMethod\":{\"number\":\"\",\"expiryMonth\":\"\",\"expiryYear\":\"\",\"cvc\":\"\",\"holderName\":\"\"},\"reference\":\"{{REFERENCE_ID}}\"}" \
++  -d "replacements[0]=card_number" \
++  -d "replacements[1]=card_expiry" \
++  -d "replacements[2]=card_cvc" \
++  -d "replacements[3]=cardholder_name"
++```
+ 
+ > You can provide an `Idempotency-Key` to make sure that requests with the same key result in only one outbound request. Use a different and unique key for Stripe and any idempotency keys you provide on the underlying third-party request.
+->
++> 
+ > Use a new `Idempotency-Key` every time you make updates to `request.body` or `request.header` fields. Passing in the older idempotency key results in the API replaying older responses, including any previous validation errors or destination endpoint errors. We recommend that you use a new idempotency key when retrying requests that encountered an error reaching the destination endpoint to make sure the request is retried at the destination.
+ 
+ ## Forward wallet payment methods
+@@ -101,13 +111,13 @@
+ 
+ Stripe supports the following wallets:
+ 
+-- **Apple Pay**: Device Primary Account Numbers (DPANs) only. Apple Pay Merchant Primary Account Numbers (MPANs) aren’t supported.
++- **Apple Pay**: Device Primary Account Numbers (DPANs) and Merchant Primary Account Numbers (MPANs).
+ - **Google Pay**: Both Funding Primary Account Numbers (FPANs) and Device Primary Account Numbers (DPANs).
+ 
+-To access wallet forwarding, contact [Stripe support](https://dashboard.stripe.com/login?redirect=https%3A%2F%2Fsupport.stripe.com%2Fcontact%2Femail%3Fquestion%3Dother%26topic%3Dpayment_apis%26subject%3DHow%2520can%2520I%2520access%2520wallet%2520forwarding%2520for%2520Vault%2520and%2520Forward%3F).
++Contact your account team to access wallet forwarding.
+ 
+ > Link Payments currently unsupported for the Vault and Forward API. Link card transactions have a [PaymentMethod object](https://docs.stripe.com/api/payment_methods/object.md) with a [type](https://docs.stripe.com/api/payment_methods/object.md#payment_method_object-type) of `card` and a [wallet type](https://docs.stripe.com/api/payment_methods/object.md#payment_method_object-card-wallet-type) of `link`. Don’t include PaymentMethods in forwarding requests.
+->
++> 
+ > If your integration uses Link, route Link card transactions to Stripe for processing rather than forwarding them to a third-party endpoint.
+ 
+ ### Detect wallet payment methods
+@@ -127,7 +137,7 @@
+     "wallet": {
+       "type": "google_pay",
+       "google_pay": {
+-        "tokenization_type": "dpan_or_ecommerce_token" // or "fpan"
++        "tokenization_type": "dpan_or_ecommerce_token"  // or "fpan"
+       }
+     }
+   }
+@@ -167,34 +177,21 @@
+ 
+ For Google Pay FPANs, use the same replacement fields as regular card payments:
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const request = await stripe.forwarding.requests.create(
+-  {
+-    payment_method: "{{PAYMENTMETHOD_ID}}",
+-    url: "https://endpoint-url/v1/payments",
+-    request: {
+-      headers: [
+-        {
+-          name: "Destination-API-Key",
+-          value: "{{DESTINATION_API_KEY}}",
+-        },
+-        {
+-          name: "Destination-Idempotency-Key",
+-          value: "{{DESTINATION_IDEMPOTENCY_KEY}}",
+-        },
+-      ],
+-      body: '{"amount":{"value":1000,"currency":"usd"},"paymentMethod":{"number":"","expiryMonth":"","expiryYear":"","cvc":"","holderName":""},"reference":"{{REFERENCE_ID}}"}',
+-    },
+-    replacements: ["card_number", "card_expiry", "card_cvc", "cardholder_name"],
+-  },
+-  {
+-    idempotencyKey: "{{IDEMPOTENCYKEY_ID}}",
+-  },
+-);
++```curl
++curl https://api.stripe.com/v1/forwarding/requests \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -H "Idempotency-Key: {{IDEMPOTENCYKEY_ID}}" \
++  -d "payment_method={{PAYMENTMETHOD_ID}}" \
++  --data-urlencode "url=https://endpoint-url/v1/payments" \
++  -d "request[headers][0][name]=Destination-API-Key" \
++  -d "request[headers][0][value]={{DESTINATION_API_KEY}}" \
++  -d "request[headers][1][name]=Destination-Idempotency-Key" \
++  -d "request[headers][1][value]={{DESTINATION_IDEMPOTENCY_KEY}}" \
++  --data-urlencode "request[body]={\"amount\":{\"value\":1000,\"currency\":\"usd\"},\"paymentMethod\":{\"number\":\"\",\"expiryMonth\":\"\",\"expiryYear\":\"\",\"cvc\":\"\",\"holderName\":\"\"},\"reference\":\"{{REFERENCE_ID}}\"}" \
++  -d "replacements[0]=card_number" \
++  -d "replacements[1]=card_expiry" \
++  -d "replacements[2]=card_cvc" \
++  -d "replacements[3]=cardholder_name"
+ ```
+ 
+ ### Forward wallet DPANs
+@@ -256,14 +253,14 @@
+    Content-Length: 321
+    ```
+ 
+-1. Stripe includes the following headers:
++2. Stripe includes the following headers:
+ 
+    ```
+    Destination-API-Key: {{DESTINATION_API_KEY}}
+    Destination-Idempotency-Key: {{DESTINATION_IDEMPOTENCY_KEY}}
+    ```
+ 
+-1. Stripe includes the following JSON body in the request:
++3. Stripe includes the following JSON body in the request:
+ 
+    ```
+    {
+@@ -271,7 +268,8 @@
+        value: 1000,
+        currency: 'usd'
+      },
+-     paymentMethod: {number: '4242424242424242',
++     paymentMethod: {
++       number: '4242424242424242',
+        expiryMonth: '03',
+        expiryYear: '2030',
+        cvc: '123',
+@@ -281,7 +279,7 @@
+    }
+    ```
+ 
+-> If you’re using the Vault and the Forward API to make an authorization request, you must handle any post-transaction actions, such as refunds or disputes, directly with the third-party processor. Contact Stripe support if you require 3DS authentication across your multiprocessor setup.
++> If you’re using the Vault and the Forward API to make an authorization request, you must handle any post-transaction actions, such as refunds or disputes, directly with the third-party processor. If you need 3DS authentication across multiple payment processors, contact your account team.
+ 
+ ## Handle the response from the destination endpoint
+ 
+@@ -291,55 +289,39 @@
+ 
+ ```json
+ {
+-  id: "fwdreq_123",
+-  object: "forwarding.request",
+-  payment_method: "{{PAYMENT_METHOD}}",
+-  request_details: {
+-    body: '{
+-      "amount": {
+-        "value": 1000,
+-        "currency": "usd"
+-      },
+-      "paymentMethod": {
+-        "number": "424242******4242",
+-        "expiryMonth": "03",
+-        "expiryYear": "2030",
+-        "cvc": "***",
+-        "holderName": "First Last",
+-      },
+-      "reference": "{{REFERENCE_ID}}"
+-    }',
+-    headers: [
++  "id": "fwdreq_123",
++  "object": "forwarding.request",
++  "payment_method": "{{PAYMENT_METHOD}}",
++  "request_details": {
++    "body": "{ \"amount\": { \"value\": 1000, \"currency\": \"usd\" }, \"paymentMethod\": { \"number\": \"424242******4242\", \"expiryMonth\": \"03\", \"expiryYear\": \"2030\", \"cvc\": \"***\", \"holderName\": \"First Last\" }, \"reference\": \"{{REFERENCE_ID}}\" }",
++    "headers": [
+       {
+-        name: "Content-Type",
+-        value: "application/json",
++        "name": "Content-Type",
++        "value": "application/json"
+       },
+       {
+-        name: "Destination-API-Key",
+-        value: "{{DESTINATION_API_KEY}}",
++        "name": "Destination-API-Key",
++        "value": "{{DESTINATION_API_KEY}}"
+       },
+       {
+-        name: "Destination-Idempotency-Key",
+-        value: "{{DESTINATION_IDEMPOTENCY_KEY}}",
++        "name": "Destination-Idempotency-Key",
++        "value": "{{DESTINATION_IDEMPOTENCY_KEY}}"
+       },
+       ...
+     ]
+   },
+-  request_context: {
++  "request_context": {
+       "destination_duration": 234,
+       "destination_ip_address": "35.190.113.80"
+   },
+-  response_details: {
+-    body: '{
+-      // Response from the third-party endpoint goes here
+-      ...
+-    }',
+-    headers: [
++  "response_details": {
++    "body": "{ // Response from the third-party endpoint goes here ... }",
++    "headers": [
+       ...
+     ],
+-    status: 200,
++    "status": 200
+   },
+-  replacements: [
++  "replacements": [
+     "card_number",
+     "card_expiry",
+     "card_cvc",
+@@ -349,15 +331,15 @@
+ }
+ ```
+ 
+-## Configure your Vault and Forward API endpoint
++## Configure your Vault and Forward API endpoint 
+ 
+ To set up your Vault and Forward API endpoint, you must:
+ 
+ - [Confirm that we support the destination endpoint](https://docs.stripe.com/payments/vault-and-forward.md#confirm-endpoint).
+-- Provide a test and production account with [Stripe support](https://dashboard.stripe.com/login?redirect=https%3A%2F%2Fsupport.stripe.com%2Fcontact%2Femail%3Fquestion%3Dother%26topic%3Dpayment_apis%26subject%3DHow%2520can%2520I%2520access%2520the%2520Vault%2520and%2520Forward%2520API%3F%26body%3DWhat%2520endpoint%28s%29%2520would%2520you%2520like%2520to%2520forward%2520card%2520details%2520to%3F).
+-- [Share the production details](https://docs.stripe.com/payments/vault-and-forward.md#share-production-details) for the destination endpoint with [Stripe support](https://dashboard.stripe.com/login?redirect=https%3A%2F%2Fsupport.stripe.com%2Fcontact%2Femail%3Fquestion%3Dother%26topic%3Dpayment_apis%26subject%3DHow%2520can%2520I%2520access%2520the%2520Vault%2520and%2520Forward%2520API%3F%26body%3DWhat%2520endpoint%28s%29%2520would%2520you%2520like%2520to%2520forward%2520card%2520details%2520to%3F).
+-
+-### Confirm that we support the destination endpoint
++- [Provide test and production accounts](https://docs.stripe.com/payments/vault-and-forward.md#provide-test-account) to your account team.
++- [Share the production details](https://docs.stripe.com/payments/vault-and-forward.md#share-production-details) for the destination endpoint with your account team.
++
++### Confirm that we support the destination endpoint 
+ 
+ Stripe supports forwarding API requests to the following endpoints:
+ 
+@@ -372,12 +354,16 @@
+   - `[prefix]-checkout-live.adyenpayments.com/checkout/v70/storedPaymentMethods`
+   - `[prefix]-checkout-live.adyenpayments.com/checkout/v71/payments`
+   - `[prefix]-checkout-live.adyenpayments.com/checkout/v71/storedPaymentMethods`
++  - `[prefix]-checkout-live.adyenpayments.com/checkout/v72/payments`
++  - `[prefix]-checkout-live.adyenpayments.com/checkout/v72/storedPaymentMethods`
+ - **Basis Theory**:
+   - `api.basistheory.com/connections/stripe-forward/tokenize`
+ - **Braintree**:
+   - `payments.braintree-api.com/graphql`
+ - **CardPointe**:
+   - `[prefix].cardconnect.com/cardconnect/rest/auth`
++- **Chase Orbital**:
++  - `orbital1.chasepaymentech.com/gwapi/v4/gateway/profile`
+ - **Checkout**:
+   - `api.checkout.com/tokens`
+   - `api.checkout.com/payments`
+@@ -393,6 +379,7 @@
+   - `api.flexpay.io/v1/gateways/charge`
+ - **GMO Payment Gateway**:
+   - `p01.mul-pay.jp/payment/ExecTran.json`
++  - `token.mul-pay.jp/payment/ExecTran.json`
+ - **PaymentsOS**:
+   - `api.paymentsos.com/tokens`
+ - **PCI Vault**:
+@@ -421,9 +408,12 @@
+   - `secure.worldpay.com/jsp/merchant/xml/paymentService`
+ - **Xsolla**:
+   - `ps.xsolla.com/forwarding/payments/card`
++- **Yuno**:
++  - `api-sandbox.y.uno/pci-stripe-forward-webhook/v1/forward`
++  - `api.y.uno/pci-stripe-forward-webhook/v1/forward`
+ - [Your own PCI-compliant token vault](https://docs.stripe.com/payments/forwarding-token-vault.md)
+ 
+-Stripe supports HTTPS-based APIs that accept JSON/XML requests and return JSON/XML responses. If your destination endpoint isn’t supported or you require a different API format, share the endpoint details with [Stripe support](https://dashboard.stripe.com/login?redirect=https%3A%2F%2Fsupport.stripe.com%2Fcontact%2Femail%3Fquestion%3Dother%26topic%3Dpayment_apis%26subject%3DHow%2520can%2520I%2520Access%2520the%2520Vault%2520and%2520Forward%2520API%3F%26body%3DWhat%2520endpoint%28s%29%2520would%2520you%2520like%2520to%2520forward%2520card%2520details%2520to%3F) to get support for your specific needs.
++Stripe supports HTTPS APIs that accept JSON or XML requests and return JSON or XML responses. If your destination endpoint isn’t supported or you need a different API format, share the endpoint details with your account team.
+ 
+ ### Supported countries
+ 
+@@ -552,7 +542,7 @@
+ - VN
+ - ZA
+ 
+-Additionally, ensure that your Stripe account is registered in one of these countries:
++Additionally, make sure that your Stripe account is registered in one of these countries:
+ 
+ ### Countries eligible for the Vault and Forward API
+ 
+@@ -601,15 +591,15 @@
+ - SK
+ - US
+ 
+-### Provide test accounts to Stripe support
+-
+-To access the Vault and Forward API, share the [account IDs](https://dashboard.stripe.com/settings/account) (`acct_xxxx`) for your test accounts with [Stripe support](https://dashboard.stripe.com/login?redirect=https%3A%2F%2Fsupport.stripe.com%2Fcontact%2Femail%3Fquestion%3Dother%26topic%3Dpayment_apis%26subject%3DHow%2520can%2520I%2520access%2520the%2520Vault%2520and%2520Forward%2520API%3F%26body%3DWhat%2520endpoint%28s%29%2520would%2520you%2520like%2520to%2520forward%2520card%2520details%2520to%3F).
+-
+-### Share production details
+-
+-Share the production details for destination endpoint with [Stripe support](https://dashboard.stripe.com/login?redirect=https%3A%2F%2Fsupport.stripe.com%2Fcontact%2Femail%3Fquestion%3Dother%26topic%3Dpayment_apis%26subject%3DHow%2520can%2520I%2520access%2520the%2520Vault%2520and%2520Forward%2520API%3F%26body%3DWhat%2520endpoint%28s%29%2520would%2520you%2520like%2520to%2520forward%2520card%2520details%2520to%3F). These include the following for destination endpoint: URL, HTTP method, documentation, fields, request headers, and encryption keys. Stripe then sets up destination endpoint for use with the Vault and Forward API in live mode.
+-
+-To share third-party API keys, you must encrypt them by using the Stripe public key that’s specific to the Vault and Forward API. Start by [importing a public key](http://www.gnupg.org/gph/en/manual.html#AEN84) using [the GNU Privacy Guard (PGP)](http://gnupg.org). After you familiarize yourself with the basics of PGP, use the following PGP key to encrypt your third-party API keys:
++### Provide test accounts to your account team 
++
++To access the Vault and Forward API, share your test [account IDs](https://dashboard.stripe.com/settings/account) (`acct_xxxx`) with your account team.
++
++### Share production details 
++
++Share the destination endpoint’s production URL, HTTP method, documentation, fields, request headers, and encryption keys with your account team. Stripe then configures the endpoint for use with the Vault and Forward API in live mode.
++
++To share third-party API keys, you must encrypt them by using the Stripe public key that’s specific to the Vault and Forward API. Start by [importing a public key](https://www.gnupg.org/gph/en/manual.html#AEN84) using [the GNU Privacy Guard (PGP)](https://gnupg.org). After you familiarize yourself with the basics of PGP, use the following PGP key to encrypt your third-party API keys:
+ 
+ ### Vault and Forward API PGP key
+ 
+@@ -674,29 +664,29 @@
+ 1. Create a file named `hash_encrypt_key.sh` with the content below. The script generates a `SHA256` hash of your API key, encrypts it with Stripe’s public key, and then `Base64` encodes it.
+ 
+    > #### Required utilities
+-   >
++   > 
+    > To run the script, you must first install the `sha256sum`, `gpg`, and `base64` utilities.
+ 
+    ```bash
+    #!/bin/sh
+    set -euo pipefail
+    fail () { printf "Error: $1\n" >&2 && exit 1; }
+-
++   
+    STRIPE_PUBLIC_KEY=AE863ADA1603150856C0A853A7B203177D034588
+    API_KEY=$(printf "$1" | tr -d '\n' | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')
+-
++   
+    [ -x "$(command -v sha256sum)" ]                    || fail "sha256sum is not installed."
+    [ -x "$(command -v gpg)" ]                          || fail "gpg is not installed."
+    [ -x "$(command -v base64)" ]                       || fail "base64 is not installed."
+    [ ! -z "$API_KEY" ]                                 || fail "Please pass in an API key."
+    grep -iqv "Basic \|Bearer " <<< "$API_KEY"          || fail "Please omit the Basic/Bearer prefix."
+    gpg --list-keys $STRIPE_PUBLIC_KEY > /dev/null 2>&1 || fail "Stripe public key not imported."
+-
++   
+    printf "$API_KEY" | sha256sum | cut -d " " -f 1 | tr -d '\n' | gpg -e -r $STRIPE_PUBLIC_KEY --always-trust | base64 > encrypted_hashed_key.txt
+    printf "Successfully generated encrypted_hashed_key.txt\n"
+    ```
+ 
+-1. Run the script by passing your third-party API key in single quotes, omitting any `Bearer` or `Basic` prefix. The key must be the exact key that you use for actual requests to the destination endpoint, not including any prefix.
++2. Run the script by passing your third-party API key in single quotes, omitting any `Bearer` or `Basic` prefix. The key must be the exact key that you use for actual requests to the destination endpoint, not including any prefix.
+ 
+    The script produces a file named `encrypted_hashed_key.txt`.
+ 
+@@ -704,7 +694,7 @@
+    sh hash_encrypt_key.sh '<THIRD_PARTY_API_KEY>'
+    ```
+ 
+-### Use Stripe restricted API keys with Vault and Forward
++### Use Stripe restricted API keys with Vault and Forward 
+ 
+ Use a [restricted API key (RAK)](https://docs.stripe.com/keys-best-practices.md#limit-access) to allow server-side access to only the Vault and Forward endpoints.
+ 
+@@ -714,45 +704,32 @@
+ - Use the restricted API key as your `Authorization: Bearer <rk_...>` credential when calling `/v1/forwarding/requests` from your server.
+ - If your integration also calls other APIs, add only the minimal additional permissions those calls require.
+ 
+-Learn more about how to [create a restricted API key](https://docs.stripe.com/keys.md#create-restricted-api-secret-key).
+-
+-## Test your integration
++Learn more about how to [create a restricted API key](https://docs.stripe.com/keys.md#create-restricted-api-key).
++
++## Test your integration 
+ 
+ To confirm that your integration works correctly with destination endpoint, initiate a ForwardingRequest using the PaymentMethod you created. This example uses `pm_card_visa` as a payment method.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const request = await stripe.forwarding.requests.create(
+-  {
+-    payment_method: "pm_card_visa",
+-    url: "{{DESTINATION ENDPOINT}}",
+-    request: {
+-      headers: [
+-        {
+-          name: "Destination-API-Key",
+-          value: "{{DESTINATION_API_KEY}}",
+-        },
+-        {
+-          name: "Destination-Idempotency-Key",
+-          value: "{{DESTINATION_IDEMPOTENCY_KEY}}",
+-        },
+-      ],
+-      body: '{"amount":{"value":1000,"currency":"usd"},"paymentMethod":{"number":"","expiryMonth":"","expiryYear":"","cvc":"","holderName":""},"reference":"{{REFERENCE_ID}}"}',
+-    },
+-    replacements: ["card_number", "card_expiry", "card_cvc", "cardholder_name"],
+-  },
+-  {
+-    idempotencyKey: "{{IDEMPOTENCYKEY_ID}}",
+-  },
+-);
++```curl
++curl https://api.stripe.com/v1/forwarding/requests \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -H "Idempotency-Key: {{IDEMPOTENCYKEY_ID}}" \
++  -d payment_method=pm_card_visa \
++  -d "url={{DESTINATION ENDPOINT}}" \
++  -d "request[headers][0][name]=Destination-API-Key" \
++  -d "request[headers][0][value]={{DESTINATION_API_KEY}}" \
++  -d "request[headers][1][name]=Destination-Idempotency-Key" \
++  -d "request[headers][1][value]={{DESTINATION_IDEMPOTENCY_KEY}}" \
++  --data-urlencode "request[body]={\"amount\":{\"value\":1000,\"currency\":\"usd\"},\"paymentMethod\":{\"number\":\"\",\"expiryMonth\":\"\",\"expiryYear\":\"\",\"cvc\":\"\",\"holderName\":\"\"},\"reference\":\"{{REFERENCE_ID}}\"}" \
++  -d "replacements[0]=card_number" \
++  -d "replacements[1]=card_expiry" \
++  -d "replacements[2]=card_cvc" \
++  -d "replacements[3]=cardholder_name"
+ ```
+ 
+ > The Vault and Forward API treats any response from the destination endpoint as a `success` and returns a `200`, along with the destination endpoint’s response code in the `response.body`. For example, when the destination endpoint returns a status code of `400` to Stripe, the Vault and Forward API responds with a status code of `200`. The `response.body` includes the destination endpoint’s `400` response and error message. Separately test the API request that you send to your destination endpoint to make sure that you don’t have any errors.
+ 
+-### View your request logs in the Dashboard
++### View your request logs in the Dashboard 
+ 
+ You can view request logs and errors related to the Vault and Forward API in [Workbench](https://docs.stripe.com/workbench/overview.md#request-logs). Additionally, you can use the [List API](https://docs.stripe.com/api/forwarding/forwarding_requests/list.md) to fetch the logs from Stripe.
+ 

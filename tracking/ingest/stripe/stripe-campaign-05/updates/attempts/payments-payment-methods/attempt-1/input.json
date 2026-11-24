@@ -1,0 +1,164 @@
+{
+  "job_id": "payments-payment-methods",
+  "source_target": "wiki/sources/source-stripe-payment-methods.md",
+  "source_before_sha256": "68d2617e1311270e8545c05e4c9fba444609bc2b86bfa6d75a8ec3f3b9f0c75d",
+  "contributions": [
+    {
+      "job_id": "payments-payment-methods",
+      "canonical_url": "https://docs.stripe.com/payments/payment-methods",
+      "attempt": 1,
+      "raw_path": "raw/stripe-payments-payment-methods-2026-11-07.md",
+      "raw_sha256": "1bea0ae3f9c83f664280dc1d8a36f5c42ee355410e92ec576a5424507557f8d4",
+      "prior_raw_path": "raw/stripe-payment-methods-api-2025.md",
+      "prior_raw_sha256": "ecf299c9a2421b3680f615e93840891a136aaf22e6395831422fb94f5eb66e68",
+      "new_capture_role": "full_captured_page",
+      "proposed_disposition": "source_required_update",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-payment-methods/attempt-1/receipt.json",
+      "receipt_sha256": "32399fe970dd5994466c1c6ac2c66b36e8d20b4752e9b66f29212ca07940cb98",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-payment-methods/attempt-1/review.json",
+      "review_sha256": "bf246c31e2326a0098d96d098ca8c4fbc3af11e5f17ae5601915a989cf8b515d",
+      "source_assessments": [
+        {
+          "source_target": "wiki/sources/source-stripe-payment-methods.md",
+          "proposed_disposition": "source_required_update",
+          "update_needed": true,
+          "findings": [
+            "Correct lines 19-20 and 34-39 for different status targets and finality, and lines 59-65 for Stripe-sender verification and event-destination scope. Retain April provenance and include November qualification and reciprocal methods/lifecycle links."
+          ],
+          "conflicts": [
+            "Current source line 36 repeats April 19 old line 35's guaranteed-funds wording. November line 36 expressly limits succeeded to successful completion under the method's processing flow and names refunds, disputes, returns and reversals. November lifecycle raw/stripe-payments-paymentintents-lifecycle-2026-11-07.md:33-34 still describes funds in account and fulfillment, while the status guide raw/stripe-payments-payment-intents-verifying-status-2026-11-07.md:30-34 explains later outcomes on Charge even if the PaymentIntent remains succeeded. Keep fulfillment eligibility on verified successful completion distinct from irreversible funds, immediate balance availability or payout. Current wiki/sources/source-stripe-payment-intents.md:52-59,74-78 separately retains state and deferred balance-data scope.",
+            "Current source line 20 refers to the order as processing. The PaymentIntent is processing and the merchant order stays pending (old 37; new 38). Current source lines 19-20 and 34-39 should label card without 3DS and ACH debit as examples of different notification timing and distinguish success from the retry/failure branch. The table header currently says 'on success' while listing both branches for delayed flows.",
+            "Current source lines 59-65 list lifecycle events but lack the November direction to verify webhook signatures and scope the recommendation to payment methods needing buyer action or delayed notification (new 52-60). Current source and related lifecycle source should distinguish the guide-local addition from a platform-wide novelty: the existing lifecycle summary already describes verified webhooks (wiki/sources/source-stripe-payment-intents.md:30)."
+          ],
+          "reason": "The dated source still carries the prior funds guarantee, although November defines a narrower success state and explicitly calls for signature verification."
+        }
+      ],
+      "affected_concepts": [
+        "wiki/concepts/stripe-payment-methods.md",
+        "wiki/concepts/stripe-payment-intents.md"
+      ],
+      "unresolved_questions": [
+        "Neither guide proves payout timing or immunity from later returns/disputes for any specific account, method, or transaction. The object example is abbreviated in both captures and does not establish request or response schema completeness."
+      ],
+      "mapped_source_assessment": {
+        "source_target": "wiki/sources/source-stripe-payment-methods.md",
+        "proposed_disposition": "source_required_update",
+        "update_needed": true,
+        "findings": [
+          "Correct lines 19-20 and 34-39 for different status targets and finality, and lines 59-65 for Stripe-sender verification and event-destination scope. Retain April provenance and include November qualification and reciprocal methods/lifecycle links."
+        ],
+        "conflicts": [
+          "Current source line 36 repeats April 19 old line 35's guaranteed-funds wording. November line 36 expressly limits succeeded to successful completion under the method's processing flow and names refunds, disputes, returns and reversals. November lifecycle raw/stripe-payments-paymentintents-lifecycle-2026-11-07.md:33-34 still describes funds in account and fulfillment, while the status guide raw/stripe-payments-payment-intents-verifying-status-2026-11-07.md:30-34 explains later outcomes on Charge even if the PaymentIntent remains succeeded. Keep fulfillment eligibility on verified successful completion distinct from irreversible funds, immediate balance availability or payout. Current wiki/sources/source-stripe-payment-intents.md:52-59,74-78 separately retains state and deferred balance-data scope.",
+          "Current source line 20 refers to the order as processing. The PaymentIntent is processing and the merchant order stays pending (old 37; new 38). Current source lines 19-20 and 34-39 should label card without 3DS and ACH debit as examples of different notification timing and distinguish success from the retry/failure branch. The table header currently says 'on success' while listing both branches for delayed flows.",
+          "Current source lines 59-65 list lifecycle events but lack the November direction to verify webhook signatures and scope the recommendation to payment methods needing buyer action or delayed notification (new 52-60). Current source and related lifecycle source should distinguish the guide-local addition from a platform-wide novelty: the existing lifecycle summary already describes verified webhooks (wiki/sources/source-stripe-payment-intents.md:30)."
+        ],
+        "reason": "The dated source still carries the prior funds guarantee, although November defines a narrower success state and explicitly calls for signature verification."
+      },
+      "findings": [
+        "Both captures describe PaymentMethod as payment instrument details used with PaymentIntent to take payment, or SetupIntent plus Customer to save for future use. The model holds billing and type-specific details, not amount or currency, and the SEPA example is illustrative. Stripe recommends creating PaymentMethods with Stripe.js to handle sensitive data and customer actions. Dashboard activates available methods generally immediately without additional contracts (old 6-17,65-90; new 7-18,70-100).",
+        "Customer actions identified by PaymentIntent.next_action include bank redirect to approve, a one-time verification code conveyed to the API, and a customer push of bank funds; the card example excludes 3D Secure. For immediate methods such as cards, the described result is succeeded or requires_payment_method. ACH illustrates delayed status, for which the Intent is processing until the result and the merchant keeps the order pending until payment succeeds (old 19-39; new 20-40).",
+        "Reusable methods may be set up during payment or separately, reducing friction and authentication/decline risk. Some bank transfers are single-use, consumed after an attempt and cannot attach to a Customer (old 41-47; new 42-48).",
+        "Configure an event destination for action-required or delayed methods and verify webhook signatures to authenticate Stripe as sender. payment_intent.processing means submitted for a delayed method and wait, payment_intent.succeeded means fulfill, and payment_intent.payment_failed means ask for another method. Alternatives remain low-volume Dashboard tracking, lower-reliability rate-limited polling, or partner application (old 49-63; new 50-68). Events and buyer action preserve the payment-status boundary, with succeeded meaning processing-flow completion rather than irrevocable funds.",
+        "Keep the existing link to wiki/sources/source-stripe-payment-intents.md (source 67-70) and connect the Payment Methods API overview reciprocally with wiki/concepts/stripe-payment-methods.md:76-103 for method roles and wiki/concepts/stripe-payment-intents.md:77-96,140-158 for lifecycle, Charge outcomes and status handling. Stripe index 21 and 729-730 and root index 7 already provide entry routes. Keep the distinct supported-methods overview source in the payment-methods concept."
+      ],
+      "substantive_changes": [
+        "November line 36 replaces the April guaranteed-funds line with successful completion subject to refunds, disputes, returns and reversals. New line 38 shifts delayed-order handling from common behavior to explicit provider recommendation, while keeping delayed Intent behavior. November line 52 adds explicit signature-verification guidance and updates the event-destination link; the three event meanings and tracking options remain."
+      ],
+      "historical_claims_to_preserve": [
+        "Retain April 19 guide raw and explicitly superseded guaranteed-funds wording as dated provenance only. Preserve its still-supported object roles, regional activation qualification, action examples, immediate versus delayed events and retries, setup timing and single-use constraint, polling caveats and Stripe.js recommendation (old 8-90; new 9-100)."
+      ],
+      "conflicts": [
+        "Current source line 36 repeats April 19 old line 35's guaranteed-funds wording. November line 36 expressly limits succeeded to successful completion under the method's processing flow and names refunds, disputes, returns and reversals. November lifecycle raw/stripe-payments-paymentintents-lifecycle-2026-11-07.md:33-34 still describes funds in account and fulfillment, while the status guide raw/stripe-payments-payment-intents-verifying-status-2026-11-07.md:30-34 explains later outcomes on Charge even if the PaymentIntent remains succeeded. Keep fulfillment eligibility on verified successful completion distinct from irreversible funds, immediate balance availability or payout. Current wiki/sources/source-stripe-payment-intents.md:52-59,74-78 separately retains state and deferred balance-data scope.",
+        "Current source line 20 refers to the order as processing. The PaymentIntent is processing and the merchant order stays pending (old 37; new 38). Current source lines 19-20 and 34-39 should label card without 3DS and ACH debit as examples of different notification timing and distinguish success from the retry/failure branch. The table header currently says 'on success' while listing both branches for delayed flows.",
+        "Current source lines 59-65 list lifecycle events but lack the November direction to verify webhook signatures and scope the recommendation to payment methods needing buyer action or delayed notification (new 52-60). Current source and related lifecycle source should distinguish the guide-local addition from a platform-wide novelty: the existing lifecycle summary already describes verified webhooks (wiki/sources/source-stripe-payment-intents.md:30)."
+      ],
+      "expected_read_files": [
+        {
+          "path": "raw/stripe-payments-payment-methods-2026-11-07.md",
+          "sha256": "1bea0ae3f9c83f664280dc1d8a36f5c42ee355410e92ec576a5424507557f8d4",
+          "lines": 105
+        },
+        {
+          "path": "raw/stripe-payment-methods-api-2025.md",
+          "sha256": "ecf299c9a2421b3680f615e93840891a136aaf22e6395831422fb94f5eb66e68",
+          "lines": 95
+        },
+        {
+          "path": "wiki/sources/source-stripe-payment-methods.md",
+          "sha256": "68d2617e1311270e8545c05e4c9fba444609bc2b86bfa6d75a8ec3f3b9f0c75d",
+          "lines": 74
+        },
+        {
+          "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/3fdd82926db434384e6441cf/content.diff",
+          "sha256": "f316dae08f2b4dff0332fa1bc4df75519aec52566e3280d7e17b4a0f9f78b400",
+          "lines": 118
+        }
+      ],
+      "original_query_prompts_path": "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md",
+      "original_prompts": "New raw `raw/stripe-payments-payment-methods-2026-11-07.md`. Prior raw `raw/stripe-payment-methods-api-2025.md`. Current summaries `wiki/sources/source-stripe-payment-methods.md`.\n\n- Q1. For `https://docs.stripe.com/payments/payment-methods`, what documented behavior, prerequisites, actors and state transitions does the complete new capture establish? How do these compare with the matched prior capture and each mapped summary?\n\n- Q2. Which changes are substantive, presentational or navigation-only? Identify the exact dated qualifications, conflicts and reciprocal routes that the proposed disposition should preserve.",
+      "reviewed_answers": {
+        "Q1": "For https://docs.stripe.com/payments/payment-methods, a PaymentMethod contains payment instrument details, including billing details and a type-specific hash. A PaymentIntent takes payment, while a SetupIntent and Customer save details for later use. The buyer takes any bank approval, one-time-code, or push-funds action indicated by PaymentIntent.next_action. Cards illustrate immediate succeeded or requires_payment_method outcomes, while ACH debit illustrates processing with the merchant holding the order pending. A verified succeeded webhook supports fulfillment, and failed prompts the merchant to request another method (old raw lines 8-63; new raw lines 9-68). November defines succeeded as completed processing with possible later refund, dispute, return, or reversal. source-stripe-payment-methods.md reflects the earlier roles but must replace the guaranteed-funds language and distinguish merchant order status from Intent status.",
+        "Q2": "For https://docs.stripe.com/payments/payment-methods, the substantive November 7 change is the explicit removal of the April 19 guaranteed-funds wording in favor of successful method processing with later refunds, disputes, returns or reversals possible. November also expressly recommends pending-order handling and webhook-signature verification (old raw lines 33-39 and old raw lines 49-57; new raw lines 34-40 and new raw lines 50-60). The new event-destination URL, title and table formatting, separated tracking subsection, and reformatted SEPA example are navigation or representation, with the event semantics and PaymentMethod field roles preserved. Keep the April authority dated in source-stripe-payment-methods.md, distinguish later Charge outcomes from the succeeded Intent, and make methods and Intent lifecycle routes reciprocal without replacing the separate regional-methods overview (old raw lines 59-95; new raw lines 62-105)."
+      }
+    }
+  ],
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payments-payment-methods-2026-11-07.md",
+      "sha256": "1bea0ae3f9c83f664280dc1d8a36f5c42ee355410e92ec576a5424507557f8d4",
+      "lines": 105
+    },
+    {
+      "path": "raw/stripe-payment-methods-api-2025.md",
+      "sha256": "ecf299c9a2421b3680f615e93840891a136aaf22e6395831422fb94f5eb66e68",
+      "lines": 95
+    },
+    {
+      "path": "wiki/sources/source-stripe-payment-methods.md",
+      "sha256": "68d2617e1311270e8545c05e4c9fba444609bc2b86bfa6d75a8ec3f3b9f0c75d",
+      "lines": 74
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/3fdd82926db434384e6441cf/content.diff",
+      "sha256": "f316dae08f2b4dff0332fa1bc4df75519aec52566e3280d7e17b4a0f9f78b400",
+      "lines": 118
+    }
+  ],
+  "concept_targets": [
+    {
+      "path": "wiki/concepts/stripe-payment-intents.md",
+      "before_sha256": "479fb6d1f161b674d6653ebfbb229c6e8c647e54962391fb1b22feec3fbece46",
+      "contributing_jobs": [
+        "payments-payment-intents-upgrade-to-handle-actions",
+        "payments-payment-methods",
+        "payments-payment-methods-transitioning",
+        "payments-paymentintents-lifecycle",
+        "payments-place-a-hold-on-a-payment-method",
+        "payments-setup-intents",
+        "payments-without-card-authentication"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    },
+    {
+      "path": "wiki/concepts/stripe-payment-methods.md",
+      "before_sha256": "26621c942bfc14ded9a7220aa98b72ab245da1d9b8cf3695c80e4dc077205f03",
+      "contributing_jobs": [
+        "payments-payment-methods",
+        "payments-payment-methods-integration-options",
+        "payments-payment-methods-overview",
+        "payments-payment-methods-payment-method-connect-support",
+        "payments-payment-methods-payment-method-support",
+        "payments-payment-methods-transitioning"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    }
+  ],
+  "state": "worker_running",
+  "attempt": 1,
+  "review_scope": "full",
+  "worker_agent": "/root/s05w2",
+  "reviewer_agent": "/root/s05r2",
+  "role_notes": "tracking/ingest/stripe/stripe-campaign-05/updates/role-notes.md",
+  "worker_output": "/tmp/stripe-s05-ingest/payments-payment-methods-worker.json",
+  "reviewer_output": "/tmp/stripe-s05-ingest/payments-payment-methods-reviewer.json"
+}

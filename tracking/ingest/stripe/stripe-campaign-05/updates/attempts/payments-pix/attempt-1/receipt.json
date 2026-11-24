@@ -1,0 +1,243 @@
+{
+  "job_id": "payments-pix",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe: Pix Payments\"\ntype: source\ndate_ingested: 2026-05-06\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/pix\"\nraw_files:\n  - \"stripe-payments-pix-2026-11-07.md\"\n  - \"stripe-pix-2025.md\"\ntags: [stripe, real-time-payments, pix, brazil, brl, qr-code, iof, ebanx, recurring, pix-automatico, connect, disputes]\n---\n\n## Overview\n\nPix (`pix`) is Brazil’s real-time bank-to-bank payment system. Customers in Brazil pay in BRL by reviewing and approving a QR code or Pix string in their bank app. The November 7, 2026 overview labels payment confirmation immediate and settlement up to two business days (T+2), in the currency mapped to the Stripe account country. Customer authorization time depends on when the customer approves. The May 6, 2026 overview described standard payout timing.\n\nDuring authorization, the checkout page stays open. The bank app has no return redirect. Checkout or Elements handles the configured `return_url` at a terminal intent state. Check the status for payment success before fulfillment.\n\n## Eligibility and limits\n\nThe November overview lists instant provisional access for eligible merchants and Connect platforms or marketplaces, with B2B and B2C and both domestic and cross-border coverage. It groups supported business locations across AMER, EMEA and APAC and maps settlement to BRL, USD, EUR, GBP, CAD, AUD or SGD by account country. Brazil-domiciled Stripe accounts have one-time Pix with BRL settlement. Eligible businesses outside Brazil can accept one-time Pix from buyers in Brazil and use Pix Automático for recurring payments. The May guide qualified Brazilian one-time acceptance as invite-only. Check account eligibility in Payment methods settings.\n\nThe November **Account eligibility** and **Settlement currencies** tables give the exact country and currency rows and list 12 prohibited merchant category codes. The November overview also excludes other crypto businesses and telehealth or medicine vendors, and identifies the nonprofit and charity exclusion in Singapore. The May guide listed crypto businesses, insurance companies, telehealth or medicine vendors, and nonprofits or charities as broader categories in addition to Stripe’s restrictions.\n\n| Limit | November 7, 2026 documentation |\n| --- | --- |\n| Minimum | BRL 0.50 per payment |\n| Default maximum | BRL equivalent of USD 3,000 per payment, including for Brazilian businesses. Accounts enabled for a higher limit may accept larger amounts. |\n| Brazilian customer paying a business outside Brazil | USD 3,000 per day and USD 10,000 per month, per customer per business. |\n| Recurring | The customer-authorized mandate amount caps a charge. A charge above that amount fails. |\n\nThe May guide already gave the BRL 0.50 minimum, a USD 3,000 per-payment maximum and a USD 10,000 monthly buyer limit per business. It did not specify the November account overrides or the same cross-border and daily scope.\n\n## Refunds and disputes\n\nRequest a full or partial refund within 90 days. Pix refunds return to the original bank account and cannot be canceled. November describes bank credit as generally occurring in minutes, with no guaranteed maximum. Check the Refund status in the Dashboard or through the API. A successful request or early status update leaves actual bank credit unconfirmed.\n\nUnder the Special Refund Mechanism (MED), customers raise eligible disputes such as fraud or account takeover with their bank and provide evidence. Stripe notifies the merchant by email, Dashboard and `charge.dispute.created`. The Dashboard and Dispute object provide the reason. The partner decision is final and the merchant has no route through Stripe to contest it or submit evidence. Stripe debits the merchant’s Stripe account after receiving notice that the partner accepted the return of funds. The November matrix supports full disputes and excludes partial disputes, manual capture, partial capture, multi-capture and over-capture.\n\n## Pix Automático\n\nUse [[source-stripe-pix-automatico|Pix Automático]] for eligible recurring payments and Checkout subscription mode. The customer must approve the amount and billing cycle in their bank app. A checkout consent checkbox alone is insufficient. A SetupIntent creates a mandate without an initial charge. A PaymentIntent takes an initial payment and establishes the mandate. Subsequent charges follow a bank pre-debit notice and a three-day wait. The PaymentIntent is `processing` during that period and confirmation can take up to seven days with retries.\n\nWhen a Charge exists, read `payment_method_details.pix.mandate` to retrieve the mandate via the API. Saved methods in the Dashboard provide context, while the API provides mandate details. Detaching the saved PaymentMethod revokes the mandate and prevents reuse. Customer revocation in the banking app sends `mandate.updated`. Collect a new mandate on-session before taking later payments.\n\n## IOF, customer emails and statement descriptors\n\nBoth captures document 3.5% IOF on applicable foreign-exchange purchases by Brazilian customers from businesses domiciled outside Brazil, with a rate subject to change. Stripe and its partner collect and remit the tax. The default Pix `payment_method_options` choice `amount_includes_iof: never` passes the tax to the customer as a markup in their banking app. With `always`, the business absorbs the tax and Stripe deducts it from settlement. Stripe provides Checkout and Elements disclosures. Direct API merchants display the appropriate IOF and Ebanx terms for the selected option, with English and Brazilian Portuguese examples in the November guide.\n\nEbanx sends receipts by default. Merchants who disable them and send their own receipts include an IOF line item. The guide recommends itemizing IOF when the merchant absorbs it. Optional completion reminders containing a Pix QR code and key are off by default. Both settings are under Customer emails. Ebanx appears as recipient and statement descriptor. The merchant name appears in the `identifier` field. Pix ignores custom `statement_descriptor` and supports no dynamic or account-level descriptor override.\n\n## Stripe products and Connect\n\nEnable Pix in Payment methods settings for Stripe front-end products. See [[source-stripe-pix-accept-payment]] for the separate one-time guide for manually listed methods. The November product matrix lists full-page and embedded Checkout, Payment Links, Payment Element, in-app payments, Managed Payments, Billing, Invoicing, Customer Portal, Radar and Connect. It lists Checkout Sessions, Payment Intents, Payment Intents with `setup_future_usage`, Setup Intents and off-session payments. Use the Pix Automático route above for mandate-based usage. The matrix marks Express Checkout Element, Payment Method Messaging Element and Terminal unsupported.\n\nFor Connect direct charges or charges using `on_behalf_of`, the November guide requires an eligible connected account in a supported country with Pix activated. Full Stripe Dashboard accounts activate Pix in their settings. For Express or a non-Stripe-hosted Dashboard, the platform requests the connected account’s `pix_payments` capability. The May guide also described destination charges and separate charges and transfers. It tied supported business geography to the merchant of record, including to the platform when the platform is the merchant of record.\n\n## Related\n\n- [[stripe-pix]] — Stripe Pix concept and subscription guide\n- [[stripe-real-time-payments]] — Stripe real-time payment methods\n- [[source-stripe-subscriptions-pix]] — separate Pix subscription integration and its November variant index\n- [[stripe]] — Stripe company page\n\n## Raw Sources\n\n- [[raw/stripe-payments-pix-2026-11-07|November 7, 2026 Pix product overview]] — full capture with eligibility, payment flow, product support, dispute and mandate conditions.\n- [[raw/stripe-pix-2025|May 6, 2026 Pix product overview]] — earlier eligibility, payout, payment and Connect wording with the retained flow diagrams.\n",
+  "quotes": {
+    "payments-pix": [
+      {
+        "text": "Access type: Instant provisional access",
+        "location": "raw/stripe-payments-pix-2026-11-07.md:14"
+      },
+      {
+        "text": "For Brazilian customers paying businesses outside Brazil, the limits are 3,000 USD per day and 10,000 USD per month, per customer per business.",
+        "location": "raw/stripe-payments-pix-2026-11-07.md:81"
+      },
+      {
+        "text": "A successful refund request or an early status update is not, by itself, proof that the customer’s bank account has been credited.",
+        "location": "raw/stripe-payments-pix-2026-11-07.md:126"
+      },
+      {
+        "text": "✓ Setup Intents",
+        "location": "raw/stripe-payments-pix-2026-11-07.md:189"
+      },
+      {
+        "text": "The PaymentIntent is `processing` during this period; confirmation can take up to 7 days with retries.",
+        "location": "raw/stripe-payments-pix-2026-11-07.md:200"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-pix": [
+      {
+        "text": "Stripe accounts in Brazil can accept Pix one-time payments with BRL settlement. Pix Automático isn’t available in Brazil. (Invite only)",
+        "location": "raw/stripe-pix-2025.md:94"
+      },
+      {
+        "text": "If Stripe receives notification that our partner has accepted a request to return customer funds, Stripe removes the funds from your account.",
+        "location": "raw/stripe-pix-2025.md:142"
+      },
+      {
+        "text": "Pix is supported if the platform account is in a supported country for Pix.",
+        "location": "raw/stripe-pix-2025.md:159"
+      },
+      {
+        "text": "The amount for a single Pix must be at least 0.50 BRL and no more than 3,000 USD.",
+        "location": "raw/stripe-pix-2025.md:184"
+      },
+      {
+        "text": "Stripe and our partner handle the collection and remittance of this IOF fee for you.",
+        "location": "raw/stripe-pix-2025.md:194"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-pix-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 282
+      }
+    ],
+    "raw/stripe-pix-2025.md": [
+      {
+        "start": 1,
+        "end": 243
+      }
+    ],
+    "wiki/sources/source-stripe-pix.md": [
+      {
+        "start": 1,
+        "end": 49
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/bd629e7c61cb674ef299cc5e/content.diff": [
+      {
+        "start": 1,
+        "end": 486
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-pix/attempt-2/receipt.json": [
+      {
+        "start": 1,
+        "end": 177
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-pix/attempt-2/review.json": [
+      {
+        "start": 1,
+        "end": 60
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 355,
+        "end": 362
+      },
+      {
+        "start": 683,
+        "end": 687
+      },
+      {
+        "start": 746,
+        "end": 751
+      }
+    ],
+    "wiki/concepts/stripe-pix.md": [
+      {
+        "start": 1,
+        "end": 35
+      },
+      {
+        "start": 56,
+        "end": 87
+      }
+    ],
+    "wiki/concepts/stripe-real-time-payments.md": [
+      {
+        "start": 8,
+        "end": 32
+      },
+      {
+        "start": 39,
+        "end": 68
+      },
+      {
+        "start": 196,
+        "end": 213
+      }
+    ],
+    "wiki/sources/source-stripe-pix-automatico.md": [
+      {
+        "start": 1,
+        "end": 45
+      }
+    ],
+    "wiki/sources/source-stripe-real-time-payments.md": [
+      {
+        "start": 1,
+        "end": 31
+      }
+    ],
+    "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md": [
+      {
+        "start": 235,
+        "end": 241
+      }
+    ]
+  },
+  "answers": {
+    "payments-pix": {
+      "Q1": "https://docs.stripe.com/payments/pix describes a Brazilian buyer paying in BRL by authorizing a QR code or Pix string in their banking app. Stripe uses the account-country settlement currency, and the November guide labels confirmation immediate and settlement up to two business days. Checkout stays open during bank authorization, and a configured return at a terminal intent state requires a separate success check. For eligible Pix Automático outside Brazil, the buyer approves the amount and cycle in-app via a SetupIntent without an initial charge or a PaymentIntent with an initial payment. Later charges wait three days after pre-debit notice, remain processing and can take up to seven days with retries. A revoked mandate requires new on-session authorization. Refunds can be requested for 90 days and return to the original account, with credit distinct from request status. The bank takes evidence for limited disputes and the merchant has no route through Stripe to contest them. Stripe debits the account after notification that the partner accepted the request to return funds (new raw lines 128–144 and old raw lines 140–142). Connect direct or on_behalf_of charges require connected-account eligibility and activation. Stripe and its partner collect and remit the IOF documented at 3.5% on applicable cross-border FX. The buyer funds it by default or the merchant absorbs it. Stripe handles disclosures for Checkout/Elements, and Direct API merchants display theirs. Ebanx sends receipts by default and appears as payment recipient (old raw lines 188–203 and 214–232; new raw lines 202–217 and 252–274). See also new raw lines 9–21, 53–83, 107–200, 228–250 and 276–282, and old raw lines 8–33, 94–120 and 140–186. source-stripe-pix.md now preserves the May identity and adds the November eligibility, status, limit and refund/dispute qualifications.",
+      "Q2": "At https://docs.stripe.com/payments/pix the November reorganization and numbered checkout steps are presentational. The added bank-app and terminal-intent redirect conditions are substantive, along with provisional access, T+2 settlement wording, an account-enabled override of the default BRL equivalent of USD 3,000 per payment, and the USD 3,000/day and USD 10,000/month limits for Brazilian buyers paying a business outside Brazil (old raw lines 30–33, 94–105 and 182–186; new raw lines 12–21, 57–83). Keep that earlier Brazilian invite-only wording dated, the Brazilian one-time-only scope, the narrower Singapore non-profit restriction, unchanged conditional IOF choices, and May platform-as-MoR guidance alongside November direct/on_behalf_of activation. Preserve the new refund, dispute and mandate conditions and the separate Pix Automático and subscriptions routes, with reciprocal stripe-pix and stripe-real-time-payments routes in source-stripe-pix.md. The broader real-time matrix's SetupIntents/setup_future_usage No labels differ from the November method matrix and mandate route (new raw lines 146–200). A refund request, a terminal intent or a partner notice alone must retain its own outcome scope. The candidate corrects the prior attribution of IOF collection and remittance to Ebanx alone. Both snapshots name Stripe and its partner for IOF collection/remittance, with Ebanx separately named for receipts and recipient display. Preserve who funds the dated fee and who provides disclosures as separate roles (old raw lines 188–203 and 214–232; new raw lines 202–217 and 252–274)."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "payments-pix-primary-reciprocal",
+      "target_path": "wiki/concepts/stripe-pix.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-subscriptions-pix]] — 2026-11-07 Pix subscription variant index and retained 2026-05-13 combined Checkout, SetupIntents and Subscriptions API guide; mandate, payment and sandbox conditions are dated",
+      "proposed_markdown": "- [[source-stripe-pix]] — May and November 2026 Pix product overviews, with buyer and business eligibility, limits, refund and dispute conditions, and Pix Automático mandate scope.\n- [[source-stripe-subscriptions-pix]] — November 7, 2026 subscription variant index and retained May 13, 2026 Checkout, SetupIntents and Subscriptions API guide.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "payments-pix-matrix-scope",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "| Pix | `pix` | Brazil | No | No | No | Yes |",
+      "proposed_markdown": "| Pix | `pix` | Brazil | Bank app has no return redirect. Checkout/Elements can redirect at a terminal intent state. | Yes in the November Pix matrix. See Pix Automático mandate scope. | Yes in the November Pix matrix. See Pix Automático mandate scope. | Yes |",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "See November raw lines 146–164, 185–200 and 240–248. The prior concept row’s general No entries are distinct from the method-level support matrix."
+      ]
+    },
+    {
+      "update_id": "payments-pix-payto-exclusivity",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "**PayTo** (Australia): unique among real-time methods — supports SetupIntents, `setup_future_usage`, and Express Checkout Element. Also supports disputes (final, non-appealable), mandate-based recurring, and Billing. Identity verification required to activate.",
+      "proposed_markdown": "**PayTo** (Australia): supports SetupIntents, `setup_future_usage`, and Express Checkout Element. Also supports disputes (final, non-appealable), mandate-based recurring, and Billing. Identity verification required to activate. The November Pix overview also lists SetupIntents and `setup_future_usage`, with a separate Pix Automático mandate flow.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "payments-pix-dated-limits-servicing",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Business locations**: 35 international merchant countries + BR (invite only, one-time only). Settlement currency varies by account country (BRL/USD/EUR/GBP/CAD/AUD/SGD).\n\n**Transaction limits**: min 0.50 BRL, max 3,000 USD per payment. Single buyer cap: 10,000 USD/month per business.\n\n**Refunds**: 90-day window. Reflected within minutes.\n\n**Disputes**: Limited (fraud, account takeover). **Non-challengeable** — funds removed from Stripe balance automatically.",
+      "proposed_markdown": "**Business locations and limits**. The November 7, 2026 Pix overview lists instant provisional access, with Brazilian accounts limited to one-time Pix and BRL settlement. May described Brazilian one-time access as invite-only. November documents a BRL 0.50 minimum and a default per-payment maximum equivalent to USD 3,000, with higher limits for enabled accounts. For Brazilian buyers paying a business outside Brazil, November lists USD 3,000 daily and USD 10,000 monthly per customer per business.\n\n**Refunds and disputes**. Request a full or partial refund within 90 days. Refunds return to the original bank account. Refund-request status leaves bank credit unconfirmed. Stripe debits disputed funds after notice of partner acceptance. See [[source-stripe-pix]] for eligibility, timing and dispute conditions.",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "Refunds must be requested within 90 days. The completion time has no guaranteed maximum. See November raw lines 107–144."
+      ]
+    },
+    {
+      "update_id": "payments-pix-dated-restrictions",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Prohibited categories**: crypto businesses, insurance, telehealth/medicine, non-profits/charities.",
+      "proposed_markdown": "**Prohibited categories**. The November 7, 2026 Pix overview lists 12 prohibited MCCs and additional crypto and telehealth or medicine exclusions. It identifies the nonprofit and charity exclusion in Singapore. May used broader category wording. See [[source-stripe-pix]] for dated eligibility and the raw MCC table.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The evidence is November raw lines 20–43 and 85–89 and May raw lines 234–243."
+      ]
+    },
+    {
+      "update_id": "payments-pix-real-time-reciprocal",
+      "target_path": "wiki/concepts/stripe-real-time-payments.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-pix]] — Pix: Brazil QR/string, Ebanx partner, IOF tax, Pix Automático recurring, non-challengeable disputes",
+      "proposed_markdown": "- [[source-stripe-pix]] — dated Pix product overviews, including Brazilian QR payments, country and account eligibility, limits, refunds and disputes, cross-border IOF, and Pix Automático mandates.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "warnings": []
+    }
+  ]
+}

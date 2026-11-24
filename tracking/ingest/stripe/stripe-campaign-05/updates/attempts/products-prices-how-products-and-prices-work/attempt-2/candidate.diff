@@ -1,0 +1,108 @@
+--- wiki/sources/source-stripe-products-prices.md
++++ tracking/ingest/stripe/stripe-campaign-05/updates/attempts/products-prices-how-products-and-prices-work/attempt-2/candidate.md
+@@ -2,8 +2,10 @@
+ title: "Stripe Products and Prices"
+ type: source
+ date_ingested: 2026-04-20
++date_updated: 2026-11-22
+ original_format: webpage
+ raw_files:
++  - "stripe-products-prices-how-products-and-prices-work-2026-11-07.md"
+   - "stripe-products-prices-2025.md"
+   - "stripe-manage-products-prices-2025.md"
+ tags: [stripe, products, prices, catalog, subscriptions, checkout, invoices, pricing-models]
+@@ -11,38 +13,44 @@
+ 
+ ## Summary
+ 
+-How Stripe's Product and Price objects model a business catalog. Core resources for Checkout, Payment Links, Subscriptions, Invoices, and Quotes integrations.
++The April 20 and [November 7, 2026 catalog overviews](https://docs.stripe.com/products-prices/how-products-and-prices-work) explain how [[stripe]] Products describe goods and services and Prices specify amounts, currencies, billing intervals, and tax behavior. Merchants can create them in the Dashboard or import a catalog using the Products and Prices APIs for Checkout, Payment Links, Subscriptions, Invoices, and Quotes.
+ 
+ ## Key Takeaways
+ 
+-- **Custom product IDs** — unlike most Stripe resources, you can choose your own product ID (use internal system IDs for easy reconciliation)
+-- **Prices are immutable** — never modify `unit_amount`; archive (`active: false`) and create new price instead
+-- **`price_data`** — creates temporary Price objects invisible in Dashboard catalog; use for dynamic amounts (e.g. donations); Product objects may persist
+-- **Max recurring interval**: 3 years
+-- **Subscription constraint**: all prices must share same `recurring.interval` + `recurring.interval_count` (unless flexible billing mode)
+-- **Archive not delete**: products/prices can't be deleted in general; only archive; Stripe stores indefinitely for transaction history
++- **Custom Product IDs** — a merchant can choose a Product ID, including an ID from its own catalog.
++- **Catalog design** — November recommends one Product for each distinct customer-facing option, entitlement, tax code, or separately displayed item. For the same Product, use Prices for different intervals or currencies and a replacement Price when the amount changes. The Starter, Professional, and Enterprise example uses three Products with monthly and annual Prices for each. Checkout, Payment Links, and invoices display the Product name per line item. Items sharing a Product also share its name and description.
++- **Change amounts** — create a new Price and archive the old one using `active: false`. Stripe preserves historical transaction records. The separate April management guide describes updating Price `metadata`, `nickname`, and `active`.
++- **Inline `price_data`** — create inline prices through the API for a specific Checkout Session, Payment Link, Subscription, or invoice. These Prices stay out of Dashboard catalog listings and searches but can be viewed by direct Dashboard URL. Related Products can persist. The April management guide says inline Prices are effectively archived by default and cannot be updated or reused.
++- **Subscription limits** — the maximum recurrence is three years. Outside flexible billing for mixed intervals, all Prices on a Subscription must share both `recurring.interval` and `recurring.interval_count`.
++- **Archive or delete** — both overviews prefer archival to preserve history and describe Dashboard deletion exceptions for a never-used Price or a Product without Prices. The separate April manage guide also documents Product deletion and its associated-Price limits.
+ 
+ ## Product vs Price
+ 
+ | | Product | Price |
+ | --- | --- | --- |
+-| Defines | What you sell | How much + how often |
+-| ID | Custom (you choose) | Stripe-generated |
+-| Required fields | Name | Amount, currency, product |
+-| Optional | Description, image, tax code | Default price, tax_behavior |
++| Defines | What you sell | How much and how often |
++| ID | Merchant may choose an ID | Stripe-generated |
++| Creation | Name required | Currency and Product association, with amount parameters depending on billing scheme |
++| Other fields | Description, image, tax code, and the optional `default_price` pointing to a Price | Recurring fields for recurring Prices. When calculating taxes, `tax_behavior` is required if no default is configured in Stripe Tax. An explicit `inclusive` or `exclusive` value cannot be changed. |
++
++For `POST /v1/prices`, pass an existing Product ID via `product` or create the related Product with `product_data.name`, as shown in the November Invoice Items API example's `createPrice` prerequisite. For non-tiered Prices, the November Prices API reference requires one of `unit_amount`, `unit_amount_decimal`, or `custom_unit_amount`. Tiered Prices use `billing_scheme=tiered`, `tiers`, and `tiers_mode`. Set or change the default Price on the Product.
+ 
+ ## Price Types
+ 
+ | Type | Notes |
+ | --- | --- |
+ | One-time | Single charge |
+-| Recurring | Subscription billing; specify interval |
+-| Inline (`price_data`) | Dynamic amount at checkout; temp Price object, invisible in Dashboard |
+-| Pay-what-you-want | Customer sets amount; one-time only (no recurring) |
+-| Multi-currency | One Price object for multiple currencies |
+-| Tiered / usage-based | Configure with different `unit_amount` tiers |
++| Recurring | Subscription billing with a recurrence interval |
++| Inline (`price_data`) | API-created for a specific resource and excluded from Dashboard catalog listings |
++| Pay-what-you-want | Customer chooses the amount for a one-time payment |
++| Multi-currency | One Price can offer amounts in multiple currencies |
++| Tiered / usage-based | Tiered amounts use volume or graduated tiers. Usage-based prices can charge per unit of reported usage or use tiered billing. |
++
++When the merchant explicitly passes amount and currency for an API invoice item or charge, Stripe uses those values. The November catalog overview assigns the choice of localized amount and currency to the merchant in these cases. It recommends `pricing.price` to pass a Price ID for invoice items. Automatic localization is unverified across Price-ID routes.
+ 
+ ## Compatibility Table (key entries)
++
++These entries are the same in the April and November catalog overviews.
+ 
+ | Feature | Checkout | Payment Links | Quotes | Subscriptions | Invoices |
+ | --- | --- | --- | --- | --- | --- |
+@@ -54,16 +62,17 @@
+ | Decimal amounts | ✓ | **Disallowed** | ✓ | ✓ | ✓ |
+ | Customer chooses price | ✓ | ✓ | **Disallowed** | **Disallowed** | **Disallowed** |
+ 
+-**Disallowed** = cannot use that product/price with this API at all.
+-**Ignored** = feature has no effect but product/price still usable.
++**Disallowed** means the feature precludes using that Product or Price with the listed API. **Ignored** means the feature has no effect and the Product or Price remains usable.
++
++The separate November 7 Payment Links create guide lists flat-rate or tiered pricing for recurring products and flat-rate or package pricing for one-off products. Its tiered wording conflicts with the two catalog tables. Its flat-rate request examples document the creation routes below and leave exact tiered support by route, subtype, and version unresolved. They do not establish general support for metering, decimal amounts, or all package combinations. See [[stripe-payment-links]].
+ 
+ ## How Each API Uses Prices
+ 
+-- **Checkout**: specify price `id` per line item; renders product name + image
+-- **Payment Links**: Dashboard-created; renders product name + image
+-- **Subscriptions**: price must be recurring; billing period = `recurring.interval`; multiple prices OK if same interval
+-- **Quotes**: models one-off invoice or subscription; auto-creates invoices/subscriptions on acceptance
+-- **Invoices**: specify price `id` per line item; uses `product.name` in invoice PDF
++- **Checkout** — specify a Price ID per line item or use inline `price_data`. The Session computes totals and shows the Product name and image.
++- **Payment Links** — create the link in the Dashboard or use `POST /v1/payment_links`. The November create guide demonstrates `line_items[][price]` for an existing Price ID or `line_items[][price_data]` with `product_data` to create a Product and Price inline. Both examples include a quantity. The link computes totals and shows the Product name and image.
++- **Subscriptions** — use recurring Prices. Outside flexible billing the intervals and counts have to match. The separate May mixed-interval guide describes flexible billing, interval alignment, and API version requirements. The November mixed-interval selector routes to Dashboard and API variants. See [[stripe-subscriptions]] and [[stripe-subscriptions-mixed-interval]].
++- **Quotes** — specify a Price ID for a one-off invoice or subscription. On customer acceptance Stripe creates the relevant billing objects. Acceptance does not establish collection.
++- **Invoices** — a Price ID can identify the line item's Price. Stripe uses `product.name` when rendering the invoice on the web or as a PDF. The separate November Invoice Items API reference also documents inline `price_data` and the explicit amount and currency fields.
+ 
+ ## Related Pages
+ 
+@@ -73,5 +82,6 @@
+ 
+ ## Raw Sources
+ 
+-- [[stripe-products-prices-2025]] — Products & Prices: custom IDs, price immutability, price_data, compatibility table, subscription constraints, archive rules
+-- [[stripe-manage-products-prices-2025]] — Manage Products & Prices: CRUD operations, lookup_key + transfer_lookup_key, multi-currency per-API rules, rounding per line item, delete rules, copy-to-live-mode (one-time), import sync pattern
++- [[raw/stripe-products-prices-how-products-and-prices-work-2026-11-07|November 7, 2026 Products and Prices overview]]
++- [[raw/stripe-products-prices-2025|April 20, 2026 Products and Prices overview]] — custom IDs, amount replacement, price_data, compatibility, subscription constraints, and archive rules
++- [[raw/stripe-manage-products-prices-2025|April 20, 2026 Manage Products and Prices guide]] — CRUD operations, lookup_key and transfer_lookup_key, multi-currency per-API rules, rounding per line item, delete rules, one-time copy to live mode, and import synchronization

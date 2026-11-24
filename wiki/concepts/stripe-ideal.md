@@ -19,7 +19,7 @@ iDEAL | Wero (formerly iDEAL, now rebranding) is the Netherlands' dominant onlin
 - **Recurring**: Via [[stripe-sepa-debit]]. In the 2026-05-13 subscription guide, hosted Checkout uses iDEAL for the first subscription payment (or a refunded 0.01 EUR collection for a free trial); Direct API uses a refunded 0.01 EUR setup payment and a successful SetupIntent to obtain a generated SEPA Direct Debit payment method. Later SEPA payment success is separate.
 - **Disputes**: No — customers can't dispute with bank; contact merchant directly
 - **Refunds**: 180 days; up to 7 days pending; after 7 days without failure → considered successful
-- **Manual capture**: No (both May 3 and November 7 overviews).
+- **Manual capture.** Both iDEAL | Wero overviews say No. The November bank-redirect matrix also marks `ideal` unsupported. The same-date standalone Wero overview separately says Yes for its own method. See [[source-stripe-wero]].
 - **Full product support**: Connect, Checkout, Payment Links, Subscriptions, Invoicing, Elements
 
 ## Compliance Requirements

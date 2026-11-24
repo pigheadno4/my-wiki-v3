@@ -1,0 +1,59 @@
+--- wiki/sources/source-stripe-paypay.md
++++ wiki/sources/source-stripe-paypay.md
+@@ -2,32 +2,46 @@
+ title: "Stripe: PayPay Payments"
+ type: source
+ date_ingested: 2026-05-07
++date_updated: 2026-11-22
+ original_format: webpage
++canonical_url: https://docs.stripe.com/payments/paypay
+ raw_files:
++  - "stripe-payments-paypay-2026-11-07.md"
+   - "stripe-paypay-2025.md"
+ tags: [stripe, wallets, paypay, japan, jpy, redirect]
+ ---
+ 
+ ## Summary
+ 
+-Overview of Stripe's PayPay integration — Japan-only digital wallet, JPY only, redirect-based. No recurring, Connect, disputes, or manual capture. Instant refunds up to 365 days.
++[[stripe]] documents PayPay as a customer-initiated, single-use digital wallet (`paypay`). The November 7, 2026 overview lists domestic Japanese merchants and customers, JPY, prices from JPY 50 to JPY 1,000,000, and the standard payout schedule. It confirms payment outcomes immediately. May 7, 2026 documents the same currency, transaction range and standard payout.
+ 
+-## Key Details
++## Eligibility
+ 
+-**API enum**: `paypay`. Japan only (JP merchants and customers). JPY only.
++November lists B2B and B2C merchants, instant provisional access, and possible review after activation. The website must match the onboarding information, clearly describe the products or services and payment flow, identify any digital goods or services for sale, and include a complete Specific Conditions of Transaction Acceptance (SCTA) page. The table prohibits MCC 6051 for cryptocurrency exchanges and wallets. It explains that restricted MCCs can require additional onboarding information and gives Stripe Support as the route to appeal capability restrictions. May also listed other categories at PayPay's discretion.
+ 
+-**No recurring. No Connect support. No dispute support. No manual capture.**
++## Authorization and expiry
+ 
+-**Refunds**: full and partial. 365-day window. Instant. `refund.updated` / `refund.failed` webhooks.
++The customer chooses PayPay, opens it by QR code or web on desktop, or in the PayPay app or browser on mobile, and authorizes with PayPay. In the standard redirect flow the customer leaves the checkout page and returns automatically after a short delay or manually. An eligible custom integration can keep its page open and present a separate custom QR variant. The overview gives no eligibility criteria or integration contract for this variant. Stripe immediately confirms success or failure after authorization. Browser return alone does not establish the payment outcome.
+ 
+-**Charge limits**: min 50 JPY, max 1,000,000 JPY.
++PayPay-side authorization expires five minutes after redirect. Stripe separately expires the payment attempt one hour after creation of that attempt and reports `payment_intent_payment_attempt_expired`. See [[source-stripe-paypay-accept-payment]] for the separately dated acceptance guide.
+ 
+-**Product support**: Payment Links, Checkout (not subscription/setup mode), Elements (not Express Checkout Element).
++## Product and API support
+ 
+-**Prohibited**: cryptocurrency exchanges/wallets + additional categories at PayPal discretion.
++The November overview lists full-page and embedded Checkout, Payment Links, Payment Element, and in-app payments. It excludes Express Checkout Element, Payment Method Messaging Element, Managed Payments, Billing, Invoicing, Customer Portal, and Terminal. Radar is in private preview, with access by request to Stripe. The matrix lists Checkout Sessions and PaymentIntents and excludes SetupIntents, `setup_future_usage`, off-session charges, recurring payments, manual capture, partial capture, multicapture, and overcapture. May documented Checkout in payment mode only and excluded Express Checkout Element. Eligible front-end integrations can enable PayPay in the Dashboard for dynamic method selection, and manually configured integrations follow the acceptance guide.
+ 
+-**PayPay Connect**: requires invite (noted in wallets hub page).
++## Connect documentation
++
++The May 7 and November 7 method profiles exclude Connect. November explicitly excludes platforms and marketplaces in account eligibility and marks Connect unsupported in the product matrix. Three captured tables list PayPay Connect as supported with footnote 8, which directs readers to request an invite. See the May wallets table ([row 80](../../raw/stripe-wallets-2025.md#L80), [footnote line 88](../../raw/stripe-wallets-2025.md#L88)), the November wallets table ([row 91](../../raw/stripe-payments-wallets-2026-11-07.md#L91), [footnote line 100](../../raw/stripe-payments-wallets-2026-11-07.md#L100)), and the November payment-method support table ([row 200](../../raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md#L200), [footnote line 209](../../raw/stripe-payments-payment-methods-payment-method-support-2026-11-07.md#L209)). These dated documents disagree. They do not establish whether a particular platform can get an invitation or accept PayPay in live mode. See [[stripe-wallets]] for the companion wallet summary.
++
++Stripe sends a computed statement descriptor based on the payment descriptor and applicable account configuration to its PayPay partner integration. PayPay controls whether and how it displays the descriptor. The link to general Connect descriptor guidance does not establish PayPay Connect eligibility.
++
++## Refunds and disputes
++
++Merchants can submit full or partial refunds from the Dashboard or Refunds API up to 365 days from the original payment. The method's maximum window is separate from the merchant's return policy. November describes instant refunds that cannot be canceled. PayPay returns the amount to the original PayPay balance or linked payment source without processing a reversal. Check the Refund object's final `succeeded` or `failed` status in the Dashboard or API, or read Stripe's `refund.updated` and `refund.failed` events. Failure returns funds to the merchant's Stripe balance and requires another method to refund the customer. May already describes the window, instant processing, and final status handling.
++
++The November overview excludes standard partial and full disputes. Customers cannot file PayPay chargebacks through that standard process, and Stripe does not debit the merchant's balance for a dispute. PayPay may direct customer inquiries to the merchant, who can issue a full or partial refund.
+ 
+ ## Raw Sources
+ 
+-- [[stripe-paypay-2025]] — verbatim hub page (109 lines); 1 italic fix (_webhook_)
++- [[raw/stripe-payments-paypay-2026-11-07|November 7, 2026 PayPay overview]]
++- [[raw/stripe-paypay-2025|May 7, 2026 PayPay overview]] — verbatim webpage content (109 lines), with Markdown emphasis normalized for webhook

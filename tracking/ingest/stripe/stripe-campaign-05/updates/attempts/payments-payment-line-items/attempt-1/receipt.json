@@ -1,0 +1,212 @@
+{
+  "job_id": "payments-payment-line-items",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe — Payment Line Items\"\ntype: source\ndate_ingested: 2026-05-11\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/payment-line-items\"\nraw_files:\n  - \"stripe-payments-payment-line-items-2026-11-07.md\"\n  - \"stripe-payment-line-items-2026.md\"\ntags: [stripe, payment-line-items, l2-l3, interchange, commercial-cards, klarna, paypal, payment-intents]\n---\n\n## Summary\n\nThe May 11 and November 7, 2026 guides describe adding transaction metadata to PaymentIntents through `amount_details` and `payment_details`. It helps customers reconcile purchases. Eligible commercial cards on IC+ pricing can qualify for interchange savings. Klarna and PayPal use line-item data in underwriting, which can improve approvals.\n\n## Geographic and network scope\n\n- The card program covers US domestic transactions with US merchants and US-issued cards (excluding US territories), and intra-EU transactions with EU merchants and EU-issued cards. Stripe lists Visa, Mastercard and American Express, with a direct agreement required for AmEx savings. The guides list up to 200 line items and say AmEx receives only the first four.\n- Klarna is described as a global payment method and PayPal as available to customers across locations. Business-location eligibility is defined in the individual payment-method guides.\n- The November guide says **US Visa Level 2 ended in April 2026**, with Visa savings available through **Product 3 CEDP**. Its retained Visa Level 2 column is context for the former program. Mastercard Level 2 remains separately documented.\n- November lists Visa Product 3 for Purchasing, Corporate and Business cards, versus Mastercard Level 3 for Purchasing and Corporate cards. It retains Business, Purchasing and Corporate in the Level 2 column. May used generic card-type rows for Level 2 and Level 3/Product 3.\n- November revises Visa exclusion codes, extends Mastercard’s `3000–3299` exclusion range to `3000–3350` for L2 and L3, and lists separate Product 3 exclusions for federal-government-issued Visa GSA T&E Corporate and Purchasing cards at specified MCCs. Read the dated network tables for the exact codes and sales-tax requirements. The industry-to-MCC examples are a separate lookup.\n\n## Minimum fields and validation\n\n- **Payment Intents API, Level 2.** Send transaction tax in `amount_details[tax][total_tax_amount]` and the order reference in `payment_details[order_reference]` for the documented Level 2 program.\n- **Payment Intents API, Level 3/Product 3.** Include order reference and per-item product name, unit cost, quantity, product code and unit of measure. November explicitly permits transaction-level tax or per-item tax for L3, although the per-item field row still labels tax required. The field notes prohibit combining those two placements. May’s minimum-field table names per-item tax, but its request examples already show how to pass transaction-level tax. Report actual sales tax, including zero when none was collected.\n- **Checkout Sessions API.** Checkout populates Level 2 tax and order reference from line items. Its documented Level 3 inputs are Checkout line-item quantity, price unit amount and product, and product name and unit label. These are Checkout fields.\n- **Validation versus eligibility.** Network MCC and tax requirements affect savings eligibility without causing a corresponding Stripe API rejection. Stripe returns HTTP 400 for an arithmetic mismatch by default. Set `amount_details.enforce_arithmetic_validation: false` per request to proceed with an `amount_details.error` when arithmetic fails. Stripe withholds mismatched card line-item data from the networks, removing L2/L3 qualification. Payment status and any realized savings are separate outcomes.\n\n## PaymentIntent operations and field limits\n\n- Send line items during confirmation with automatic or manual capture. If omitted at confirmation, supply them at a supported capture. PayPal does not support setting line items at capture. For an ordinary separate capture, already supplied line items persist. If a capture updates them, match the updated data to the capture amount. Multicapture has separate field continuity rules in the [[source-stripe-payment-line-items-flexible|flexible guide]].\n- Expand `amount_details.line_items` to include line items in API responses. A create response can remain `requires_payment_method`. A sample return URL gives a destination and does not confirm payment completion.\n- Per-item tax appears in actual examples as `amount_details[line_items][index][tax][total_tax_amount]`. Use one tax placement per request and one discount placement per request. The field table sometimes uses singular `line_item` as shorthand for an indexed item.\n- Product names allow up to 1,024 characters (card transmission truncates to 26 alphanumeric characters, PayPal to 127). Product code and alphanumeric unit of measure allow up to 12 characters. Order reference is truncated to 25 alphanumeric characters for cards and 255 for Klarna, where it is visible to the customer. Card-only customer reference is truncated to 25 alphanumeric characters before network transmission.\n\n## Payment-method-specific fields\n\nPass supported method-specific fields under each PaymentIntent item at `amount_details[line_items][index][payment_method_options][method]`. Different methods’ fields may coexist in a request when supported, independent of which method confirms it.\n\n- **Card.** `commodity_code` is at most 12 alphanumeric characters, without spaces.\n- **Klarna.** `product_url` and `image_url` allow up to 4,096 characters. `reference` is customer-visible, while `subscription_reference` is for select recurring integrations. Each reference allows up to 255 characters. Klarna derives the item amount as `(unit_cost × quantity) − discount_amount + tax.total_tax_amount`; the example still supplies a PaymentIntent `amount`.\n- **PayPal.** `description` allows up to 127 characters. `category` is `digital_goods`, `physical_goods`, or `donation`. `sold_by` identifies the connected Stripe account selling the item. Leave it blank outside that role.\n- **Industry metadata.** Both guides say card and PayPal line items cannot accompany travel-industry metadata. They separately document Klarna Extra Merchant Data as private preview.\n\n## Flexible payment scenarios\n\nThe May cards row excludes partial and decrement authorization. The November cards compatibility row uses broader wording and the guide names surcharge, multicapture, overcapture, incremental, decremental and partial authorization. The [[source-stripe-payment-line-items-flexible|companion guide]] documents conditional manual partial authorization and capture-time reconciliation, and does not include a decrement procedure. Its multicapture guidance excludes Klarna and PayPal. See the companion for scenario-specific prerequisites.\n\n## Detail locators\n\n- November lines 19–53 and May lines 18–49 cover card, region, and network eligibility, including the dated Visa and Mastercard MCC tables. November lines 683–713 and May lines 789–822 are the separate industry-to-MCC lookup.\n- November lines 55–128 and May lines 51–126 cover minimum fields, the separate Checkout structure, and conditional validation. November lines 417–451 and May lines 511–547 show the full indexed PaymentIntent line-item and method nesting.\n- November lines 290–407 and May lines 324–501 cover confirmation and capture. November lines 612–620 and May lines 706–714 cover arithmetic validation and network eligibility.\n\n## Related Pages\n\n- [[stripe|Stripe]]\n- [[stripe-payment-line-items]] — payment line items concept\n- [[stripe-payment-intents]] — Payment Intents API concept\n- [[source-stripe-payment-line-items-flexible]] — scenario implementation guide\n\n## Raw Sources\n\n- [[raw/stripe-payments-payment-line-items-2026-11-07|November 7, 2026 payment line items guide]] — full capture (717 lines).\n- [[raw/stripe-payment-line-items-2026|May 11, 2026 payment line items guide]] — full capture (826 lines).\n",
+  "quotes": {
+    "payments-payment-line-items": [
+      {
+        "text": "Visa Level 2 was sunset in April 2026 and is no longer available. Visa savings are now available through Product 3 (CEDP) only.",
+        "location": "raw/stripe-payments-payment-line-items-2026-11-07.md:36"
+      },
+      {
+        "text": "Klarna supports industry specific metadata with Extra Merchant Data (private preview).",
+        "location": "raw/stripe-payments-payment-line-items-2026-11-07.md:27"
+      },
+      {
+        "text": "Can replace `amount_details[line_item][tax][total_tax_amount]` for L3",
+        "location": "raw/stripe-payments-payment-line-items-2026-11-07.md:112"
+      },
+      {
+        "text": "For card payments, Stripe doesn’t send line item data with arithmetic errors to card networks, preventing the transaction from qualifying for L2/L3 interchange savings.",
+        "location": "raw/stripe-payments-payment-line-items-2026-11-07.md:620"
+      },
+      {
+        "text": "such as surcharge, multicaptures, overcaptures, incremental authorization, decremental authorization, and partial authorization.",
+        "location": "raw/stripe-payments-payment-line-items-2026-11-07.md:717"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-payment-line-items": [
+      {
+        "text": "except [partial authorization](https://docs.stripe.com/payments/partial-authorization.md) and decrement authorization",
+        "location": "raw/stripe-payment-line-items-2026.md:25"
+      },
+      {
+        "text": "Only Purchasing and Corporate cards are eligible",
+        "location": "raw/stripe-payment-line-items-2026.md:41"
+      },
+      {
+        "text": "line_item[tax][total_tax_amount]",
+        "location": "raw/stripe-payment-line-items-2026.md:62"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-payment-line-items-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 717
+      }
+    ],
+    "raw/stripe-payment-line-items-2026.md": [
+      {
+        "start": 1,
+        "end": 826
+      }
+    ],
+    "wiki/sources/source-stripe-payment-line-items.md": [
+      {
+        "start": 1,
+        "end": 93
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/ad69ecbac100d8ee0d0215e7/content.diff": [
+      {
+        "start": 1,
+        "end": 832
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 563,
+        "end": 569
+      },
+      {
+        "start": 713,
+        "end": 718
+      }
+    ],
+    "wiki/concepts/stripe-payment-line-items.md": [
+      {
+        "start": 8,
+        "end": 57
+      },
+      {
+        "start": 98,
+        "end": 103
+      }
+    ],
+    "wiki/concepts/stripe-payment-intents.md": [
+      {
+        "start": 123,
+        "end": 132
+      }
+    ],
+    "raw/stripe-payments-payment-line-items-flexible-payment-scenarios-2026-11-07.md": [
+      {
+        "start": 11,
+        "end": 21
+      },
+      {
+        "start": 336,
+        "end": 336
+      },
+      {
+        "start": 529,
+        "end": 529
+      },
+      {
+        "start": 722,
+        "end": 730
+      },
+      {
+        "start": 752,
+        "end": 759
+      },
+      {
+        "start": 804,
+        "end": 822
+      },
+      {
+        "start": 864,
+        "end": 869
+      },
+      {
+        "start": 921,
+        "end": 921
+      }
+    ]
+  },
+  "answers": {
+    "payments-payment-line-items": {
+      "Q1": "At https://docs.stripe.com/payments/payment-line-items, merchants pass amount_details and payment_details on PaymentIntents for reconciliation, potential Klarna/PayPal underwriting benefits and network savings on qualifying IC+ commercial-card transactions. Business, issuer, region, network, MCC and tax scope govern eligibility. Stripe can accept a request without network qualification. The PaymentIntent examples use amount_details[line_items][index] for per-item tax and nest method metadata beneath that item's payment_method_options. Both captures scope the travel-industry metadata incompatibility to cards and PayPal and separately document Klarna Extra Merchant Data in private preview, qualifying the reciprocal concept’s general prohibition. Line items can be given at confirmation or a supported separate capture, with PayPal capture excluded and expanded response display opt-in. By default arithmetic mismatch returns 400. Request-level opt-out can leave an Intent with amount_details.error and mismatched card data withheld from networks, so request acceptance is separate from payment completion and savings. The revised source-stripe-payment-line-items.md keeps the earlier flow and adds dated Visa eligibility, November’s L3 top-level tax alternative and the scoped flexible-scenario wording. November explicitly says US Visa Level 2 ended in April 2026, with Visa savings through Product 3 CEDP only. Checkout separately auto-populates L2 tax and order reference and requires its own L3 inputs. The examples illustrate request and Intent states, while settlement and actual savings require further evidence (old raw lines 18-76, old raw lines 324-407 and old raw lines 511-547 and old raw lines 706-714, versus new raw lines 19-78, new raw lines 290-343 and new raw lines 417-451 and new raw lines 612-620).",
+      "Q2": "For https://docs.stripe.com/payments/payment-line-items, the revised source-stripe-payment-line-items.md retains both dated guides and distinguishes November’s changes. November 7 explicitly dates US Visa Level 2 sunset to April 2026 and routes Visa savings to Product 3 CEDP only even though the older-style Visa Level 2 column remains. November lists Visa Business, Corporate and Purchasing cards for Product 3 versus Mastercard Corporate/Purchasing for Level 3. It extends Mastercard’s 3000–3299 exclusions to 3000–3350, revises Visa’s MCC ranges, adds federal-government Corporate/Purchasing GSA T&E Visa exclusions at listed MCCs, and allows top-level or per-line L3 tax without sending both. Both dates already show a top-level tax request with indexed plural line_items. November newly makes that tax placement an express L3 eligibility alternative (old raw lines 621-650, new raw lines 61-68, new raw lines 111-114 and new raw lines 527-554). Preserve May 11’s table and explicit partial and decrement exclusions as history. November names both scenarios plus surcharge, multicapture, overcapture and incremental authorization, but the companion supplies no decrement procedure (old raw lines 23-25, old raw lines 29-65 and old raw lines 824-826, against new raw lines 24-26, new raw lines 32-68, new raw lines 99-128 and new raw lines 715-717). Heading/table/JSON changes, cURL and sample payment-method selection or return URLs are presentation or example changes. The candidate preserves the cards/PayPal industry-metadata restriction with the separate Klarna private-preview path, and keeps the reciprocal Payment Line Items concept route, paired raw history, flexible guide and Payment Intents links."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "main-payment-line-items-network-eligibility",
+      "target_path": "wiki/concepts/stripe-payment-line-items.md",
+      "update_kind": "durable_fact",
+      "anchor": "| Level | Card Types | Key Required Fields |\n| --- | --- | --- |\n| L2 | Business, Purchasing, Corporate | `tax[total_tax_amount]`, `order_reference` |\n| L3/Product 3 | Purchasing, Corporate only | + `product_name`, `unit_cost`, `quantity`, `product_code`, `unit_of_measure`, `line_item[tax]` |",
+      "proposed_markdown": "| Program in the November 7, 2026 guide | Card types | Key PaymentIntent fields |\n| --- | --- | --- |\n| Mastercard Level 2 | Business, Purchasing, Corporate | Transaction tax and order reference |\n| Mastercard Level 3 | Purchasing and Corporate | Order reference, line-item product name, unit cost, quantity, product code and unit of measure, plus transaction-level or per-item tax |\n| Visa Product 3 | Purchasing, Corporate and Business | Same Level 3/Product 3 field group in the guide |",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": [
+        "November lines 42–68 distinguish card types and allow the top-level tax alternative. November lines 99–114 and 126 explain the per-item tax label and mutual exclusion. May lines 39–65 retain the earlier generic rows."
+      ]
+    },
+    {
+      "update_id": "main-payment-line-items-visa-sunset",
+      "target_path": "wiki/concepts/stripe-payment-line-items.md",
+      "update_kind": "durable_fact",
+      "anchor": "Visa's US program is now called **Commercial Enhanced Data Program (CEDP)**, replacing the old Level 2/3 programs.",
+      "proposed_markdown": "The November 7, 2026 Stripe guide says US Visa Level 2 ended in April 2026, with Visa savings through **Commercial Enhanced Data Program (CEDP) Product 3**. The guide still prints Visa Level 2 figures for historical context.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The scope appears at new raw lines 32–36. The table at 46–53 retains a Visa Level 2 column alongside the sunset note."
+      ]
+    },
+    {
+      "update_id": "main-payment-line-items-industry-metadata",
+      "target_path": "wiki/concepts/stripe-payment-line-items.md",
+      "update_kind": "durable_fact",
+      "anchor": "> **Mutual exclusivity**: Payment line items and [[stripe-industry-metadata]] (T&E industry-specific data) cannot be sent on the same PaymentIntent. Travel/hospitality merchants must choose one.",
+      "proposed_markdown": "> **Industry metadata.** The May and November 2026 guides say card and PayPal line items cannot be sent alongside [[stripe-industry-metadata|travel-industry metadata]]. Klarna has a separate Extra Merchant Data path in private preview.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "See the per-method restrictions matrices at old raw line 26 and new raw line 27."
+      ]
+    },
+    {
+      "update_id": "main-payment-line-items-indexed-method-data",
+      "target_path": "wiki/concepts/stripe-payment-line-items.md",
+      "update_kind": "durable_fact",
+      "anchor": "Payment-method-specific fields nested under `line_item[payment_method_options][klarna|paypal|card]`:",
+      "proposed_markdown": "PaymentIntent method-specific fields go under each `amount_details[line_items][index][payment_method_options][method]` entry, with `klarna`, `paypal`, or `card` for the method:",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "The exact plural indexed shape for the per-item tax and payment_method_options fields is shown in new raw lines 417–451 and old raw lines 511–547. The selected quote is field-table shorthand."
+      ]
+    },
+    {
+      "update_id": "main-payment-line-items-source-route",
+      "target_path": "wiki/concepts/stripe-payment-line-items.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-payment-line-items]] — full feature guide, field requirements, MCC tables, code samples",
+      "proposed_markdown": "- [[source-stripe-payment-line-items]] — May and November 2026 feature guides with network and MCC eligibility, PaymentIntent and Checkout fields, arithmetic validation, and flexible scenario links.",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ]
+}

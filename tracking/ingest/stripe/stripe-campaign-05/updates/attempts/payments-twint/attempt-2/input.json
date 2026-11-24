@@ -1,0 +1,158 @@
+{
+  "job_id": "payments-twint",
+  "source_target": "wiki/sources/source-stripe-twint.md",
+  "source_before_sha256": "7b801e2eb167c339f8498d4dac35acc59e2cc6a972fcd4c55234fd6f2232c8ff",
+  "contributions": [
+    {
+      "job_id": "payments-twint",
+      "canonical_url": "https://docs.stripe.com/payments/twint",
+      "attempt": 2,
+      "raw_path": "raw/stripe-payments-twint-2026-11-07.md",
+      "raw_sha256": "c825f5421c8cc4681f4bd6ac72ba78ccafbc72631739faf8d6bcadfd5821f391",
+      "prior_raw_path": "raw/stripe-twint-2025.md",
+      "prior_raw_sha256": "582de136e0fd4486a7c620d14029bb70c6c67772a138dd8fcc017f8a72a94623",
+      "new_capture_role": "full_captured_page",
+      "proposed_disposition": "source_required_update",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-twint/attempt-2/receipt.json",
+      "receipt_sha256": "deb4790f3c12a953877046fd8ef181e97f0a5aa6803657af94e51b561fc1d80d",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-twint/attempt-2/review.json",
+      "review_sha256": "2dabbdcab848170753d964d22dc870ddf4468ffc93b8ebe5f18a280eb9eebb9c",
+      "source_assessments": [
+        {
+          "source_target": "wiki/sources/source-stripe-twint.md",
+          "proposed_disposition": "source_required_update",
+          "update_needed": true,
+          "findings": [
+            "Correct the baseline merchant country count and scope customer geography versus business locations at source lines 13–19. Add November CHF 0.50 floor, approval and B2C conditions, possible review, appealed capability restrictions and country-specific MCC route. Retain the CHF 5,000 maximum, public website and eligibility conditions and prior refund/dispute guidance as dated where applicable.",
+            "Revise source lines 19–36 to record the November Wallets label, hosted QR/redirect and attempt statuses (requires_action during authorization, succeeded after success, requires_payment_method after a declined/failed attempt with possible retry), mandate setup/ad hoc charging/revocation and automatic replacement under the indirect platform-as-MoR path, Connect activation and descriptor-name rules, as well as refund finality/failure and dispute debit and Dashboard response. Preserve May charge-type and capability distinctions.",
+            "Keep prior raw and add November raw plus the reciprocal stripe-twint route. Keep navigation to other TWINT guide variants on their implementation touchpoints."
+          ],
+          "conflicts": [
+            "Correct line 17's 36 instead of 35, line 21's missing cumulative refund cap, and date May's bank-redirect family and desktop QR descriptions. Preserve May's dispute rarity figure as historical, not a rate verified by the November capture."
+          ],
+          "reason": "The November full capture materially expands eligibility and payment/post-payment/mandate behavior, and exposing the differences changes answers to onboarding, merchant-of-record and outcome questions."
+        }
+      ],
+      "affected_concepts": [
+        "wiki/concepts/stripe-twint.md"
+      ],
+      "unresolved_questions": [
+        "The November overview does not establish an individual account’s approval, MCC requirements for Iceland, Monaco or San Marino, actual payment completion or whether any particular custom descriptor is shown."
+      ],
+      "mapped_source_assessment": {
+        "source_target": "wiki/sources/source-stripe-twint.md",
+        "proposed_disposition": "source_required_update",
+        "update_needed": true,
+        "findings": [
+          "Correct the baseline merchant country count and scope customer geography versus business locations at source lines 13–19. Add November CHF 0.50 floor, approval and B2C conditions, possible review, appealed capability restrictions and country-specific MCC route. Retain the CHF 5,000 maximum, public website and eligibility conditions and prior refund/dispute guidance as dated where applicable.",
+          "Revise source lines 19–36 to record the November Wallets label, hosted QR/redirect and attempt statuses (requires_action during authorization, succeeded after success, requires_payment_method after a declined/failed attempt with possible retry), mandate setup/ad hoc charging/revocation and automatic replacement under the indirect platform-as-MoR path, Connect activation and descriptor-name rules, as well as refund finality/failure and dispute debit and Dashboard response. Preserve May charge-type and capability distinctions.",
+          "Keep prior raw and add November raw plus the reciprocal stripe-twint route. Keep navigation to other TWINT guide variants on their implementation touchpoints."
+        ],
+        "conflicts": [
+          "Correct line 17's 36 instead of 35, line 21's missing cumulative refund cap, and date May's bank-redirect family and desktop QR descriptions. Preserve May's dispute rarity figure as historical, not a rate verified by the November capture."
+        ],
+        "reason": "The November full capture materially expands eligibility and payment/post-payment/mandate behavior, and exposing the differences changes answers to onboarding, merchant-of-record and outcome questions."
+      },
+      "findings": [
+        "Both captures describe immediate outcome notification after approval in a supported TWINT app for Swiss customers paying in CHF, with the same 35 merchant-account locations and standard payout timing. The November overview shows domestic/cross-border acceptance, approval required, B2C supported/B2B excluded, a CHF 0.50 minimum and the same CHF 5,000 maximum. The website must be publicly usable and display required business identity, address and terms/contact, CHF pricing by checkout, and Swiss shipping if physical goods are sold. November adds possible post-activation review and an appeal route for capability restrictions; pending stays until verification and Connect Express/no Stripe-hosted Dashboard must request `twint_payments` and check active before accepting payments (old raw lines 8–56, 58–96, 134–151, 165–179; new raw lines 9–55, 114–128, 257–263).",
+        "November adds a business-country MCC table distinguishing prohibited from restricted categories with additional information. Iceland, Monaco and San Marino are listed as business locations but lack MCC requirements in this page and route to Stripe Support. The product matrix expands the explicit labels and keeps Express Checkout Element unsupported, while recurring and some product/API paths are marked supported. The full capture does not establish every account’s approval or every feature combination (old raw lines 58–107, 119–132; new raw lines 57–128 and 212–236).",
+        "At November checkout the buyer first reaches a TWINT-hosted page on both platforms, chooses the app on mobile or scans its QR code on desktop, then approves in the app. The Intent remains requires_action while awaiting approval, then succeeded after success or requires_payment_method after a decline/failure. Return alone is not the result. The failed attempt leaves a retryable Intent at requires_payment_method, as documented separately by the November verifying-status guide (raw/stripe-payments-payment-intents-verifying-status-2026-11-07.md lines 24–35). The May desktop description had the website presenting the QR code, and did not state the same Intent status sequence (old raw lines 8–10 and 109–115; new raw lines 237–249).",
+        "November explicitly covers mandate creation with a SetupIntent or a future-use PaymentIntent, off-session ad hoc merchant charging without fixed amount/schedule, the single-active-mandate business/customer relationship and replacement revocation for platform-as-MoR indirect payments without on_behalf_of. The merchant can detach the saved PaymentMethod, the customer can revoke in app, and TWINT can revoke; Stripe updates the Mandate state. For a payment use the Charge mandate field, distinct from the saved PaymentMethod; active mandates are generally routed in Dashboard via saved methods (new raw lines 188–210; historical recurring label old raw lines 30–33).",
+        "November documents original-payment-source refunds within 180 days, multiple partials capped by the original amount, no reversals or cancellation, and final Refund status/webhooks. Failed refund funds return to Stripe balance and the merchant refunds differently. Customers complain to their bank and Stripe debits on receipt of a dispute, with evidence or acceptance in Dashboard, won amounts returned and lost debits permanent. Partial disputes and manual/partial/multi/over-capture are marked unsupported (old raw lines 42–52 and 153–163; new raw lines 139–186)."
+      ],
+      "substantive_changes": [
+        "The overview family label changes from May Bank redirects to November Wallets, while redirection remains in the described customer flow. November states a CHF 0.50 minimum, approval-required B2C-only eligibility, possible post-activation review and MCC tiering, including countries whose MCC table is unavailable. Same 35 countries and CHF 5,000 maximum (old raw lines 26–28, 54–96 and 134–151; new raw lines 12–55, 57–128).",
+        "November introduces hosted mobile app selection and desktop QR flow detail, PaymentIntent state sequence, refund cancellation/final-status and dispute accounting/evidence boundaries, plus ad hoc mandate lifecycle and platform-as-MoR mandate replacement (old raw lines 109–115 and 153–179; new raw lines 154–210 and 237–249).",
+        "November explicitly says forwarded dynamic descriptors may not be displayed and names the Connect default-name rules: connected account for direct/on_behalf_of, platform for destination/separate charges without on_behalf_of. Preserve the earlier named charge-type support and full Dashboard activation route as evidence dated May (old raw lines 165–179; new raw lines 251–263).",
+        "Region regrouping of unchanged country codes, heading/table formatting and added reference links are presentational/navigation changes; the new account/MCC and support matrix cells are additional documented claims."
+      ],
+      "historical_claims_to_preserve": [
+        "Retain actual May 3, 2026 date despite the 2025 raw filename and keep the November 7, 2026 overview as separate evidence. Preserve the May Bank redirects classification and desktop QR wording as dated, alongside the November Wallets classification and TWINT-hosted page flow (old raw lines 1–4, 26–28 and 109–115; new raw lines 1–5, 12–16 and 237–249).",
+        "Retain May's 25–50 disputes per million as a dated figure only, CHF 5,000 maximum, 180-day refunds and suspension/termination rights. Preserve May's separate full Dashboard versus Express capability routes and named charge types (old raw lines 54–56 and 134–179; new raw lines 25–55, 126–128, 154–186 and 257–263).",
+        "Preserve the existing stripe-twint concept inbound source link (concept lines 51–60) and link back to it from the source. The separate TWINT acceptance, save, setup and subscriptions routes remain implementation references with their own dated scope."
+      ],
+      "conflicts": [
+        "Current source line 17 and concept line 12 claim 36 merchant countries; the identical ordered lists have 35 entries (old raw lines 62–96; new raw lines 21 and 116). Source line 13's Switzerland-only shorthand concerns customers; account availability spans the documented list. Source lines 19 and 25–26 should date the May bank-redirect classification and QR source against November lines 12 and 245.",
+        "Concept line 24's 'all other products' overreaches the May enumerated list and conflicts with November's explicit unsupported labels for Terminal, Managed Payments and Payment Method Messaging Element (old raw lines 98–107; new raw lines 212–229). Concept line 37's unqualified connected-account name should be scoped to the November charge/merchant-of-record rules.",
+        "Current source line 21 omits that combined partial refunds cannot exceed the original payment, already explicit in May (old raw line 155, new raw line 156). Preserve minimum and maximum, no refund cancellation, and the minimum source scope by capture."
+      ],
+      "expected_read_files": [
+        {
+          "path": "raw/stripe-payments-twint-2026-11-07.md",
+          "sha256": "c825f5421c8cc4681f4bd6ac72ba78ccafbc72631739faf8d6bcadfd5821f391",
+          "lines": 263
+        },
+        {
+          "path": "raw/stripe-twint-2025.md",
+          "sha256": "582de136e0fd4486a7c620d14029bb70c6c67772a138dd8fcc017f8a72a94623",
+          "lines": 179
+        },
+        {
+          "path": "wiki/sources/source-stripe-twint.md",
+          "sha256": "7b801e2eb167c339f8498d4dac35acc59e2cc6a972fcd4c55234fd6f2232c8ff",
+          "lines": 40
+        },
+        {
+          "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/78fd6a6293b80e8acc5ac452/content.diff",
+          "sha256": "04c35dd29f3168b4f5f304a317d251695944b780320665e2f88e3289c82f0629",
+          "lines": 426
+        }
+      ],
+      "original_query_prompts_path": "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md",
+      "original_prompts": "New raw `raw/stripe-payments-twint-2026-11-07.md`. Prior raw `raw/stripe-twint-2025.md`. Current summaries `wiki/sources/source-stripe-twint.md`.\n\n- Q1. For `https://docs.stripe.com/payments/twint`, what documented behavior, prerequisites, actors and state transitions does the complete new capture establish? How do these compare with the matched prior capture and each mapped summary?\n\n- Q2. Which changes are substantive, presentational or navigation-only? Identify the exact dated qualifications, conflicts and reciprocal routes that the proposed disposition should preserve.",
+      "reviewed_answers": {
+        "Q1": "https://docs.stripe.com/payments/twint describes approval-required B2C payments for Swiss buyers in CHF with the same 35 merchant countries and standard payout schedule. November adds a CHF 0.50 minimum beneath the CHF 5,000 maximum, documents public website and business requirements, and keeps twint_payments pending until verified. On mobile or desktop the buyer reaches a TWINT-hosted page, selects the app or scans its QR, and approves in the app. Pending authorization is requires_action, the successful Intent reaches succeeded, and a declined or failed attempt returns to requires_payment_method, leaving the Intent incomplete and retryable. For later charges the buyer authorizes an ad hoc mandate via SetupIntent or future-use PaymentIntent. An indirect platform-as-MoR second mandate without on_behalf_of revokes the earlier one for the buyer. Refund status and dispute evidence/outcomes are separate. See new raw lines 12–55, 114–128, 154–210 and 237–263, and old raw lines 8–56, 58–96, 109–115 and 134–179. source-stripe-twint.md needs the 35-country correction and the new eligibility, outcome and operational qualifications.",
+        "Q2": "At https://docs.stripe.com/payments/twint, the table and regional presentation reorganize the same country list, but November changes the payment-family label from Bank redirects to Wallets and supplies substantive eligibility and hosted flow details. It adds B2C-only approval, the CHF 0.50 minimum and post-activation review and MCC treatment, then documents Intent attempt outcomes (requires_action while awaiting authorization, succeeded after success and requires_payment_method after decline or failure), mandate replacement and revocation, Connect descriptor names, refund final status and dispute handling (old raw lines 26–28, 54–96, 109–115 and 134–179; new raw lines 12–55, 57–128, 154–210 and 237–263). source-stripe-twint.md should retain May 3, 2026’s dispute frequency figure and QR wording, named Connect charge types, original-payment refund cap and November 7’s full overview, with reciprocal stripe-twint and distinct implementation-guide routes. November’s hosted redirect does not prove success or actual account eligibility. The dated verifying-status guide also marks requires_payment_method as incomplete and retryable (raw/stripe-payments-payment-intents-verifying-status-2026-11-07.md lines 24–35)."
+      }
+    }
+  ],
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payments-twint-2026-11-07.md",
+      "sha256": "c825f5421c8cc4681f4bd6ac72ba78ccafbc72631739faf8d6bcadfd5821f391",
+      "lines": 263
+    },
+    {
+      "path": "raw/stripe-twint-2025.md",
+      "sha256": "582de136e0fd4486a7c620d14029bb70c6c67772a138dd8fcc017f8a72a94623",
+      "lines": 179
+    },
+    {
+      "path": "wiki/sources/source-stripe-twint.md",
+      "sha256": "7b801e2eb167c339f8498d4dac35acc59e2cc6a972fcd4c55234fd6f2232c8ff",
+      "lines": 40
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/78fd6a6293b80e8acc5ac452/content.diff",
+      "sha256": "04c35dd29f3168b4f5f304a317d251695944b780320665e2f88e3289c82f0629",
+      "lines": 426
+    }
+  ],
+  "concept_targets": [
+    {
+      "path": "wiki/concepts/stripe-twint.md",
+      "before_sha256": "b64ffb90f44a7151457811deeffa1dd614297da88aa855caf15f2c8eb79a0614",
+      "contributing_jobs": [
+        "payments-twint",
+        "payments-twint-accept-a-payment",
+        "payments-twint-save-during-payment",
+        "payments-twint-set-up-future-payments"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    }
+  ],
+  "state": "worker_running",
+  "attempt": 2,
+  "review_scope": "targeted",
+  "worker_agent": "/root/s05w2",
+  "reviewer_agent": "/root/s05r6",
+  "invalid_handoff": "624e0cb592fbff32685758f0be33902815dc5737798243e861e5be104aaec4f7AssertionError('Restore the required [[stripe]] company link')",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-05/updates/attempts/payments-twint/attempt-1/receipt.json",
+  "receipt_sha256": "cf0a87dd0cfec8223cfd8ca1b7b11f77459b72bd7e73704e96f51a46fd605994",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-05/updates/attempts/payments-twint/attempt-1/review.json",
+  "review_sha256": "b3e06af4e34a23d499b15138faf5cd207d6f255e2d36e149403b8123f80b1096",
+  "role_notes": "tracking/ingest/stripe/stripe-campaign-05/updates/role-notes.md",
+  "worker_output": "/tmp/stripe-s05-ingest/payments-twint-worker.json",
+  "reviewer_output": "/tmp/stripe-s05-ingest/payments-twint-reviewer.json",
+  "prior_attempt_dir": "tracking/ingest/stripe/stripe-campaign-05/updates/attempts/payments-twint/attempt-1"
+}

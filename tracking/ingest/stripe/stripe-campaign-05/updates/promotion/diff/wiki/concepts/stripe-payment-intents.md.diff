@@ -1,0 +1,36 @@
+--- wiki/concepts/stripe-payment-intents.md
++++ wiki/concepts/stripe-payment-intents.md
+@@ -112,6 +112,8 @@
+ // To charge later: off_session: true, confirm: true
+ ```
+ 
++The April and November 2026 Setup Intents guides separately describe no-charge setup. `SetupIntent.usage` uses `on_session` for customer-present-only reuse and `off_session` for off-session or mixed use. It defaults to `off_session`. Get an agreement for off-session charging and bring the customer back online if the issuer requires authentication on a later off-session card payment. See [[source-stripe-payment-intents#Saving a payment method|the Setup Intents guide summary]].
++
+ ## ConfirmationToken Metadata
+ 
+ `@stripe/stripe-js@9.15.0` adds `metadata?: MetadataParam` to `ConfirmationTokenCreateParams`, so typed web integrations can attach metadata while calling `stripe.createConfirmationToken({elements, params})`. The declaration documents a maximum of 50 keys and rejects unsupported value types at compile time. This is package-level TypeScript evidence; server persistence and Stripe-hosted runtime availability still require current API and product confirmation.
+@@ -139,6 +141,7 @@
+ 
+ - [[source-stripe-api-tour]] — conceptual same-URL tour of PaymentIntent, PaymentMethod, Charge, and Event roles; its state sketch is simplified and its Charge/retry language is conditional.
+ - [[source-stripe-payment-intents]] — April and November 2026 combined reference for server creation and reuse, scoped client secrets, lifecycle and setup, and asynchronous capture. Async creation can leave Charge balance data unavailable even after confirmation and expansion. The sample response shape and creation default have separate version scopes.
++- [[source-stripe-payment-methods]] — April and November Payment Methods API guides on pending orders, verified success for fulfillment, and possible later financial outcomes after PaymentIntent success
+ - [[source-stripe-payment-intents-quickstart]] — Full quickstart: server setup, Elements wiring, confirmPayment, return page, Stripe Tax, email receipts, off-session charging
+ - [[source-stripe-elements-advanced-payments]] — Checkout Sessions vs Payment Intents comparison matrix
+ - [[source-stripe-payment-element-design-integration]] — April 2026 Checkout Sessions and Payment Intents paths, including separate initialization and Intent creation/confirmation choices. The November capture is variant navigation.
+@@ -147,12 +150,12 @@
+ - [[source-stripe-checkout-dynamic-amounts]] — April 21, 2026 full guide: PaymentIntents amount updates require trusted server calculation and client refresh; its wording says post-confirmation increases **generally** are not possible, without specifying exceptions. It separately documents Checkout Sessions `runServerUpdate`/server line-item changes and Session completion/expiry checks, which must not be applied as PaymentIntent fields. The November 7 capture is only a Checkout Sessions/Payment Intents variant index and does not verify current implementation or lifecycle behavior.
+ - [[source-stripe-email-receipts]] — Receipts (PI path): receipt_email is additional address, no invoice generation (use Stripe Billing), localization doesn't use browser locale, update Charge not PI for receipt changes
+ - [[source-stripe-receipts]] — Receipts overview: 30-day link expiry, auto/manual send, refund receipts, invoice itemized receipts, Connect branding rules
+-- [[source-stripe-auth-and-capture]] — Auth+capture: validity windows per card brand, per-PM capture rules, capture_method=manual vs automatic_delayed (private preview), partial capture
++- [[source-stripe-auth-and-capture]] — April and November 2026 guide to manual capture, Charge card expiry, eligible multicapture and method-specific windows. November adds private-preview timing controls and changes the mixed card/SEPA Direct Debit create example. See the separate versioned API and SDK evidence above.
+ - [[source-stripe-payment-element-migration]] — Migration guide: CardElement → PaymentElement, elements.submit() pattern, 11 Elements options, ConfirmationToken migration
+ - [[source-stripe-two-step-confirmation]] — Two-step web checkout: submit deferred Payment Element details, create a ConfirmationToken for review or validation, optionally calculate tax, create a server PaymentIntent, then confirm from the client. The 2026-11-07 guide adds scoped zero-amount US-bank microdeposit suppression and lists `allowedPaymentMethodTypes` where the 2026-05-11 table listed `paymentMethodTypes`; the source preserves the dated save-warning conflict and Account/Customer conditions.
+ - [[source-stripe-accept-payment-deferred]] — Deferred intent: retained 2026-05-11 guide covers payment, setup, and subscription modes; render Element before server-side Intent or Subscription creation, submit before branch-specific confirmation, and update displayed amounts when needed. The 2026-11-07 canonical capture is a variant index, not current implementation evidence.
+ - [[source-stripe-finalize-payments-server]] — Server-side confirmation: the retained 2026-05-11 web guide covers payment, setup, and subscription variants with ConfirmationToken and branch-specific Intent handling; its SDK minimums and limitations remain dated. The 2026-11-07 canonical capture supplies variant navigation only, not refreshed implementation behavior.
+ - [[source-github-stripe-js]] — package-qualified Stripe.js loader and declaration history through `@stripe/stripe-js@9.15.0`, including ConfirmationToken metadata typing
+-- [[source-stripe-payments-without-auth]] — Legacy US/CA-only: CardElement + createPaymentMethod, error_on_requires_action, synchronous, no webhooks
+-- [[source-stripe-legacy-apis]] — April and November 2026 existing Charges migration, Charge read compatibility and the scoped November creation notice. Includes saved-method attachment, the create API fallback and historical Payment Request Button version limits.
+-- [[source-stripe-migrate-basic-card-integration]] — Migrate legacy to auth-handling: remove error_on_requires_action, add confirmation_method='manual', handleCardAction, 1-hour re-confirm window
++- [[source-stripe-payments-without-auth]] — Stripe's May and November 2026 guides describe a synchronous Card Element path for businesses accepting only US- or Canadian-issued cards. Use `error_on_requires_action` and handle immediate post-payment tasks after `succeeded` without a webhook in this path. Stripe recommends webhooks for the global integration.
++- [[source-stripe-legacy-apis]] — April and November 2026 existing Charges migration, Charge read compatibility and the scoped November creation notice. Includes saved-method attachment, the create API fallback and historical Payment Request Button version limits. The separate same-URL Sources transition evidence distinguishes server-verified Intent outcomes, Checkout Session completion and retained Charge events.
++- [[source-stripe-migrate-basic-card-integration]] — May and November 2026 guides to handling issuer-requested authentication in the basic card flow. With `confirmation_method=manual`, successful `handleCardAction` leaves `requires_confirmation`; re-confirm the same PaymentIntent on the server within one hour and verify payment success. See the source for dated request examples and sandbox qualifications.

@@ -1,0 +1,185 @@
+{
+  "job_id": "payments-payment-line-items-flexible-payment-scenarios",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe — Payment Line Items for Flexible Payments\"\ntype: source\ndate_ingested: 2026-05-11\ndate_updated: 2026-11-22\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/payments/payment-line-items/flexible-payment-scenarios\"\nraw_files:\n  - \"stripe-payments-payment-line-items-flexible-payment-scenarios-2026-11-07.md\"\n  - \"stripe-payment-line-items-flexible-2026.md\"\ntags: [stripe, payment-line-items, multicapture, overcapture, incremental-authorization, partial-authorization, surcharge, flexible-payments]\n---\n\n## Summary\n\nStripe’s May 11 and November 7, 2026 guides describe how merchants supply `amount_details` on PaymentIntents for multicapture, overcapture, incremental authorization, partial authorization, and surcharge. The four flexible authorization or capture paths use `capture_method: manual` with an `if_available` request for the relevant feature. Availability depends on payment-method support. Expand `amount_details.line_items` to return line items in the API response.\n\n## Multicapture Rules\n\n- Klarna and PayPal are excluded from multicapture.\n- Treat `amount_details` and `amount_details[line_items]` independently. At the first capture, add either if absent at creation. Include or explicitly unset either that was present at creation.\n- The guides’ general rule says to keep including fields sent in previous captures and prohibits adding them later if preceding captures omitted them.\n- Stripe sums `discount_amount`, `tax.total_tax_amount`, and `shipping.amount` and aggregates line items across captures. The shipping postal codes can be omitted and must stay consistent when supplied.\n- A partial nonfinal capture can remain `requires_capture`. An explicit `final_capture: true`, or omitting it where it defaults to true, can complete the PaymentIntent.\n- Both guides illustrate closing a partially captured Intent with `amount_to_capture: 0` and `final_capture: true`. This specific final request omits `amount_details` and `line_items`, and its `succeeded` example response retains the first capture’s line items. Read that example alongside the general continuity rule above.\n\n## Overcapture Rules\n\nRequest overcapture using `request_overcapture: 'if_available'` in the card example. When capturing more than the current authorization, set `amount_to_capture` up to `maximum_amount_capturable` and pass updated `amount_details` consistent with the actual capture amount.\n\n## Incremental Authorization Rules\n\nRequest incremental authorization using `request_incremental_authorization: 'if_available'` in the card example. Use `increment_authorization` to raise the authorization up to the payment method’s limit and send `amount_details` matching the new total authorized amount. The example remains `requires_capture` with no amount received after the increment.\n\n## Partial Authorization Rules\n\nRequest partial authorization using `request_partial_authorization: 'if_available'` in the card example. When the issuer authorizes a smaller amount and the supplied details no longer reconcile, `amount_details.error.code` is `amount_details_amount_mismatch`.\n\n- **Update at capture.** Send `amount_details` matching the partially authorized amount. A matching update clears the error and allows Stripe to send card line-item data to the networks. Actual L2/L3 savings depend on qualification.\n- **Capture without the update.** The example succeeds at capture with the error still present. Stripe withholds the mismatched card line-item data, so the transaction cannot qualify for L2/L3 interchange savings.\n\n## Surcharge Rules\n\n- Include the surcharge in the PaymentIntent `amount` and specify its amount in `amount_details[surcharge][amount]`. A separate surcharge line item double counts it and produces an HTTP 400 in the guides’ incorrect example.\n- For tax with a surcharge, the November 7 guide explicitly directs tax to top-level `amount_details[tax][total_tax_amount]` rather than line-level tax. The May 11 correct example already used that field. May’s public-preview SDK comment applies to its incorrect Node example. November uses curl and links to the card surcharge guide.\n\n## Detail locators\n\n- November lines 15–22, 107–113, and 182–217 cover manual multicapture, first-capture data and continuity. Lines 277–333 show the zero-amount finalization. The example shows `succeeded` and a retained `amount_capturable` value. The response fragment supplies no general post-finalization balance rule.\n- November lines 338–441, 531–717, and 724–919 cover the other authorization and capture paths. The example at lines 823–861 shows a nested line-item URL with a different ID than the PaymentIntent, so use the Intent itself for object identity.\n- November lines 925–946 and 1024–1071 contain the correct and incorrect surcharge examples. May lines 1153–1178 and 1280–1359 retain the earlier examples.\n\n## Related Pages\n\n- [[stripe|Stripe]]\n- [[stripe-payment-line-items]] — payment line items concept\n- [[source-stripe-payment-line-items]] — main feature guide\n- [[stripe-surcharge]] — surcharge concept\n\n## Raw Sources\n\n- [[raw/stripe-payments-payment-line-items-flexible-payment-scenarios-2026-11-07|November 7, 2026 flexible payment scenarios guide]] — full capture (1,071 lines).\n- [[raw/stripe-payment-line-items-flexible-2026|May 11, 2026 flexible payment scenarios guide]] — full capture (1,359 lines).\n",
+  "quotes": {
+    "payments-payment-line-items-flexible-payment-scenarios": [
+      {
+        "text": "If previous captures didn’t include these fields, you can’t add them in later captures.",
+        "location": "raw/stripe-payments-payment-line-items-flexible-payment-scenarios-2026-11-07.md:190"
+      },
+      {
+        "text": "Pass in an updated `amount_details` hash that is consistent with the capture amount during Capture.",
+        "location": "raw/stripe-payments-payment-line-items-flexible-payment-scenarios-2026-11-07.md:441"
+      },
+      {
+        "text": "Pass in an updated `amount_details` hash that is consistent with the total authorized amount after the increment.",
+        "location": "raw/stripe-payments-payment-line-items-flexible-payment-scenarios-2026-11-07.md:634"
+      },
+      {
+        "text": "For card payments, Stripe doesn’t send mismatched line item data to card networks.",
+        "location": "raw/stripe-payments-payment-line-items-flexible-payment-scenarios-2026-11-07.md:868"
+      },
+      {
+        "text": "To populate tax information with the surcharge, use `amount_details[tax][total_tax_amount]` instead of `amount_details[line_item][tax][total_tax_amount]`.",
+        "location": "raw/stripe-payments-payment-line-items-flexible-payment-scenarios-2026-11-07.md:927"
+      }
+    ]
+  },
+  "old_evidence": {
+    "payments-payment-line-items-flexible-payment-scenarios": [
+      {
+        "text": "Don’t create a separate line item for the surcharge.",
+        "location": "raw/stripe-payment-line-items-flexible-2026.md:1155"
+      },
+      {
+        "text": "the line items won’t correctly add up to the amount exclusive of the surcharge amount, and the request will 400.",
+        "location": "raw/stripe-payment-line-items-flexible-2026.md:1282"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-payments-payment-line-items-flexible-payment-scenarios-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 1071
+      }
+    ],
+    "raw/stripe-payment-line-items-flexible-2026.md": [
+      {
+        "start": 1,
+        "end": 1359
+      }
+    ],
+    "wiki/sources/source-stripe-payment-line-items-flexible.md": [
+      {
+        "start": 1,
+        "end": 57
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/e47c9805e0462d6845bf01d0/content.diff": [
+      {
+        "start": 1,
+        "end": 1008
+      }
+    ],
+    "wiki/index.md": [
+      {
+        "start": 5,
+        "end": 9
+      }
+    ],
+    "wiki/stripe-index.md": [
+      {
+        "start": 563,
+        "end": 569
+      },
+      {
+        "start": 713,
+        "end": 718
+      }
+    ],
+    "wiki/concepts/stripe-payment-line-items.md": [
+      {
+        "start": 55,
+        "end": 103
+      }
+    ],
+    "wiki/concepts/stripe-surcharge.md": [
+      {
+        "start": 20,
+        "end": 27
+      },
+      {
+        "start": 50,
+        "end": 59
+      }
+    ]
+  },
+  "answers": {
+    "payments-payment-line-items-flexible-payment-scenarios": {
+      "Q1": "The November 7 capture at https://docs.stripe.com/payments/payment-line-items/flexible-payment-scenarios describes merchant use of amount_details on a PaymentIntent, including manual capture and if_available requests subject to method support. Multicapture excludes Klarna and PayPal, permits adding data at first capture, and describes general later-capture continuity for previously supplied fields, with no adding fields that prior captures omitted. The initial nonfinal partial capture can stay requires_capture and the explicit or default final capture can complete it. In the specific zero-amount example, the final request sets final_capture=true and omits amount_details and line_items even though the earlier capture sent them. The example response retains first-capture line items. Both captures present this prose/example tension (old raw lines 236-239 and old raw lines 346-362, new raw lines 187-190 and new raw lines 277-289). Stripe aggregates items and sums amounts across captures. Overcapture updates details to match the larger capture within its ceiling, while an increment updates details to match the larger authorized total without capturing it. A partial-authorization mismatch can be corrected at capture to enable card-network data transmission or remain when capture succeeds without sending mismatched data. A surcharge is included in the amount and specified separately, with top-level tax. The May mechanics match apart from the new explicit tax instruction (old raw lines 14-21, old raw lines 231-286, old raw lines 540-544, old raw lines 789-793 and old raw lines 964-1155, compared with new raw lines 15-22, new raw lines 182-217, new raw lines 437-441, new raw lines 630-634 and new raw lines 756-927). source-stripe-payment-line-items-flexible.md retains the earlier scenario coverage and now records the top-level tax qualification, field continuity and distinct capture and authorization ceilings.",
+      "Q2": "For https://docs.stripe.com/payments/payment-line-items/flexible-payment-scenarios, source-stripe-payment-line-items-flexible.md retains both dated raw sources and adds the November rule. The substantive November 7 clarification directs top-level tax when using a surcharge, while the May 11 example already used top-level tax (old raw lines 1153-1178 versus new raw lines 925-946). Preserve surcharge-inclusive PaymentIntent amount, distinct surcharge field, and the example’s 400 when surcharge is also a line item (old raw lines 1280-1282 and new raw lines 1024-1026). Node-to-curl, example return URL and payment method selection, and the updated surcharge link are presentation or navigation. The dropped public-preview SDK note is historical example context (old raw lines 1284-1290 and new raw lines 1028-1034). Both dates preserve the general continuity rule and the distinct zero-amount final request omitting amount_details and line_items while the example response retains first-capture items (old raw lines 236-239 and old raw lines 346-362, new raw lines 187-190 and new raw lines 277-289). Treat the zero-amount example as scoped to its illustrated finalization. Existing missing late-add and ceiling checks are baseline findings, and sample object inconsistencies do not define behavior. The candidate keeps the Payment Line Items reciprocal source link, Surcharge concept route and May raw provenance. Bounded concept corrections scope the multicapture example, capture and authorization ceilings, L2/L3 qualification, and November surcharge tax rule."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "flexible-line-items-multicapture",
+      "target_path": "wiki/concepts/stripe-payment-line-items.md",
+      "update_kind": "durable_fact",
+      "anchor": "Line items work with multicapture (cards only — Klarna/PayPal not supported):\n\n- Can add `amount_details` at first capture even if absent at creation\n- If set at creation, must include or explicitly unset at first capture\n- Once included in any capture, must continue in all subsequent captures\n- `discount_amount`, `tax.total_tax_amount`, `shipping.amount` are **summed** across captures\n- `shipping.from_postal_code` / `to_postal_code` must not change across captures\n- `line_items` are **aggregated** across captures\n- Partial capture: `amount_to_capture: 0` + `final_capture: true` → `succeeded` with only first-capture items",
+      "proposed_markdown": "Multicapture is conditional on payment-method support and excludes Klarna and PayPal. Use manual capture and request multicapture when available.\n\n- Add `amount_details` or `amount_details[line_items]` on the first capture if absent at creation. Include or explicitly unset each field that was present at creation.\n- The general later-capture rule requires continuing fields previously supplied and prohibits adding fields omitted in preceding captures.\n- Stripe sums `discount_amount`, `tax.total_tax_amount` and `shipping.amount` and aggregates line items. Shipping postal codes are optional and must stay consistent if supplied.\n- A partial nonfinal capture can remain `requires_capture`. The May and November guides illustrate a zero-amount final capture with `final_capture: true` that omits new amount details and returns only the first capture’s items. This example is specific to the illustrated finalization.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "General continuity at new raw lines 187–190 and old lines 236–239. Specific zero-capture example at new lines 277–333 and old lines 346–406. Method support at new lines 15–21."
+      ]
+    },
+    {
+      "update_id": "flexible-line-items-overcapture",
+      "target_path": "wiki/concepts/stripe-payment-line-items.md",
+      "update_kind": "durable_fact",
+      "anchor": "Pass updated `amount_details` during capture that is consistent with the larger capture amount.",
+      "proposed_markdown": "Pass an `amount_to_capture` up to `maximum_amount_capturable` and update `amount_details` to match the actual larger capture amount.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "The capture ceiling is in new raw lines 437–441 and old lines 540–544."
+      ]
+    },
+    {
+      "update_id": "flexible-line-items-incremental-authorization",
+      "target_path": "wiki/concepts/stripe-payment-line-items.md",
+      "update_kind": "durable_fact",
+      "anchor": "Use `incrementAuthorization()` endpoint. Pass updated `amount_details` consistent with the new total authorized amount after the increment.",
+      "proposed_markdown": "Use `increment_authorization` to increase the authorization up to the payment method’s limit. Pass updated `amount_details` matching the new authorized total. A later capture collects funds.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "See new raw lines 630–634 and 662–717, and old raw lines 789–793."
+      ]
+    },
+    {
+      "update_id": "flexible-line-items-network-qualification",
+      "target_path": "wiki/concepts/stripe-payment-line-items.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Fix at capture**: provide reconciled `amount_details` matching the partial amount → error cleared, L2/L3 savings preserved",
+      "proposed_markdown": "- **Fix at capture**: Reconcile `amount_details` to the partially authorized amount. This clears the error and allows Stripe to send card line-item data to networks. Actual L2/L3 savings depend on qualification.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "The positive transmission qualification is new raw line 821 and old line 1042. The selected quote covers the complementary mismatch exclusion."
+      ]
+    },
+    {
+      "update_id": "flexible-line-items-tax",
+      "target_path": "wiki/concepts/stripe-payment-line-items.md",
+      "update_kind": "durable_fact",
+      "anchor": "Pass surcharge via `amount_details[surcharge][amount]`. Do **not** add surcharge as a separate line item — doing so causes a 400 arithmetic error because Stripe validates line items against `amount` exclusive of surcharge. See [[stripe-surcharge]].",
+      "proposed_markdown": "Include the surcharge in the PaymentIntent `amount` and record it under `amount_details[surcharge][amount]`. Adding it as a separate line item as well produces an HTTP 400 in the guide’s incorrect example. The November 7, 2026 guide directs tax with a surcharge to top-level `amount_details[tax][total_tax_amount]`. See [[stripe-surcharge]].",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "See new raw lines 925–946 and 1024–1026. The May example already used top-level tax."
+      ]
+    },
+    {
+      "update_id": "flexible-line-items-surcharge-route",
+      "target_path": "wiki/concepts/stripe-surcharge.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- ✓ Payment Line Items",
+      "proposed_markdown": "- ✓ Payment Line Items. The [[source-stripe-payment-line-items-flexible|flexible payment scenarios guide]] covers surcharge and line-item tax field placement.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "The linked guide documents field placement. The link supplies no new applicability or API-version claim."
+      ]
+    }
+  ]
+}

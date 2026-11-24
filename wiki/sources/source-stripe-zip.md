@@ -2,35 +2,60 @@
 title: "Stripe: Zip Payments"
 type: source
 date_ingested: 2026-05-06
+date_updated: 2026-11-22
 original_format: webpage
+canonical_url: "https://docs.stripe.com/payments/zip"
 raw_files:
+  - "stripe-payments-zip-2026-11-07.md"
   - "stripe-zip-2025.md"
 tags: [stripe, bnpl, zip, buy-now-pay-later, consumer, australia, us, installments, connect]
 ---
 
-## Summary
+## Overview
 
-Overview of Zip as a Stripe BNPL for Australia and the US. Three products: Zip Pay (AU line of credit), Zip Money (AU larger credit), Zip Pay In 4 (US installments). Connect supported, no manual capture. Unique 14-day direct merchant resolution window before dispute escalation.
+The November 7, 2026 guide describes Zip as single-use buy now, pay later for domestic Australian and US payments in AUD and USD. Zip makes the purchase amount minus fees available up front and collects installments directly from the customer. The customer confirms billing details, follows Stripe's hosted redirect to Zip on desktop or mobile, checks eligibility, signs in or creates a Zip account, and selects and authorizes a plan. Zip sends the customer back to the merchant's return URL and Stripe reports payment success or failure immediately. November lists settlement up to two business days (T+2). May 6, 2026 labels merchant payout timing “Standard.” The captures describe separate confirmation, settlement and payout stages. Zip sets customer installment statement descriptors using merchant trading name and transaction details. The merchant's Stripe descriptors do not control them. See November lines 9–14, 128–145 and 265–291 and May lines 8–10, 33–35 and 93–95.
 
-## Key Details
+## Eligibility and integration
 
-**Consumer BNPL** — AU and US. AUD/USD. **Connect supported**. **No manual capture**. **No setup_future_usage**.
+November lists AU and US merchant accounts and Connect platforms or marketplaces, with B2B and B2C labels. It calls access “Instant provisional access,” while the separate November payment-method support matrix lists invite-only qualifiers for Zip. Account eligibility remains conditional. The country-specific merchant category code tables distinguish prohibition from restrictions that can require additional information. For example, MCC 6513 is prohibited in Australia and restricted in the US. Dynamic Payment Element and Checkout Session display checks the two-letter shipping country first, then client IP geolocation. See November lines 18–28, 34–110, 112–127 and 147–154 and [[source-stripe-payment-method-support]].
 
-**Three products**:
-- **Zip Pay** (AU): up to $1k AUD, flexible repayment (weekly/bi-weekly/monthly)
-- **Zip Money** (AU): $1k–$50k AUD, up to 36-month interest-free
-- **Zip Pay In 4** (US): $35–$1.5k USD, 4 installments over 6 weeks, first at purchase
+November lists Checkout Sessions and PaymentIntents, full-page Checkout in payment mode, Payment Links, embedded Checkout, Payment Element, in-app payments, Radar and Connect. The guide excludes Checkout subscription and setup modes, Express Checkout, recurring payments, manual/partial/multi/over-capture, SetupIntents, `setup_future_usage` and off-session payments. The Dashboard-managed and manual inclusion routes are described separately. Use the country-specific Zip branding guidance. See November lines 156–180 and 231–263, 287–291, May lines 63–91 and 120–125, and [[source-stripe-zip-accept-payment]].
 
-**Disputes**: 180-day customer window. Zip requires merchant-first resolution — customer must contact merchant first; 14-day direct resolution period before escalating to Zip. Zip covers fraud losses.
+## Payment plans
 
-**Refunds**: 180-day window.
+- **Zip Pay (AU).** Credit up to AUD 1,000, with weekly, biweekly or monthly repayments. The monthly fee is waived if the balance is repaid in full by its due date. November's prose starts at AUD 0.50 and its table starts at AUD 1. May gives AUD 1 as the combined Australian range floor. The executable Zip Pay minimum remains unresolved in these captures.
+- **Zip Money (AU).** November lists AUD 1,000–50,000, subject to approval and retailer availability. Interest-free periods can reach 36 months depending on the retailer. More than three interest-free months or credit above AUD 5,000 requires retailer qualification. May describes AUD 1,000–5,000 as the typical range with up to AUD 50,000 possible and directs merchants to support for higher or longer terms. Zip charges an establishment fee and a monthly fee, with the monthly fee waived when the month-end balance is zero.
+- **Pay in 4 (US).** USD 35–1,500, with a customer fee based on purchase amount. The first installment is paid at checkout, with the other three at two-week intervals.
 
-**Buyer country**: shipping address → geocoded IP.
+In Australia the buyer can pay the portion beyond available Zip credit with a card up front. See November lines 128–145 and May lines 93–111.
 
-**Additional requirements**: delivery within 60 days; retain records 18 months; no surcharging; no cash refunds. US: goods must be in US; no gift cards; USD only.
+## Refunds
 
-**Prohibited categories**: country-specific, linked to external Zip docs (not published in page).
+November documents full and partial refunds through the Dashboard or API within 180 calendar days of the original payment. A submitted refund is pending and cannot be canceled. Refunds typically finish three to five business days after Zip processes refund confirmation, with timing variable. Check the Refund object and final `refund.updated` or `refund.failed` event. A failed refund restores the amount to the merchant's Stripe balance, and the merchant must refund the customer by another method.
+
+- **US.** For a full refund, Zip cancels unpaid installments and returns paid amounts to the original payment method. For a partial refund, Zip reduces remaining installments and returns any excess to the original payment method.
+- **Australia.** Full and partial refunds credit the customer's available Zip balance.
+
+See November lines 172–195 and May lines 156–158.
+
+## Disputes
+
+- **US.** Zip manages disputes, notifications, responses and outcomes directly. Customers contact Zip Support.
+- **Australia.** Customers have 180 calendar days from purchase to file and must contact the merchant first. If unresolved 14 days after purchase, the customer can open a Zip case. Stripe withholds the disputed amount and fee when the case becomes a dispute and notifies the merchant by email, Dashboard and, if configured, `charge.dispute.created`. Submit evidence by Dashboard or Disputes API within 12 calendar days of dispute creation. For file evidence through the API, upload through the Files API and include returned file IDs in the dispute update. Zip sets case-specific timing without a fixed published decision timeframe. A merchant win restores the disputed amount and fee to the Stripe balance. A customer win makes the balance charge permanent.
+
+The May guide describes a unified merchant-first process and says Zip covers customer fraud losses. It asks merchants to comply promptly if Stripe requests a shipping pause. The November guide supplies the country-specific routing above. See November lines 197–229 and May lines 127–154.
+
+## May additional terms
+
+The May guide called for delivery within 60 days and retaining transaction records for at least 18 months, prohibited surcharging, and prohibited cash return credits unless required by law. It directed customer privacy questions to Zip. For the US it specified US-located goods and services, USD transaction records and no gift cards, gift vouchers or prepaid stored-value cards or vouchers. It says Zip determines customer eligibility and is solely entitled to receive customer payment, while Stripe acquires and settles the purchase for the merchant. The November capture omits this detailed terms list. See May lines 169–185.
+
+## Related Pages
+
+- [[stripe-bnpl]] — BNPL methods and integrations
+- [[source-stripe-zip-accept-payment]] — Zip implementation guide
+- [[stripe]] — Stripe company page
 
 ## Raw Sources
 
-- [[stripe-zip-2025]] — verbatim webpage content (185 lines); MP4 video URL left as-is
+- [[raw/stripe-payments-zip-2026-11-07|November 7, 2026 Zip payments]] — Full method guide
+- [[raw/stripe-zip-2025|May 6, 2026 Zip payments]] — Earlier full guide, including the original video URL

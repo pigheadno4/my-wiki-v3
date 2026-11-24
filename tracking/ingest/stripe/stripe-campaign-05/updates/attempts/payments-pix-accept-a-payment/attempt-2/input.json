@@ -1,0 +1,175 @@
+{
+  "job_id": "payments-pix-accept-a-payment",
+  "source_target": "wiki/sources/source-stripe-pix-accept-payment.md",
+  "source_before_sha256": "8a635c6321a7e6ec08acb64a84bcd9db399126d23530b16da2c564b66ff81177",
+  "contributions": [
+    {
+      "job_id": "payments-pix-accept-a-payment",
+      "canonical_url": "https://docs.stripe.com/payments/pix/accept-a-payment",
+      "attempt": 1,
+      "raw_path": "raw/stripe-payments-pix-accept-a-payment-2026-11-07.md",
+      "raw_sha256": "9f430368a475b7913bede2fc9f8a56dcb794604f4a972b3218302a81bc2da2d7",
+      "prior_raw_path": "raw/stripe-pix-accept-payment-2025.md",
+      "prior_raw_sha256": "fa80f80c71ec541455357f8c4317dce2cb63ac73c3f5c8e1cc78d8356b9d9fd2",
+      "new_capture_role": "navigation_only_variant_index",
+      "proposed_disposition": "raw_reference",
+      "receipt_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-pix-accept-a-payment/attempt-1/receipt.json",
+      "receipt_sha256": "c7b3b6c7330e9c376864a0cc8eefa95497019ef63c5f995b555d54ed0bdc413b",
+      "review_path": "tracking/ingest/stripe/stripe-campaign-05/attempts/payments-pix-accept-a-payment/attempt-1/review.json",
+      "review_sha256": "f40d3bb7f4fafea434f3a07032dbd022f1a7aea9114988c4b9036dd377d18f62",
+      "source_assessments": [
+        {
+          "source_target": "wiki/sources/source-stripe-pix-accept-payment.md",
+          "proposed_disposition": "source_required_update",
+          "update_needed": true,
+          "findings": [
+            "Source lines 13-36 retain main routes, cross-border wording in the body, expiry configuration and test lookup. Scope the quantitative expiry controls by variant and correct the tax-ID lead and test scenario boundary independently of the November capture. Preserve May one-time versus Pix Automático scope and the separate navigation locator."
+          ],
+          "conflicts": [
+            "Source line 21 materially conflates expiry limits. May Checkout `payment_method_options.pix.expires_after_seconds` permits 10 to 1,209,600 seconds (14 days), default 14,400 seconds (old raw lines 99-104). May Direct API's relative and absolute controls are mutually exclusive and have a three-day maximum (259,200 seconds for `expires_after_seconds`), with the relative clock starting at Intent confirmation and a four-hour default if neither is set (old raw lines 1162-1175). The Elements section describes QR expiry four hours from creation and emits `payment_intent.payment_failed` (old raw lines 223-227). Scope the corresponding statement in the Real-Time Payments concept line 63. Retain the Direct API warning that `next_action` can echo the input expiry even if actual timing differs, so rely on the failure event (old raw line 1175).",
+            "Source line 13, Stripe index line 359 and Real-Time Payments concept lines 63 and 207 shorten the tax ID requirement to an apparently global legal mandate. Source line 23 retains the cross-border scope correctly. May Elements explicitly says it collects CPF/CNPJ for cross-border transactions regardless of client/server confirmation, and the May Direct API HTML form requires name, email and CPF/CNPJ as example inputs with a cross-border legal description (old raw lines 223-225, 905-937 and 1013-1033). Preserve these distinct claims. The dedicated Pix concept line 26 already qualifies the same legal boundary in its separate subscription examples.",
+            "Source line 19 should scope `payment_method_types=['pix']` to manual configuration, and distinguish one-time BRL line items from setup and recurring subscription supported via Pix Automático (old raw lines 14-44, 46-96). The May statement is a link to the separate recurring method, not generic evidence that the one-time path automatically creates or activates a mandate.",
+            "Source lines 29-34 list simulations but omit that the first four listed patterns ignore configured expiry while `fill_never` uses it (old raw lines 182-208, 757-783 and 1134-1160). Correct the known test trap if retaining scenario labels. Configuration, scan, or browser return does not show actual payment completion; use the verified Intent status or events (old raw lines 729-741, 1041-1065 and 1162-1179)."
+          ],
+          "reason": "The current summary could cause a Direct API integrator to submit a 14-day expiry where the matched May guide specifies three days. The lead expands the documented cross-border CPF/CNPJ rule beyond its evidence. These are baseline errors."
+        }
+      ],
+      "affected_concepts": [
+        "wiki/concepts/stripe-real-time-payments.md",
+        "wiki/concepts/stripe-pix.md"
+      ],
+      "unresolved_questions": [
+        "The November selector provides no evidence about currently applicable variant expiry limits, compliance terms, merchant eligibility, or payment execution."
+      ],
+      "mapped_source_assessment": {
+        "source_target": "wiki/sources/source-stripe-pix-accept-payment.md",
+        "proposed_disposition": "source_required_update",
+        "update_needed": true,
+        "findings": [
+          "Source lines 13-36 retain main routes, cross-border wording in the body, expiry configuration and test lookup. Scope the quantitative expiry controls by variant and correct the tax-ID lead and test scenario boundary independently of the November capture. Preserve May one-time versus Pix Automático scope and the separate navigation locator."
+        ],
+        "conflicts": [
+          "Source line 21 materially conflates expiry limits. May Checkout `payment_method_options.pix.expires_after_seconds` permits 10 to 1,209,600 seconds (14 days), default 14,400 seconds (old raw lines 99-104). May Direct API's relative and absolute controls are mutually exclusive and have a three-day maximum (259,200 seconds for `expires_after_seconds`), with the relative clock starting at Intent confirmation and a four-hour default if neither is set (old raw lines 1162-1175). The Elements section describes QR expiry four hours from creation and emits `payment_intent.payment_failed` (old raw lines 223-227). Scope the corresponding statement in the Real-Time Payments concept line 63. Retain the Direct API warning that `next_action` can echo the input expiry even if actual timing differs, so rely on the failure event (old raw line 1175).",
+          "Source line 13, Stripe index line 359 and Real-Time Payments concept lines 63 and 207 shorten the tax ID requirement to an apparently global legal mandate. Source line 23 retains the cross-border scope correctly. May Elements explicitly says it collects CPF/CNPJ for cross-border transactions regardless of client/server confirmation, and the May Direct API HTML form requires name, email and CPF/CNPJ as example inputs with a cross-border legal description (old raw lines 223-225, 905-937 and 1013-1033). Preserve these distinct claims. The dedicated Pix concept line 26 already qualifies the same legal boundary in its separate subscription examples.",
+          "Source line 19 should scope `payment_method_types=['pix']` to manual configuration, and distinguish one-time BRL line items from setup and recurring subscription supported via Pix Automático (old raw lines 14-44, 46-96). The May statement is a link to the separate recurring method, not generic evidence that the one-time path automatically creates or activates a mandate.",
+          "Source lines 29-34 list simulations but omit that the first four listed patterns ignore configured expiry while `fill_never` uses it (old raw lines 182-208, 757-783 and 1134-1160). Correct the known test trap if retaining scenario labels. Configuration, scan, or browser return does not show actual payment completion; use the verified Intent status or events (old raw lines 729-741, 1041-1065 and 1162-1179)."
+        ],
+        "reason": "The current summary could cause a Direct API integrator to submit a 14-day expiry where the matched May guide specifies three days. The lead expands the documented cross-border CPF/CNPJ rule beyond its evidence. These are baseline errors."
+      },
+      "findings": [
+        "Complete November 7, 2026 capture is a three-route selector for Checkout, Elements, and Direct API (new raw lines 5-15). Same routes carry full May 6, 2026 bodies (old raw lines 8-12, 219-225 and 797-801). No linked November variant body was read.",
+        "Diff line 1180 joins the final removed May cancellation sentence to the first selector addition. Old raw line 1179 and new raw line 13 distinguish both.",
+        "Root index line 7 reaches Stripe index line 359 for this source and line 748 for Real-Time Payments. That concept line 207 links the existing summary and should preserve it with dated details. Add the reciprocal source route. Stripe index line 685 also reaches the separate Pix concept's version-scoped recurring and SDK context, where line 84 routes its distinct subscription guide. Keep those contexts distinct."
+      ],
+      "substantive_changes": [],
+      "historical_claims_to_preserve": [
+        "May Checkout supports BRL one-time line items for Brazilian customers, with business-locations compatibility as printed at old raw line 16. Hosted flow uses success_url and embedded uses return_url. Payment, setup and subscription are listed, with the last two directed to Pix Automático (old raw lines 12-44 and 46-96).",
+        "May Elements `stripe.confirmPayment` uses a merchant-server PaymentIntent and client secret, with Accounts v2 customer_account versus Customers v1 customer examples (old raw lines 452-586). May Direct API uses client-side confirmPixPayment, optional manual presentation via `handleActions: false` and `next_action.pix_display_qr_code`, and payment via a bank app using QR or Pix string (old raw lines 797-832 and 996-1122).",
+        "May payment success uses verified Intent status or payment_intent.succeeded. The stated expiry signal is payment_intent.payment_failed. Direct API offers a different payment method or cancellation after code expiry, and allows merchant Intent cancellation before expiry. Separate test approval/expiry simulations from the stated live Brazilian Pix-enabled bank account prerequisite (old raw lines 225-227, 729-755, 1041-1065 and 1124-1179)."
+      ],
+      "conflicts": [
+        "Source line 21 materially conflates expiry limits. May Checkout `payment_method_options.pix.expires_after_seconds` permits 10 to 1,209,600 seconds (14 days), default 14,400 seconds (old raw lines 99-104). May Direct API's relative and absolute controls are mutually exclusive and have a three-day maximum (259,200 seconds for `expires_after_seconds`), with the relative clock starting at Intent confirmation and a four-hour default if neither is set (old raw lines 1162-1175). The Elements section describes QR expiry four hours from creation and emits `payment_intent.payment_failed` (old raw lines 223-227). Scope the corresponding statement in the Real-Time Payments concept line 63. Retain the Direct API warning that `next_action` can echo the input expiry even if actual timing differs, so rely on the failure event (old raw line 1175).",
+        "Source line 13, Stripe index line 359 and Real-Time Payments concept lines 63 and 207 shorten the tax ID requirement to an apparently global legal mandate. Source line 23 retains the cross-border scope correctly. May Elements explicitly says it collects CPF/CNPJ for cross-border transactions regardless of client/server confirmation, and the May Direct API HTML form requires name, email and CPF/CNPJ as example inputs with a cross-border legal description (old raw lines 223-225, 905-937 and 1013-1033). Preserve these distinct claims. The dedicated Pix concept line 26 already qualifies the same legal boundary in its separate subscription examples.",
+        "Source line 19 should scope `payment_method_types=['pix']` to manual configuration, and distinguish one-time BRL line items from setup and recurring subscription supported via Pix Automático (old raw lines 14-44, 46-96). The May statement is a link to the separate recurring method, not generic evidence that the one-time path automatically creates or activates a mandate.",
+        "Source lines 29-34 list simulations but omit that the first four listed patterns ignore configured expiry while `fill_never` uses it (old raw lines 182-208, 757-783 and 1134-1160). Correct the known test trap if retaining scenario labels. Configuration, scan, or browser return does not show actual payment completion; use the verified Intent status or events (old raw lines 729-741, 1041-1065 and 1162-1179)."
+      ],
+      "expected_read_files": [
+        {
+          "path": "raw/stripe-payments-pix-accept-a-payment-2026-11-07.md",
+          "sha256": "9f430368a475b7913bede2fc9f8a56dcb794604f4a972b3218302a81bc2da2d7",
+          "lines": 15
+        },
+        {
+          "path": "raw/stripe-pix-accept-payment-2025.md",
+          "sha256": "fa80f80c71ec541455357f8c4317dce2cb63ac73c3f5c8e1cc78d8356b9d9fd2",
+          "lines": 1179
+        },
+        {
+          "path": "wiki/sources/source-stripe-pix-accept-payment.md",
+          "sha256": "8a635c6321a7e6ec08acb64a84bcd9db399126d23530b16da2c564b66ff81177",
+          "lines": 40
+        },
+        {
+          "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/30fb21c2724fd874e9c77533/content.diff",
+          "sha256": "eb4f08c43cb7358e11ba9c68441399d67e29c181bdb6f453534a88e8549cc961",
+          "lines": 1182
+        }
+      ],
+      "original_query_prompts_path": "tracking/ingest/stripe/stripe-campaign-05/proposed-queries.md",
+      "original_prompts": "New raw `raw/stripe-payments-pix-accept-a-payment-2026-11-07.md`. Prior raw `raw/stripe-pix-accept-payment-2025.md`. Current summaries `wiki/sources/source-stripe-pix-accept-payment.md`.\n\n- Q1. For `https://docs.stripe.com/payments/pix/accept-a-payment`, what documented behavior, prerequisites, actors and state transitions does the complete new capture establish? How do these compare with the matched prior capture and each mapped summary?\n\n- Q2. Which changes are substantive, presentational or navigation-only? Identify the exact dated qualifications, conflicts and reciprocal routes that the proposed disposition should preserve.",
+      "reviewed_answers": {
+        "Q1": "The November 7, 2026 base capture at https://docs.stripe.com/payments/pix/accept-a-payment identifies Pix one-time acceptance in Brazil and links Checkout, Elements, and Direct API (new raw lines 5-15). It contains no detailed prerequisites or state transitions. The May 6 guide describes Brazilian buyers paying a BRL checkout through their banking app with a Pix string or QR code. The Checkout path uses a Session with BRL one-time line items; setup and recurring subscription are addressed through Pix Automático (old raw lines 12-44). The Elements and Direct API paths create a PaymentIntent on the merchant server. Elements captures CPF/CNPJ for cross-border transactions and uses generic client confirmPayment; Direct API documents explicit customer fields and confirmPixPayment to render instructions (old raw lines 223-227, 452-586 and 905-1033). Issuing or scanning the instructions does not establish payment. The shopper pays in the bank app and the merchant checks Intent status or payment_intent.succeeded. Expiry can yield payment_intent.payment_failed; for Direct API an expired code cannot be used and the merchant may confirm with another method or cancel (old raw lines 729-741, 1041-1065 and 1162-1179). source-stripe-pix-accept-payment.md retains the path list but combines different expiry limits and omits the cross-border qualifier in its lead.",
+        "Q2": "At https://docs.stripe.com/payments/pix/accept-a-payment, the November change is presentation/navigation only (new raw lines 9-15), without proof of substantive product change or deprecation. The historical May 6, 2026 limits in source-stripe-pix-accept-payment.md need a baseline correction. Checkout's relative expiry runs from 10 seconds to 14 days (old raw lines 99-104); Direct API supports up to three days, with mutually exclusive relative and absolute options and a relative clock anchored to confirmation (old raw lines 1162-1175). Both have a four-hour default, and Elements describes four-hour QR expiry from creation (old raw lines 223-227). Preserve the cross-border CPF/CNPJ qualifier and explicit Direct API example fields (old raw lines 223-225 and 905-937), the one-time BRL versus mandate-based setup/subscription split (old raw lines 14-35), and test simulation expiry exceptions (old raw lines 182-208 and 1134-1160). Keep the Stripe index route at line 359 and Real-Time Payments reciprocal route at line 207, add the source backlink, and label the November raw as a navigation reference. The dedicated Pix concept and its distinct subscription guide remain a route for dated recurring behavior."
+      }
+    }
+  ],
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-payments-pix-accept-a-payment-2026-11-07.md",
+      "sha256": "9f430368a475b7913bede2fc9f8a56dcb794604f4a972b3218302a81bc2da2d7",
+      "lines": 15
+    },
+    {
+      "path": "raw/stripe-pix-accept-payment-2025.md",
+      "sha256": "fa80f80c71ec541455357f8c4317dce2cb63ac73c3f5c8e1cc78d8356b9d9fd2",
+      "lines": 1179
+    },
+    {
+      "path": "wiki/sources/source-stripe-pix-accept-payment.md",
+      "sha256": "8a635c6321a7e6ec08acb64a84bcd9db399126d23530b16da2c564b66ff81177",
+      "lines": 40
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/30fb21c2724fd874e9c77533/content.diff",
+      "sha256": "eb4f08c43cb7358e11ba9c68441399d67e29c181bdb6f453534a88e8549cc961",
+      "lines": 1182
+    }
+  ],
+  "concept_targets": [
+    {
+      "path": "wiki/concepts/stripe-pix.md",
+      "before_sha256": "4d3299f2942d62c22e2fd14d4d1dd7a2ace83ca8cdd85e5b515d368f9bd520ab",
+      "contributing_jobs": [
+        "payments-pix",
+        "payments-pix-accept-a-payment",
+        "payments-pix-save-payment-details"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    },
+    {
+      "path": "wiki/concepts/stripe-real-time-payments.md",
+      "before_sha256": "189fb766b099bdd8593f12aae4c180da178c148f9dca35ecc65cc306edb64485",
+      "contributing_jobs": [
+        "payments-paynow",
+        "payments-paynow-accept-a-payment",
+        "payments-payto",
+        "payments-pix",
+        "payments-pix-accept-a-payment",
+        "payments-pix-pix-automatico",
+        "payments-pix-save-payment-details",
+        "payments-promptpay",
+        "payments-promptpay-accept-a-payment",
+        "payments-swish",
+        "payments-swish-accept-a-payment",
+        "payments-upi",
+        "payments-upi-accept-a-payment",
+        "payments-upi-set-up-future-payments",
+        "payments-upi-upi-autopay"
+      ],
+      "scope": "Audit relevant sections first; only bounded evidence-backed reciprocal corrections in final reviewed findings. No unrelated rewrite."
+    }
+  ],
+  "state": "worker_running",
+  "attempt": 2,
+  "review_scope": "targeted",
+  "worker_agent": "/root/s05w1",
+  "reviewer_agent": "/root/s05r2",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-05/updates/attempts/payments-pix-accept-a-payment/attempt-1/receipt.json",
+  "receipt_sha256": "0859f73a56eff75c088d69471a0adc90db072b0cf596e2636e3f183aa6b276e8",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-05/updates/attempts/payments-pix-accept-a-payment/attempt-1/review.json",
+  "review_sha256": "9e9b6ab09e3752cb434ce703278cd8846b673879d872c221dbf668f0aa4e061f",
+  "role_notes": "tracking/ingest/stripe/stripe-campaign-05/updates/role-notes.md",
+  "worker_output": "/tmp/stripe-s05-ingest/payments-pix-accept-a-payment-worker.json",
+  "reviewer_output": "/tmp/stripe-s05-ingest/payments-pix-accept-a-payment-reviewer.json",
+  "prior_attempt_dir": "tracking/ingest/stripe/stripe-campaign-05/updates/attempts/payments-pix-accept-a-payment/attempt-1"
+}
