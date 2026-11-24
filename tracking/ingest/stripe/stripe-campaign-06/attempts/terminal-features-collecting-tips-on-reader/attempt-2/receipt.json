@@ -1,0 +1,142 @@
+{
+  "job_id": "terminal-features-collecting-tips-on-reader",
+  "attempt": 2,
+  "raw_path": "raw/stripe-terminal-features-collecting-tips-on-reader-2026-11-07.md",
+  "raw_sha256": "437308d1864979bcf70c08970f390000439b616ccf921e4fecd71b3e476a3fef",
+  "prior_raw_path": "raw/stripe-terminal-on-reader-tipping-2025.md",
+  "prior_raw_sha256": "6d65484e906c69cd548f90f698d252e7ffb10a0c2461359f471ebeb495fc8137",
+  "source_targets": [
+    "wiki/sources/source-stripe-terminal-on-reader-tipping.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-terminal-on-reader-tipping.md": "5a3b51123206244b40de00548bcae24b05d96c7e12ca84cca36aac2ed909c74f"
+  },
+  "read_ranges": {
+    "raw/stripe-terminal-features-collecting-tips-on-reader-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 360
+      }
+    ],
+    "raw/stripe-terminal-on-reader-tipping-2025.md": [
+      {
+        "start": 1,
+        "end": 95
+      },
+      {
+        "start": 96,
+        "end": 240
+      },
+      {
+        "start": 241,
+        "end": 386
+      }
+    ],
+    "wiki/sources/source-stripe-terminal-on-reader-tipping.md": [
+      {
+        "start": 1,
+        "end": 66
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/eddd4dee35b6c0092183c8f8/content.diff": [
+      {
+        "start": 1,
+        "end": 85
+      },
+      {
+        "start": 86,
+        "end": 210
+      },
+      {
+        "start": 211,
+        "end": 308
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "- HK",
+      "location": "raw/stripe-terminal-features-collecting-tips-on-reader-2026-11-07.md:39"
+    },
+    {
+      "text": "- MX",
+      "location": "raw/stripe-terminal-features-collecting-tips-on-reader-2026-11-07.md:50"
+    },
+    {
+      "text": "If the payment is successful,",
+      "location": "raw/stripe-terminal-features-collecting-tips-on-reader-2026-11-07.md:142"
+    },
+    {
+      "text": "BBPOS WisePad 3 readers receive new or updated configurations when they connect to your POS application. BBPOS WisePOS E readers can take up to 5 minutes to receive new or updated configurations.",
+      "location": "raw/stripe-terminal-features-collecting-tips-on-reader-2026-11-07.md:130"
+    },
+    {
+      "text": "Setting a tip-eligible amount that\u2019s greater than 0 while attempting to skip tipping results in an error.",
+      "location": "raw/stripe-terminal-features-collecting-tips-on-reader-2026-11-07.md:360"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "<!-- Fetched: 2026-04-27 -->",
+      "location": "raw/stripe-terminal-on-reader-tipping-2025.md:2"
+    },
+    {
+      "text": "If specifying more than one currency in your `Configuration` object, you must provide the same configuration keys for each currency.",
+      "location": "raw/stripe-terminal-on-reader-tipping-2025.md:141"
+    },
+    {
+      "text": "After PaymentIntent confirmation, the `amount_tip` field is set to zero",
+      "location": "raw/stripe-terminal-on-reader-tipping-2025.md:157"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The merchant configures three reader suggestions through the Dashboard or Configuration API, which can be assigned to the account or a location. Three fixed amounts, three percentages or a smart choice between them are documented. Percentage tips default to post-tax. Both captures require the same configuration keys across currencies and retain the WisePad 3 Android 2.8.1+/iOS 2.16.1+ minimums and reader-specific propagation.",
+    "The customer sees tipping before card presentation if configured and eligible, with selected, custom or no tip depending on configuration. The reader adds the tip. The documented PaymentIntent field transition and successful PaymentIntent and Charge amount update are stable. Both captures retain skip conditions, test-card total-based declines, and override precedence.",
+    "Existing summary describes the stable flow well, but its availability list only reflects April, and its override section foregrounds a single transaction and omits the nonnegative lower bound. Both captures explicitly allow temporarily skipping all transactions and require the amount to be 0 or higher. Preserve the success condition when adding the Charge detail."
+  ],
+  "substantive_changes": [
+    "The November 7, 2026 detailed availability list has 40 entries, adding HK and MX to April 27, 2026's 38. The detailed guide lists the same three reader families without a country-by-reader matrix. The separate dated overview attributes HK and MX specifically to S700/S710 and WisePOS E and retains nine WisePad 3 countries.",
+    "The core detailed guide's flow and input semantics match. Node SDK examples become cURL examples for configuration and server-driven overrides. SDK headings/fence types, list/table formatting and image URLs change. The collection and confirmation links gain the inspect variant as navigation."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep April 27, 2026 as the older fetch date despite the filename suffix. Keep the 38-country April list and April overview's nine-market WisePad 3 subset as dated routes. Preserve actual options, SDK prerequisites, propagation, skip rules, and successful amount transition in both guides.",
+    "The combination of specified zero and skip flag, specified amount equal to the PaymentIntent amount, and positive amount with a true skip flag has different meanings. Preserve zero override, full-amount behavior, and validation error respectively."
+  ],
+  "conflicts": [
+    "The summary and tipping concept's unqualified 38-market description is historical. Use dated lists and place the 40-market update under S700/S710 and WisePOS E only when citing the November tipping overview's explicit country-by-reader rows.",
+    "The tipping concept and overview source summary (wiki/sources/source-stripe-terminal-collect-tips.md:13) say both methods require manual capture. The old related overview did say that (old overview line 47); its November counterpart explicitly lists automatic and manual for on-reader and manual for on-receipt (new overview line 44). The two assigned detailed captures describe on-reader confirmation and successful amounts and make no blanket manual-capture requirement. Route the dated difference to the overview."
+  ],
+  "unresolved_questions": [
+    "The detailed guide alone has no reader-by-market matrix, no rollout effective date and no account-specific enablement evidence or achieved payment outcome. The separate published overview supports the dated matrix, not unlisted combinations or live availability."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-terminal-tipping.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-terminal-on-reader-tipping.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add the dated November availability result and preserve the dated April evidence link. Keep existing flow, qualify support by device using the related overview, and surface stable skip-all and nonnegative-eligible details when describing overrides."
+      ],
+      "conflicts": [
+        "The 38-market heading is an April state. The tipping concept and overview summary's blanket manual-capture claim follows the old separate overview and conflicts with its November version for on-reader."
+      ],
+      "reason": "Reader and market eligibility is a substantive reader-selection difference even though setup, collection and confirmation logic are consistent."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/terminal/features/collecting-tips/on-reader, source-stripe-terminal-on-reader-tipping covers a flow in which the merchant configures smart, percentage or fixed suggestions in the Dashboard or Configuration API for an account or location. Below the smart threshold the reader displays fixed amounts, otherwise percentages. Percentage suggestions use the post-tax amount by default and can use a supplied tip-eligible base. Multiple currencies must use the same configuration keys. WisePad 3 requires Android SDK 2.8.1+ or iOS SDK 2.16.1+ and receives configuration on connecting to the POS app, while WisePOS E can take up to five minutes. See old raw lines 63-78, old raw lines 96-103, old raw lines 141-143, new raw lines 66-81, new raw lines 95-102 and new raw lines 128-130. The customer selects a suggested, custom or no tip as configured, then presents their card. Before confirmation, amount_tip holds the tip while amount excludes it. After confirmation, amount_tip is zero and amount_details.tip.amount is null when disabled, zero when enabled without a tip, or the selected tip. Successful processing updates PaymentIntent and Charge amount to include the tip. Missing configuration, skipping, unsupported country and currency mismatch suppress the screen. The tip-inclusive test amount can trigger test-card declines. The guide allows skipping individual transactions or temporarily skipping all, and for a supplied eligible amount requires a nonnegative value, gives zero skip precedence, ignores an amount equal to the PaymentIntent total, and errors on positive amount with skipping. See old raw lines 149-178, old raw lines 382-386, new raw lines 136-165 and new raw lines 356-360. The existing summary preserves setup, lifecycle and most overrides. The April and November detailed guides list Stripe Reader S700/S710, BBPOS WisePOS E and BBPOS WisePad 3 alongside aggregate country lists. The list expands from 38 to 40 with HK and MX. See old raw lines 20-61 and new raw lines 21-64. These lists do not assign each country to an individual reader. Only the separate November tipping overview's country-by-reader matrix lists HK and MX for Stripe Reader S700/S710 and BBPOS WisePOS E. Both dated overview versions keep the same nine WisePad 3 markets without HK/MX.",
+    "Q2": "For https://docs.stripe.com/terminal/features/collecting-tips/on-reader, update source-stripe-terminal-on-reader-tipping with the November 7, 2026 Availability list's HK and MX entries and retain the April 27, 2026 capture and its 38 entries. See old raw line 2, old raw lines 20-61, new raw line 2, new raw lines 21-64, new raw line 39 and new raw line 50. Keep the reader list distinct from the country-by-reader matrix. The separate tipping overview's April lines 21\u201324 list 38 markets for S700/S710 and WisePOS E, with neither HK nor MX. Its November lines 22\u201325 place HK and MX in the 40-market S700/S710 and WisePOS E row. The nine WisePad 3 markets are the same in both versions. Preserve device-specific SDK and propagation limits from old raw lines 71-74, old raw line 143, new raw lines 74-77 and new raw line 130. Preserve the source-to-stripe-terminal-tipping reciprocal route and the separate source-stripe-terminal-collect-tips route for reader-country and capture conditions, including April overview line 47's blanket manual-capture wording, which is repeated in wiki/sources/source-stripe-terminal-collect-tips.md:13 and the tipping concept, and the November overview line 44 exception specifying automatic or manual for on-reader and manual for on-receipt. The assigned detail pages describe tip before card presentation and the confirmation and success transitions. See old raw lines 149-163 and new raw lines 136-150. Presentational differences include Node-to-cURL server examples with the same options, JS-to-TSX fences, Swift/Kotlin headings, table and list layout and image references. Collection/confirmation links with process=inspect are navigation. See old raw lines 6-18, old raw lines 80-94, old raw lines 184-212, old raw lines 274-314, new raw lines 7-19, new raw lines 83-93, new raw lines 171-190 and new raw lines 256-284. The captures establish documentation scope and examples only."
+  }
+}

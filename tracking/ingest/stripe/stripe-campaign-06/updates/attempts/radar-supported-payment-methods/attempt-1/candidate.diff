@@ -1,0 +1,68 @@
+--- wiki/sources/source-stripe-radar-supported-payment-methods.md
++++ wiki/sources/source-stripe-radar-supported-payment-methods.md (candidate)
+@@ -2,42 +2,48 @@
+ title: "Stripe — Supported Payment Methods with Radar"
+ type: source
+ date_ingested: 2026-05-10
++date_updated: 2026-11-24
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/radar/supported-payment-methods"
+ raw_files:
++  - "stripe-radar-supported-payment-methods-2026-11-07.md"
+   - "stripe-radar-supported-payment-methods-2026.md"
+ tags: [stripe, radar, payment-methods, ach, sepa, bnpl, wallets, custom-rules]
+ ---
+ 
+ ## Summary
+ 
+-Default Radar protection applies to all payment methods. Custom risk settings (Fraud Teams or Platforms) are fully available for cards, ACH, and SEPA; private preview for others.
++The November 7, 2026 guide describes default Radar fraud protection for Stripe users and supported payment methods, excluding deprecated methods. Default controls that block high-risk payments apply to Radar Standard and above. Stripe may still block payments for Radar Lite users due to fraud, sanctions, and other compliance or regulatory considerations. The Dashboard Radar risk controls page shows blocked payments.
+ 
+-## Coverage
++The separate November plan matrix in [[source-stripe-radar-how-it-works]] lists essential card fraud prevention across plans and the all-payment-methods fraud prevention feature from Standard upward. The matrix also lists custom transaction rules, backtesting, and custom allowlists and blocklists from Plus upward.
+ 
+-| Status | Payment methods |
+-| --- | --- |
+-| Default (all users) | All payment methods — blocks high-risk transactions |
+-| Custom supported (Fraud Teams/Platforms) | Cards (credit/debit/card-backed wallets: Apple Pay, Google Pay), ACH, SEPA |
+-| Private preview | ACSS, AU BECS, Bacs, NZ BECS, PayTo; BNPL (Affirm, Afterpay, Klarna); Digital wallets (Cash App, PayPal); Stablecoin/crypto wallets |
++## Payment method coverage by capture
+ 
+-## Custom Features (Fraud Teams/Platforms)
++- **November 7, 2026.** Custom risk settings depend on the Radar plan. The guide lists cards, digital wallets and wallets (both wallet labels link to the same route), bank debits, bank redirects, bank transfers, buy now, pay later (BNPL), real-time payments, stablecoins, and vouchers. Eligibility, preview status, and any opt-in requirement for individual methods formerly marked private preview remain unresolved from this list of families.
++- **May 10, 2026.** The guide described default high-risk blocking controls for all Radar users, said Radar screened most preview methods by default, and excluded deprecated methods. It listed custom risk settings for Radar for Fraud Teams or Radar for Platforms on cards (including Apple Pay and Google Pay when card-backed), ACH, and SEPA Direct Debit. It listed ACSS, AU BECS, Bacs, NZ BECS, PayTo, BNPL (Affirm, Afterpay, Klarna), digital wallets (Cash App, PayPal), and stablecoin or crypto wallets as private preview, with opt-in required to customize risk settings for private-preview methods.
+ 
+-- Block/allow lists (email, IP, email domain, etc.)
+-- Custom rules with `:payment_method_type:` attribute to target specific PMs
+-- Rule backtesting against historical data
+-- Consolidated Radar analytics across all payment volume
++## Custom risk settings
+ 
+-## Example Rule
++Both guides describe blocklists and allowlists, custom rules, rule backtesting against historical data, and consolidated Radar analytics across payment volume, subject to plan eligibility. Supported methods inherit active Radar rules and settings by default. Within eligible rules, merchants can target a payment method with the `:payment_method_type:` attribute.
+ 
++## Bacs Direct Debit rule example
++
++Both guides show this condition for Bacs Direct Debit and a high weekly dispute count for the customer's IP address.
++
++```text
++if :payment_method_type: = 'bacs_debit' and :dispute_count_on_ip_weekly: >  3
+ ```
+-if :payment_method_type: = 'bacs_debit' and :dispute_count_on_ip_weekly: > 3
+-```
++
++The May (raw line 166) and November (raw line 170) captures of [[source-stripe-radar-rules-supported-attributes]] enumerate `card`, `sepa_debit`, and `us_bank_account` for `:payment_method_type:`, omitting `bacs_debit` in both dated lists. The discrepancy leaves runtime rule acceptance and account entitlement for Bacs unresolved.
+ 
+ ## Related Pages
+ 
+-- [[stripe-radar]] — concept page (updated with PM coverage)
++- [[stripe-radar]] — Radar concept and payment method coverage
+ - [[source-stripe-radar-risk-settings]] — risk settings and controls
++- [[source-stripe-radar-how-it-works]] — plan matrix and screening scope
++- [[source-stripe-radar-rules-supported-attributes]] — dated supported-value lists for `:payment_method_type:`
+ 
+ ## Raw Sources
+ 
+-- [[stripe-radar-supported-payment-methods-2026]] — verbatim supported payment methods with Radar
++- [[raw/stripe-radar-supported-payment-methods-2026-11-07|November 7, 2026 Supported Payment Methods with Radar]] — plan-specific default controls and custom risk settings by payment method family
++- [[raw/stripe-radar-supported-payment-methods-2026|May 10, 2026 Supported Payment Methods with Radar]] — historic default controls, method-level coverage and private-preview opt-in

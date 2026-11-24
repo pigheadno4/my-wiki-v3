@@ -1,0 +1,116 @@
+{
+  "job_id": "terminal-features-receipts",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Terminal: Provide Receipts\"\ntype: source\ndate_ingested: 2026-05-01\ndate_updated: 2026-11-24\ncanonical_url: \"https://docs.stripe.com/terminal/features/receipts\"\noriginal_format: webpage\nraw_files:\n  - \"stripe-terminal-receipts-2025.md\"\ntags: [stripe, stripe-terminal, receipts, emv, compliance, card-networks]\n---\n\n## Summary\n\nStripe Terminal merchants must offer customers a physical or email receipt per card network rules and local regulations. Stripe supports two approaches: prebuilt email receipts and custom receipts.\n\n## Prebuilt Email Receipts\n\n- When you have the customer's email, set `receipt_email` when creating the live PaymentIntent. Stripe automatically emails a compliant receipt at capture.\n- To trigger an automatic email after checkout, update the PaymentIntent's `receipt_email` with the customer's email.\n- For Terminal payments created with test API keys, Stripe does not automatically send receipts. View or manually send a test receipt in the Dashboard.\n- Available via server-side API (`receipt_email`) and client-side SDKs (`receiptEmail` on iOS, Android, React Native).\n- Prebuilt receipts include the fields required by card networks.\n\n## Custom Receipts\n\nMerchants can use the Stripe API or Terminal SDKs to build branded emailed or printed receipts. Include the required fields for in-person EMV payments.\n\n**Required EMV fields** (available on PaymentIntent after confirmation):\n\n| Field | Name | Requirement |\n| --- | --- | --- |\n| `account_type` | Account Type | Required (optional in US) |\n| `application_preferred_name` | Application name | Required |\n| `dedicated_file_name` | AID | Required |\n\n**Optional EMV fields**: `authorization_response_code` (ARC), `application_cryptogram`, `terminal_verification_results` (TVR), `transaction_status_information` (TSI).\n\n- Server-side: access via the `receipt` object on `charge.payment_method_details.card_present`.\n- Client-side: `ReceiptDetails` class on iOS, Android, React Native SDKs. The JavaScript SDK's PaymentIntent object matches the API object.\n- If provided, `preferred_locales` on the PaymentMethod object gives the cardholder's preferred language from the presented card's settings.\n\n## Related Pages\n\n- [[stripe-terminal]] \u2014 in-person receipt workflows\n- [[source-stripe-receipts]] \u2014 general Stripe email receipts. The May 11, 2026 general guide describes a verified-user testing exception. The November 7 general guide calls for manual test sends, and both Terminal captures document that test-key receipts are available to view or send manually in the Dashboard.\n\n## Raw Sources\n\n- [[stripe-terminal-receipts-2025]] \u2014 full Terminal guide captured May 1, 2025\n\n## Related raw API references\n\n- [[raw/stripe-terminal-features-receipts-2026-11-07]] \u2014 full November 7, 2026 Terminal guide documenting the same receipt behavior\n",
+  "quotes": {
+    "terminal-features-receipts": [
+      {
+        "text": "aren\u2019t sent automatically. Instead, you can view or manually send a receipt",
+        "location": "raw/stripe-terminal-features-receipts-2026-11-07.md:9"
+      },
+      {
+        "text": "you must provide customers with the option to receive a physical or email receipt.",
+        "location": "raw/stripe-terminal-features-receipts-2026-11-07.md:11"
+      },
+      {
+        "text": "Stripe automatically emails a compliant receipt to the customer when",
+        "location": "raw/stripe-terminal-features-receipts-2026-11-07.md:24"
+      },
+      {
+        "text": "**Required** (Optional in US)",
+        "location": "raw/stripe-terminal-features-receipts-2026-11-07.md:41"
+      },
+      {
+        "text": "If provided, you can also access the cardholder\u2019s preferred language",
+        "location": "raw/stripe-terminal-features-receipts-2026-11-07.md:56"
+      }
+    ]
+  },
+  "old_evidence": {
+    "terminal-features-receipts": [
+      {
+        "text": "Fetched: 2025-05-01",
+        "location": "raw/stripe-terminal-receipts-2025.md:2"
+      },
+      {
+        "text": "update the PaymentIntent\u2019s `receipt_email` with the customer\u2019s email.",
+        "location": "raw/stripe-terminal-receipts-2025.md:25"
+      },
+      {
+        "text": "You can access these fields server-side using the Stripe API, or client-side using the Stripe Terminal SDKs.",
+        "location": "raw/stripe-terminal-receipts-2025.md:53"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-terminal-features-receipts-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 56
+      }
+    ],
+    "raw/stripe-terminal-receipts-2025.md": [
+      {
+        "start": 1,
+        "end": 55
+      }
+    ],
+    "wiki/sources/source-stripe-terminal-receipts.md": [
+      {
+        "start": 1,
+        "end": 46
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/1136ed9b50eb01f3829eb67c/content.diff": [
+      {
+        "start": 1,
+        "end": 58
+      }
+    ],
+    "wiki/concepts/stripe-terminal.md": [
+      {
+        "start": 156,
+        "end": 176
+      },
+      {
+        "start": 548,
+        "end": 563
+      }
+    ]
+  },
+  "answers": {
+    "terminal-features-receipts": {
+      "Q1": "For https://docs.stripe.com/terminal/features/receipts, the 2026-11-07 and 2025-05-01 captures document identical behavior for source-stripe-terminal-receipts. A Terminal merchant must offer a physical or email receipt. Stripe does not automatically send test-key receipts and the Dashboard operator can view or manually send them (old raw lines 8-12 and new raw lines 9-13). With the customer's email, the integration can set receipt_email on PaymentIntent creation and Stripe sends a prebuilt compliant email at capture. After checkout, updating the PaymentIntent's receipt_email is a separately documented trigger (old raw lines 14-27 and new raw lines 15-28). For a custom emailed or printed EMV receipt, receipt data is available after confirmation. Include application_preferred_name, dedicated_file_name and account_type, with account_type optional in the US. API integrations use the Charge card-present receipt field and native clients have ReceiptDetails references. JavaScript matches the API PaymentIntent object. Card-derived preferred_locales are available if provided (old raw lines 30-55 and new raw lines 31-56). The mapped summary preserves the two approaches and most of those fields. Before revision, it omitted the test-key exception and the condition on preferred_locales, and compressed the two email triggers.",
+      "Q2": "For https://docs.stripe.com/terminal/features/receipts, source-stripe-terminal-receipts retains the 2025-05-01 full raw as primary evidence and adds the full 2026-11-07 raw as reference (old raw lines 1-2 and new raw lines 1-3). The capture reproduces the same implementation. The iOS link escaping, image destination, emphasis and table layout are presentational, while the confirm-payment destination gets process=inspect as navigation (old raw lines 14-41 and new raw lines 15-42). The revision restores the documented Terminal test-key rule. Stripe does not send Terminal receipts automatically for payments using test API keys, and operators can view or manually send them in the Dashboard (old raw line 8, new raw line 9). The Terminal guides establish an available Dashboard route and leave other receipt access surfaces unspecified. The revised source preserves optional locale availability, separates the capture-stage and post-checkout email actions, and preserves the US account_type exception (old raw lines 8-12 and old raw lines 23-25 and old raw lines 38-55, new raw lines 9-13 and new raw lines 24-26 and new raw lines 39-56). It preserves the Stripe index and company routes, adds a reciprocal stripe-terminal route, and replaces the self-link with source-stripe-receipts for general email mechanics. The distinct general guide dated 2026-05-11 mentions verified testing-user exceptions (raw/stripe-receipts-2026.md:52-54), whereas the 2026-11-07 general capture also requires manual test receipts (raw/stripe-receipts-2026-11-07.md:23-27). The Terminal qualification is grounded in the two Terminal captures. The general guide\u2019s receipt URL discussion (raw/stripe-receipts-2026-11-07.md lines 65-67) does not establish a guaranteed test Terminal receipt URL."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "terminal-features-receipts-send-receipts",
+      "target_path": "wiki/concepts/stripe-terminal.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Send receipts** \u2014 prebuilt email (set `receipt_email` on PI \u2192 auto-sent on capture) or custom receipts with required EMV fields (`account_type`, `application_preferred_name`, `dedicated_file_name`); see [[source-stripe-terminal-receipts]]",
+      "proposed_markdown": "- **Send receipts** \u2014 Stripe emails a prebuilt receipt at live capture when `receipt_email` is set. After checkout, update the PaymentIntent\u2019s `receipt_email` to trigger one. For test-key payments, view or manually send receipts in the Dashboard. Custom EMV receipts require `application_preferred_name`, `dedicated_file_name`, and `account_type` (optional in the US). See [[source-stripe-terminal-receipts]].",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "The prebuilt receipt timing branches and the separate custom data stage are documented in the May 1, 2025 Terminal guide, lines 23\u201325 and 35\u201342."
+      ]
+    },
+    {
+      "update_id": "terminal-features-receipts-source-label",
+      "target_path": "wiki/concepts/stripe-terminal.md",
+      "update_kind": "durable_fact",
+      "anchor": "- [[source-stripe-terminal-receipts]] \u2014 Receipts: prebuilt email receipts, custom receipt EMV fields, cardholder preferred_locales",
+      "proposed_markdown": "- [[source-stripe-terminal-receipts]] \u2014 Receipts: prebuilt email, manual test sends, custom EMV fields, and cardholder `preferred_locales` when provided",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": []
+    }
+  ]
+}

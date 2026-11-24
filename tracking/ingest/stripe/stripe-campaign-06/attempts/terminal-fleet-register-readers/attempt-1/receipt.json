@@ -1,0 +1,133 @@
+{
+  "job_id": "terminal-fleet-register-readers",
+  "attempt": 1,
+  "raw_path": "raw/stripe-terminal-fleet-register-readers-2026-11-07.md",
+  "raw_sha256": "41479e536bc46e009bea894cb9bf90857d9820285ff6e17291746cc7aa728558",
+  "prior_raw_path": "raw/stripe-terminal-register-readers-2025.md",
+  "prior_raw_sha256": "3a482a01dc295f963fe47c1f2d6d3091a83c14d909e041136c459ba9d55ccbcd",
+  "source_targets": [
+    "wiki/sources/source-stripe-terminal-register-readers.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-terminal-register-readers.md": "1e4d0cb7b3428118c21ecf57d4513ede782935a17bc8e29223889d9941fe39af"
+  },
+  "read_ranges": {
+    "raw/stripe-terminal-fleet-register-readers-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 95
+      },
+      {
+        "start": 96,
+        "end": 189
+      }
+    ],
+    "raw/stripe-terminal-register-readers-2025.md": [
+      {
+        "start": 1,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 179
+      }
+    ],
+    "wiki/sources/source-stripe-terminal-register-readers.md": [
+      {
+        "start": 1,
+        "end": 29
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/c58229f9e4178ddceedef0ae/content.diff": [
+      {
+        "start": 1,
+        "end": 101
+      },
+      {
+        "start": 102,
+        "end": 202
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "This method allows you to register up to 10 readers at a time.",
+      "location": "raw/stripe-terminal-fleet-register-readers-2026-11-07.md:41"
+    },
+    {
+      "text": "If you need to re-register a reader to another Stripe account, use the [Registration code]",
+      "location": "raw/stripe-terminal-fleet-register-readers-2026-11-07.md:43"
+    },
+    {
+      "text": "If the platform placed the order, connected accounts can\u2019t self-register the reader to their own account directly.",
+      "location": "raw/stripe-terminal-fleet-register-readers-2026-11-07.md:48"
+    },
+    {
+      "text": "Stripe automatically registers each reader to that location when fulfilling your order and assigning serial numbers.",
+      "location": "raw/stripe-terminal-fleet-register-readers-2026-11-07.md:88"
+    },
+    {
+      "text": "Pre-registration isn\u2019t supported across accounts.",
+      "location": "raw/stripe-terminal-fleet-register-readers-2026-11-07.md:93"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "This method only works for readers that were ordered by the account. For Platforms, the platform or the sub-account must have placed the order to register it to a sub-account.",
+      "location": "raw/stripe-terminal-register-readers-2025.md:58"
+    },
+    {
+      "text": "find an order with a status of either `shipped` or `delivered`.",
+      "location": "raw/stripe-terminal-register-readers-2025.md:85"
+    },
+    {
+      "text": "by specifying the `locationId` in your `connectReader` call.",
+      "location": "raw/stripe-terminal-register-readers-2025.md:162"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The complete November capture requires a Location for payment acceptance and a user role with write permissions to register. A smart reader supports pairing/registration code, serial number or order number. The pairing code is generated or regenerated on the reader and used in Dashboard or the create-reader API; that route is the documented way to re-register to another account.",
+    "Serial registration lets an eligible actor register or re-register without physical access, up to 10 at a time through the described Dashboard flow. An unrelated-account transfer requires a registration code. If an uncontrolled connected account ordered directly, registration to the platform account is barred. When the platform ordered, the platform must register on behalf of the connected account via Stripe-Account or View Dashboard as.",
+    "Order-number registration applies to orders placed by the account or its connected accounts. Hardware Orders handles shipped or delivered orders and branches on assigned serial numbers. The Terminal Readers order lookup is the other Dashboard route. Selected orders can use sequential reader names from a prefix. Pre-registration chooses one location per order, with fulfillment and serial assignment triggering automatic registration and with cross-account pre-registration excluded.",
+    "Mobile M2, BBPOS Chipper 2X BT and BBPOS WisePad 3 registration occurs while connecting in the listed SDK variants. iOS and Android pass locationId in BluetoothConnectionConfiguration while React Native supplies it to connectReader. Each variant allows the discovered reader's locationId to reuse the last location."
+  ],
+  "substantive_changes": [
+    "November replaces May's coarse serial-number order ownership narrative with unrelated-transfer and Connect-specific directionality and delegation rules.",
+    "November documents the serial-assignment branch and the pre-registration workflow with one location per order, no cross-account pre-registration, and automatic Stripe registration during fulfillment and serial assignment. Use serial registration after serial numbers are assigned for distribution across multiple locations."
+  ],
+  "historical_claims_to_preserve": [
+    "Preserve the May 1 capture, despite the 2025 filename, and date its broader serial ordering rule. The three smart-reader methods, serial physical-access and ten-device qualification, order number ownership and both mobile location paths are present across the dated captures.",
+    "The May Node.js and November cURL pairing examples both show registration_code, label and location for creating the reader. Swift let-to-var, React Native JavaScript-to-TSX fence, headings, numbering and location-link edits change example presentation or navigation."
+  ],
+  "conflicts": [
+    "The mapped source and wiki/concepts/stripe-terminal-hardware-orders.md:104 still use the May broad serial order restriction as a present-tense rule. It omits November's account relationship and ordering actor distinctions. Preserve both dated scopes without treating the new conditions as exhaustive eligibility.",
+    "The source and hardware-orders concept currently apply BluetoothConnectionConfiguration to all listed mobile readers without platform scope. iOS and Android use the config while React Native passes locationId directly in connectReader. The general Terminal concept's connect-time locationId guidance is compatible."
+  ],
+  "unresolved_questions": [
+    "The passes do not establish whether May's general serial purchase-account qualifier still operates separately in all cases or whether any given account has platform controls. The November text supplies the listed conditions, without an exhaustive eligibility matrix."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-terminal-hardware-orders.md",
+    "wiki/concepts/stripe-terminal.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-terminal-register-readers.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add the November serial/Connect actor rules and Hardware Orders serial-assignment and pre-registration branch. Keep the three methods distinct, including order provenance and the ten-device serial batch limit.",
+        "Qualify the mobile SDK route and preserve the older raw and existing Hardware Orders reciprocal route. Align the concept's serial-account wording and link the Terminal connect-time Location route without broadening eligibility."
+      ],
+      "conflicts": [
+        "Retain May's serial purchase-account statement as dated evidence alongside the November direction-specific restrictions. Correct the generic mobile BluetoothConnectionConfiguration claim."
+      ],
+      "reason": "The mapped summary would send a platform-ordered connected account or a cross-location pre-registration query to an incomplete or misleading route and leaves React Native's registration argument in the wrong place."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/terminal/fleet/register-readers, source-stripe-terminal-register-readers captures the baseline that payment acceptance requires registration to a Location and registration requires a write-permitted user. The smart-reader pairing code generated on the device is used in Dashboard or as registration_code when creating a Reader via API. Serial registration is remote and can batch up to ten. November routes unrelated-account transfers to the pairing code method and says that an order made by a connected account outside platform controls cannot register to the platform account. If the platform orders, it registers on the connected account's behalf with Stripe-Account or View Dashboard as, and the connected account cannot self-register that reader under this flow (old raw lines 8-46, old raw lines 48-70, new raw lines 9-48, new raw lines 50-66). Order-number registration requires an order from the account or an associated connected account. From a shipped or delivered order, assigned serials open selection and registration, while unassigned serials lead to pre-registration. Stripe registers to the chosen location during fulfillment and serial assignment. One location is allowed per order and cross-account pre-registration is excluded (old raw lines 72-98, new raw lines 68-102). For a mobile M2, Chipper 2X BT or WisePad 3 the app registers during connection, using locationId in BluetoothConnectionConfiguration for iOS/Android or directly in React Native connectReader. It can reuse the last location from the discovered reader's locationId (old raw line 104, old raw line 130, old raw line 162, new raw lines 106-110, new raw lines 134-138, new raw lines 168-180). The current summary misses the new Connect and pre-registration conditions and treats the native configuration path as generic.",
+    "Q2": "At https://docs.stripe.com/terminal/fleet/register-readers, source-stripe-terminal-register-readers merits a dated source_required_update. The May 1 guide gives a broad serial order ownership qualifier. The November 7 guide explicitly distinguishes unrelated-account transfers, connected-account direct orders outside platform controls, and platform-placed orders requiring platform action to register on behalf of the connected account. This is a documentation expansion, without evidence of when the product rules first took effect or that broader eligibility has been relaxed (old raw lines 48-60, new raw lines 39-48). Preserve the order-number order provenance and distinguish the new Hardware Orders serial-assignment branch: automatic fulfillment-time registration after pre-selecting one location, no across-account pre-registration, and serial-number registration after assignment when splitting the order among locations (old raw lines 72-98, new raw lines 68-102). Heading/numbering, the Locations link, Node.js-to-cURL pairing example and Swift/TSX edits are presentation or navigation, with mobile variants already differing in argument placement (old raw lines 26-46, old raw lines 102-126, old raw lines 160-179, new raw lines 19-37, new raw lines 106-132, new raw lines 168-189). Preserve the reciprocal hardware-orders concept route, update its broad serial restriction and mobile SDK phrasing, and keep the Terminal concept route for registration at connect-time and the Location prerequisite."
+  }
+}

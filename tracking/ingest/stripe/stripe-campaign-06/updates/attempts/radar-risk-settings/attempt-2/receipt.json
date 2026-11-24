@@ -1,0 +1,229 @@
+{
+  "job_id": "radar-risk-settings",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Stripe \u2014 Risk Settings and Risk Controls\"\ntype: source\ndate_ingested: 2026-05-10\ndate_updated: 2026-11-24\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/radar/risk-settings\"\nraw_files:\n  - \"stripe-radar-risk-settings-2026-11-07.md\"\n  - \"stripe-radar-risk-settings-2026.md\"\ntags: [stripe, radar, risk-settings, risk-controls, fraud, adaptive-3ds, fraudulent-dispute, early-fraud-warning, risk-score]\n---\n\n## Summary\n\n[[stripe]] Radar\u2019s Dashboard risk settings tune protection thresholds on supporting plans. The 2026-11-07 guide documents two additional controls, a distinct fraudulent payment score for cards, and direct-charge options for solely platform-controlled connected accounts. The 2026-05-10 guide preserves the earlier Fraud Teams migration and control scope.\n\n## Risk Settings (3 presets)\n\n| Setting | Priority |\n| --- | --- |\n| Maximize protection | Prioritize blocking payments likely to receive early fraud warnings |\n| Balance risk and revenue | Balance fraud protection with tolerating some risk |\n| Maximize revenue | Prioritize revenue by blocking high-risk payments |\n\nThe change modal projects fraud blocked and payments accepted from the previous four months of payment data. On a supporting plan, a Dashboard operator can choose a preset or backtest and set a custom Fraudulent dispute blocking threshold. A custom threshold that matches no preset puts the account in **Manual mode**. Custom rules continue to apply independently. The card-only dynamic control can temporarily block additional elevated-risk payments.\n\n**Default block rule migration.** The May guide says existing Radar for Fraud Teams users could change blocking preferences through risk settings starting March 1, 2026. Selecting a risk setting disables the default high-risk block rule based on classic risk and prevents re-enabling that rule. The classic score remains usable in eligible custom rules. November omits the May Fraud Teams wording from the custom-threshold and score-rule instructions and conditions risk settings on plan support.\n\n**Plan boundaries.** The November risk-settings guide places the Fraudulent card payments control on Standard and above. The separate November [[source-stripe-radar-how-it-works|plan matrix]] lists transaction risk scores, risk preferences, custom rules and Adaptive 3DS on Plus and Pro, and dynamic thresholds on Pro. The captures give no equivalence between the May and November plans or universal eligibility for the custom Fraudulent dispute threshold.\n\n## Risk Controls\n\n| Control | Documented scope |\n| --- | --- |\n| Fraudulent card payments | November adds this card-only control on Standard and above. It blocks payments likely to be fraudulent even when a resulting dispute or early fraud warning is unlikely. The risk setting determines the threshold. Dashboard monitoring and backtesting are documented. |\n| Fraudulent dispute | Blocks payments likely to result in fraudulent disputes. The guide describes an eligible custom threshold and backtesting. May explicitly names Fraud Teams. |\n| Early fraud warning | Uses the card-only early fraud warning score. May lists Maximize protection only. November lists Balanced and Maximize protection. Stripe recommends the control for applicable card-brand monitoring, including VAMP. |\n| Adaptive 3DS | Uses machine learning to authenticate medium-risk payments. An issuer can challenge the customer. Fraud-dispute liability typically shifts to the issuer after successful 3DS authentication. Compliance-required 3DS, including SCA, can still activate with adaptive 3DS disabled. The authentication fraud-prevention control is unavailable in sandboxes in the November guide, which replaces May\u2019s wording about testing environments. |\n| Dynamic risk thresholds | November adds temporary card-only blocking of additional elevated and high-risk payments during detected fraud pressure. The control returns to the default threshold when the threat is no longer detected. It uses a manually configured threshold when that threshold blocks more. The separate November plan matrix lists this feature on Pro. |\n| Fraudulent non-card payments | The control blocks high-risk transactions. May says auto-enabled by default for non-card local payment methods. November says enabled for supported methods and routes to the [[source-stripe-radar-supported-payment-methods|method-specific guide]], which places default high-risk controls on Standard and above and conditions custom settings on plan. |\n\n## Radar Scores and Risk Levels\n\n| Numerical score | Range and method scope | Custom-rule attribute on an eligible plan |\n| --- | --- | --- |\n| Fraudulent payment | 0\u201399, cards only, November guide. Estimates likely fraud even if no fraudulent dispute or early warning follows. | `:fraudulent_payment_score:` |\n| Fraudulent dispute | 0\u201399, cards, ACH Direct Debit and SEPA Direct Debit. Estimates likelihood of a fraudulent dispute. | `:fraudulent_dispute_score:` |\n| Early fraud warning | 0\u201399, cards only. Estimates likelihood of an early fraud warning. | `:early_fraud_warning_score:` |\n| Classic risk | 0\u201399. Adjustment applies to cards, ACH Direct Debit and SEPA Direct Debit. Estimates likelihood of a fraudulent dispute or early warning. | `:risk_score:` |\n\nThe classic score can appear when no fraudulent dispute or early fraud warning score is available or when a block used classic risk. It contributes to the Dashboard overall risk level when visible. The deprecated feature is the default high-risk block rule. Eligible custom rules can still use the score after risk settings are enabled.\n\nThe Dashboard overall level is the maximum among the fraudulent dispute, early fraud warning and classic scores that factored into the decision. The `:risk_level:` rule attribute reflects classic risk alone. In November\u2019s descriptions, Normal indicates fewer signals and does not establish legitimacy, Elevated indicates more signals and does not establish fraud, and Highest indicates the strongest signals associated with the score\u2019s outcome.\n\nThe May risk-settings guide documents a private-preview Checkout bot score (0\u201399, `:bot_score:`). The separate [[raw/stripe-radar-bot-abuse-2026-11-07|2026-11-07 bot abuse guide]] attributes the bot risk control and score to Radar Pro and lists Stripe Checkout, Custom Checkout, Radar Sessions and Web Elements. Both dated bot guides describe the score as an estimate that a bot made the payment. Fraud likelihood is a separate signal.\n\n## Connect Direct-Charge Controls\n\nThe November guide says platform Radar rules apply to payments made to the platform, including where the platform is the merchant of record. For direct charges where the connected account is merchant of record, the following Dashboard management options are documented for accounts controlled solely by the platform.\n\n| Management option | Effect |\n| --- | --- |\n| Only connected accounts | The connected account manages its own rules, settings and plan. A platform that pays its connected accounts\u2019 fees can override their plans with Radar Lite. |\n| Only my platform | The platform manages Radar and overrides connected-account rules. Connected accounts can see when a platform rule blocks a payment but cannot see the platform rules or manage Radar. |\n| Both my platform and connected accounts | Radar evaluates their rules as one set, starting with platform rules. Rule-action ordering allows an allow rule from either party to override a block rule from the other. |\n\nIf the platform changes the connected account\u2019s plan to Radar Lite or chooses platform-only management, it can grant the connected account view-only Dashboard access to outcomes. For wider Connect risk tooling, see [[source-stripe-radar-for-platforms]].\n\n> [!warning] Dated shared-rule guidance\n> The [[source-stripe-radar-for-platforms|2026-05-10 Radar for Platforms guide]] says platform rules run first and have priority when both parties' rules match, yet gives an example where a connected-account rule can still block or review after a platform allow. The 2026-11-07 risk-settings guide describes a single rule set and explicitly lets an allow from either party override the other's block, with platform rules evaluated first. The guides leave live shared-rule precedence unresolved.\n\n## Related Pages\n\n- [[stripe-radar]] \u2014 risk settings, scoring and platform controls\n- [[source-stripe-radar-risk-evaluation]] \u2014 payment risk outcomes\n- [[stripe-3d-secure]] \u2014 3DS adaptive authentication\n- [[source-stripe-radar-how-it-works]] \u2014 dated plan comparison\n- [[source-stripe-radar-supported-payment-methods]] \u2014 method and plan boundaries\n- [[source-stripe-radar-bot-abuse]] \u2014 May 2026 Checkout bot-scoring guidance\n- [[source-stripe-radar-for-platforms]] \u2014 platform risk tooling\n\n## Raw Sources\n\n- [[raw/stripe-radar-risk-settings-2026-11-07|Stripe Radar risk settings and controls captured 2026-11-07]]\n- [[raw/stripe-radar-risk-settings-2026|Stripe Radar risk settings and controls captured 2026-05-10]]\n",
+  "quotes": {
+    "radar-risk-settings": [
+      {
+        "text": "Fraudulent card payments is included with Radar Standard and above.",
+        "location": "raw/stripe-radar-risk-settings-2026-11-07.md:53"
+      },
+      {
+        "text": "This control is available on the **Balanced** and **Maximize protection** risk settings.",
+        "location": "raw/stripe-radar-risk-settings-2026-11-07.md:67"
+      },
+      {
+        "text": "Dynamic risk thresholds apply to card payments only.",
+        "location": "raw/stripe-radar-risk-settings-2026-11-07.md:81"
+      },
+      {
+        "text": "your default high risk block rule is disabled and you can\u2019t re-enable it.",
+        "location": "raw/stripe-radar-risk-settings-2026-11-07.md:147"
+      },
+      {
+        "text": "These settings apply only to connected accounts controlled solely by your platform.",
+        "location": "raw/stripe-radar-risk-settings-2026-11-07.md:186"
+      }
+    ]
+  },
+  "old_evidence": {
+    "radar-risk-settings": [
+      {
+        "text": "Beginning March 1, 2026, existing Radar for Fraud Teams users can change blocking preferences using risk settings",
+        "location": "raw/stripe-radar-risk-settings-2026.md:29"
+      },
+      {
+        "text": "This control is only available if you choose the **Maximize protection** risk setting.",
+        "location": "raw/stripe-radar-risk-settings-2026.md:58"
+      },
+      {
+        "text": "### Bot score (Private preview)",
+        "location": "raw/stripe-radar-risk-settings-2026.md:98"
+      },
+      {
+        "text": "Prioritize revenue by blocking high-risk payments",
+        "location": "raw/stripe-radar-risk-settings-2026.md:18"
+      },
+      {
+        "text": "Risk controls and risk settings won\u2019t override the custom rules you created.",
+        "location": "raw/stripe-radar-risk-settings-2026.md:42"
+      },
+      {
+        "text": "automatically enables the fraudulent non-card payments control by default for all non-card, local payment methods.",
+        "location": "raw/stripe-radar-risk-settings-2026.md:70"
+      },
+      {
+        "text": "the `:risk_level:` Radar rules attribute, which only corresponds to the [risk score]",
+        "location": "raw/stripe-radar-risk-settings-2026.md:80"
+      },
+      {
+        "text": "Radar is deprecating the [high risk block rule]",
+        "location": "raw/stripe-radar-risk-settings-2026.md:110"
+      },
+      {
+        "text": "you can continue writing custom rules on `:risk_score:`.",
+        "location": "raw/stripe-radar-risk-settings-2026.md:119"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-radar-risk-settings-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 198
+      }
+    ],
+    "raw/stripe-radar-risk-settings-2026.md": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 125
+      }
+    ],
+    "wiki/sources/source-stripe-radar-risk-settings.md": [
+      {
+        "start": 1,
+        "end": 60
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/94c207ad9c148f02c342cb0e/content.diff": [
+      {
+        "start": 1,
+        "end": 77
+      },
+      {
+        "start": 78,
+        "end": 153
+      },
+      {
+        "start": 154,
+        "end": 229
+      }
+    ]
+  },
+  "answers": {
+    "radar-risk-settings": {
+      "Q1": "For https://docs.stripe.com/radar/risk-settings, source-stripe-radar-risk-settings describes a plan-qualified Dashboard operator choosing Maximize protection, Balance risk and revenue or Maximize revenue. Radar adjusts thresholds and the modal shows estimates based on four months of payments. First enabling a setting disables the default high-risk score block rule irreversibly, while custom rules remain; a nonmatching Fraudulent dispute threshold results in Manual mode and can be backtested (old raw lines 14-42 and old raw lines 104-110, new raw lines 9-43 and new raw lines 141-147). The November guide adds Fraudulent card payments using the broader card-only fraud score and a card-only dynamic threshold that increases blocking under pressure and resets after the threat, using a stricter manual threshold when configured (old raw lines 44-72, new raw lines 47-53 and new raw lines 77-93 and new raw lines 115-123). The November risk-settings guide puts the Fraudulent card payments control on Radar Standard and above (new raw lines 47-53). The separate November plan matrix lists transaction risk scores, custom rules, risk preferences and Adaptive 3DS on Plus and Pro, and dynamic thresholds on Pro (raw/stripe-radar-how-radar-works-2026-11-07.md:26,37-46). Using a score as a custom-rule predicate requires a plan that supports custom rules. These feature statements establish no equivalence with May's Radar for Fraud Teams label. It also describes platform control of transactions where the platform is merchant of record and three additional rule-management choices for connected-account merchant-of-record direct charges where the account is controlled solely by the platform. Shared rules run as one set with platform rules evaluated first; rule ordering still lets an allow rule override a block from the other party. When visibility is available under the Radar Lite or platform-only conditions, it is view-only for outcomes (new raw lines 158-192). The revised source retains the May baseline and dates the new controls and Balanced early-warning availability. It distinguishes the default rule\u2019s deprecation from continued classic scoring. Both captures separate the Dashboard overall risk level from the :risk_level: rules attribute, which corresponds to classic risk (old raw lines 74-80 and old raw lines 104-119, new raw lines 97-113 and new raw lines 141-156).",
+      "Q2": "For https://docs.stripe.com/radar/risk-settings, source-stripe-radar-risk-settings retains both dated captures. Preserve the May 10 guidance's March 1 migration date and Radar for Fraud Teams wording as historical and November's plan support condition, without inferring plan equivalence. November omits the earlier Fraud Teams qualification in custom-threshold and score-rule instructions, but retains the named controls/effects and no override of merchant custom rules (old raw lines 27-42 and old raw lines 82-119, new raw lines 28-43 and new raw lines 125-156). November adds likely-fraud card blocking, its distinct card-only score, dynamic thresholds and direct-charge configuration, and changes EFW from protection-only to Balanced plus Maximize protection. It changes non-card wording from local payment methods to supported methods and testing environments to sandboxes for the authentication fraud-prevention control; issuer challenge, qualified liability shift and SCA-required 3DS remain (old raw lines 46-72 and new raw lines 47-95 and new raw lines 115-123 and new raw lines 158-192). The November risk-settings guide puts the Fraudulent card payments control on Radar Standard and above (new raw lines 47-53). The separate November plan matrix lists transaction risk scores, custom rules, risk preferences and Adaptive 3DS on Plus and Pro, and dynamic thresholds on Pro (raw/stripe-radar-how-radar-works-2026-11-07.md:26,37-46). Using a score as a custom-rule predicate requires a plan that supports custom rules. These feature statements establish no equivalence with May's Radar for Fraud Teams label. The revised summary removes the earlier suggestion that Maximize revenue blocks only high-risk payments. Both guides say the Maximize revenue preset prioritizes revenue by blocking high-risk payments (old raw lines 16-18 and new raw lines 17-19). Separate custom rules still apply, and the card-only dynamic control can temporarily block elevated-risk payments (new raw lines 37-43 and new raw lines 77-83). November expands the risk-level description: Normal does not guarantee legitimacy, Elevated indicates more signals without establishing fraud, and Highest indicates the strongest signals. The distinction between the Dashboard aggregate and the classic-risk rules attribute remains (old raw lines 74-80 and new raw lines 103-113). The plan comparison, refund and bot links, and updated risk-evaluation/review destinations supply navigation; table spacing and emphasis changes are presentational. The May Checkout bot-score paragraph describes private preview as historical scope. The separate 2026-11-07 bot guide linked directly by the source attributes the bot score and bot risk control to Radar Pro and lists Stripe Checkout, Custom Checkout, Radar Sessions and Web Elements (old raw lines 98-110 and old raw lines 121-125, new raw lines 95-103 and new raw lines 141-156 and new raw lines 194-198, raw/stripe-radar-bot-abuse-2026-11-07.md:11-17). The earlier bot guide remains a dated navigation route. The May Radar for Platforms guide says platform rules run first and have priority when both parties' rules match, yet its shared-mode example permits a connected-account rule to block or review after a platform allow (raw/stripe-radar-for-platforms-2026.md:176-193). November's risk-settings guide describes a single rule set, evaluates platform rules first, and explicitly gives reciprocal allow-over-block precedence (new raw lines 179-186). Live precedence remains unresolved. The source preserves the reciprocal stripe-radar route and links companion plan, payment method, bot, Connect, risk-evaluation and adaptive 3DS material. The proposed concept edits update the risk-setting inventory, preserve the dated bot scopes and platform-guidance conflict, and label the Charge outcome examples separately from the Dashboard aggregate and classic rule attribute. The Stripe index and company route labels still need their scope reconciled centrally."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "radar-risk-settings-direct-charge-control",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Platform payment controls**: platform-only (overrides connected accounts) or shared (platform rules first). Permissions: Connect Risk Analyst role required.",
+      "proposed_markdown": "**Platform payment controls for direct charges.** The November 2026 risk-settings guide documents connected-account-only, platform-only, and shared management where the connected account is merchant of record and is controlled solely by the platform. Platform-only overrides connected-account rules. Shared management evaluates one rule set starting with platform rules, while action ordering lets an allow rule from either side override the other side\u2019s block. For specified Lite or platform-only situations the platform can grant view-only access to outcomes. See [[source-stripe-radar-risk-settings]]. The separate [[source-stripe-radar-for-platforms]] guide describes permissions for risk reviews.\n\nThe [[source-stripe-radar-for-platforms|2026-05-10 Radar for Platforms guide]] says platform rules run first and have priority when both parties' rules match, yet gives an example where a connected-account rule can still block or review after a platform allow. The 2026-11-07 risk-settings guide describes a single rule set and explicitly lets an allow from either party override the other's block, with platform rules evaluated first. The guides leave live shared-rule precedence unresolved.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "New raw lines 158-192 ground direct-charge scope and behavior. The risk-review role documented in the separate platform guide is outside the listed prerequisites for this setting.",
+        "Shared-mode guidance differs between raw/stripe-radar-for-platforms-2026.md:176-193 and new raw lines 179-186. The documents describe their respective scope and do not resolve live behavior."
+      ]
+    },
+    {
+      "update_id": "radar-risk-settings-dated-risk-controls-and-scores",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "durable_fact",
+      "anchor": "**3 preset risk settings** (Dashboard \u2192 Risk controls): Maximize protection \u2192 Balance \u2192 Maximize revenue. Each tunes blocking thresholds across 4 risk controls. Selecting a risk setting disables the legacy `Block if :risk_level: = 'highest' default` rule (migration since March 1, 2026).\n\n**4 risk controls**: Fraudulent dispute (backtest + custom threshold in Fraud Teams), Early fraud warning (Maximize protection only; recommended for VAMP), Adaptive 3DS (liability shift on auth; SCA overrides disable), Fraudulent non-card payments (auto-enabled).\n\n**5 Radar scores**:\n\n| Score | Rule attribute | Status |\n| --- | --- | --- |\n| Fraudulent dispute score (0\u201399, cards+ACH+SEPA) | `:fraudulent_dispute_score:` | Active |\n| Early fraud warning score (0\u201399, cards only) | `:early_fraud_warning_score:` | Active |\n| Bot score (0\u201399, Checkout only) | `:bot_score:` | Preview |\n| Risk score (0\u201399) | `:risk_score:` | **Deprecated** |\n| Overall risk level (max of above) | `:risk_level:` | Active |\n\nCustom rules never overridden by risk settings. See [[source-stripe-radar-risk-settings]].",
+      "proposed_markdown": "The 2026-11-07 risk-settings guide describes three presets and a plan-qualified custom Fraudulent dispute threshold with backtesting. A threshold that matches no preset displays Manual mode. First enabling a risk setting disables the default classic high-risk block rule permanently. Existing custom rules continue to apply. The 2026-05-10 guide dates the transition for existing Radar for Fraud Teams users to March 1, 2026.\n\nNovember adds Fraudulent card payments on Standard and above and card-only dynamic thresholds that temporarily tighten blocking and revert when detected fraud pressure ends. The separate November plan matrix lists dynamic thresholds on Pro and risk preferences, transaction scores, custom rules and Adaptive 3DS on Plus and Pro. Early fraud warning extends from the May Maximize protection-only statement to November\u2019s Balanced and Maximize protection. Non-card control scope follows the dated supported-method guide. See [[source-stripe-radar-risk-settings]].\n\nRadar uses the fraudulent dispute, early fraud warning, and classic scores that factored into a decision to calculate the Dashboard overall risk level. The `:risk_level:` rules attribute reflects classic risk alone. Classic `:risk_score:` remains usable in eligible custom rules after the default block rule is disabled. November also introduces the separate card-only fraudulent payment score. See **Bot Abuse Prevention** below for the separate dated bot guidance.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Old raw lines 27-42, 54-70, 74-119 and new raw lines 28-93, 97-156 distinguish migration, control and scoring scope. The related plan matrix is raw/stripe-radar-how-radar-works-2026-11-07.md:26-46. Company and provider index still use four-control, five-score and score-deprecation shorthand."
+      ]
+    },
+    {
+      "update_id": "radar-risk-settings-dated-classic-score-route",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "durable_fact",
+      "anchor": "Risk score range: 0\u201399 (Radar for Fraud Teams only). Default thresholds: \u226575 = high, \u226565 = elevated.",
+      "proposed_markdown": "The May 2026 [[source-stripe-radar-risk-evaluation|risk evaluations guide]] describes a classic score from 0\u201399 for Radar for Fraud Teams and default thresholds of at least 75 for high and at least 65 for elevated. See [[source-stripe-radar-risk-settings]] for November plan scope, the Dashboard overall risk level, and the deprecation of the default classic high-risk block rule.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Preserve the classic historical outcome table below. New raw lines 103-113 and 141-156 distinguish the aggregate from classic risk and preserve eligible custom-rule use. November plan coverage differs from the May product naming."
+      ]
+    },
+    {
+      "update_id": "radar-risk-settings-reciprocal-source-route",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-radar-risk-settings]] \u2014 Risk settings (3 presets), 4 risk controls, 5 Radar scores, deprecation of risk_score",
+      "proposed_markdown": "- [[source-stripe-radar-risk-settings]] \u2014 May and November 2026 risk settings, plan-qualified controls, classic and Dashboard risk signals, and direct-charge settings.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "radar-risk-settings-charge-outcome-heading",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "durable_fact",
+      "anchor": "| `risk_level` | Default action | `outcome.type` |",
+      "proposed_markdown": "| `Charge.outcome.risk_level` in the May 2026 examples | May guide action or illustrated outcome | `Charge.outcome.type` |",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "The historical examples are in raw/stripe-radar-risk-evaluation-2026.md:44-163. November distinguishes the Dashboard aggregate and `:risk_level:` attribute in new raw lines 103-113."
+      ]
+    },
+    {
+      "update_id": "radar-risk-settings-charge-outcome-classic-default",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "durable_fact",
+      "anchor": "| `highest` | Blocked | `blocked` |",
+      "proposed_markdown": "| `highest` | Blocked by default in the May guide. For accounts where enabling risk settings disables the classic default block rule, see [[source-stripe-radar-risk-settings]]. | `blocked` |",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "The historical example is in raw/stripe-radar-risk-evaluation-2026.md:62-79. See new raw lines 141-156 for default classic block-rule disablement."
+      ]
+    },
+    {
+      "update_id": "radar-risk-settings-bot-scope",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "durable_fact",
+      "anchor": "Bot score (0\u201399) assigned to **Stripe Checkout** payments only. High score = bot likely made payment (not fraud signal). Use for anti-scripting/anti-bot policies (e.g. limited-inventory). Access via Dashboard \u2192 payment \u2192 Risk scores, Sigma `radar_abuse_prevention_attributes.bot_score`, or custom Radar rule on `:bot_score:`. See [[source-stripe-radar-bot-abuse]].",
+      "proposed_markdown": "The May 2026 [[source-stripe-radar-bot-abuse|bot guide]] covers the 0\u201399 Checkout bot score for anti-scripting policies. It describes access through Dashboard payment Risk scores and Sigma `radar_abuse_prevention_attributes.bot_score`, plus custom rules with `:bot_score:`. The [[raw/stripe-radar-bot-abuse-2026-11-07|2026-11-07 bot guide]] describes Radar Pro coverage for the bot score and control across Stripe Checkout, Custom Checkout, Radar Sessions and Web Elements. A high score indicates a bot likely made the payment. Fraud likelihood is a separate signal.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "November risk settings links the separate bot guide at new raw line 101. The May bot guide is raw/stripe-radar-bot-abuse-2026.md:10-24; the November scope and signal distinctions are raw/stripe-radar-bot-abuse-2026-11-07.md:11-17."
+      ]
+    },
+    {
+      "update_id": "radar-risk-settings-bot-source-route",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-radar-bot-abuse]] \u2014 Bot score (0-99) for Checkout payments: anti-scripting policy enforcement, Sigma query, Radar rules",
+      "proposed_markdown": "- [[source-stripe-radar-bot-abuse]] \u2014 May 2026 Checkout bot-score guide for anti-scripting, Sigma and Radar rules. The [[raw/stripe-radar-bot-abuse-2026-11-07|November 2026 bot capture]] documents Radar Pro and additional integration routes.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The wiki bot source links the May full capture. November eligibility and integration scope are in the directly linked 2026-11-07 raw at lines 11-17."
+      ]
+    }
+  ]
+}

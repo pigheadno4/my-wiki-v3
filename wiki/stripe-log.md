@@ -6,6 +6,10 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-11-24] ingest | Stripe S06 approved documentation updates
+
+Updated 62 existing summaries. Attached 38 November captures as dated factual evidence and linked 24 as references. Audited 21 existing concepts and updated 20. The recorded source count is 666. The campaign verified 124 query answers and three coordinator audits.
+
 ## [2026-11-24] ingest | Stripe iOS `26.16.1`
 
 Delta at `4de377e` after the completed `26.16.0` ingest. Approved focused review covers the card-entry title announcement, retained Apple Pay and no-method shipping callers, customer reset and Link brand lookup, React Native SPI and SwiftPM dependency. Recorded the correction to the older Identity heading without rewriting history. No SDK or payment execution. See [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]].

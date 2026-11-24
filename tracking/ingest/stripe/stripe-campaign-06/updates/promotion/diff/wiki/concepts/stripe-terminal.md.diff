@@ -1,0 +1,253 @@
+--- wiki/concepts/stripe-terminal.md
++++ wiki/concepts/stripe-terminal.md
+@@ -13,7 +13,7 @@
+ 
+ ## Architecture
+ 
+-Every Terminal deployment has four components:
++A custom SDK-based Terminal deployment has four components:
+ 
+ 1. **Your application** — web-based, mobile, or desktop POS
+ 2. **Your backend** — server-side logic talking to the Stripe API
+@@ -36,13 +36,14 @@
+ 
+ ## Integration Paths
+ 
+-Five distinct ways to integrate Terminal, ranging from full custom builds to no-code options:
++The April 2026 landing page lists five paths. The November 2026 capture adds Stripe’s first-party no-code Preview path as the sixth.
+ 
+ | Path | Description | Code required |
+ | --- | --- | --- |
+ | **Custom POS** | Build a fully custom point-of-sale using SDKs (Android, iOS, JavaScript, React Native) or the server-driven API | Yes |
+ | **Tap to Pay** | Accept contactless payments using a compatible iPhone or Android device — no dedicated reader hardware needed | Yes (SDK) |
+ | **Apps on devices** | Deploy a custom Android POS app directly onto Stripe smart readers | Yes |
++| **Terminal without coding (November Preview)** | Standalone on a compatible reader (public preview) or the Stripe Terminal app on a supported iPhone or Android device (private preview). Both require internet. See [[source-stripe-terminal-overview]]. | No code |
+ | **Third-party POS** | Integrate Terminal into existing third-party POS, hardware, and commerce stacks | No code |
+ | **Gateway** | Combine Stripe with gateway-supported POS systems, third-party hardware, gift cards | No code |
+ 
+@@ -134,10 +135,10 @@
+ 
+ ## Fleet Management
+ 
+-- Order pre-certified readers and accessories from the Stripe Dashboard; up to 10,000 units per order
+-- Ship to any location; Connect platforms can route readers to connected accounts' business locations
++- Order pre-certified readers and accessories from the Stripe Dashboard. The guides specify up to 10,000 of each item in a single order.
++- Ship to eligible physical addresses according to the destination table and territory exclusions. Terminal Connect platforms can specify connected account addresses during checkout.
+ - Monitor entire reader fleet from the Dashboard
+-- Self-service returns (33 countries): 30-day window, original packaging, first-return shipping fee refund
++- The November 2026 guide lists 32 countries for eligible Dashboard self-service returns, down from 33 in May. Gibraltar remains in the shipping table. The returns flow requires original packaging and accessories within 30 days and refunds shipping fees on the first initiated return. Use **Contact support** on the Dashboard order when self-service is unavailable.
+ - Hardware Orders API (preview): programmatic ordering via SKUs + shipping methods; country-specific, query dynamically
+ - See [[stripe-terminal-hardware-orders]] for full ordering, returns, and API details
+ 
+@@ -162,11 +163,11 @@
+ - **Extended authorizations** — extend capture window up to 30 days; Visa/Mastercard/Amex/Discover (category-dependent); not available on Interac/eftpos; see [[stripe-terminal-extended-authorizations]]
+ - **Cancel or refund payments** — cancel pre-capture (Visa/MC/Amex/Discover/girocard); refund post-capture (online all except Interac; Interac = in-person only); see [[stripe-terminal-refunds]]
+ - **Display cart details** — dynamically update smart reader screen with line items and totals via `setReaderDisplay` (display-only; does not control charge amount); pre-dip (US only) lets customers present card before amount is finalized; see [[source-stripe-terminal-display-cart]]
+-- **Collect on-screen inputs** — display prebuilt input forms (S700/S710 + WisePOS E only); 6 types: signature, selection, email, phone, text, numeric; up to 5 per call; signature images stored 7 days; see [[stripe-terminal-collect-inputs]]
+-- **Collect swiped data** — private preview; reads non-PCI magstripe data (e.g. gift cards) via `collectData()`; token returned, cleartext retrieved server-side; 24h storage; S700/S710/WisePOS E/M2/Chipper2X; not offline; see [[source-stripe-terminal-collect-data]]
+-- **Collect NFC tapped data** — private preview; reads NFC UID from non-payment instruments (cards, wristbands); available offline; S700/S710/M2 only; UID returned directly (no server retrieval); cannot collect card payments; see [[source-stripe-terminal-collect-nfc-data]]
+-- **Apps on Devices** — deploy custom Android POS app on smart readers; two modes: POS on reader or POS + consumer-facing app via TCP/IP; AOSP (no Google Play Services); 200MB APK limit; 8GB storage limit; single-platform Connect requirement; see [[stripe-terminal-apps-on-devices]]
+-- **Send receipts** — prebuilt email (set `receipt_email` on PI → auto-sent on capture) or custom receipts with required EMV fields (`account_type`, `application_preferred_name`, `dedicated_file_name`); see [[source-stripe-terminal-receipts]]
++- **Collect on-screen inputs** — the 2026-05-01 guide lists Stripe Reader S700/S710 and BBPOS WisePOS E for six input types. SDK variants document up to five sequential inputs per call. The server-driven guide specifies seven-day storage for signature files. See [[stripe-terminal-collect-inputs]].
++- **Collect swiped data** — the 2026-05-01 private-preview guide covers non-PCI magstripe collection, SDK tokens, backend retrieval and reader, offline and 24-hour retention limits. The 2026-11-07 capture indexes iOS, Android and React Native. See [[source-stripe-terminal-collect-data]].
++- **Collect NFC tapped data** — the 2026-05-01 private-preview guide lists Stripe Reader S700/S710 and Stripe M2, documents offline NFC UID reads with the UID returned directly to the app, and excludes card payments. See [[source-stripe-terminal-collect-nfc-data]].
++- **Apps on Devices** — Android POS on a smart reader or a separate POS paired with a consumer-facing app over TCP/IP. Standard Stripe API uploads are capped at 200 MB. November 2026 documents a 300 MB private preview by request. See [[stripe-terminal-apps-on-devices]] for device, DevKit, storage and Connect requirements.
++- **Send receipts** — Stripe emails a prebuilt receipt at live capture when `receipt_email` is set. After checkout, update the PaymentIntent’s `receipt_email` to trigger one. For test-key payments, view or manually send receipts in the Dashboard. Custom EMV receipts require `application_preferred_name`, `dedicated_file_name`, and `account_type` (optional in the US). See [[source-stripe-terminal-receipts]].
+ 
+ ## Global Availability
+ 
+@@ -182,17 +183,18 @@
+ | Reader | Category | Notes |
+ | --- | --- | --- |
+ | Stripe Reader S700 | sPOS | 5.5" screen, Android 10, WiFi/Ethernet, 64GB — 25 countries (all GA + CZ/PL/JP preview) |
+-| Stripe Reader S710 | sPOS | Same as S700 + 4G/LTE cellular — 16 countries only (US/CA/GB/IE/SG/AU/NZ/FR/BE/AT/ES/SE/NO/PT/FI/MY); min SDK: iOS v4.7.3, Android v3.8.0, RN v0.0.1-beta.28 |
+-| BBPOS WisePOS E | sPOS | 5" screen, Android 9, WiFi/Ethernet only (no cellular) — 24 countries (all GA + PL preview, no JP); ~8h battery; dark theme default |
+-| BBPOS WisePad 3 | mPOS | 2.4" screen, BLE/USB, **non-US** (25 countries, excl. US, incl. JP/PL preview); physical PIN pad for PIN-auth markets; auto-off 5min disconnected; ~600 contact/~800 contactless tx per charge |
+-| Stripe Reader M2 | mPOS | US only (all 50 states + Puerto Rico); screenless; BT LE/USB; iOS/Android/RN SDKs only; auto-off after 10h inactivity; reset: hold 14s; dock + mount accessories available |
+-| Tap to Pay on iPhone | Software | No hardware; iOS SDK + RN; GA 20 countries (not Puerto Rico); preview 17; PIN iOS 16.4+; Apple entitlement + app review required |
+-| Tap to Pay on Android | Software | No hardware; Android SDK + RN; GA 18 countries; preview 19 (CA/CZ/ES/PT are preview); separate `stripeterminal-taptopay` dep; Android 13+, GMS, NFC, ARM |
++| Stripe Reader T600 | sPOS | Android countertop and pole-mount reader. The 2026-11-07 smart-reader overview lists 37 markets and server-driven compatibility. The product guide documents JavaScript, iOS, Android and React Native SDKs using internet, LAN or handoff. See [[source-stripe-terminal-smart-readers]]. |
++| Stripe Reader S710 | sPOS | Adds cellular connectivity. Setup SDK minimums are iOS v4.7.3, Android v3.8.0 and React Native v0.0.1-beta.28. The May and November 2026 smart-reader overviews list 10 and 24 markets, respectively. Separate April and November setup badges list 16 and 39. See [[source-stripe-terminal-smart-readers]] for the dated difference and unresolved market availability. |
++| BBPOS WisePOS E | sPOS | 5" screen, Android 9, WiFi/Ethernet only (no cellular), ~8h battery, dark theme default. The November 7, 2026 device banner lists 24 markets, including SG and with no JP or HK. HK deployment remains unresolved given the firmware and feature-specific evidence in [[source-stripe-terminal-bbpos-wisepos-e]]. |
++| BBPOS WisePad 3 | mPOS | 2.4" screen, BLE or Android-only USB; physical PIN pad for PIN-auth markets; auto-off 5min disconnected; ~600 contact/~800 contactless tx per charge. The reader reference [[source-stripe-terminal-bbpos-wisepad3]] and mobile-reader overview list 24 non-US markets in May 2026 and 37 in November 2026. |
++| Stripe Reader M2 | mPOS | US (all 50 states and Puerto Rico, per the setup guide); screenless; BLE or Android-only USB; iOS/Android/RN SDKs; auto-off after 10h inactivity when connected; reset by holding 14s then releasing; optional dock and mount |
++| Tap to Pay on iPhone | Software | No hardware; iOS SDK + RN; April 24, 2026 setup guide: GA in 20 countries (excluding Puerto Rico), public preview in 17; PIN iOS 16.4+; Apple entitlement + app review required |
++| Tap to Pay on Android | Software | No hardware; Android SDK + RN; April 24, 2026 setup guide: GA in 18 countries, public preview in 19 (including CA/CZ/ES/PT); separate `stripeterminal-taptopay` dep; Android 13+, GMS, NFC, ARM |
+ | Verifone V660p | sPOS | Public preview US/CA; private preview GB/IE/SG; 5.5" 580-nit; **battery** (10h active, 72h standby); 11W power; charge 8h before first use; don't go below 10%; Ethernet via Full Feature Base (optional, request separately) |
+ | Verifone UX700 | sPOS | Public preview US/CA; private preview GB/IE only (no SG); 5.5" 450-nit; no battery; 4-pin cable into 6-pin port; built-in Ethernet (no accessory needed) |
+ | Verifone P630 | sPOS | Public preview US/CA; private preview GB/IE/SG; 3.5"; no battery; power cable connects to back (remove cover); Ethernet via D0 Orange Dongle (2M cable, **included in box**); **WiFi-first** network priority (unlike other smart readers); wall/flat-surface mount supported |
+ | Verifone M425 | sPOS | Public preview **US/CA only** (no private preview anywhere); 3.5" tablet form; no battery; USB-C via dongle into back; power button on back left (hold 2s on, 5s off); Ethernet via D0 Orange Dongle (1M cable, **included in box**) |
+-| Chipper 2X BT | mPOS (legacy) | Older Bluetooth mobile reader |
++| Chipper 2X BT | mPOS (legacy) | US row in the May and November 2026 mobile reader overviews. Separate November device and setup guides label the reader no longer supported and say it is no longer available for purchase. |
+ | Verifone P400 | sPOS (legacy) | Older US countertop reader |
+ 
+ All Verifone models share: Android 13, quad-core Cortex A53, 2GB RAM, 32GB, E2EE + P2PE capable (individual PCI listings). Must contact Sales to order. Not all models available in every country.
+@@ -222,16 +224,16 @@
+ | --- | --- | --- | --- | --- | --- | --- |
+ | Tipping | ✓ on-reader+receipt | ✓ on-reader+receipt | Receipt only | ✓ on-reader+receipt | App-impl. | ✓ |
+ | On-screen input collection | ✓ | ✓ | – | – | App-impl. | ✓ |
+-| Custom splash screen | ✓ | ✓ | – | ✓ | – | ✓ |
++| Custom splash screen | ✓ | ✓ | – | ✓ | – | P400 (May 2026, [[source-stripe-terminal-splash-screen]]) |
+ | Custom POS app | ✓ (paid) | – | – | – | App-impl. | ✓ (paid) |
+-| Cellular | S710 only | – | – | – | – | – |
++| [[source-stripe-terminal-cellular-config]] fleet cellular settings (May 2026) | S710 only | – | – | – | – | – |
+ 
+ ### Operational rules
+ 
+ - **One reader per SDK instance**: each reader connects to one SDK instance at a time — four readers need four devices.
+ - **Automatic updates**: smart readers update when powered on, charged, and idle; Bluetooth readers update on SDK connection. Battery must be **>50%** to install updates. Required updates block the reader until complete.
+ - **Simulated reader**: registration codes `simulated-wpe`, `simulated-s700`, `simulated-s710` (sandbox only).
+-- **Mobile reader registration**: no Dashboard/API pre-registration needed — associate with `locationId` at connection time.
++- **Mobile reader registration**: no Dashboard/API pre-registration needed — associate with `locationId` at connection time. See the SDK variants in [[source-stripe-terminal-register-readers#Mobile Reader Registration|Register readers]].
+ - **Don't pair via device Settings**: pairing through OS Bluetooth settings makes the reader unavailable to your app.
+ - **Standby mode**: do NOT call `disconnectReader` to save power — reader manages power in standby.
+ - **Reader reboot**: M2 and WisePad 3 auto-reboot after 24h; force with `rebootReader` API.
+@@ -246,7 +248,7 @@
+ 
+ Both accept: Visa/MC/Amex/Discover contactless, NFC wallets, QR, PIN. Regional: eftpos (AU), Interac (CA), Cartes Bancaires (FR).
+ 
+-**Country differences:**
++**Country differences in the 2026-04-24 [[source-stripe-terminal-tap-to-pay|setup guide]] capture:**
+ 
+ - iPhone GA but Android preview: CA, CZ, ES, PT
+ - Android GA but iPhone preview: FI, MY
+@@ -275,7 +277,7 @@
+ Smart reader firmware communicates **directly with Stripe**. Your POS app connects to the reader via:
+ 
+ - **LAN** (Terminal SDK) — reader must be on the same local network as the POS
+-- **Internet** (server-driven integration) — recommended for S700/S710
++- **Internet** (server-driven integration) — recommended for S700/S710 and WisePOS E. The dated [[source-stripe-terminal-bbpos-wisepos-e]] guide recommends the Stripe API for this path. See [[source-stripe-terminal-setup-wisepos-e]] for the two WisePOS E connection legs.
+ 
+ **Network priority for S710**: Ethernet → WiFi → Cellular (auto-managed at Android level). Plugging in Ethernet while on WiFi automatically switches; removing from dock reverts to WiFi.
+ 
+@@ -319,9 +321,9 @@
+ 
+ **Universal**: Stripe account AND Location must be in the same country; local currency only.
+ 
+-**Reader availability exceptions**: DE = WisePOS E + S700 only (no S710); JP = S700 only (no WisePOS E, no S710, no Android Tap to Pay); GI = Tap to Pay Android only.
+-
+-**Canada (CA) — Interac**: add `interac_present` to `payment_method_types`; Interac = automatic capture only; use `manual_preferred` for mixed; `manual` capture → Interac declined; **in-person refund mandatory** (cannot refund Interac via API/Dashboard); Interac Flash max 250 CAD; PIN after 100 CAD or 4th contactless.
++**Regional reader listings.** The 2026-04-24 [[source-stripe-terminal-regional|regional guide]] lists WisePOS E and S700 as smart readers for Germany and S700 for Japan, with WisePad 3 as a mobile reader for both. The regional guide and the May 1 Tap to Pay readers overview list iPhone for Japan and omit Android there. The April regional table lists Android Tap to Pay as Gibraltar’s only reader option. The November 7 [[source-stripe-terminal-tap-to-pay-readers|Tap to Pay reader overview]] lists both platforms for Japan and Android alone for Gibraltar. The November S710 overview and setup badge differ in their lists for Germany and Japan. See [[source-stripe-terminal-smart-readers]] for the dated comparison. A Tap to Pay market listing leaves GA or preview status, account or device eligibility, and physical reader availability to separate evidence.
++
++**Canada (CA) — Interac**: Add `interac_present` to `payment_method_types`. Interac authorizes and captures in one step, which can be asynchronous. The April 24, 2026 regional guide lists `automatic`, `automatic_async`, and `manual_preferred` as supported capture settings as of API `2025-03-31.basil`. With `manual_preferred`, an Interac payment still captures in one step while other cards can follow a separate capture flow. `manual` declines Interac. **In-person refunds are mandatory.** Ordinary online refunds through the Refunds API or Dashboard are unavailable. The April regional guide documents a server-driven in-person Terminal reader `refund_payment` endpoint with the original card and matching currency. Interac Flash max 250 CAD. A PIN is required above 100 CAD or on the fourth consecutive contactless transaction.
+ 
+ **Australia (AU) — eftpos**: automatic/manual_preferred/automatic_delayed capture only; min SDK iOS 2.20.0 / Android 2.20.0 / RN 0.0.1-beta.12.
+ 
+@@ -354,35 +356,36 @@
+ | Reader category | Model | POS communicates with reader via | Reader communicates with Stripe via |
+ | --- | --- | --- | --- |
+ | Mobile readers | M2, WisePad 3 | BT or USB (SDK) | SDK on POS device |
+-| Smart readers (SDK) | WisePOS E, S700/S710 | LAN (SDK) | Directly (internet) |
+-| Smart readers (server-driven) | WisePOS E, S700/S710, Verifone | REST API (internet) | Directly (internet) |
++| Smart readers (local-network SDK) | WisePOS E, S700/S710 | LAN (SDK) | Directly (internet) |
++| Stripe Reader T600 (SDK) | T600 | The November product guide describes internet, LAN or handoff SDK connections. See the T600 row under Reader Hardware. | See product and integration guidance |
++| Smart readers (server-driven) | WisePOS E, S700/S710, Verifone, T600 (named in the November 2026 overview) | REST API (internet) | Directly (internet) |
+ | Tap to Pay | iPhone, Android | n/a — phone IS the reader | SDK on phone |
+ 
+-JavaScript SDK requires same-network LAN when used with smart readers.
++The JavaScript SDK local-network route requires the POS and reader to share a network. The November 7, 2026 JavaScript API reference also says to register a smart reader to the account before discovery in the app. The May 1, 2026 capture names the Verifone P400. See [[source-stripe-terminal-js-sdk-reference]].
+ 
+ ## Locations
+ 
+ Every Terminal reader — **including the simulated reader** — requires a Location object before connecting. Create Locations via Dashboard or API. Locations represent physical places; mobile businesses can use a primary address.
+ 
+-**Address requirements vary by country** (4 tiers):
+-
+-- AU/CA/IT/JP/ES/US: `line1`, `city`, `state`, `postal_code`, `country`
+-- Most EU + MY/NZ/NO: `line1`, `city`, `postal_code`, `country`
+-- BG/HR/CY/IE/MT/SG/SI: `line1`, `postal_code`, `country`
+-- GI: `line1`, `country`
++**Address requirements (May 2026).** The historical guide lists four field groups and country-specific Beta flags. The November capture links to variants. See [[source-stripe-terminal-locations-and-zones#Required Address Fields (May 1, 2026)|the dated country lists]].
++
++- `line1`, `city`, `state`, `postal_code`, `country` applies to six countries in the May list, including Japan (Beta).
++- `line1`, `city`, `postal_code`, `country` applies to the longer May list, including Switzerland and the United Kingdom.
++- `line1`, `postal_code`, `country` applies to Ireland, Singapore, and the May Beta entries for Bulgaria, Croatia, Cyprus, Malta and Slovenia.
++- `line1` and `country` applies to Gibraltar (Beta in May).
+ 
+ **Cannot change a location's country** — create a new location and re-register readers.
+ 
+-**Zones** (optional): hierarchical grouping of locations; nested zones supported; one zone per location; Dashboard only (API cannot create/modify zones).
+-
+-**Connection token scoping**: pass `location` to `connectionTokens.create` to restrict the token to smart readers at that location. No effect on Bluetooth readers.
++**Zones (May 2026).** Optional Dashboard groups can nest, with at most one zone per Location. Remove readers before deleting a Location and clear Locations before deleting a zone. The Dashboard guide allows moving Locations with their readers to a different zone. The May API variant excludes zone creation or modification.
++
++**Connection token scoping (May 2026).** The optional `location` in `connectionTokens.create` restricts smart-reader access to that Location. Omit it for no Location filter. The parameter has no effect on Bluetooth reader discovery.
+ 
+ **Connect**:
+ 
+-- Direct charges: create Location under connected account with `Stripe-Account` header
+-- Destination charges: Locations belong to the platform; store connected account in Location `metadata`
+-
+-See [[source-stripe-terminal-locations-and-zones]] for full address requirements and API samples.
++- Direct charges (May 2026): create the Location with the `Stripe-Account` header. Only the authenticated connected account can access it.
++- Destination charges (May 2026): the platform owns its Locations and can add an optional connected-account reference to Location `metadata` when needed.
++
++See [[source-stripe-terminal-locations-and-zones]] for the May 2026 functional guide and November Dashboard/API navigation.
+ 
+ ## Development Workflow
+ 
+@@ -504,24 +507,26 @@
+ 
+ ## Sources
+ 
++- [[source-stripe-terminal-mobile-readers]] — May and November 2026 market lists, hardware-specific routes, SDK connectivity, and update and reboot behavior.
+ - [[source-github-stripe-terminal-android]] — exact `stripeterminal@5.8.0` Android SDK baseline: permissions, lifecycle, reader connection, payments, SetupIntents, refunds, offline forwarding, Tap to Pay, updates, and support policy
+ - [[changelog-github-stripe-terminal-android]] — package-qualified Android Terminal history: v5 migration boundary, `5.6.0` offline migration risk, and exact `5.8.0` permission, buzzer, printing, Keystore, update, and PIN changes
+ - [[source-github-stripe-terminal-ios]] — exact `StripeTerminal@5.8.0` iOS SDK baseline: initialization, reader lifecycle, payments, SetupIntents, offline mode, Tap to Pay, QR methods, updates, and support policy
+ - [[changelog-github-stripe-terminal-ios]] — package-qualified iOS Terminal history: v5 migration boundary, accumulated v5 milestones, and exact 5.8.0 changes
+-- [[source-stripe-terminal-overview]] — Terminal landing page: 5 integration paths, SDK list, in-person fundamentals, features, Connect support
++- [[source-stripe-terminal-overview]] — April and November 2026 Terminal landing pages. November adds the sixth integration path, Stripe’s no-code Preview.
+ - [[source-stripe-terminal-how-it-works]] — Architecture (4 components), connection types, encryption tiers (E2EE vs P2PE), fleet management, integration scope
+ - [[source-stripe-terminal-global-availability]] — 23 GA countries, 15 preview countries, payment method × reader matrix, Maestro sunset
+ - [[source-stripe-terminal-select-reader]] — Reader lineup, SDK/payment/feature matrices, physical specs, operational rules (1:1 SDK, auto-updates)
++- [[source-stripe-terminal-smart-readers]] — May and November 2026 smart-reader catalogs, dated S710 lists, T600 integration routing and update versus restart guidance.
+ - [[source-stripe-terminal-setup-reader-s700-s710]] — S700 vs S710 country availability, S710 SDK minimums, network priority, Ethernet hub setup, admin passcode
+-- [[source-stripe-terminal-s700-s710]] — S700/S710 firmware reference: 4-component software, latest 2.41.2.0/1.00.03.00, diagnostics, payment sounds, NFC UID (1.00.00.25)
++- [[source-stripe-terminal-s700-s710]] — May and November 2026 S700/S710 reader reference covering regional software versions, separate firmware history, device specifications, diagnostics, and update behavior.
+ - [[source-stripe-terminal-s700-s710-accessories]] — Case/Hub/Dock/adapter lineup; Hub→POS not reader; Dock no USB payment; Hub+Dock countertop combo
+ - [[source-stripe-terminal-setup-wisepos-e]] — WisePOS E: 24 countries (no JP), ~8h battery, dark theme default, WiFi/Ethernet only (no cellular), Ethernet dock setup
+-- [[source-stripe-terminal-bbpos-wisepos-e]] — WisePOS E firmware reference: latest 2.41.2.0/5.01.03.00, tap sounds same for success+failure, both-cables-before-dock rule
+-- [[source-stripe-terminal-setup-reader-m2]] — M2: US+PR only, BT LE/USB, no screen/UI, auto-off 10h, reset 14s, dock+mount accessories
+-- [[source-stripe-terminal-stripe-m2]] — M2 firmware reference: latest 2.01.01.00, power button 4s/14s, NFC UID (2.01.00.31), LED states, version format uses hyphens
+-- [[source-stripe-terminal-setup-wisepad3]] — WisePad 3: non-US (25 countries), PIN pad, auto-off 5min disconnected, ~600/~800 tx per charge, language on-device
+-- [[source-stripe-terminal-bbpos-wisepad3]] — WisePad 3 firmware reference: software version format, latest firmware 4.01.03.00, config regions, key identifiers (490001/510001/480001)
+-- [[source-stripe-terminal-tap-to-pay]] — Tap to Pay iPhone (GA 20, preview 17) + Android (GA 18, preview 19); entitlement req; Android device requirements; CVM gotchas
++- [[source-stripe-terminal-bbpos-wisepos-e]] — May and November 2026 WisePOS E operations and firmware tables. November lists reader app `2.46.4.0`, firmware `5.01.06.01` (AU `.eftpos`), and ROM `1.8.9.4`, with HK deployment unresolved.
++- [[source-stripe-terminal-setup-reader-m2]] — M2 setup guide covering US and Puerto Rico, BLE and Android-only USB, charging, and power controls.
++- [[source-stripe-terminal-stripe-m2]] — May and November 2026 M2 reader references covering the listed software strings, separate firmware changelog and key history, and LED status.
++- [[source-stripe-terminal-setup-wisepad3]] — WisePad 3 setup guide covering the PIN pad, auto-off after 5 minutes disconnected, approximately 600 contact or 800 contactless transactions per charge, and device language.
++- [[source-stripe-terminal-bbpos-wisepad3]] — May and November 2026 WisePad 3 reader reference covering the availability banners, regional software tables, firmware changelog, and key history.
++- [[source-stripe-terminal-tap-to-pay]] — April 24, 2026 Tap to Pay setup guide: iPhone (GA 20, preview 17) and Android (GA 18, preview 19) market classifications, entitlement, device requirements, and CVM
+ - [[source-stripe-terminal-setup-verifone]] — Verifone V660p/UX700/P630/M425 specs; preview status by model/country; V660p only model with battery; all P2PE capable
+ - [[source-stripe-terminal-setup-v660p]] — V660p setup: 11W power, 8h initial charge, don't go below 10%, Full Feature Base for Ethernet
+ - [[source-stripe-terminal-setup-ux700]] — UX700 setup: no battery (mains-only), 4-pin/6-pin connector, built-in Ethernet (no accessory), not in SG
+@@ -530,10 +535,10 @@
+ - [[source-stripe-terminal-verifone-accessories]] — P630/M425 D0 Orange Dongle included in box; V660p Full Feature Base optional; cable lengths (P630=2M, M425=1M)
+ - [[source-stripe-terminal-design-custom-pos]] — Integration architecture types, Locations required (incl. simulated), development workflow, SDK × reader matrix
+ - [[source-stripe-terminal-accept-inperson-js-nodejs]] — Complete JS SDK + Node.js code sample: card_present PaymentIntent, ConnectionToken rules, JS SDK must not be bundled, setSimulatorConfiguration
+-- [[source-stripe-terminal-js-sdk-reference]] — JS SDK API reference: 29 methods (create, discoverReaders, collectPaymentMethod, processPayment, print, etc.), 17 error codes, changelog
++- [[source-stripe-terminal-js-sdk-reference]] — JavaScript SDK API reference: reader discovery, payment operations, errors, and changelog
+ - [[source-stripe-terminal-sdk-migration-guide]] — SDK v5 migration guide: unified process methods, customer cancel default on, reconnecting status, easyConnect, iOS 15 min, Android Handoff→AppsOnDevices
+-- [[source-stripe-terminal-sdk-v4-migration-guide]] — SDK v4 migration guide: consolidated connectReader, auto-reconnect default on, allow_redisplay, unified disconnect callbacks, iOS 14 min
+-- [[source-stripe-terminal-sdk-v3-migration-guide]] — SDK v3 migration guide: processPayment→confirmPaymentIntent, readReusableCard removed, DiscoveryConfig per-type, iOS 13/Android 26 min
++- [[source-stripe-terminal-sdk-v4-migration-guide]] — historical iOS and Android v4 migration, including default reconnection after unexpected disconnects for mobile and Tap to Pay readers
++- [[source-stripe-terminal-sdk-v3-migration-guide]] — Historical migration to SDK 3.0.0 for iOS and Android, with the November 2026 platform index linked for navigation.
+ - [[source-stripe-terminal-example-applications]] — Example app repos (JS/iOS/Android/RN), shared Sinatra backend, iOS Simulator location note
+ - [[source-stripe-terminal-testing]] — Full test card tables (20 standard + 4 PIN + 7 error), physical test card amount codes, simulated update scenarios
+ - [[source-stripe-terminal-setup-integration]] — SDK setup guide: versions (iOS ~5.0, Android 5.4.1), iOS plist requirements, Android lifecycle-aware init, server-driven limitations, Chrome 142+ note
+@@ -557,9 +562,9 @@
+ - [[source-stripe-terminal-incremental-authorizations]] — Incremental authorizations: availability by card/MCC, setup, incrementAuthorization API, capture auto-increment behavior
+ - [[source-stripe-terminal-extended-authorizations]] — Extended authorizations: capture window up to 30 days, card/MCC eligibility table, capture_before field, Amex caveat
+ - [[source-stripe-terminal-refunds]] — Refunds and cancellations: cancel pre-capture (card eligibility), online vs in-person refunds, Interac mandatory in-person refund
+-- [[source-stripe-terminal-receipts]] — Receipts: prebuilt email receipts, custom receipt EMV fields, cardholder preferred_locales
+-- [[source-stripe-terminal-display-cart]] — Display cart details: setReaderDisplay, display-only amounts, pre-dip (US only)
+-- [[source-stripe-terminal-collect-inputs]] — Collect on-screen inputs: 6 input types, customization, webhooks, 7-day signature storage
+-- [[source-stripe-terminal-collect-data]] — Collect swiped data (private preview): magstripe gift cards, tokenization, 24h storage, disclaimer
+-- [[source-stripe-terminal-collect-nfc-data]] — Collect NFC tapped data (private preview): NFC UID, offline-capable, S700/S710/M2, no card payments
+-- [[source-stripe-terminal-apps-on-devices]] — Apps on Devices: two integration modes, AOSP differences, permissions allowlist, Connect single-platform requirement
++- [[source-stripe-terminal-receipts]] — Receipts: prebuilt email, manual test sends, custom EMV fields, and cardholder `preferred_locales` when provided
++- [[source-stripe-terminal-display-cart]] — May 2026 cart-display guide covering setup, resetting, and US pre-dip, with the November platform index linked for navigation.
++- [[source-stripe-terminal-collect-inputs]] — collect on-screen inputs guide captured 2026-05-01, with the 2026-11-07 platform variant index linked for navigation.
++- [[source-stripe-terminal-collect-data]] — May 2026 private-preview non-PCI swiped-data guide with a dated November SDK variant index.
++- [[source-stripe-terminal-collect-nfc-data]] — May 2026 private-preview NFC UID guide with a dated November SDK variant index.
++- [[source-stripe-terminal-apps-on-devices]] — May and November 2026 Apps on Devices overviews, integration and APK scopes, DevKit requirements, permissions and single-platform Connect controls.

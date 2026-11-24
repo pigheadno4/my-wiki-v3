@@ -1,0 +1,52 @@
+--- wiki/sources/source-stripe-terminal-register-readers.md
++++ wiki/sources/source-stripe-terminal-register-readers.md (candidate)
+@@ -2,28 +2,43 @@
+ title: "Stripe Terminal: Register Readers"
+ type: source
+ date_ingested: 2026-05-01
++date_updated: 2026-11-24
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/terminal/fleet/register-readers"
+ raw_files:
++  - "stripe-terminal-fleet-register-readers-2026-11-07.md"
+   - "stripe-terminal-register-readers-2025.md"
+ tags: [stripe, stripe-terminal, registration, fleet, readers, locations]
+ ---
+ 
+ ## Summary
+ 
+-Readers must be registered to a location before accepting payments. Any user with write permissions can register. Smart readers have 3 registration methods; mobile readers register at SDK connect time.
++The May 1 and November 7, 2026 guides require a reader to be registered to a Location to accept payments. Registration requires a user role with write permissions. Smart readers have three registration methods. The listed mobile readers register while connecting via the SDK.
+ 
+ ## Smart Reader Registration Methods
+ 
+-**1. Registration code (pairing code)**: requires physical access to the reader. Pairing code appears on-screen on first unbox; regenerate via admin settings if needed. Register via Dashboard or API (`stripe.terminal.readers.create({ registration_code, label, location })`).
++**1. Registration code (pairing code).** Obtain the code from the reader or regenerate it in admin settings. An unregistered reader shows the code when first unboxed. Use Dashboard or create a Reader through the API. The May Node and November cURL examples send `registration_code`, `label` and `location`. Use the code method to re-register a reader to another Stripe account.
+ 
+-**2. Serial number**: remote registration — no physical reader needed. Up to **10 readers at a time**. Only works for readers ordered by the account (platforms: order must be by the platform or the sub-account). Serial number found on box, back of reader, or Hardware Orders page.
++**2. Serial number.** The Dashboard flow can register or re-register without physical access, up to **10 readers at a time**. Find the serial number in Hardware Orders, on the box or reader, or in the Reader details/API if already registered.
+ 
+-**3. Order number**: register from Hardware Orders page (overflow menu → Register) or registration flow. Only works for orders placed by the account or its sub-accounts. Supports batch registration with sequential naming (e.g. "Test reader 1", "Test reader 2").
++> **Serial registration scope (2026-05-01 and 2026-11-07).** May says the reader must have been ordered by the account and that either the platform or the sub-account must have placed the order to register it to a sub-account. November says serial registration cannot transfer a reader registered to an unrelated Stripe account. Under November’s Connect rules, a connected account that ordered directly and is outside the platform’s controls cannot have that reader registered to the platform account. For platform-placed orders, the connected account cannot self-register the reader. The platform registers on its behalf using the `Stripe-Account` header or **View Dashboard as**. The dated wording leaves the interaction with the broad May restriction unresolved.
++
++**3. Order number.** Use this method for an order placed by the account or one of its connected accounts. In **Hardware Orders**, a `shipped` or `delivered` order’s **Register** action opens reader selection when serial numbers are assigned or the pre-registration flow when they are unassigned. The **Terminal Readers** registration flow also supports entering an order number and selecting registerable readers. A supplied name becomes a sequential prefix when registering multiple readers.
++
++**Pre-registration (November).** Pre-select one Location per order. Stripe automatically registers the readers to it during fulfillment and serial assignment. Pre-registration stays within the same account, so a platform cannot pre-register the order to a connected account’s Location. To split an order among multiple Locations, use serial-number registration after assignment.
+ 
+ ## Mobile Reader Registration
+ 
+-Register M2, Chipper 2X BT, WisePad 3 at SDK connect time by passing `locationId` in `BluetoothConnectionConfiguration`. Can reuse `reader.locationId` from a previously discovered reader to register to the last-used location.
++For Stripe Reader M2, BBPOS Chipper 2X BT and BBPOS WisePad 3, both guides document registration during the connection. The iOS and Android variants pass `locationId` in `BluetoothConnectionConfiguration`. React Native passes `locationId` in its `connectReader` call. Each variant can reuse the discovered reader’s `reader.locationId` for the last-used Location.
++
++## Related Pages
++
++- [[stripe]] — company page
++- [[stripe-terminal-hardware-orders]] — ordering, configuration and reader registration
++- [[stripe-terminal#Locations|Stripe Terminal Locations]] — Location prerequisites and configuration
++- [[source-stripe-terminal-locations-and-zones]] — Location and zone setup
+ 
+ ## Raw Sources
+ 
+-- [[stripe-terminal-register-readers-2025]] — verbatim webpage content (Dashboard flows + Node/Swift/Kotlin/React Native code samples)
++- [[raw/stripe-terminal-fleet-register-readers-2026-11-07|November 7, 2026 Register readers guide]]
++- [[stripe-terminal-register-readers-2025]] — May 1, 2026 verbatim webpage (Dashboard flows and SDK samples)

@@ -1,0 +1,90 @@
+--- wiki/sources/source-stripe-react-stripejs.md
++++ wiki/sources/source-stripe-react-stripejs.md (candidate)
+@@ -2,7 +2,9 @@
+ title: "Stripe Docs — React Stripe.js reference"
+ type: source
+ date_ingested: 2026-05-08
++date_updated: 2026-11-24
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/sdks/stripejs-react"
+ raw_files:
+   - "stripe-react-stripejs-2025.md"
+ tags: [stripe, react, stripe-elements, checkout-elements-provider, elements-provider, usestripe, useelements, elementsconsumer]
+@@ -10,7 +12,7 @@
+ 
+ ## Summary
+ 
+-Full React Stripe.js API reference covering both integration paths: Checkout Sessions (`CheckoutElementsProvider`) and Payment Intents (`Elements` provider). 673 lines including complete prop tables, hooks, and class component support.
++The 2026-05-08 React Stripe.js reference contains both integration paths: Checkout Sessions (`CheckoutElementsProvider`) and advanced integration with Payment Intents (the standard `Elements` provider). It documents loading Stripe.js asynchronously with a publishable key via `loadStripe`, then passing the resulting promise to the provider. See the raw for the prop tables, hooks, and class component examples.
+ 
+ ## Two Integration Paths
+ 
+@@ -18,42 +20,48 @@
+ 
+ | API | Purpose |
+ | --- | --- |
+-| `CheckoutElementsProvider` | Root provider; `stripe` + `options.clientSecret` (from Checkout Session) |
+-| `useCheckoutElements()` | Returns `{ type, checkout }` — type: `'loading'|'error'|'success'` |
+-| `checkout.confirm()` | Submits the Checkout Session |
+-| `onReady`, `onChange`, etc. | Element event props |
++| `CheckoutElementsProvider` | Root provider that accepts `stripe`. Pass the created Checkout Session's client secret in the provider's `options.clientSecret`. |
++| `useCheckoutElements()` | Returns a loading, error, or success state. Only success supplies `checkout`. |
++| `checkout.confirm()` | Confirms the Checkout Session in the successful hook branch after loading and error handling. |
++| `onReady`, `onChange`, etc. | Element event props. |
+ 
+-Available elements: BillingAddressElement, CurrencySelectorElement, ExpressCheckoutElement, PaymentElement, PaymentMethodMessagingElement, ShippingAddressElement, TaxIdElement
++Available elements: BillingAddressElement, CurrencySelectorElement, ExpressCheckoutElement, PaymentElement, PaymentMethodMessagingElement, ShippingAddressElement, TaxIdElement.
+ 
+-Note: `useCheckoutElements` replaces `useCheckout` from pre-v6.
++Use `useCheckoutForm()` inside `CheckoutFormProvider`. The 2026-05-08 reference directs pre-v6 users to `useCheckout()`. The retained package history identifies it as an alias deprecated since 6.3.0 and still implemented and exported from `/checkout` in the pinned 7.0.0 snapshot. See [[source-github-react-stripe-js]].
+ 
+ ### Payment Intents (`@stripe/react-stripe-js`)
+ 
+ | API | Purpose |
+ | --- | --- |
+-| `<Elements stripe={promise} options={{ clientSecret }}>` | Root provider; `options` immutable after set |
+-| `useStripe()` | Stripe instance (null until Promise resolves) |
+-| `useElements()` | Elements instance; `elements.getElement(Component)` for imperative access |
+-| `ElementsConsumer` | For class components; render props `({ stripe, elements }) => ...` |
++| `Elements` | Root provider. When rendering the Payment Element, supply the Intent's `clientSecret` unless rendering before creating the Intent. |
++| `useStripe()` | Stripe instance, initially null if a Stripe promise is unresolved. |
++| `useElements()` | Elements instance, initially null if a Stripe promise is unresolved. Use `elements.getElement(Component)` for imperative access in this path. |
++| `ElementsConsumer` | Class component alternative with `({ stripe, elements }) => ...` render props. |
+ 
+-Available elements: AddressElement, ExpressCheckoutElement, LinkAuthenticationElement, PaymentElement, PaymentMethodMessagingElement, TaxIdElement
++Available elements: AddressElement, ExpressCheckoutElement, LinkAuthenticationElement, PaymentElement, PaymentMethodMessagingElement, TaxIdElement.
++
++The advanced confirmation example waits for both `stripe` and `elements` before calling `stripe.confirmPayment`.
+ 
+ ## Key Rules
+ 
+-- `stripe` prop immutable after set
+-- `options` prop immutable — use `elements.update()` for appearance changes
+-- Always load Stripe.js from `js.stripe.com` (PCI compliance — never bundle)
+-- Use `onReady` prop to capture Element instance for imperative methods like `focus()`
+-- One of each Element type per provider
++- Both providers document setting the `stripe` prop once. Initial server-side rendering or static generation can pass `null` or a promise resolving to `null`.
++- The 2026-05-08 advanced reference describes the standard `Elements` provider's `options` prop as immutable after setup and directs appearance changes through `elements.update()`.
++- The UMD instructions require Stripe.js to load directly from `js.stripe.com` and prohibit self-hosting or bundling the script.
++- The Checkout path's imperative example captures an Element through `onReady`. The advanced path's example retrieves it through `elements.getElement(...)`.
++- Mount at most one of each Element type per provider.
+ 
+-> [!warning] Contradiction
+-> The retained `@stripe/react-stripe-js@6.8.0` implementation in [[source-github-react-stripe-js]] treats `clientSecret` and `fonts` as immutable but forwards other changed provider options through `elements.update()`. The broader immutability statement above reflects this source's 2025 documentation snapshot.
++> [!warning] 2026-05-08 website reference and retained 6.8.0 implementation
++> The 2026-05-08 advanced website reference describes blanket `Elements.options` immutability. The retained `@stripe/react-stripe-js@6.8.0` implementation in [[source-github-react-stripe-js]] treats `clientSecret` and `fonts` as immutable and forwards other changed provider options through `elements.update()`.
+ 
+ ## Related Pages
+ 
+-- [[stripe-elements]] — Stripe Elements concept page (React API section added)
++- [[stripe-elements]] — Stripe Elements concept page
+ - [[stripe]] — Stripe company page
+ 
+ ## Raw Sources
+ 
+-- [[stripe-react-stripejs-2025]] — verbatim webpage content (673 lines; prop tables reformatted by linter)
++- [[stripe-react-stripejs-2025]] — 2026-05-08 complete two-variant website capture (673 lines with prop tables reformatted by linter)
++
++## Related raw API references
++
++- [[raw/stripe-sdks-stripejs-react-2026-11-07|2026-11-07 React Stripe.js reference index]] — navigation to [Elements](https://docs.stripe.com/sdks/stripejs-react.md?ui=embedded-components) and [Advanced integration](https://docs.stripe.com/sdks/stripejs-react.md?ui=elements). The capture contains the index only.

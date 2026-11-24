@@ -1,0 +1,74 @@
+--- wiki/sources/source-stripe-terminal-sdk-migration-guide.md
++++ wiki/sources/source-stripe-terminal-sdk-migration-guide.md
+@@ -2,6 +2,7 @@
+ title: "Stripe Terminal: SDK Migration Guide (v5.0.0)"
+ type: source
+ date_ingested: 2026-05-01
++date_updated: 2026-11-24
+ original_format: webpage
+ raw_files:
+   - "stripe-terminal-sdk-migration-guide-2025.md"
+@@ -10,37 +11,46 @@
+ 
+ ## Summary
+ 
+-Breaking changes and migration guide for Stripe Terminal iOS and Android SDK v5.0.0.
++The 2026-05-01 migration guide covers breaking changes for the Stripe Terminal iOS and Android SDKs when upgrading to v5.0.0.
+ 
+ ## Breaking Changes Summary
+ 
+ **Unified payment methods** (both platforms):
+-- `processPaymentIntent` replaces `collectPaymentMethod` + `confirmPaymentIntent` (two steps → one)
+-- `processRefund` replaces `collectRefundPaymentMethod` + `confirmRefund`
+-- `processSetupIntent` replaces `collectSetupIntentPaymentMethod` + `confirmSetupIntent`
++- Stripe recommends `processPaymentIntent` to collect and confirm in one call. The existing `collectPaymentMethod` and `confirmPaymentIntent` methods continue to work in v5.
++- Use `processRefund` for the combined refund flow. The two-step `collectRefundPaymentMethod` and `confirmRefund` methods are deprecated in v5.
++- `processSetupIntent` combines the setup intent collection and confirmation steps.
+ 
+-**Customer cancellation**: now **enabled by default** on all supported readers. API changed from `Bool` to `SCPCustomerCancellation` enum (iOS) / `CustomerCancellation` enum (Android). Use `.disableIfAvailable` / `DISABLE_IF_AVAILABLE` to restore prior behavior.
++**Customer cancellation** is enabled by default on supported readers. Use `.disableIfAvailable` with the iOS `SCPCustomerCancellation` enum or `CustomerCancellation.DISABLE_IF_AVAILABLE` on Android to opt out.
+ 
+-**New ConnectionStatus**: `.reconnecting` (iOS) / `RECONNECTING` (Android). `connectedReader` / `getConnectedReader()` is nil during reconnect.
++**Connection status** adds `.reconnecting` on iOS and `RECONNECTING` on Android. On iOS, `connectedReader` is `nil` during reconnection until it succeeds. The Android guide documents `getConnectedReader()` returning `null` during initial connection until the attempt succeeds.
+ 
+-**`easyConnect`**: new method combining discover + connect in one call (iOS 5.1+, Android 5.0+). Supports `discoveryFilter` by serial or reader ID.
++**`easyConnect`** combines discovery and connection for smart readers and Tap to Pay on iOS 5.1 or later. The Android guide documents it for smart readers, Tap to Pay, and Apps on Devices. Internet reader discovery supports filtering by serial number or reader ID.
+ 
+-**Interac refunds**: PaymentIntent ID now requires `clientSecret` too.
++**Interac refunds** require the PaymentIntent's `clientSecret` when using its PaymentIntent ID. The charge-ID path does not require it.
+ 
+ ## iOS-Specific Changes
+ 
+-- Min iOS: 14 → **15**
+-- `Terminal.setTokenProvider` removed → use `Terminal.initWithTokenProvider(_:)` before accessing `Terminal.shared`
+-- `DiscoveryConfiguration` direct init removed → must use Builder classes
+-- Swift async/await supported for all Terminal methods
++- The v5 minimum is iOS 15. Existing iOS SDK 4.x releases support iOS 14 and later.
++- `Terminal.setTokenProvider` was removed. Use `Terminal.initWithTokenProvider(_:)` before accessing `Terminal.shared`.
++- Use the associated builder classes to initialize `DiscoveryConfiguration` objects.
++- Terminal methods have Swift async variants.
+ 
+ ## Android-Specific Changes
+ 
+-- `Terminal.initTerminal` renamed to `Terminal.init`; now requires nullable `OfflineListener`
+-- **Apps on Devices**: all `Handoff` class names renamed to `AppsOnDevices` (e.g., `HandoffDiscoveryConfiguration` → `AppsOnDevicesDiscoveryConfiguration`); Maven artifact `stripeterminal-handoffclient` → `stripeterminal-appsondevices`
+-- Kotlin Coroutines: optional module `stripeterminal-ktx:5.0.0` adds `suspend` wrappers
+-- **Tap to Pay on Android**: now requires Android 13+; hardware-backed KeyStore v100+; debug options enabled → `TAP_TO_PAY_INSECURE_ENVIRONMENT` error; `TapZone` class refactored (indicator + position → single `TapZone` object)
++- `Terminal.initTerminal` was renamed to `Terminal.init` and now requires a nullable `OfflineListener` parameter.
++- **Apps on Devices** renamed its `Handoff` classes to `AppsOnDevices` (for example, `HandoffDiscoveryConfiguration` to `AppsOnDevicesDiscoveryConfiguration`). The Maven artifact changed from `stripeterminal-handoffclient` to `stripeterminal-appsondevices`. Stripe says it will no longer update the old artifact.
++- The optional `stripeterminal-ktx:5.0.0` module adds Kotlin coroutine `suspend` wrappers.
++- **Tap to Pay on Android** requires Android 13 or later and hardware-backed KeyStore key agreement from SDK 5.0.0. Check the hardware support with `supportsReadersOfType()` or `FEATURE_HARDWARE_KEYSTORE` version 100 or later. Production reader discovery fails with `TAP_TO_PAY_INSECURE_ENVIRONMENT` if device debug options are enabled. The simulated Tap to Pay reader is exempt from this debug-options restriction. The guide also covers the refactored `TapZone` object and lists Discover acceptance as public preview.
++
++## Related
++
++- [[stripe]]
++- [[stripe-terminal]]
+ 
+ ## Raw Sources
+ 
+-- [[stripe-terminal-sdk-migration-guide-2025]] — verbatim webpage content (full iOS + Android before/after code examples)
++- [[stripe-terminal-sdk-migration-guide-2025]] — 2026-05-01 v5.0.0 migration guide with full iOS and Android before/after examples
++
++## Related raw API references
++
++- [[raw/stripe-terminal-references-sdk-migration-guide-2026-11-07|2026-11-07 Terminal SDK v6.0.0 migration guide index]] — navigation to the [iOS](https://docs.stripe.com/terminal/references/sdk-migration-guide.md?terminal-sdk-platform=ios) and [Android](https://docs.stripe.com/terminal/references/sdk-migration-guide.md?terminal-sdk-platform=android) variants. The capture contains the index only.

@@ -1,0 +1,171 @@
+{
+  "job_id": "terminal-features-refunds",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Stripe Terminal: Refund Transactions\"\ntype: source\ndate_ingested: 2026-05-01\ndate_updated: 2026-11-24\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/terminal/features/refunds\"\nraw_files:\n  - \"stripe-terminal-refunds-2025.md\"\ntags: [stripe, stripe-terminal, refunds, cancellations, interac, payment-intents]\n---\n\n## Summary\n\nThe May 1, 2026 guide covers cancellation of uncaptured [[stripe-terminal|Stripe Terminal]] PaymentIntents and refunds of captured payments, with card-network and client/server distinctions. The November 7, 2026 index routes to server-driven, JavaScript, iOS, Android and React Native variants.\n\n## Key Takeaways\n\n### Canceling payments (pre-capture)\n\n- Available on Visa, Mastercard, Amex, Discover, girocard\n- **Interac/eftpos**: The May guide describes automatic capture when the payment is routed as a single-message Interac or eftpos transaction. For a captured payment, initiate a refund. Check the actual capture state before choosing a flow.\n- Client-side cancellation via `cancelPaymentIntent`: iOS, Android, React Native SDKs\n- JavaScript SDK and server-driven integrations cancel on the server (see `stripe.paymentIntents.cancel('pi_...')`). The other client SDKs can use server-side cancellation when the necessary information is unavailable in the app.\n- Canceling releases all uncaptured funds; the PaymentIntent can no longer be used to charge\n\n### Refunds (post-capture)\n\n- **Online refunds**: available on all card networks except Interac; no card re-presentment required\n- **In-person refunds**: Mandatory for Interac in Canada. The May guide lists WisePad 3, WisePOS E, S700/S710, and Tap to Pay on iPhone and Android.\n- In the ordinary server-side refund flow, pass a PaymentIntent ID or Charge ID to the Refunds API to refund the underlying Charge.\n- For a partial refund, pass an integer `amount` in the charge currency\u2019s smallest unit.\n- The May guide recommends daily backend reconciliation for unintended authorizations and uncollected funds.\n\n> [!note] April 24 and May 1, 2026 Interac refund routes\n> Ordinary online refunds through the Refunds API or Dashboard exclude Interac. The separate [[source-stripe-terminal-regional|April 24 regional guide]] documents the server-driven in-person Terminal reader `refund_payment` endpoint. The reader prompts for the original card, and the refund currency must match the original charge.\n\nThe May guide\u2019s confirmed-Intent example describes a pre-capture window. Inspect the Intent\u2019s actual capture state before choosing cancellation or refund. See [[stripe-terminal-refunds]] for the separately sourced iOS and Android SDK 6.0.0 conditions.\n\n## API Examples\n\n```javascript\n// Full refund\nconst refund = await stripe.refunds.create({\n  payment_intent: 'pi_Aabcxyz01aDfoo',\n});\n\n// Partial refund\nconst refund = await stripe.refunds.create({\n  payment_intent: 'pi_Aabcxyz01aDfoo',\n  amount: 1000,\n});\n```\n\n## See Also\n\n- [[stripe-terminal-refunds]] \u2014 concept page\n- [[source-stripe-terminal-regional]] \u2014 Interac in-person refund details (Canada)\n\n## Raw Sources\n\n- [[raw/stripe-terminal-refunds-2025|May 1, 2026 full Terminal refunds and cancellation guide]]\n\n## Related raw API references\n\n- [[raw/stripe-terminal-features-refunds-2026-11-07|November 7, 2026 Terminal refunds index for server-driven, JavaScript, iOS, Android and React Native]]\n",
+  "quotes": {
+    "terminal-features-refunds": [
+      {
+        "text": "Cancel or refund Stripe Terminal payments.",
+        "location": "raw/stripe-terminal-features-refunds-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants.",
+        "location": "raw/stripe-terminal-features-refunds-2026-11-07.md:11"
+      },
+      {
+        "text": "[Server-driven](https://docs.stripe.com/terminal/features/refunds.md?terminal-sdk-platform=server-driven)",
+        "location": "raw/stripe-terminal-features-refunds-2026-11-07.md:13"
+      },
+      {
+        "text": "[JavaScript](https://docs.stripe.com/terminal/features/refunds.md?terminal-sdk-platform=js)",
+        "location": "raw/stripe-terminal-features-refunds-2026-11-07.md:14"
+      },
+      {
+        "text": "[React Native](https://docs.stripe.com/terminal/features/refunds.md?terminal-sdk-platform=react-native)",
+        "location": "raw/stripe-terminal-features-refunds-2026-11-07.md:17"
+      }
+    ]
+  },
+  "old_evidence": {
+    "terminal-features-refunds": [
+      {
+        "text": "Canceling a PaymentIntent releases all uncaptured funds, and a canceled PaymentIntent can no longer be used to perform charges.",
+        "location": "raw/stripe-terminal-refunds-2025.md:29"
+      },
+      {
+        "text": "The JavaScript SDK and server-driven integration require you to cancel the `PaymentIntent` on your server.",
+        "location": "raw/stripe-terminal-refunds-2025.md:112"
+      },
+      {
+        "text": "as an integer in cents (or the charge currency\u2019s smallest currency unit)",
+        "location": "raw/stripe-terminal-refunds-2025.md:140"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-terminal-features-refunds-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "raw/stripe-terminal-refunds-2025.md": [
+      {
+        "start": 1,
+        "end": 85
+      },
+      {
+        "start": 86,
+        "end": 156
+      }
+    ],
+    "wiki/sources/source-stripe-terminal-refunds.md": [
+      {
+        "start": 1,
+        "end": 55
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/05c357647b0317bb0931f9e7/content.diff": [
+      {
+        "start": 1,
+        "end": 83
+      },
+      {
+        "start": 84,
+        "end": 161
+      }
+    ]
+  },
+  "answers": {
+    "terminal-features-refunds": {
+      "Q1": "For https://docs.stripe.com/terminal/features/refunds, source-stripe-terminal-refunds uses the 2026-11-07 capture for server-driven, JavaScript, iOS, Android and React Native navigation. It names the cancel/refund topic without specifying actors, prerequisites or state transitions (new raw lines 5-17). The full 2026-05-01 guide distinguishes automatic and manual capture. The app can cancel an authorized, uncaptured card_present PaymentIntent, releasing the hold and making that Intent unusable for charging. For an already captured Intent the captured Charge must be refunded (old raw lines 8-20 and old raw lines 24-35). The iOS, Android and React Native apps can cancel client-side. JavaScript and server-driven integrations cancel on the server, and other SDK integrations can use the server when required data is unavailable in the app (old raw lines 33-47 and old raw lines 108-112). For captured payments the historical guide documents an online server-side refund with Charge or PaymentIntent ID and no card re-presentment, except for Interac in Canada, for which it routes to the eligible in-person reader flow. Partial refund amount is expressed in the charge currency's smallest unit (old raw lines 122-140). The revised summary keeps the pre/post-capture and SDK split, specifies the currency unit, and distinguishes the ordinary online refund path from the in-person Interac endpoint. The 2026-04-24 regional capture expressly documents a server-driven in-person Terminal reader endpoint (raw/stripe-terminal-regional-2025.md:437-447).",
+      "Q2": "For https://docs.stripe.com/terminal/features/refunds, source-stripe-terminal-refunds links the 2026-11-07 index and its five exact platform destinations (new raw lines 9-17), as navigation evidence. May 1's implementation detail and embedded platform routes remain available as historical authority (old raw lines 1-2 and old raw lines 33-51 and old raw lines 71-95). A change in format provides no proof of removal of any cancellation or refund behavior. The revised source preserves actual uncaptured-versus-captured state, Visa/Mastercard/Amex/Discover/girocard cancellation, single-message Interac and eftpos and the daily reconciliation recommendation (old raw lines 8-20 and old raw lines 24-31). It preserves Interac's Canadian in-person requirement and eligible readers, and scopes the API/Dashboard exclusion to ordinary online refund routes because the separate April regional guide gives a server-driven in-person refund_payment endpoint with original card and currency conditions (old raw lines 122-128 and raw/stripe-terminal-regional-2025.md:437-447). It expresses the partial amount in the charge currency's smallest unit (old raw lines 139-141). Both dated raws remain linked in their respective sections. The stripe-terminal-refunds, stripe-terminal, Stripe index and company routes are retained. The source-stripe-terminal-regional route remains available for the Interac procedure, and the concept retains its separate iOS and Android SDK 6.0.0 scope and preview/capture qualifications. The dedicated refund concept scopes the absent manual capture window to payments routed over Interac or eftpos. The regional concept distinguishes Interac's single-step capture behavior from the April regional guide's API 2025-03-31.basil supported capture settings and `manual_preferred` routing (old raw lines 8-20, raw/stripe-terminal-regional-2025.md:418-435,784-799)."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "terminal-features-refunds-capture-state",
+      "target_path": "wiki/concepts/stripe-terminal-refunds.md",
+      "update_kind": "durable_fact",
+      "anchor": "**When to use**: PaymentIntent is confirmed but not yet captured.",
+      "proposed_markdown": "**When to use**: A confirmed `card_present` PaymentIntent can be canceled while authorized and uncaptured. Check its capture state after confirmation.",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": [
+        "The May full guide distinguishes automatic and manual capture at lines 8\u201310 and documents cancellation of uncaptured card-present PaymentIntents at lines 24\u201335."
+      ]
+    },
+    {
+      "update_id": "terminal-features-refunds-single-message-capture",
+      "target_path": "wiki/concepts/stripe-terminal-refunds.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Not available on Interac/eftpos**: these use automatic capture \u2014 the PaymentIntent is captured immediately at confirmation, so cancellation is not possible. Instead, ensure your app can initiate a refund at the end of the checkout flow.",
+      "proposed_markdown": "**Single-message Interac and eftpos.** The May guide describes automatic capture when the payment is routed over Interac or eftpos. These routes have no separate manual capture window. Check the actual capture state and use the refund flow after capture.",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": [
+        "May Terminal refunds raw lines 8\u201320 describe automatic capture on the routed network. The April 24, 2026 regional raw describes Interac automatic capture including asynchronous processing and separates the allowed capture settings and routed state (raw/stripe-terminal-regional-2025.md:418\u2013435,784\u2013799)."
+      ]
+    },
+    {
+      "update_id": "terminal-features-refunds-interac",
+      "target_path": "wiki/concepts/stripe-terminal-refunds.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Interac in-person refunds**: mandatory for Interac transactions (cannot refund Interac via API or Dashboard). Available on WisePad 3, WisePOS E, S700/S710, Tap to Pay iPhone, Tap to Pay Android.",
+      "proposed_markdown": "**Interac in-person refunds**: Mandatory for Interac transactions in Canada. Ordinary online refunds through the Refunds API or Dashboard are unavailable. The April 24, 2026 regional guide documents a server-driven in-person Terminal reader `refund_payment` endpoint, with the original card and matching currency. The May guide lists WisePad 3, WisePOS E, S700/S710 and Tap to Pay on iPhone and Android.",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": [
+        "The April 24, 2026 regional raw has both the ordinary refund exclusion and separate in-person Terminal reader endpoint (raw/stripe-terminal-regional-2025.md:437\u2013447). The companion source-stripe-terminal-regional still uses broad API shorthand at line 34."
+      ]
+    },
+    {
+      "update_id": "terminal-features-refunds-currency-unit",
+      "target_path": "wiki/concepts/stripe-terminal-refunds.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Partial refund** (add `amount` in cents):",
+      "proposed_markdown": "**Partial refund** (add an integer `amount` in the charge currency\u2019s smallest unit):",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": [
+        "May Terminal refunds raw line 140 gives the charge currency\u2019s smallest unit."
+      ]
+    },
+    {
+      "update_id": "terminal-features-refunds-terminal-interac",
+      "target_path": "wiki/concepts/stripe-terminal.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Canada (CA) \u2014 Interac**: add `interac_present` to `payment_method_types`; Interac = automatic capture only; use `manual_preferred` for mixed; `manual` capture \u2192 Interac declined; **in-person refund mandatory** (cannot refund Interac via API/Dashboard); Interac Flash max 250 CAD; PIN after 100 CAD or 4th contactless.",
+      "proposed_markdown": "**Canada (CA) \u2014 Interac**: Add `interac_present` to `payment_method_types`. Interac authorizes and captures in one step, which can be asynchronous. The April 24, 2026 regional guide lists `automatic`, `automatic_async`, and `manual_preferred` as supported capture settings as of API `2025-03-31.basil`. With `manual_preferred`, an Interac payment still captures in one step while other cards can follow a separate capture flow. `manual` declines Interac. **In-person refunds are mandatory.** Ordinary online refunds through the Refunds API or Dashboard are unavailable. The April regional guide documents a server-driven in-person Terminal reader `refund_payment` endpoint with the original card and matching currency. Interac Flash max 250 CAD. A PIN is required above 100 CAD or on the fourth consecutive contactless transaction.",
+      "quote_indexes": [
+        0,
+        2
+      ],
+      "warnings": [
+        "The supported capture-setting list is an April 24, 2026 regional observation explicitly scoped to API 2025-03-31.basil. The single-step Interac capture behavior is distinct from the configuration value (raw/stripe-terminal-regional-2025.md:418\u2013435).",
+        "The April 24, 2026 regional raw has both the ordinary refund exclusion and separate in-person Terminal reader endpoint (raw/stripe-terminal-regional-2025.md:437\u2013447). The companion source-stripe-terminal-regional still uses broad API shorthand at line 34."
+      ]
+    },
+    {
+      "update_id": "terminal-features-refunds-dashboard-scope",
+      "target_path": "wiki/concepts/stripe-terminal-refunds.md",
+      "update_kind": "durable_fact",
+      "anchor": "Refunds can also be initiated through the Stripe Dashboard.",
+      "proposed_markdown": "Eligible online refunds can also be initiated through the Stripe Dashboard.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The April 24, 2026 regional raw has both the ordinary refund exclusion and separate in-person Terminal reader endpoint (raw/stripe-terminal-regional-2025.md:437\u2013447). The companion source-stripe-terminal-regional still uses broad API shorthand at line 34."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,138 @@
+{
+  "job_id": "terminal-features-incremental-authorizations",
+  "attempt": 1,
+  "raw_path": "raw/stripe-terminal-features-incremental-authorizations-2026-11-07.md",
+  "raw_sha256": "7415505672be8b2e674a7062c8232e8f00b422e0f388c376fa05d6d59738b0dd",
+  "prior_raw_path": "raw/stripe-terminal-incremental-authorizations-2025.md",
+  "prior_raw_sha256": "6d5373cec43f0ac2b926d3e9f957c5d7a114ae2796894cb49de2171ed25c59c5",
+  "source_targets": [
+    "wiki/sources/source-stripe-terminal-incremental-authorizations.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-terminal-incremental-authorizations.md": "0d5da001aacd2c636cfe0e06f29d76bb46f6b5e5e0cad25ccb6321836dc8347a"
+  },
+  "read_ranges": {
+    "raw/stripe-terminal-features-incremental-authorizations-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 130
+      },
+      {
+        "start": 131,
+        "end": 279
+      }
+    ],
+    "raw/stripe-terminal-incremental-authorizations-2025.md": [
+      {
+        "start": 1,
+        "end": 145
+      },
+      {
+        "start": 146,
+        "end": 291
+      }
+    ],
+    "wiki/sources/source-stripe-terminal-incremental-authorizations.md": [
+      {
+        "start": 1,
+        "end": 58
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/6dd0fb3fee047761787239e3/content.diff": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 191
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "**UnionPay**\\* (Private preview)",
+      "location": "raw/stripe-terminal-features-incremental-authorizations-2026-11-07.md:34"
+    },
+    {
+      "text": "As of SDK 6.0.0, `captureMethod` defaults to automatic-asynchronous",
+      "location": "raw/stripe-terminal-features-incremental-authorizations-2026-11-07.md:42"
+    },
+    {
+      "text": "For React Native SDK `0.0.1-beta.34` and later, explicitly set `captureMethod: 'manual'`",
+      "location": "raw/stripe-terminal-features-incremental-authorizations-2026-11-07.md:44"
+    },
+    {
+      "text": "Each `PaymentIntent` can have a maximum of 10 incremental authorization attempts, including declines.",
+      "location": "raw/stripe-terminal-features-incremental-authorizations-2026-11-07.md:245"
+    },
+    {
+      "text": "Regardless, when using `amount_to_capture` we recommend that you always check for potential failures.",
+      "location": "raw/stripe-terminal-features-incremental-authorizations-2026-11-07.md:279"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "They\u2019re only available with Visa, Mastercard, American Express, or Discover.",
+      "location": "raw/stripe-terminal-incremental-authorizations-2025.md:16"
+    },
+    {
+      "text": "payment_method_types: ['card_present']",
+      "location": "raw/stripe-terminal-incremental-authorizations-2025.md:48"
+    },
+    {
+      "text": "processPayment(paymentIntent.id)",
+      "location": "raw/stripe-terminal-incremental-authorizations-2025.md:228"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "November establishes the same merchant integration requesting manually captured card-present payment, client confirmation and charge eligibility check, backend incremental authorization and capture, with issuer-visible pending holds that can vary by bank.",
+    "The previously summarized flow stays supported in both dated captures. November adds UnionPay category/region-limited private preview and names SDK versions with automatic-asynchronous default and explicit manual creation. The versioned React Native and server example changes are specific to the shown integrations."
+  ],
+  "substantive_changes": [
+    "November adds China UnionPay Terminal private preview for car rental/automobile rental agencies, hotels, motels, resorts and steamship/cruise lines, in select Asia-Pacific and European countries named in the source. Stripe Sales is the request-access route.",
+    "November adds manual capture warning for iOS and Android 6.0.0 and React Native 0.0.1-beta.34 and later. Both already require manual capture for feature use. The React Native creation examples now explicitly pass manual; the confirmation example passes the PaymentIntent object to collect, then the collected PaymentIntent to confirmPaymentIntent, replacing older ID-based collect/process in the example.",
+    "November server cURL creation uses allowed_payment_method_types[] with card_present, unlike May Node payment_method_types; distinguish request-field wording from the otherwise presentational cURL substitution for create/increment/capture and the Swift example\u2019s SGD-to-JPY change. SDK migration links and Stripe Sales are retrieval routes associated with substantive qualifications."
+  ],
+  "historical_claims_to_preserve": [
+    "The prior raw was captured 2026-05-01 despite its filename suffix. It lists Visa/Mastercard/Amex all user categories and Discover restricted categories; those descriptions remain in November with the additional scoped UnionPay row. Both require a fully online POS and reader.",
+    "Preserve after-confirmation, before-capture eligibility, use update before confirmation, latest Charge card-present eligibility, total amount/difference distinction, up to ten attempts including declines, original-amount preservation and unsaved companion fields on failure. Higher capture amounts trigger an attempted auto-increment with the specific eligible on-receipt overcapture exception.",
+    "Keep issuer-dependent pending authorization display and one captured-total entry."
+  ],
+  "conflicts": [
+    "November expressly requires client-side manual capture from iOS/Android SDK 6.0.0 and React Native 0.0.1-beta.34 onward because of the automatic-asynchronous default. The same guide's Swift and Kotlin creation snippets omit the setter, as does its Swift confirmation setup; React Native includes manual capture in both snippets but the confirmation-only example does not repeat the request flag. Use explicit requirements and do not present the incomplete snippets as self-contained eligible integrations.",
+    "The source and concept reproduce 'capture always succeeds' from both incremental-auth captures. Scope to the eligible on-receipt overcapture path and omission of automatic increment only. Keep eligibility, documented overcapture limits and advice to check potential failures. The separate on-receipt guide requires latest_charge.overcapture_supported and documents limits.",
+    "Source uses the May-only card table and the concept has the same old table. Add the November UnionPay entry as private preview with its eligibility and access bounds; the table provides no universal availability for UnionPay or automatic permission for a specific merchant.",
+    "The May Node creation sample uses payment_method_types; November cURL uses allowed_payment_method_types. Treat the example field change as meaningful for versioned request documentation, not mere cURL translation or proof the May field still works generally. The concept's existing JS sample needs historical or exact SDK version context; keep the separate PaymentIntent versioned request evidence.",
+    "Source line 49 compresses capture failure to card_declined. Both raw captures also say authorization of the original amount remains and attempted updates such as application_fee_amount are not saved."
+  ],
+  "unresolved_questions": [
+    "The captures alone do not establish current China UnionPay eligibility for any particular account, cross-version request compatibility, or a release-wide React Native signature contract from guide examples."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-terminal-incremental-authorizations.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-terminal-incremental-authorizations.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add November functional authority and preserve May dated comparison, reciprocal Terminal incremental-authorizations concept, Terminal tipping/on-receipt route, and versioned SDK migration routes. Route non-Terminal behavior through the separate online concept."
+      ],
+      "conflicts": [
+        "November expressly requires client-side manual capture from iOS/Android SDK 6.0.0 and React Native 0.0.1-beta.34 onward because of the automatic-asynchronous default. The same guide's Swift and Kotlin creation snippets omit the setter, as does its Swift confirmation setup; React Native includes manual capture in both snippets but the confirmation-only example does not repeat the request flag. Use explicit requirements and do not present the incomplete snippets as self-contained eligible integrations.",
+        "The source and concept reproduce 'capture always succeeds' from both incremental-auth captures. Scope to the eligible on-receipt overcapture path and omission of automatic increment only. Keep eligibility, documented overcapture limits and advice to check potential failures. The separate on-receipt guide requires latest_charge.overcapture_supported and documents limits.",
+        "Source uses the May-only card table and the concept has the same old table. Add the November UnionPay entry as private preview with its eligibility and access bounds; the table provides no universal availability for UnionPay or automatic permission for a specific merchant.",
+        "The May Node creation sample uses payment_method_types; November cURL uses allowed_payment_method_types. Treat the example field change as meaningful for versioned request documentation, not mere cURL translation or proof the May field still works generally. The concept's existing JS sample needs historical or exact SDK version context; keep the separate PaymentIntent versioned request evidence.",
+        "Source line 49 compresses capture failure to card_declined. Both raw captures also say authorization of the original amount remains and attempted updates such as application_fee_amount are not saved."
+      ],
+      "reason": "UnionPay and SDK boundaries are consequential and missing from the pinned summary. Existing capture wording needs scope and example/version attribution."
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/terminal/features/incremental-authorizations, both captures require a fully online POS and reader, setting card-present incremental authorization support and manual capture when the merchant integration creates the PaymentIntent, then confirming the payment client-side and checking the latest Charge\u2019s incremental_authorization_supported field. Only confirmed uncaptured payments can be incremented; before confirmation use the update method. November adds the scoped UnionPay private preview and explicit manual-capture instructions for iOS/Android 6.0.0 and React Native 0.0.1-beta.34 onward (old raw lines 14-36, old raw lines 130-134, old raw line 239; new raw lines 15-44, new raw lines 131-135, new raw line 241). The merchant backend provides a higher total; Stripe attempts authorization for the difference, up to 10 attempts including declines. Success updates the amount; decline leaves the prior authorization intact and discards other attempted field updates. Capture above the currently authorized amount normally attempts auto-increment, except eligible on-receipt tipping uses overcapture; monitor capture failures. The issuer determines pending display, while the captured total appears once (old raw line 10, old raw lines 241-291; new raw line 11, new raw lines 243-279). source-stripe-terminal-incremental-authorizations covers the May mechanism, but lacks the new eligibility/default boundaries and reads too broadly on capture success.",
+    "Q2": "For https://docs.stripe.com/terminal/features/incremental-authorizations, update source-stripe-terminal-incremental-authorizations and its reciprocal stripe-terminal-incremental-authorizations route. May 1 names four networks; November 7 adds China UnionPay private preview in named APAC/European countries for specified rental, hotel/motel/resort and cruise categories, via Stripe Sales. Keep full online, attempt and MCC conditions (old raw lines 14-36; new raw lines 15-44). Record iOS/Android 6.0.0 and React Native 0.0.1-beta.34 explicit manual capture despite incomplete Swift/Kotlin creation snippets. React Native switches the demonstration from ID collection/processPayment to object collection/confirmPaymentIntent, and server create changes from payment_method_types to allowed_payment_method_types[] in the displayed request. Treat Node-to-cURL increment/capture and example currency changes as presentational, the migration pointers as routes (old raw lines 40-56, old raw lines 153-159, old raw lines 204-236, old raw lines 247-284; new raw lines 42-55, new raw lines 62-68, new raw lines 82-97, new raw lines 154-160, new raw lines 205-238, new raw lines 249-271). Preserve the on-receipt tipping link and overcapture eligibility and limits; scope the prior 'always succeeds' wording to the guide's no-auto-increment exception and retain the check-for-failures instruction (old raw lines 265-291; new raw lines 260-279)."
+  }
+}

@@ -1,0 +1,188 @@
+{
+  "job_id": "refunds",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Stripe \u2014 Refund and Cancel Payments\"\ntype: source\ndate_ingested: 2026-05-11\ndate_updated: 2026-11-24\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/refunds\"\nraw_files:\n  - \"stripe-refunds-2026-11-07.md\"\n  - \"stripe-refunds-2026.md\"\ntags: [stripe, refunds, cancel, paymentintent, arn, reversal, connect, webhooks, failed-refunds]\n---\n\n## Summary\n\nStripe's refund and cancellation guide covers payment and Refund status, balance and destination rules, failure and tracing, and Connect. The 2026-11-07 capture adds the bank-details lifecycle for refunds that require action and a bank-debit duplicate-credit warning.\n\n## Key Rules\n\n- **Cancel a payment** before completion at no cost.\n- **Refund** part or all of a successful payment through the Dashboard or the Refunds API. Total refunds cannot exceed the original charge. A refund might incur a fee and Stripe does not return the original processing fees.\n- **Balance source** is the available Stripe balance. If it is insufficient, card refunds remain pending until funds are available and refunds for other payment method types fail.\n- **Destination** remains the original payment method. The issuer handles refunds to expired or canceled cards, usually by crediting a replacement card or using an alternate method if no replacement is available. A refund can still fail.\n- **Refund notifications** require the original charge to have been created on a Stripe customer with an email address stored and **Email customers for refunds** enabled. The bank-details request below is a separate workflow.\n\n> [!note] 2026-05-11 and 2026-11-07 refund guides\n> The May capture says fully refunded credit-card charges cannot be disputed or charged back. The November refund guide omits that sentence. The 2026-11-07 fraud-types guide separately preserves the fully versus partially refunded distinction and says a partially refunded card payment can still be disputed for its full amount. See [[source-stripe-disputes-fraud-types]] and [[disputes]].\n>\n> The May refund guide also describes issuing a refund from a payment details page and automatic or manual refund receipts. The November guide retains payment-details **cancellation** and conditional refund notifications. The two captures do not establish a policy or feature change from those omissions.\n\n> [!warning] 2026-11-07 bank-debit refunds\n> A merchant's proactive refund and a dispute initiated concurrently by the customer's bank can both credit the customer for the same transaction. Stripe directs merchants to the method-specific refund guidance for [SEPA Direct Debit](https://docs.stripe.com/payments/sepa-debit.md#refunds), [Bacs Direct Debit](https://docs.stripe.com/payments/bacs-debit.md#refunds), [ACH Direct Debit](https://docs.stripe.com/payments/ach-direct-debit.md#refunds), [ACSS (Canadian PADs)](https://docs.stripe.com/payments/acss-debit.md#refunds), [AU BECS Direct Debit](https://docs.stripe.com/payments/au-becs-debit.md#refunds), and [NZ bank account debits](https://docs.stripe.com/payments/nz-bank-account.md#refunds).\n\n## Refunds That Require Action\n\nFor some methods without native refunds, including Konbini, PromptPay, Boleto and bank transfers, Stripe emails the customer for bank details before processing. The Refund object's `next_action` exposes the action type, the recipient and send time of the email, and the expiry.\n\n| Event | Refund status |\n| --- | --- |\n| Refund created and customer emailed | `requires_action` |\n| Customer submits bank details and Stripe starts processing | `pending` |\n| Refund expected to reach the bank | `succeeded` |\n| Bank returns funds to Stripe | `requires_action`; Stripe emails again for corrected details |\n| No response by expiry | `failed` |\n| Refund canceled while still awaiting details | `canceled` |\n\n## Reversal vs Refund\n\nSome refunds issued shortly after the charge appear as **reversals**. The original charge disappears from the statement without a separate credit. Reversals usually incur lower network fees, so IC+ users might see a cost difference. Check `destination_details[card][type] = 'reversal'` in the API or the refund's Timeline entry in the Dashboard.\n\n## Refund Reference Numbers\n\nStatement timing depends on the card network and issuer. The tracing section estimates approximately 5\u201310 business days for a credit, depending on the bank. Card refund references depend on financial partner support. An ARN (Acquirer Reference Number) can take up to seven business days from initiation and is unavailable for reversals. If the card network does not support ARN, Stripe attempts a STAN (System Trace Audit Number) or RRN (Retrieval Reference Number). Stripe or its partners can provide references for selected local methods.\n\nCheck the refund Timeline in the Dashboard, or retrieve the Refund or consume `refund.updated` for `destination_details`. Card references appear as `destination_details[card][reference]` together with type and availability when supplied.\n\n## Failed Refunds\n\n| Reason | Description |\n| --- | --- |\n| `charge_for_pending_refund_disputed` | Customer disputed the charge while the refund was pending. Stripe recommends accepting or challenging the dispute instead of refunding to avoid duplicate reimbursement. |\n| `declined` | Declined by a financial partner. |\n| `expired_or_canceled_card` | The payment method was canceled or expired. |\n| `insufficient_funds` | A refund pending for insufficient funds expired. |\n| `lost_or_stolen_card` | Original card was lost or stolen. |\n| `merchant_request` | Business requested failure. |\n| `unknown` | Unknown reason. |\n\nA failed Refund has state `failed`, `failure_reason` and `failure_balance_transaction`. Stripe sends `refund.failed`. Stripe credits funds the bank returns back to the Stripe balance, or the platform's Stripe balance for Connect destination charges. Both captures give up to 30 days from the post date in failure handling and up to 30 days from requesting the refund in tracing.\n\n## Cancel a Refund\n\n- The Dashboard is the only supported channel for card-refund cancellation. Only some card refunds qualify, during a short window before the refund reaches the customer. Processed charge reversals are ineligible.\n- Where Stripe needs banking information, the API or Dashboard can cancel the refund while details remain uncollected and the refund requires action.\n\nCanceled refunds transition to `canceled` and include `failure_reason` and `failure_balance_transaction`. Funds for a canceled destination-charge refund go to the platform's Stripe balance.\n\n## Cancel a PaymentIntent\n\nFor an uncaptured `requires_capture` charge, cancel the PaymentIntent. The guide lists `requires_payment_method`, `requires_capture`, `requires_confirmation`, `requires_action` and `processing` (US Bank Account only) as eligible API statuses. A succeeded PaymentIntent is ineligible. Dashboard payment cancellation applies to uncaptured payments or debit payments that have yet to be posted to the bank.\n\n## Connect Behavior\n\n| Charge type | Debited from |\n| --- | --- |\n| Direct charges | Connected account |\n| Destination or separate charges and transfers | Platform. Reverse the associated transfers to recover the refund amount from connected accounts. |\n\n## Key Webhooks\n\n`refund.created`, `refund.updated` (may include a tracing reference such as ARN), `refund.failed`, `charge.refunded`, `charge.dispute.funds_reinstated` and `review.closed`. See **Refund events** in either raw capture for specifics and deprecated events.\n\n## Related Pages\n\n- [[stripe-refunds]] \u2014 Stripe Refunds concept\n- [[stripe]]\n- [[disputes]] \u2014 dispute handling\n- [[source-stripe-receipts]] \u2014 separate refund receipt guide\n- [Bank transfer refunds](https://docs.stripe.com/payments/bank-transfers.md#refunds)\n\n## Raw Sources\n\n- [[raw/stripe-refunds-2026-11-07|2026-11-07 refund and cancellation guide]]\n- [[stripe-refunds-2026]] \u2014 2026-05-11 refund and cancellation guide (295 lines)\n",
+  "quotes": {
+    "refunds": [
+      {
+        "text": "there\u2019s a risk of double refund.",
+        "location": "raw/stripe-refunds-2026-11-07.md:84"
+      },
+      {
+        "text": "the refund enters the `requires_action` status and Stripe emails your customer to request their bank information.",
+        "location": "raw/stripe-refunds-2026-11-07.md:143"
+      },
+      {
+        "text": "the refund transitions back to `requires_action`.",
+        "location": "raw/stripe-refunds-2026-11-07.md:164"
+      },
+      {
+        "text": "The refund must not have been processed as a charge reversal.",
+        "location": "raw/stripe-refunds-2026-11-07.md:124"
+      },
+      {
+        "text": "An ARN isn\u2019t available in the case of a reversal",
+        "location": "raw/stripe-refunds-2026-11-07.md:202"
+      }
+    ]
+  },
+  "old_evidence": {
+    "refunds": [
+      {
+        "text": "Disputes and chargebacks aren\u2019t possible on credit card charges that are fully refunded.",
+        "location": "raw/stripe-refunds-2026.md:14"
+      },
+      {
+        "text": "You can also send [refund receipts]",
+        "location": "raw/stripe-refunds-2026.md:37"
+      },
+      {
+        "text": "You can cancel these refunds while banking information hasn\u2019t been collected.",
+        "location": "raw/stripe-refunds-2026.md:131"
+      },
+      {
+        "text": "reversals usually incur lower network fees.",
+        "location": "raw/stripe-refunds-2026.md:150"
+      },
+      {
+        "text": "up to 30 days from the post date.",
+        "location": "raw/stripe-refunds-2026.md:93"
+      },
+      {
+        "text": "up to 30 days from requesting the refund.",
+        "location": "raw/stripe-refunds-2026.md:172"
+      },
+      {
+        "text": "up to 7 business days after initiating the refund to receive the ARN",
+        "location": "raw/stripe-refunds-2026.md:179"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-refunds-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 106
+      },
+      {
+        "start": 107,
+        "end": 220
+      },
+      {
+        "start": 221,
+        "end": 313
+      }
+    ],
+    "raw/stripe-refunds-2026.md": [
+      {
+        "start": 1,
+        "end": 110
+      },
+      {
+        "start": 111,
+        "end": 215
+      },
+      {
+        "start": 216,
+        "end": 295
+      }
+    ],
+    "wiki/sources/source-stripe-refunds.md": [
+      {
+        "start": 1,
+        "end": 75
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/8029cd9ca5006236a121d708/content.diff": [
+      {
+        "start": 1,
+        "end": 103
+      },
+      {
+        "start": 104,
+        "end": 205
+      },
+      {
+        "start": 206,
+        "end": 305
+      },
+      {
+        "start": 306,
+        "end": 391
+      }
+    ]
+  },
+  "answers": {
+    "refunds": {
+      "Q1": "For https://docs.stripe.com/refunds, both captures say a merchant can cancel before completion at no cost, refund part or all after success (potential fee and no return of original Stripe processing fees), and issue refunds through Dashboard or Refunds API within the original total. Stripe funds them from available balance, holds insufficiently funded card refunds pending and fails other methods in that case, then submits to the customer bank or issuer, with the original payment method as destination (old raw lines 8-26, old raw lines 83-89; new raw lines 9-27, new raw lines 74-80). For an uncaptured requires_capture charge cancel its PaymentIntent; Connect debits connected accounts on direct charges and the platform on destination/separate charges, with transfer reversal to recover (old raw lines 72-81; new raw lines 63-72). November adds the distinct Refund.requires_action flow for eligible methods without native refunds. Stripe emails for bank details, the customer responds and processing goes pending, expected arrival is succeeded, bank return prompts a repeat request, no response by expiry fails, and cancellation while requires_action yields canceled. Refund.next_action describes the request, addressee/time and expiry. May documents only the banking-information/cancellation prerequisite without the state table (old raw lines 127-135; new raw lines 122-166). The revised source-stripe-refunds preserves the May core and records the November lifecycle and the separate bank-debit warning (new raw lines 82-84). Both guides describe issuer-dependent timing and state two different anchors for funds returned after failure (old raw lines 91-95 and old raw lines 167-172; new raw lines 86-90 and new raw lines 189-194).",
+      "Q2": "For https://docs.stripe.com/refunds, source-stripe-refunds adds the 2026-11-07 bank-debit double-credit risk when the merchant refunds while the bank initiates a dispute, and the banking-information Refund status workflow with a second email when the bank returns funds. Both captures recommend accepting or challenging a dispute filed while the refund is pending instead of refunding, to avoid duplicate reimbursement. Both also describe the separate API-or-Dashboard cancellation route while bank details remain uncollected (old raw lines 91-107 and old raw lines 127-135; new raw lines 82-96 and new raw lines 141-166). The revised page dates the May fully refunded credit-card dispute statement, alternate Dashboard issuance and automatic/manual receipt instructions. November omits those passages and retains conditional notifications and payment-details cancellation (old raw lines 12-20 and old raw lines 29-41; new raw lines 13-21, new raw lines 29-40 and new raw lines 132-139). The November fraud-types capture separately retains the full versus partial refund distinction (raw/stripe-disputes-prevention-fraud-types-2026-11-07.md:23). Only the Dashboard supports eligible card-refund cancellation, within a short window before the refund reaches the customer. Processed charge reversals are ineligible. ARN availability and timing are partner-dependent, and reversals usually incur lower network fees so IC+ pricing differences are possible (old raw lines 127-133, old raw lines 146-150 and old raw lines 176-180; new raw lines 122-128, new raw lines 168-172 and new raw lines 198-202). The page retains the reciprocal stripe-refunds and related disputes and receipts routes and adds the method-specific and bank transfer links. cURL replaces Node for the same API operations. Numbering and markup changes are presentational. Refund object, create, events and bank-transfer links improve navigation (old raw lines 45-72, old raw lines 244-256 and old raw lines 268-272; new raw lines 44-63, new raw lines 266-273, new raw lines 285-289 and new raw lines 308-313)."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "refunds-disputes",
+      "target_path": "wiki/concepts/stripe-refunds.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Disputes impossible** on fully refunded credit card charges.",
+      "proposed_markdown": "The 2026-05-11 refund guide says a fully refunded credit-card charge cannot be disputed or charged back. The 2026-11-07 refund guide omits that sentence. The separately captured fraud-types guidance distinguishes fully refunded from partially refunded card payments, which can still be disputed for their full amount. See [[source-stripe-disputes-fraud-types]].\n\nThe November refund guide warns that a merchant's proactive bank-debit refund and an overlapping dispute initiated by the customer's bank can yield two credits. See the payment-method routes in [[source-stripe-refunds]].",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The dated omission is visible in old raw lines 12-16 and new raw lines 13-17. The separate November fraud-types raw states the distinction at raw/stripe-disputes-prevention-fraud-types-2026-11-07.md:23."
+      ]
+    },
+    {
+      "update_id": "refunds-reversal",
+      "target_path": "wiki/concepts/stripe-refunds.md",
+      "update_kind": "durable_fact",
+      "anchor": "Refunds issued shortly after the original charge may appear as **reversals** \u2014 original charge drops off statement, no separate credit issued. IC+ users pay lower network fees on reversals. Check `destination_details[card][type] = 'reversal'` via API.",
+      "proposed_markdown": "A refund issued shortly after the charge may appear as a **reversal**. The original charge disappears from the statement without a separate credit. Reversals usually incur lower network fees, so IC+ users might see a cost difference. Check `destination_details[card][type] = 'reversal'` in the API.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "The quote supplies reversal context. The separate IC+ qualifier is in old raw lines 146-150 and new raw lines 168-172."
+      ]
+    },
+    {
+      "update_id": "refunds-reference",
+      "target_path": "wiki/concepts/stripe-refunds.md",
+      "update_kind": "durable_fact",
+      "anchor": "Banking tracing identifiers \u2014 provide to customer if refund isn't visible. Available up to 7 business days after initiating. Not available for reversals. Check `destination_details[card][reference]` via API.",
+      "proposed_markdown": "Where supported, customers can give their bank a refund reference. The card ARN can take up to seven business days and is unavailable for reversals. Stripe attempts STAN/RRN when networks lack ARN support. Selected local payment methods have separate references. Check `destination_details[card][reference]` for card refunds.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "ARN timing and reference availability are in old raw lines 174-180 and new raw lines 196-202. The examples for separate local methods are in new raw lines 214-246."
+      ]
+    },
+    {
+      "update_id": "refunds-failure",
+      "target_path": "wiki/concepts/stripe-refunds.md",
+      "update_kind": "durable_fact",
+      "anchor": "7 failure reasons: `charge_for_pending_refund_disputed`, `declined`, `expired_or_canceled_card`, `insufficient_funds`, `lost_or_stolen_card`, `merchant_request`, `unknown`. Failed refund returns to Stripe balance (up to 30 days). Webhook: `refund.failed`.\n\n**Important**: if `charge_for_pending_refund_disputed`, accept/challenge dispute instead \u2014 refunding would double-reimburse the customer.",
+      "proposed_markdown": "7 failure reasons: `charge_for_pending_refund_disputed`, `declined`, `expired_or_canceled_card`, `insufficient_funds`, `lost_or_stolen_card`, `merchant_request`, `unknown`. When a bank or issuer returns failed refund funds, Stripe credits them to the Stripe balance. The guides give an up-to-30-day estimate from the post date in failure handling and from the request in tracing. Webhook: `refund.failed`.\n\nFor `charge_for_pending_refund_disputed`, Stripe recommends accepting or challenging the dispute instead of refunding to avoid duplicate reimbursement.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The bank-debit overlap quote relates to a separate scenario. The targeted change is grounded in new raw lines 86-118 and new raw lines 189-194, corroborated by old raw lines 91-123 and old raw lines 167-172."
+      ]
+    },
+    {
+      "update_id": "refunds-cancellation",
+      "target_path": "wiki/concepts/stripe-refunds.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Card refunds**: Dashboard only, brief window\n- **Bank transfer refunds awaiting banking info**: API or Dashboard",
+      "proposed_markdown": "- **Card refunds**: the Dashboard is the only supported channel. Only some card refunds qualify, during a short window before the refund reaches the customer. Processed charge reversals are ineligible.\n- **Refunds awaiting bank details**: the API or Dashboard can cancel eligible refunds while `requires_action` and details remain uncollected. The November guide gives examples including Konbini, PromptPay, Boleto and bank transfers. See the state and retry workflow in [[source-stripe-refunds]].",
+      "quote_indexes": [
+        1,
+        2,
+        3
+      ],
+      "warnings": []
+    }
+  ]
+}

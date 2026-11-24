@@ -1,0 +1,290 @@
+{
+  "job_id": "terminal-features-collect-inputs",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Stripe Terminal: Collect On-Screen Inputs\"\ntype: source\ndate_ingested: 2026-05-01\ndate_updated: 2026-11-24\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/terminal/features/collect-inputs\"\nraw_files:\n  - \"stripe-terminal-collect-inputs-2025.md\"\ntags: [stripe, stripe-terminal, collect-inputs, forms, signature, reader-display, webhooks]\n---\n\n## Summary\n\nThe 2026-05-01 [[stripe]] Terminal guide describes displaying prebuilt forms and collecting customer responses with `collect_inputs` or `collectInputs`. It lists Stripe Reader S700/S710 and BBPOS WisePOS E. The 2026-11-07 capture indexes the Server-driven, JavaScript, iOS, Android, and React Native variants. The behavior below comes from the May guide.\n\n## Key Details\n\n**Input types**. `signature`, `selection`, `email`, `phone`, `text`, and `numeric`. Forms can appear before payment, after payment, or outside a payment cycle. Each of the four SDK variants documents up to five sequential inputs per call.\n\n**Reader interaction**. The reader displays the first input. A required input hides Skip, while the customer may skip an optional input. After the customer completes all inputs, the reader returns to the splash screen after three seconds if no subsequent request arrives.\n\n**Customization**. Set required inputs, customize the title, description and button text, and add up to four toggles per input. Selection inputs support `primary` and `secondary` choice styles.\n\n**Character limits**. Title 40, description 500 for selection or 100 for other types, submit button 30, and skip button 14.\n\n**Server-driven**. The merchant integration starts the reader action and subscribes to `terminal.reader.action_succeeded` and `terminal.reader.action_failed`. Two minutes without touching the reader screen causes a timeout reported as failure. Optional request metadata can correlate results. Retrieving the reader provides a fallback if the backend misses an event.\n\n**SDK responses**. JavaScript and React Native return a promise. iOS and Android return results through a callback. Cancellation, timeout, or another collection failure returns an SDK error.\n\n**Returned data**. Server-driven signatures return a file ID for a retrievable SVG. SDK signatures return SVG strings. Selection returns the choice\u2019s `text` and `id`. Other inputs return the customer\u2019s response string. Both paths flag a skipped optional input with `skipped: true`. The May guide lists `enabled` and `disabled` for server-driven toggles and additionally lists `skipped` for SDK toggles.\n\n**Server-driven signature files**. Stripe stores the signature image for seven days. If needed longer, retrieve the file through the Files API and store it in accordance with applicable law.\n\n**SDK minimums and offline collection**. The May guide gives iOS 4.4.0+ and Android 4.3.0+. It documents collecting inputs on a capable smart reader operating offline for iOS, Android and React Native.\n\n**Data and merchant responsibilities**. Do not collect sensitive data, including payment card information or protected health information, or information restricted by law. The merchant is responsible for obtaining applicable consents and permissions, the legal validity and enforceability of contracts or notices that use input collected by the reader or output displayed on it, and lawful collection, use, storage and disclosure of signatures.\n\n## Related\n\n- [[stripe-terminal-collect-inputs]] \u2014 collection flow and inputs\n- [[stripe-terminal]] \u2014 Terminal integration overview\n\n## Raw Sources\n\n- [[raw/stripe-terminal-collect-inputs-2025|Stripe Terminal collect on-screen inputs guide captured 2026-05-01]] \u2014 five variant bodies\n\n## Related raw API references\n\n- [[raw/stripe-terminal-features-collect-inputs-2026-11-07|Stripe Terminal collect on-screen inputs platform variant index captured 2026-11-07]]\n",
+  "quotes": {
+    "terminal-features-collect-inputs": [
+      {
+        "text": "Use Terminal to collect inputs from your customers.",
+        "location": "raw/stripe-terminal-features-collect-inputs-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants.",
+        "location": "raw/stripe-terminal-features-collect-inputs-2026-11-07.md:11"
+      },
+      {
+        "text": "[Server-driven]",
+        "location": "raw/stripe-terminal-features-collect-inputs-2026-11-07.md:13"
+      },
+      {
+        "text": "[React Native]",
+        "location": "raw/stripe-terminal-features-collect-inputs-2026-11-07.md:17"
+      }
+    ]
+  },
+  "old_evidence": {
+    "terminal-features-collect-inputs": [
+      {
+        "text": "Don\u2019t use `collect_inputs` to collect sensitive data (including protected health information and customer payment card information), or any information restricted by law.",
+        "location": "raw/stripe-terminal-collect-inputs-2025.md:21"
+      },
+      {
+        "text": "After the customer has completed all the inputs, the reader changes to a transitional state for 3 seconds, waiting for a subsequent request.",
+        "location": "raw/stripe-terminal-collect-inputs-2025.md:136"
+      },
+      {
+        "text": "This includes timeouts, which occur after the reader screen isn\u2019t touched for 2 minutes.",
+        "location": "raw/stripe-terminal-collect-inputs-2025.md:165"
+      },
+      {
+        "text": "Stripe stores the signature images you collect for 7 days.",
+        "location": "raw/stripe-terminal-collect-inputs-2025.md:171"
+      },
+      {
+        "text": "You can collect customer information even when the smart reader is [operating offline]",
+        "location": "raw/stripe-terminal-collect-inputs-2025.md:604"
+      },
+      {
+        "text": "of each toggle is populated with `enabled` or `disabled`.",
+        "location": "raw/stripe-terminal-collect-inputs-2025.md:148"
+      },
+      {
+        "text": "You can specify up to 5 inputs at a time, and the reader collects them in sequence.",
+        "location": "raw/stripe-terminal-collect-inputs-2025.md:181"
+      },
+      {
+        "text": "For each toggle, `enabled`, `disabled` or `skipped` is returned",
+        "location": "raw/stripe-terminal-collect-inputs-2025.md:271"
+      },
+      {
+        "text": "`4.4.0` and up",
+        "location": "raw/stripe-terminal-collect-inputs-2025.md:312"
+      },
+      {
+        "text": "`4.3.0` and up",
+        "location": "raw/stripe-terminal-collect-inputs-2025.md:448"
+      },
+      {
+        "text": "If there is no subsequent request after 3 seconds, the reader changes back to the splash screen.",
+        "location": "raw/stripe-terminal-collect-inputs-2025.md:136"
+      },
+      {
+        "text": "If you use input collected by, or output displayed from a Terminal smart reader",
+        "location": "raw/stripe-terminal-collect-inputs-2025.md:138"
+      },
+      {
+        "text": "Successful input collection with skipping all non-required inputs",
+        "location": "raw/stripe-terminal-collect-inputs-2025.md:282"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-terminal-features-collect-inputs-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "raw/stripe-terminal-collect-inputs-2025.md": [
+      {
+        "start": 1,
+        "end": 110
+      },
+      {
+        "start": 111,
+        "end": 220
+      },
+      {
+        "start": 221,
+        "end": 330
+      },
+      {
+        "start": 331,
+        "end": 440
+      },
+      {
+        "start": 441,
+        "end": 550
+      },
+      {
+        "start": 551,
+        "end": 660
+      },
+      {
+        "start": 661,
+        "end": 696
+      }
+    ],
+    "wiki/sources/source-stripe-terminal-collect-inputs.md": [
+      {
+        "start": 1,
+        "end": 35
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/86ac9ccc68b9e95bac66686f/content.diff": [
+      {
+        "start": 1,
+        "end": 112
+      },
+      {
+        "start": 113,
+        "end": 225
+      },
+      {
+        "start": 226,
+        "end": 347
+      },
+      {
+        "start": 348,
+        "end": 461
+      },
+      {
+        "start": 462,
+        "end": 571
+      },
+      {
+        "start": 572,
+        "end": 661
+      },
+      {
+        "start": 662,
+        "end": 701
+      }
+    ]
+  },
+  "answers": {
+    "terminal-features-collect-inputs": {
+      "Q1": "At https://docs.stripe.com/terminal/features/collect-inputs, source-stripe-terminal-collect-inputs has May functional evidence and a November navigation reference. The November capture states the purpose of collecting customer input with Terminal and lists Server-driven, JavaScript, iOS, Android and React Native, without details on supported readers, prerequisites, API or reader transitions (new raw lines 5-7, new raw lines 9-17). The May capture names S700/S710 and BBPOS WisePOS E, allows forms before or after payment or outside a payment cycle, and bars sensitive data. The reader displays the first input, the customer completes or skips optional inputs, and the reader waits three seconds after completion before returning to the splash screen if no request arrives (old raw lines 8-21, old raw lines 128-142). The merchant's server-driven integration starts the reader action and can receive success/failure webhooks, including a failure after two minutes of no touch. An SDK integration instead gets results directly in a promise or callback, and documents up to five sequential inputs. Signatures are retrievable SVG via a file ID in server-driven or an SVG string in the SDK (old raw lines 140-171, old raw lines 173-181, old raw lines 263-273, old raw lines 309-316, old raw lines 445-452, old raw lines 600-606). The revised summary preserves the May flows and names the documented readers, distinguishes server-driven and SDK toggle states, and includes the prohibition on sensitive data and the merchant\u2019s consent and legal responsibilities (old raw lines 8-21, old raw lines 134-148, old raw lines 261-273).",
+      "Q2": "At https://docs.stripe.com/terminal/features/collect-inputs, source-stripe-terminal-collect-inputs includes the November 7 capture as a dated navigation reference. Its five links replace bundled variant text at the capture level and establish no retirement, availability change, or amended runtime rule (new raw lines 9-17, old raw lines 23-29, old raw lines 173-181, old raw lines 305-316, old raw lines 441-452, old raw lines 596-606). May 1 remains the date of factual documentation, including iOS 4.4.0+ and Android 4.3.0+ and smart-reader offline collection for iOS, Android and React Native. It documents the server-driven two-minute no-touch timeout, seven-day Stripe signature file retention, and merchant responsibility for contracts or notices using either reader-collected input or reader-displayed output (old raw lines 8-21, old raw lines 132-171, old raw lines 309-316, old raw lines 445-452, old raw lines 600-606). Server-driven documents enabled/disabled toggles, while the SDK also documents skipped (old raw lines 142-148, old raw lines 263-273). The candidate links to the reciprocal concepts stripe-terminal-collect-inputs and stripe-terminal. Proposed concept changes replace explicit device exclusions with the May positive list, scope the five-input limit to SDKs and the seven-day signature file retention to server-driven collection, and add React Native offline and the SDK toggle distinction to the dedicated concept (old raw lines 8-21, old raw lines 142-181, old raw lines 265-273, old raw lines 309-316, old raw lines 445-452, old raw lines 600-606). The May raw remains behavior evidence, and the November index serves platform navigation (new raw lines 9-17). The dedicated concept attributes simulator scenarios to the JavaScript, iOS, and Android sections in the May guide (old raw lines 275-285, old raw lines 408-418, old raw lines 557-567)."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "terminal-features-collect-inputs-reader-scope",
+      "target_path": "wiki/concepts/stripe-terminal-collect-inputs.md",
+      "update_kind": "durable_fact",
+      "anchor": "Stripe Terminal smart readers (S700/S710, WisePOS E) can display prebuilt input forms and collect structured information from customers outside the payment flow. Supports 6 input types collected in sequence, with customizable text and optional toggles.\n\n**Not available on**: M2, WisePad 3, Tap to Pay.",
+      "proposed_markdown": "The 2026-05-01 Stripe Terminal guide lists Stripe Reader S700/S710 and BBPOS WisePOS E for on-screen input forms. It documents six input types with customizable text and optional toggles. Forms can be displayed before payment, after payment, or outside a payment cycle.",
+      "quote_indexes": [],
+      "warnings": [
+        "Old raw lines 8-21 give the dated affirmative reader list and the timing scope. Neither capture expressly lists M2, WisePad 3, or Tap to Pay as exclusions."
+      ]
+    },
+    {
+      "update_id": "terminal-features-collect-inputs-sdk-limit",
+      "target_path": "wiki/concepts/stripe-terminal-collect-inputs.md",
+      "update_kind": "durable_fact",
+      "anchor": "- Up to **5 inputs per call**, collected in sequence",
+      "proposed_markdown": "- The JavaScript, iOS, Android, and React Native SDK variants document up to five inputs per call, collected in sequence.",
+      "quote_indexes": [],
+      "warnings": [
+        "Old raw lines 179-181, 309-316, 445-452 and 600-606 document the SDK limit."
+      ]
+    },
+    {
+      "update_id": "terminal-features-collect-inputs-offline",
+      "target_path": "wiki/concepts/stripe-terminal-collect-inputs.md",
+      "update_kind": "durable_fact",
+      "anchor": "- iOS and Android support collecting inputs while the reader is **offline**",
+      "proposed_markdown": "- The 2026-05-01 guide documents offline input collection on a capable smart reader for iOS, Android, and React Native.",
+      "quote_indexes": [],
+      "warnings": [
+        "See old raw lines 309-316, 445-452 and 600-606 for the named variants."
+      ]
+    },
+    {
+      "update_id": "terminal-features-collect-inputs-timeout",
+      "target_path": "wiki/concepts/stripe-terminal-collect-inputs.md",
+      "update_kind": "durable_fact",
+      "anchor": "- Timeout: **2 minutes** of no touch \u2192 `terminal.reader.action_failed` webhook",
+      "proposed_markdown": "- Server-driven collection times out after two minutes without a touch and reports the failure in a `terminal.reader.action_failed` webhook.",
+      "quote_indexes": [],
+      "warnings": [
+        "Old raw lines 162-165 specify the server-driven no-touch boundary."
+      ]
+    },
+    {
+      "update_id": "terminal-features-collect-inputs-toggle-result",
+      "target_path": "wiki/concepts/stripe-terminal-collect-inputs.md",
+      "update_kind": "durable_fact",
+      "anchor": "| Toggle | `\"enabled\"` / `\"disabled\"` / `\"skipped\"` |",
+      "proposed_markdown": "| Toggle | Server-driven documents `enabled` and `disabled`. SDKs also document `skipped` |",
+      "quote_indexes": [],
+      "warnings": [
+        "Old raw lines 142-148 and 263-273 distinguish toggle values from skipping the optional input itself."
+      ]
+    },
+    {
+      "update_id": "terminal-features-collect-inputs-signature-retention",
+      "target_path": "wiki/concepts/stripe-terminal-collect-inputs.md",
+      "update_kind": "durable_fact",
+      "anchor": "- Stored by Stripe for **7 days only**\n- Download via Files API using your secret key; store externally if retention > 7 days\n- Merchant is responsible for complying with laws governing collection, storage, and disclosure of signatures",
+      "proposed_markdown": "- For server-driven collection, Stripe stores the signature file for seven days.\n- Download the file through the Files API and store it if it is needed beyond seven days.\n- The merchant is responsible for complying with laws governing collection, use, storage and disclosure of signatures.",
+      "quote_indexes": [],
+      "warnings": [
+        "Old raw lines 167-171 specify server-driven signature file retention and responsibility. SDK signatures are SVG strings (old raw lines 263-273)."
+      ]
+    },
+    {
+      "update_id": "terminal-features-collect-inputs-dedicated-route",
+      "target_path": "wiki/concepts/stripe-terminal-collect-inputs.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-terminal-collect-inputs]] \u2014 primary source: input types, API, customization, webhooks, signature storage",
+      "proposed_markdown": "- [[source-stripe-terminal-collect-inputs]] \u2014 integration guide captured 2026-05-01, with the 2026-11-07 platform variant index linked for navigation.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "terminal-features-collect-inputs-terminal-scope",
+      "target_path": "wiki/concepts/stripe-terminal.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Collect on-screen inputs** \u2014 display prebuilt input forms (S700/S710 + WisePOS E only); 6 types: signature, selection, email, phone, text, numeric; up to 5 per call; signature images stored 7 days; see [[stripe-terminal-collect-inputs]]",
+      "proposed_markdown": "- **Collect on-screen inputs** \u2014 the 2026-05-01 guide lists Stripe Reader S700/S710 and BBPOS WisePOS E for six input types. SDK variants document up to five sequential inputs per call. The server-driven guide specifies seven-day storage for signature files. See [[stripe-terminal-collect-inputs]].",
+      "quote_indexes": [],
+      "warnings": [
+        "The Stripe index concept row still says only, and source listings in the Stripe index and company page give the five-input SDK limit and seven-day server-driven signature file retention without attribution or scope. Align catalog wording centrally. Old raw lines 8-21, 167-181, 309-316, 445-452 and 600-606 establish the scoped facts."
+      ]
+    },
+    {
+      "update_id": "terminal-features-collect-inputs-terminal-route",
+      "target_path": "wiki/concepts/stripe-terminal.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-terminal-collect-inputs]] \u2014 Collect on-screen inputs: 6 input types, customization, webhooks, 7-day signature storage",
+      "proposed_markdown": "- [[source-stripe-terminal-collect-inputs]] \u2014 collect on-screen inputs guide captured 2026-05-01, with the 2026-11-07 platform variant index linked for navigation.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "terminal-features-collect-inputs-legal-responsibility",
+      "target_path": "wiki/concepts/stripe-terminal-collect-inputs.md",
+      "update_kind": "durable_fact",
+      "anchor": "- Ensuring the legal validity and enforceability of any contracts or notices created using collected inputs",
+      "proposed_markdown": "- Ensuring the legal validity and enforceability of contracts or notices that use input collected by the reader or output displayed on it",
+      "quote_indexes": [],
+      "warnings": [
+        "The responsibility covers both paths in May raw lines 138, 261, 394, 543 and 684. The November index only supplies navigation."
+      ]
+    },
+    {
+      "update_id": "terminal-features-collect-inputs-simulator-scope",
+      "target_path": "wiki/concepts/stripe-terminal-collect-inputs.md",
+      "update_kind": "durable_fact",
+      "anchor": "SDK simulated reader supports:",
+      "proposed_markdown": "The May guide's JavaScript, iOS, and Android simulator sections list these scenarios:",
+      "quote_indexes": [],
+      "warnings": [
+        "See May raw lines 275\u2013285, 408\u2013418 and 557\u2013567 for the documented scenarios. The May React Native variant (lines 596\u2013696) has no equivalent simulator section. Its November link is navigation."
+      ]
+    }
+  ]
+}

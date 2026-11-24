@@ -1,0 +1,185 @@
+{
+  "job_id": "radar-rules-reference",
+  "attempt": 1,
+  "raw_path": "raw/stripe-radar-rules-reference-2026-11-07.md",
+  "raw_sha256": "4543418dfc768c64812b526f980a766d102298cfecbad6bb817bdc1cb975af9c",
+  "prior_raw_path": "raw/stripe-radar-rules-reference-2026.md",
+  "prior_raw_sha256": "fd63320d7c5868be1bded8e20d962d72dad46cd417459f62de0de4f5a5a68685",
+  "source_targets": [
+    "wiki/sources/source-stripe-radar-rules-reference.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-radar-rules-reference.md": "1e44916586b9bdff334294c26d83a6b5a406d457752d27a91d1f819d9807fb97"
+  },
+  "read_ranges": {
+    "raw/stripe-radar-rules-reference-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 158
+      },
+      {
+        "start": 159,
+        "end": 230
+      },
+      {
+        "start": 231,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 365
+      },
+      {
+        "start": 366,
+        "end": 421
+      }
+    ],
+    "raw/stripe-radar-rules-reference-2026.md": [
+      {
+        "start": 1,
+        "end": 80
+      },
+      {
+        "start": 81,
+        "end": 155
+      },
+      {
+        "start": 156,
+        "end": 227
+      },
+      {
+        "start": 228,
+        "end": 296
+      },
+      {
+        "start": 297,
+        "end": 354
+      },
+      {
+        "start": 355,
+        "end": 408
+      }
+    ],
+    "wiki/sources/source-stripe-radar-rules-reference.md": [
+      {
+        "start": 1,
+        "end": 55
+      },
+      {
+        "start": 56,
+        "end": 102
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/b0540425577cd6c8e89bfd7d/content.diff": [
+      {
+        "start": 1,
+        "end": 60
+      },
+      {
+        "start": 61,
+        "end": 115
+      },
+      {
+        "start": 116,
+        "end": 180
+      },
+      {
+        "start": 181,
+        "end": 245
+      },
+      {
+        "start": 246,
+        "end": 314
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "If [your Radar plan](https://docs.stripe.com/radar/how-radar-works.md#compare-plans) supports this feature for platforms, you can create rules for both transaction and account-level actions.",
+      "location": "raw/stripe-radar-rules-reference-2026-11-07.md:40"
+    },
+    {
+      "text": "Whether or not there are matches on this rule, we evaluate rules for allow, block, and review afterward.",
+      "location": "raw/stripe-radar-rules-reference-2026-11-07.md:61"
+    },
+    {
+      "text": "### Treasury transaction actions (Private preview)",
+      "location": "raw/stripe-radar-rules-reference-2026-11-07.md:92"
+    },
+    {
+      "text": "Treasury transaction rules apply to Treasury transactions on your connected accounts. Currently, inbound transfers and received credits are supported.",
+      "location": "raw/stripe-radar-rules-reference-2026-11-07.md:94"
+    },
+    {
+      "text": "A block rule instructs Stripe to reject any matching Treasury transaction. Rejected transactions aren\u2019t evaluated against further rules.",
+      "location": "raw/stripe-radar-rules-reference-2026-11-07.md:98"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "You can raise an account for review with or without pausing payouts on the account.",
+      "location": "raw/stripe-radar-rules-reference-2026.md:39"
+    },
+    {
+      "text": "Whether or not there are matches on this rule, we evaluate rules for allow, block, and review afterward.",
+      "location": "raw/stripe-radar-rules-reference-2026.md:60"
+    },
+    {
+      "text": "`all_time` includes 5 years of data with velocity up to 31622400 seconds (1 day buckets)",
+      "location": "raw/stripe-radar-rules-reference-2026.md:398"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Both dated captures retain payment rule priority Request 3DS \u2192 Allow \u2192 Block \u2192 Review with unordered rules within an action type. Requesting issuer authentication where supported leaves subsequent evaluation in place; Allow short-circuits later block/review stages but an issuer may still decline; Block rejects; Review still processes the payment and creates a review opportunity.",
+    "Platform connected-account policy can raise an account review or raise review and pause payouts while under review if the Radar plan supports the feature. Reviews appear in the connected accounts review queue; start with review before automating payout pauses is guidance.",
+    "November adds a separate connected-account Treasury transaction private preview for inbound transfers and received credits. Block rejects and stops further rule evaluation, while Review allows processing for later examination.",
+    "The summary currently describes syntax and card-payment processing but omits the plan-gated account rule actions and the separate private-preview Treasury actions. Both captures preserve type-specific syntax, case-sensitive string metadata, missing-attribute comparisons, Boolean false, post-authorization checks, amounts and bucketed velocity."
+  ],
+  "substantive_changes": [
+    "November explicitly conditions account-level controls on a Radar plan supporting the platform feature, whereas May names Radar for Platforms. Account action outcomes remain unchanged.",
+    "The November private-preview Treasury section adds Block and Review for supported inbound transfers and received credits on connected accounts. It supplies no basis for GA or eligibility for a particular platform."
+  ],
+  "historical_claims_to_preserve": [
+    "Preserve May 10, 2026 reference for card-payment stages, account review/payout-pause under Radar for Platforms and retained rule syntax, metadata scopes, post-authorization, missing-attribute and velocity rules. Date and retain November 7, 2026 independently.",
+    "Preserve unchanged warnings: customers can see a temporary authorization even when a rule ultimately blocks the charge; stricter pass requirements can exclude legitimately unavailable verification; list-based blocking has the documented EU geo-blocking caution."
+  ],
+  "conflicts": [
+    "The mapped source's bare 'First match wins' implies a matching Request 3DS rule suppresses subsequent stages. Both captures explicitly continue Allow, Block and Review evaluation regardless of a 3DS rule match. The linked Radar concept and Rules overview shorthand that Allow overrides everything needs scope to subsequent Radar blocking/review; the overview's 'Triggers 3DS authentication' needs issuer/support qualification. Its prior raw also says actual issuer performance is not assured (raw/stripe-radar-rules-2026.md:88).",
+    "Mapped source velocity values read as exact windows and group the 5-year all_time history as a lookback without the separate velocity qualifier. Both raws use 'up to' for interval bounds and state both 5 years of data and 'velocity up to 31622400 seconds' for all_time. Keep the two documented descriptions distinct.",
+    "The Radar concept describes missing attributes themselves as always false. Both captures define false comparisons, preserve carry-forward through NOT, and assign false rather than missing to absent Boolean attributes. The mapped source already distinguishes most of this."
+  ],
+  "unresolved_questions": [
+    "The two captures give the generic account metadata form with a closing double colon (new line 201, old line 188) but its worked example has one (new line 211, old line 198). Retain the generic form and flag the example if surfaced; these snapshots cannot establish parser behavior for the inconsistent example."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-radar.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-radar-rules-reference.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Both dated captures retain payment rule priority Request 3DS \u2192 Allow \u2192 Block \u2192 Review with unordered rules within an action type. Requesting issuer authentication where supported leaves subsequent evaluation in place; Allow short-circuits later block/review stages but an issuer may still decline; Block rejects; Review still processes the payment and creates a review opportunity.",
+        "Platform connected-account policy can raise an account review or raise review and pause payouts while under review if the Radar plan supports the feature. Reviews appear in the connected accounts review queue; start with review before automating payout pauses is guidance.",
+        "November adds a separate connected-account Treasury transaction private preview for inbound transfers and received credits. Block rejects and stops further rule evaluation, while Review allows processing for later examination.",
+        "The summary currently describes syntax and card-payment processing but omits the plan-gated account rule actions and the separate private-preview Treasury actions. Both captures preserve type-specific syntax, case-sensitive string metadata, missing-attribute comparisons, Boolean false, post-authorization checks, amounts and bucketed velocity."
+      ],
+      "conflicts": [
+        "The mapped source's bare 'First match wins' implies a matching Request 3DS rule suppresses subsequent stages. Both captures explicitly continue Allow, Block and Review evaluation regardless of a 3DS rule match. The linked Radar concept and Rules overview shorthand that Allow overrides everything needs scope to subsequent Radar blocking/review; the overview's 'Triggers 3DS authentication' needs issuer/support qualification. Its prior raw also says actual issuer performance is not assured (raw/stripe-radar-rules-2026.md:88).",
+        "Mapped source velocity values read as exact windows and group the 5-year all_time history as a lookback without the separate velocity qualifier. Both raws use 'up to' for interval bounds and state both 5 years of data and 'velocity up to 31622400 seconds' for all_time. Keep the two documented descriptions distinct.",
+        "The Radar concept describes missing attributes themselves as always false. Both captures define false comparisons, preserve carry-forward through NOT, and assign false rather than missing to absent Boolean attributes. The mapped source already distinguishes most of this."
+      ],
+      "reason": "Add plan-gated account actions and the dated private-preview Treasury section, repair the 3DS termination overstatement and velocity wording, keep both captures, and maintain the reciprocal Stripe Radar concept reference plus Rules and Lists routes."
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/radar/rules/reference, the November 7, 2026 capture documents Radar processing merchant-defined payment rules in order Request 3DS, Allow, Block, Review, with same-action rules unordered. The first stage requests issuer authentication where supported for Payment Intents API or Checkout and leaves later rule evaluation in place whether or not a 3DS rule matches. An allowed payment can still be declined by the issuer, a block rejects the payment, and a review still processes payment and charges the customer while permitting examination. See new raw lines 13-24 and new raw lines 55-75, against old raw lines 12-23 and old raw lines 54-74. A platform with a supporting plan can raise a connected account review or raise review and pause payouts while under review, with reviews appearing in the connected accounts review queue. May 10, 2026 named Radar for Platforms for the same outcomes (new raw line 40 and new raw lines 77-90, old raw line 39 and old raw lines 76-89). November separately documents private-preview Treasury actions for connected-account inbound transfers and received credits. Block rejects and stops rule evaluation, whereas Review processes the transaction and leaves it available for fraud review (new raw lines 92-102; old raw lines 76-93 proceed from account actions to conditions without a Treasury section). source-stripe-radar-rules-reference already routes syntax, type-specific attributes, metadata, post-authorization, missingness and velocity but lacks both account and Treasury sections and incorrectly generalizes first match to 3DS. The retained distinctions include false missing-attribute comparisons under NOT and false rather than missing absent Boolean attributes (new raw lines 335-359 and old raw lines 322-346).",
+    "Q2": "For https://docs.stripe.com/radar/rules/reference, update source-stripe-radar-rules-reference while retaining the factual May 10, 2026 and November 7, 2026 captures. The substantive November additions are an explicit platform plan condition for account rules and private-preview connected-account Treasury actions for inbound transfers and received credits. Keep Block versus Review state outcomes separate from the regular payment-rule actions and account payout pauses, and preserve the older Radar for Platforms wording as historical (new raw line 40 and new raw lines 77-102, old raw line 39 and old raw lines 76-93). Repair the mapped source's first-match shorthand: the already-prior 3DS exception runs later Allow/Block/Review logic regardless of 3DS match, and issuer support and decline remain relevant (new raw lines 17-22 and new raw lines 59-73, old raw lines 16-21 and old raw lines 58-72). The linked Rules overview and Radar concept also need qualification where their Allow/3DS wording implies broader effects. Preserve documented velocity upper bounds, and distinguish 5-year all_time data coverage from the separate stated velocity cap (new raw lines 399-411, old raw lines 386-398). Retain the references' post-authorization and missingness mechanics (new raw lines 245-259 and new raw lines 335-359; old raw lines 232-246 and old raw lines 322-346). The generic account metadata syntax and differing example delimiter are both historical and November text (new raw lines 197-211 and old raw lines 184-198). Review and disputes/fraud-data destination changes are navigation, while list numbering, emphasis and table padding are presentational (new raw line 73 and new raw lines 289-299 and new raw line 419, old raw line 72 and old raw lines 276-286 and old raw line 406). Preserve reciprocal routing to stripe-radar and related routes to source-stripe-radar-rules and source-stripe-radar-lists, while labeling the November plan comparison as a navigation target rather than inferring a tier."
+  }
+}

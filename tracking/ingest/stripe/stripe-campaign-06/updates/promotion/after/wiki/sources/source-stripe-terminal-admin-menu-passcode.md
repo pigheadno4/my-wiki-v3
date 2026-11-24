@@ -1,0 +1,46 @@
+---
+title: "Stripe Terminal: Configure the Admin Menu Passcode"
+type: source
+date_ingested: 2026-05-01
+date_updated: 2026-11-24
+original_format: webpage
+canonical_url: "https://docs.stripe.com/terminal/fleet/admin-menu-passcode"
+raw_files:
+  - "stripe-terminal-admin-menu-passcode-2025.md"
+tags: [stripe, stripe-terminal, configurations, fleet, security, admin-menu]
+---
+
+## Summary
+
+The May 1, 2026 guide describes a five-digit numeric passcode for the smart-reader admin menu, which controls Wi-Fi, appearance and diagnostics. It documents `07139` as Stripe's factory default and recommends choosing a secure custom passcode without obvious sequences or repeated digits.
+
+## Key Details
+
+**Hierarchy.** In the May overview, a location-specific passcode overrides the account-level default. A location without a custom passcode inherits the account-level default if set, with Stripe's factory default as the fallback.
+
+**Dashboard timing.** The May Dashboard instructions say Stripe applies the new passcode within 10 minutes.
+
+**May Dashboard roles**
+
+- View passcodes — Super Administrator, Administrator, Terminal Specialist, Developer.
+- Modify passcodes — Super Administrator, Administrator, Terminal Specialist.
+
+**May Configuration API.** Set `reader_security[admin_menu_passcode]` when creating or updating a Configuration. The Dashboard role list describes Dashboard access. API-key permission scope remains unspecified in these captures.
+
+**May Dashboard workflow.** View the configured or inherited passcode in the Dashboard. From the location details page or Manage locations, enable the location toggle for a custom passcode, enter the five-digit code, choose **Update**, then **Apply changes**.
+
+> [!warning] May Dashboard toggle and inheritance
+> The May Dashboard steps say to disable the toggle to use the Stripe default passcode. The overview says locations without a custom value inherit a configured account-level default. When an account-level default exists, the guide leaves the toggle-off result unresolved.
+
+## Related Pages
+
+- [[stripe-terminal-hardware-orders#Configurations|Terminal hardware and fleet configurations]] — reader and location configuration context.
+- [[source-stripe-terminal-configurations]] — account and location configuration workflow.
+
+## Raw Sources
+
+- [[stripe-terminal-admin-menu-passcode-2025]] — verbatim webpage content
+
+## Related raw API references
+
+- [[raw/stripe-terminal-fleet-admin-menu-passcode-2026-11-07|2026-11-07 Stripe admin-menu passcode variant index]] — navigation to the [Dashboard](https://docs.stripe.com/terminal/fleet/admin-menu-passcode.md?dashboard-or-api=dashboard) and [API](https://docs.stripe.com/terminal/fleet/admin-menu-passcode.md?dashboard-or-api=api) variants. The index captures the purpose and links. The May capture supplies the detailed configuration guidance.

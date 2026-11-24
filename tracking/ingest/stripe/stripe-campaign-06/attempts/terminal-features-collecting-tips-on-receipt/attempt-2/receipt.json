@@ -1,0 +1,123 @@
+{
+  "job_id": "terminal-features-collecting-tips-on-receipt",
+  "attempt": 2,
+  "raw_path": "raw/stripe-terminal-features-collecting-tips-on-receipt-2026-11-07.md",
+  "raw_sha256": "d070ed62903e0e5ef67003716e5e22d28ab2263bbe9d2d39efaa1673bacd7b3d",
+  "prior_raw_path": "raw/stripe-terminal-on-receipt-tipping-2025.md",
+  "prior_raw_sha256": "baafbb8bcc9930fff86815510aef8ca27264220acd222499f53f942684860941",
+  "source_targets": [
+    "wiki/sources/source-stripe-terminal-on-receipt-tipping.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-terminal-on-receipt-tipping.md": "3b1658f23eca62aaa72cadb407572fbc7b4aca99304706b6a584c4ec67fe12a0"
+  },
+  "read_ranges": {
+    "raw/stripe-terminal-features-collecting-tips-on-receipt-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 30
+      },
+      {
+        "start": 31,
+        "end": 57
+      }
+    ],
+    "raw/stripe-terminal-on-receipt-tipping-2025.md": [
+      {
+        "start": 1,
+        "end": 34
+      },
+      {
+        "start": 35,
+        "end": 68
+      }
+    ],
+    "wiki/sources/source-stripe-terminal-on-receipt-tipping.md": [
+      {
+        "start": 1,
+        "end": 30
+      },
+      {
+        "start": 31,
+        "end": 53
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/b887573fab8aff21458ef1f4/content.diff": [
+      {
+        "start": 1,
+        "end": 34
+      },
+      {
+        "start": 35,
+        "end": 68
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "As of SDK 6.0.0, `captureMethod` defaults to automatic-asynchronous, so a PaymentIntent that doesn\u2019t set it isn\u2019t eligible for this feature.",
+      "location": "raw/stripe-terminal-features-collecting-tips-on-receipt-2026-11-07.md:15"
+    },
+    {
+      "text": "This doesn\u2019t result in an additional authorization, so your customer won\u2019t see any immediate updates on their credit card statement.",
+      "location": "raw/stripe-terminal-features-collecting-tips-on-receipt-2026-11-07.md:31"
+    },
+    {
+      "text": "You can overcapture up to 50% of the PaymentIntent\u2019s authorized `amount`, or 50 USD, whichever is greater.",
+      "location": "raw/stripe-terminal-features-collecting-tips-on-receipt-2026-11-07.md:35"
+    },
+    {
+      "text": "On-receipt tipping is available for United States businesses with eligible merchant category codes (MCCs), for payments using Visa, Mastercard, Discover, and American Express card brands.",
+      "location": "raw/stripe-terminal-features-collecting-tips-on-receipt-2026-11-07.md:44"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "with `capture_method` set to `manual`",
+      "location": "raw/stripe-terminal-on-receipt-tipping-2025.md:12"
+    },
+    {
+      "text": "After you capture the PaymentIntent, your customer sees the full captured amount reflected on their statement.",
+      "location": "raw/stripe-terminal-on-receipt-tipping-2025.md:10"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Both captures describe US Terminal on-receipt tips after card authorization using a confirmed manually captured PaymentIntent. The integration inspects the expanded latest Charge's overcapture_supported, then captures the confirmed amount plus tip. Capture updates PaymentIntent.amount, leaves the original authorization readable via Charge amount_authorized, and triggers no additional authorization.",
+    "Both captures retain the eligible US merchant-category and card-network conditions, the greater-of 50% or USD 50 overcapture limit, and the eligible-MCC incremental authorization or separate generated_card PaymentIntent alternatives.",
+    "The existing summary describes the general manual-capture flow and both methods of exceeding the overcapture cap. Its API Flow lacks the new mobile SDK default caveat. The linked Terminal tipping concept already documents the iOS and Android 6.0.0 defaults separately and links back to the summary."
+  ],
+  "substantive_changes": [
+    "New November 7, 2026 documentation warns that when creating the PaymentIntent with the iOS or Android Terminal SDK, set manual capture explicitly. As of SDK 6.0.0 the default is automatic-asynchronous, so omission makes this flow ineligible. Migration-guide links provide navigation for both SDKs."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain the April 27, 2026 factual raw and its general manual-capture, Charge check, capture and amount transition, limit, fallback and availability facts, all corroborated in November. The older basename includes 2025 but its header dates the capture to April 27, 2026."
+  ],
+  "conflicts": [
+    "The mapped guide (wiki/sources/source-stripe-terminal-on-receipt-tipping.md:17) and tipping concept (wiki/concepts/stripe-terminal-tipping.md:70) say the full amount shows only at settlement. Both assigned captures say the full amount appears after capture and no additional authorization causes an immediate statement update. The linked overview (wiki/sources/source-stripe-terminal-collect-tips.md:32) similarly specifies settlement, while its April 27, 2026 companion raw (raw/stripe-terminal-collect-tips-2025.md:43) says the initial pending authorization updates later without giving that exact timing. Preserve the overview route and dated authority while flagging the adjacent mismatch for the coordinator."
+  ],
+  "unresolved_questions": [],
+  "affected_concepts": [
+    "wiki/concepts/stripe-terminal-tipping.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-terminal-on-receipt-tipping.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Both captures describe US Terminal on-receipt tips after card authorization using a confirmed manually captured PaymentIntent. The integration inspects the expanded latest Charge's overcapture_supported, then captures the confirmed amount plus tip. Capture updates PaymentIntent.amount, leaves the original authorization readable via Charge amount_authorized, and triggers no additional authorization.",
+        "Both captures retain the eligible US merchant-category and card-network conditions, the greater-of 50% or USD 50 overcapture limit, and the eligible-MCC incremental authorization or separate generated_card PaymentIntent alternatives.",
+        "The existing summary describes the general manual-capture flow and both methods of exceeding the overcapture cap. Its API Flow lacks the new mobile SDK default caveat. The linked Terminal tipping concept already documents the iOS and Android 6.0.0 defaults separately and links back to the summary."
+      ],
+      "conflicts": [
+        "The mapped guide (wiki/sources/source-stripe-terminal-on-receipt-tipping.md:17) and tipping concept (wiki/concepts/stripe-terminal-tipping.md:70) say the full amount shows only at settlement. Both assigned captures say the full amount appears after capture and no additional authorization causes an immediate statement update. The linked overview (wiki/sources/source-stripe-terminal-collect-tips.md:32) similarly specifies settlement, while its April 27, 2026 companion raw (raw/stripe-terminal-collect-tips-2025.md:43) says the initial pending authorization updates later without giving that exact timing. Preserve the overview route and dated authority while flagging the adjacent mismatch for the coordinator."
+      ],
+      "reason": "Add the explicit iOS/Android creation caveat as of Terminal SDK 6.0.0, date/link both captures, narrow the statement timing claim, and preserve the existing Terminal tipping concept backlink and collect-tips overview route."
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/terminal/features/collecting-tips/on-receipt, the November 7, 2026 capture documents the US Terminal flow: the customer adds a tip after authorizing the card, the merchant integration creates and confirms a manual-capture PaymentIntent, then expands latest_charge to inspect overcapture_supported before capturing the confirmed amount plus the tip via amount_to_capture. The customer sees the captured total after capture. See new raw lines 8-15 and new raw line 23, compared with old raw lines 7-12 and old raw line 27. Capture updates PaymentIntent.amount without additional authorization or immediate statement updates, and the underlying Charge's amount_authorized exposes the original authorization. See new raw line 31 and old raw line 42. Both captures document the greater-of 50% of authorized amount or USD 50 extra capture limit, eligible-MCC incremental authorization or a new generated_card PaymentIntent when above it, and the eligible US MCC and Visa/Mastercard/Discover/American Express restrictions, with Connect users directed to match connected account MCCs to their businesses. See new raw lines 35-57 and old raw lines 46-68. The April 27, 2026 prior capture and source-stripe-terminal-on-receipt-tipping already cover the core flow. The new capture specifies that iOS or Android SDK creation requires explicitly selecting manual capture because as of SDK 6.0.0 the default is automatic-asynchronous and makes the flow ineligible if left in place (new raw line 15, versus the general requirement in old raw line 12). The summary lacks this caveat and overstates statement timing as settlement-only (new raw line 11 and new raw line 31, old raw line 10 and old raw line 42).",
+    "Q2": "For https://docs.stripe.com/terminal/features/collecting-tips/on-receipt, update source-stripe-terminal-on-receipt-tipping to preserve and link both dated captures. The November 7, 2026 SDK creation warning is substantive to the guide: as of iOS and Android Terminal SDK 6.0.0 explicitly select manual capture when the SDK creates the PaymentIntent, since leaving automatic-asynchronous in place makes on-receipt tipping ineligible (new raw line 15 versus the general requirement in old raw line 12). The migration guide links are navigation for that caveat. Swapping Node for cURL with the same expansion/capture examples, markup and discovery metadata changes are presentation (new raw lines 17-29, old raw lines 14-40). Retain the April 27, 2026 authority for the same US MCC/brand conditions, overcapture limits and conditional fallback routes (new raw lines 33-57, old raw lines 44-68). Repair the summary's settlement-only formulation using after-capture full statement total and absence of an extra authorization or immediate statement update (new raw line 11 and new raw line 31, old raw line 10 and old raw line 42). Preserve reciprocal routing with stripe-terminal-tipping, which already documents both SDK 6.0.0 defaults, and keep the summary's source-stripe-terminal-collect-tips overview route. The neighboring overview at wiki/sources/source-stripe-terminal-collect-tips.md:32 says the pending authorization updates at settlement. Its April 27, 2026 raw at raw/stripe-terminal-collect-tips-2025.md:43 says it updates later to reflect the tip, without specifying settlement as the exact point. The mapped guide at wiki/sources/source-stripe-terminal-on-receipt-tipping.md:17 and the concept at wiki/concepts/stripe-terminal-tipping.md:70 likewise overstate the timing. Keep the overview route and dated historical evidence, and flag the neighboring summary wording for coordinator consideration. The assigned update assessment covers the mapped detailed guide."
+  }
+}

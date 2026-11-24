@@ -7,14 +7,14 @@ tags: [stripe, stripe-terminal, tipping, in-person-payments, payment-intents]
 
 ## Definition
 
-Stripe Terminal supports two voluntary tip collection methods — on-reader and on-receipt — both built on the PaymentIntents API with manual capture. Mandatory tips (fixed amounts) must be included in the original `PaymentIntent` amount; neither voluntary method applies.
+Stripe Terminal’s two voluntary tip methods, on-reader and on-receipt, use the PaymentIntents API. Capture conditions are documented below. Include mandatory tips in the original `PaymentIntent` amount. Mandatory tips cannot use either voluntary flow.
 
 ## On-reader Tipping
 
 The card reader displays suggested tip options to the customer before payment is collected. The customer selects a tip (or custom amount, or no tip) on the reader screen; the reader automatically adds it to the payment amount.
 
 **Supported readers**: BBPOS WisePad 3, BBPOS WisePOS E, Stripe Reader S700/S710  
-**Country availability**: 38 countries for S700/S710 + WisePOS E (AT, AU, BE, BG, CA, CH, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GI, HR, HU, IE, IT, JP, LI, LT, LU, LV, MT, MY, NL, NO, NZ, PL, PT, RO, SE, SG, SI, SK, US); WisePad 3 subset: AU, CA, FR, DE, IE, NL, NZ, SG, GB  
+**Dated country availability**. The 2026-11-07 tipping overview lists 40 markets in its S700/S710 and WisePOS E on-reader tipping row, adding HK and MX to the 38 in the 2026-04-27 overview. Both overviews list the same nine WisePad 3 markets (AU, CA, FR, DE, IE, NL, NZ, SG, GB). The same-day WisePOS E reader and setup banners omit HK and MX from their 24-market lists, leaving general deployment and account eligibility in those markets unresolved. See [[source-stripe-terminal-on-reader-tipping]] for the captured evidence.\
 **Merchant category**: Any  
 **Card brands**: Any  
 **WisePad 3 SDK minimums**: Android SDK 2.8.1+, iOS SDK 2.16.1+
@@ -53,9 +53,9 @@ After capture: `amount`, `amount_authorized`, and `amount_captured` all reflect 
 
 ### Per-Transaction Overrides
 
-**Skip tipping** (`skip_tipping`/`skipTipping`): hides tip screen for a single transaction. Useful for mixing on-reader (takeout) and on-receipt (dine-in) in the same business. Available across all SDKs.
+**Skip tipping** (`skip_tipping` or `skipTipping`). Hide the tip prompt for an individual transaction or temporarily for all transactions. The detailed guide gives server-driven, JavaScript, iOS, Android, and React Native examples.
 
-**Tip-eligible amount**: overrides the base amount used for percentage calculations — shown to customer alongside pre-tip total. Use case: salon calculating tips on services only, not retail products sold.
+**Tip-eligible amount** changes the base for percentage tips. The reader shows it alongside the pre-tip amount. A supplied eligible amount must be zero or higher.
 
 - `eligible_amount: 0` → skips tipping regardless of `skip_tipping`
 - `eligible_amount` = PaymentIntent amount → ignored
@@ -67,7 +67,7 @@ After capture: `amount`, `amount_authorized`, and `amount_captured` all reflect 
 
 ## On-receipt Tipping
 
-Tips are collected after authorization via **overcapture** — capturing more than the originally authorized amount. Common in table-service restaurants where staff record tip from a printed receipt. No new authorization is triggered; the customer sees the full amount only at settlement.
+Tips are collected after authorization via **overcapture** — capturing more than the originally authorized amount. Common in table-service restaurants where staff record tip from a printed receipt. The full captured amount appears on the customer’s statement after capture, with no new authorization to trigger an immediate statement update.
 
 **Supported readers**: Any Terminal reader  
 **Country availability**: US only  
@@ -113,18 +113,18 @@ For `stripeterminal@6.0.0`, explicitly set `CaptureMethod.Manual` for on-receipt
 ## Constraints
 
 - **One method per PaymentIntent**: once on-reader tipping is applied to a `PaymentIntent`, on-receipt tipping cannot be used on the same `PaymentIntent`
-- **Both require manual capture**: neither method works with automatic capture
+- **Capture method by tip method**. The 2026-04-27 overview described both methods as requiring manual capture. The 2026-11-07 overview documents `capture_method=automatic` or `capture_method=manual` for on-reader tipping and `capture_method=manual` for on-receipt tipping. See the dated capture-method evidence in [[source-stripe-terminal-on-reader-tipping]].
 - **On-reader tipping limit**: maximum charge amount for the currency (8–9 digits depending on currency), inclusive of tip
 - **On-receipt overcapture limit**: 50% of authorized amount or 50 USD, whichever is greater
 
 ## Fleet Configuration
 
-On-reader tip options are configured at the fleet level via the Configuration object (same account→location hierarchy). Set `tipping: { usd: { percentages, fixed_amounts, smart_tip_threshold } }` per currency. Propagation: 10 minutes. See [[source-stripe-terminal-tipping-config]].
+The May 2026 fleet guide describes Dashboard location controls and the currency-keyed `tipping` field on the Configuration object. Its Dashboard section says settings apply on the reader within 10 minutes. See [[source-stripe-terminal-tipping-config]] for the fleet guide and November Dashboard/API index, and [[source-stripe-terminal-configurations]] for account defaults and location overrides.
 
 ## Sources
 
 - [[source-stripe-terminal-collect-tips]] — overview: method comparison, country availability, API behavior tables
-- [[source-stripe-terminal-on-reader-tipping]] — detailed on-reader guide: Configuration API (smart/pct/fixed), tip lifecycle, skip tipping, tip-eligible amounts, multi-currency constraints
+- [[source-stripe-terminal-on-reader-tipping]] — April and November on-reader guides with the payment flow, configuration, overrides, and dated availability.
 - [[source-stripe-terminal-on-receipt-tipping]] — detailed on-receipt guide: overcapture flow, limits, eligible MCCs, fallback options
 - [[source-stripe-terminal-collect-card-payment]] — notes on-receipt tip collection at capture time
-- [[source-stripe-terminal-tipping-config]] — fleet configuration: tipping options via Configuration object, smart_tip_threshold, 10-min propagation
+- [[source-stripe-terminal-tipping-config]] — May 2026 fleet Dashboard and Configuration API settings, plus the November Dashboard/API index

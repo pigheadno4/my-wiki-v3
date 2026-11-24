@@ -1,0 +1,124 @@
+---
+title: "Recurring Payments"
+type: concept
+category: technology
+tags: [recurring-payments, subscriptions, stored-credentials, billing-cycles, dunning, merchant-initiated]
+---
+
+## Definition
+
+Recurring payments are **merchant-initiated charges** made on a schedule or based on usage, without requiring buyer interaction at the time of each charge. Common models: subscriptions, automatic bill payments, usage-based billing, and installments.
+
+## Core Mechanics
+
+All recurring payment systems share the same 3-step pattern:
+
+1. **Buyer consent** — buyer agrees to future charges during an initial checkout (explicit authorization)
+2. **Credential storage** — merchant stores a token representing the buyer's payment method (never the raw card)
+3. **Merchant-initiated charge** — merchant triggers future charges using the stored token, without buyer present
+
+The stored credential must be declared to card networks using standardized fields (see Stored Credentials below) so that authentication and liability rules apply correctly.
+
+## Recurring Payment Models
+
+| Model | Amount | Frequency | Examples |
+| --- | --- | --- | --- |
+| Fixed subscription | Fixed | Regular | Netflix, SaaS monthly |
+| Usage-based | Variable | Regular | Utilities, metered API |
+| Unscheduled | Fixed/variable | Irregular | Top-up when balance low |
+| Installment | Fixed | Defined schedule | BNPL, financing |
+
+## Stored Credentials Standard
+
+Card networks (Visa, Mastercard) require merchants to flag merchant-initiated transactions (MITs) with stored credential metadata. Key fields across platforms:
+
+- **payment_initiator**: MERCHANT (vs CUSTOMER for buyer-present)
+- **usage**: SUBSEQUENT (vs FIRST for initial consent)
+- **charge_type / usage_pattern**: nature of the recurring charge (subscription, unscheduled, installment)
+
+Failure to include these fields correctly can result in higher decline rates, wrong liability assignment, or SCA challenges on MIT charges.
+
+## Dunning & Retry Logic
+
+Failed recurring charges require dunning — a retry sequence to recover the payment:
+
+- **Smart retry**: use card network decline codes to decide when/whether to retry (e.g. `do_not_retry` codes should not be retried)
+- **Retry windows**: typically 3–7 days after initial failure, with 2–4 attempts before cancellation
+- **Subscriber notification**: email/SMS before retry; critical for reducing involuntary churn
+- **Account updater**: automatically fetch updated card details when cards expire or are replaced (Visa/Mastercard network service)
+
+## Key Considerations
+
+- **Buyer consent language**: must clearly disclose recurring charge amount, frequency, and cancellation terms (FTC requirements in US; PSD2 in EU)
+- **SCA (Strong Customer Authentication)**: EU regulations require strong auth on first setup; subsequent MITs are exempt if correctly flagged
+- **Currency**: most platforms require single currency per billing plan/subscription
+- **Cancellation**: must be as easy as sign-up (FTC Click-to-Cancel rule, 2024)
+- **Proration**: mid-cycle plan changes require calculating and crediting unused time
+
+## Platform Implementations
+
+| Platform | Approach | Token type |
+| --- | --- | --- |
+| PayPal | Vault (setup token → payment token) + `usage_pattern` | Payment Method Token |
+| Stripe | Setup Intents → Payment Methods + `setup_future_usage` | Payment Method ID |
+| Adyen | Checkout stored-payment-method endpoints and recurring processing models; legacy Recurring API remains for older token operations | Stored Payment Method / legacy Recurring Detail |
+| Braintree iOS PayPal | Vault or checkout-with-vault consent → Braintree nonce/server vault | Braintree payment-method nonce/token |
+
+See platform-specific concept pages for integration details:
+
+- [[paypal-vault]] — PayPal tokenization lifecycle
+- [[paypal-subscriptions]] — PayPal Subscriptions API and billing plan structure
+
+## Key Players
+
+- [[paypal]] — Vault + Subscriptions API + Orders API recurring
+- [[stripe]] — Billing (subscriptions) + Payment Intents with `setup_future_usage`; SetupIntents API for saving payment methods without charging
+- **Adyen** — Recurring API, tokenization
+
+## Platform-Specific Implementation
+
+- **Braintree Apple Pay**: the collected payment-method guide says Apple Pay cards can be vaulted and used for recurring billing and split shipment transactions. Separately, it says vaulting should only be used when the customer consents during checkout to future merchant-initiated transactions. It warns not to reuse that vaulted card for a future transaction when the customer is present and can authorize the payment, saying that use results in declines. This establishes the page's consent and use guidance, not a subscription scheduler or complete later-charge lifecycle. See [[source-braintree-payment-methods-apple-pay]].
+
+- **Braintree subscription management**: [[source-braintree-recurring-billing-manage-node]] routes status-qualified updates, mid-cycle proration and failed-proration behavior, past-due balance and retry handling, manual-retry settlement boundaries, and transaction-based refunds. Canceled and Expired subscriptions cannot be changed; Past Due updates are limited to non-price fields. A refund does not itself cancel future subscription billing.
+
+- **Stripe**: See [[stripe-subscriptions]] for full Subscriptions API, Checkout integration, customer portal, flexible billing mode, and provisioning pattern
+- **PayPal**: See [[paypal-subscriptions]] for Subscriptions API + vault-based recurring
+- **Braintree iOS**: [[braintree-ios-sdk]] can collect PayPal billing-agreement consent and recurring-plan metadata, but the merchant server still owns token storage and later charges. An Apple Pay recurring request shown by the demo is not, by itself, a recurring-payment engine.
+- **Adyen**: The retained Checkout examples create, list, and delete stored payment methods and distinguish `Subscription`, `CardOnFile`, and unscheduled or one-click models. At Postman commit `78874d7`, all three stored-method operation descriptions explicitly name the `API tokenise payment details` API-credential role. This is a newly documented prerequisite in the comparison, not evidence that the permission or enforcement was newly introduced. The retained Recurring v68 Postman collection calls itself legacy and recommends Checkout recurring endpoints when possible. The PHP server SDK independently retains v68 operations for listing/disabling recurring details, shopper notification, Account Updater, and deprecated permits. See [[source-github-adyen-postman]] and [[source-github-adyen-php-api-library]].
+
+## Open Questions
+
+- How do Stripe's dunning/smart-retry features compare to PayPal's?
+- What are typical involuntary churn rates by payment method?
+
+## Sources
+
+- [[source-adyen-docs-online-payments-tokenization]] - Adyen tokenization overview covering consent-based Vault storage, Sessions and Advanced implementation routes, one-click/subscription/non-fixed-schedule models, shopper-reference scope, and the separate `/payments` requirement for shopper-not-present Sessions token payments
+- [[source-braintree-payment-methods-paypal-best-practices]] - Braintree PayPal recurring-experience route for the review page's plan information and recurring indicator, distinct from token storage, scheduled charge execution and subscription lifecycle evidence
+- [[source-braintree-payment-methods-sepa-direct-debit]] - Braintree guide stating that vaulting payment methods and creating recurring transactions are supported for SEPA Direct Debit, with pilot-only availability and linked-PayPal setup qualifications
+
+- [[source-braintree-payment-methods-unionpay]] - Braintree guide stating that vaulted UnionPay cards do not require SMS verification after initial verification, while preserving the guide's deprecated-integration and limited-release tension
+
+- [[source-braintree-payment-methods-local-payment-methods]] - Braintree guide stating that vaulting payment methods and creating recurring transactions are currently unsupported for Local Payment Methods
+
+- [[source-braintree-payment-methods-ach]] - Braintree ACH bank-account vaulting with the page's explicit boundary that Braintree recurring billing does not support repeat payments with bank accounts
+
+- [[source-braintree-control-panel-reporting-expiring-cards]] - Braintree report route for identifying expired or soon-to-expire cards to support recurring-billing follow-up, distinct from merchant reminder outreach and the separately enabled, account-qualified Account Updater option
+
+- [[source-braintree-authorization-responses]] - Braintree processor-decline categories and retry restrictions, including recurring-ECI limits and same-payment-information restrictions
+
+- [[source-braintree-recurring-billing-plans-node]] - Braintree plan-template inheritance, EU price and dormant-customer notice qualification, and Control Panel/API boundaries for recurring-billing add-ons and discounts
+
+- [[source-braintree-recurring-billing-manage-node]] - Braintree Node.js subscription-management guide for status-dependent updates, proration, retry handling, settlement qualification and refunds
+
+- [[source-braintree-recurring-billing-overview]] - Braintree recurring-billing availability, plan-and-Vault setup flow, and `Pending`, `Active`, `Past Due`, `Expired` and `Canceled` subscription meanings
+
+- [[source-braintree-recurring-billing-testing-go-live-node]] - Braintree Node.js route for sandbox recurring-billing setup and test-value locators, plus the separate production credentials, recreated settings and plans, environment switch, and limited real-payment settlement checks
+
+- [[source-braintree-recurring-billing-create-node]] - Braintree Node.js guide to stored-payment-method and plan prerequisites, plan-derived subscription setup, and start-date or trial-dependent creation, charge and status timing
+
+- [[source-braintree-subscription-create-node]] - Braintree Node.js subscription-creation route for vaulted tokens or conditional nonces, including the first-transaction 3DS nonce and merchant-account currency qualifications
+
+- [[source-braintree-subscription-update-node]] - Braintree Node.js route for existing-subscription updates, add-on and discount changes, qualified 3DS-enriched nonce use for the next transaction, and removal of all existing add-ons and discounts
+
+- [[source-stripe-recurring-payments-overview]] — April and November 2026 Stripe guide covering four payment types, six products and subscription creation. See [[stripe-subscriptions-schedules]] for finite Billing plans and [[stripe-installments]] for card eligibility.

@@ -1,0 +1,125 @@
+{
+  "job_id": "terminal-fleet-wifi",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Terminal: Configure the WiFi Network\"\ntype: source\ndate_ingested: 2026-05-01\ndate_updated: 2026-11-24\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/terminal/fleet/wifi\"\nraw_files:\n  - \"stripe-terminal-wifi-config-2025.md\"\ntags: [stripe, stripe-terminal, configurations, fleet, wifi, network]\n---\n\n## Summary\n\nThe 2026-05-01 [[stripe]] Terminal guide describes remote WiFi configuration for smart readers. A reader first connects to local WiFi to fetch the remote configuration. The configured network then appears in the reader\u2019s settings. The device user selects it and the reader connects without requiring them to enter additional information. The 2026-11-07 capture states the remote configuration purpose and links to separate Dashboard and API variants.\n\n## Key Details\n\nThe 2026-05-01 guide documents the following behavior.\n\n**Supported security types**. WPA/WPA2 Personal (PSK), WPA/WPA2 Enterprise (EAP-PEAP) and WPA/WPA2 Enterprise (EAP-TLS).\n\n**Credential validation and updates**. Stripe pushes profile changes to the reader, which stays connected if the credentials are valid. Stripe does not validate credentials when the profile is configured. An incorrect password, expired EAP-TLS certificate or other invalid credential prevents the reader from connecting. The guide does not specify what feedback appears on the reader.\n\n**Dashboard**. Operators select the security type, enter credentials and apply changes from the location details or manage locations page, using the local or inherited configuration controls as applicable.\n\n**Reader registration**. Newly registered readers prompt the user to connect to the configured network. On readers that are already registered, the network may take up to 10 minutes to appear in network settings.\n\n**API**. Create or update a Configuration object with the WiFi type and its corresponding field. The Personal PSK examples use `wifi: { type: 'personal_psk', personal_psk: { ssid, password } }`.\n\n**EAP-TLS**. First upload PEM files to the Files API and use the resulting file IDs in the configuration. Choose `terminal_wifi_certificate` for client and CA certificates and `terminal_wifi_private_key` for the private key.\n\n## Related\n\n- [[stripe-terminal-hardware-orders]] \u2014 Terminal fleet configuration and reader registration\n\n## Raw Sources\n\n- [[raw/stripe-terminal-wifi-config-2025|Stripe Terminal WiFi configuration guide captured 2026-05-01]] \u2014 Dashboard flows and Node.js API examples\n\n## Related raw API references\n\n- [[raw/stripe-terminal-fleet-wifi-2026-11-07|Stripe Terminal WiFi configuration Dashboard and API index captured 2026-11-07]]\n",
+  "quotes": {
+    "terminal-fleet-wifi": [
+      {
+        "text": "Remotely configure a WiFi network for your readers.",
+        "location": "raw/stripe-terminal-fleet-wifi-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants.",
+        "location": "raw/stripe-terminal-fleet-wifi-2026-11-07.md:11"
+      },
+      {
+        "text": "[Dashboard](https://docs.stripe.com/terminal/fleet/wifi.md?dashboard-or-api=dashboard)",
+        "location": "raw/stripe-terminal-fleet-wifi-2026-11-07.md:13"
+      },
+      {
+        "text": "[API](https://docs.stripe.com/terminal/fleet/wifi.md?dashboard-or-api=api)",
+        "location": "raw/stripe-terminal-fleet-wifi-2026-11-07.md:14"
+      }
+    ]
+  },
+  "old_evidence": {
+    "terminal-fleet-wifi": [
+      {
+        "text": "To fetch the remotely configured network from the server, the reader must first connect to a local WiFi network.",
+        "location": "raw/stripe-terminal-wifi-config-2025.md:14"
+      },
+      {
+        "text": "You can then select this network to connect automatically, without requiring the end user to enter any additional information.",
+        "location": "raw/stripe-terminal-wifi-config-2025.md:16"
+      },
+      {
+        "text": "Stripe doesn\u2019t perform validation checks when you configure the WiFi profile.",
+        "location": "raw/stripe-terminal-wifi-config-2025.md:20"
+      },
+      {
+        "text": "Certificate and private key files must be in PEM format.",
+        "location": "raw/stripe-terminal-wifi-config-2025.md:53"
+      },
+      {
+        "text": "the reader won\u2019t connect to the network.",
+        "location": "raw/stripe-terminal-wifi-config-2025.md:20"
+      },
+      {
+        "text": "the WiFi network might take up to 10 minutes to appear",
+        "location": "raw/stripe-terminal-wifi-config-2025.md:47"
+      },
+      {
+        "text": "Use `terminal_wifi_certificate` as the file purpose for client and CA certificates, and `terminal_wifi_private_key` for the private key.",
+        "location": "raw/stripe-terminal-wifi-config-2025.md:53"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-terminal-fleet-wifi-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-terminal-wifi-config-2025.md": [
+      {
+        "start": 1,
+        "end": 49
+      },
+      {
+        "start": 50,
+        "end": 92
+      }
+    ],
+    "wiki/sources/source-stripe-terminal-wifi-config.md": [
+      {
+        "start": 1,
+        "end": 29
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/4105eddacb5acd93f0075f9d/content.diff": [
+      {
+        "start": 1,
+        "end": 49
+      },
+      {
+        "start": 50,
+        "end": 94
+      }
+    ],
+    "wiki/concepts/stripe-terminal-hardware-orders.md": [
+      {
+        "start": 1,
+        "end": 76
+      },
+      {
+        "start": 77,
+        "end": 134
+      }
+    ]
+  },
+  "answers": {
+    "terminal-fleet-wifi": {
+      "Q1": "At https://docs.stripe.com/terminal/fleet/wifi, source-stripe-terminal-wifi-config links the November 7, 2026 capture as a Dashboard/API variant index. It states the remote configuration purpose without describing smart-reader prerequisites or any connection transition (new raw lines 5-14). The full May 1, 2026 guide says a smart reader must first connect to local WiFi so it can fetch the remote profile. After the configured network appears on the reader, the user selects it, and the reader connects without additional information. Stripe pushes changes and the reader stays connected if credentials are valid. Stripe does not validate at configuration time, and invalid credentials prevent connection. The guide does not specify what feedback appears (old raw lines 8-20). A Dashboard operator chooses security and credentials for a local or inherited location profile and applies changes. After registration the reader prompts the user to connect, and the network may take up to ten minutes to appear on already registered readers. An API integrator creates or updates a Configuration with the matching WiFi type and field. For EAP-TLS, the integrator first uploads the PEM certificates and private key with their respective purposes, then uses the resulting file IDs (old raw lines 26-47, old raw lines 49-73). The previous summary omitted the network selection step and characterized the failure as silent. The revised summary distinguishes appearance from selection and connection without new credentials, and limits the failure claim to nonconnection.",
+      "Q2": "At https://docs.stripe.com/terminal/fleet/wifi, source-stripe-terminal-wifi-config adds the November 7, 2026 navigation index as a dated raw reference and retains the May 1, 2026 full guide. The two links replace bundled Dashboard/API text in the captured base page. The November bytes do not establish a functional change (old raw lines 22-26, old raw lines 49-55, new raw lines 9-14). The revised source preserves May's Personal PSK, Enterprise EAP-PEAP and Enterprise EAP-TLS types, initial local connection, separate selection step, invalid-credentials failure, registration prompt, and possible ten-minute wait for the network to appear for existing registrations. It retains the EAP-TLS Files upload and PEM requirements (old raw lines 8-20, old raw lines 26-47, old raw lines 49-55). The source links back to stripe-terminal-hardware-orders, whose existing reciprocal source entry is proposed to distinguish the May feature evidence from the November navigation."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "terminal-fleet-wifi-reciprocal-source-route",
+      "target_path": "wiki/concepts/stripe-terminal-hardware-orders.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-terminal-wifi-config]] \u2014 WiFi network config: remote push to smart readers, 3 security types, no credential validation, EAP-TLS via Files API",
+      "proposed_markdown": "- [[source-stripe-terminal-wifi-config]] \u2014 May 2026 smart-reader WiFi setup, including user network selection, three security types, no credential validation at configuration time and EAP-TLS via Files API. The November capture indexes the Dashboard and API variants.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "May establishes first connection to local WiFi, selection of the configured network, and failure to connect with invalid credentials (old raw lines 8-20). EAP-TLS file requirements appear in old raw lines 49-55. November establishes variant navigation."
+      ]
+    }
+  ]
+}

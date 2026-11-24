@@ -1,0 +1,100 @@
+{
+  "job_id": "terminal-features-apps-on-devices-troubleshooting",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Terminal: Apps on Devices \u2014 Troubleshooting\"\ntype: source\ndate_ingested: 2026-05-01\ndate_updated: 2026-11-24\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/terminal/features/apps-on-devices/troubleshooting\"\nraw_files:\n  - \"stripe-terminal-features-apps-on-devices-troubleshooting-2026-11-07.md\"\n  - \"stripe-terminal-apps-on-devices-troubleshooting-2025.md\"\ntags: [stripe, stripe-terminal, apps-on-devices, troubleshooting, android]\n---\n\n## Summary\n\nThe May and November 2026 [[stripe]] troubleshooting guides cover uploading, deploying, and operating [[stripe-terminal-apps-on-devices|Apps on Devices]] apps.\n\n## Upload and Approval\n\n- **Files API upload timeout.** Stripe's server cutoff is 45 seconds for this APK upload path. For a timeout with a large APK or slow uplink, the guide suggests uploading to Stripe from a server with a faster connection. The separate [[source-stripe-terminal-apps-on-devices|Apps on Devices overview]] describes a larger-upload private preview with no timeout specified in the capture.\n- **Sandbox to live.** Submit the app again for live approval after sandbox approval. The guide says to upload the exact same APK for automatic approval.\n\n## Settings Access\n\nWhen a third-party app is the default launch app, the usual left-edge swipe to **Settings** is unavailable. The app can use `stripe://settings/` to open Stripe admin's **All settings** screen. The November [[source-stripe-terminal-apps-on-devices-build|Build guide]] says this root destination always requires the admin PIN.\n\nThe Android Settings app is a separate screen. Stripe blocks it on production devices. On a DevKit, the guide describes opening Android Settings via `adb` to change the device language, because the DevKit reader app cannot change it.\n\n## Multiple Apps and Kiosk Selection\n\nThe May 1 guide names Stripe Reader S700/S710. The November 7 guide describes running multiple apps on Apps on Devices-compatible Terminal readers. Stripe provides no app launcher, so developers implement switching in their apps. During deployment, they can specify `default_kiosk_application`, which launches at update checks and after payments. The November wording identifies the compatible-reader class and gives no exhaustive device list or rollout evidence.\n\nThe troubleshooting guides say the Dashboard cannot configure multiple apps on a device. The November Build guide separately documents choosing a preferred kiosk app when deploying to a DevKit deploy group in the sandbox Dashboard. A direct sideload does not set the DevKit's preferred kiosk app.\n\nTo configure that preferred app on a DevKit, include the device in a deploy group. Upload the app selecting only DevKit device types to skip app review, then deploy the version to the group targeting that DevKit.\n\n## Web App Packaging\n\nA framework such as Cordova can package a web app as an Android APK. The app needs a JavaScript bridge to issue local Terminal SDK commands. With a server-driven integration, Stripe handles payment collection commands and device communication without the JavaScript bridge or Terminal handoff client.\n\n## Crashes and Production Logs\n\n- **Restarts.** A production reader restarts the merchant app after a crash when that app is configured as the default. An initialization failure can cause a crash loop. On a DevKit configured to use the Stripe payment app as default, a crash of the merchant app restarts Stripe's app instead.\n- **Many line items.** The guide identifies memory as a possible cause and cites a 500 KB Android IPC limit when saving activity state. Storing data outside activity state, such as in a database, can help.\n- **Production fixes and observability.** Upload and deploy a corrected version to fix a deployed app. Stripe does not expose production reader logs and points to Sentry for observability.\n\n## Raw Sources\n\n- [[raw/stripe-terminal-features-apps-on-devices-troubleshooting-2026-11-07|2026-11-07 Apps on Devices troubleshooting guide]]\n- [[raw/stripe-terminal-apps-on-devices-troubleshooting-2025|2026-05-01 Apps on Devices troubleshooting guide]]\n",
+  "quotes": {
+    "terminal-features-apps-on-devices-troubleshooting": [
+      {
+        "text": "Apps on Devices compatible Terminal readers support running multiple apps, but we don\u2019t provide an app launcher.",
+        "location": "raw/stripe-terminal-features-apps-on-devices-troubleshooting-2026-11-07.md:44"
+      },
+      {
+        "text": "You can\u2019t use the Dashboard to configure multiple apps on a device.",
+        "location": "raw/stripe-terminal-features-apps-on-devices-troubleshooting-2026-11-07.md:44"
+      },
+      {
+        "text": "Make sure to upload the exact same APK for automatic approval.",
+        "location": "raw/stripe-terminal-features-apps-on-devices-troubleshooting-2026-11-07.md:15"
+      },
+      {
+        "text": "Stripe blocks the Android Settings app on production Stripe devices.",
+        "location": "raw/stripe-terminal-features-apps-on-devices-troubleshooting-2026-11-07.md:40"
+      },
+      {
+        "text": "On a DevKit, the device\u2019s preferred kiosk app is only set when you include the device in a deploy group.",
+        "location": "raw/stripe-terminal-features-apps-on-devices-troubleshooting-2026-11-07.md:76"
+      }
+    ]
+  },
+  "old_evidence": {
+    "terminal-features-apps-on-devices-troubleshooting": [
+      {
+        "text": "The Stripe Reader S700/S710 supports running multiple apps, but we don\u2019t provide an app launcher.",
+        "location": "raw/stripe-terminal-apps-on-devices-troubleshooting-2025.md:43"
+      },
+      {
+        "text": "Stripe enforces a 45 second timeout on its servers",
+        "location": "raw/stripe-terminal-apps-on-devices-troubleshooting-2025.md:10"
+      },
+      {
+        "text": "If the app crashes, the Stripe payment app restarts instead.",
+        "location": "raw/stripe-terminal-apps-on-devices-troubleshooting-2025.md:58"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-terminal-features-apps-on-devices-troubleshooting-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 81
+      }
+    ],
+    "raw/stripe-terminal-apps-on-devices-troubleshooting-2025.md": [
+      {
+        "start": 1,
+        "end": 78
+      }
+    ],
+    "wiki/sources/source-stripe-terminal-apps-on-devices-troubleshooting.md": [
+      {
+        "start": 1,
+        "end": 37
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/a3e308e9086a86689a142793/content.diff": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 119
+      }
+    ]
+  },
+  "answers": {
+    "terminal-features-apps-on-devices-troubleshooting": {
+      "Q1": "At https://docs.stripe.com/terminal/features/apps-on-devices/troubleshooting, source-stripe-terminal-apps-on-devices-troubleshooting summarizes both captures' upload and sandbox/live review rules. The Files API server times out at 45 seconds. A developer can try faster uplink infrastructure, and a sandbox-approved app still needs live resubmission, with the exact same APK for automatic approval. When a third-party app is the default launcher, use stripe://settings/ to open Stripe admin's All settings screen. The November Build guide (raw/stripe-terminal-features-apps-on-devices-build-2026-11-07.md lines 480-489 and 532) says that this screen always requires the admin PIN. On a DevKit the developer can open the separate Android Settings app through adb for language. Stripe blocks that Android app on production (old raw lines 8-39, new raw lines 9-40). November says compatible Terminal readers can run multiple apps, broadening the May S700/S710 wording. The updated summary presents both dated scopes. App developers implement switching because Stripe provides no launcher. The deploy-time default kiosk app starts during update checks and after payments, and the Dashboard cannot configure multiple apps. An APK-packaged web app using local SDK commands needs a JavaScript bridge, whereas server-driven payment collection does not (old raw lines 41-51, new raw lines 42-52). A production reader restarts the configured default app after a crash, with an initialization crash loop possible. The Stripe payment app restarts on DevKit when configured as default and the merchant app crashes. A large activity-state payload may hit the 500 KB IPC limit, and production reader logs are unavailable. The DevKit preferred kiosk app is set only through a deploy group targeting the device. Selecting only DevKit device types during upload skips review (old raw lines 53-78, new raw lines 54-81).",
+      "Q2": "At https://docs.stripe.com/terminal/features/apps-on-devices/troubleshooting, the revised source-stripe-terminal-apps-on-devices-troubleshooting retains both dated functional captures. The May 1 text names S700/S710 and November 7 describes Apps on Devices-compatible Terminal readers. The revised source preserves in-app switching without a Stripe launcher, the default kiosk update and payment triggers, and the specific Dashboard limit on configuring multiple apps. The earlier summary's blanket 'not available in Dashboard' obscured the separate preferred kiosk workflow. The November Build guide (raw/stripe-terminal-features-apps-on-devices-build-2026-11-07.md lines 656-669) separately documents choosing a preferred kiosk app in the Dashboard's sandbox DevKit deploy-group workflow. The new class wording does not enumerate each compatible device or establish a hardware rollout (old raw lines 41-43, new raw lines 42-44). Markdown headings, step numbering, formatting and deploy URL casing are presentational or navigation (old raw lines 64-78, new raw lines 66-81). The revised source preserves the 45-second Files API scope, sandbox versus live review, production versus DevKit Settings/default-app rules, and DevKit-only review exception. A crash loop is conditional and the 500 KB IPC statement concerns saving activity state (old raw lines 8-39, old raw lines 53-78, new raw lines 9-40, new raw lines 54-81). The revised source links back to stripe-terminal-apps-on-devices, which already links to troubleshooting, and retains the separate setup and upload scope. The overview's larger upload preview provides no basis for carrying this ordinary Files API timeout into the preview."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "terminal-features-apps-on-devices-troubleshooting-troubleshooting-route",
+      "target_path": "wiki/concepts/stripe-terminal-apps-on-devices.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-terminal-apps-on-devices-troubleshooting]] \u2014 troubleshooting: upload timeout, sandbox/live resubmit, admin settings deep link, IPC limit, crash loops, no production logs",
+      "proposed_markdown": "- [[source-stripe-terminal-apps-on-devices-troubleshooting]] \u2014 May and November 2026 troubleshooting for Files API uploads, app approval, settings, multiple apps on compatible readers, kiosk selection, and restarts.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "May names S700/S710. November gives a compatible-reader class without a hardware list. The November Build guide separately establishes the admin PIN and sandbox DevKit preferred-kiosk selection."
+      ]
+    }
+  ]
+}

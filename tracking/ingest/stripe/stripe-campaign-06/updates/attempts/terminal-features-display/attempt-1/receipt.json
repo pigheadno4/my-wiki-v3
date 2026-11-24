@@ -1,0 +1,111 @@
+{
+  "job_id": "terminal-features-display",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Terminal: Display Cart Details\"\ntype: source\ndate_ingested: 2026-05-01\ndate_updated: 2026-11-24\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/terminal/features/display\"\nraw_files:\n  - \"stripe-terminal-display-cart-2025.md\"\ntags: [stripe, stripe-terminal, reader-display, cart, pre-dip, checkout]\n---\n\n## Summary\n\nThe 2026-05-01 [[stripe]] [[stripe-terminal|Terminal]] guide describes displaying cart line items and totals on the Verifone P400, BBPOS WisePOS E, and Stripe Reader S700/S710. The 2026-11-07 capture gives the cart-display purpose and an index for the Server-driven, JavaScript, iOS, Android, and React Native variants. The behavior below comes from the May guide.\n\n## Set the Reader Display\n\nThe integration sets the display before processing the payment, supplying the cart's line items, currency, tax, and total in the form expected by its integration. The application calculates tax and total, optionally using Stripe Tax. The displayed amount must match the independently charged amount. Setting the display does not control what the customer is charged.\n\nMay shows setting the display from server-driven, JavaScript, iOS, Android, and React Native integrations. It also links a Java `setReaderDisplay` reference. The November index gives no standalone Java variant and establishes no change in Java support.\n\nThe May guide distinguishes the display reset by integration.\n\n- **Server-driven** \u2014 `cancel_action` endpoint.\n- **JavaScript, iOS, and Android** \u2014 `clearReaderDisplay` returns the display to the splash screen. The Android paragraph names the method, although its link points to `create-payment-intent`. The separate November [[source-stripe-terminal-js-sdk-reference|JavaScript SDK reference]] also describes `clearReaderDisplay`.\n\nThe May React Native variant shows `setReaderDisplay`. Its reset behavior remains unresolved in these captures.\n\n## Pre-Dip (US only)\n\nThe May guide describes pre-dip, pre-tap, or pre-swipe for US payments on the Verifone P400, BBPOS WisePOS E, and Stripe Reader S700/S710.\n\n- Calling `setReaderDisplay` prepares the reader. The customer can present a payment method before the amount is finalized, and the reader retains it for later use. Updating the cart display does not invalidate the pre-dip.\n- Stripe provides no update or event to the integration when the customer pre-dips. The merchant can complete the transaction through the ordinary `PaymentIntent` flow.\n- Where pre-dip is unavailable, the cart screen shows subtotal and line items without the early card presentation step. Ordinary payment processing is a separate flow.\n\n## Raw Sources\n\n- [[raw/stripe-terminal-display-cart-2025|2026-05-01 display-cart guide]] \u2014 five variant bodies\n\n## Related raw API references\n\n- [[raw/stripe-terminal-features-display-2026-11-07|2026-11-07 display-cart platform variant index]]\n",
+  "quotes": {
+    "terminal-features-display": [
+      {
+        "text": "Dynamically update cart details on the reader screen.",
+        "location": "raw/stripe-terminal-features-display-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants.",
+        "location": "raw/stripe-terminal-features-display-2026-11-07.md:11"
+      },
+      {
+        "text": "[Server-driven](https://docs.stripe.com/terminal/features/display.md?terminal-sdk-platform=server-driven)",
+        "location": "raw/stripe-terminal-features-display-2026-11-07.md:13"
+      },
+      {
+        "text": "[React Native](https://docs.stripe.com/terminal/features/display.md?terminal-sdk-platform=react-native)",
+        "location": "raw/stripe-terminal-features-display-2026-11-07.md:17"
+      }
+    ]
+  },
+  "old_evidence": {
+    "terminal-features-display": [
+      {
+        "text": "The amounts passed to the `setReaderDisplay` method are only used for display purposes.",
+        "location": "raw/stripe-terminal-display-cart-2025.md:23"
+      },
+      {
+        "text": "Pre-dipping a card is only supported for payments in the US.",
+        "location": "raw/stripe-terminal-display-cart-2025.md:175"
+      },
+      {
+        "text": "Updating the display doesn\u2019t invalidate a pre-dip, if one has already occurred.",
+        "location": "raw/stripe-terminal-display-cart-2025.md:181"
+      },
+      {
+        "text": "To clear reader display on the server-driven integration, call the [cancel_action]",
+        "location": "raw/stripe-terminal-display-cart-2025.md:59"
+      },
+      {
+        "text": "Stripe doesn\u2019t provide updates or events to indicate that the customer pre-dipped their card.",
+        "location": "raw/stripe-terminal-display-cart-2025.md:183"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-terminal-features-display-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "raw/stripe-terminal-display-cart-2025.md": [
+      {
+        "start": 1,
+        "end": 85
+      },
+      {
+        "start": 86,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 190
+      }
+    ],
+    "wiki/sources/source-stripe-terminal-display-cart.md": [
+      {
+        "start": 1,
+        "end": 37
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/b6747b1ca5af216f1f8d3c7e/content.diff": [
+      {
+        "start": 1,
+        "end": 103
+      },
+      {
+        "start": 104,
+        "end": 195
+      }
+    ]
+  },
+  "answers": {
+    "terminal-features-display": {
+      "Q1": "For https://docs.stripe.com/terminal/features/display, the November 7, 2026 capture states that cart details can be updated on a reader display and directs the implementer to server-driven, JavaScript, iOS, Android or React Native variants. It specifies no reader prerequisites, request details, display reset or payment/pre-dip state transitions (new raw lines 5-17). The May 1, 2026 matched capture documents a merchant integration calling setReaderDisplay before processing the payment on named P400, WisePOS E and S700/S710 readers, with line items and application-calculated tax and total. The customer sees the cart information while the charge amount remains independent (old raw lines 8-23). May gives server-driven cancel_action and JavaScript, iOS and Android clearReaderDisplay routes (old raw line 59 and old raw line 88 and old raw line 113 and old raw line 142). On supported US readers, setting the display enables early card presentation. Further cart updates preserve that pre-dip. The reader captures the presented payment method for later use. Stripe provides no update or event telling the integration that the customer pre-dipped, and the merchant can complete the transaction through the usual PaymentIntent flow. Where unavailable the display shows subtotal and line items (old raw lines 173-187). The revised source-stripe-terminal-display-cart preserves the May behavior, dates the SDK scope, and distinguishes reset by integration.",
+      "Q2": "For https://docs.stripe.com/terminal/features/display, the revised source-stripe-terminal-display-cart adds the November 7, 2026 capture as a dated navigation reference. Its five destinations are navigation and its capture is a variant index, while May 1, 2026 contains substantive integration text (new raw lines 9-17, old raw lines 13-27 and old raw lines 59-65 and old raw lines 90-96 and old raw lines 115-121 and old raw lines 142-148). Missing behavior prose and the absence of a standalone Java route from the index do not establish a product change, SDK removal or regional change. The revised source retains the May capture as factual evidence for the named reader and display-versus-charge boundary, resetting by integration, and the US-only pre-dip scope including no Stripe notification to the integration and no early card capture when pre-dip is unavailable (old raw lines 8-23 and old raw line 59 and old raw lines 173-187, new raw lines 5-17). The revised reset list follows the May guide, which states JavaScript clearReaderDisplay (old raw line 88), iOS and Android clearReaderDisplay (old raw line 113 and old raw line 142), and server-driven cancel_action (old raw line 59). The React Native variant gives setReaderDisplay without the reset claim in this capture (old raw lines 144-171), and the Android reset link points to create-payment-intent despite the clearReaderDisplay link text. The revised source dates the platform options and scopes the non-US fallback to pre-dip. The stripe-terminal concept retains its reciprocal source route. The separate November JavaScript SDK reference confirms that clearReaderDisplay resets cart details to the splash screen (raw/stripe-terminal-references-api-js-sdk-2026-11-07.md:328-330)."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "terminal-features-display-terminal-route",
+      "target_path": "wiki/concepts/stripe-terminal.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-terminal-display-cart]] \u2014 Display cart details: setReaderDisplay, display-only amounts, pre-dip (US only)",
+      "proposed_markdown": "- [[source-stripe-terminal-display-cart]] \u2014 May 2026 cart-display guide covering setup, resetting, and US pre-dip, with the November platform index linked for navigation.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Functional claims, including device and US pre-dip scope, remain dated to 2026-05-01. The November capture lists five variant routes."
+      ]
+    }
+  ]
+}

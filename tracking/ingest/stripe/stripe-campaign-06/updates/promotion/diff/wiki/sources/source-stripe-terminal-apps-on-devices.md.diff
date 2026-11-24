@@ -1,0 +1,65 @@
+--- wiki/sources/source-stripe-terminal-apps-on-devices.md
++++ wiki/sources/source-stripe-terminal-apps-on-devices.md
+@@ -2,34 +2,50 @@
+ title: "Stripe Terminal: Apps on Devices"
+ type: source
+ date_ingested: 2026-05-01
++date_updated: 2026-11-24
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/terminal/features/apps-on-devices/overview"
+ raw_files:
++  - "stripe-terminal-features-apps-on-devices-overview-2026-11-07.md"
+   - "stripe-terminal-apps-on-devices-2025.md"
+ tags: [stripe, stripe-terminal, apps-on-devices, android, smartpos, aosp, connect]
+ ---
+ 
+ ## Summary
+ 
+-Apps on Devices allows merchants to deploy custom Android POS apps directly onto Stripe smart readers. Included at no extra cost on standard card-present pricing; contact sales for eligibility. Android and React Native SDKs only.
++Apps on Devices runs Android POS applications on Stripe smart readers. Both the May 1 and November 7, 2026 guides describe access for eligible merchants with an Android POS app or resources to build one. Eligible users on standard card-present pricing pay no extra cost. Contact Stripe Sales for eligibility and pricing assessment, or use the support form if you have no sales representative. Stripe handles payments and compliance through the Android or React Native Terminal SDK.
+ 
+-## Key Details
++## Integration Modes
+ 
+-**Two integration modes**:
+-1. **POS on reader**: merchant POS app + Stripe Reader app share one device; POS is the default launcher; Stripe Reader app takes over during payment, then returns control
+-2. **POS + consumer-facing app**: POS on separate device communicates with a custom consumer-facing app on the reader via TCP/IP
++1. **POS on the reader.** The device starts in the merchant POS app. The Stripe Reader app takes the foreground during payment, then returns primary control to the POS app.
++2. **POS and reader on separate devices.** The consumer-facing Android app runs on the smart reader and supports payment. The merchant manages communication between the apps over TCP/IP.
+ 
+-**App limits**: 200MB APK size, 8GB max device storage.
++## Upload and Device Requirements
+ 
+-**S700/S710 specs**: Qualcomm 665, 4GB RAM, 64GB, Android 10, 1080×1920, 420dpi.
++- **APK size.** Standard Stripe API uploads have a 200 MB limit in both captures. November documents a separate private preview for uploads up to 300 MB. The email form requests access and does not enable it immediately. See November raw lines 50–64.
++- **Storage and Android environment.** Stripe manages updates over the air and caps app storage on the device at 8 GB. SmartPOS OS is based on AOSP. Google Play Services, notifications and a user-accessible home screen are unavailable. Production devices disable USB, ADB and debugging.
++- **Development hardware.** May describes using a DevKit for development. November explicitly requires a DevKit for Apps on Devices development and testing and documents ordering up to five DevKits per user through Dashboard Readers. Operators with only a production reader can accept payments through a server-driven integration or use standalone mode on a supported reader.
++- **T600 (November).** Without a main battery, app termination is more likely to leave partial writes. Apps must be able to handle these in data stores, logs and downloads. Each T600 DevKit includes the T-bridge required for DevKit power and data. See November raw lines 86–96.
++- **Specifications by reader.** The May S700/S710 table lists Snapdragon 665 (QCM6125), 4 GB RAM, 64 GB storage, Android 10, 1080×1920 and 420 dpi. November routes to device-specific specifications for T600, S700/S710 and Verifone. See May raw lines 53–65 and November lines 66–72.
+ 
+-**AOSP differences**: no Google Play Services (Firebase/Maps may fail), no notifications, no home screen, USB disabled on production devices. Use DevKit for development.
++## Permissions and Connect
+ 
+-**Permissions**: auto-granted at install, no runtime prompts, allowlist enforced. Camera/BT/location = experimental. NFC = payments only.
++SmartPOS OS grants allowed manifest permissions during installation without a runtime prompt. Apps requesting permissions outside the allowlist are rejected. November adds `android.permission.CHANGE_WIFI_MULTICAST_STATE` to the documented allowlist (raw lines 98–116). Camera, Bluetooth and location are experimental. The overview scopes NFC to payments for Apps on Devices. See the separate [[source-stripe-terminal-collect-nfc-data]] route for Terminal’s tapped-data private-preview evidence and integration scope.
+ 
+-**App lifecycle**: Build → App review → Submit (APK via API) → Deploy (via Deploy API) → Monitor.
++For direct charges, a single platform must control the connected account. Platforms deploy apps only to singly controlled connected accounts, with `controller.is_controller = true` documented as the qualification.
+ 
+-**Connect**: requires `controller.is_controller = true` on connected account (single-platform control).
++## App Lifecycle
++
++Build and test, prepare for app review, submit, deploy to selected devices, then monitor. The May deploy step points to the [Deploy API](https://docs.stripe.com/terminal/features/apps-on-devices/deploy-with-API.md). November points to [[source-stripe-terminal-apps-on-devices-deploy-dashboard|Dashboard deployment]]. The [[source-stripe-terminal-apps-on-devices-deploy-api|separate API deployment guide]] documents private-preview access through Stripe Support.
++
++## Related Pages
++
++- [[stripe]] — company page
++- [[stripe-terminal-apps-on-devices]] — Apps on Devices concept
++- [[stripe-terminal#In-Person Fundamentals|Stripe Terminal in-person features]] — nearby integrations and the separate NFC route
++- [[source-stripe-terminal-apps-on-devices-submit]] — app submission route
+ 
+ ## Raw Sources
+ 
+-- [[stripe-terminal-apps-on-devices-2025]] — verbatim webpage content
++- [[raw/stripe-terminal-features-apps-on-devices-overview-2026-11-07|November 7, 2026 Apps on Devices overview]]
++- [[stripe-terminal-apps-on-devices-2025]] — May 1, 2026 verbatim overview

@@ -1,0 +1,206 @@
+{
+  "job_id": "recurring-payments",
+  "attempt": 1,
+  "raw_path": "raw/stripe-recurring-payments-2026-11-07.md",
+  "raw_sha256": "a2f1f588bdbb463423994ce36d9c1808b840d39336861ff6ae62648256d52230",
+  "prior_raw_path": "raw/stripe-recurring-payments-overview-2025.md",
+  "prior_raw_sha256": "4d2fe88aa366f462d18e66ee286bb83e48aed3a0f4ce08cde8e029c18f7e5627",
+  "source_targets": [
+    "wiki/sources/source-stripe-recurring-payments-overview.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-recurring-payments-overview.md": "72e88ce6affb012e5c0dc48f0461282b643f5cd62d444d5603b73f4e76c3053d"
+  },
+  "read_ranges": {
+    "raw/stripe-recurring-payments-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 420
+      },
+      {
+        "start": 421,
+        "end": 650
+      },
+      {
+        "start": 651,
+        "end": 880
+      },
+      {
+        "start": 881,
+        "end": 1090
+      },
+      {
+        "start": 1091,
+        "end": 1290
+      },
+      {
+        "start": 1291,
+        "end": 1504
+      }
+    ],
+    "raw/stripe-recurring-payments-overview-2025.md": [
+      {
+        "start": 1,
+        "end": 165
+      },
+      {
+        "start": 166,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 580
+      },
+      {
+        "start": 581,
+        "end": 790
+      },
+      {
+        "start": 791,
+        "end": 1000
+      },
+      {
+        "start": 1001,
+        "end": 1170
+      },
+      {
+        "start": 1171,
+        "end": 1340
+      },
+      {
+        "start": 1341,
+        "end": 1515
+      }
+    ],
+    "wiki/sources/source-stripe-recurring-payments-overview.md": [
+      {
+        "start": 1,
+        "end": 93
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/253c9b292f4a5ea851d5dcd9/content.diff": [
+      {
+        "start": 1,
+        "end": 125
+      },
+      {
+        "start": 126,
+        "end": 270
+      },
+      {
+        "start": 271,
+        "end": 440
+      },
+      {
+        "start": 441,
+        "end": 610
+      },
+      {
+        "start": 611,
+        "end": 780
+      },
+      {
+        "start": 781,
+        "end": 950
+      },
+      {
+        "start": 951,
+        "end": 1099
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "After the subscription is created, read `subscription.latest_invoice.confirmation_secret.client_secret` and return that value to the front end to confirm the payment.",
+      "location": "raw/stripe-recurring-payments-2026-11-07.md:241"
+    },
+    {
+      "text": "If your business is based in Mexico, you can offer card payments in installments.",
+      "location": "raw/stripe-recurring-payments-2026-11-07.md:1358"
+    },
+    {
+      "text": "Installment plans allow customers to make partial payments for a set amount of time until the total amount is paid.",
+      "location": "raw/stripe-recurring-payments-2026-11-07.md:1362"
+    },
+    {
+      "text": "`end_behavior` determines what happens to the subscription after the last iteration is complete.",
+      "location": "raw/stripe-recurring-payments-2026-11-07.md:1403"
+    },
+    {
+      "text": "Stripe only supports installments for Stripe Mexico accounts.",
+      "location": "raw/stripe-recurring-payments-2026-11-07.md:1457"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "In some markets, network rules prohibit using subscription schedules to set up installment plans as they might be mistaken for an ongoing subscription.",
+      "location": "raw/stripe-recurring-payments-overview-2025.md:54"
+    },
+    {
+      "text": "The following example creates a `Subscription` and expands the `confirmation_secret` from its latest invoice in the response.",
+      "location": "raw/stripe-recurring-payments-overview-2025.md:235"
+    },
+    {
+      "text": "If you want to set up a recurring invoice, create a subscription.",
+      "location": "raw/stripe-recurring-payments-overview-2025.md:1432"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The full November 7 guide covers four recurring payment types and a six-product matrix. Organizations users can view/filter subscriptions across accounts, while creation and analysis are account-level. Dashboard subscriptions generate the next invoice on the billing-cycle date, with an automatic saved-method charge depending on settings. Checkout uses a backend subscription-mode Session, and the guide places activation after successful payment.",
+    "Elements sends the selected Price and customer ID to the backend, uses default_incomplete for the payment-awaiting example, and passes the expanded latest invoice confirmation secret's client_secret to the frontend. Accounts v2 passes customer_account and Customers v1 passes customer in the examples.",
+    "For self-managed recurring charges, PaymentIntents save during an initial on-session charge and SetupIntents collect outside checkout. A subsequent PaymentIntent charges the associated saved method, with off_session and confirm flags for the documented off-session attempt. Stripe-hosted customer portal self-service follows merchant activation, configuration and sharing. Payment Links support a recurring donation product. Migration points to a separate Billing guide.",
+    "Subscription-generated recurring invoices either send the invoice to the customer under configured terms or automatically charge a saved method. The guide separately limits customer-scheduled future payments on the hosted invoice page to the US. The standalone send_invoice API workflow covers the product/price/customer setup, days_until_due for past-due marking, a 250-item ceiling and editing with auto_advance=false until finalization.",
+    "Mexico card installments are a separate mechanism from Billing subscription schedules and BNPL. Both snapshots describe Stripe Mexico account, eligible Mexico-issued consumer credit card from a supported issuer, MXN, plan minimum, added card fee and Stripe-determined eligibility."
+  ],
+  "substantive_changes": [
+    "November adds a fourth payment-type overview and actual Billing Subscription Schedules API installment workflows. A recurring price or inline price_data establishes the amount and cadence, and the illustrated phase runs six monthly iterations and cancels the subscription after completion. This is a documented example, with no global or account-specific availability inference.",
+    "November replaces the April snapshot's duplicated some-markets network-rule caveat with guidance and examples for subscription-schedule installments. This is a documentation difference with unresolved market applicability.",
+    "November adds explicit nested Elements confirmation-secret access guidance and the confirmation_secret object to both example invoices. April already expanded the object in requests and described passing the secret. November still shows payment_intent in both illustrative responses."
+  ],
+  "historical_claims_to_preserve": [
+    "The prior filename ends in 2025, but its capture header is 2026-04-23. Preserve that dated raw beside the 2026-11-07 capture, including the some-markets rule warning at lines 54 and 1447.",
+    "The Node.js examples in the existing summary can retain their April illustration provenance. November shows Ruby for Checkout and cURL for the other compared API examples, with the underlying request patterns generally matching."
+  ],
+  "conflicts": [
+    "April's network-rule prohibition in some markets and November's affirmative example describe different dated evidence. Neither snapshot identifies the affected markets or resolves current availability. Keep the older warning attached to April.",
+    "Both captures' Elements narrative calls the payment-awaiting example inactive in one paragraph, while the actual status in prose and both example objects is incomplete. Treat inactive as a description and use incomplete for the illustrated API status.",
+    "The examples under the complex Subscription Schedules API heading actually create Subscriptions in both captures. The new dedicated installment workflow genuinely calls the Subscription Schedules API. The currently retained assertion that confirmation_secret replaces payment_intent generally is broader than either reviewed capture.",
+    "Both captures' subscription type feature table says a website is required, while the product matrix says subscriptions have a no-website path. Keep the Dashboard and Payment Links no-code routes distinct from website-based integrations and avoid a blanket website requirement. The dedicated Mexico integration route scopes hosted Checkout to payment mode and Invoicing to individual send_invoice invoices, so the recurring-payments umbrella guide cannot establish those paths support recurring subscription charges."
+  ],
+  "unresolved_questions": [
+    "Which markets are affected by the April network-rule warning, and whether that warning applies today, is unspecified in the pins.",
+    "The raw text refers to highlighted minimum storage fields in both captures, while the extracted code does not visibly mark a minimum set. Keep the text tied to its example, without inferring a field list or general storage rule."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/recurring-payments.md",
+    "wiki/concepts/stripe-subscriptions.md",
+    "wiki/concepts/stripe-subscriptions-schedules.md",
+    "wiki/concepts/stripe-installments.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-recurring-payments-overview.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Change the three-type framing to show Installments as the fourth route in November. Add the dated Billing schedule workflow and link its dedicated concept, while keeping BNPL and Mexico card installments distinct.",
+        "Keep both raw snapshots and label the November Ruby/cURL and April Node.js example variants. Use incomplete for the illustrated Elements API status and record latest_invoice.confirmation_secret.client_secret as this workflow's frontend value.",
+        "Preserve existing reciprocal subscription and generic recurring routes. Refresh the generic concept's stale three-type label, then route eligibility and implementation to the separate Stripe installment and subscription schedule concepts."
+      ],
+      "conflicts": [
+        "Retain April's dated some-markets network-rule warning beside the November schedule example.",
+        "Skip any universal claim that payment_intent was replaced. The November response examples display both forms. Preserve Mexico integration-level restrictions and the hosted-invoice scheduled payment qualification."
+      ],
+      "reason": "The mapped summary would cause a reader looking for the fourth payment route or a fixed-duration Billing installment workflow to miss the November documentation. It also presents the omitted network warning as undated and overstates the Elements field replacement."
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/recurring-payments, source-stripe-recurring-payments-overview summarizes the April guide's three listed types and subscription examples. November retains Stripe Billing subscriptions, subscription-generated invoices and saved-method charging, and documents installments as a fourth type, with Billing schedules, BNPL, and Mexico-only card installments as distinct paths (old raw lines 32-62, old raw lines 1445-1473, new raw lines 33-93, new raw lines 1356-1387, new raw lines 1403-1405, new raw lines 1439-1462). A merchant can create from account-level Dashboard, select Sell a subscription in Payment Links, or create a backend Checkout Session with mode=subscription. Following successful Checkout payment, the subscription becomes active and the Session references the Account or Customer and Subscription. Elements uses a selected Price and customer identity (customer_account for Accounts v2 or customer for Customers v1), creates the illustrated incomplete subscription on the server, and passes the expanded invoice confirmation secret's client_secret to the frontend for payment confirmation (old raw lines 154-192, old raw lines 229-287, new raw lines 166-204, new raw lines 235-269, new raw line 680). The merchant can save with a PaymentIntent during checkout or a server-created SetupIntent outside checkout and use another PaymentIntent with the saved method for a later off-session charge. Recurring invoices require a subscription, which generates an invoice each cycle and supports sending under configured terms or automatically charging a saved method. The US-only limit is for hosted-invoice scheduling of future payment (old raw lines 60-62, old raw lines 1203-1212, old raw lines 1250-1252, old raw lines 1296-1304, old raw lines 1430-1443, new raw lines 75-77, new raw lines 1161-1170, new raw lines 1196-1198, new raw lines 1230-1238, new raw lines 1341-1354). Merchant portal activation/configuration/sharing enables customer self-service, recurring donation Payment Links use a recurring product, and existing-subscription migration is routed to a separate Stripe Billing guide (old raw lines 1475-1507, new raw lines 1464-1496).",
+    "Q2": "For https://docs.stripe.com/recurring-payments, source-stripe-recurring-payments-overview needs a dated update. The 2026-04-23 capture twice warns that in some markets network rules prohibit using subscription schedules for installments (old raw line 54, old raw line 1447). The 2026-11-07 capture describes the recurring-price or inline-price-data route and demonstrates six monthly iterations and end_behavior=cancel after completion for Accounts v2 and Customers v1 (new raw lines 1356-1387, new raw lines 1390-1419, new raw lines 1423-1437). The affected markets and current restriction are unresolved across these pins. The Mexico-only scope and added fee for card installments, Stripe Mexico account, eligible Mexico consumer credit card, MXN and minimum are retained (old raw lines 1455-1473, new raw lines 1445-1462). Preserve these distinct routes through recurring-payments, stripe-subscriptions, stripe-subscriptions-schedules and stripe-installments. November clarifies the exact Elements client_secret path and adds confirmation_secret to both response examples, which still contain payment_intent. The old request already expanded confirmation_secret, and the response status incomplete is consistent across both dates (old raw lines 233-258, old raw lines 561-571, old raw lines 971-981, old raw line 691, new raw lines 239-253, new raw lines 554-560, new raw lines 971-977, new raw line 680). Constrain the current summary's replacement claim to this documented confirmation path. Checkout's Node.js to Ruby switch and most subsequent Node.js to cURL switches are example variants, as are list numbering, table/JSON indentation and media placement changes. The custom-tax link moving to standalone-tax-api is navigation, with the bring-your-own integration statement retained (old raw lines 130-146, old raw lines 194-227, old raw lines 239-285, new raw lines 142-158, new raw lines 206-233, new raw lines 243-267)."
+  }
+}

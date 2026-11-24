@@ -1,0 +1,143 @@
+{
+  "job_id": "terminal-features-collect-data",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Stripe Terminal: Collect Swiped Data\"\ntype: source\ndate_ingested: 2026-05-01\ndate_updated: 2026-11-24\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/terminal/features/collect-data\"\nraw_files:\n  - \"stripe-terminal-collect-data-2025.md\"\ntags: [stripe, stripe-terminal, magstripe, gift-cards, collect-data, private-preview]\n---\n\n## Summary\n\nThe 2026-05-01 [[stripe]] Terminal guide describes a private preview for collecting non-PCI magstripe data, such as gift-card data, through reader hardware. The 2026-11-07 capture repeats the non-PCI purpose and indexes iOS, Android and React Native. The linked variant bodies are outside the November capture. The operational details below come from the May guide.\n\n## Key Details\n\n**Private preview access in May**. The guide directs merchants to email `terminal-collect-data@stripe.com` with the use case, device and integration type, magstripe format, and the provider if using third-party cards.\n\n**Reader and offline scope in May**. The guide lists Stripe Reader S700/S710, BBPOS WisePOS E, Stripe M2 and BBPOS Chipper2X BT. It states that collection is unavailable offline.\n\n**Data format**. The May guide specifies non-PCI numeric track-2 data with the ISO/IEC 7813 start sentinel `;`, the end sentinel `?`, and no separator. For formats outside the documented list, it directs merchants to contact the Terminal team with the card format and BIN ranges.\n\n**Integration flow in May**.\n\n1. The merchant\u2019s POS uses the Terminal SDK\u2019s `collectData` with its magstripe configuration, and the customer swipes the card.\n2. The SDK returns a token representing the data or an error if the swipe fails. The iOS and React Native examples read the token from `stripeId`.\n3. The merchant\u2019s authenticated backend uses the token to retrieve cleartext non-PCI track data through `GET /v1/terminal/reader_collected_data/{id}`, for example to redeem a gift card. The May guide says Stripe stores the collected data for 24 hours.\n\n**Customer cancellation in May**. The iOS and Android sections describe default customer cancellation on supported readers and a smart-reader opt-out using the platform\u2019s `customerCancellation` setting. The React Native example also sets `customerCancellation: 'disableIfAvailable'`.\n\n**Stripe responsibility**. The May guide says Stripe neither authenticates collected data nor authorizes transactions using that data. Stripe disclaims responsibility for those activities and liability for related third-party illegal conduct or fraud.\n\n## Related\n\n- [[stripe-terminal]] \u2014 Terminal devices and integration overview\n\n## Raw Sources\n\n- [[raw/stripe-terminal-collect-data-2025|Stripe Terminal collect swiped data guide captured 2026-05-01]] \u2014 iOS, Android, and React Native implementation sections\n\n## Related raw API references\n\n- [[raw/stripe-terminal-features-collect-data-2026-11-07|Stripe Terminal collect swiped data SDK variant index captured 2026-11-07]]\n",
+  "quotes": {
+    "terminal-features-collect-data": [
+      {
+        "text": "Use Terminal for collecting non-PCI data with the reader hardware interfaces.",
+        "location": "raw/stripe-terminal-features-collect-data-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-terminal-features-collect-data-2026-11-07.md:11"
+      },
+      {
+        "text": "[iOS](https://docs.stripe.com/terminal/features/collect-data.md?terminal-sdk-platform=ios)",
+        "location": "raw/stripe-terminal-features-collect-data-2026-11-07.md:13"
+      },
+      {
+        "text": "[Android](https://docs.stripe.com/terminal/features/collect-data.md?terminal-sdk-platform=android)",
+        "location": "raw/stripe-terminal-features-collect-data-2026-11-07.md:14"
+      },
+      {
+        "text": "[React Native](https://docs.stripe.com/terminal/features/collect-data.md?terminal-sdk-platform=react-native)",
+        "location": "raw/stripe-terminal-features-collect-data-2026-11-07.md:15"
+      }
+    ]
+  },
+  "old_evidence": {
+    "terminal-features-collect-data": [
+      {
+        "text": "This feature isn\u2019t available offline.",
+        "location": "raw/stripe-terminal-collect-data-2025.md:16"
+      },
+      {
+        "text": "After swiping the card, Stripe provides a tokenized data object. Use the token to securely retrieve the cleartext track data on your back end.",
+        "location": "raw/stripe-terminal-collect-data-2025.md:18"
+      },
+      {
+        "text": "The collected data is stored on Stripe\u2019s servers for 24 hours.",
+        "location": "raw/stripe-terminal-collect-data-2025.md:69"
+      },
+      {
+        "text": "Stripe doesn\u2019t perform and isn\u2019t responsible for the authentication of collected data or the authorization of transactions using collected data.",
+        "location": "raw/stripe-terminal-collect-data-2025.md:76"
+      },
+      {
+        "text": "The card data is available on track 2 only.",
+        "location": "raw/stripe-terminal-collect-data-2025.md:22"
+      },
+      {
+        "text": "with your card format and BIN ranges if your card numbers don\u2019t match one of these approved formats.",
+        "location": "raw/stripe-terminal-collect-data-2025.md:26"
+      },
+      {
+        "text": "On supported readers, the ability for customers to cancel transactions is now _enabled by default_.",
+        "location": "raw/stripe-terminal-collect-data-2025.md:42"
+      },
+      {
+        "text": "To disable customer cancellation on smart readers, set `customerCancellation` to `DISABLE_IF_AVAILABLE`.",
+        "location": "raw/stripe-terminal-collect-data-2025.md:88"
+      },
+      {
+        "text": "customerCancellation: 'disableIfAvailable',",
+        "location": "raw/stripe-terminal-collect-data-2025.md:140"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-terminal-features-collect-data-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-terminal-collect-data-2025.md": [
+      {
+        "start": 1,
+        "end": 83
+      },
+      {
+        "start": 84,
+        "end": 165
+      }
+    ],
+    "wiki/sources/source-stripe-terminal-collect-data.md": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/39c4035789d91ae417365419/content.diff": [
+      {
+        "start": 1,
+        "end": 84
+      },
+      {
+        "start": 85,
+        "end": 168
+      }
+    ]
+  },
+  "answers": {
+    "terminal-features-collect-data": {
+      "Q1": "At https://docs.stripe.com/terminal/features/collect-data, source-stripe-terminal-collect-data presents the November 7, 2026 capture as a Terminal non-PCI reader-hardware introduction with links to iOS, Android and React Native variants. See new raw lines 5-15. Those bytes do not establish SDK call, prerequisites, token state, backend retrieval, storage or Stripe responsibility. The May 1, 2026 full capture states private-preview access by a request including use case, reader and integration, format and applicable third-party provider. It describes S700/S710, WisePOS E, M2 and Chipper 2X BT, no offline mode and only approved numeric track-2 formatting. See old raw lines 8-30. The merchant's POS collects a customer swipe, the SDK returns a token or error, and the merchant backend retrieves cleartext non-PCI data for uses such as gift-card redemption within the documented 24-hour storage window. The capture limits default customer cancellation to supported readers and locates the opt-out on supported smart readers. Stripe disclaims authentication of collected data, authorization of transactions using it, and liability for illegal conduct or fraud by third parties associated with the collected data. See old raw lines 36-76, old raw lines 82-119 and old raw lines 125-165. The revised dated summary retains the May flow and the documented instruction to contact the Terminal team with card format and BIN ranges when the format falls outside the guide (old raw lines 20-26).",
+      "Q2": "For https://docs.stripe.com/terminal/features/collect-data, source-stripe-terminal-collect-data links the November 7, 2026 capture as a dated reference for SDK navigation. It retains the non-PCI reader-hardware purpose and substitutes three Markdown variant links for the detailed in-page prose and examples. See old raw lines 4-30, old raw lines 32-42, old raw lines 78-88, old raw lines 121-129 and new raw lines 5-15. November shows neither a substantive operational change nor contrary functional evidence. Preserve May 1, 2026 as the source for private preview, hardware and no offline use, format restrictions and contact, token-or-error and backend retrieval, 24-hour storage, cancellation qualification and the Stripe disclaimer. See old raw lines 8-30, old raw lines 36-42, old raw lines 67-76, old raw lines 86-88 and old raw lines 156-165. The November index supplies no fresh confirmation of those conditions. The revised summary and proposed concept edits date the operational scope and preserve the reciprocal stripe-terminal route. The November link exposes the three variants as navigation."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "terminal-features-collect-data-date-operational-scope",
+      "target_path": "wiki/concepts/stripe-terminal.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Collect swiped data** \u2014 private preview; reads non-PCI magstripe data (e.g. gift cards) via `collectData()`; token returned, cleartext retrieved server-side; 24h storage; S700/S710/WisePOS E/M2/Chipper2X; not offline; see [[source-stripe-terminal-collect-data]]",
+      "proposed_markdown": "- **Collect swiped data** \u2014 the 2026-05-01 private-preview guide covers non-PCI magstripe collection, SDK tokens, backend retrieval and reader, offline and 24-hour retention limits. The 2026-11-07 capture indexes iOS, Android and React Native. See [[source-stripe-terminal-collect-data]].",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "May guides the operational scope (old raw lines 8-30 and 36-76). The November variant bodies are outside the capture. The Stripe company source label still describes private preview and retention without a capture date."
+      ]
+    },
+    {
+      "update_id": "terminal-features-collect-data-reciprocal-source-route",
+      "target_path": "wiki/concepts/stripe-terminal.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-terminal-collect-data]] \u2014 Collect swiped data (private preview): magstripe gift cards, tokenization, 24h storage, disclaimer",
+      "proposed_markdown": "- [[source-stripe-terminal-collect-data]] \u2014 May 2026 private-preview non-PCI swiped-data guide with a dated November SDK variant index.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ]
+}

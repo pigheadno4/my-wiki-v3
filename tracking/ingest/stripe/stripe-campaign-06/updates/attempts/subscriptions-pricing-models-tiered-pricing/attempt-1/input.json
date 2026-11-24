@@ -1,0 +1,146 @@
+{
+  "job_id": "subscriptions-pricing-models-tiered-pricing",
+  "contribution": {
+    "job_id": "subscriptions-pricing-models-tiered-pricing",
+    "queue_id": 471,
+    "canonical_url": "https://docs.stripe.com/subscriptions/pricing-models/tiered-pricing",
+    "attempt": 1,
+    "raw_path": "raw/stripe-subscriptions-pricing-models-tiered-pricing-2026-11-07.md",
+    "raw_sha256": "eb8c45831da2128b418426a2078718f4918e1f4d39edf357875ee2f8112ef5ef",
+    "prior_raw_path": "raw/stripe-tiered-pricing-2026.md",
+    "prior_raw_sha256": "b6e8fa1dc0ffa7220f2367b5590126ed2aeb71d87c69032dd14e60f547c65829",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-06/attempts/subscriptions-pricing-models-tiered-pricing/attempt-1/receipt.json",
+    "receipt_sha256": "007dbbdcfde96d6a0571bfaf519189d72e77b89ae1f27ac16bf2c79fb1d2e689",
+    "review_path": "tracking/ingest/stripe/stripe-campaign-06/attempts/subscriptions-pricing-models-tiered-pricing/attempt-1/review.json",
+    "review_sha256": "c99a524357bc4b353ff88b8893778c5d0a18a6e79c589e44ae25dd4951107802",
+    "new_capture_role": "full_captured_page",
+    "proposed_disposition": "source_required_update",
+    "source_assessments": [
+      {
+        "source_target": "wiki/sources/source-stripe-tiered-pricing.md",
+        "proposed_disposition": "source_required_update",
+        "update_needed": true,
+        "findings": [
+          "Both captures describe using a recurring tiered Price with volume applying one end-of-period tier rate to the whole quantity or usage and graduated summing units within successive tiers. Both Dashboard examples create a Product with a monthly recurring Price; both API pairs use /v1/prices, a Product ID, billing_scheme=tiered, the chosen tiers_mode and tier bounds.",
+          "Both retain optional combination of a per-unit amount and a flat amount, with at least one required per tier. The first tier's flat amount is billed at zero quantity if defined. The zero-charge workaround uses up_to=1, a per-unit charge equal to the flat rate, and no flat_amount.",
+          "The November API examples set licensed usage for both modes; the May examples set metered usage. source-stripe-tiered-pricing currently repeats metered in a single undated snippet, while the reciprocal subscriptions concept gives the generic tiered billing scheme and already routes to the guide."
+        ],
+        "conflicts": [
+          "The mapped API example represents two distinct tiers_mode string choices as a JavaScript bitwise OR expression and shows metered as the generic example. Use explicit mode choices and date licensed versus metered documentation examples.",
+          "The summary's 'graduated ... always increases' overstates the documented calculation. Graduated accumulates charges across tiers; an additional unit at zero unit amount need not increase the total unless it adds a flat charge.",
+          "Both captures' Dashboard directions say the Product and Price can only be edited until a Subscription uses them (November lines 52 and 110, May lines 51 and 123). The dated manage-prices guides instead give a generic existing-Price field restriction from creation (raw/stripe-products-prices-manage-prices-2026-11-07.md:176 and raw/stripe-manage-products-prices-2025.md:203); the mapped catalog summary also separates changes to an amount from some editable fields. Preserve the tiered Dashboard wording as a dated guide statement if retained, and route real edit questions to source-stripe-products-prices without generalizing.",
+          "The flat-fee table in both captures has overlapping human-readable labels around 10, 15 and 20 (November lines 139-145, May lines 166-172). Preserve the explicit up_to boundaries or the verified quantity-12 example instead of copying the ambiguous labels."
+        ],
+        "reason": "Date both variant examples, keep tiering independent of usage_type, replace the generic metered and monotonic-price claims with directly evidenced qualifications, and keep subscriptions and usage-based routing."
+      }
+    ],
+    "affected_concepts": [
+      "wiki/concepts/stripe-subscriptions.md"
+    ],
+    "unresolved_questions": [
+      "The captures do not explain why the examples changed recurring.usage_type or demonstrate runtime compatibility as printed. Keep the two documented variants and the dedicated usage-based implementation route.",
+      "The two guides use different scopes for Product/Price editing around Dashboard setup and after Price creation. The reviewed language does not establish a universal subscription-time edit cutoff or necessary update fields."
+    ],
+    "mapped_source_assessment": {
+      "source_target": "wiki/sources/source-stripe-tiered-pricing.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Both captures describe using a recurring tiered Price with volume applying one end-of-period tier rate to the whole quantity or usage and graduated summing units within successive tiers. Both Dashboard examples create a Product with a monthly recurring Price; both API pairs use /v1/prices, a Product ID, billing_scheme=tiered, the chosen tiers_mode and tier bounds.",
+        "Both retain optional combination of a per-unit amount and a flat amount, with at least one required per tier. The first tier's flat amount is billed at zero quantity if defined. The zero-charge workaround uses up_to=1, a per-unit charge equal to the flat rate, and no flat_amount.",
+        "The November API examples set licensed usage for both modes; the May examples set metered usage. source-stripe-tiered-pricing currently repeats metered in a single undated snippet, while the reciprocal subscriptions concept gives the generic tiered billing scheme and already routes to the guide."
+      ],
+      "conflicts": [
+        "The mapped API example represents two distinct tiers_mode string choices as a JavaScript bitwise OR expression and shows metered as the generic example. Use explicit mode choices and date licensed versus metered documentation examples.",
+        "The summary's 'graduated ... always increases' overstates the documented calculation. Graduated accumulates charges across tiers; an additional unit at zero unit amount need not increase the total unless it adds a flat charge.",
+        "Both captures' Dashboard directions say the Product and Price can only be edited until a Subscription uses them (November lines 52 and 110, May lines 51 and 123). The dated manage-prices guides instead give a generic existing-Price field restriction from creation (raw/stripe-products-prices-manage-prices-2026-11-07.md:176 and raw/stripe-manage-products-prices-2025.md:203); the mapped catalog summary also separates changes to an amount from some editable fields. Preserve the tiered Dashboard wording as a dated guide statement if retained, and route real edit questions to source-stripe-products-prices without generalizing.",
+        "The flat-fee table in both captures has overlapping human-readable labels around 10, 15 and 20 (November lines 139-145, May lines 166-172). Preserve the explicit up_to boundaries or the verified quantity-12 example instead of copying the ambiguous labels."
+      ],
+      "reason": "Date both variant examples, keep tiering independent of usage_type, replace the generic metered and monotonic-price claims with directly evidenced qualifications, and keep subscriptions and usage-based routing."
+    },
+    "findings": [
+      "Both captures describe using a recurring tiered Price with volume applying one end-of-period tier rate to the whole quantity or usage and graduated summing units within successive tiers. Both Dashboard examples create a Product with a monthly recurring Price; both API pairs use /v1/prices, a Product ID, billing_scheme=tiered, the chosen tiers_mode and tier bounds.",
+      "Both retain optional combination of a per-unit amount and a flat amount, with at least one required per tier. The first tier's flat amount is billed at zero quantity if defined. The zero-charge workaround uses up_to=1, a per-unit charge equal to the flat rate, and no flat_amount.",
+      "The November API examples set licensed usage for both modes; the May examples set metered usage. source-stripe-tiered-pricing currently repeats metered in a single undated snippet, while the reciprocal subscriptions concept gives the generic tiered billing scheme and already routes to the guide."
+    ],
+    "substantive_changes": [
+      "The API examples switch from a May metered configuration to a November licensed configuration in both tiers modes. This changes example semantics alongside the Node-to-cURL rewrite. The documented rate-selection math and support for tiering by quantity or usage remain."
+    ],
+    "historical_claims_to_preserve": [
+      "Keep the May 12, 2026 factual guide, both metered examples as historical documentation, and stable volume/graduated math, flat amounts, at-least-one-amount requirement, and no-usage qualification. Preserve the November 7, 2026 licensed examples as separate evidence."
+    ],
+    "conflicts": [
+      "The mapped API example represents two distinct tiers_mode string choices as a JavaScript bitwise OR expression and shows metered as the generic example. Use explicit mode choices and date licensed versus metered documentation examples.",
+      "The summary's 'graduated ... always increases' overstates the documented calculation. Graduated accumulates charges across tiers; an additional unit at zero unit amount need not increase the total unless it adds a flat charge.",
+      "Both captures' Dashboard directions say the Product and Price can only be edited until a Subscription uses them (November lines 52 and 110, May lines 51 and 123). The dated manage-prices guides instead give a generic existing-Price field restriction from creation (raw/stripe-products-prices-manage-prices-2026-11-07.md:176 and raw/stripe-manage-products-prices-2025.md:203); the mapped catalog summary also separates changes to an amount from some editable fields. Preserve the tiered Dashboard wording as a dated guide statement if retained, and route real edit questions to source-stripe-products-prices without generalizing.",
+      "The flat-fee table in both captures has overlapping human-readable labels around 10, 15 and 20 (November lines 139-145, May lines 166-172). Preserve the explicit up_to boundaries or the verified quantity-12 example instead of copying the ambiguous labels."
+    ],
+    "expected_read_files": [
+      {
+        "path": "raw/stripe-subscriptions-pricing-models-tiered-pricing-2026-11-07.md",
+        "sha256": "eb8c45831da2128b418426a2078718f4918e1f4d39edf357875ee2f8112ef5ef",
+        "lines": 159
+      },
+      {
+        "path": "raw/stripe-tiered-pricing-2026.md",
+        "sha256": "b6e8fa1dc0ffa7220f2367b5590126ed2aeb71d87c69032dd14e60f547c65829",
+        "lines": 186
+      },
+      {
+        "path": "wiki/sources/source-stripe-tiered-pricing.md",
+        "sha256": "ab99fa5e5d44d921e1c4cf4e10d79af322bb710cea30aa5a0e0d5af910696d30",
+        "lines": 53
+      },
+      {
+        "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/061ca2092918eb56d6cdc468/content.diff",
+        "sha256": "c54d00855ca8d60a96b1ce3ebe9a3442be067dd73d35cdcb793813a40cbeb00e",
+        "lines": 272
+      }
+    ],
+    "original_query_prompts_path": "tracking/ingest/stripe/stripe-campaign-06/proposed-queries.md"
+  },
+  "source_target": "wiki/sources/source-stripe-tiered-pricing.md",
+  "source_before_sha256": "ab99fa5e5d44d921e1c4cf4e10d79af322bb710cea30aa5a0e0d5af910696d30",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-subscriptions-pricing-models-tiered-pricing-2026-11-07.md",
+      "sha256": "eb8c45831da2128b418426a2078718f4918e1f4d39edf357875ee2f8112ef5ef",
+      "lines": 159
+    },
+    {
+      "path": "raw/stripe-tiered-pricing-2026.md",
+      "sha256": "b6e8fa1dc0ffa7220f2367b5590126ed2aeb71d87c69032dd14e60f547c65829",
+      "lines": 186
+    },
+    {
+      "path": "wiki/sources/source-stripe-tiered-pricing.md",
+      "sha256": "ab99fa5e5d44d921e1c4cf4e10d79af322bb710cea30aa5a0e0d5af910696d30",
+      "lines": 53
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/061ca2092918eb56d6cdc468/content.diff",
+      "sha256": "c54d00855ca8d60a96b1ce3ebe9a3442be067dd73d35cdcb793813a40cbeb00e",
+      "lines": 272
+    }
+  ],
+  "concept_targets": [
+    {
+      "path": "wiki/concepts/stripe-subscriptions.md",
+      "sha256": "6e7d376870ded4c3db5d2bd55753b4ad0a355bce0a26f22c07bbb063ae96f24c"
+    }
+  ],
+  "fixed_queries": "New raw `raw/stripe-subscriptions-pricing-models-tiered-pricing-2026-11-07.md`. Prior raw `raw/stripe-tiered-pricing-2026.md`. Current summaries `wiki/sources/source-stripe-tiered-pricing.md`.\n\n- Q1. For `https://docs.stripe.com/subscriptions/pricing-models/tiered-pricing`, what documented behavior, prerequisites, actors and state transitions does the complete new capture establish? How do these compare with the matched prior capture and each mapped summary?\n\n- Q2. Which changes are substantive, presentational or navigation-only? Identify the exact dated qualifications, conflicts and reciprocal routes that the proposed disposition should preserve.",
+  "state": "review_running",
+  "attempt": 1,
+  "review_scope": "full",
+  "worker_agent": "/root/s6iw6",
+  "reviewer_agent": "/root/s6ir4",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-06/updates/attempts/subscriptions-pricing-models-tiered-pricing/attempt-1/receipt.json",
+  "receipt_sha256": "db09f93d63d97a2e733d3be48bfe77159d085c592595765fa80ca14ad8af695c",
+  "role": "reviewer",
+  "role_notes": "tracking/ingest/stripe/stripe-campaign-06/updates/role-notes.md",
+  "approved_scope": "tracking/ingest/stripe/stripe-campaign-06/updates/approved-proposal.json",
+  "attempt_dir": "tracking/ingest/stripe/stripe-campaign-06/updates/attempts/subscriptions-pricing-models-tiered-pricing/attempt-1",
+  "worker_output": "/tmp/stripe-s06-ingest/subscriptions-pricing-models-tiered-pricing-worker.json",
+  "reviewer_output": "/tmp/stripe-s06-ingest/subscriptions-pricing-models-tiered-pricing-reviewer.json"
+}

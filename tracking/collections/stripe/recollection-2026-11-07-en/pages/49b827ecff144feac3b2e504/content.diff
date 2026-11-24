@@ -1,0 +1,66 @@
+--- raw/stripe-radar-supported-payment-methods-2026.md
++++ raw/stripe-radar-supported-payment-methods-2026-11-07.md
+@@ -2,32 +2,28 @@
+ 
+ Configure how Radar evaluates transactions against default risk controls.
+ 
+-Radar fraud protection is active by default for all Stripe users. Radar screens all payment methods against [default risk controls](https://docs.stripe.com/radar/supported-payment-methods.md#default-risk-controls), and blocks all high-risk transactions.
++Radar fraud protection is active by default for all Stripe users and for all [supported payment methods](https://docs.stripe.com/payments/payment-methods/overview.md). Radar doesn’t support deprecated payment methods. Users on Radar Standard or above are protected by a set of default risk controls that block high-risk payments. You can view blocked payments on the [Radar risk controls](https://dashboard.stripe.com/settings/radar/risk-controls) page in the Dashboard.
+ 
+-## Default risk controls for all payments
++> #### Radar Lite users
++> 
++> Stripe might still block payments for a variety of reasons, including but not limited to fraud risk, sanctions, and other compliance and regulatory considerations.
+ 
+-All Radar users are protected by a set of default risk controls that block high-risk payments. Radar is on by default, and applies to [all payment methods](https://docs.stripe.com/payments/payment-methods/overview.md). Radar supports most preview payment methods, but not deprecated payment methods.
++## Custom risk settings 
+ 
+-You can view blocked payments on the [Radar risk controls](https://dashboard.stripe.com/settings/radar/risk-controls) page in the Dashboard.
++If [your plan](https://docs.stripe.com/radar/how-radar-works.md#compare-plans) supports this feature, you can customize your risk settings for the following types of payment methods:
+ 
+-## Custom risk settings
+-
+-If you use Radar for Fraud Teams or Radar for Platforms, you can customize your risk settings for these payment methods:
+-
+-| Category                                                                                                                                                                                                                                                                                                         | Payment methods                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | Status                |
+-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
+-| [Cards](https://docs.stripe.com/payments/payment-methods/overview.md#cards)                                                                                                                                                                                                                                      | Credit and debit cards, card-backed digital wallets1                                                                                                                                                                                                                                                                                                                                                                                                                                            | ✓ Supported Supported |
+-| [Bank Debits](https://docs.stripe.com/payments/payment-methods/overview.md#bank-debits)                                                                                                                                                                                                                          | _ACH_ (Automated Clearing House (ACH) is a US financial network used for electronic payments and money transfers that doesn’t rely on paper checks, credit card networks, wire transfers, or cash), _SEPA_ (Single Euro Payments Area (SEPA) is a payment-integration initiative to simplify bank transfers involving euros. Several dozen countries comprise SEPA. Most of the participating countries are in the European Union and have euro-based economies, but this is not a requirement) | ✓ Supported Supported |
+-| [ACSS](https://docs.stripe.com/payments/acss-debit.md), [AU Becs](https://docs.stripe.com/payments/au-becs-debit.md), [Bacs](https://docs.stripe.com/payments/payment-methods/bacs-debit.md), [NZ Becs](https://docs.stripe.com/payments/nz-bank-account.md), [PayTo](https://docs.stripe.com/payments/payto.md) | (Private preview)                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+-| [Buy Now Pay Later](https://docs.stripe.com/payments/payment-methods/overview.md#buy-now-pay-later)                                                                                                                                                                                                              | [Affirm](https://docs.stripe.com/payments/affirm.md), [Afterpay](https://docs.stripe.com/payments/afterpay-clearpay.md), [Klarna](https://docs.stripe.com/payments/klarna.md)                                                                                                                                                                                                                                                                                                                   | (Private preview)     |
+-| [Digital wallets](https://docs.stripe.com/payments/payment-methods/overview.md#wallets)                                                                                                                                                                                                                          | [Cash App](https://docs.stripe.com/payments/cash-app-pay.md), [PayPal](https://docs.stripe.com/payments/paypal.md)                                                                                                                                                                                                                                                                                                                                                                              | (Private preview)     |
+-| [Stablecoin and crypto wallets](https://docs.stripe.com/payments/stablecoin-payments.md)                                                                                                                                                                                                                         | Any compatible crypto wallet                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | (Private preview)     |
+-
+-1 For example, [Apple Pay](https://docs.stripe.com/apple-pay.md) or [Google Pay](https://docs.stripe.com/google-pay.md).
++- [Cards](https://docs.stripe.com/payments/payment-methods/overview.md#cards)
++- [Digital wallets](https://docs.stripe.com/payments/payment-methods/overview.md#wallets)
++- [Bank debits](https://docs.stripe.com/payments/payment-methods/overview.md#bank-debits)
++- [Bank redirects](https://docs.stripe.com/payments/payment-methods/overview.md#bank-redirects)
++- [Bank transfers](https://docs.stripe.com/payments/payment-methods/overview.md#bank-transfers)
++- [Buy now, pay later](https://docs.stripe.com/payments/payment-methods/overview.md#buy-now-pay-later)
++- [Real-time payments](https://docs.stripe.com/payments/payment-methods/overview.md#real-time-payments)
++- [Stablecoin payments](https://docs.stripe.com/payments/stablecoin-payments.md)
++- [Vouchers](https://docs.stripe.com/payments/payment-methods/overview.md#vouchers)
++- [Wallets](https://docs.stripe.com/payments/payment-methods/overview.md#wallets)
+ 
+ ### Risk controls
+-
+-> To customize risk controls for any payment methods in private preview, you’ll need to [opt in](https://docs.stripe.com/radar/supported-payment-methods.md#early-access).
+ 
+ You can customize your risk controls with these features:
+ 
+@@ -38,13 +34,11 @@
+ 
+ ### Payment method rules
+ 
+-By default, all supported payment methods inherit your active Radar rules and settings. You can adjust individual payment method rules with the `:payment_method_type:` attribute.
++By default, all [supported payment methods](https://docs.stripe.com/payments/payment-methods/overview.md) inherit your active Radar rules and settings. You can adjust individual payment method rules with the `:payment_method_type:` attribute.
+ 
+ For example, this rule applies only to transactions using Bacs Direct Debit, where the customer IP address has a high number of disputes:
+ 
+ `if :payment_method_type: = 'bacs_debit' and :dispute_count_on_ip_weekly: >  3`
+-
+-## Request early access
+ 
+ ## See also
+ 

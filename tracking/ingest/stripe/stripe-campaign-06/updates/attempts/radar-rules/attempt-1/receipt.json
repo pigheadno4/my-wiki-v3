@@ -1,0 +1,221 @@
+{
+  "job_id": "radar-rules",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe \u2014 Fraud Prevention Rules\"\ntype: source\ndate_ingested: 2026-05-10\ndate_updated: 2026-11-24\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/radar/rules\"\nraw_files:\n  - \"stripe-radar-rules-2026-11-07.md\"\n  - \"stripe-radar-rules-2026.md\"\ntags: [stripe, radar, rules, fraud, block, allow, review, 3ds, cvc, avs, metadata, radar-assistant]\n---\n\n## Summary\n\n[[stripe]]'s [[stripe-radar|Radar]] guide covers built-in rules, custom transaction and account rules, 3D Secure (3DS), and the Radar Assistant. The 2026-11-07 capture documents Dashboard custom rules conditional on an eligible Radar plan. The account owner, administrators, and developers can create rules. The 2026-05-10 guide named Radar for Fraud Teams and Radar for Platforms for custom rules.\n\n## Rule Actions\n\n| Action | Documented effect |\n| --- | --- |\n| Request 3DS | Requests authentication, which the issuer might not perform. Applies to Checkout, Payment Intents, and Setup Intents and is evaluated before Allow, Block, and Review. |\n| Allow | Contact Stripe for the ability to create Allow rules. Within the rule's scope, Allow overrides Stripe risk assessment and matching default and custom rules after the Request 3DS evaluation. |\n| Block | Prevents processing of payments subject to the block action. |\n| Review payment | Stripe processes the payment normally. Only successful payments go to the team's review queue. |\n| Review account or pause payouts | Platforms can raise an account review. A payout pause also raises a review. Account rules apply to existing and future accounts on activation. |\n\nStripe handles issuer soft declines that require 3DS and triggers it when required for regulatory SCA even with Radar disabled. Transaction rules evaluate future transactions. They cover supported payment methods by default, subject to any method specified by `:payment_method_type:` and the applicable rule and plan scope.\n\n## Traffic Allocation\n\nThe November capture documents adjustable traffic allocation for eligible custom transaction rules. It can be set during creation or adjusted later for rollout or rollback. The default of 100% enforces the action on every match. A partial percentage limits enforcement to that share of matching payments. At 0% (shadow), Radar evaluates and reports counterfactual outcomes without enforcing the action.\n\nRetries stay in the same allocation bucket. For cards, Radar groups by the same invoice first, then the same customer and amount if there is no invoice, then the same card and amount if there is no customer. For other methods, retries of the same payment share a bucket. The guide documents allocation consistency for retries. Behavior after other predicates or settings change between attempts is unresolved. Account rule activation uses a separate flow.\n\n## Built-in Rules\n\n- **Transaction risk**. The guide describes `if :risk_level: = 'highest'` as a deprecated default block rule. The November risk-controls section describes early fraud warnings and dynamic risk thresholds for blocking the highest-risk payments. The May guide described early fraud warnings there. For `if :risk_level: = 'elevated'`, May named Fraud Teams and Platforms for default review. November describes the default review of suspected elevated-risk payments with no tier specified in that row.\n- **Account risk**. The May guide names the Platforms account models and lists `:account_risk_level:` for `highest` and `elevated`. November lists `:account_fraud_risk_level:` for those two predicates. Neither capture assigns those predicates to specific actions. The November [[source-stripe-radar-rules-supported-attributes|supported-attributes reference]] lists `account_fraud_risk_level` for connected-account rules and `account_risk_level` separately for private-preview Treasury transaction rules. Alias and migration behavior are unresolved.\n- **CVC and AVS**. From 2024-12-17, the Dashboard shows the risk-score-based CVC and postal-code verification rules to new customers and existing customers who have never used the legacy rules. The legacy options are shown to existing customers who enabled at least one. When enabled, the risk-score-based rules block a failed issuer check unless Stripe assesses the payment as low risk. Both variants exempt absent verification input or unsupported issuer checks. Enabled checks can also affect attaching a card to a customer or creating the card and customer together.\n- **Legacy 3DS**. For Payment Intents and Setup Intents, the May capture lists three deprecated card rules (recommended, supported, and required). November lists the deprecated supported-for-card rule. Availability of the other two remains unresolved.\n\n> [!note] Payment-method coverage and plan scope\n> The May method section named cards, ACH, and SEPA Direct Debit for most users. November describes default fraud protection across supported methods. The same-day [[source-stripe-radar-supported-payment-methods|supported-methods guide]] scopes the default high-risk controls to Standard and above and says Stripe may still block payments on Lite. Custom features depend on the [[source-stripe-radar-how-it-works#November plan matrices|plan comparison]]. The rules guide's removal of named tiers does not establish wider eligibility.\n\n## Rule Syntax\n\n```\n{action} if {attribute} {operator} {value}\n```\n\n- Custom metadata: `::field::` or `::customer:field::`\n- List membership: `:attribute: in @list_alias`\n- Max: **200 transaction rules**, **100 account rules**\n\n## Key 3DS Attributes\n\n| Attribute | Meaning |\n| --- | --- |\n| `is_3d_secure` | Card supports 3DS, issuer attempted it, and the customer did not fail authentication. The guide generally recommends it for Block rules. |\n| `is_3d_secure_authenticated` | The issuer attempted 3DS and the customer completed full authentication. Using it in Block rules can exclude legitimate payments, such as those with SCA exemptions. |\n| `has_liability_shift` | Stripe expects liability shift for the payment, which can also apply outside a 3DS flow (for example, Apple Pay in certain regions). |\n\nIn the risk-based 3DS Block example, the predicate excludes off-session payments, Apple Pay, and Google Pay (represented as `android_pay`) when Google Pay has a cryptogram. See May lines 122\u2013123 and November lines 118\u2013119 for the amount-based example. In both captures, a separate risk-level and edge-cases example says its Request 3DS and Block predicates apply above a certain amount, although the predicates contain no amount condition (May lines 179\u2013180, November lines 175\u2013176).\n\n## Radar Assistant\n\nThe rule editor's LLM assistant drafts a transaction rule from natural language. By using it, users agree that Stripe can log and use their chat entries to train and improve the assistant. Rules can also be written manually.\n\n## Best Practices\n\n- Use Allow rules minimally. The guide recommends excluding the highest-risk matches from Allow.\n- Keep Block false positives low and test before enabling. Target Review narrowly to keep the queue manageable.\n- Transaction testing simulates the previous six months of charges. Account testing shows the accounts that would match today. Rule activity covers the past 180 days.\n- The guide says EU businesses might be affected by the Geo-blocking Regulation and its limits on blocking payments from customers based in EU member states.\n- The May metrics section explicitly qualified Allow and Review metrics and additional Block metrics by Fraud Teams. November omits those labels. Both Block metrics sections describe payments **allowed** under Risk score (May lines 374\u2013376, November lines 388\u2013390). The row does not establish a Block risk-score metric definition.\n\n## Related Pages\n\n- [[stripe-radar]] \u2014 Radar concept\n- [[source-stripe-radar-how-it-works#November plan matrices|Radar plan comparison]]\n- [[source-stripe-radar-rules-supported-attributes]] \u2014 supported rule attributes\n- [[source-stripe-radar-supported-payment-methods]] \u2014 default protection, controls and method-specific scope\n- [[source-stripe-radar-lists]] \u2014 lists used in rules (`@list_alias`)\n- [[source-stripe-radar-risk-settings]] \u2014 automatic risk controls\n- [[source-stripe-radar-rules-reference]] \u2014 rule evaluation and syntax reference\n\n## Raw Sources\n\n- [[raw/stripe-radar-rules-2026-11-07|2026-11-07 fraud prevention rules]]\n- [[raw/stripe-radar-rules-2026|2026-05-10 fraud prevention rules]] \u2014 includes five historical screenshot references\n",
+  "quotes": {
+    "radar-rules": [
+      {
+        "text": "and are evaluated before review, block, and allow rules.",
+        "location": "raw/stripe-radar-rules-2026-11-07.md:202"
+      },
+      {
+        "text": ":account_fraud_risk_level: = 'highest'",
+        "location": "raw/stripe-radar-rules-2026-11-07.md:40"
+      },
+      {
+        "text": "To evaluate a rule without affecting payments, set its traffic allocation to 0%.",
+        "location": "raw/stripe-radar-rules-2026-11-07.md:242"
+      },
+      {
+        "text": "By using Radar Assistant you agree that Stripe can log and use your chat entries",
+        "location": "raw/stripe-radar-rules-2026-11-07.md:252"
+      },
+      {
+        "text": "Because only *successful* payments are placed in review",
+        "location": "raw/stripe-radar-rules-2026-11-07.md:332"
+      }
+    ]
+  },
+  "old_evidence": {
+    "radar-rules": [
+      {
+        "text": "`if :account_risk_level: = 'highest'`",
+        "location": "raw/stripe-radar-rules-2026.md:39"
+      },
+      {
+        "text": "Stripe supports three legacy built-in rules to request 3DS",
+        "location": "raw/stripe-radar-rules-2026.md:75"
+      },
+      {
+        "text": "apply this rule to all future transactions.",
+        "location": "raw/stripe-radar-rules-2026.md:227"
+      },
+      {
+        "text": "If you use Radar for Fraud Teams, you can also view the following:",
+        "location": "raw/stripe-radar-rules-2026.md:374"
+      },
+      {
+        "text": "Radar for Platforms has additional account-level AI models",
+        "location": "raw/stripe-radar-rules-2026.md:37"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-radar-rules-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 115
+      },
+      {
+        "start": 116,
+        "end": 195
+      },
+      {
+        "start": 196,
+        "end": 280
+      },
+      {
+        "start": 281,
+        "end": 301
+      },
+      {
+        "start": 302,
+        "end": 427
+      },
+      {
+        "start": 428,
+        "end": 462
+      }
+    ],
+    "raw/stripe-radar-rules-2026.md": [
+      {
+        "start": 1,
+        "end": 111
+      },
+      {
+        "start": 112,
+        "end": 204
+      },
+      {
+        "start": 205,
+        "end": 285
+      },
+      {
+        "start": 286,
+        "end": 378
+      },
+      {
+        "start": 379,
+        "end": 454
+      }
+    ],
+    "wiki/sources/source-stripe-radar-rules.md": [
+      {
+        "start": 1,
+        "end": 78
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/574ee369d67148b141aded20/content.diff": [
+      {
+        "start": 1,
+        "end": 75
+      },
+      {
+        "start": 76,
+        "end": 132
+      },
+      {
+        "start": 133,
+        "end": 187
+      },
+      {
+        "start": 188,
+        "end": 244
+      },
+      {
+        "start": 245,
+        "end": 310
+      },
+      {
+        "start": 311,
+        "end": 376
+      },
+      {
+        "start": 377,
+        "end": 444
+      },
+      {
+        "start": 445,
+        "end": 508
+      },
+      {
+        "start": 509,
+        "end": 579
+      }
+    ]
+  },
+  "answers": {
+    "radar-rules": {
+      "Q1": "For https://docs.stripe.com/radar/rules, the revised source-stripe-radar-rules retains the May 10 document\u2019s actions, syntax, defaults, 3DS and Assistant and adds the November 7 rollout. Both describe default screening and authorized owners, administrators and developers creating custom rules. May names Fraud Teams and Platforms and November requires an eligible plan (old raw lines 8-16, old raw lines 183-196; new raw lines 9-17, new raw lines 179-192). Request 3DS rules are limited to Checkout, Payment Intents and Setup Intents, and are evaluated before Allow, Block and Review. A request may not result in issuer authentication. Stripe automatically handles issuer soft declines requiring 3DS and regulatory SCA when necessary even if Radar is disabled (old raw lines 73-88, old raw lines 204-209; new raw lines 74-84, new raw lines 200-205). Contact Stripe for Allow rule creation; for matching payments within the applicable action scope Allow overrides Stripe risk assessment and matching default/custom rules, with the earlier 3DS evaluation still distinct. Applies to all new payments refers to future evaluation, and eligible custom transaction allocation controls which matches receive the action. The default 100% covers all matches, partial allocation stages enforcement, 0% reports shadow outcomes without enforcing and retries keep the same bucket (old raw lines 215-227, old raw lines 286-295; new raw lines 211-244, new raw lines 303-312). Review preserves normal payment processing and only successful payments enter the queue. Platform account rules activate against existing and future accounts, and Payout pause also raises a review (old raw line 255, old raw line 316, old raw lines 428-446; new raw line 192, new raw line 272, new raw line 332, new raw lines 436-454).",
+      "Q2": "For https://docs.stripe.com/radar/rules, the revised source-stripe-radar-rules preserves the reciprocal stripe-radar concept plus the supported attributes, supported methods, lists, risk controls and plan routes. November adds custom transaction allocation, shadow and retry grouping by invoice, then customer plus amount absent invoice, then card plus amount absent customer and same-payment retry grouping for other methods (old raw lines 215-227; new raw lines 223-244). The revised summary records dynamic risk thresholds and the dated account predicates. May 10 named :account_risk_level: for Platforms, November 7 uses :account_fraud_risk_level: for account models without assigning either predicate a specific action (old raw lines 24-43; new raw lines 25-44). The linked November supported-attributes capture, raw/stripe-radar-rules-supported-attributes-2026-11-07.md lines 758-767 and 835-844, places account_fraud_risk_level in connected-account rules and account_risk_level in private-preview Treasury transaction rules. That establishes distinct documented scopes, with aliases and runtime migration unresolved. May named cards/ACH/SEPA for most users in its method section; November broadly states default protection across supported methods (old raw lines 424-426; new raw lines 432-434). The same-day linked supported-payment-methods raw/stripe-radar-supported-payment-methods-2026-11-07.md lines 9-17 scopes default high-risk controls to Standard and above and says Stripe may still block Lite payments. Removal of tier and metrics labels leaves expanded entitlements unresolved (old raw lines 352-393; new raw lines 367-404). December 17, 2024 is the Dashboard visibility split: new users and existing users who never used the legacy rules see risk-score-based CVC/AVS, whereas existing users who enabled at least one legacy rule see legacy options. Only the risk-score rules except low-risk failures; both variants except absent verification input or unsupported issuer checks (old raw lines 49-67; new raw lines 50-68). May listed deprecated recommended-for-card and required-for-card alongside supported-for-card; November retains only deprecated supported-for-card, leaving the omitted entries' availability unresolved (old raw lines 75-81; new raw lines 76-80). In the corrected risk-based 3DS example, the block predicate excludes off-session payments, Apple Pay, and Google Pay under android_pay when it has a cryptogram, so the example does not establish a blanket wallet exemption when the cryptogram is absent (old raw lines 122-124; new raw lines 118-119). Platform-only account review and payout pause remain documented. November removes five screenshot references, which remain in the historical May capture, and retargets reporting and risk-outcome links as navigation (old raw lines 195-196, old raw lines 313-324, old raw lines 347-365, old raw lines 382-396, old raw line 452; new raw line 192, new raw lines 330-340, new raw lines 363-379, new raw line 460). The related documentation also contains two unresolved wording inconsistencies: the risk-based edge-case example mentions an amount threshold absent from its request and block predicates (old raw lines 179-180, new raw lines 175-176), and the Block metrics Risk score row refers to allowed payments (old raw lines 374-376, new raw lines 388-390)."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "radar-rules-actions",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "durable_fact",
+      "anchor": "**4 actions**: Request 3DS, Allow (override everything \u2014 use minimally), Block, Review; Platforms also: Pause payouts.",
+      "proposed_markdown": "**Transaction actions**. An eligible plan supports custom rules. Request 3DS rules apply to Checkout, Payment Intents and Setup Intents, before Allow, Block and Review. A request may not result in issuer authentication. Stripe still handles issuer-required 3DS and regulatory SCA when needed. Creating Allow rules requires contacting Stripe. A Review match still processes normally, and only successful payments enter the queue. Platforms can review accounts or pause payouts and raise a review.",
+      "quote_indexes": [
+        0,
+        4
+      ],
+      "warnings": [
+        "November rules guide at lines 11, 74, 84, 192, 200\u2013205, 272, 303\u2013312, 332 and 436\u2013454. May names Fraud Teams and Platforms. The November guide does not establish a plan mapping."
+      ]
+    },
+    {
+      "update_id": "radar-rules-account-attributes",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Built-in**: `if :risk_level: = 'highest'` (deprecated), `if :risk_level: = 'elevated'` (review); CVC/AVS rules (risk-score-based since Dec 2024). Platforms add `:account_risk_level:` rules.",
+      "proposed_markdown": "**Built-in rules**. The guides describe the deprecated `:risk_level: = 'highest'` block rule, elevated-risk review, and legacy or risk-score-based CVC/AVS Dashboard rules. May names `:account_risk_level:` for Platforms. November lists `:account_fraud_risk_level:` for the two account-level risk predicates without assigning their actions. The [[source-stripe-radar-rules-supported-attributes|November attributes reference]] lists the November spelling for connected-account rules and `account_risk_level` separately for private-preview Treasury transaction rules.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "May rules lines 33\u201343, November rules lines 33\u201344, and the November supported-attributes capture lines 758\u2013767 and 835\u2013844. Neither alias nor migration behavior is established."
+      ]
+    },
+    {
+      "update_id": "radar-rules-traffic-allocation",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Rule syntax**: `{action} if {attribute} {operator} {value}`. Metadata: `::field::`. List membership: `:attr: in @list`. Max 200 transaction + 100 account rules. Backtests against last 6 months.",
+      "proposed_markdown": "**Rule syntax**: `{action} if {attribute} {operator} {value}`. Metadata: `::field::`. List membership: `:attr: in @list`. Max 200 transaction + 100 account rules. Transaction backtests simulate the last six months of charges.\n\n**Traffic allocation**. November documents staged rollout or rollback for custom transaction rules. 100% is the default. At 0% shadow, Radar evaluates and reports outcomes without enforcing the action. Retries for the same transaction stay in the same bucket. See [[source-stripe-radar-rules#Traffic Allocation|the rules guide]] for card grouping.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "November rules lines 223\u2013244 and 274."
+      ]
+    },
+    {
+      "update_id": "radar-rules-3ds-example",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "durable_fact",
+      "anchor": "**3DS attributes**: `is_3d_secure` (recommended for block), `is_3d_secure_authenticated` (stricter), `has_liability_shift`. Exclude wallets: `not(:digital_wallet: = 'android_pay' and :has_cryptogram:)`.",
+      "proposed_markdown": "**3DS attributes**. `is_3d_secure` is generally recommended for Block and `is_3d_secure_authenticated` requires full authentication. `has_liability_shift` reflects Stripe's expected liability shift. The risk-based Block example excludes off-session payments, Apple Pay, and Google Pay when it has a cryptogram. See [[source-stripe-radar-rules#Key 3DS Attributes|the dated rules examples]].",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Wallet predicate in May raw lines 122\u2013123 and November raw lines 118\u2013119. Attributes in November raw lines 92\u201396. The example's exclusions apply to that predicate."
+      ]
+    },
+    {
+      "update_id": "radar-rules-assistant-and-eu",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Radar Assistant**: LLM writes rules from natural language (training consent required). EU note: geo-blocking regulation prohibits blocking EU customers by location. See [[source-stripe-radar-rules]].",
+      "proposed_markdown": "**Radar Assistant** drafts transaction rules from natural language. Using it constitutes agreement that Stripe can log and use chat entries to train and improve it. Users can write rules manually. The guide says EU businesses might be affected by the Geo-blocking Regulation and its limits on blocking payments from customers based in EU member states. See [[source-stripe-radar-rules]].",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Geo-blocking qualification appears at November rules line 19 and May rules line 18."
+      ]
+    }
+  ]
+}

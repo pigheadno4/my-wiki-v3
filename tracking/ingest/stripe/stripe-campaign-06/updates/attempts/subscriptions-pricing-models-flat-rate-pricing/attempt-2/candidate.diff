@@ -1,0 +1,65 @@
+--- wiki/sources/source-stripe-flat-rate-pricing.md
++++ wiki/sources/source-stripe-flat-rate-pricing.md (candidate)
+@@ -2,39 +2,49 @@
+ title: "Stripe — Set Up Flat Rate Pricing"
+ type: source
+ date_ingested: 2026-05-12
++date_updated: 2026-11-24
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/subscriptions/pricing-models/flat-rate-pricing"
+ raw_files:
++  - "stripe-subscriptions-pricing-models-flat-rate-pricing-2026-11-07.md"
+   - "stripe-flat-rate-pricing-2026.md"
+ tags: [stripe, subscriptions, flat-rate, pricing, products, prices]
+ ---
+ 
+ ## Summary
+ 
+-Implementation guide for flat rate subscription pricing: create Product → create Price(s) with monthly/yearly intervals → create Subscription. One product can have multiple prices (monthly + yearly) sharing the same product description.
++The May 12 and November 7, 2026 [[stripe]] guides describe flat-rate [[stripe-subscriptions|subscriptions]]. Model each service level as a Product and use separate recurring Prices for its billing intervals. In the example, the Basic Product has a 10 USD monthly Price and a 100 USD yearly Price. Both share its description on the customer's receipt and invoice.
++
++## Dashboard Setup
++
++Create a named Product in the Product catalog and optionally add a description. Add a recurring flat-rate Price for each offered interval and save the Product with its Prices.
++
++> [!note] Product and Price edits
++> Both flat-rate captures describe an edit cutoff at subscription creation within the Dashboard setup steps. The separate [[source-stripe-products-prices#Product and Price lifecycle|catalog management guide]] describes editing existing Products in the Dashboard or through the API. Its April and November editions list `metadata`, `nickname`, and `active` in the generic post-creation Price note. Both editions separately describe adding currencies to an existing Price in the Dashboard and illustrate updating `lookup_key` through the API. These documents leave a universal subscription-time edit cutoff unresolved.
+ 
+ ## Key API Pattern
+ 
++The following Node pattern follows the May examples. The November cURL examples use the same Product, recurring Price, and Subscription parameters.
++
+ ```js
+-// 1. Create product
++// Create the Product
+ stripe.products.create({ name: 'Basic' })
+ 
+-// 2. Create monthly price
+-stripe.prices.create({ product: id, unit_amount: 1000, currency: 'usd', recurring: { interval: 'month' } })
++// Create the two recurring Prices for that Product
++stripe.prices.create({ product: productId, unit_amount: 1000, currency: 'usd', recurring: { interval: 'month' } })
++stripe.prices.create({ product: productId, unit_amount: 10000, currency: 'usd', recurring: { interval: 'year' } })
+ 
+-// 3. Create yearly price
+-stripe.prices.create({ product: id, unit_amount: 10000, currency: 'usd', recurring: { interval: 'year' } })
+-
+-// 4. Create subscription
+-stripe.subscriptions.create({ customer: id, items: [{ price: priceId }] })
++// Create a Subscription with the customer's selected Price
++stripe.subscriptions.create({ customer: customerId, items: [{ price: priceId }] })
+ ```
+-
+-**Note**: Products can't be edited after a subscription is created with them.
+ 
+ ## Related Pages
+ 
+-- [[stripe-subscriptions]] — concept page
++- [[stripe-subscriptions]] — subscriptions concept
+ - [[source-stripe-recurring-pricing-models]] — pricing models overview
++- [[source-stripe-products-prices]] — Product and Price lifecycle
+ 
+ ## Raw Sources
+ 
+-- [[stripe-flat-rate-pricing-2026]] — verbatim flat rate pricing guide (106 lines, 1 image)
++- [[raw/stripe-subscriptions-pricing-models-flat-rate-pricing-2026-11-07|2026-11-07 flat-rate pricing guide]]
++- [[raw/stripe-flat-rate-pricing-2026|2026-05-12 flat-rate pricing guide]] — includes the original illustration and Node examples

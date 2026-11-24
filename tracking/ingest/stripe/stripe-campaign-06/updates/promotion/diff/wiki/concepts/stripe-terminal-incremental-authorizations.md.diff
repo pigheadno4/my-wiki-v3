@@ -1,0 +1,51 @@
+--- wiki/concepts/stripe-terminal-incremental-authorizations.md
++++ wiki/concepts/stripe-terminal-incremental-authorizations.md
+@@ -17,6 +17,7 @@
+ | Mastercard | All |
+ | American Express | All |
+ | Discover | Transportation, hospitality, food service, car rental, recreation (restricted — see source for full list) |
++| China UnionPay (November 2026 private preview) | Car rental and automobile rental agencies, hotels, motels, resorts and steamship or cruise lines. Selected Asia-Pacific and European markets. Request access through Stripe Sales. |
+ 
+ Additional restrictions:
+ 
+@@ -27,11 +28,13 @@
+ 
+ ## Integration Flow
+ 
+-For iOS `StripeTerminal@6.0.0`, SDK-side `PaymentIntentParametersBuilder` now defaults to `.automaticAsync`. Explicitly choose `.setCaptureMethod(.manual)` for incremental authorization; the retained example enforces this when that feature is selected. The server-side manual-capture example below remains applicable. See [[source-github-stripe-terminal-ios]] and [[changelog-github-stripe-terminal-ios]].
++For iOS `StripeTerminal@6.0.0`, SDK-side `PaymentIntentParametersBuilder` defaults to `.automaticAsync`. Explicitly choose `.setCaptureMethod(.manual)` for incremental authorization, as the retained versioned example does when that feature is selected. See [[source-github-stripe-terminal-ios]] and [[changelog-github-stripe-terminal-ios]].
+ 
+ For Android `stripeterminal@6.0.0`, the SDK builder defaults to `CaptureMethod.AutomaticAsync`; explicitly choose `CaptureMethod.Manual` for incremental authorization. The changed Java/Kotlin examples enforce this when incremental authorization is selected; eligibility and authoritative backend state still govern later capture. See [[source-github-stripe-terminal-android]] and [[changelog-github-stripe-terminal-android]].
+ 
+ ### 1. Create PaymentIntent with incremental auth support
++
++The November 2026 guide also requires explicit `captureMethod: 'manual'` for React Native SDK `0.0.1-beta.34` and later. The Swift and Kotlin creation snippets and the Swift confirmation setup omit the manual setting. Set it explicitly alongside the incremental authorization request flag. The Node example below is from the May 2026 capture. November’s server example uses `allowed_payment_method_types[]=card_present`. See [[stripe-payment-intents]] for the separate versioned Node request boundary.
+ 
+ ```javascript
+ const paymentIntent = await stripe.paymentIntents.create({
+@@ -51,7 +54,7 @@
+ 
+ ### 2. Confirm and check eligibility
+ 
+-After confirming the PaymentIntent (collect + processPayment/confirmPaymentIntent), check `incremental_authorization_supported` on `latest_charge`. Not guaranteed even if requested — actual eligibility depends on card network and MCC at transaction time.
++After confirming the PaymentIntent, inspect `payment_method_details.card_present.incremental_authorization_supported` on `latest_charge`. Eligibility depends on card network and merchant category at transaction time. In the May React Native example, collect and process use the PaymentIntent ID. November passes the object for collection, then uses `confirmPaymentIntent` with the collected object. The November confirmation example omits the incremental authorization request flag, which is part of the creation prerequisites.
+ 
+ ### 3. Perform incremental authorization (server-side)
+ 
+@@ -78,7 +81,7 @@
+ 
+ Capturing with `amount_to_capture` higher than the current authorized amount triggers an **automatic** incremental authorization attempt.
+ 
+-**Exception**: merchants eligible for on-receipt tipping (overcapture) — `amount_to_capture` above authorized amount does NOT trigger incremental auth; capture always succeeds (overcapture applies instead).
++**Capture outcome.** If an automatic increment returns `card_declined`, the previous amount stays authorized and accompanying field updates are unsaved. Check for possible capture failures. For eligible on-receipt tips, overcapture skips the automatic increment. The November on-receipt guide requires checking the latest Charge’s `payment_method_details.card_present.overcapture_supported` and limits the excess to 50% of the authorized amount or USD 50, whichever is greater. See [[source-stripe-terminal-on-receipt-tipping]].
+ 
+ ## Relationship to On-Receipt Tipping
+ 
+@@ -88,6 +91,6 @@
+ 
+ ## Sources
+ 
+-- [[source-stripe-terminal-incremental-authorizations]] — primary source: availability table, setup flow, incrementAuthorization API, capture behavior
++- [[source-stripe-terminal-incremental-authorizations]] — May and November 2026 Terminal guides for payment eligibility, versioned manual capture setup, increment, and capture outcomes.
+ - [[source-stripe-terminal-on-receipt-tipping]] — mentions incremental auth as fallback when overcapture limits are exceeded
+ - [[stripe-terminal-extended-authorizations]] — related: extends the capture window (vs increasing the amount)

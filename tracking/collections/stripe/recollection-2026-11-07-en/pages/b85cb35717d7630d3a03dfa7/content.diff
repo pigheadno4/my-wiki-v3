@@ -1,0 +1,524 @@
+--- raw/stripe-terminal-apps-on-devices-build-2025.md
++++ raw/stripe-terminal-features-apps-on-devices-build-2026-11-07.md
+@@ -4,21 +4,23 @@
+ 
+ Access the Apps on Devices sample integration repository on [GitHub](https://github.com/stripe-samples/terminal-apps-on-devices).
+ 
+-Use your SmartPOS DevKit device to test and iterate your application without going through the deployment, app review, or signing process.
+-
+-If you need a DevKit device, you can [order up to five per user](https://docs.stripe.com/terminal/fleet/order-and-return-readers.md) from the [Readers](https://dashboard.stripe.com/terminal) section in your Dashboard.
++Use your SmartPOS DevKit device to test and iterate your application without going through the deployment, app review, or signing process. If you only have a production reader, you can accept payments with a [server-driven integration](https://docs.stripe.com/terminal/designing-integration.md) or use [standalone mode](https://docs.stripe.com/terminal/payments/ready-made-apps.md) on a supported reader.
++
++If you need a DevKit device, you can [order up to five per user](https://docs.stripe.com/terminal/fleet/order-and-return-readers.md) from the [Readers](https://dashboard.stripe.com/terminal/shop) page in the Dashboard.
+ 
+ > #### Verifone reader support
+->
+-> Verifone reader support is in public preview for the United States and Canada. Some verifone readers are in private preview for Ireland and the United Kingdom (V660p, UX700, P630) and for Singapore (V660p, P630). To join the preview, you must [contact the Sales team to order the applicable reader](https://stripe.com/contact/sales).
+-
+-## Set up the DevKit
++> 
++> Verifone P630 and UX700 are **generally available** in the United States. Verifone V660p and M425 are in **public preview** for the United States and Canada, with V660p, P630, and UX700 also in **public preview** for Belgium, Canada, Italy, the Netherlands, New Zealand, Norway, Poland, Spain, and Sweden. V660p, UX700, and P630 are in **private preview** for Ireland and the United Kingdom, France, Singapore (V660p, P630), and Australia.
++> 
++> To order a Verifone reader or join a preview, you must [contact the Sales team](https://stripe.com/contact/sales).
++
++## Set up the DevKit 
+ 
+ Before you can use your DevKit for app development, you must do the following:
+ 
+ 1. Follow the on-screen prompts to connect to a network.
+-1. [Register](https://docs.stripe.com/terminal/payments/connect-reader.md?terminal-sdk-platform=android&reader-type=internet#register-reader) the device to your Stripe account.
+-1. Install all available updates.
++2. [Register](https://docs.stripe.com/terminal/payments/connect-reader.md?terminal-sdk-platform=android&reader-type=internet#register-reader) the device to your Stripe account.
++3. Install all available updates.
+ 
+ After the initial setup, you can register your DevKit to another account or location at any time. To do so, connect the DevKit to the internet and follow the steps to [register a reader](https://docs.stripe.com/terminal/payments/connect-reader.md?terminal-sdk-platform=android&reader-type=internet#register-reader).
+ 
+@@ -30,7 +32,7 @@
+ 
+ The Terminal API supports targeting registered DevKit devices.
+ 
+-## Develop your app for Stripe devices
++## Develop your app for Stripe devices 
+ 
+ Use the following steps to develop your app for Stripe Android devices, including setting up the app and handing it off to the Stripe Reader app.
+ 
+@@ -48,18 +50,27 @@
+ 
+ ```kotlin
+ dependencies {
+-   implementation("com.stripe:stripeterminal-core:5.4.1")
+-   implementation("com.stripe:stripeterminal-appsondevices:5.4.1")
+-}
+-```
+-
+-Make sure that you aren’t using any other Stripe Terminal SDK dependencies. For example, if you previously integrated the Terminal Android SDK, don’t use the top-level `com.stripe:stripeterminal` dependency (for example, `com.stripe:stripeterminal:5.4.1`).
++   implementation("com.stripe:stripeterminal-core:6.0.0")
++   implementation("com.stripe:stripeterminal-appsondevices:6.0.0")
++}
++```
++
++Make sure that you aren’t using any other Stripe Terminal SDK dependencies. For example, if you previously integrated the Terminal Android SDK, don’t use the top-level `com.stripe:stripeterminal` dependency (for example, `com.stripe:stripeterminal:6.0.0`).
+ 
+ See an example of [including dependencies in your app’s build script](https://github.com/stripe-samples/terminal-apps-on-devices/blob/718c2de38c7b8003fcf58c536c266bb990ad43a7/app/build.gradle.kts#L66).
+ 
++Terminal Android SDK `6.0.0` and later require your app to set `compileSdk` to 35 (Android 15) or higher:
++
++```kotlin
++android {
++  compileSdk = 35
++  // ...
++}
++```
++
+ ### Configure your application
+ 
+-To inform the Stripe SDK of lifecycle events, add a [TerminalApplicationDelegate.onCreate()](https://stripe.dev/stripe-terminal-android/core/com.stripe.stripeterminal/-terminal-application-delegate/on-create.html) call to the [onCreate()](<https://developer.android.com/reference/android/app/Application#onCreate()>) method for your application subclass.
++To inform the Stripe SDK of lifecycle events, add a [TerminalApplicationDelegate.onCreate()](https://stripe.dev/stripe-terminal-android/core/com.stripe.stripeterminal/-terminal-application-delegate/on-create.html) call to the [onCreate()](https://developer.android.com/reference/android/app/Application#onCreate\(\)) method for your application subclass.
+ 
+ #### Kotlin
+ 
+@@ -75,10 +86,11 @@
+ 
+ In your [app manifest](https://developer.android.com/guide/topics/manifest/manifest-intro), specify the name of your `Application` subclass with the `android:name` attribute.
+ 
+-> To ensure your `Application` supports devices running Android 15, set the `targetSdkVersion` to `24` or later.
++> To make sure your `Application` supports devices running Android 15, set the `targetSdkVersion` to `24` or later.
+ 
+ ```xml
+-<manifest xmlns:android="http://schemas.android.com/apk/res/android"><application android:name=".MyApp">
++<manifest xmlns:android="http://schemas.android.com/apk/res/android">
++    <application android:name=".MyApp">
+     <!-- App manifest contents -->
+     </application>
+ </manifest>
+@@ -92,7 +104,7 @@
+ 
+ ### Configure your application
+ 
+-To inform the Stripe SDK of lifecycle events, add a `TerminalApplicationDelegate.onCreate()` call to the [onCreate()](<https://developer.android.com/reference/android/app/Application#onCreate()>) method for your application subclass.
++To inform the Stripe SDK of lifecycle events, add a `TerminalApplicationDelegate.onCreate()` call to the [onCreate()](https://developer.android.com/reference/android/app/Application#onCreate\(\)) method for your application subclass.
+ 
+ #### Kotlin
+ 
+@@ -111,7 +123,8 @@
+ In your [app manifest](https://developer.android.com/guide/topics/manifest/manifest-intro), specify the name of your `Application` subclass with the `android:name` attribute.
+ 
+ ```xml
+-<manifest xmlns:android="http://schemas.android.com/apk/res/android"><application android:name=".MainApplication">
++<manifest xmlns:android="http://schemas.android.com/apk/res/android">
++    <application android:name=".MainApplication">
+     <!-- App manifest contents -->
+     </application>
+ </manifest>
+@@ -121,9 +134,9 @@
+ 
+ ### Serverless initialization
+ 
+-For Apps on Devices, you can use `AppsOnDevicesConnectionTokenProvider` instead of a backend token provider. This enables initialization without a backend server providing connection tokens.
+-
+-```js
++For Apps on Devices, you can use `AppsOnDevicesConnectionTokenProvider` instead of a back-end token provider. This enables initialization without a back-end server providing connection tokens.
++
++```tsx
+ import {
+   StripeTerminalProvider,
+   AppsOnDevicesConnectionTokenProvider,
+@@ -146,15 +159,15 @@
+ 
+ #### Android
+ 
+-> In version `5.0.0` of the Android SDK, you can use the `easyConnect` method to combine reader discovery and connection into a single API call to simplify integration. See the [SDK migration guide](https://docs.stripe.com/terminal/references/sdk-migration-guide.md#update-your-reader-connection-usage) for details.
++> As of version `5.0.0` of the Android SDK, you can use the `easyConnect` method to combine reader discovery and connection into a single API call to simplify integration. See the [SDK migration guide](https://docs.stripe.com/terminal/references/sdk-v5-migration-guide.md?terminal-sdk-platform=android#update-your-reader-connection-usage) for details.
+ 
+ You must register a new Stripe device to your account as a new [Reader object](https://docs.stripe.com/api/terminal/readers/object.md). Use the pairing code provided in the device’s admin settings to [create the Reader object](https://docs.stripe.com/api/terminal/readers/create.md). Your app uses the Stripe Terminal Android SDK to discover and connect to your device:
+ 
+-See more examples of how to [discover](https://github.com/stripe-samples/terminal-apps-on-devices/blob/718c2de38c7b8003fcf58c536c266bb990ad43a7/app/src/main/java/com/stripe/aod/sampleapp/model/MainViewModel.kt#L90) and [connect](https://github.com/stripe-samples/terminal-apps-on-devices/blob/718c2de38c7b8003fcf58c536c266bb990ad43a7/app/src/main/java/com/stripe/aod/sampleapp/model/MainViewModel.kt#L106) using handoff mode in the Apps on Devices sample integration repository on [GitHub](https://github.com/stripe-samples/terminal-apps-on-devices).
++See an example of how to [discover and connect to a reader using easyConnect](https://github.com/stripe-samples/terminal-apps-on-devices/blob/05de97f52683130339a5973cf875cb834398f381/app/src/main/java/com/stripe/aod/sampleapp/model/MainViewModel.kt#L42-L88) in the Apps on Devices sample integration repository on [GitHub](https://github.com/stripe-samples/terminal-apps-on-devices).
+ 
+ 1. Your app runs on your registered device.
+-1. Your app discovers the reader by calling [discoverReaders](https://stripe.dev/stripe-terminal-android/core/com.stripe.stripeterminal/-terminal/discover-readers.html) with [AppsOnDevicesDiscoveryConfiguration](https://stripe.dev/stripe-terminal-android/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-apps-on-devices-discovery-configuration/index.html).
+-1. Your app connects to the reader by using [connectReader](https://stripe.dev/stripe-terminal-android/core/com.stripe.stripeterminal/-terminal/connect-reader.html).
++2. Your app discovers the reader by calling [discoverReaders](https://stripe.dev/stripe-terminal-android/core/com.stripe.stripeterminal/-terminal/discover-readers.html) with [AppsOnDevicesDiscoveryConfiguration](https://stripe.dev/stripe-terminal-android/external/com.stripe.stripeterminal.external.models/-discovery-configuration/-apps-on-devices-discovery-configuration/index.html).
++3. Your app connects to the reader by using [connectReader](https://stripe.dev/stripe-terminal-android/core/com.stripe.stripeterminal/-terminal/connect-reader.html).
+ 
+ The following example shows how to discover and connect to a Stripe reader using handoff mode in an Android app:
+ 
+@@ -162,7 +175,8 @@
+ 
+ ```kotlin
+ private fun discoverReaders() {
+-    Terminal.getInstance().discoverReaders(config = AppsOnDevicesDiscoveryConfiguration(),
++    Terminal.getInstance().discoverReaders(
++        config = AppsOnDevicesDiscoveryConfiguration(),
+         discoveryListener = object : DiscoveryListener {
+             override fun onUpdateDiscoveredReaders(readers: List<Reader>) {
+                 // In Apps on Devices discovery, the list will
+@@ -187,7 +201,8 @@
+ 
+ private fun connectReader(reader: Reader) {
+     Terminal.getInstance().connectReader(
+-        reader,AppsOnDevicesConnectionConfiguration(
++        reader,
++        AppsOnDevicesConnectionConfiguration(
+             object : AppsOnDevicesReaderListener {
+                 override fun onDisconnect(reason: DisconnectReason) {
+                     // Optionally get notified about reader disconnects (for example, reader was rebooted)
+@@ -213,17 +228,17 @@
+ 
+ #### React Native
+ 
+-> In version `0.0.1-beta.29` of the React Native SDK, you can use the [easyConnect](https://stripe.dev/stripe-terminal-react-native/api-reference/interfaces/StripeTerminalSdkType.html#easyconnect) method to combine reader discovery and connection into a single API call to simplify integration.
++> In version `0.0.1-beta.29` of the React Native SDK, you can use the [easyConnect](https://stripe.dev/stripe-terminal-react-native/api-reference/interfaces/WithStripeTerminalProps.html#easyconnect) method to combine reader discovery and connection into a single API call to simplify integration.
+ 
+ You must register a new Stripe device to your account as a new [Reader object](https://docs.stripe.com/api/terminal/readers/object.md). Use the pairing code provided in the device’s admin settings to [create the Reader object](https://docs.stripe.com/api/terminal/readers/create.md). Your app uses the Stripe Terminal React Native SDK to discover and connect to your device:
+ 
+ 1. Your app runs on your registered device.
+-1. Your app discovers the reader by calling [discoverReaders](https://stripe.dev/stripe-terminal-react-native/api-reference/interfaces/StripeTerminalSdkType.html#discoverReaders) with `appsOnDevices` [discovery method](https://stripe.dev/stripe-terminal-react-native/api-reference/modules/Reader.Android.html#DiscoveryMethod).
+-1. Your app connects to the reader by using [connectReader](https://stripe.dev/stripe-terminal-react-native/api-reference/interfaces/StripeTerminalSdkType.html#connectreader-1).
++2. Your app discovers the reader by calling [discoverReaders](https://stripe.dev/stripe-terminal-react-native/api-reference/interfaces/WithStripeTerminalProps.html#discoverreaders) with `appsOnDevices` [discovery method](https://stripe.dev/stripe-terminal-react-native/api-reference/modules/Reader.Android.html#DiscoveryMethod).
++3. Your app connects to the reader by using [connectReader](https://stripe.dev/stripe-terminal-react-native/api-reference/interfaces/WithStripeTerminalProps.html#connectreader).
+ 
+ The following example shows how to discover and connect to a Stripe reader using Apps on Devices mode in a React Native app:
+ 
+-```js
++```tsx
+ const { discoverReaders, connectReader, discoveredReaders } =
+     useStripeTerminal({
+       onUpdateDiscoveredReaders: async (readers) => {
+@@ -277,6 +292,10 @@
+ 
+ When a payment operation starts, the Stripe Reader app comes to the foreground and your app transitions to the background. Unless specified, the transition uses the Android system default animation, which slides from the right.
+ 
++> Custom transition animations require reader software version 2.42 or later.
++
++#### Android
++
+ You can customize the transition by passing an `appTransitionAnimation` parameter to `AppsOnDevicesConnectionConfiguration` when connecting to the reader.
+ 
+ ### Use a preset animation
+@@ -291,7 +310,8 @@
+         appsOnDevicesListener = object : AppsOnDevicesReaderListener {
+             override fun onDisconnect(reason: DisconnectReason) {}
+             override fun onReportReaderEvent(event: ReaderEvent) {}
+-        },appTransitionAnimation = AppTransitionAnimation.Preset(AppTransitionPreset.SLIDE_FROM_BOTTOM)
++        },
++        appTransitionAnimation = AppTransitionAnimation.Preset(AppTransitionPreset.SLIDE_FROM_BOTTOM)
+     )
+ 
+     Terminal.getInstance().connectReader(
+@@ -323,7 +343,8 @@
+     appsOnDevicesListener = object : AppsOnDevicesReaderListener {
+         override fun onDisconnect(reason: DisconnectReason) {}
+         override fun onReportReaderEvent(event: ReaderEvent) {}
+-    },appTransitionAnimation = AppTransitionAnimation.Custom(
++    },
++    appTransitionAnimation = AppTransitionAnimation.Custom(
+         enterAnim = R.anim.slide_in_up,
+         exitAnim = R.anim.slide_out_down
+     )
+@@ -338,7 +359,8 @@
+ 
+ ```kotlin
+ val config = AppsOnDevicesConnectionConfiguration(
+-    appsOnDevicesListener = listener,appTransitionAnimation = AppTransitionAnimation.Custom(
++    appsOnDevicesListener = listener,
++    appTransitionAnimation = AppTransitionAnimation.Custom(
+         enterAnim = AppTransitionAnimation.Custom.NO_ANIMATION,
+         exitAnim = AppTransitionAnimation.Custom.NO_ANIMATION
+     )
+@@ -347,42 +369,188 @@
+ 
+ > If the animation resource IDs are invalid, the SDK throws an exception during connection in debug builds. In release builds, the SDK uses the system default transition.
+ 
+-## Device management [Client-side]
+-
+-You can access the device’s admin settings by launching the `stripe://settings/` deep-link URI from your app.
+-
+-See an example of [launching the admin settings deep-link URI](https://github.com/stripe-samples/terminal-apps-on-devices/blob/718c2de38c7b8003fcf58c536c266bb990ad43a7/app/src/main/java/com/stripe/aod/sampleapp/fragment/HomeFragment.kt#L30).
+-
+-#### Kotlin
+-
+-```kotlin
++#### React Native
++
++You can customize the transition by passing an `appTransitionAnimation` parameter to `ConnectAppsOnDevicesParams` or `EasyConnectAppsOnDevicesParams` when connecting to the reader.
++
++### Use a preset animation
++
++The SDK bundles a preset animation that requires no additional setup. Pass `{ type: 'preset', preset: AppTransitionPreset.SlideFromBottom }`:
++
++```typescript
++import {
++  useStripeTerminal,
++  AppTransitionPreset,
++} from '@stripe/stripe-terminal-react-native';
++
++const { connectReader } = useStripeTerminal();
++
++const { reader, error } = await connectReader({
++  discoveryMethod: 'appsOnDevices',
++  reader: selectedReader,
++  appTransitionAnimation: { type: 'preset', preset: AppTransitionPreset.SlideFromBottom },
++});
++```
++
++If you use the `SlideFromBottom` preset, the Stripe Reader app slides up from the bottom of the screen.
++
++### Use a custom animation
++
++You can define custom Android animation resources in the `res/anim/` directory of your Android app. Then, pass the resource IDs as `enterAnim` and `exitAnim`. The `enterAnim` controls how the Stripe Reader app enters the screen. The `exitAnim` controls how your app exits the screen.
++
++```typescript
++// enterAnim and exitAnim are Android resource IDs (numbers) from your res/anim/ directory
++const enterAnim: number = /* your enter animation resource ID */;
++const exitAnim: number = /* your exit animation resource ID */;
++
++const { reader, error } = await connectReader({
++  discoveryMethod: 'appsOnDevices',
++  reader: selectedReader,
++  appTransitionAnimation: { type: 'custom', enterAnim, exitAnim },
++});
++```
++
++### Disable the transition animation
++
++You can disable the transition animation by passing `0` for both `enterAnim` and `exitAnim`. To disable the animation in only one direction, pass `0` for either `enterAnim` or `exitAnim`.
++
++```typescript
++const { reader, error } = await connectReader({
++  discoveryMethod: 'appsOnDevices',
++  reader: selectedReader,
++  appTransitionAnimation: { type: 'custom', enterAnim: 0, exitAnim: 0 },
++});
++```
++
++> If the animation resource IDs are invalid, the SDK throws an exception during connection in debug builds. In release builds, the SDK uses the system default transition.
++
++### Use the system default animation
++
++Omit `appTransitionAnimation` or pass `{ type: 'systemDefault' }` to use the Android system default transition.
++
++### Customize transitions when opening device settings
++
++Your app can open the reader’s [settings screen](https://docs.stripe.com/terminal/payments/setup-reader/stripe-reader-s700-s710.md#settings) to let businesses configure Wi-Fi, check for software updates, or adjust device preferences. This uses the `stripe://settings/` deeplink, which triggers a standard Android activity transition.
++
++The `appTransitionAnimation` parameter configured during [reader connection](https://docs.stripe.com/terminal/features/apps-on-devices/build.md#customize-transitions) doesn’t apply to these transitions. It only controls animations the SDK triggers during payment operations. To create a consistent transition when navigating to device settings, use `ActivityOptions.makeCustomAnimation` with the SDK’s built-in animation presets.
++
++The Terminal SDK includes animation resource files for each preset. You can access the enter and exit animation resource IDs from `AppTransitionPreset.SLIDE_FROM_BOTTOM` using `.enterAnim` and `.exitAnim`. Currently, `SLIDE_FROM_BOTTOM` is the only available preset:
++
++#### Kotlin
++
++```kotlin
++import android.app.ActivityOptions
++import com.stripe.stripeterminal.appsondevices.extensions.enterAnim
++import com.stripe.stripeterminal.appsondevices.extensions.exitAnim
++import com.stripe.stripeterminal.external.models.AppTransitionPreset
++
++val options = ActivityOptions.makeCustomAnimation(
++    this,
++    AppTransitionPreset.SLIDE_FROM_BOTTOM.enterAnim,
++    AppTransitionPreset.SLIDE_FROM_BOTTOM.exitAnim,
++)
+ startActivity(
+     Intent(Intent.ACTION_VIEW)
+-        .setData(Uri.parse("stripe://settings/"))
++        .setData(Uri.parse("stripe://settings/")),
++    options.toBundle()
+ )
+ ```
+ 
++To disable the animation, pass `0` for both animation parameters:
++
++#### Kotlin
++
++```kotlin
++val options = ActivityOptions.makeCustomAnimation(this, 0, 0)
++startActivity(
++    Intent(Intent.ACTION_VIEW)
++        .setData(Uri.parse("stripe://settings/")),
++    options.toBundle()
++)
++```
++
++## Device management [Client-side]
++
++Your app can deep-link directly to specific device settings screens, allowing users to access the exact configuration they need without navigating the full admin menu. For example, add a “WiFi settings” button that opens network configuration, or let staff adjust screen brightness without needing to navigate through the top-level settings menu.
++
++### Available deep links
++
++Launch any of these URIs using an Android `ACTION_VIEW` intent:
++
++| Destination | URI | Admin PIN required |
++| --- | --- | --- |
++| All settings | `stripe://settings/` | Always |
++| Network | `stripe://settings/network/` | Always |
++| Advanced | `stripe://settings/advanced/` | Always |
++| Registration code | `stripe://settings/registration_code/` | Always |
++| Appearance | `stripe://settings/appearance/` | Bypassable |
++| Language | `stripe://settings/language/` | Bypassable |
++| Bug report | `stripe://settings/bug_report/` | Bypassable |
++
++Screens marked **Bypassable** prompt for the admin PIN by default, but your app can skip the prompt. See [Bypass the admin PIN](https://docs.stripe.com/terminal/features/apps-on-devices/build.md#bypass-the-admin-pin) below.
++
++- **Network** lets users select and configure WiFi networks, including static IP and custom DNS settings.
++- **Advanced** provides access to additional settings such as [diagnostics](https://docs.stripe.com/terminal/readers/stripe-reader-s700-s710.md#diagnostics) and factory reset.
++- **Registration code** generates a pairing code to [register the reader](https://docs.stripe.com/terminal/fleet/register-readers.md#smart-readers) to a Stripe account.
++- **Appearance** controls screen brightness and theme.
++- **Bug report** collects device logs and diagnostic information and sends them to Stripe support for troubleshooting.
++- **Language** controls the reader display language.
++
++### Launch a settings screen
++
++Use a standard Android `ACTION_VIEW` intent to open a settings screen. To customize the transition animation, pass an `ActivityOptions` bundle as described in [Customize transitions when opening device settings](https://docs.stripe.com/terminal/features/apps-on-devices/build.md#customize-transitions-when-opening-device-settings).
++
++See the [Apps on Devices sample app](https://github.com/stripe-samples/terminal-apps-on-devices) for a complete working example.
++
++#### Kotlin
++
++```kotlin
++startActivity(
++    Intent(Intent.ACTION_VIEW)
++        .setData(Uri.parse("stripe://settings/network/"))
++)
++```
++
++### Bypass the admin PIN
++
++For appearance, language, and bug report screens, the device prompts for the admin PIN by default. You can skip this prompt by adding the `bypass_admin_menu_passcode` extra to the intent. Use this for low-risk screens where you don’t want staff to enter a PIN every time.
++
++#### Kotlin
++
++```kotlin
++startActivity(
++    Intent(Intent.ACTION_VIEW)
++        .setData(Uri.parse("stripe://settings/appearance/"))
++        .putExtra("bypass_admin_menu_passcode", true)
++)
++```
++
++> Only bypass the admin PIN for non-sensitive screens. All settings, network, advanced, and registration code screens always require the PIN regardless of this flag.
++
+ ## Instrument the app [Client-side]
+ 
+ Stripe doesn’t provide an application-level instrumentation solution. To keep track of crashes and other logs from your application, you can use a third-party library such as Sentry or Crashlytics.
+ 
+ ## Set the device locale [Client-side]
+ 
+-The device user’s language selection (not country) informs the value returned by [Locale.getDefault()](<https://developer.android.com/reference/java/util/Locale#getDefault()>). You can change the device language in the admin settings.
++The device user’s language selection (not country) informs the value returned by [Locale.getDefault()](https://developer.android.com/reference/java/util/Locale#getDefault\(\)). You can change the device language in the admin settings.
+ 
+ ## Screen orientation [Client-side]
+ 
+-Stripe Android devices have the _Auto-rotate screen_ setting enabled by default. Your app can override this setting by locking the UI to a specific screen orientation.
++Stripe Android devices have the *Auto-rotate screen* setting enabled by default. Your app can override this setting by locking the UI to a specific screen orientation.
+ 
+ This can be achieved by setting the [screenOrientation](https://developer.android.com/guide/topics/manifest/activity-element#screen) attribute on the relevant `<activity>` tags in the manifest.
++
++> On Stripe Reader T600, set `android:screenOrientation="nosensor"` to make sure your app runs in the reader’s landscape orientation.
+ 
+ ```xml
+ <activity
+-    android:name=".MainActivity"android:screenOrientation="portrait">
++    android:name=".MainActivity"
++    android:screenOrientation="portrait">
+ </activity>
+ ```
+ 
+-Alternatively, this can be set programmatically using [Activity::setRequestedOrientation](<https://developer.android.com/reference/android/app/Activity#setRequestedOrientation(int)>) in your `Activity` class.
++Alternatively, this can be set programmatically using [Activity::setRequestedOrientation](https://developer.android.com/reference/android/app/Activity#setRequestedOrientation\(int\)) in your `Activity` class.
+ 
+ #### Kotlin
+ 
+@@ -390,7 +558,8 @@
+ class MainActivity : Activity() {
+     override fun onCreate(savedInstanceState: Bundle?) {
+         super.onCreate(savedInstanceState)
+-// Lock to portrait orientation
++
++        // Lock to portrait orientation
+         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+ 
+         // Or, lock to landscape orientation
+@@ -403,7 +572,7 @@
+ 
+ Stripe Android devices don’t render a system UI, including a back button or status bar.
+ 
+-If your app needs to communicate battery level, charging state, and connectivity status to the user, refer to the following Android API docs for guidance:
++If your app needs to communicate battery level, charging state, and connectivity status to your users, refer to the following Android API docs for guidance:
+ 
+ - [Monitor the Battery Level and Charging State](https://developer.android.com/training/monitoring-device-state/battery-monitoring)
+ - [Monitor connectivity status and connection metering](https://developer.android.com/training/monitoring-device-state/connectivity-status-type)
+@@ -418,10 +587,11 @@
+ 
+ ```xml
+ <activity
+-    android:name=".MyActivity"android:configChanges="uiMode" />
+-```
+-
+-Your activity can be notified of configuration changes by implementing [Activity::onConfigurationChanged](<https://developer.android.com/reference/android/app/Activity#onConfigurationChanged(android.content.res.Configuration)>). This method is only called if you’ve specified configurations you want to handle with the `android:configChanges` attribute in your manifest.
++    android:name=".MyActivity"
++    android:configChanges="uiMode" />
++```
++
++Your activity can be notified of configuration changes by implementing [Activity::onConfigurationChanged](https://developer.android.com/reference/android/app/Activity#onConfigurationChanged\(android.content.res.Configuration\)). This method is only called if you’ve specified configurations you want to handle with the `android:configChanges` attribute in your manifest.
+ 
+ ```kotlin
+ class MainActivity : Activity() {
+@@ -432,16 +602,29 @@
+ }
+ ```
+ 
+-## Test your app
+-
+-Use your S700 DevKit device to test your app in the Stripe Dashboard or using the Android Debug Bridge (`adb`).
++## Test your app 
++
++Use your SmartPOS DevKit device to test your app in the Stripe Dashboard or using the Android Debug Bridge (`adb`).
+ 
+ #### Android Debug Bridge (adb)
+ 
+ You can connect your DevKit device to your computer using a USB-A to USB-C cable. Then, use `adb` to directly install your app’s assembled APK onto the DevKit device.
+ 
++For a UX700 DevKit, connect the device and your development computer to the same Wi-Fi network. Find the DevKit’s local IP address in its network settings. On your computer, run the following commands, replacing `<IP_ADDRESS>` with the DevKit’s local IP address:
++
++```
++$ adb connect <IP_ADDRESS>
++$ adb devices
++```
++
++Confirm that the DevKit appears in the `adb devices` output.
++
+ The following examples assume your application’s [package name](https://developer.android.com/studio/build/configure-app-module) is `com.example.myapp` and the [main activity](https://developer.android.com/reference/android/content/Intent.html#ACTION_MAIN) is `MainActivity`.
+ 
++> #### Post-transaction behavior
++> 
++> When you install your custom app directly, you can’t set the DevKit’s preferred kiosk app. When a transaction completes, the DevKit always returns to the default Stripe reader app. If you want to make your app the preferred kiosk app on a DevKit, you must use a deploy group as described in the Dashboard instructions.
++
+ ```
+ $ adb install myapp.apk
+ ```
+@@ -471,15 +654,15 @@
+ Follow these steps to test your app in the Dashboard:
+ 
+ 1. In a sandbox, open the [Terminal readers](https://dashboard.stripe.com/test/terminal/readers) page.
+-1. If you haven’t already, click **Register reader** to [register](https://docs.stripe.com/terminal/payments/connect-reader.md?reader-type=internet#register-reader) the DevKit device to your account.
+-1. Click **Terminal** > **Software**.
+-1. On the [Software](https://dashboard.stripe.com/terminal/software) tab, choose the app that you want to deploy. You can also create a new app to deploy.
+-1. On the app details page, click **Deploy version**.
+-1. Choose the latest version of your app, then click **Next**.
+-1. Choose the [deploy group](https://docs.stripe.com/terminal/features/apps-on-devices/deploy-in-Dashboard.md) for your DevKit device, then click **Next**.
+-1. Choose your preferred kiosk app, then click **Next**. This is the default app that launches when the Stripe reader turns on. If there’s only one app to deploy, choose that app instead.
+-1. Confirm the deployment details, then click **Deploy**.
+-1. Restart your DevKit device to deploy your app to the device.
++2. If you haven’t already, click **Register reader** to [register](https://docs.stripe.com/terminal/payments/connect-reader.md?terminal-sdk-platform=android&reader-type=internet#register-reader) the DevKit device to your account.
++3. Click **Terminal** > **Software**.
++4. On the [Software](https://dashboard.stripe.com/terminal/software) tab, choose the app that you want to deploy. You can also create a new app to deploy.
++5. On the app details page, click **Deploy version**.
++6. Choose the latest version of your app, then click **Next**.
++7. Choose the [deploy group](https://docs.stripe.com/terminal/features/apps-on-devices/deploy-in-dashboard.md) for your DevKit device, then click **Next**.
++8. Choose your preferred kiosk app, then click **Next**. The Stripe reader launches this app when it turns on and after each transaction. If there’s only one app to deploy, choose that app.
++9. Confirm the deployment details, then click **Deploy**.
++10. Restart your DevKit device to deploy your app to the device.
+ 
+ ### Troubleshooting
+ 

@@ -1,0 +1,107 @@
+{
+  "job_id": "terminal-references-sdk-v3-migration-guide",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Terminal: SDK Migration Guide (v3.0.0)\"\ntype: source\ndate_ingested: 2026-05-01\ndate_updated: 2026-11-24\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/terminal/references/sdk-v3-migration-guide\"\nraw_files:\n  - \"stripe-terminal-sdk-v3-migration-guide-2025.md\"\ntags: [stripe, stripe-terminal, sdk, ios, android, migration, v3]\n---\n\n## Summary\n\nThe 2026-05-01 [[stripe]] [[stripe-terminal|Terminal]] guide documents migrating existing iOS and Android integrations from pre-v3 SDKs to 3.0.0. The 2026-11-07 capture gives the v3.0.0 migration purpose and links the iOS and Android variants. The migration details below come from the May guide.\n\n## Breaking Changes Summary\n\n- Both SDKs rename `processPayment` to `confirmPaymentIntent` and `processRefund` to `confirmRefund`. The iOS guide says the parameters stay the same and names the renamed errors `SCPConfirmPaymentIntentError` and `SCPConfirmRefundError`. The Android guide says the method behavior stays the same.\n- Both remove `readReusableCard`. The guide recommends creating, collecting, and confirming a SetupIntent in the SDK to save a payment method without a charge.\n- Discovery configuration became a protocol on iOS and an interface on Android, with implementations for specific reader discovery methods.\n\n**Historical offline private preview**. In the May guide's v3 migration, Stripe first enables offline payments for the account in its backend. The integrator must then disconnect and reconnect to the reader with the SDK for the configuration to take effect. A PaymentIntent created offline can have a null `stripeId` on iOS or `id` on Android. See the separate [[source-stripe-terminal-offline-collect-card-payments|offline collection guide]] for later integration evidence.\n\n## iOS-Specific Changes\n\n- The minimum moves from iOS 11 for the v2.x branch to iOS 13 for v3.\n- `discoverReaders` completes when `connectReader` is called. A failed connection requires a new `discoverReaders` call to resume discovery. An integration can also connect to a previously discovered reader or retry connecting without active discovery. Canceling discovery completes with `SCPErrorCanceled`.\n- `SCPErrorBusy` is removed. The SDK queues new commands while another is running and executes them after preceding commands complete. Integrations that used the busy error as a signal need to account for potential queue buildup.\n- Parameter and configuration classes such as `SCPCollectConfiguration` and `SCPPaymentIntentParameters` become immutable and use builders. `build()` throws in Swift and takes an `NSError **` out-parameter in Objective-C.\n- `SCPReconnectionDelegate` now receives the reader instance. The method names replace `terminal` with `reader`.\n\n## Android-Specific Changes\n\n- The minimum moves from Android 5.0 (API 21) for the v2.x branch to Android 8.0 (API 26) for v3. Lowering `minSdkVersion` cannot bypass the SDK's runtime check.\n- Location permission is required for every discovery configuration and checked at reader discovery. Only `BluetoothDiscoveryConfiguration` requires Bluetooth permissions, which the SDK checks at discovery.\n- With a Bluetooth or USB reader requiring an update, status stays `CONNECTING` while the update installs. The SDK reports connected and ready only after the required update completes successfully.\n- For Parcel access, replace `writeParcelable`/`readParcelable` with `writeSerializable`/`readSerializable`. The guide advises against persisting SDK model data across versions because model changes can make earlier data unreadable.\n- `BluetoothReaderListener` and `UsbReaderListener` are replaced by `ReaderListener`. `Reader.registeredLocation` becomes `Reader.location`, and `Reader.device` is replaced by `Reader.bluetoothDevice` and `Reader.usbDevice`.\n- `CaptureMethod.getManual()` is replaced by `CaptureMethod.MANUAL`. Use `CollectConfiguration.Builder` in place of the removed constructor.\n- `CardDetails.fingerprint` and `CardPresentDetails.fingerprint` are removed from the Android SDK. The guide routes fingerprint access to Stripe server-side SDKs. See May's renamed and removed API list for other changes.\n\n## Related\n\n- [[source-stripe-terminal-design-custom-pos]] \u2014 new integration design\n- [[source-github-stripe-terminal-ios]] and [[source-github-stripe-terminal-android]] \u2014 later version-specific SDK evidence\n\n## Raw Sources\n\n- [[raw/stripe-terminal-sdk-v3-migration-guide-2025|2026-05-01 v3.0.0 migration guide]] \u2014 iOS and Android variant bodies\n\n## Related raw API references\n\n- [[raw/stripe-terminal-references-sdk-v3-migration-guide-2026-11-07|2026-11-07 v3.0.0 migration variant index]]\n",
+  "quotes": {
+    "terminal-references-sdk-v3-migration-guide": [
+      {
+        "text": "Learn how to migrate to the 3.0.0 of the Stripe Terminal SDK.",
+        "location": "raw/stripe-terminal-references-sdk-v3-migration-guide-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants.",
+        "location": "raw/stripe-terminal-references-sdk-v3-migration-guide-2026-11-07.md:11"
+      },
+      {
+        "text": "[iOS](https://docs.stripe.com/terminal/references/sdk-v3-migration-guide.md?terminal-sdk-platform=ios)",
+        "location": "raw/stripe-terminal-references-sdk-v3-migration-guide-2026-11-07.md:13"
+      },
+      {
+        "text": "[Android](https://docs.stripe.com/terminal/references/sdk-v3-migration-guide.md?terminal-sdk-platform=android)",
+        "location": "raw/stripe-terminal-references-sdk-v3-migration-guide-2026-11-07.md:14"
+      }
+    ]
+  },
+  "old_evidence": {
+    "terminal-references-sdk-v3-migration-guide": [
+      {
+        "text": "After we enable the changes in the backend for your account, you must disconnect and reconnect to your reader using the SDK for the updated configuration to take effect.",
+        "location": "raw/stripe-terminal-sdk-v3-migration-guide-2025.md:17"
+      },
+      {
+        "text": "If `connectReader` fails, your integration needs to make a new call to `discoverReaders` to resume discovering readers.",
+        "location": "raw/stripe-terminal-sdk-v3-migration-guide-2025.md:49"
+      },
+      {
+        "text": "The parameters for these methods haven\u2019t changed but the error types have also been renamed to `SCPConfirmPaymentIntentError` and `SCPConfirmRefundError` respectively.",
+        "location": "raw/stripe-terminal-sdk-v3-migration-guide-2025.md:91"
+      },
+      {
+        "text": "The reader status will now remain `CONNECTING` while installing any required updates.",
+        "location": "raw/stripe-terminal-sdk-v3-migration-guide-2025.md:131"
+      },
+      {
+        "text": "Only the name of the method is changed, the behavior of these methods remains identical.",
+        "location": "raw/stripe-terminal-sdk-v3-migration-guide-2025.md:157"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-terminal-references-sdk-v3-migration-guide-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-terminal-sdk-v3-migration-guide-2025.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 183
+      }
+    ],
+    "wiki/sources/source-stripe-terminal-sdk-v3-migration-guide.md": [
+      {
+        "start": 1,
+        "end": 47
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/b2743d85616f1ccb839ce726/content.diff": [
+      {
+        "start": 1,
+        "end": 85
+      },
+      {
+        "start": 86,
+        "end": 185
+      }
+    ]
+  },
+  "answers": {
+    "terminal-references-sdk-v3-migration-guide": {
+      "Q1": "At https://docs.stripe.com/terminal/references/sdk-v3-migration-guide, the revised source-stripe-terminal-sdk-v3-migration-guide uses the November 7 capture for navigation. It identifies Terminal SDK 3.0.0 migration and links iOS and Android variants. It contains no developer instructions or runtime transitions (new raw lines 5-14). The May 1 guide tells pre-v3 developers to move to iOS 13+ or Android API 26+ and use per-type discovery configuration. Historical offline payment access required Stripe backend enablement followed by SDK disconnect/reconnect, and offline PaymentIntent IDs can be null (old raw lines 12-44, old raw lines 73-85, old raw lines 101-119, old raw lines 133-145). On iOS, discovery now ends when connectReader starts, can report cancellation as SCPErrorCanceled, and must be invoked again to resume discovery after a failed connection. A previously discovered reader can still be reused. Commands queue instead of producing SCPErrorBusy, and the reconnection delegate receives the reader (old raw lines 46-71). Android checks Location at discovery and requires Bluetooth permissions only for the Bluetooth discovery config. A Bluetooth/USB reader with a required update stays CONNECTING until the update completes successfully (old raw lines 121-131). Both rename the payment/refund process methods and recommend create/collect/confirm SetupIntents instead of readReusableCard. Android calls the renames behavior-identical. iOS says parameters are unchanged and its two confirmation error types also change, which the revised summary records (old raw lines 89-95, old raw lines 155-167).",
+      "Q2": "At https://docs.stripe.com/terminal/references/sdk-v3-migration-guide, the revised source-stripe-terminal-sdk-v3-migration-guide links to the November 7 iOS/Android variant index as navigation. This is a capture/navigation change from the full May 1 historical guide. The two variant links establish no new v3 behavior, feature removal, or general current access (new raw lines 9-14, old raw lines 8-25, old raw lines 97-119). May remains the factual authority for the v3 platform floors, SDK discovery permission timing, required-update readiness gate for Bluetooth/USB, and offline historical private-preview/account enablement, disconnect/reconnect and null-ID behavior (old raw lines 14-19, old raw lines 25-31, old raw lines 73-85, old raw lines 101-107, old raw lines 121-145). The old summary's blanket 'only rename' claim uses Android wording and obscures iOS's renamed errors SCPConfirmPaymentIntentError and SCPConfirmRefundError. The revised source documents unchanged iOS parameters and renamed errors separately from Android's identical method behavior and Parcel serialization qualification (old raw lines 89-95, old raw lines 155-167). The stripe-terminal reciprocal route identifies the historical v3 migration, with separate SDK and offline guides for newer integration decisions."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "terminal-references-sdk-v3-migration-guide-terminal-route",
+      "target_path": "wiki/concepts/stripe-terminal.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-terminal-sdk-v3-migration-guide]] \u2014 SDK v3 migration guide: processPayment\u2192confirmPaymentIntent, readReusableCard removed, DiscoveryConfig per-type, iOS 13/Android 26 min",
+      "proposed_markdown": "- [[source-stripe-terminal-sdk-v3-migration-guide]] \u2014 Historical migration to SDK 3.0.0 for iOS and Android, with the November 2026 platform index linked for navigation.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "warnings": [
+        "Historical v3 platform limits and offline preview guidance come from the 2026-05-01 full capture. The adjacent newer SDK and offline routes apply to their own dated scopes."
+      ]
+    }
+  ]
+}

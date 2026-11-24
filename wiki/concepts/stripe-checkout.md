@@ -273,6 +273,7 @@ The APIs remain private preview. Host visibility/resume and per-controller confi
 - [[source-stripe-checkout-save-during-payment]] — Save during payment: setup_future_usage vs payment_method_save, allow_redisplay, customer_creation, PM removal, GDPR note
 - [[source-stripe-checkout-fulfillment]] — Fulfill orders: dual-trigger pattern, fulfill_checkout function, webhook handler, delayed PMs, landing page config
 - [[source-stripe-checkout-receipts]] — Receipts + paid invoices: automatic setup, branding, invoice_creation param, invoice_data hash, delayed PM behavior, localization
+- [[source-stripe-receipts]] — November 2026 general guide to Checkout and Payment Links paid invoices after successful one-time payments. The dated Checkout companion above scopes manual capture.
 - [[source-stripe-checkout-custom-success-page]] — Redirect behavior: hosted success page, embedded return page + session status, redirect_on_completion (3 modes), onComplete callback
 - [[source-stripe-checkout-abandoned-carts]] — Abandoned cart recovery: consent + after_expiration.recovery, checkout.session.expired, recovery URL, anti-spam, conversion tracking
 - [[source-stripe-checkout-conversion-funnel]] — GA4 conversion funnel (hosted): gtag instrumentation, begin_checkout, Measurement Protocol, client ID linking

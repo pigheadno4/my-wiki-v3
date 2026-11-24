@@ -1,0 +1,116 @@
+{
+  "job_id": "terminal-features-receipts",
+  "attempt": 1,
+  "raw_path": "raw/stripe-terminal-features-receipts-2026-11-07.md",
+  "raw_sha256": "3786973370a863b981e1cbd5a2bedaf0f6ad63585f7abb91fd2747934c2af0ba",
+  "prior_raw_path": "raw/stripe-terminal-receipts-2025.md",
+  "prior_raw_sha256": "3a47b60d535f9127f9da87f05d56187a48ca55bd51e6d1d5a89c8c4f1209b4f2",
+  "source_targets": [
+    "wiki/sources/source-stripe-terminal-receipts.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-terminal-receipts.md": "81b95c3f8d6ad614f0861bbcedeef3d764ef64577e36b51764131d08c8a50242"
+  },
+  "read_ranges": {
+    "raw/stripe-terminal-features-receipts-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 56
+      }
+    ],
+    "raw/stripe-terminal-receipts-2025.md": [
+      {
+        "start": 1,
+        "end": 55
+      }
+    ],
+    "wiki/sources/source-stripe-terminal-receipts.md": [
+      {
+        "start": 1,
+        "end": 46
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/1136ed9b50eb01f3829eb67c/content.diff": [
+      {
+        "start": 1,
+        "end": 58
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "aren\u2019t sent automatically. Instead, you can view or manually send a receipt",
+      "location": "raw/stripe-terminal-features-receipts-2026-11-07.md:9"
+    },
+    {
+      "text": "you must provide customers with the option to receive a physical or email receipt.",
+      "location": "raw/stripe-terminal-features-receipts-2026-11-07.md:11"
+    },
+    {
+      "text": "Stripe automatically emails a compliant receipt to the customer when",
+      "location": "raw/stripe-terminal-features-receipts-2026-11-07.md:24"
+    },
+    {
+      "text": "**Required** (Optional in US)",
+      "location": "raw/stripe-terminal-features-receipts-2026-11-07.md:41"
+    },
+    {
+      "text": "If provided, you can also access the cardholder\u2019s preferred language",
+      "location": "raw/stripe-terminal-features-receipts-2026-11-07.md:56"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Fetched: 2025-05-01",
+      "location": "raw/stripe-terminal-receipts-2025.md:2"
+    },
+    {
+      "text": "update the PaymentIntent\u2019s `receipt_email` with the customer\u2019s email.",
+      "location": "raw/stripe-terminal-receipts-2025.md:25"
+    },
+    {
+      "text": "You can access these fields server-side using the Stripe API, or client-side using the Stripe Terminal SDKs.",
+      "location": "raw/stripe-terminal-receipts-2025.md:53"
+    }
+  ],
+  "proposed_disposition": "raw_reference",
+  "findings": [
+    "The complete November and May Terminal guides document the same merchant duty to offer physical or email receipts, Stripe-triggered delivery for specified customer email on capture or via a post-checkout update, and separate EMV obligations for custom receipts.",
+    "Test-key Terminal payments do not send automatically in either capture; operators can view or manually send through the Dashboard. The mapped summary omits this important exception.",
+    "Custom receipts must include application_preferred_name and dedicated_file_name, and account_type outside the documented US exception. They can use API or SDK receipt details after confirmation, with cardholder preferred_locales only if provided."
+  ],
+  "substantive_changes": [
+    "No substantive functional change between the two Terminal captures. November retargets the confirmation deep link to process=inspect; spacing, Markdown emphasis/escaping and receipt illustration destination are presentation or navigation."
+  ],
+  "historical_claims_to_preserve": [
+    "The old raw header dates its capture 2025-05-01, while 2026-05-01 in the source frontmatter is the ingest date. Keep distinct capture dates for both raws.",
+    "Keep automatic capture-time email and post-checkout-trigger branches distinct, preserve test-key manual handling and optional locale availability, and maintain the client/server/JS object and US account_type qualifications."
+  ],
+  "conflicts": [
+    "The mapped source omits the Terminal test-key exception and states preferred_locales without the provided-if condition. Restore both and distinguish the trigger after checkout from automatic sending at capture.",
+    "The stripe-terminal concept currently omits the US account_type exception and the live-versus-test distinction. Preserve the linked general receipts guide as separate scope. Its May 2026 snapshot allowed a verified-user test auto-send exception (raw/stripe-receipts-2026.md:52-54), while both Terminal captures direct test receipts to Dashboard and the November general capture also states no automatic test receipts (raw/stripe-receipts-2026-11-07.md:23-27).",
+    "Replace the mapped source's self-link with an actual reciprocal concept/general receipts route."
+  ],
+  "unresolved_questions": [],
+  "affected_concepts": [
+    "wiki/concepts/stripe-terminal.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-terminal-receipts.md",
+      "proposed_disposition": "raw_reference",
+      "update_needed": true,
+      "findings": [
+        "Record the full November capture as documentary reference without attributing changed functionality to it. The retained evidence supports independent correction of test-mode, stage and locale wording."
+      ],
+      "conflicts": [
+        "Keep Terminal test receipts separate from the May general receipts exception and restore account_type US and preferred_locales qualifications in the source and applicable concept label."
+      ],
+      "reason": "The recollection is behaviorally unchanged and has only presentation/navigation changes, but the existing summary omits material retained qualifications and links to itself."
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/terminal/features/receipts, the 2026-11-07 and 2025-05-01 captures document identical behavior for source-stripe-terminal-receipts. A Terminal merchant must offer a physical or email receipt. Stripe does not automatically send test-key receipts and the Dashboard operator can view or manually send them (old raw lines 8-12 and new raw lines 9-13). With the customer's email, the integration can set receipt_email on PaymentIntent creation and Stripe sends a prebuilt compliant email at capture. After checkout, updating the PaymentIntent's receipt_email is a separately documented trigger (old raw lines 14-27 and new raw lines 15-28). For a custom emailed or printed EMV receipt, receipt data is available after confirmation. Include application_preferred_name, dedicated_file_name and account_type, with account_type optional in the US. API integrations use the Charge card-present receipt field and native clients have ReceiptDetails references; JavaScript matches the API PaymentIntent object. Card-derived preferred_locales are available if provided (old raw lines 30-55 and new raw lines 31-56). The mapped summary preserves the two approaches and most of those fields, but omits the test-key exception and the condition on preferred_locales, and compresses the two email triggers.",
+    "Q2": "For https://docs.stripe.com/terminal/features/receipts, keep source-stripe-terminal-receipts tied to the 2025-05-01 full raw and retain the full 2026-11-07 raw as reference (old raw lines 1-2 and new raw lines 1-3). The capture reproduces the same implementation. The iOS link escaping, image destination, emphasis and table layout are presentational, while the confirm-payment destination gets process=inspect as navigation (old raw lines 14-41 and new raw lines 15-42). Restore the already documented Dashboard-only test handling and optional locale availability. Keep the capture-stage and post-checkout email actions separate, and preserve the US account_type exception (old raw lines 8-12 and old raw lines 23-25 and old raw lines 38-55, new raw lines 9-13 and new raw lines 24-26 and new raw lines 39-56). Preserve reciprocal stripe-terminal, Stripe index and company routes, and route general email mechanics to source-stripe-receipts instead of the present self-link. The distinct general guide dated 2026-05-11 mentions verified testing-user exceptions (raw/stripe-receipts-2026.md:52-54), whereas the 2026-11-07 general capture also requires manual test receipts (raw/stripe-receipts-2026-11-07.md:23-27). Keep the Terminal qualification tied to the two Terminal captures rather than applying the dated general exception."
+  }
+}

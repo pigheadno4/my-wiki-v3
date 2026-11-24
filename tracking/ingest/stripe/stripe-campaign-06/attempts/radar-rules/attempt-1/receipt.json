@@ -1,0 +1,182 @@
+{
+  "job_id": "radar-rules",
+  "attempt": 1,
+  "raw_path": "raw/stripe-radar-rules-2026-11-07.md",
+  "raw_sha256": "8e230bdff95b8eff95117cc32804d0ea730e68262295a69fe0c7e9988a9b016e",
+  "prior_raw_path": "raw/stripe-radar-rules-2026.md",
+  "prior_raw_sha256": "fc2c0e0dc9960a3a5c951c2d483d9bcc102d8554c0b47e063d0c040e475756d6",
+  "source_targets": [
+    "wiki/sources/source-stripe-radar-rules.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-radar-rules.md": "34b06eec7687ff90db4330ae918d08970a4381ad52ddd12190cb1ba06f853ba6"
+  },
+  "read_ranges": {
+    "raw/stripe-radar-rules-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 210
+      },
+      {
+        "start": 211,
+        "end": 315
+      },
+      {
+        "start": 316,
+        "end": 415
+      },
+      {
+        "start": 416,
+        "end": 462
+      }
+    ],
+    "raw/stripe-radar-rules-2026.md": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 395
+      },
+      {
+        "start": 396,
+        "end": 454
+      }
+    ],
+    "wiki/sources/source-stripe-radar-rules.md": [
+      {
+        "start": 1,
+        "end": 78
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/574ee369d67148b141aded20/content.diff": [
+      {
+        "start": 1,
+        "end": 105
+      },
+      {
+        "start": 106,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 310
+      },
+      {
+        "start": 311,
+        "end": 435
+      },
+      {
+        "start": 436,
+        "end": 535
+      },
+      {
+        "start": 536,
+        "end": 579
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "If [your Radar plan]",
+      "location": "raw/stripe-radar-rules-2026-11-07.md:11"
+    },
+    {
+      "text": ":account_fraud_risk_level: = 'highest'",
+      "location": "raw/stripe-radar-rules-2026-11-07.md:40"
+    },
+    {
+      "text": "Traffic allocation remains consistent across retries.",
+      "location": "raw/stripe-radar-rules-2026-11-07.md:232"
+    },
+    {
+      "text": "Traffic allocation is available only for custom transaction rules.",
+      "location": "raw/stripe-radar-rules-2026-11-07.md:244"
+    },
+    {
+      "text": "To evaluate a rule without affecting payments, set its traffic allocation to 0%.",
+      "location": "raw/stripe-radar-rules-2026-11-07.md:242"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "`if :account_risk_level: = 'highest'`",
+      "location": "raw/stripe-radar-rules-2026.md:39"
+    },
+    {
+      "text": "Stripe supports three legacy built-in rules to request 3DS",
+      "location": "raw/stripe-radar-rules-2026.md:75"
+    },
+    {
+      "text": "apply this rule to all future transactions.",
+      "location": "raw/stripe-radar-rules-2026.md:227"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The November guide establishes plan-gated Dashboard custom rules, with rule creation restricted to account owners, administrators and developers, distinct future-transaction and existing/future account activation scopes, and separate processor, issuer, team-reviewer and platform roles.",
+    "Both guides describe default screening, rules and metrics. An eligible custom transaction rule now has documented allocation and shadow behavior. Payment review keeps normal processing and only successful payments enter the queue; account payout pause also opens a review.",
+    "The source reflects the May rule guide but omits the newly documented rollout and still has incorrect or overbroad action, cryptogram and plan wording. The reciprocal Radar concept needs the dated account attribute, rollout and scope qualification."
+  ],
+  "substantive_changes": [
+    "November documents adjusting a custom transaction rule at creation and later for staged rollout or rollback. 100% is default and applies to every match; 0% shadow evaluates and reports counterfactual outcomes without enforcing the action. Allocation is sticky on retries. Card retry grouping prioritizes same invoice, then customer and amount if no invoice, then card and amount if no customer. Other methods keep retries of the same payment in the same bucket. Account rule activation is separate.",
+    "November rules guide adds dynamic risk thresholds to its risk-controls description, changes the two account model predicates to :account_fraud_risk_level:, shifts several plan-specific descriptions to generic document wording gated by plan eligibility, and describes default rules across supported methods through the supported-methods route. Its legacy 3DS list includes only the deprecated supported-for-card option, down from three documented options; the omitted two's availability is unresolved.",
+    "Removed five screenshot references, normalized Markdown and edited prose are presentational. Reporting and risk-outcome target changes are navigation; the dynamic threshold paragraph also changes content."
+  ],
+  "historical_claims_to_preserve": [
+    "May 10 named Fraud Teams/Platforms as custom-rule products, tied elevated transaction review to those products and tied account models to Platforms; preserve dated metrics qualifiers rather than assigning November entitlement from omitted wording.",
+    "May listed deprecated recommended/supported/required 3DS examples for Payment Intents and SetupIntents. Both guides preserve required issuer/SCA handling independent of Radar, request versus issuer performance, and the December 17, 2024 CVC/AVS visibility split, low-risk exceptions for the risk-score versions, and missing/unsupported-check exceptions.",
+    "Retain rule ordering and scope, separate account payout-pause review, prior screenshot evidence, 200 transaction/100 account limits, six-month transaction charge test and 180-day rule activity history when relevant."
+  ],
+  "conflicts": [
+    "Source lines 19\u201322 hard-code per-action tier labels; use the November supported-plan condition and its plan-comparison route, keep Stripe contact for Allow, and retain the explicit platform-only boundary for account review/payout pause. May named Fraud Teams and Platforms. Removed tier or metrics labels do not establish broader eligibility.",
+    "Source lines 31\u201332 and concept line 32 need dated account attribute spellings, `:account_risk_level:` on May 10 and `:account_fraud_risk_level:` on November 7. Both rules captures list the two risk predicates without assigning a Block or Review action to either. Do not infer a migration, alias, or action mapping.",
+    "Source line 22 says a Review sends payments to the queue. Both guides distinguish normal authorization/processing from queue placement, which applies only to successful payments. Source line 19 and concept line 30 should distinguish the request from issuer performance and retain 3DS-before-Allow evaluation.",
+    "Source line 56 reverses the cryptogram caveat: the cited predicate exempts Apple Pay and the Google Pay (`android_pay`) example when it has a cryptogram, plus off-session payments as specified in the example. It does not document a blanket no-cryptogram exception.",
+    "Source line 60 and concept line 40 phrase Radar Assistant consent as a requirement without explaining that use constitutes agreement to logging/training and manual rule authoring is the alternative. Source line 68 and concept line 40 should retain the documentation's qualified wording about EU businesses potentially affected by the Geo-blocking Regulation.",
+    "Both guide examples say 'above a certain amount' for conditions without any amount predicate (May 179\u2013180, November 175\u2013176); retain it only as a documented example inconsistency. Both rules captures also describe payments allowed in the Block metrics Risk score row (May 374\u2013376, November 388\u2013390), which should not be converted into a firm metric definition."
+  ],
+  "unresolved_questions": [
+    "No evidence establishes account-attribute syntax backward compatibility, an exact eligibility mapping from May products to November plans, whether the listed metrics became available on more plans, or current availability of the two omitted deprecated 3DS rules.",
+    "The cross-rule behavior when the allocation bucket stays fixed but other predicates/settings change between retries is not established. The captured statement supports consistent allocation for the same transaction's retries."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-radar.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-radar-rules.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add the November capture as functional authority for gradual rollout, shadow mode and dated rules language, retain the May capture for historical qualifications, and retain reciprocal `stripe-radar` plus relevant list, risk-controls, plan and supported-method links."
+      ],
+      "conflicts": [
+        "Source lines 19\u201322 hard-code per-action tier labels; use the November supported-plan condition and its plan-comparison route, keep Stripe contact for Allow, and retain the explicit platform-only boundary for account review/payout pause. May named Fraud Teams and Platforms. Removed tier or metrics labels do not establish broader eligibility.",
+        "Source lines 31\u201332 and concept line 32 need dated account attribute spellings, `:account_risk_level:` on May 10 and `:account_fraud_risk_level:` on November 7. Both rules captures list the two risk predicates without assigning a Block or Review action to either. Do not infer a migration, alias, or action mapping.",
+        "Source line 22 says a Review sends payments to the queue. Both guides distinguish normal authorization/processing from queue placement, which applies only to successful payments. Source line 19 and concept line 30 should distinguish the request from issuer performance and retain 3DS-before-Allow evaluation.",
+        "Source line 56 reverses the cryptogram caveat: the cited predicate exempts Apple Pay and the Google Pay (`android_pay`) example when it has a cryptogram, plus off-session payments as specified in the example. It does not document a blanket no-cryptogram exception.",
+        "Source line 60 and concept line 40 phrase Radar Assistant consent as a requirement without explaining that use constitutes agreement to logging/training and manual rule authoring is the alternative. Source line 68 and concept line 40 should retain the documentation's qualified wording about EU businesses potentially affected by the Geo-blocking Regulation.",
+        "Both guide examples say 'above a certain amount' for conditions without any amount predicate (May 179\u2013180, November 175\u2013176); retain it only as a documented example inconsistency. Both rules captures also describe payments allowed in the Block metrics Risk score row (May 374\u2013376, November 388\u2013390), which should not be converted into a firm metric definition."
+      ],
+      "reason": "Substantive allocation mechanics are missing, dated qualifiers need to be preserved, and existing summary errors could misstate rule behavior or applicability."
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/radar/rules, source-stripe-radar-rules summarizes the May 10 document\u2019s actions, syntax, defaults, 3DS and Assistant, but omits the November 7 rollout mechanism and needs several qualifications. Both describe default screening and authorized account owners, administrators and developers creating plan-eligible custom rules; May names Fraud Teams and Platforms and November refers to the supported plan (old raw lines 8-16, old raw lines 183-196; new raw lines 9-17, new raw lines 179-192). Request 3DS is evaluated before the other actions, and the issuer might not perform it; review keeps normal processing and only successful payments enter the queue (old raw lines 73-88, old raw lines 204-209, old raw line 255, old raw line 316; new raw lines 74-84, new raw lines 200-205, new raw line 272, new raw line 332). Merchants test and add eligible custom transaction rules for future transactions; November adds a default 100% allocation, controllable gradual enforcement or rollback, 0% shadow reporting without enforcement, and sticky retry buckets (old raw lines 215-227; new raw lines 211-244). Platform account rules are tested before activation for existing and future accounts; Payout pause also raises a review (old raw lines 428-446; new raw line 192, new raw lines 436-454).",
+    "Q2": "For https://docs.stripe.com/radar/rules, make a substantive update to source-stripe-radar-rules and retain the reciprocal stripe-radar route, related list and risk-controls routes, and plan and supported-method guidance. November documents custom transaction allocation, priority invoice/customer-and-amount/card-and-amount card retry grouping, same-payment retry grouping for other methods, and shadow mode versus May\u2019s test-and-add procedure (new raw lines 223-244; old raw lines 215-227). Distinguish added dynamic risk thresholds, the new account predicate spelling without action assignments, revised plan-scoped text without inferred entitlement expansion, and the two omitted deprecated 3DS examples without inferring removal (old raw lines 24-43, old raw lines 73-92, old raw lines 352-393, old raw lines 424-435; new raw lines 25-44, new raw lines 74-88, new raw lines 367-404, new raw lines 432-443). Preserve the December 17, 2024 CVC/AVS visibility split, enabled-check limitations, the platform-only account review/pause qualifier and example-specific wallet exclusions (old raw lines 49-67, old raw lines 122-124, old raw lines 195-196; new raw lines 50-68, new raw lines 118-119, new raw line 192). Keep screenshots as historical presentation and treat the data-query and risk-outcome URL retargeting as navigation (old raw lines 313-324, old raw lines 347-365, old raw line 452; new raw lines 330-340, new raw lines 363-379, new raw line 460)."
+  }
+}

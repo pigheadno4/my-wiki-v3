@@ -1,0 +1,53 @@
+--- wiki/sources/source-stripe-terminal-collect-nfc-data.md
++++ wiki/sources/source-stripe-terminal-collect-nfc-data.md (candidate)
+@@ -2,7 +2,9 @@
+ title: "Stripe Terminal: Collect Tapped Data for NFC Instruments"
+ type: source
+ date_ingested: 2026-05-01
++date_updated: 2026-11-24
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/terminal/features/collect-nfc-data"
+ raw_files:
+   - "stripe-terminal-collect-nfc-data-2025.md"
+ tags: [stripe, stripe-terminal, nfc, collect-data, private-preview, offline]
+@@ -10,25 +12,29 @@
+ 
+ ## Summary
+ 
+-Stripe Terminal can read the NFC UID from non-payment NFC instruments (cards, wristbands) using the reader's contactless interface. This is a **private preview** feature in the same access program as magstripe collect-data.
++The 2026-05-01 [[stripe]] Terminal guide documents Collect data private-preview support for reading the unique identifier (UID) of a non-payment NFC instrument, such as a card or wristband, through the reader’s contactless interface. The 2026-11-07 capture states the reader-hardware purpose and indexes the iOS, Android and React Native variants. The implementation details below come from the May guide.
+ 
+ ## Key Details
+ 
+-**Access**: Private preview — email `terminal-collect-data@stripe.com` with use case, Terminal device, and integration type.
++**Private preview access in May**. Request access by emailing `terminal-collect-data@stripe.com` with the use case, Terminal device and integration type.
+ 
+-**Supported readers**: S700/S710, M2 only. **Not** WisePOS E or Chipper2X.
++**Reader and offline scope in May**. The guide lists Stripe Reader S700/S710 and Stripe M2 and documents offline collection.
+ 
+-**Available offline** (unlike magstripe collect-data).
++> **Card-payment restriction.** NFC UID collection cannot collect card payments. Use the standard Terminal payment flow for payments. [Collect card payments with Terminal](https://docs.stripe.com/terminal/payments/collect-card-payment.md).
+ 
+-**Cannot be used for card payments** — a hard warning in the docs. Use the standard Terminal payment flow for payment collection.
++**Integration in May**. The merchant’s POS initiates collection through the Terminal SDK using `collectData()` with NFC UID configured as `.nfcUid` on iOS or `NFC_UID` on Android and React Native. The customer taps the NFC instrument. The SDK returns a collected-data object containing `nfcUid`, or an error if the read fails. The UID returns to the app in the collection result. The separate swiped-data guide documents a token followed by backend retrieval.
+ 
+-**Integration**:
+-- Call `collectData()` with `type: NFC_UID` (`.nfcUid` on iOS)
+-- SDK returns `CollectedData` object with `nfcUid` field directly — no server-side retrieval step needed (unlike magstripe)
+-- iOS/Android/React Native only (no server-driven variant)
++**Customer cancellation in May**. The iOS and Android sections describe default cancellation on supported readers and a smart-reader opt-out in `customerCancellation`. The iOS spelling is `.disableIfAvailable`, and Android uses `DISABLE_IF_AVAILABLE`. The React Native example sets `customerCancellation: 'disableIfAvailable'`.
+ 
+-**Customer cancellation**: enabled by default on smart readers; disable with `customerCancellation: disableIfAvailable`.
++## Related
++
++- [[stripe-terminal]] — Terminal devices and integration overview
++- [[source-stripe-terminal-collect-data]] — non-PCI magstripe capture with server retrieval
+ 
+ ## Raw Sources
+ 
+-- [[stripe-terminal-collect-nfc-data-2025]] — verbatim webpage content (iOS, Android, React Native)
++- [[raw/stripe-terminal-collect-nfc-data-2025|Stripe Terminal collect NFC tapped data guide captured 2026-05-01]] — iOS, Android, and React Native implementation sections
++
++## Related raw API references
++
++- [[raw/stripe-terminal-features-collect-nfc-data-2026-11-07|Stripe Terminal collect NFC tapped data SDK variant index captured 2026-11-07]]

@@ -1,0 +1,130 @@
+{
+  "job_id": "terminal-features-extended-authorizations",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Stripe Terminal: Extended Authorizations\"\ntype: source\ndate_ingested: 2026-05-01\ndate_updated: 2026-11-24\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/terminal/features/extended-authorizations\"\nraw_files:\n  - \"stripe-terminal-features-extended-authorizations-2026-11-07.md\"\n  - \"stripe-terminal-extended-authorizations-2025.md\"\ntags: [stripe, stripe-terminal, extended-authorization, payment-intents, card-present]\n---\n\n## Summary\n\nThe May and November 2026 [[stripe]] Terminal guides describe extending the capture window for a successfully authorized, confirmed card-present PaymentIntent. They describe a typical baseline of 48 hours, or five days for Visa, and extensions of up to 30 days depending on card brand and merchant category. A hotel might authorize at check-in and capture at check-out.\n\n## Request and Capture\n\n- **Eligibility**. Visa, Mastercard, American Express, and Discover have the card-brand and merchant-category scopes below. Single-message methods such as Interac and eftpos are excluded. Stripe advises Connect users to set the MCC for each connected account to match its business.\n- **Creation**. At PaymentIntent creation, set `payment_method_options.card_present.request_extended_authorization` to `true` and `capture_method` to `manual`. Confirmation attempts to initiate payment.\n- **Deadline**. After confirmation, read `payment_method_details.card_present.capture_before` on the Charge for the payment's exact deadline. Network rules can change. If capture misses that deadline, the authorization expires, the hold is released, and the PaymentIntent transitions to `canceled`.\n\n## SDK and Server Examples\n\n> [!warning] iOS and Android SDK 6.0.0\n> November documents that `captureMethod` defaults to automatic-asynchronous on iOS and Android SDK 6.0.0. SDK-side PaymentIntent creation must explicitly select manual capture for extended authorization. The retained Swift and Kotlin webpage examples omit this setter. The separately captured [[source-github-stripe-terminal-ios|iOS SDK]] and [[source-github-stripe-terminal-android|Android SDK]] examples explicitly select manual. The November React Native example adds `captureMethod: 'manual'` and gives no React Native version threshold.\n\nThe May Node create example passes `payment_method_types: ['card_present']`. The November cURL example sends `allowed_payment_method_types[]=card_present`. Both request extended authorization and manual capture. The [[stripe-payment-intents|PaymentIntent concept]] records the separate `stripe@23.0.0` request boundary. The webpage examples alone leave cross-version compatibility unresolved.\n\n## Validity Window by Card Brand and MCC\n\n| Card brand | Eligible merchant categories | Extended window |\n| --- | --- | --- |\n| Visa | Hotel, lodging, vehicle rental, and cruise line | Nominal 30 days. The exact window is 29 days 18 hours for clearing. |\n| Visa | Aircraft, bicycle (including electric scooters), boat, clothing and costume, DVD and video, equipment and tool, furniture, motor home, and motorcycle rentals, plus trailer parks and campgrounds | Nominal 10 days. The exact window is 9 days 18 hours for clearing. |\n| Mastercard (excludes Maestro and Cirrus) | All merchant categories | 30 days |\n| American Express | Lodging and vehicle rental | 30 days, with capture due by the end of the customer's stay or rental |\n| Discover | Airline, bus charter or tour, car rental, cruise line, local or suburban commuter, passenger transportation including ferries, hotel, lodging, and passenger railway | 30 days |\n\n## See Also\n\n- [[stripe-terminal-extended-authorizations]] \u2014 Terminal extended authorization concept\n- [[stripe-terminal-incremental-authorizations]] \u2014 related capability for increasing the authorized amount\n\n## Raw Sources\n\n- [[raw/stripe-terminal-features-extended-authorizations-2026-11-07|2026-11-07 Terminal extended authorizations guide]]\n- [[raw/stripe-terminal-extended-authorizations-2025|2026-05-01 Terminal extended authorizations guide]]\n",
+  "quotes": {
+    "terminal-features-extended-authorizations": [
+      {
+        "text": "As of SDK 6.0.0, `captureMethod` defaults to automatic-asynchronous",
+        "location": "raw/stripe-terminal-features-extended-authorizations-2026-11-07.md:21"
+      },
+      {
+        "text": "allowed_payment_method_types[]=card_present",
+        "location": "raw/stripe-terminal-features-extended-authorizations-2026-11-07.md:30"
+      },
+      {
+        "text": "captureMethod: 'manual'",
+        "location": "raw/stripe-terminal-features-extended-authorizations-2026-11-07.md:94"
+      },
+      {
+        "text": "Failure to capture the payment by this time cancels the authorization and releases the funds.",
+        "location": "raw/stripe-terminal-features-extended-authorizations-2026-11-07.md:108"
+      },
+      {
+        "text": "The exact extended authorization window is 29 days and 18 hours",
+        "location": "raw/stripe-terminal-features-extended-authorizations-2026-11-07.md:124"
+      }
+    ]
+  },
+  "old_evidence": {
+    "terminal-features-extended-authorizations": [
+      {
+        "text": "payment_method_types: ['card_present']",
+        "location": "raw/stripe-terminal-extended-authorizations-2025.md:30"
+      },
+      {
+        "text": "Failure to capture the payment by this time cancels the authorization and releases the funds.",
+        "location": "raw/stripe-terminal-extended-authorizations-2025.md:112"
+      },
+      {
+        "text": "so it\u2019s only present after the `PaymentIntent` is confirmed.",
+        "location": "raw/stripe-terminal-extended-authorizations-2025.md:118"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-terminal-features-extended-authorizations-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 58
+      },
+      {
+        "start": 59,
+        "end": 124
+      }
+    ],
+    "raw/stripe-terminal-extended-authorizations-2025.md": [
+      {
+        "start": 1,
+        "end": 61
+      },
+      {
+        "start": 62,
+        "end": 128
+      }
+    ],
+    "wiki/sources/source-stripe-terminal-extended-authorizations.md": [
+      {
+        "start": 1,
+        "end": 43
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/b4908b0205e2d272998c4c99/content.diff": [
+      {
+        "start": 1,
+        "end": 84
+      }
+    ]
+  },
+  "answers": {
+    "terminal-features-extended-authorizations": {
+      "Q1": "For https://docs.stripe.com/terminal/features/extended-authorizations, May 1 and November 7 describe an eligible merchant's Terminal integration requesting card-present extended authorization at PaymentIntent creation using payment_method_options.card_present.request_extended_authorization=true and capture_method=manual. Confirmation attempts to initiate payment. An eligible, successfully authorized, confirmed Terminal payment can be captured up to 30 days later depending on the card brand and merchant category (old raw line 8; new raw line 9). Visa, Mastercard, American Express and Discover are listed; Interac and eftpos are excluded as single-message methods. Connect users set connected-account MCCs to match their businesses. The merchant reads capture_before from the resulting Charge after confirmation to learn its actual deadline. If capture misses the deadline the authorization expires, funds release, and PaymentIntent becomes canceled (old raw lines 8-18, old raw lines 112-128; new raw lines 9-21, new raw lines 108-124). November explicitly requires manual capture for client creation with iOS/Android SDK 6.0.0 because the default is automatic-asynchronous, and shows a React Native example setting manual (old raw lines 93-102; new raw line 21, new raw lines 88-98). The revised source-stripe-terminal-extended-authorizations retains the earlier flow and network table and adds the SDK caveats, exact field placement, and expiry release detail.",
+      "Q2": "For https://docs.stripe.com/terminal/features/extended-authorizations, the revised source-stripe-terminal-extended-authorizations retains the May 1 functional evidence, the reciprocal stripe-terminal-extended-authorizations concept, its versioned iOS/Android evidence, and the related incremental authorization and PaymentIntent request routes. November 7's substantive caveat is explicit manual capture on iOS/Android SDK 6.0.0 because the default changed to automatic-asynchronous; the unchanged shown Swift and Kotlin builders omit manual and are incomplete for that version. The React Native sample adds manual with no release boundary specified here. The server create sample moves from payment_method_types to allowed_payment_method_types[]; the revised guide dates both examples and attributes the stripe@23.0.0 compatibility boundary to the separate versioned package evidence. Switching Node to cURL, TSX fencing and table/footnote formatting are presentational; migration links are navigation (old raw lines 16-50, old raw lines 64-79, old raw lines 93-102; new raw lines 17-45, new raw lines 59-74, new raw lines 88-98). Both captures preserve the typical 48 hours or Visa five days, exact Visa 29d18h/9d18h, Mastercard all categories excluding Maestro/Cirrus, Amex lodging/vehicle rental with capture by end of stay or rental and Discover specified categories. The revised source preserves capture_before on the Charge after confirmation and the missed-deadline release and canceled transition (old raw lines 8-14, old raw lines 112-128; new raw lines 9-15, new raw lines 108-124)."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "terminal-features-extended-authorizations-definition",
+      "target_path": "wiki/concepts/stripe-terminal-extended-authorizations.md",
+      "update_kind": "durable_fact",
+      "anchor": "Extended authorizations allow merchants to capture a confirmed Terminal PaymentIntent beyond the standard window (48 hours for most cards, 5 days for Visa), up to 30 days depending on card brand and merchant category.",
+      "proposed_markdown": "Extended authorizations allow later capture of a successfully authorized, confirmed card-present Terminal PaymentIntent. The May and November guides give a typical baseline of 48 hours, or five days for Visa, and an extension of up to 30 days depending on card brand and merchant category. The Charge gives the payment's actual deadline.",
+      "quote_indexes": [
+        3,
+        4
+      ],
+      "warnings": [
+        "The typical timing and brand/category limit are documented at May raw line 8 and November raw line 9. Confirmation attempts to initiate payment."
+      ]
+    },
+    {
+      "update_id": "terminal-features-extended-authorizations-example-qualification",
+      "target_path": "wiki/concepts/stripe-terminal-extended-authorizations.md",
+      "update_kind": "durable_fact",
+      "anchor": "Set at PaymentIntent creation:",
+      "proposed_markdown": "The November webpage explicitly requires manual capture for iOS and Android SDK 6.0.0 creation. Its Swift and Kotlin samples omit the corresponding setter. The separately captured SDK examples above set it explicitly. The November React Native example adds `captureMethod: 'manual'` and specifies no React Native version threshold.\n\nSet `payment_method_options.card_present.request_extended_authorization` to `true` and `capture_method` to `manual` when creating the PaymentIntent. The historical Node create example below is from the May 2026 guide. The November guide uses `allowed_payment_method_types[]=card_present` in its cURL example. See [[stripe-payment-intents|PaymentIntent request version notes]] for the separate `stripe@23.0.0` boundary.",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": [
+        "May raw lines 27\u201336 and November raw lines 25\u201332 document the distinct request samples. November raw lines 39\u201345 and 59\u201375 omit the setter shown in the separately retained SDK examples."
+      ]
+    },
+    {
+      "update_id": "terminal-features-extended-authorizations-source-route",
+      "target_path": "wiki/concepts/stripe-terminal-extended-authorizations.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-terminal-extended-authorizations]] \u2014 primary source: availability table, setup, capture_before field behavior",
+      "proposed_markdown": "- [[source-stripe-terminal-extended-authorizations]] \u2014 May and November 2026 Terminal guides covering eligibility, SDK and server setup, and the Charge-based capture deadline.",
+      "quote_indexes": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ]
+}

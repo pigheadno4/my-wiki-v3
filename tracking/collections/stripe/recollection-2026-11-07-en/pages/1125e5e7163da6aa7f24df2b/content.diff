@@ -1,0 +1,279 @@
+--- raw/stripe-receipts-2026.md
++++ raw/stripe-receipts-2026-11-07.md
+@@ -1,68 +1,220 @@
+ # Receipts and paid invoices
+ 
+-Send payment or refund receipts automatically.
+-
+-Each receipt contains a link to view it in a browser and a unique [receipt number](https://docs.stripe.com/api.md#charge_object-receipt_number) that’s useful when looking up payment information.
+-
+-You can also access the link to view the receipt in a browser through the API in the _PaymentIntent’s_ (The Payment Intents API tracks the lifecycle of a customer checkout flow and triggers additional authentication steps when required by regulatory mandates, custom Radar fraud rules, or redirect-based payment methods) related [Charge](https://docs.stripe.com/api/charges/object.md#charge_object-receipt_url) object. When you visit the link, the receipt always shows the latest status of that charge. If it’s been refunded, the receipt accurately reflects the refund. Stripe-hosted receipts are designed to be viewed in a web browser. You can’t directly download them.
+-
+-As a security measure, receipt links expire within 30 days. Expired receipt links require the customer to provide the original email address to resend the receipt to that address.
+-
+-## Automatically send receipts
+-
+-You can enable automated receipts with:
+-
+-- [Payment Links](https://docs.stripe.com/payment-links/post-payment.md#send-email-receipts)
+-- [Checkout Sessions API](https://docs.stripe.com/api/checkout/sessions.md)
+-  - [Full hosted page](https://docs.stripe.com/payments/checkout/receipts.md?payment-ui=stripe-hosted#automatically-send-receipts)
+-  - [Full embedded page](https://docs.stripe.com/payments/checkout/receipts.md?payment-ui=embedded-page#automatically-send-receipts-embedded-page)
+-  - [Elements](https://docs.stripe.com/payments/advanced/receipts.md?payment-ui=embedded-components)
+-- [Advanced integrations](https://docs.stripe.com/payments/advanced/receipts.md#automatically-send-receipts)
+-
+-## Manually send receipts
+-
+-To send receipts in the [Dashboard](https://dashboard.stripe.com/payments), click **Send receipt** within the **Receipt history** section of a Payment details page. You can also hover over a payment within the **Payments** section of a customer’s page and click the **Send receipt** icon. To resend an email receipt, input a different email address, or specify a comma-separated list of addresses to send it to several recipients. A record of the last 10 receipts is visible on the payment’s page.
+-
+-To give your customer direct access to a receipt through your application, use the [`receipt_url`](https://docs.stripe.com/api/charges/object.md#charge_object-receipt_url).
+-
+-## Customize receipts
+-
+-Learn how to customize receipts with:
+-
+-- [Payment Links](https://docs.stripe.com/payment-links/post-payment.md#send-email-receipts)
+-- [Checkout Sessions API](https://docs.stripe.com/payments/checkout/receipts.md#customizing-receipts)
+-  - [Full hosted page](https://docs.stripe.com/payments/checkout/receipts.md?payment-ui=stripe-hosted#customizing-receipts)
+-  - [Full embedded page](https://docs.stripe.com/payments/checkout/receipts.md?payment-ui=embedded-page#customizing-receipts-embedded-page)
+-  - [Elements](https://docs.stripe.com/payments/advanced/receipts.md?payment-ui=embedded-components)
+-- [Advanced integrations](https://docs.stripe.com/payments/advanced/receipts.md#automatically-send-receipts)
+-
+-## Refund receipts
+-
+-When a payment is refunded, Stripe can automatically send a receipt to the same email address provided in the original charge. You can also use the Dashboard to manually send a copy of the refund receipt. To enable automated refund receipts, toggle **Refunds** on in your [Customer emails settings](https://dashboard.stripe.com/settings/emails).
+-
+-Businesses in Mexico can also download refund receipts from the Dashboard. These receipts contain additional information about the refund, such as refund status and refund type.
+-
+-## Invoice and subscription payment receipts
+-
+-Stripe creates a receipt when a customer pays an _invoice_ (Invoices are statements of amounts owed by a customer. They track the status of payments from draft through paid or otherwise finalized. Subscriptions automatically generate invoices, or you can manually create a one-off invoice) or makes any _subscription_ (A Subscription represents the product details associated with the plan that your customer subscribes to. Allows you to charge the customer on a recurring basis) payment. Receipts for subscription and invoice payments are itemized to include line items, discounts, and taxes. After payment, the [Hosted Invoice Page](https://docs.stripe.com/invoicing/hosted-invoice-page.md) includes a link to a receipt that the customer can download for their own records.
+-
+-## Test receipts
+-
+-Test payments created using your [test API keys](https://docs.stripe.com/keys.md#test-live-modes) don’t automatically send receipts unless the associated email belongs to you or to another user with a verified email and access to the testing environment. For test payments associated with other email addresses, view or manually send a receipt using the [Dashboard](https://dashboard.stripe.com/test/payments).
+-
+-## Stripe Connect receipts
+-
+-Receipt settings depend on the charge and account type:
++Send customers receipts for payments and refunds, and create itemized paid invoices for one-time purchases.
++
++Stripe creates receipts for all successful payments and refunds, including invoice payments and recurring payments as part of a *subscription* (A Subscription represents the product details associated with the plan that your customer subscribes to. Allows you to charge the customer on a recurring basis). Customers can view their receipts online through a web browser, and optionally download receipts as PDFs. Stripe doesn’t email every receipt it creates. You can send receipts by email [automatically](https://docs.stripe.com/receipts.md#automatic) or [manually](https://docs.stripe.com/receipts.md#manual).
++
++Use the following table to find your use case.
++
++| Use case | Guide |
++| --- | --- |
++| Email receipts for one-time online payments | [Automatically send receipts](https://docs.stripe.com/receipts.md#automatic) |
++| Send emails for subscriptions and invoices | [Send customer emails](https://docs.stripe.com/invoicing/send-email.md) |
++| Provide receipts for in-person payments | [Terminal receipts](https://docs.stripe.com/terminal/features/receipts.md) |
++| Give customers an itemized paid invoice for a one-time payment | [Paid invoice receipts](https://docs.stripe.com/receipts.md#paid-invoice-receipts) |
++| Send receipts for payments on connected accounts | [Connect receipts](https://docs.stripe.com/receipts.md#receipts-for-stripe-connect) |
++
++## Before you begin
++
++Before Stripe can email a receipt automatically, make sure that:
++
++- The payment has a recipient email address. Stripe uses the payment’s receipt email address if one is set, and otherwise uses the email address of the payment’s Customer. A Customer object isn’t required.
++- Your public business details include the [required contact information](https://docs.stripe.com/receipts.md#support-requirements).
++- The payment is in live mode. Test payments don’t trigger automatic receipt emails, but you can [send a test receipt manually](https://docs.stripe.com/receipts.md#test-receipts).
++
++## Automatically send receipts (Recommended) 
++
++You can automatically send customer receipts by email. Automatic receipts are available for payments and refunds.
++
++1. In the Dashboard, open **Settings** > **Business** > [Customer emails](https://dashboard.stripe.com/settings/emails).
++2. Under **Payments**, turn on **Successful payments** or **Refunds**.
++
++Stripe sends a payment receipt only after the payment succeeds. Stripe doesn’t send a receipt if a payment fails or gets [declined](https://docs.stripe.com/declines.md). For payment methods with *delayed* (A payment method that can't immediately return payment status when a customer attempts a transaction (for example, ACH debits). Businesses commonly hold an order in a pending state until payment is successful with these payment methods) payment confirmation, Stripe sends the receipt after it confirms that the payment succeeded.
++
++### Specify a receipt email address 
++
++If you specify [receipt_email](https://docs.stripe.com/api/payment_intents/create.md#create_payment_intent-receipt_email) when you create a PaymentIntent, Stripe sends a receipt to that address when the payment succeeds in live mode, even if **Successful payments** is turned off.
++
++For Checkout Sessions, set [payment_intent_data.receipt_email](https://docs.stripe.com/api/checkout/sessions/create.md#create_checkout_session-payment_intent_data-receipt_email).
++
++If **Successful payments** is turned off and you don’t specify a receipt email address, you can [send the receipt manually](https://docs.stripe.com/receipts.md#manual).
++
++> Businesses in Mexico can download refund receipts from the Dashboard. These receipts contain additional information about the refund, such as refund status and refund type.
++
++## Manually send receipts 
++
++You can send email receipts manually from the Dashboard. Manual receipts are available for payments and refunds.
++
++1. In the Dashboard, open **Transactions** > [Payments](https://dashboard.stripe.com/payments).
++2. Click the successful payment or refund you want to send a receipt for. Only successful payments have receipts available.
++3. On the payment details page, go to **Receipt history**.
++4. Click the overflow menu (⋯), and select **Send receipt**.
++5. Confirm or update the customer’s email address. You can send to multiple recipients by adding more email addresses as a comma-separated list.
++6. Click **Send**.
++
++The receipt history on the payment details page displays up to 10 receipts.
++
++### Test receipts 
++
++If you need to send a receipt for a test payment, send a [manual receipt](https://docs.stripe.com/receipts.md#manual).
++
++## Receipt URLs
++
++Every receipt has a URL that the customer can view in a web browser. To link to a receipt from your application, use the [receipt_url](https://docs.stripe.com/api/charges/object.md#charge_object-receipt_url) attribute of the [Charge](https://docs.stripe.com/api/charges/object.md) object.
++
++### Expired receipt URLs 
++
++Receipts don’t expire, but for security reasons, links to receipts expire after 30 days. You can’t customize or extend a receipt link’s expiration period. If a receipt link has expired, Stripe asks the customer to provide the email address associated with the original transaction. Stripe creates a new link and sends it to that email.
++
++## Paid invoice receipts 
++
++A paid *invoice* (Invoices are statements of amounts owed by a customer. They track the status of payments from draft through paid or otherwise finalized. Subscriptions automatically generate invoices, or you can manually create a one-off invoice) is an itemized record of a completed purchase, and includes more detail than a standard receipt. For subscriptions, Stripe generates invoices automatically. For one-time payments, turn on invoice creation for each payment link or Checkout Session.
++
++> Invoice creation for one-time payments through the [Checkout Sessions API](https://docs.stripe.com/api/checkout/sessions.md) is not an [Invoicing](https://stripe.com/invoicing) feature, and is priced separately. Review [this support article](https://support.stripe.com/questions/pricing-for-post-payment-invoices-for-one-time-purchases-via-checkout-and-payment-links) to learn more.
++
++Post-payment invoice creation is available for one-time payments made with [Payment Links](https://docs.stripe.com/payment-links.md) or [Checkout](https://docs.stripe.com/payments/checkout.md). Configure it on the payment link or Checkout Session. To bill customers with invoices in other integrations, see [Invoicing](https://docs.stripe.com/invoicing.md).
++
++### Create paid invoices with Payment Links 
++
++To create a paid invoice for each one-time purchase made with a payment link:
++
++1. In the Dashboard, [create](https://dashboard.stripe.com/payment-links/create) a payment link or edit an existing one.
++2. Click **After payment**.
++3. Select **Create an invoice PDF**.
++4. Click **Create link** for a new payment link or **Update link** for an existing one.
++
++Stripe creates a paid invoice after each successful payment through the link. To email the invoice to your customers, also turn on [automatic receipts](https://docs.stripe.com/receipts.md#automatic). Learn more about [post-payment options for Payment Links](https://docs.stripe.com/payment-links/post-payment.md).
++
++### Automatically send paid invoices with Checkout 
++
++1. Turn on [automatic receipts](https://docs.stripe.com/receipts.md#automatic).
++2. Set [invoice_creation[enabled]](https://docs.stripe.com/api/checkout/sessions/create.md#create_checkout_session-invoice_creation-enabled) to `true` when creating a Checkout Session:
++
++```curl
++curl https://api.stripe.com/v1/checkout/sessions \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d mode=payment \
++  -d "invoice_creation[enabled]=true" \
++  -d "line_items[0][price]={{ONE_TIME_PRICE_ID}}" \
++  -d "line_items[0][quantity]=1" \
++  -d ui_mode=elements \
++  --data-urlencode "return_url=https://example.com"
++```
++
++After the payment completes successfully, Stripe sends an invoice summary to the email that the customer provided. This summary includes links to download PDFs of both the invoice and payment receipt.
++
++You can listen for the [invoice.paid](https://docs.stripe.com/api/events/types.md#event_types-invoice.paid) event if you need to access invoice receipts programmatically.
++
++### Invoice receipt timing 
++
++Invoice receipts are only sent after the payment completes successfully. Payment methods with *delayed* (A payment method that can't immediately return payment status when a customer attempts a transaction (for example, ACH debits). Businesses commonly hold an order in a pending state until payment is successful with these payment methods) payment confirmation timing, including [ACH Direct Debit](https://docs.stripe.com/payments/ach-direct-debit/accept-a-payment.md), [Bacs Direct Debit](https://docs.stripe.com/payments/bacs-debit/accept-a-payment.md), [bank transfers](https://docs.stripe.com/payments/bank-transfers/accept-a-payment.md), [Boleto](https://docs.stripe.com/payments/boleto/accept-a-payment.md), [Canadian pre-authorized debits](https://docs.stripe.com/payments/acss-debit/accept-a-payment.md), [Konbini](https://docs.stripe.com/payments/konbini/accept-a-payment.md), [OXXO](https://docs.stripe.com/payments/oxxo/accept-a-payment.md), [Pay by Bank](https://docs.stripe.com/payments/pay-by-bank/accept-a-payment.md), and [SEPA Direct Debit](https://docs.stripe.com/payments/sepa-debit/accept-a-payment.md), can take longer to trigger receipts. Check your [payment method’s documentation](https://docs.stripe.com/payments/payment-methods/overview.md) to determine whether payment confirmation is immediate or delayed.
++
++### Custom invoice data 
++
++When creating a Checkout Session, you can pass custom values to the [invoice_creation.invoice_data](https://docs.stripe.com/api/checkout/sessions/create.md#create_checkout_session-invoice_creation-invoice_data) object to customize your invoices:
++
++```curl
++curl https://api.stripe.com/v1/checkout/sessions \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d mode=payment \
++  -d "invoice_creation[enabled]=true" \
++  -d "invoice_creation[invoice_data][description]=Invoice for Product X" \
++  -d "invoice_creation[invoice_data][metadata][order]=order-xyz" \
++  -d "invoice_creation[invoice_data][account_tax_ids][0]=DE123456789" \
++  -d "invoice_creation[invoice_data][custom_fields][0][name]=Purchase Order" \
++  -d "invoice_creation[invoice_data][custom_fields][0][value]=PO-XYZ" \
++  -d "invoice_creation[invoice_data][rendering_options][amount_tax_display]=include_inclusive_tax" \
++  -d "invoice_creation[invoice_data][footer]=B2B Inc." \
++  -d "line_items[0][price]={{ONE_TIME_PRICE_ID}}" \
++  -d "line_items[0][quantity]=1" \
++  -d ui_mode=elements \
++  --data-urlencode "return_url=https://example.com"
++```
++
++Review [invoicing best practices](https://docs.stripe.com/invoicing/customize.md) for your region to make sure you’re collecting the right information from your customers. Information like the customer’s billing and shipping addresses, phone number, and tax ID appears on the resulting invoice.
++
++### Invoice language 
++
++The language of the invoice is determined by the customer information available when you create the Checkout Session.
++
++| Customer information | Invoice language |
++| --- | --- |
++| The customer is represented by a [v2 Account](https://docs.stripe.com/api/v2/core/accounts.md). | The value of the Account’s [defaults.locales](https://docs.stripe.com/api/v2/core/accounts/object.md#v2_account_object-defaults-locales) attribute. |
++| The customer is represented by a [Customer](https://docs.stripe.com/api/customers.md) object. | The value of the Customer’s [preferred_locales](https://docs.stripe.com/api/customers/object.md#customer_object-preferred_locales) attribute. |
++| The customer has no locale data available. | The **Default language** from your [Customer emails settings](https://dashboard.stripe.com/settings/emails). |
++| No customer information is provided. | The customer’s browser locale when they open the Checkout Session URL. |
++
++## Customize receipts 
++
++You can customize your receipts to match your business’s visual design, along with the business information to display.
++
++### Branding 
++
++Your branding settings control the visual display of your receipts and other Stripe interfaces.
++
++1. In the Dashboard, go to **Settings** > **Business** > [Branding](https://dashboard.stripe.com/settings/branding).
++2. Click the **Email receipts** tab.
++3. For the image type you want to add, click the plus icon (:plus:), then select your file. Make sure it meets all the [requirements](https://docs.stripe.com/receipts.md#image-requirements).
++4. For your color scheme, select your brand color and your accent color. You can use the dropdown color picker, or provide a color code as HEX or RGB values.
++5. Click **Save changes**.
++
++#### Image requirements 
++
++Image requirements are the same for both the logo and icon files, but the icon is displayed at smaller sizes.
++
++|  |
++| Dimensions | - Must be square
++- Minimum 128 x 128 pixels |
++| Supported file types | - PNG (recommended)
++- JPG |
++| Maximum file size | 512 KB |
++
++### Business information 
++
++Your business details control the information that displays on receipts and other Stripe interfaces.
++
++1. In the Dashboard, go to **Settings** > **Business** > [Business details](https://dashboard.stripe.com/settings/business).
++2. Under **Public details**, click **Edit**.
++3. Update your customer support information, noting the [requirements](https://docs.stripe.com/receipts.md#support-requirements).
++4. Click **Save**.
++
++#### Support requirements 
++
++For compliance reasons, some contact information is always required on receipts:
++
++- Legal business name
++- Customer support address
++- Customer support email
++- Privacy policy URL
++
++### Localization 
++
++Stripe determines the language of the receipt that customers view in a web browser in the following order:
++
++1. For payments made through a Checkout Session, the customer’s browser locale, or the Checkout Session’s [locale](https://docs.stripe.com/api/checkout/sessions/create.md#create_checkout_session-locale) if Stripe didn’t record a browser locale.
++2. The [preferred_locales](https://docs.stripe.com/api/customers/object.md#customer_object-preferred_locales) of the payment’s Customer.
++3. The **Default language** from your [Customer emails settings](https://dashboard.stripe.com/settings/emails).
++
++Receipt emails can use a different language than the receipt page:
++
++- If the payment has a Customer, the email uses the Customer’s `preferred_locales`, and otherwise the **Default language** from your Customer emails settings. The Checkout Session’s locale doesn’t apply.
++- If the payment has no Customer, such as a guest Checkout payment, the payment receipt email uses the Checkout Session’s browser or explicit locale. Otherwise, it uses your **Default language**. Refund receipt emails for these payments always use your **Default language**.
++
++Invoices use different rules. See [Invoice language](https://docs.stripe.com/receipts.md#invoice-language).
++
++## Connect receipts 
++
++If you use *Connect* (Connect is Stripe's solution for multi-party businesses, such as marketplace or software platforms, to route payments between sellers, customers, and other recipients), receipt settings depend on the charge and account type used by your platform or marketplace:
+ 
+ - [Destination charges](https://docs.stripe.com/connect/destination-charges.md) and [separate charges and transfers](https://docs.stripe.com/connect/separate-charges-and-transfers.md): Receipts use the platform account’s **Customer emails**, **Branding**, and **Public details** settings.
+ 
+ - [Direct charges](https://docs.stripe.com/connect/direct-charges.md): Receipts use the connected account’s **Customer emails**, **Branding**, and **Public details** settings.
+ 
+-Platform accounts can send a receipt for a connected account by passing `receipt_email` when making a charge request.
+-
+-For connected accounts that use the Stripe Dashboard (which includes Standard connected accounts), you can configure receipt settings under [Branding](https://dashboard.stripe.com/settings/branding). For connected accounts that don’t use the Dashboard (which includes Express and Custom connected accounts), the platform configures receipt settings through [settings.branding](https://docs.stripe.com/api/accounts/update.md#update_account-settings-branding).
++Platform accounts can send a receipt for a connected account by passing `receipt_email` when creating a PaymentIntent.
++
++Connected accounts that use the Stripe Dashboard, such as Standard connected accounts, can configure the appearance of their receipts under [Branding](https://dashboard.stripe.com/settings/branding). For connected accounts that don’t use the Dashboard, such as Express and Custom connected accounts, the platform configures receipt appearance through [settings.branding](https://docs.stripe.com/api/accounts/update.md#update_account-settings-branding). Branding settings don’t control whether Stripe sends receipts.
+ 
+ ## See also
+ 
+ - [Send customer emails](https://docs.stripe.com/invoicing/send-email.md)
+-- [Automate customer emails](https://docs.stripe.com/billing/revenue-recovery/customer-emails.md)+- [Terminal receipts](https://docs.stripe.com/terminal/features/receipts.md)

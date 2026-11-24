@@ -1,0 +1,63 @@
+--- wiki/sources/source-stripe-legacy-apis.md
++++ wiki/sources/source-stripe-legacy-apis.md
+@@ -2,10 +2,11 @@
+ title: "Stripe Legacy APIs"
+ type: source
+ date_ingested: 2026-04-20
+-date_updated: 2026-11-22
++date_updated: 2026-11-24
+ canonical_url: "https://docs.stripe.com/payments/charges-api"
+ original_format: webpage
+ raw_files:
++  - "stripe-sources-2026-11-07.md"
+   - "stripe-payments-payment-methods-transitioning-2026-11-07.md"
+   - "stripe-payments-older-apis-2026-11-07.md"
+   - "stripe-payments-payment-intents-migration-2026-11-07.md"
+@@ -122,18 +123,23 @@
+ 
+ ## Sources API Concepts
+ 
+-4 characteristics classify every Source object:
++The dedicated Sources captures describe the historical stateful `Source` workflow. On April 20, 2026, Stripe planned to remove local-method support and required migration of those methods to the Payment Methods API. It recommended migrating Sources card use and said it then had no card-removal plan. On November 7, 2026, the dedicated guide described the page as superseded by the transition guide and Payment Methods API reference. It broadly planned to remove Sources support, required existing Sources users to migrate to Payment Intents and Payment Methods, and said new integrations cannot use Sources. It directed new integrations to [payment method integration options](https://docs.stripe.com/payments/payment-methods/integration-options.md).
++
++> [!note] November 7, 2026 card-support notices
++> The Older APIs overview still said it did not then plan to turn off Sources card support. The card-oriented transition guide planned to stop Sources card support and support for legacy Cards and required existing Sources card users to migrate. The dedicated Sources notice applies to the Sources API broadly. These captures leave the shutdown date, account-level enforcement and actual delivery of migration emails unresolved.
++
++Four characteristics classify the legacy payment methods documented for Sources.
+ 
+  | Characteristic | Values | Notes |
+  | --- | --- | --- |
+- | Pull vs Push | Pull = merchant debits customer; Push = customer sends funds | Cards = pull; iDEAL/Sofort/ACH Credit = push |
+- | Flow | none / redirect / code verification / receiver | Determines customer action required before source is chargeable |
+- | Usage | `single_use` / `reusable` | Single-use → `consumed` after charge; reusable must be attached to Customer |
+- | Confirmation | synchronous / asynchronous | Async charge starts `pending`; webhook required for fulfillment |
++ | Pull vs Push | Merchant debit after customer consent, or customer sends funds | Cards illustrate pull. iDEAL, Sofort and ACH Credit Transfers illustrate push. |
++ | Flow | none / redirect / code verification / receiver | Depending on the method, a Source can require no additional action (the card example excludes 3D Secure), customer approval after a redirect, a verification code submitted by the merchant, or customer funding of the receiver account. |
++ | Usage | `single_use` / `reusable` | Charge a single-use Source directly once, after which it is `consumed`. A reusable Source must be attached to a Customer for repeated use. Charging it directly consumes it. |
++ | Confirmation | synchronous / asynchronous | A synchronous Charge immediately reports `succeeded` or `failed`. An asynchronous Charge starts `pending`. Stripe sends a status-change webhook, which the integration must be able to receive to confirm success or failure. |
+ 
+-**Receiver flow detail**: if not fully charged, funds credited to balance after 60 days. If source becomes chargeable but no charge is made, source is canceled and payment refunded automatically.
++**Chargeable and Receiver flows.** The historical guides describe a Charge request after the Source becomes chargeable to complete the payment. Their general passage says that an uncharged Source is canceled and the authenticated payment refunded automatically. The Receiver passage separately says that if received funds have not been fully charged, Stripe charges them on the merchant’s behalf and credits the merchant’s balance after 60 days. The two passages describe their respective scopes.
+ 
+-The 2026-04-20 Sources API guide marks **accepting local payment methods through the Sources API route** as deprecated and planned for removal; migrate that route to the Payment Methods API. Its push-method table names Alipay, Bancontact, giropay, iDEAL, Przelewy24, WeChat Pay, Sofort and Multibanco in the Sources context. This notice does not say those payment methods themselves are unavailable through current APIs.
++**Historical method table.** The Sources table lists deprecated local methods in the Sources context, including Alipay, Bancontact, giropay, iDEAL, Przelewy24, WeChat Pay, Sofort and Multibanco. Both captures have malformed table alignment and link the ACH debit authentication and microdeposit entries to ACH with Charges. The separate November transition matrix explicitly lists ACH Direct Debit as supported on Tokens and unsupported on Sources. ACH Credit Transfers are the distinct push example. See [[stripe-ach-direct-debit]] for the current ACH Direct Debit route.
+ 
+ ## Migration Guide (Charges → Payment Intents)
+ 
+@@ -154,6 +160,7 @@
+ 
+ ## Raw Sources
+ 
++- [[raw/stripe-sources-2026-11-07|November 7, 2026 dedicated Sources API guide]] — broader deprecation notice, migration and new-integration boundary, and historical Source and Charge mechanics.
+ - [[raw/stripe-payments-payment-methods-transitioning-2026-11-07|November 7, 2026 Sources and Tokens transition guide]] — Full same-URL overview for card-route migration, server verification, events and legacy mapping.
+ - [[raw/stripe-payments-older-apis-2026-11-07|November 2026 Older APIs overview]] — same-route full capture and grouped comparison.
+ - [[raw/stripe-payments-payment-intents-migration-2026-11-07|November 2026 Payment Intents migration]] — existing integration migration and the historical Payment Request Button procedure.
+@@ -162,7 +169,7 @@
+ - [[raw/stripe-older-apis-2025]] — 2026-04-20 overview and grouped comparison. See the dated Sources, Charges and ACH qualifications above.
+ - [[raw/stripe-charges-api-legacy-2025]] — Charges API: flow comparison, refunds, Apple Pay, statement descriptors, metadata, declines
+ - [[raw/stripe-payment-intents-migration-2025]] — Charges→PaymentIntents migration: incremental approach, confirmCardPayment, setup_future_usage, confirmCardSetup, off-session flagging, test cards
+-- [[raw/stripe-sources-api-2025]] — Sources API concepts: 4 characteristics (pull/push, flow, usage, sync/async), 4 flow types, single-use vs reusable, async pending→webhook pattern; deprecated local-payment-method acceptance is scoped to the Sources API route
++- [[raw/stripe-sources-api-2025|April 20, 2026 dedicated Sources API guide]] — Sources API concepts: 4 characteristics (pull/push, flow, usage, sync/async), 4 flow types, single-use vs reusable, async pending→webhook pattern; deprecated local-payment-method acceptance is scoped to the Sources API route
+ - [[raw/stripe-sources-to-payment-methods-migration-2025]] — Sources/Tokens→PaymentMethods migration: 3 paths (Checkout/Element/own form), stateless PaymentMethod vs stateful Source, 48h requires_action timeout, webhook mapping, reusable legacy method migration tool, legacy card backward-compat
+ - [[raw/stripe-charges-vs-payment-intents-2025]] — Charges vs PaymentIntents: 3 API options, Charges = US/Canada simple cards not SCA-ready, PI = all methods + SCA + Terminal; charge object read migration field mapping; brand/Google Pay rename
+ - [[raw/stripe-upgrade-integration-2025]] — Integration upgrade map: Card Element→Payment Element, Legacy Checkout→Checkout/Payment Links, Payment Request Button→Express Checkout Element, Manual→Dynamic payment methods

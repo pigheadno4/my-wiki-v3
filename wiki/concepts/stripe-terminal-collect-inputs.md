@@ -7,9 +7,7 @@ tags: [stripe, stripe-terminal, collect-inputs, forms, signature, reader-display
 
 ## Definition
 
-Stripe Terminal smart readers (S700/S710, WisePOS E) can display prebuilt input forms and collect structured information from customers outside the payment flow. Supports 6 input types collected in sequence, with customizable text and optional toggles.
-
-**Not available on**: M2, WisePad 3, Tap to Pay.
+The 2026-05-01 Stripe Terminal guide lists Stripe Reader S700/S710 and BBPOS WisePOS E for on-screen input forms. It documents six input types with customizable text and optional toggles. Forms can be displayed before payment, after payment, or outside a payment cycle.
 
 ## Input Types
 
@@ -28,10 +26,10 @@ Stripe Terminal smart readers (S700/S710, WisePOS E) can display prebuilt input 
 
 - **Server-driven**: `stripe.terminal.readers.collectInputs(readerId, { inputs: [...] })`
 - **JS/iOS/Android/React Native**: `collectInputs(params)` on the Terminal SDK instance
-- Up to **5 inputs per call**, collected in sequence
+- The JavaScript, iOS, Android, and React Native SDK variants document up to five inputs per call, collected in sequence.
 - Can be displayed before payment, after payment, or outside any payment cycle
 - iOS: requires SDK 4.4.0+; Android: requires SDK 4.3.0+
-- iOS and Android support collecting inputs while the reader is **offline**
+- The 2026-05-01 guide documents offline input collection on a capable smart reader for iOS, Android, and React Native.
 
 ## Customization
 
@@ -60,7 +58,7 @@ Use `\n` for line breaks within text fields.
 
 - Reader displays the first input; customer completes or skips (if optional) each in sequence
 - After all inputs: reader shows a transitional state for **3 seconds**, then returns to splash screen if no subsequent request arrives
-- Timeout: **2 minutes** of no touch → `terminal.reader.action_failed` webhook
+- Server-driven collection times out after two minutes without a touch and reports the failure in a `terminal.reader.action_failed` webhook.
 
 ## Receiving Input Data
 
@@ -76,23 +74,23 @@ Returned values by type:
 | `selection` | Selected choice `text` + `id` |
 | `phone` / `email` / `text` / `numeric` | Customer's input string |
 | Skipped optional | `skipped: true` |
-| Toggle | `"enabled"` / `"disabled"` / `"skipped"` |
+| Toggle | Server-driven documents `enabled` and `disabled`. SDKs also document `skipped` |
 
 ## Signature Images
 
-- Stored by Stripe for **7 days only**
-- Download via Files API using your secret key; store externally if retention > 7 days
-- Merchant is responsible for complying with laws governing collection, storage, and disclosure of signatures
+- For server-driven collection, Stripe stores the signature file for seven days.
+- Download the file through the Files API and store it if it is needed beyond seven days.
+- The merchant is responsible for complying with laws governing collection, use, storage and disclosure of signatures.
 
 ## Legal Compliance
 
 The feature includes a strong legal notice: the merchant is fully responsible for:
 - Obtaining all necessary consents, authorizations, and permissions
-- Ensuring the legal validity and enforceability of any contracts or notices created using collected inputs
+- Ensuring the legal validity and enforceability of contracts or notices that use input collected by the reader or output displayed on it
 
 ## Simulated Testing
 
-SDK simulated reader supports:
+The May guide's JavaScript, iOS, and Android simulator sections list these scenarios:
 - Successful collection (all inputs)
 - Successful collection (skipping all non-required inputs)
 - Failed collection (timeout)
@@ -101,4 +99,4 @@ Hard-coded values are returned per input type when simulating success.
 
 ## Sources
 
-- [[source-stripe-terminal-collect-inputs]] — primary source: input types, API, customization, webhooks, signature storage
+- [[source-stripe-terminal-collect-inputs]] — integration guide captured 2026-05-01, with the 2026-11-07 platform variant index linked for navigation.

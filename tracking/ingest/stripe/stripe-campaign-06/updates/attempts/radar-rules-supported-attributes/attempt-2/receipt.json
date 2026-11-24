@@ -1,0 +1,218 @@
+{
+  "job_id": "radar-rules-supported-attributes",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Stripe \u2014 Radar Supported Attributes\"\ntype: source\ndate_ingested: 2026-05-10\ndate_updated: 2026-11-24\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/radar/rules/supported-attributes\"\nraw_files:\n  - \"stripe-radar-rules-supported-attributes-2026-11-07.md\"\n  - \"stripe-radar-rules-supported-attributes-2026.md\"\ntags: [stripe, radar, rules, attributes, reference, velocity, fingerprint, ip, email, distance, platform]\n---\n\n## Summary\n\nStripe\u2019s May 10 and November 7, 2026 captures catalog the signals merchants can use in Radar rules. Stripe evaluates each rule with the inputs available for the payment method, transaction or connected account. Consult the dated raw tables for attribute names, windows and applicability.\n\n## Attribute Categories\n\n| Category | Applies to |\n| --- | --- |\n| Transaction rule attributes | All Radar-screened payment methods, with constraints on individual attributes |\n| Cross-payment-method attributes | Shared by multiple methods, with applicability varying by attribute |\n| Payment method\u2013specific attributes | Single payment method only. Non-Boolean attributes are missing for other methods. |\n| Payment outcome counters | Authorization, block, decline and total. Charge counters use card charges, and transaction counters cover supported methods with setup-attempt scope specified by row. |\n| Platform attributes | Connect platforms, with separate transaction, account and November Treasury scopes |\n\n## Notable Transaction Attributes\n\n**Risk.** November recommends three 0\u201399 rule scores. `fraudulent_dispute_score` applies to cards, ACH Direct Debit and SEPA Direct Debit. `fraudulent_payment_score` and `early_fraud_warning_score` apply to cards only. Classic `risk_level` (normal, elevated, highest, not_assessed) and `risk_score` remain supported. Both captures give adjustable classic thresholds of 65 for elevated and 75 for highest.\n\n> **Classic risk range and rule retirement (2026-11-07).** Both Supported Attributes captures list the classic `risk_score` rule attribute as 0\u2013100. The separate November Risk Settings capture describes the classic model as 0\u201399, says selecting a risk setting disables the default high-risk block rule, and still documents custom `:risk_score:` rules. Whether the model emits 100 remains unresolved. See [[source-stripe-radar-risk-settings]] and its November raw lines 141\u2013156.\n\n**Amount.** `amount_in_xyz` auto-converts using the explicit currency list (May raw line 60, November line 66). Decimal currencies use base units, such as dollars.\n\n**IP and client.** See `ip_address`, `ip_country`, `ip_state`, `ip_address_connection_type`, `is_anonymous_ip` and `is_my_login_ip`, plus `browser`, `isp`, `operating_system` and `user_agent`. November says iCloud Private Relay users can share the same IP counters. It suggests using `isp` to identify the traffic and considering exclusion from rules.\n\n**Email, distance and time.** `email`, `email_domain`, `is_disposable_email` and `email_commonality` (common, uncommon, rare, early access). Distance predicates measure billing, shipping and IP distances in km. `dispute_count_on_ip_hourly/daily/weekly/all_time` is bounded at 25. See `seconds/minutes/hours_since_email_first_seen` and the Stripe-wide and transaction variants.\n\n**Payment details.** See `payment_method_type`, `currency`, `charge_description`, `is_checkout`, `is_off_session`, `is_recurring`, `is_setup_intent` and `destination`. November adds `is_free_trial_transaction` for transactions Stripe identifies as coming from a free trial, primarily through Checkout or Billing. Both captures deprecate the payment `transaction_type` predicate, recommend `is_setup_intent` where possible, and reserve the `payment_intent` value for Request Credentials rules.\n\n> **Bacs rule example and enum (2026-05-10 and 2026-11-07).** The May and November Supported Attributes enum rows list `card`, `sepa_debit` and `us_bank_account`. The dated examples in [[source-stripe-radar-supported-payment-methods]] use `bacs_debit` in `:payment_method_type:`. The documentation leaves parser acceptance and entitlement for Bacs unresolved. See the May and November Attributes raw lines 166 and 170 and the paired Supported Payment Methods raw lines 46\u201348 and 43\u201345.\n\n**Customers.** See `customer`, `hours_since_customer_was_created`, `total_customers_for_email_weekly/yearly` and `total_customers_with_prior_fraud_activity_for_email_*`. Both captures describe Accounts v2 as generally available for Connect users and in public preview for other Stripe users. Preview users must specify a preview version. November gives the Dashboard enrollment route through **Account previews and features** \u2192 **Reusable payment methods for Global Payouts**. The dated captures recommend customer-configured Account objects for most use cases.\n\nMay includes 12 yearly transaction counters for customers, emails, cards and names. November omits those rows while retaining shorter transaction windows and separately scoped yearly counters. Whether the omitted predicates still evaluate remains unresolved. See the May **Customers**, **Email usage**, **Card usage** and **Name** tables.\n\n## Cross-Payment-Method Fingerprint Attributes\n\nApplies to cards, ACH and SEPA. See `authorized/blocked/declined_transactions_per_payment_instrument_fingerprint_hourly/daily/weekly`, `average_usd_amount_attempted_on_payment_instrument_fingerprint_all_time` and `hours_since_per_payment_instrument_fingerprint_first_seen`.\n\n## Card and Radar Pro Attributes\n\n- Radar documents the results of the issuer\u2019s address and CVC checks as post-authorization rule attributes. The `card_description`, `card_issuer` and `card_3d_secure_result` inputs remain public preview in both captures.\n- `has_liability_shift` is approximate. May starts from a non-wallet card payment\u2019s preauthorization liability shift and allows false negatives for certain digital wallets. November describes preauthorization card liability shift, possible later downgrade under network rules and false negatives for some Google Pay payments.\n- November adds `network_token` to `digital_wallet`. In both captures the listed values require a registered-device cryptogram, with `android_pay` valid with or without one. November also adds `is_agent_initiated` for card payments Stripe identifies as initiated by an AI agent.\n- November\u2019s Radar Pro table lists 0\u201399 `bot_score` and the `free_trial_abuse_risk_level` and `refund_abuse_risk_level` predicates for cards only. `name_verification` compares the supplied cardholder name with names inferred by Stripe, with separate match, unavailable and not-provided outcomes. The [[raw/stripe-radar-bot-abuse-2026-11-07|November 7, 2026 Bot Abuse capture]] names Stripe Checkout, Custom Checkout, Radar Sessions and Web Elements for bot scoring. The [[source-stripe-radar-bot-abuse|May 10, 2026 Bot Abuse guide]] documents the earlier Checkout scope.\n\n## Crypto Attributes (Early Access)\n\n`crypto_fingerprint`, `crypto_payins_network`, `crypto_payins_token_currency`\n\n## Connect and Treasury Rules\n\n- **Transaction rules** can review, block or allow connected-account transactions. May names destination charges and separate charges and transfers, and requires Radar for Platforms access for direct charges. November lists all three charge types under charge-type and Radar-tier conditions. The [[raw/stripe-radar-risk-settings-2026-11-07|November 7, 2026 Risk Settings capture]] separately describes merchant-of-record scope and the platform controls that determine whose Radar rules apply to connected-account direct charges. That configuration applies only to connected accounts controlled solely by the platform.\n- **Account rules** can submit the connected account itself for review. May restricts them to Radar for Platforms and lists `account_risk_level`. November makes availability tier-dependent and lists `account_fraud_risk_level` and `account_fraud_risk_score`. Coexistence of these names, automatic migration and exact entitlement changes remain unresolved.\n- **Treasury transaction rules** are a November private preview for certain Radar plans. They can review or block connected-account Treasury transactions and list `account_risk_level` in this scope. The Treasury `transaction_type` values are `INBOUND_TRANSFER` and `RECEIVED_CREDIT`, with separate inbound and return aggregates in the raw.\n\n> **Counter descriptions (2026-05-10 and 2026-11-07).** In both captures `refund_count_on_card_all_time` refers to a billing address while companion windows refer to a card. In both platform rule tables, the daily disputed-dollar row describes the past week, and the monthly and weekly refunded-dollar rows both describe the past day. The actual counting entity and windows remain unresolved. See May raw lines 399\u2013402, 696, 716\u2013718, 780 and 806\u2013808, and November raw lines 408\u2013411, 706, 726\u2013728, 791 and 817\u2013819.\n\n## Related Pages\n\n- [[stripe]] \u2014 company page\n- [[stripe-radar]] \u2014 concept page\n- [[source-stripe-radar-rules-reference]] \u2014 attribute types and operators\n- [[source-stripe-radar-rules]] \u2014 how to build rules using these attributes\n\n## Raw Sources\n\n- [[raw/stripe-radar-rules-supported-attributes-2026-11-07|November 7, 2026 Supported Attributes reference]]\n- [[stripe-radar-rules-supported-attributes-2026]] \u2014 May 10, 2026 verbatim supported attributes reference (827 lines)\n",
+  "quotes": {
+    "radar-rules-supported-attributes": [
+      {
+        "text": "which remain supported",
+        "location": "raw/stripe-radar-rules-supported-attributes-2026-11-07.md:33"
+      },
+      {
+        "text": "The values range between 0 (least likely) and 99 (most likely). Applies to card payments only.",
+        "location": "raw/stripe-radar-rules-supported-attributes-2026-11-07.md:213"
+      },
+      {
+        "text": "`account_fraud_risk_level`",
+        "location": "raw/stripe-radar-rules-supported-attributes-2026-11-07.md:766"
+      },
+      {
+        "text": "`account_fraud_risk_score`",
+        "location": "raw/stripe-radar-rules-supported-attributes-2026-11-07.md:767"
+      },
+      {
+        "text": "These attributes apply to connected accounts and can be used to review or block Treasury transactions.",
+        "location": "raw/stripe-radar-rules-supported-attributes-2026-11-07.md:837"
+      }
+    ]
+  },
+  "old_evidence": {
+    "radar-rules-supported-attributes": [
+      {
+        "text": "The values range between 0 (least risky) and 100 (riskiest).",
+        "location": "raw/stripe-radar-rules-supported-attributes-2026.md:35"
+      },
+      {
+        "text": "Available for [direct charges](https://docs.stripe.com/connect/direct-charges.md) only if you have access to [Radar for Platforms](https://docs.stripe.com/radar/radar-for-platforms.md).",
+        "location": "raw/stripe-radar-rules-supported-attributes-2026.md:672"
+      },
+      {
+        "text": "Available only with [Radar for Platforms](https://docs.stripe.com/radar/radar-for-platforms.md).",
+        "location": "raw/stripe-radar-rules-supported-attributes-2026.md:673"
+      },
+      {
+        "text": "**account_risk_level**",
+        "location": "raw/stripe-radar-rules-supported-attributes-2026.md:756"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-radar-rules-supported-attributes-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 886
+      }
+    ],
+    "raw/stripe-radar-rules-supported-attributes-2026.md": [
+      {
+        "start": 1,
+        "end": 827
+      }
+    ],
+    "wiki/sources/source-stripe-radar-rules-supported-attributes.md": [
+      {
+        "start": 1,
+        "end": 63
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/0b162b31433f0603e9c8a38d/content.diff": [
+      {
+        "start": 1,
+        "end": 1527
+      }
+    ]
+  },
+  "answers": {
+    "radar-rules-supported-attributes": {
+      "Q1": "At https://docs.stripe.com/radar/rules/supported-attributes, source-stripe-radar-rules-supported-attributes.md describes the November 7, 2026 capture as a five-category attribute catalog for merchants writing Radar rules. Stripe supplies the payment and account signals, and method-specific non-Boolean inputs are missing for other methods. Radar exposes issuer address and CVC check results as post-authorization rule attributes. The outcome counters distinguish card charge data from supported transaction outcomes, including authorization, block, decline and total with row-specific setup scope. The fingerprint family applies to cards, ACH and SEPA. See new raw lines 17-29, new raw lines 218-254, new raw lines 375-381, new raw lines 450-455, new raw lines 488-509 and new raw lines 596-617. May documents the same basic scope and timing in old raw lines 16-28, old raw lines 202-238, old raw lines 366-372 and old raw lines 441-446. November recommends 0\u201399 fraudulent dispute scores for cards/ACH Direct Debit/SEPA Direct Debit and 0\u201399 early fraud warning and fraudulent payment scores for cards, while retaining classic risk rules and their adjustable 65/75 defaults. The May capture and original summary list the classic score only. See old raw lines 30-35 and new raw lines 31-41. For Connect, platform transaction rules support review, block or allow on connected-account transactions, and account rules can submit the connected account itself for review. The separate Treasury branch supports review or block of Treasury transactions for connected accounts in private preview on certain plans. The November capture also documents the Accounts v2 preview version and Dashboard enrollment condition, Radar Pro attributes, Stripe-detected free-trial transactions primarily from Checkout/Billing, and Stripe-identified AI-agent-initiated payments under Cards. See old raw lines 8-14, old raw lines 664-677, old raw lines 748-756, new raw lines 9-15, new raw line 178, new raw lines 207-216, new raw line 402, new raw lines 673-687, new raw lines 758-767 and new raw lines 835-881. The original summary covered the five categories and the fingerprint family. This revision retains them, routes currency counts to the explicit lists (old raw lines 56-60 and new raw lines 62-66), and surfaces the November additions.",
+      "Q2": "For https://docs.stripe.com/radar/rules/supported-attributes, source-stripe-radar-rules-supported-attributes.md preserves both dated full raw links. Substantive November differences include the preview enrollment instructions and three recommended scores, the shared iCloud Private Relay IP-counter caveat with exclusion presented as optional, additional Pro/AI-agent/free-trial predicates, and the liability-shift wording moving from May's non-wallet and certain digital wallet phrasing to November's preauthorization card-payment and some Google Pay caveat. See old raw lines 8-14, old raw lines 30-35, old raw line 72, old raw line 248, new raw lines 9-15, new raw lines 31-41, new raw lines 73-80, new raw line 178, new raw lines 207-216, new raw line 264 and new raw line 402. The May table conditions direct charges and account rules on Radar for Platforms. November lists direct charges under charge type/tier availability, makes account rules tier-dependent, and adds Treasury private preview for certain plans. Keep those exact date and scope differences, including old account_risk_level under account rules versus November's account_fraud_risk_level and account_fraud_risk_score under account rules and account_risk_level under Treasury. See old raw lines 668-677, old raw lines 748-756, new raw lines 677-687, new raw lines 758-767 and new raw lines 835-856. Preserve the early-access email and crypto flags, 3DS card-field preview, the two captures' account/card/email/name yearly transaction-row evidence and the unresolved impact of November's omission. See old raw line 84, old raw line 130, old raw line 138, old raw line 146, old raw lines 285-320, old raw line 331, old raw line 361, old raw line 383, new raw lines 88-93, new raw line 117, new raw lines 133-153, new raw lines 172-174, new raw lines 285-287 and new raw lines 296-341 and new raw lines 367-394. The revision routes the currency count to the 34 names in old raw line 60 and new raw line 66. Where retained, flag the card refund entity and platform amount period inconsistencies in old raw lines 399-402, old raw line 696, old raw lines 716-718, old raw line 780, old raw lines 806-808, new raw lines 408-411, new raw line 706, new raw lines 726-728, new raw line 791 and new raw lines 817-819. The candidate keeps the reciprocal stripe-radar route and the rules and Rules Reference routes. Both dated Supported Attributes captures document a 0\u2013100 classic risk_score rule attribute (old raw line 35 and new raw lines 33-41), and November states that the classic predicates remain supported. The separate November Risk Settings raw lines 141\u2013156 describe a 0\u201399 classic model, retirement of the default high-risk block rule, and continued support for custom :risk_score: rules. An emitted value of 100 is unresolved. The concept\u2019s Checkout-only bot_score wording at lines 159 and 204 needs dated qualification. The November Supported Attributes capture places the 0\u201399 attribute under Radar Pro and limits it to cards (new raw lines 207-213). November Bot Abuse raw lines 11\u201317 list Stripe Checkout, Custom Checkout, Radar Sessions and Web Elements for Radar Pro. The revised page links the November capture for this claim and labels the companion May-only summary as historical. Both Bot Abuse captures say a high score indicates likely bot activity, does not establish fraud or malice, and is intended for anti-bot policies instead of standalone fraud decisions. Keep both scopes without inferring support for every card integration. November\u2019s digital_wallet row adds network_token, absent in May. Both rows say the listed values require the registered-device cryptogram, with android_pay valid with or without it. See old raw line 392 and new raw line 400. The November Risk Settings capture separately describes which rules apply depending on the merchant of record and platform payments controls. That documented configuration applies only to connected accounts controlled solely by the platform (November Risk Settings raw lines 158-186). Table layout, backticks/italics and Description headers are presentation, while the unchanged Rules/Rules Reference entries are navigation. See old raw lines 824-827 and new raw lines 883-886. Both Supported Attributes enum rows list card, sepa_debit and us_bank_account (old raw lines 164-166 and new raw lines 168-170). The May Supported Payment Methods raw lines 46\u201348 and November Supported Payment Methods raw lines 43\u201345 use bacs_debit in a rule example. Both example and enum are dated documentary evidence. Parser acceptance and account entitlement for Bacs remain unresolved."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "radar-rules-supported-attributes-account-rule-names",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Built-in**: `if :risk_level: = 'highest'` (deprecated), `if :risk_level: = 'elevated'` (review); CVC/AVS rules (risk-score-based since Dec 2024). Platforms add `:account_risk_level:` rules.",
+      "proposed_markdown": "**Built-in**. The default `Block if :risk_level: = 'highest'` rule is being retired when migrating to risk settings. See `if :risk_level: = 'elevated'` for review and the CVC/AVS rules (risk-score-based since December 2024). May's Connect account rules list `account_risk_level`. November lists `account_fraud_risk_level` and `account_fraud_risk_score` for account rules, and `account_risk_level` in the separate Treasury private preview. See [[source-stripe-radar-rules-supported-attributes]].",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "May Attributes raw lines 748\u2013756 and November Attributes raw lines 758\u2013767 and 835\u2013843 differ in naming and scope. Coexistence and migration remain unverified. November Risk Settings raw lines 141\u2013156 distinguishes default rule retirement from custom rule support."
+      ]
+    },
+    {
+      "update_id": "radar-rules-supported-attributes-bot-score-row",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "durable_fact",
+      "anchor": "| Bot score (0\u201399, Checkout only) | `:bot_score:` | Preview |",
+      "proposed_markdown": "| Bot score (0\u201399, cards only in the November attributes reference) | `:bot_score:` | Radar Pro in November. See Bot Abuse Prevention for integration scope. |",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "November Attributes raw lines 207\u2013213 bound rule-method and tier scope. November Bot Abuse raw lines 11\u201317 lists specific integrations."
+      ]
+    },
+    {
+      "update_id": "radar-rules-supported-attributes-classic-score-row",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "durable_fact",
+      "anchor": "| Risk score (0\u201399) | `:risk_score:` | **Deprecated** |",
+      "proposed_markdown": "| Classic risk score | `:risk_score:` | Custom rules remain supported. The default high-risk block rule is being retired. See the dated ranges below. |",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "November Risk Settings raw lines 141\u2013156 supports continued custom risk-score rules."
+      ]
+    },
+    {
+      "update_id": "radar-rules-supported-attributes-classic-ranges",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "durable_fact",
+      "anchor": "Risk score range: 0\u201399 (Radar for Fraud Teams only). Default thresholds: \u226575 = high, \u226565 = elevated.",
+      "proposed_markdown": "The May 2026 Risk evaluation guide describes a 0\u201399 score with Radar for Fraud Teams, and November Risk Settings describes the classic model as 0\u201399. Both dated Supported Attributes captures list the classic `risk_score` rule attribute as 0\u2013100 with adjustable defaults of 65 for elevated and 75 for highest. Whether the model emits 100 remains unresolved. See [[source-stripe-radar-risk-settings]] and [[source-stripe-radar-rules-supported-attributes]].",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Different contexts: May Attributes raw line 35, November Attributes raw lines 33\u201341, May Risk evaluation raw line 46 and November Risk Settings raw lines 141\u2013156."
+      ]
+    },
+    {
+      "update_id": "radar-rules-supported-attributes-bot-integrations",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "durable_fact",
+      "anchor": "Bot score (0\u201399) assigned to **Stripe Checkout** payments only. High score = bot likely made payment (not fraud signal). Use for anti-scripting/anti-bot policies (e.g. limited-inventory). Access via Dashboard \u2192 payment \u2192 Risk scores, Sigma `radar_abuse_prevention_attributes.bot_score`, or custom Radar rule on `:bot_score:`. See [[source-stripe-radar-bot-abuse]].",
+      "proposed_markdown": "The [[source-stripe-radar-bot-abuse|May 10, 2026 Bot Abuse guide]] names Stripe Checkout and documents Sigma access via `radar_abuse_prevention_attributes.bot_score`. The [[raw/stripe-radar-bot-abuse-2026-11-07|November 7, 2026 Bot Abuse capture]] documents Stripe Checkout, Custom Checkout, Radar Sessions and Web Elements, with a 0\u201399 score in Radar Pro. November [[source-stripe-radar-rules-supported-attributes|Supported Attributes]] scopes the `:bot_score:` rule predicate to cards. A high score indicates likely bot activity and does not establish fraud or malice. Stripe advises using the score for anti-scripting or anti-bot policies rather than as a standalone fraud signal. The November guide describes viewing the score in the Dashboard, writing custom rules and using the bot risk control.",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "November Bot Abuse raw lines 11\u201317 for integration and tier scope and the limits of the score, lines 23\u201335 for access and control, and May Bot Abuse raw lines 12\u201314 and 19\u201324 for historical Checkout, scope and Sigma access."
+      ]
+    },
+    {
+      "update_id": "radar-rules-supported-attributes-bot-source-route",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-radar-bot-abuse]] \u2014 Bot score (0-99) for Checkout payments: anti-scripting policy enforcement, Sigma query, Radar rules",
+      "proposed_markdown": "- [[source-stripe-radar-bot-abuse]] \u2014 May 10, 2026 Bot Abuse guide on Checkout scoring, anti-bot policies, Sigma and rules",
+      "quote_indexes": [
+        1
+      ],
+      "warnings": [
+        "The November Bot Abuse integration and tier evidence is linked directly in Bot Abuse Prevention. The companion source carries the May raw."
+      ]
+    },
+    {
+      "update_id": "radar-rules-supported-attributes-risk-settings-source-route",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-radar-risk-settings]] \u2014 Risk settings (3 presets), 4 risk controls, 5 Radar scores, deprecation of risk_score",
+      "proposed_markdown": "- [[source-stripe-radar-risk-settings]] \u2014 Risk Settings guide and risk controls",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The prior Risk Settings source describes risk_score as deprecated. November Risk Settings raw lines 141\u2013156 distinguish the retiring rule from supported custom predicates. Coordinate the reciprocal route with the separate Risk Settings update."
+      ]
+    },
+    {
+      "update_id": "radar-rules-supported-attributes-attributes-source-route",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-radar-rules-supported-attributes]] \u2014 Supported attributes: 5 categories, risk/IP/email/distance/fingerprint/time/crypto (827 lines)",
+      "proposed_markdown": "- [[source-stripe-radar-rules-supported-attributes]] \u2014 May and November 2026 reference for rule attributes, including classic and recommended scores, payment-method and wallet predicates, and Connect account and Treasury rule scopes.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "radar-rules-supported-attributes-dashboard-overall-risk",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "durable_fact",
+      "anchor": "| Overall risk level (max of above) | `:risk_level:` | Active |",
+      "proposed_markdown": "| Classic rule risk level | `:risk_level:` | Reflects the classic risk score. |\n\nThe [[raw/stripe-radar-risk-settings-2026-11-07|November 7, 2026 Risk Settings capture]] describes the Dashboard overall risk level as the maximum of the fraudulent dispute, early fraud warning and classic risk scores that contributed to the payment decision. The Dashboard displays Normal, Elevated or Highest.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "November Risk Settings raw lines 103\u2013113 distinguish the Dashboard aggregate from the classic rule predicate. November Supported Attributes lines 33\u201341 retain the classic predicates."
+      ]
+    },
+    {
+      "update_id": "radar-rules-supported-attributes-legacy-highest-action",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "durable_fact",
+      "anchor": "| `highest` | Blocked | `blocked` |",
+      "proposed_markdown": "| `highest` | Blocked in the May 10, 2026 Risk evaluations guide\u2019s default example. The legacy high-risk rule applies while enabled. | `blocked` when blocked |",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "May Risk evaluations raw lines 62\u201378 illustrate the legacy default and its blocked outcome; November Risk Settings raw lines 28\u201334 and 141\u2013156 describe disabling the corresponding rule on selection of a risk setting."
+      ]
+    }
+  ]
+}

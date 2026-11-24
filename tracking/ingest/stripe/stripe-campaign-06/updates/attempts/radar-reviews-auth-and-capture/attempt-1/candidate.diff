@@ -1,0 +1,72 @@
+--- wiki/sources/source-stripe-radar-reviews-auth-capture.md
++++ wiki/sources/source-stripe-radar-reviews-auth-capture.md (candidate)
+@@ -2,50 +2,47 @@
+ title: "Stripe — Review Uncaptured Payments (Auth and Capture)"
+ type: source
+ date_ingested: 2026-05-10
++date_updated: 2026-11-24
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/radar/reviews/auth-and-capture"
+ raw_files:
++  - "stripe-radar-reviews-auth-and-capture-2026-11-07.md"
+   - "stripe-radar-reviews-auth-capture-2026.md"
+ tags: [stripe, radar, reviews, auth-and-capture, payment-intent, webhooks]
+ ---
+ 
+ ## Summary
+ 
+-Integration guide for using Radar reviews with auth-and-capture payment flows. Approve and capture are separate actions; use `review.closed` webhook to auto-capture approved payments.
++Guide to Radar reviews for two-step authorization and capture. The May and November 2026 captures describe the Dashboard and API routes. November adds a no-code Workflows template.
+ 
+ ## Key Rule
+ 
+-**Approving a review ≠ capturing the payment.** You must explicitly capture after approving.
++**Approval and capture are separate actions.** The capture window varies by card brand, applicable extended holds and payment method type.
+ 
+ ## Dashboard Behavior
+ 
+-- Uncaptured payments in review: show **Capture** + **Cancel** buttons (not Refund)
+-- Cancel releases the authorization without creating a Refund object
++- When Stripe places an uncaptured payment in review, the merchant can approve the review and then select **Capture** separately.
++- **Cancel** on the uncaptured payment releases the authorization without creating a Refund object.
++
++## November 7, 2026 Workflows Template
++
++Stripe documents **Capture payments after Radar review approval** as a no-code [Workflows](https://docs.stripe.com/workflows.md) template. A closed Radar review triggers the workflow. It checks that the review was approved and that the payment still awaits capture, then performs the separate capture action. The November capture’s **Use Workflows to automatically capture approved payments** section links the Dashboard template.
+ 
+ ## API Integration Pattern
+ 
+-1. Create PaymentIntent with `capture_method: 'manual'`
+-2. If `paymentIntent.review` is empty → capture immediately
+-3. If `paymentIntent.review` is set → leave uncaptured; wait for review
+-4. Listen for `review.closed` webhook
+-5. If `review.reason === 'approved'` → `stripe.paymentIntents.capture(pi.id)`
++1. Create and confirm the PaymentIntent with `capture_method: 'manual'`.
++2. After successful creation and confirmation, capture an eligible uncaptured payment if `PaymentIntent.review` is empty. Leave reviewed payments uncaptured.
++3. Listen for `review.closed`. The Review’s `reason` distinguishes approval from other closures, such as a refund.
++4. In both guides’ example, the handler retrieves the Event, checks its `review.closed` type and verifies the Review’s `reason: approved`. It retrieves the Review’s PaymentIntent and issues a separate capture request. Check capture eligibility and the result of the request. The sample’s event and reason checks establish review state.
+ 
+-```js
+-// Step 2: capture if not in review
+-if (!paymentIntent.review) {
+-  await stripe.paymentIntents.capture(paymentIntent.id);
+-}
+-
+-// Step 4-5: webhook handler
+-if (event.type === 'review.closed' && review.reason === 'approved') {
+-  await stripe.paymentIntents.capture(review.payment_intent);
+-}
+-```
++See **Immediately capture payments not placed in review** for May’s Node.js and November’s Ruby examples. Both **Capture a payment after a review is approved** sections include a Ruby webhook example.
+ 
+ ## Related Pages
+ 
+-- [[stripe-radar]] — concept page
++- [[stripe-radar#Review Queue (Fraud Teams)|Stripe Radar Review Queue]] — review actions and the uncaptured-payment flow
+ - [[source-stripe-radar-reviews]] — review queue overview
+ 
+ ## Raw Sources
+ 
+-- [[stripe-radar-reviews-auth-capture-2026]] — verbatim auth-and-capture review guide (1 screenshot)
++- [[raw/stripe-radar-reviews-auth-and-capture-2026-11-07|November 7, 2026 Review Uncaptured Payments guide]] — Workflows, Dashboard and API routes
++- [[raw/stripe-radar-reviews-auth-capture-2026|May 10, 2026 Review Uncaptured Payments guide]] — Dashboard and API routes with screenshot

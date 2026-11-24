@@ -1,0 +1,158 @@
+{
+  "job_id": "terminal-references-sdk-migration-guide",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Terminal: SDK Migration Guide (v5.0.0)\"\ntype: source\ndate_ingested: 2026-05-01\ndate_updated: 2026-11-24\noriginal_format: webpage\nraw_files:\n  - \"stripe-terminal-sdk-migration-guide-2025.md\"\ntags: [stripe, stripe-terminal, sdk, ios, android, migration, v5]\n---\n\n## Summary\n\nThe 2026-05-01 migration guide covers breaking changes for the Stripe Terminal iOS and Android SDKs when upgrading to v5.0.0.\n\n## Breaking Changes Summary\n\n**Unified payment methods** (both platforms):\n- Stripe recommends `processPaymentIntent` to collect and confirm in one call. The existing `collectPaymentMethod` and `confirmPaymentIntent` methods continue to work in v5.\n- Use `processRefund` for the combined refund flow. The two-step `collectRefundPaymentMethod` and `confirmRefund` methods are deprecated in v5.\n- `processSetupIntent` combines the setup intent collection and confirmation steps.\n\n**Customer cancellation** is enabled by default on supported readers. Use `.disableIfAvailable` with the iOS `SCPCustomerCancellation` enum or `CustomerCancellation.DISABLE_IF_AVAILABLE` on Android to opt out.\n\n**Connection status** adds `.reconnecting` on iOS and `RECONNECTING` on Android. On iOS, `connectedReader` is `nil` during reconnection until it succeeds. The Android guide documents `getConnectedReader()` returning `null` during initial connection until the attempt succeeds.\n\n**`easyConnect`** combines discovery and connection for smart readers and Tap to Pay on iOS 5.1 or later. The Android guide documents it for smart readers, Tap to Pay, and Apps on Devices. Internet reader discovery supports filtering by serial number or reader ID.\n\n**Interac refunds** require the PaymentIntent's `clientSecret` when using its PaymentIntent ID. The charge-ID path does not require it.\n\n## iOS-Specific Changes\n\n- The v5 minimum is iOS 15. Existing iOS SDK 4.x releases support iOS 14 and later.\n- `Terminal.setTokenProvider` was removed. Use `Terminal.initWithTokenProvider(_:)` before accessing `Terminal.shared`.\n- Use the associated builder classes to initialize `DiscoveryConfiguration` objects.\n- Terminal methods have Swift async variants.\n\n## Android-Specific Changes\n\n- `Terminal.initTerminal` was renamed to `Terminal.init` and now requires a nullable `OfflineListener` parameter.\n- **Apps on Devices** renamed its `Handoff` classes to `AppsOnDevices` (for example, `HandoffDiscoveryConfiguration` to `AppsOnDevicesDiscoveryConfiguration`). The Maven artifact changed from `stripeterminal-handoffclient` to `stripeterminal-appsondevices`. Stripe says it will no longer update the old artifact.\n- The optional `stripeterminal-ktx:5.0.0` module adds Kotlin coroutine `suspend` wrappers.\n- **Tap to Pay on Android** requires Android 13 or later and hardware-backed KeyStore key agreement from SDK 5.0.0. Check the hardware support with `supportsReadersOfType()` or `FEATURE_HARDWARE_KEYSTORE` version 100 or later. Production reader discovery fails with `TAP_TO_PAY_INSECURE_ENVIRONMENT` if device debug options are enabled. The simulated Tap to Pay reader is exempt from this debug-options restriction. The guide also covers the refactored `TapZone` object and lists Discover acceptance as public preview.\n\n## Related\n\n- [[stripe]]\n- [[stripe-terminal]]\n\n## Raw Sources\n\n- [[stripe-terminal-sdk-migration-guide-2025]] \u2014 2026-05-01 v5.0.0 migration guide with full iOS and Android before/after examples\n\n## Related raw API references\n\n- [[raw/stripe-terminal-references-sdk-migration-guide-2026-11-07|2026-11-07 Terminal SDK v6.0.0 migration guide index]] \u2014 navigation to the [iOS](https://docs.stripe.com/terminal/references/sdk-migration-guide.md?terminal-sdk-platform=ios) and [Android](https://docs.stripe.com/terminal/references/sdk-migration-guide.md?terminal-sdk-platform=android) variants. The capture contains the index only.\n",
+  "quotes": {
+    "terminal-references-sdk-migration-guide": [
+      {
+        "text": "Learn how to migrate to version 6.0.0 of the Stripe Terminal SDK.",
+        "location": "raw/stripe-terminal-references-sdk-migration-guide-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants.",
+        "location": "raw/stripe-terminal-references-sdk-migration-guide-2026-11-07.md:11"
+      },
+      {
+        "text": "terminal-sdk-platform=ios",
+        "location": "raw/stripe-terminal-references-sdk-migration-guide-2026-11-07.md:13"
+      },
+      {
+        "text": "terminal-sdk-platform=android",
+        "location": "raw/stripe-terminal-references-sdk-migration-guide-2026-11-07.md:14"
+      }
+    ]
+  },
+  "old_evidence": {
+    "terminal-references-sdk-migration-guide": [
+      {
+        "text": "Learn how to migrate to version 5.0.0 of the Stripe Terminal SDK.",
+        "location": "raw/stripe-terminal-sdk-migration-guide-2025.md:6"
+      },
+      {
+        "text": "the existing `collectPaymentMethod` and `confirmPaymentIntent` methods continue to work",
+        "location": "raw/stripe-terminal-sdk-migration-guide-2025.md:44"
+      },
+      {
+        "text": "the existing `collectPaymentMethod` and `confirmPaymentIntent` methods continue to work",
+        "location": "raw/stripe-terminal-sdk-migration-guide-2025.md:447"
+      },
+      {
+        "text": "The `collectRefundPaymentMethod` and `confirmRefund` methods are now deprecated.",
+        "location": "raw/stripe-terminal-sdk-migration-guide-2025.md:89"
+      },
+      {
+        "text": "The `collectRefundPaymentMethod` and `confirmRefund` methods are now deprecated.",
+        "location": "raw/stripe-terminal-sdk-migration-guide-2025.md:504"
+      },
+      {
+        "text": "During a reconnect, `Terminal.shared.connectedReader` will now be `nil` until the reconnection is successful.",
+        "location": "raw/stripe-terminal-sdk-migration-guide-2025.md:257"
+      },
+      {
+        "text": "During initial connection `Terminal.getInstance().getConnectedReader()` will now be `null` until the connection attempt succeeds.",
+        "location": "raw/stripe-terminal-sdk-migration-guide-2025.md:689"
+      },
+      {
+        "text": "For smart readers and Tap to Pay integrations using iOS SDK 5.1 or newer",
+        "location": "raw/stripe-terminal-sdk-migration-guide-2025.md:297"
+      },
+      {
+        "text": "For smart readers, Tap to Pay, and Apps on Devices integrations",
+        "location": "raw/stripe-terminal-sdk-migration-guide-2025.md:730"
+      },
+      {
+        "text": "Internet reader discovery now supports filtering by reader ID or serial number.",
+        "location": "raw/stripe-terminal-sdk-migration-guide-2025.md:359"
+      },
+      {
+        "text": "Internet reader discovery now supports filtering by reader ID or serial number.",
+        "location": "raw/stripe-terminal-sdk-migration-guide-2025.md:778"
+      },
+      {
+        "text": "Tap to Pay on Android 5.0.0 and above requires your Android device to be running Android 13 or higher.",
+        "location": "raw/stripe-terminal-sdk-migration-guide-2025.md:942"
+      },
+      {
+        "text": "supports hardware-backed key agreements",
+        "location": "raw/stripe-terminal-sdk-migration-guide-2025.md:944"
+      },
+      {
+        "text": "This doesn\u2019t apply to usage of the simulated Tap to Pay reader.",
+        "location": "raw/stripe-terminal-sdk-migration-guide-2025.md:946"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-terminal-references-sdk-migration-guide-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-terminal-sdk-migration-guide-2025.md": [
+      {
+        "start": 1,
+        "end": 170
+      },
+      {
+        "start": 171,
+        "end": 340
+      },
+      {
+        "start": 341,
+        "end": 520
+      },
+      {
+        "start": 521,
+        "end": 705
+      },
+      {
+        "start": 706,
+        "end": 880
+      },
+      {
+        "start": 881,
+        "end": 979
+      }
+    ],
+    "wiki/sources/source-stripe-terminal-sdk-migration-guide.md": [
+      {
+        "start": 1,
+        "end": 46
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/e44fce243a98679763b754fe/content.diff": [
+      {
+        "start": 1,
+        "end": 110
+      },
+      {
+        "start": 111,
+        "end": 290
+      },
+      {
+        "start": 291,
+        "end": 470
+      },
+      {
+        "start": 471,
+        "end": 645
+      },
+      {
+        "start": 646,
+        "end": 820
+      },
+      {
+        "start": 821,
+        "end": 983
+      }
+    ]
+  },
+  "answers": {
+    "terminal-references-sdk-migration-guide": {
+      "Q1": "For https://docs.stripe.com/terminal/references/sdk-migration-guide, the 2026-11-07 capture identifies v6.0.0 and routes app developers to separate iOS and Android variants (new raw lines 1-14). The complete landing body documents no v6 integration prerequisites, payment or reader state transitions, or functional actor roles. The 2026-05-01 capture underlying source-stripe-terminal-sdk-migration-guide addresses developers upgrading iOS or Android from pre-v5 versions, documents single-call collect and confirm for payments, refunds and setup intents and customer cancellation on supported readers (old raw lines 12-32 and old raw lines 437-451), and covers the iOS 15 minimum (old raw lines 34-38), the Android nullable OfflineListener in Terminal.init (old raw lines 663-667), and Android Tap to Pay device and production/simulated conditions (old raw lines 938-946). The revised summary covers that v5 material, clarifies that the old payment methods still work (old raw lines 42-48 and old raw lines 445-451), and distinguishes a nil connectedReader during iOS reconnect from the Android statement of null during initial connection alongside the RECONNECTING enum (old raw lines 255-257 and old raw lines 687-689).",
+      "Q2": "For https://docs.stripe.com/terminal/references/sdk-migration-guide, the version designation moves from v5.0.0 on 2026-05-01 (old raw lines 1-8) to v6.0.0 on 2026-11-07 (new raw lines 1-7), a document-scope change. The Index wrapper and iOS/Android platform links are presentation and navigation (new raw lines 9-14). The disappeared body reflects the capture change. The revised source-stripe-terminal-sdk-migration-guide uses the new capture as a dated navigation-only raw reference with the two exact variant targets https://docs.stripe.com/terminal/references/sdk-migration-guide.md?terminal-sdk-platform=ios and https://docs.stripe.com/terminal/references/sdk-migration-guide.md?terminal-sdk-platform=android (new raw lines 13-14). It retains the 2026-05-01 v5 raw link, fits the existing v5-labeled inbound routes from stripe-terminal and stripe-index, and reciprocates the Terminal concept route. It distinguishes v5 payment method compatibility from deprecated refund methods (old raw lines 42-48, old raw lines 87-89, old raw lines 445-451, and old raw lines 502-504), separates the platform-specific reader states (old raw lines 255-257 and old raw lines 687-689), and scopes easyConnect to smart readers and Tap to Pay on iOS 5.1+, with Apps on Devices additionally documented for Android (old raw lines 295-297 and old raw lines 728-730). Reader ID and serial filters apply to Internet discovery (old raw lines 357-359 and old raw lines 776-778). Android Tap to Pay distinguishes the Android 13 and hardware key agreement prerequisites from the production discovery failure and simulated-reader exception (old raw lines 938-946)."
+    }
+  },
+  "concept_suggestions": []
+}

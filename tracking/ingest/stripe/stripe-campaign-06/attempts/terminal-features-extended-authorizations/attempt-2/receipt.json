@@ -1,0 +1,131 @@
+{
+  "job_id": "terminal-features-extended-authorizations",
+  "attempt": 2,
+  "raw_path": "raw/stripe-terminal-features-extended-authorizations-2026-11-07.md",
+  "raw_sha256": "20a93a043bd1375680aa6145f861b4983c25ff303ea6b0aff0f681710ecbc464",
+  "prior_raw_path": "raw/stripe-terminal-extended-authorizations-2025.md",
+  "prior_raw_sha256": "e9c1ee9e001e9e0b5d5dcb1fcca3f6c231f2e6b396c5355efdb2cf31084d29ea",
+  "source_targets": [
+    "wiki/sources/source-stripe-terminal-extended-authorizations.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-terminal-extended-authorizations.md": "10de8fad3c0ceff7db7b70a05c490a383ff294e1d35936697878d018d6b50dbe"
+  },
+  "read_ranges": {
+    "raw/stripe-terminal-features-extended-authorizations-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 66
+      },
+      {
+        "start": 67,
+        "end": 124
+      }
+    ],
+    "raw/stripe-terminal-extended-authorizations-2025.md": [
+      {
+        "start": 1,
+        "end": 66
+      },
+      {
+        "start": 67,
+        "end": 128
+      }
+    ],
+    "wiki/sources/source-stripe-terminal-extended-authorizations.md": [
+      {
+        "start": 1,
+        "end": 43
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/b4908b0205e2d272998c4c99/content.diff": [
+      {
+        "start": 1,
+        "end": 84
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "As of SDK 6.0.0, `captureMethod` defaults to automatic-asynchronous",
+      "location": "raw/stripe-terminal-features-extended-authorizations-2026-11-07.md:21"
+    },
+    {
+      "text": "allowed_payment_method_types[]=card_present",
+      "location": "raw/stripe-terminal-features-extended-authorizations-2026-11-07.md:30"
+    },
+    {
+      "text": "captureMethod: 'manual'",
+      "location": "raw/stripe-terminal-features-extended-authorizations-2026-11-07.md:94"
+    },
+    {
+      "text": "Failure to capture the payment by this time cancels the authorization and releases the funds.",
+      "location": "raw/stripe-terminal-features-extended-authorizations-2026-11-07.md:108"
+    },
+    {
+      "text": "The exact extended authorization window is 29 days and 18 hours",
+      "location": "raw/stripe-terminal-features-extended-authorizations-2026-11-07.md:124"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "payment_method_types: ['card_present']",
+      "location": "raw/stripe-terminal-extended-authorizations-2025.md:30"
+    },
+    {
+      "text": "Failure to capture the payment by this time cancels the authorization and releases the funds.",
+      "location": "raw/stripe-terminal-extended-authorizations-2025.md:112"
+    },
+    {
+      "text": "so it\u2019s only present after the `PaymentIntent` is confirmed.",
+      "location": "raw/stripe-terminal-extended-authorizations-2025.md:118"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Both captures describe extending the capture window for supported confirmed Terminal card-present PaymentIntents by brand and merchant category. They retain the payment-level capture_before and automatic expiry, released funds, and canceled transition.",
+    "November strengthens the SDK-client setup documentation and updates sample syntax; no network/category, deadline or state transition changed. The mapped source omits the SDK 6.0.0 caveat and the concept already gives separately sourced versions for iOS and Android. Preserve the separate request-version evidence."
+  ],
+  "substantive_changes": [
+    "November documents iOS and Android SDK 6.0.0's automatic-asynchronous default and explicit manual capture requirement for SDK-side PaymentIntent creation. React Native TSX adds captureMethod: 'manual' to the example. The still-unchanged Swift and Kotlin examples conflict with the new prose by omitting manual capture.",
+    "The server example changes Node to cURL, but also changes the request field from payment_method_types to allowed_payment_method_types[]. The language switch, emphasis, alignment and escaped footnote markup are presentational. iOS/Android migration links are navigation to a substantively new caveat."
+  ],
+  "historical_claims_to_preserve": [
+    "2026-05-01 is the prior raw capture despite filename. Preserve typical standard 48 hours or Visa 5 days, eligible extension up to 30 days, exclusion of single-message methods including Interac and eftpos, and the connected-account MCC matching guidance.",
+    "Preserve the Visa categories and exact clearing windows 29 days 18 hours and 9 days 18 hours, Mastercard 30 days for all merchant categories excluding Maestro/Cirrus, American Express lodging/vehicle rental with capture by end of stay or rental despite network window, and 30-day Discover for listed categories. No direct eligibility inference from the example or summary table.",
+    "Preserve explicit manual capture and card-present request at creation, post-confirmation Charge capture_before and automatic expiration/cancellation with release of funds, and distinction between extending time and incrementing amount."
+  ],
+  "conflicts": [
+    "November's iOS/Android SDK 6.0.0 warning mandates explicit manual capture for SDK-side creation because the default is automatic-asynchronous; the immediately following unchanged Swift and Kotlin samples omit that setter. Prefer the stated requirement and distinguish the repository concept's separately retained SDK examples that do set manual. The React Native example explicitly adds manual but this guide supplies no React Native SDK version threshold.",
+    "The request field in the May Node create example is payment_method_types; the sampled November cURL create uses allowed_payment_method_types[]. Preserve the meaningful request-shape change and version-qualify the concept's historical Node example. The separate PaymentIntent concept records the exact `stripe@23.0.0` request boundary; neither webpage sample alone proves when every API or SDK accepts the field.",
+    "Mapped summary line 20 compresses field placement; preserve payment_method_options.card_present.request_extended_authorization and explicit manual capture when creating the PaymentIntent. A request does not itself establish actual authorization length; read capture_before on the confirmed Charge.",
+    "Mapped summary line 18 presents typical baseline timing as default, and line 22 omits release of the authorization hold. Preserve 'typical' and the Charge-based per-payment deadline, the canceled transition and release of funds."
+  ],
+  "unresolved_questions": [
+    "These captures do not establish a React Native SDK version threshold, cross-version request compatibility, any particular merchant's eligibility, or an actual authorization/capture outcome."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-terminal-extended-authorizations.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-terminal-extended-authorizations.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add the November capture as functional evidence for client SDK manual capture and revised example request. Retain May and the reciprocal extended-authorizations concept plus incremental authorization and versioned SDK/PaymentIntent routes."
+      ],
+      "conflicts": [
+        "November's iOS/Android SDK 6.0.0 warning mandates explicit manual capture for SDK-side creation because the default is automatic-asynchronous; the immediately following unchanged Swift and Kotlin samples omit that setter. Prefer the stated requirement and distinguish the repository concept's separately retained SDK examples that do set manual. The React Native example explicitly adds manual but this guide supplies no React Native SDK version threshold.",
+        "The request field in the May Node create example is payment_method_types; the sampled November cURL create uses allowed_payment_method_types[]. Preserve the meaningful request-shape change and version-qualify the concept's historical Node example. The separate PaymentIntent concept records the exact `stripe@23.0.0` request boundary; neither webpage sample alone proves when every API or SDK accepts the field.",
+        "Mapped summary line 20 compresses field placement; preserve payment_method_options.card_present.request_extended_authorization and explicit manual capture when creating the PaymentIntent. A request does not itself establish actual authorization length; read capture_before on the confirmed Charge.",
+        "Mapped summary line 18 presents typical baseline timing as default, and line 22 omits release of the authorization hold. Preserve 'typical' and the Charge-based per-payment deadline, the canceled transition and release of funds."
+      ],
+      "reason": "The SDK warning changes whether a copied client example actually requests an eligible authorization. Correct retained omission and sample scope while preserving unchanged network rules and Charge-based lifecycle."
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/terminal/features/extended-authorizations, May 1 and November 7 describe an eligible merchant's Terminal integration requesting card-present extended authorization at PaymentIntent creation using payment_method_options.card_present.request_extended_authorization=true and capture_method=manual. Confirmation attempts to initiate payment. An eligible, successfully authorized, confirmed Terminal payment can be captured up to 30 days later depending on the card brand and merchant category (old raw line 8; new raw line 9). Visa, Mastercard, American Express and Discover are listed; Interac and eftpos are excluded as single-message methods. Connect users set connected-account MCCs to match their businesses. The merchant reads capture_before from the resulting Charge after confirmation to learn its actual deadline. If capture misses the deadline the authorization expires, funds release, and PaymentIntent becomes canceled (old raw lines 8-18, old raw lines 112-128; new raw lines 9-21, new raw lines 108-124). November explicitly requires manual capture for client creation with iOS/Android SDK 6.0.0 because the default is automatic-asynchronous, and shows a React Native example setting manual (old raw lines 93-102; new raw line 21, new raw lines 88-98). source-stripe-terminal-extended-authorizations captures the earlier flow and network table but omits SDK caveats, exact field placement and the expiry release detail.",
+    "Q2": "For https://docs.stripe.com/terminal/features/extended-authorizations, update source-stripe-terminal-extended-authorizations and retain the May 1 functional evidence, the reciprocal stripe-terminal-extended-authorizations concept, its versioned iOS/Android evidence, and the related incremental authorization and PaymentIntent request routes. November 7's substantive caveat is explicit manual capture on iOS/Android SDK 6.0.0 because the default changed to automatic-asynchronous; the unchanged shown Swift and Kotlin builders omit manual and are incomplete for that version. The React Native sample adds manual with no release boundary specified here. The server create sample moves from payment_method_types to allowed_payment_method_types[]; date the example and keep any version compatibility attributed to its separate package evidence. Switching Node to cURL, TSX fencing and table/footnote formatting are presentational; migration links are navigation (old raw lines 16-50, old raw lines 64-79, old raw lines 93-102; new raw lines 17-45, new raw lines 59-74, new raw lines 88-98). Both captures preserve the typical 48 hours or Visa five days, exact Visa 29d18h/9d18h, Mastercard all categories excluding Maestro/Cirrus, Amex lodging/vehicle rental with capture by end of stay or rental and Discover specified categories. Use capture_before on the confirmed Charge and keep the missed-deadline release/canceled transition (old raw lines 8-14, old raw lines 112-128; new raw lines 9-15, new raw lines 108-124)."
+  }
+}

@@ -1,0 +1,141 @@
+{
+  "job_id": "sdks-stripejs-react",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Stripe Docs \u2014 React Stripe.js reference\"\ntype: source\ndate_ingested: 2026-05-08\ndate_updated: 2026-11-24\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/sdks/stripejs-react\"\nraw_files:\n  - \"stripe-react-stripejs-2025.md\"\ntags: [stripe, react, stripe-elements, checkout-elements-provider, elements-provider, usestripe, useelements, elementsconsumer]\n---\n\n## Summary\n\nThe 2026-05-08 React Stripe.js reference contains both integration paths: Checkout Sessions (`CheckoutElementsProvider`) and advanced integration with Payment Intents (the standard `Elements` provider). It documents loading Stripe.js asynchronously with a publishable key via `loadStripe`, then passing the resulting promise to the provider. See the raw for the prop tables, hooks, and class component examples.\n\n## Two Integration Paths\n\n### Checkout Sessions (`@stripe/react-stripe-js/checkout`)\n\n| API | Purpose |\n| --- | --- |\n| `CheckoutElementsProvider` | Root provider that accepts `stripe`. Pass the created Checkout Session's client secret in the provider's `options.clientSecret`. |\n| `useCheckoutElements()` | Returns a loading, error, or success state. Only success supplies `checkout`. |\n| `checkout.confirm()` | Confirms the Checkout Session in the successful hook branch after loading and error handling. |\n| `onReady`, `onChange`, etc. | Element event props. |\n\nAvailable elements: BillingAddressElement, CurrencySelectorElement, ExpressCheckoutElement, PaymentElement, PaymentMethodMessagingElement, ShippingAddressElement, TaxIdElement.\n\nUse `useCheckoutForm()` inside `CheckoutFormProvider`. The 2026-05-08 reference directs pre-v6 users to `useCheckout()`. The retained package history identifies it as an alias deprecated since 6.3.0 and still implemented and exported from `/checkout` in the pinned 7.0.0 snapshot. See [[source-github-react-stripe-js]].\n\n### Payment Intents (`@stripe/react-stripe-js`)\n\n| API | Purpose |\n| --- | --- |\n| `Elements` | Root provider. When rendering the Payment Element, supply the Intent's `clientSecret` unless rendering before creating the Intent. |\n| `useStripe()` | Stripe instance, initially null if a Stripe promise is unresolved. |\n| `useElements()` | Elements instance, initially null if a Stripe promise is unresolved. Use `elements.getElement(Component)` for imperative access in this path. |\n| `ElementsConsumer` | Class component alternative with `({ stripe, elements }) => ...` render props. |\n\nAvailable elements: AddressElement, ExpressCheckoutElement, LinkAuthenticationElement, PaymentElement, PaymentMethodMessagingElement, TaxIdElement.\n\nThe advanced confirmation example waits for both `stripe` and `elements` before calling `stripe.confirmPayment`.\n\n## Key Rules\n\n- Both providers document setting the `stripe` prop once. Initial server-side rendering or static generation can pass `null` or a promise resolving to `null`.\n- The 2026-05-08 advanced reference describes the standard `Elements` provider's `options` prop as immutable after setup and directs appearance changes through `elements.update()`.\n- The UMD instructions require Stripe.js to load directly from `js.stripe.com` and prohibit self-hosting or bundling the script.\n- The Checkout path's imperative example captures an Element through `onReady`. The advanced path's example retrieves it through `elements.getElement(...)`.\n- Mount at most one of each Element type per provider.\n\n> [!warning] 2026-05-08 website reference and retained 6.8.0 implementation\n> The 2026-05-08 advanced website reference describes blanket `Elements.options` immutability. The retained `@stripe/react-stripe-js@6.8.0` implementation in [[source-github-react-stripe-js]] treats `clientSecret` and `fonts` as immutable and forwards other changed provider options through `elements.update()`.\n\n## Related Pages\n\n- [[stripe-elements]] \u2014 Stripe Elements concept page\n- [[stripe]] \u2014 Stripe company page\n\n## Raw Sources\n\n- [[stripe-react-stripejs-2025]] \u2014 2026-05-08 complete two-variant website capture (673 lines with prop tables reformatted by linter)\n\n## Related raw API references\n\n- [[raw/stripe-sdks-stripejs-react-2026-11-07|2026-11-07 React Stripe.js reference index]] \u2014 navigation to [Elements](https://docs.stripe.com/sdks/stripejs-react.md?ui=embedded-components) and [Advanced integration](https://docs.stripe.com/sdks/stripejs-react.md?ui=elements). The capture contains the index only.\n",
+  "quotes": {
+    "sdks-stripejs-react": [
+      {
+        "text": "Learn about React components for Stripe.js and Stripe Elements.",
+        "location": "raw/stripe-sdks-stripejs-react-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants.",
+        "location": "raw/stripe-sdks-stripejs-react-2026-11-07.md:11"
+      },
+      {
+        "text": "ui=embedded-components",
+        "location": "raw/stripe-sdks-stripejs-react-2026-11-07.md:13"
+      },
+      {
+        "text": "ui=elements",
+        "location": "raw/stripe-sdks-stripejs-react-2026-11-07.md:14"
+      }
+    ]
+  },
+  "old_evidence": {
+    "sdks-stripejs-react": [
+      {
+        "text": "You must provide the `clientSecret` of the created Checkout Session.",
+        "location": "raw/stripe-react-stripejs-2025.md:107"
+      },
+      {
+        "text": "In `@stripe/react-stripe-js` versions before v6",
+        "location": "raw/stripe-react-stripejs-2025.md:209"
+      },
+      {
+        "text": "Because props are immutable, you can\u2019t change `options` after setting it.",
+        "location": "raw/stripe-react-stripejs-2025.md:364"
+      },
+      {
+        "text": "`stripe` and `elements` will be `null`",
+        "location": "raw/stripe-react-stripejs-2025.md:657"
+      },
+      {
+        "text": "checkoutState.type === 'success'",
+        "location": "raw/stripe-react-stripejs-2025.md:231"
+      },
+      {
+        "text": "await checkout.confirm()",
+        "location": "raw/stripe-react-stripejs-2025.md:233"
+      },
+      {
+        "text": "you must include the Intent\u2019s `clientSecret` unless",
+        "location": "raw/stripe-react-stripejs-2025.md:362"
+      },
+      {
+        "text": "Fetched: 2026-05-08",
+        "location": "raw/stripe-react-stripejs-2025.md:2"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-sdks-stripejs-react-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-react-stripejs-2025.md": [
+      {
+        "start": 1,
+        "end": 140
+      },
+      {
+        "start": 141,
+        "end": 283
+      },
+      {
+        "start": 284,
+        "end": 432
+      },
+      {
+        "start": 433,
+        "end": 566
+      },
+      {
+        "start": 567,
+        "end": 673
+      }
+    ],
+    "wiki/sources/source-stripe-react-stripejs.md": [
+      {
+        "start": 1,
+        "end": 59
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/b35201685eba13f773f7cfc8/content.diff": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 245
+      },
+      {
+        "start": 246,
+        "end": 390
+      },
+      {
+        "start": 391,
+        "end": 535
+      },
+      {
+        "start": 536,
+        "end": 675
+      }
+    ]
+  },
+  "answers": {
+    "sdks-stripejs-react": {
+      "Q1": "The full 2026-11-07 capture at https://docs.stripe.com/sdks/stripejs-react identifies a React reference for Stripe.js and Elements and routes React developers to the Elements and Advanced integration variants (new raw lines 1-14). It establishes no SDK or payment prerequisites, runtime state transitions, or customer/merchant confirmation behavior. In the 2026-05-08 capture summarized by source-stripe-react-stripejs, the app uses a publishable key to load Stripe.js asynchronously and takes the created Checkout Session client secret for CheckoutElementsProvider (old raw lines 62-68 and old raw lines 98-107). useCheckoutElements distinguishes loading, error and success, with checkout.confirm() in success (old raw lines 203-209 and old raw lines 217-243). The advanced Elements path documents an Intent client secret for Payment Element except deferred rendering, null before initialization, useStripe/useElements or ElementsConsumer for classes, and the confirmPayment example (old raw lines 353-370, old raw lines 450-456, old raw lines 465-495 and old raw lines 593-595). The summary preserves the two API families and now explicitly qualifies its hook state and advanced client-secret example.",
+      "Q2": "At https://docs.stripe.com/sdks/stripejs-react, the feature description is identical (old raw lines 4-6 and new raw lines 5-7). The 2026-11-07 Index heading and exact routes https://docs.stripe.com/sdks/stripejs-react.md?ui=embedded-components (Elements) and https://docs.stripe.com/sdks/stripejs-react.md?ui=elements (Advanced integration) are presentation and navigation (new raw lines 9-14), replacing the combined 2026-05-08 body with no demonstrated substantive implementation change (old raw lines 8-14 and old raw lines 271-277). The revised source-stripe-react-stripejs adds a dated navigation reference and retains the original full raw, reciprocal stripe-elements route, and retained React package authority. The Stripe index already routes to the website source. The historical website gives the pre-v6 useCheckout instruction (old raw lines 203-209). The retained 7.0.0 repository evidence separately still exports the alias deprecated since 6.3.0. Blanket Elements options immutability is the 2026-05-08 advanced website wording (old raw lines 1-2 and old raw lines 353-364). The retained 6.8.0 package evidence distinguishes clientSecret and fonts from forwarded option changes. The proposed Elements concept correction at wiki/concepts/stripe-elements.md:155 follows the revised source. Loading and error are separate states and only success provides `checkout` for `checkout.confirm()` (old raw lines 217-233), corroborated by the retained package page at wiki/sources/stripe/github/source-github-react-stripe-js.md:106. The retained package page\u2019s reciprocal warning at line 37 incorrectly dates the website summary to 2025. The pinned website header dates it to May 8, 2026 (old raw lines 1-2). The retained package route and versioned provider-options conflict both remain applicable."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "sdks-stripejs-react-checkout-hook-success",
+      "target_path": "wiki/concepts/stripe-elements.md",
+      "update_kind": "durable_fact",
+      "anchor": "- `useCheckoutElements()` \u2192 returns `{ type: 'loading'|'error'|'success', checkout }` object; `checkout.confirm()` submits",
+      "proposed_markdown": "- `useCheckoutElements()` returns loading, error, or success. The success state supplies `checkout`, which the example uses to call `checkout.confirm()` after handling loading and error. See [[source-stripe-react-stripejs]].",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Behavior is grounded in the 2026-05-08 example (old raw lines 217-233) and the retained package summary at wiki/sources/stripe/github/source-github-react-stripe-js.md:106. The 2026-11-07 quote establishes reference identity only.",
+        "The companion package warning at wiki/sources/stripe/github/source-github-react-stripe-js.md:37 currently dates the website summary to 2025. The 2026-05-08 date is verified in old raw lines 1-2. Its retained 6.8.0 provider-options contrast remains applicable."
+      ]
+    }
+  ]
+}

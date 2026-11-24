@@ -1,0 +1,43 @@
+--- wiki/concepts/stripe-terminal-refunds.md
++++ wiki/concepts/stripe-terminal-refunds.md
+@@ -11,11 +11,11 @@
+ 
+ ## Canceling Payments (Pre-Capture)
+ 
+-**When to use**: PaymentIntent is confirmed but not yet captured.
++**When to use**: A confirmed `card_present` PaymentIntent can be canceled while authorized and uncaptured. Check its capture state after confirmation.
+ 
+ **Available on**: Visa, Mastercard, Amex, Discover, girocard.
+ 
+-**Not available on Interac/eftpos**: these use automatic capture — the PaymentIntent is captured immediately at confirmation, so cancellation is not possible. Instead, ensure your app can initiate a refund at the end of the checkout flow.
++**Single-message Interac and eftpos.** The May guide describes automatic capture when the payment is routed over Interac or eftpos. These routes have no separate manual capture window. Check the actual capture state and use the refund flow after capture.
+ 
+ **How to cancel**:
+ - **Client-side** (iOS/Android/React Native SDKs): `cancelPaymentIntent`
+@@ -34,7 +34,7 @@
+ 
+ **Online refunds**: available on all card networks **except Interac** — no card re-presentment needed.
+ 
+-**Interac in-person refunds**: mandatory for Interac transactions (cannot refund Interac via API or Dashboard). Available on WisePad 3, WisePOS E, S700/S710, Tap to Pay iPhone, Tap to Pay Android.
++**Interac in-person refunds**: Mandatory for Interac transactions in Canada. Ordinary online refunds through the Refunds API or Dashboard are unavailable. The April 24, 2026 regional guide documents a server-driven in-person Terminal reader `refund_payment` endpoint, with the original card and matching currency. The May guide lists WisePad 3, WisePOS E, S700/S710 and Tap to Pay on iPhone and Android.
+ 
+ **Full refund**:
+ ```javascript
+@@ -43,7 +43,7 @@
+ });
+ ```
+ 
+-**Partial refund** (add `amount` in cents):
++**Partial refund** (add an integer `amount` in the charge currency’s smallest unit):
+ ```javascript
+ const refund = await stripe.refunds.create({
+   payment_intent: 'pi_Aabcxyz01aDfoo',
+@@ -51,7 +51,7 @@
+ });
+ ```
+ 
+-Refunds can also be initiated through the Stripe Dashboard.
++Eligible online refunds can also be initiated through the Stripe Dashboard.
+ 
+ ## iOS SDK 6.0.0 Boundaries
+ 

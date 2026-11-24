@@ -1,0 +1,14 @@
+<!-- Source URL: https://docs.stripe.com/sdks/stripejs-react -->
+<!-- Fetched: 2026-11-07 -->
+<!-- Discovery: reconciled llms.txt,sitemap.xml -->
+
+# React Stripe.js reference
+
+Learn about React components for Stripe.js and Stripe Elements.
+
+## Index
+
+This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:
+
+- [Elements](https://docs.stripe.com/sdks/stripejs-react.md?ui=embedded-components)
+- [Advanced integration](https://docs.stripe.com/sdks/stripejs-react.md?ui=elements)

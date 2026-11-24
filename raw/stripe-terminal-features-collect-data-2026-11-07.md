@@ -1,0 +1,15 @@
+<!-- Source URL: https://docs.stripe.com/terminal/features/collect-data -->
+<!-- Fetched: 2026-11-07 -->
+<!-- Discovery: reconciled llms.txt,sitemap.xml -->
+
+# Collect swiped data
+
+Use Terminal for collecting non-PCI data with the reader hardware interfaces.
+
+## Index
+
+This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:
+
+- [iOS](https://docs.stripe.com/terminal/features/collect-data.md?terminal-sdk-platform=ios)
+- [Android](https://docs.stripe.com/terminal/features/collect-data.md?terminal-sdk-platform=android)
+- [React Native](https://docs.stripe.com/terminal/features/collect-data.md?terminal-sdk-platform=react-native)

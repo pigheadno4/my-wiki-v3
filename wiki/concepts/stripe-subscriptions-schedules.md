@@ -100,3 +100,4 @@ stripe.subscriptionSchedules.create({ from_subscription: subId })
 ## Sources
 
 - [[source-stripe-subscriptions-schedules]] — Stripe docs: full subscription schedules guide (phases, proration, metadata, direct update interactions, 10+ use cases)
+- [[source-stripe-recurring-payments-overview]] — The November 2026 guide shows finite installment schedules using a recurring Price or inline `price_data`. The source page also preserves the April 2026 warning about network rules in some markets.

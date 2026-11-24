@@ -1,0 +1,235 @@
+{
+  "job_id": "terminal-features-apps-on-devices-overview",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Terminal: Apps on Devices\"\ntype: source\ndate_ingested: 2026-05-01\ndate_updated: 2026-11-24\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/terminal/features/apps-on-devices/overview\"\nraw_files:\n  - \"stripe-terminal-features-apps-on-devices-overview-2026-11-07.md\"\n  - \"stripe-terminal-apps-on-devices-2025.md\"\ntags: [stripe, stripe-terminal, apps-on-devices, android, smartpos, aosp, connect]\n---\n\n## Summary\n\nApps on Devices runs Android POS applications on Stripe smart readers. Both the May 1 and November 7, 2026 guides describe access for eligible merchants with an Android POS app or resources to build one. Eligible users on standard card-present pricing pay no extra cost. Contact Stripe Sales for eligibility and pricing assessment, or use the support form if you have no sales representative. Stripe handles payments and compliance through the Android or React Native Terminal SDK.\n\n## Integration Modes\n\n1. **POS on the reader.** The device starts in the merchant POS app. The Stripe Reader app takes the foreground during payment, then returns primary control to the POS app.\n2. **POS and reader on separate devices.** The consumer-facing Android app runs on the smart reader and supports payment. The merchant manages communication between the apps over TCP/IP.\n\n## Upload and Device Requirements\n\n- **APK size.** Standard Stripe API uploads have a 200 MB limit in both captures. November documents a separate private preview for uploads up to 300 MB. The email form requests access and does not enable it immediately. See November raw lines 50\u201364.\n- **Storage and Android environment.** Stripe manages updates over the air and caps app storage on the device at 8 GB. SmartPOS OS is based on AOSP. Google Play Services, notifications and a user-accessible home screen are unavailable. Production devices disable USB, ADB and debugging.\n- **Development hardware.** May describes using a DevKit for development. November explicitly requires a DevKit for Apps on Devices development and testing and documents ordering up to five DevKits per user through Dashboard Readers. Operators with only a production reader can accept payments through a server-driven integration or use standalone mode on a supported reader.\n- **T600 (November).** Without a main battery, app termination is more likely to leave partial writes. Apps must be able to handle these in data stores, logs and downloads. Each T600 DevKit includes the T-bridge required for DevKit power and data. See November raw lines 86\u201396.\n- **Specifications by reader.** The May S700/S710 table lists Snapdragon 665 (QCM6125), 4 GB RAM, 64 GB storage, Android 10, 1080\u00d71920 and 420 dpi. November routes to device-specific specifications for T600, S700/S710 and Verifone. See May raw lines 53\u201365 and November lines 66\u201372.\n\n## Permissions and Connect\n\nSmartPOS OS grants allowed manifest permissions during installation without a runtime prompt. Apps requesting permissions outside the allowlist are rejected. November adds `android.permission.CHANGE_WIFI_MULTICAST_STATE` to the documented allowlist (raw lines 98\u2013116). Camera, Bluetooth and location are experimental. The overview scopes NFC to payments for Apps on Devices. See the separate [[source-stripe-terminal-collect-nfc-data]] route for Terminal\u2019s tapped-data private-preview evidence and integration scope.\n\nFor direct charges, a single platform must control the connected account. Platforms deploy apps only to singly controlled connected accounts, with `controller.is_controller = true` documented as the qualification.\n\n## App Lifecycle\n\nBuild and test, prepare for app review, submit, deploy to selected devices, then monitor. The May deploy step points to the [Deploy API](https://docs.stripe.com/terminal/features/apps-on-devices/deploy-with-API.md). November points to [[source-stripe-terminal-apps-on-devices-deploy-dashboard|Dashboard deployment]]. The [[source-stripe-terminal-apps-on-devices-deploy-api|separate API deployment guide]] documents private-preview access through Stripe Support.\n\n## Related Pages\n\n- [[stripe]] \u2014 company page\n- [[stripe-terminal-apps-on-devices]] \u2014 Apps on Devices concept\n- [[stripe-terminal#In-Person Fundamentals|Stripe Terminal in-person features]] \u2014 nearby integrations and the separate NFC route\n- [[source-stripe-terminal-apps-on-devices-submit]] \u2014 app submission route\n\n## Raw Sources\n\n- [[raw/stripe-terminal-features-apps-on-devices-overview-2026-11-07|November 7, 2026 Apps on Devices overview]]\n- [[stripe-terminal-apps-on-devices-2025]] \u2014 May 1, 2026 verbatim overview\n",
+  "quotes": {
+    "terminal-features-apps-on-devices-overview": [
+      {
+        "text": "APK files that you upload to the Stripe API have a 200 MB size limit.",
+        "location": "raw/stripe-terminal-features-apps-on-devices-overview-2026-11-07.md:52"
+      },
+      {
+        "text": "Submitting this form doesn't immediately enable the feature.",
+        "location": "raw/stripe-terminal-features-apps-on-devices-overview-2026-11-07.md:56"
+      },
+      {
+        "text": "[Deploy your app to selected devices](https://docs.stripe.com/terminal/features/apps-on-devices/deploy-in-dashboard.md)",
+        "location": "raw/stripe-terminal-features-apps-on-devices-overview-2026-11-07.md:22"
+      },
+      {
+        "text": "You need a DevKit device to develop and test apps with Apps on Devices.",
+        "location": "raw/stripe-terminal-features-apps-on-devices-overview-2026-11-07.md:90"
+      },
+      {
+        "text": "The NFC functionality in the devices only supports payments",
+        "location": "raw/stripe-terminal-features-apps-on-devices-overview-2026-11-07.md:148"
+      }
+    ]
+  },
+  "old_evidence": {
+    "terminal-features-apps-on-devices-overview": [
+      {
+        "text": "APK files that you upload to the Stripe API have a 200MB size limit.",
+        "location": "raw/stripe-terminal-apps-on-devices-2025.md:51"
+      },
+      {
+        "text": "You can use a [DevKit device]",
+        "location": "raw/stripe-terminal-apps-on-devices-2025.md:79"
+      },
+      {
+        "text": "property is `true`. That prevents multiple platforms from deploying apps to the same connected account.",
+        "location": "raw/stripe-terminal-apps-on-devices-2025.md:134"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-terminal-features-apps-on-devices-overview-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 52
+      },
+      {
+        "start": 53,
+        "end": 104
+      },
+      {
+        "start": 105,
+        "end": 157
+      }
+    ],
+    "raw/stripe-terminal-apps-on-devices-2025.md": [
+      {
+        "start": 1,
+        "end": 48
+      },
+      {
+        "start": 49,
+        "end": 94
+      },
+      {
+        "start": 95,
+        "end": 139
+      }
+    ],
+    "wiki/sources/source-stripe-terminal-apps-on-devices.md": [
+      {
+        "start": 1,
+        "end": 35
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/d73cd651d92aafd3de38952d/content.diff": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 130
+      },
+      {
+        "start": 131,
+        "end": 196
+      }
+    ],
+    "wiki/concepts/stripe-terminal-apps-on-devices.md": [
+      {
+        "start": 1,
+        "end": 146
+      }
+    ],
+    "wiki/concepts/stripe-terminal.md": [
+      {
+        "start": 156,
+        "end": 170
+      },
+      {
+        "start": 555,
+        "end": 565
+      }
+    ]
+  },
+  "answers": {
+    "terminal-features-apps-on-devices-overview": {
+      "Q1": "At https://docs.stripe.com/terminal/features/apps-on-devices/overview, the revised source-stripe-terminal-apps-on-devices.md preserves the two Android POS architectures and updates the developer limits and prerequisites. The merchant needs an existing Android POS app or resources to build one and requests eligibility through sales or support. Standard card-present pricing carries no extra Apps on Devices cost for eligible users. Stripe handles payments and compliance with the Android or React Native Terminal SDK. One device boots into the merchant POS app, switches the primary app to Stripe Reader during the transaction, and returns primary control to the POS after it finishes. A separate-device POS communicates over merchant-managed TCP/IP with the consumer-facing Android app on the smart reader (old raw lines 8-22, old raw lines 33-42, new raw lines 9-23, new raw lines 34-43). The developer builds/tests on a DevKit, prepares for review, submits, deploys to selected readers and monitors. The standard Stripe API APK upload max remains 200 MB, and November documents a separate private preview for up to 300 MB where the request form does not activate access immediately. November adds a five-DevKit order limit per user and T600 no-main-battery/partial-write and T-bridge requirements (old raw lines 49-69, old raw lines 71-83, new raw lines 50-76, new raw lines 80-100). The OS grants allowed manifest permissions at install without runtime prompts and rejects over-allowlist apps, with camera, Bluetooth and location experimental. Direct charges require one controlling platform, and the deploy eligibility section preserves the single-platform controller.is_controller=true qualification (old raw lines 81-87, old raw lines 128-134, new raw lines 98-105, new raw lines 146-152).",
+      "Q2": "At https://docs.stripe.com/terminal/features/apps-on-devices/overview, source-stripe-terminal-apps-on-devices.md records the substantive November updates alongside the May full capture. November 7 retains the ordinary 200 MB Stripe API cap, adds a 300 MB private preview with an email request and no immediate enablement, and makes the DevKit requirement explicit. Preserve its per-user cap, production-reader server-driven or supported standalone alternatives, and the T600's partial-write risk without a main battery and included T-bridge for DevKit power/data. The November allowlist also newly includes CHANGE_WIFI_MULTICAST_STATE, without claiming tested capability from permission alone (old raw lines 49-51, old raw lines 73-83, old raw lines 87-102, new raw lines 50-64, new raw lines 80-100, new raw lines 104-120). The two integration diagrams and numbered lifecycle formatting changed presentation. The deploy step now links to Dashboard, without changing the lifecycle phase or proving API retirement. Preserve the separately documented API private-preview route. The May inline S700/S710 specs remain dated evidence. November routes specifications to T600, S700/S710 and Verifone device pages (old raw lines 18-22, old raw lines 33-43, old raw lines 53-65, new raw lines 19-23, new raw lines 34-44, new raw lines 66-76). The proposed reciprocal stripe-terminal-apps-on-devices and stripe-terminal routes qualify the APK ceiling and the dedicated concept\u2019s deployment steps. The Apps on Devices NFC restriction and experimental capabilities remain scoped to this product, with a separate Terminal tapped-data private-preview route (old raw lines 128-134, new raw lines 146-152)."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "terminal-features-apps-on-devices-overview-apk-limits",
+      "target_path": "wiki/concepts/stripe-terminal-apps-on-devices.md",
+      "update_kind": "durable_fact",
+      "anchor": "| APK upload size | 200 MB |",
+      "proposed_markdown": "| APK upload size | 200 MB for standard Stripe API uploads. November 2026 adds a private preview for up to 300 MB. The email request form does not activate access immediately. |",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "terminal-features-apps-on-devices-overview-hardware-scope",
+      "target_path": "wiki/concepts/stripe-terminal-apps-on-devices.md",
+      "update_kind": "durable_fact",
+      "anchor": "**S700/S710 hardware**: Qualcomm Snapdragon 665, 4GB RAM, 64GB storage, Android 10, 1080\u00d71920 px, 420dpi (xxhdpi).",
+      "proposed_markdown": "The May 2026 S700/S710 table lists Qualcomm Snapdragon 665, 4 GB RAM, 64 GB storage, Android 10, 1080\u00d71920 px and 420 dpi (xxhdpi). The November overview links device-specific specifications. The T600\u2019s lack of a main battery raises the risk of partial writes, and each T600 DevKit includes the required T-bridge for power and data. See [[source-stripe-terminal-apps-on-devices]].",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "May raw lines 53\u201365 attribute the older dimensions to S700/S710. November raw lines 66\u201372 and 92\u201396 covers device links and T600 requirements."
+      ]
+    },
+    {
+      "update_id": "terminal-features-apps-on-devices-overview-devkit",
+      "target_path": "wiki/concepts/stripe-terminal-apps-on-devices.md",
+      "update_kind": "durable_fact",
+      "anchor": "- Use a DevKit device for development",
+      "proposed_markdown": "- The November overview requires a DevKit to develop and test. With only a production reader, use server-driven payments or standalone mode on a supported reader.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "November raw lines 86\u201390 document up to five DevKits per user, already covered in the DevKit section."
+      ]
+    },
+    {
+      "update_id": "terminal-features-apps-on-devices-overview-nfc-scope",
+      "target_path": "wiki/concepts/stripe-terminal-apps-on-devices.md",
+      "update_kind": "durable_fact",
+      "anchor": "**NFC restriction**: device NFC is payments-only \u2014 cannot be used for non-payment features.",
+      "proposed_markdown": "**NFC scope.** The Apps on Devices overview limits its NFC functionality to payments. See the separate [[source-stripe-terminal-collect-nfc-data]] source for Terminal\u2019s tapped-data preview.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "Apps on Devices November raw lines 146\u2013148 preserve the scoped caveat. The separate May NFC raw lines 8\u201320 documents a private-preview mechanism with its own constraints."
+      ]
+    },
+    {
+      "update_id": "terminal-features-apps-on-devices-overview-lifecycle-submit",
+      "target_path": "wiki/concepts/stripe-terminal-apps-on-devices.md",
+      "update_kind": "durable_fact",
+      "anchor": "3. **Submit** \u2014 upload APK via Stripe API (200MB limit)",
+      "proposed_markdown": "3. **Submit** \u2014 upload the APK for review. See the standard API upload and private-preview size limits above.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "terminal-features-apps-on-devices-overview-lifecycle-deploy",
+      "target_path": "wiki/concepts/stripe-terminal-apps-on-devices.md",
+      "update_kind": "durable_fact",
+      "anchor": "4. **Deploy** \u2014 push to selected devices via Deploy API",
+      "proposed_markdown": "4. **Deploy** \u2014 push approved apps to selected devices. The May overview links the Deploy API. November links [[source-stripe-terminal-apps-on-devices-deploy-dashboard|Dashboard deployment]], and the separate [[source-stripe-terminal-apps-on-devices-deploy-api|API guide]] documents private-preview access.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": [
+        "November separate Deploy API raw lines 9\u201315 documents the approval flow and access boundary."
+      ]
+    },
+    {
+      "update_id": "terminal-features-apps-on-devices-overview-aod-source-route",
+      "target_path": "wiki/concepts/stripe-terminal-apps-on-devices.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-terminal-apps-on-devices]] \u2014 primary source: integration modes, requirements, AOSP differences, permissions, Connect compatibility",
+      "proposed_markdown": "- [[source-stripe-terminal-apps-on-devices]] \u2014 May and November 2026 overview of Android POS integrations, APK upload scopes, DevKit and T600 requirements, permissions, deployment and Connect.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "terminal-features-apps-on-devices-overview-terminal-overview",
+      "target_path": "wiki/concepts/stripe-terminal.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Apps on Devices** \u2014 deploy custom Android POS app on smart readers; two modes: POS on reader or POS + consumer-facing app via TCP/IP; AOSP (no Google Play Services); 200MB APK limit; 8GB storage limit; single-platform Connect requirement; see [[stripe-terminal-apps-on-devices]]",
+      "proposed_markdown": "- **Apps on Devices** \u2014 Android POS on a smart reader or a separate POS paired with a consumer-facing app over TCP/IP. Standard Stripe API uploads are capped at 200 MB. November 2026 documents a 300 MB private preview by request. See [[stripe-terminal-apps-on-devices]] for device, DevKit, storage and Connect requirements.",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "terminal-features-apps-on-devices-overview-terminal-source-route",
+      "target_path": "wiki/concepts/stripe-terminal.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-terminal-apps-on-devices]] \u2014 Apps on Devices: two integration modes, AOSP differences, permissions allowlist, Connect single-platform requirement",
+      "proposed_markdown": "- [[source-stripe-terminal-apps-on-devices]] \u2014 May and November 2026 Apps on Devices overviews, integration and APK scopes, DevKit requirements, permissions and single-platform Connect controls.",
+      "quote_indexes": [
+        0,
+        1,
+        3
+      ],
+      "warnings": []
+    }
+  ]
+}

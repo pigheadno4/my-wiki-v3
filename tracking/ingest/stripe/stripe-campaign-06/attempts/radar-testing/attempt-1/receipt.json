@@ -1,0 +1,119 @@
+{
+  "job_id": "radar-testing",
+  "attempt": 1,
+  "raw_path": "raw/stripe-radar-testing-2026-11-07.md",
+  "raw_sha256": "49364f99cb0c9884dc5cb3cc6cbf9ebec3d2463eb53e3b2bcc464cd351163b0e",
+  "prior_raw_path": "raw/stripe-radar-testing-2026.md",
+  "prior_raw_sha256": "e5293b768a39086ffc159cba13d1f33ffaf39a1a37be7ab0fe9708ed572b63a8",
+  "source_targets": [
+    "wiki/sources/source-stripe-radar-testing.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-radar-testing.md": "ce8ac54e75b3a653de6dee80d57734a4b9e53f494e7db254e0561b7659dc97fd"
+  },
+  "read_ranges": {
+    "raw/stripe-radar-testing-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 77
+      }
+    ],
+    "raw/stripe-radar-testing-2026.md": [
+      {
+        "start": 1,
+        "end": 61
+      }
+    ],
+    "wiki/sources/source-stripe-radar-testing.md": [
+      {
+        "start": 1,
+        "end": 48
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/528e723801bf455d3b73eee6/content.diff": [
+      {
+        "start": 1,
+        "end": 48
+      },
+      {
+        "start": 49,
+        "end": 92
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "to force the corresponding `fraudulent_payment` risk level.",
+      "location": "raw/stripe-radar-testing-2026-11-07.md:9"
+    },
+    {
+      "text": "Use the following test IBAN to create a payment that Radar blocks in a sandbox.",
+      "location": "raw/stripe-radar-testing-2026-11-07.md:37"
+    },
+    {
+      "text": "Use the following test account and routing numbers to create a payment that Radar blocks in a sandbox.",
+      "location": "raw/stripe-radar-testing-2026-11-07.md:45"
+    },
+    {
+      "text": "we\u2019ll search for historical live mode payments that match the rule criteria.",
+      "location": "raw/stripe-radar-testing-2026-11-07.md:53"
+    },
+    {
+      "text": "3DS doesn\u2019t always guarantee that your user will receive a challenge.",
+      "location": "raw/stripe-radar-testing-2026-11-07.md:75"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "Results in a charge with a risk level of `elevated`.",
+      "location": "raw/stripe-radar-testing-2026.md:16"
+    },
+    {
+      "text": "we\u2019ll search for historical live mode payments that match the rule criteria.",
+      "location": "raw/stripe-radar-testing-2026.md:36"
+    },
+    {
+      "text": "when you test allow rules, you can also see **Overrides**.",
+      "location": "raw/stripe-radar-testing-2026.md:45"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "In a sandbox the integration can create test card charges through Dashboard or test-key API. Both captures list card numbers, tokens and PaymentMethods for rule-dependent highest, always-blocked highest and elevated outcomes. The elevated rows specify signals but no queue transition.",
+    "Rule testing before addition/update searches historical live-mode payments. Operators inspect matching transactions and aggregate volume/count outcomes. Allow-rule Overrides are previously Radar-blocked payments that would be allowed under the proposed rule."
+  ],
+  "substantive_changes": [
+    "The November functional guide adds Payment Evaluation API use of the documented test card numbers to force a corresponding fraudulent_payment risk level, plus sandbox Radar-block test inputs for SEPA Direct Debit and ACH Direct Debit.",
+    "Table padding, screenshot destination and Allow copy changes are presentational or navigation. The rule-testing workflow, outcome categories and qualification that Allow backtesting cannot establish actual counterfactual legitimacy remain."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain May sandbox card cases and distinct backtest actors/data. Maintain trade-off interpretation of counts and volume, historical outcome categories and allow-rule override meaning. Requesting 3DS need not produce a challenge and frictionless liability shift can coexist with an early fraud warning.",
+    "The separate rules guide's review-rule section provides the six-month rule-testing window (raw/stripe-radar-rules-2026-11-07.md:270-278); the two testing captures themselves only specify historical live-mode payments. Keep source attribution. The Payment Evaluation API companion has its own API access and test-key guidance."
+  ],
+  "conflicts": [
+    "Existing source lines 19 and 21 overstate the cases: rule-dependent highest can be blocked depending on rules and the legacy default block rule is an example, while elevated specifies risk with no default review promise. Keep separately sourced general review-rule and plan limits distinct.",
+    "Current source line 25 and company/index/concept routes attribute an unconditional six-month lookback to the testing guide. Both pins omit a window; the separate review-rules passage describes six months, so retain it with that attribution and scope."
+  ],
+  "unresolved_questions": [],
+  "affected_concepts": [
+    "wiki/concepts/stripe-radar.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-radar-testing.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Record November's new sandbox Payment Evaluation API use and SEPA/ACH blocked cases, keep exact input lookups in raw, and retain existing backtesting route."
+      ],
+      "conflicts": [
+        "Narrow the rule-dependent and elevated test descriptions, distinguish sandbox data from historical live-mode backtests, and cite the companion rules source for the six-month statement."
+      ],
+      "reason": "The fuller November guidance adds three actionable sandbox testing routes beyond May card charge cases."
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/radar/testing, source-stripe-radar-testing should distinguish sandbox payment simulation from a proposed rule's historical backtest. In both captures the integration creates sandbox test card charges through Dashboard or the create-charge API with a test key. The three card/token/PaymentMethod rows produce rule-dependent highest risk, highest risk always blocked, and elevated risk. The legacy highest-risk rule is an example of why the first path may be blocked and elevated does not by itself promise a default queue action (old raw lines 8-32 and new raw lines 9-33). November also documents using those test card numbers with the Payment Evaluation API to force fraudulent_payment risk levels and adding SEPA and ACH Direct Debit inputs that simulate a Radar block in a sandbox (new raw line 9 and new raw lines 35-49). Before adding or updating a rule, Stripe searches matching historical live-mode payments and the operator can inspect the list and counts/volume for disputes or warnings, refunds, blocked or issuer-failed, and succeeded. Allow backtests add potential Overrides for payments previously blocked by Radar (old raw lines 34-45 and new raw lines 51-62). The existing May-based summary retains these categories but overstates rule-dependent blocking and elevated review, lacks the new sandbox routes, and attributes a six-month window where these two captures give no duration.",
+    "Q2": "For https://docs.stripe.com/radar/testing, update source-stripe-radar-testing. The 2026-11-07 capture substantively adds the sandbox card-to-Payment Evaluation API route for the fraudulent_payment signal and the separate simulated SEPA and ACH Direct Debit blocks (old raw lines 8-16 and new raw lines 9-17, old raw lines 26-36 and new raw lines 27-53). These tests say nothing about an evaluation's live processor outcome. Table alignment, screenshot location and minor Allow guidance phrasing are presentational; the November note retains the trade-off, the inability to know what previously blocked charges would have done, and the 3DS challenge and early-warning qualifications (old raw lines 45-61 and new raw lines 62-77). Preserve the dated May card scenarios, historical live-payment context and rule-dependent block/elevated descriptions (old raw lines 8-45 and new raw lines 9-62). The six-month wording comes from the separately captured November Review rules passage (raw/stripe-radar-rules-2026-11-07.md:270-278). Keep both raw links, the reciprocal stripe-radar, provider index and company routes, and connect the sandbox evaluation subsection to source-stripe-radar-multiprocessor and the historical backtest subsection to source-stripe-radar-rules."
+  }
+}

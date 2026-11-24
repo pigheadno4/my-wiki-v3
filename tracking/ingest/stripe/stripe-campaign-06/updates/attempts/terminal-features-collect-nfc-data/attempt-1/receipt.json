@@ -1,0 +1,125 @@
+{
+  "job_id": "terminal-features-collect-nfc-data",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Terminal: Collect Tapped Data for NFC Instruments\"\ntype: source\ndate_ingested: 2026-05-01\ndate_updated: 2026-11-24\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/terminal/features/collect-nfc-data\"\nraw_files:\n  - \"stripe-terminal-collect-nfc-data-2025.md\"\ntags: [stripe, stripe-terminal, nfc, collect-data, private-preview, offline]\n---\n\n## Summary\n\nThe 2026-05-01 [[stripe]] Terminal guide documents Collect data private-preview support for reading the unique identifier (UID) of a non-payment NFC instrument, such as a card or wristband, through the reader\u2019s contactless interface. The 2026-11-07 capture states the reader-hardware purpose and indexes the iOS, Android and React Native variants. The implementation details below come from the May guide.\n\n## Key Details\n\n**Private preview access in May**. Request access by emailing `terminal-collect-data@stripe.com` with the use case, Terminal device and integration type.\n\n**Reader and offline scope in May**. The guide lists Stripe Reader S700/S710 and Stripe M2 and documents offline collection.\n\n> **Card-payment restriction.** NFC UID collection cannot collect card payments. Use the standard Terminal payment flow for payments. [Collect card payments with Terminal](https://docs.stripe.com/terminal/payments/collect-card-payment.md).\n\n**Integration in May**. The merchant\u2019s POS initiates collection through the Terminal SDK using `collectData()` with NFC UID configured as `.nfcUid` on iOS or `NFC_UID` on Android and React Native. The customer taps the NFC instrument. The SDK returns a collected-data object containing `nfcUid`, or an error if the read fails. The UID returns to the app in the collection result. The separate swiped-data guide documents a token followed by backend retrieval.\n\n**Customer cancellation in May**. The iOS and Android sections describe default cancellation on supported readers and a smart-reader opt-out in `customerCancellation`. The iOS spelling is `.disableIfAvailable`, and Android uses `DISABLE_IF_AVAILABLE`. The React Native example sets `customerCancellation: 'disableIfAvailable'`.\n\n## Related\n\n- [[stripe-terminal]] \u2014 Terminal devices and integration overview\n- [[source-stripe-terminal-collect-data]] \u2014 non-PCI magstripe capture with server retrieval\n\n## Raw Sources\n\n- [[raw/stripe-terminal-collect-nfc-data-2025|Stripe Terminal collect NFC tapped data guide captured 2026-05-01]] \u2014 iOS, Android, and React Native implementation sections\n\n## Related raw API references\n\n- [[raw/stripe-terminal-features-collect-nfc-data-2026-11-07|Stripe Terminal collect NFC tapped data SDK variant index captured 2026-11-07]]\n",
+  "quotes": {
+    "terminal-features-collect-nfc-data": [
+      {
+        "text": "Use Terminal for data collection of NFC instruments with the reader hardware interfaces.",
+        "location": "raw/stripe-terminal-features-collect-nfc-data-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants.",
+        "location": "raw/stripe-terminal-features-collect-nfc-data-2026-11-07.md:11"
+      },
+      {
+        "text": "[iOS](https://docs.stripe.com/terminal/features/collect-nfc-data.md?terminal-sdk-platform=ios)",
+        "location": "raw/stripe-terminal-features-collect-nfc-data-2026-11-07.md:13"
+      },
+      {
+        "text": "[Android](https://docs.stripe.com/terminal/features/collect-nfc-data.md?terminal-sdk-platform=android)",
+        "location": "raw/stripe-terminal-features-collect-nfc-data-2026-11-07.md:14"
+      },
+      {
+        "text": "[React Native](https://docs.stripe.com/terminal/features/collect-nfc-data.md?terminal-sdk-platform=react-native)",
+        "location": "raw/stripe-terminal-features-collect-nfc-data-2026-11-07.md:15"
+      }
+    ]
+  },
+  "old_evidence": {
+    "terminal-features-collect-nfc-data": [
+      {
+        "text": "This feature is available offline.",
+        "location": "raw/stripe-terminal-collect-nfc-data-2025.md:10"
+      },
+      {
+        "text": "After tapping your NFC instrument, Stripe provides a collected data object with the NFC UID, or an error if one occurred.",
+        "location": "raw/stripe-terminal-collect-nfc-data-2025.md:12"
+      },
+      {
+        "text": "You can\u2019t use this feature to collect card payments.",
+        "location": "raw/stripe-terminal-collect-nfc-data-2025.md:16"
+      },
+      {
+        "text": "To disable customer cancellation on smart readers, set `customerCancellation` to `.disableIfAvailable`.",
+        "location": "raw/stripe-terminal-collect-nfc-data-2025.md:32"
+      },
+      {
+        "text": "To disable customer cancellation on smart readers, set `customerCancellation` to `DISABLE_IF_AVAILABLE`.",
+        "location": "raw/stripe-terminal-collect-nfc-data-2025.md:65"
+      },
+      {
+        "text": "customerCancellation: 'disableIfAvailable',",
+        "location": "raw/stripe-terminal-collect-nfc-data-2025.md:108"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-terminal-features-collect-nfc-data-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 15
+      }
+    ],
+    "raw/stripe-terminal-collect-nfc-data-2025.md": [
+      {
+        "start": 1,
+        "end": 62
+      },
+      {
+        "start": 63,
+        "end": 123
+      }
+    ],
+    "wiki/sources/source-stripe-terminal-collect-nfc-data.md": [
+      {
+        "start": 1,
+        "end": 34
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/bdbf35d8e4f1f9eaa24de195/content.diff": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 126
+      }
+    ]
+  },
+  "answers": {
+    "terminal-features-collect-nfc-data": {
+      "Q1": "For https://docs.stripe.com/terminal/features/collect-nfc-data, the November 7, 2026 capture states the reader-hardware use case and routes implementers to iOS, Android and React Native; the index documents no setup, hardware compatibility, transfer result, or cancellation states (new raw lines 5-15). The May 1, 2026 capture documents a merchant requesting Collect data private-preview access with use case, device and integration type. It lists S700/S710 and M2 and offline availability, and instructs against using NFC UID collection for card payments (old raw lines 8-20). The POS app prompts through the Terminal SDK for a UID, a customer taps the instrument and the SDK returns a collected-data object with the UID or returns an error, directly to the app (old raw lines 26-50 and old raw lines 59-87 and old raw lines 93-123). May says customer cancellation is enabled by default on supported readers in the iOS and Android variants and documents a disable option for smart readers; the React Native example configures the disable option (old raw lines 30-32 and old raw lines 63-65 and old raw lines 104-109). The revised source-stripe-terminal-collect-nfc-data retains the May guide\u2019s reader, SDK and cancellation statements with dated and platform-specific scope.",
+      "Q2": "For https://docs.stripe.com/terminal/features/collect-nfc-data, source-stripe-terminal-collect-nfc-data retains May 1, 2026 as functional authority and links the November 7, 2026 capture as dated variant navigation. November's switch from full capture to platform index is navigation; missing behavior does not establish a product or availability change (new raw lines 9-15, old raw lines 22-34 and old raw lines 55-67 and old raw lines 89-99). Preserve the dated private-preview access request, named S700/S710 and M2 models, offline behavior, card-payment prohibition, and direct UID/error outcome, distinct from the separate swiped-data guide's server retrieval (new raw lines 5-15, old raw lines 8-20 and old raw lines 26-32). The source replaces categorical exclusions with dated reader and variant lists. It describes default cancellation on supported readers according to the iOS and Android prose, the smart-reader disable option and the React Native example (old raw lines 30-32 and old raw lines 63-65 and old raw lines 104-109). The source links to stripe-terminal, and the proposed concept changes date the preview and model facts while keeping the feature route and backlink."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "terminal-features-collect-nfc-data-date-operational-scope",
+      "target_path": "wiki/concepts/stripe-terminal.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Collect NFC tapped data** \u2014 private preview; reads NFC UID from non-payment instruments (cards, wristbands); available offline; S700/S710/M2 only; UID returned directly (no server retrieval); cannot collect card payments; see [[source-stripe-terminal-collect-nfc-data]]",
+      "proposed_markdown": "- **Collect NFC tapped data** \u2014 the 2026-05-01 private-preview guide lists Stripe Reader S700/S710 and Stripe M2, documents offline NFC UID reads with the UID returned directly to the app, and excludes card payments. See [[source-stripe-terminal-collect-nfc-data]].",
+      "quote_indexes": [],
+      "warnings": [
+        "Old raw lines 8-20 and 26-50 establish the dated functional scope. The Stripe provider index and company labels still say S700/S710/M2 only. November\u2019s linked variant bodies are outside this capture."
+      ]
+    },
+    {
+      "update_id": "terminal-features-collect-nfc-data-reciprocal-source-route",
+      "target_path": "wiki/concepts/stripe-terminal.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-terminal-collect-nfc-data]] \u2014 Collect NFC tapped data (private preview): NFC UID, offline-capable, S700/S710/M2, no card payments",
+      "proposed_markdown": "- [[source-stripe-terminal-collect-nfc-data]] \u2014 May 2026 private-preview NFC UID guide with a dated November SDK variant index.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": []
+    }
+  ]
+}

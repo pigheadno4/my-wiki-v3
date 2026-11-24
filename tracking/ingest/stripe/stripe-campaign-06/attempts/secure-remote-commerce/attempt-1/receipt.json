@@ -1,0 +1,130 @@
+{
+  "job_id": "secure-remote-commerce",
+  "attempt": 1,
+  "raw_path": "raw/stripe-secure-remote-commerce-2026-11-07.md",
+  "raw_sha256": "783fa9ce42a42b3cd7e951344a98e48d0bbd3e8e7053b3cb11a7b6b824cb61fa",
+  "prior_raw_path": "raw/stripe-secure-remote-commerce-2025.md",
+  "prior_raw_sha256": "99bb3aef759a61c9bc9afee304dae454c91a5cacb6a8b3f5d5c29dcc008fc3fa",
+  "source_targets": [
+    "wiki/sources/source-stripe-secure-remote-commerce.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-secure-remote-commerce.md": "907895953bbc8c37c481f39a078e509b131b15ea54f36d7515f47398ac54fbc3"
+  },
+  "read_ranges": {
+    "raw/stripe-secure-remote-commerce-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 70
+      },
+      {
+        "start": 71,
+        "end": 122
+      }
+    ],
+    "raw/stripe-secure-remote-commerce-2025.md": [
+      {
+        "start": 1,
+        "end": 75
+      },
+      {
+        "start": 76,
+        "end": 137
+      }
+    ],
+    "wiki/sources/source-stripe-secure-remote-commerce.md": [
+      {
+        "start": 1,
+        "end": 39
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/210d36be829a85fbb1eea665/content.diff": [
+      {
+        "start": 1,
+        "end": 86
+      },
+      {
+        "start": 87,
+        "end": 172
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Secure Remote Commerce is only available in the US at this time.",
+      "location": "raw/stripe-secure-remote-commerce-2026-11-07.md:11"
+    },
+    {
+      "text": "new Masterpass Checkout IDs can\u2019t be generated in the Dashboard.",
+      "location": "raw/stripe-secure-remote-commerce-2026-11-07.md:15"
+    },
+    {
+      "text": "Use this optional parameter to override the default `callbackUrl` configured when activating Masterpass.",
+      "location": "raw/stripe-secure-remote-commerce-2026-11-07.md:83"
+    },
+    {
+      "text": "transaction_id: req.query.oauth_verifier,",
+      "location": "raw/stripe-secure-remote-commerce-2026-11-07.md:108"
+    },
+    {
+      "text": "Stripe doesn\u2019t support serving from the filesystem, even during testing.",
+      "location": "raw/stripe-secure-remote-commerce-2026-11-07.md:122"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "new Masterpass Checkout IDs can\u2019t be generated in the Dashboard.",
+      "location": "raw/stripe-secure-remote-commerce-2025.md:14"
+    },
+    {
+      "text": "To get started, generate your Masterpass **Checkout ID**",
+      "location": "raw/stripe-secure-remote-commerce-2025.md:18"
+    },
+    {
+      "text": "transaction_id: req.query.oauth_verifier,",
+      "location": "raw/stripe-secure-remote-commerce-2025.md:122"
+    }
+  ],
+  "proposed_disposition": "raw_reference",
+  "findings": [
+    "Both the May 8 and November 7, 2026 US-only Stripe program guides describe Mastercard SRC/Click to Pay and recommend existing Visa Checkout or Masterpass integrations migrate. The guides list Visa, Mastercard, American Express and Discover for user enrollment and show a merchant passing an accepted-brand list to Mastercard.",
+    "The documented integration's browser uses a Masterpass Checkout ID and an environment-specific Mastercard script. The customer selects or enters a payment method at Mastercard, which redirects to the merchant's configured or overridden callback with oauth_verifier. The merchant then confirms the pre-created PaymentIntent with type card and nested card.masterpass cart_id and transaction_id. The example does not prove a payment succeeds.",
+    "Both versions document sandbox testing using an SRC test user/card and http or https page serving, with filesystem serving unsupported."
+  ],
+  "substantive_changes": [
+    "No new behavioral delta in November. Line wrapping of HTML and JavaScript, quote style, Markdown tables and italic markup change. The Mastercard, Stripe Dashboard, PaymentIntent and test documentation routes retain their roles."
+  ],
+  "historical_claims_to_preserve": [
+    "Preserve US-only availability as stated in each dated Stripe guide, Masterpass deprecation and the inability to generate new Checkout IDs, the guidance that Stripe was working to re-enable onboarding, and the existing-ID integration flow.",
+    "Preserve the optional callback override, sandbox/production separation, existing intent and nested card payload, and the sandbox web transport limitation."
+  ],
+  "conflicts": [
+    "The May and November raw captures both warn that new Checkout IDs cannot be generated and then tell readers to generate a Checkout ID. Existing summary repeats both without qualification. Present generation as an instruction found in the legacy flow and keep the onboarding blocker primary. Neither dated guide establishes a new-ID path.",
+    "The raw labels black and white button variants but supplies the same black-mark URL in both samples. The existing summary should not promise a separate white asset. The table states en_US while examples pass en_us; preserve both as documentation forms and leave casing acceptance outside the claim.",
+    "The payment-method concept lists SRC under Global at line 73 and the source route says US only at line 106. Qualify geography to the dated Stripe guide and update the reciprocal description to say `card` is the payment method type, with `card.masterpass` the nested payload."
+  ],
+  "unresolved_questions": [
+    "The captures do not establish a new-account onboarding path, onboarding reopening date, a separate white-mark asset, runtime locale casing acceptance, live account eligibility or payment execution."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-payment-methods.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-secure-remote-commerce.md",
+      "proposed_disposition": "raw_reference",
+      "update_needed": true,
+      "findings": [
+        "Link November as a dated corroborating raw and preserve May. Keep the payment-method concept reciprocal route and the distinct Mastercard and PaymentIntent documentation locators."
+      ],
+      "conflicts": [
+        "Qualify the retained generated-ID step under Masterpass deprecation, correct the unproven second button asset, and preserve US-only Stripe scope and card payload nesting."
+      ],
+      "reason": "November is a substantively equivalent dated reference. The mapped summary has pre-existing misleading onboarding and asset wording, and the concept has conflicting geographic and payment-method descriptions."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/secure-remote-commerce, source-stripe-secure-remote-commerce should describe the November 7, 2026 guide as US-only. Users add Visa, Mastercard, American Express or Discover for Click to Pay, and Stripe recommends migration from Visa Checkout or Masterpass. An existing merchant integration uses a Checkout ID and configured sandbox and production callback URLs, loads the matching Mastercard script and invokes masterpass.checkout for the customer. The guide simultaneously states that Masterpass is deprecated and new Checkout IDs cannot be generated while Stripe works to re-enable onboarding. See old raw lines 6-18 and old raw lines 20-43, and new raw lines 7-19 and new raw lines 21-38. When a customer completes the Mastercard-side selection or entry, Mastercard redirects to the configured callback or optional override and appends oauth_verifier. The merchant confirms its pre-created Stripe PaymentIntent using type card and nested card.masterpass with cart_id and the verifier as transaction_id. See old raw lines 69-95 and old raw lines 99-129, and new raw lines 58-83 and new raw lines 87-114. Both document Mastercard sandbox test-user/card prerequisites and http or https pages. See old raw lines 133-137 and new raw lines 118-122. The current summary captures the core card flow but presents generating a new ID as actionable and describes black and white variants without exposing the identical asset URL.",
+    "Q2": "For https://docs.stripe.com/secure-remote-commerce, treat the November 7, 2026 capture as a corroborating raw reference to source-stripe-secure-remote-commerce. HTML wrapping, JS quoting/punctuation, italic delimiters, headings and table layout change. Mastercard, the Dashboard, PaymentIntent and sandbox documentation routes are stable. See old raw lines 20-43, old raw lines 69-97, old raw lines 99-137, new raw lines 21-38, new raw lines 58-85 and new raw lines 87-122. Preserve May 8 and November 7, 2026 evidence for US-only Stripe SRC, recommendation to migrate, and the contradiction between the deprecation/onboarding warning and the legacy generate-ID instruction. See old raw lines 10-18 and new raw lines 11-19. The black/white examples show the same black-mark URL. The locale table says en_US and snippets use en_us in both. See old raw lines 24-43, old raw lines 45-67, new raw lines 23-38 and new raw lines 40-56. Correct those pre-existing summary claims where retained without treating the example as release or runtime evidence. Keep the reciprocal stripe-payment-methods route, reconcile its Global bullet with the guide's US scope, and describe card as the PaymentMethod type and card.masterpass as its nested data. Preserve the onboarding blocker, callback and sandbox routes and avoid treating a displayed success string in the example as a payment outcome."
+  }
+}

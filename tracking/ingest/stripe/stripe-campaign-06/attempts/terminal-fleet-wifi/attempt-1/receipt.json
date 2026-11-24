@@ -1,0 +1,117 @@
+{
+  "job_id": "terminal-fleet-wifi",
+  "attempt": 1,
+  "raw_path": "raw/stripe-terminal-fleet-wifi-2026-11-07.md",
+  "raw_sha256": "83918dc95aae9a15b6581343364f5ce3fbbd5f9db3dab1f5b41aa52f94b1fe00",
+  "prior_raw_path": "raw/stripe-terminal-wifi-config-2025.md",
+  "prior_raw_sha256": "259a2da4dc0c65aebd3a13e3af34a820580c06417f7e69ff8209de8d281e16f2",
+  "source_targets": [
+    "wiki/sources/source-stripe-terminal-wifi-config.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-terminal-wifi-config.md": "ee33768e47e292525c4e2f4cd90712b872c6c801404ee566d76b19920dcc131f"
+  },
+  "read_ranges": {
+    "raw/stripe-terminal-fleet-wifi-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-terminal-wifi-config-2025.md": [
+      {
+        "start": 1,
+        "end": 92
+      }
+    ],
+    "wiki/sources/source-stripe-terminal-wifi-config.md": [
+      {
+        "start": 1,
+        "end": 29
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/4105eddacb5acd93f0075f9d/content.diff": [
+      {
+        "start": 1,
+        "end": 94
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Remotely configure a WiFi network for your readers.",
+      "location": "raw/stripe-terminal-fleet-wifi-2026-11-07.md:7"
+    },
+    {
+      "text": "This article has multiple variants.",
+      "location": "raw/stripe-terminal-fleet-wifi-2026-11-07.md:11"
+    },
+    {
+      "text": "[Dashboard](https://docs.stripe.com/terminal/fleet/wifi.md?dashboard-or-api=dashboard)",
+      "location": "raw/stripe-terminal-fleet-wifi-2026-11-07.md:13"
+    },
+    {
+      "text": "[API](https://docs.stripe.com/terminal/fleet/wifi.md?dashboard-or-api=api)",
+      "location": "raw/stripe-terminal-fleet-wifi-2026-11-07.md:14"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "To fetch the remotely configured network from the server, the reader must first connect to a local WiFi network.",
+      "location": "raw/stripe-terminal-wifi-config-2025.md:14"
+    },
+    {
+      "text": "You can then select this network to connect automatically, without requiring the end user to enter any additional information.",
+      "location": "raw/stripe-terminal-wifi-config-2025.md:16"
+    },
+    {
+      "text": "Stripe doesn\u2019t perform validation checks when you configure the WiFi profile.",
+      "location": "raw/stripe-terminal-wifi-config-2025.md:20"
+    },
+    {
+      "text": "Certificate and private key files must be in PEM format.",
+      "location": "raw/stripe-terminal-wifi-config-2025.md:53"
+    }
+  ],
+  "proposed_disposition": "raw_reference",
+  "findings": [
+    "The complete November base capture is a two-variant Dashboard/API index with a remote WiFi configuration purpose. May 1 supplies full functional behavior. Smart readers must first connect to local WiFi to fetch the remotely configured network. After it is shown as Configured network, the device user selects it and need not enter further credentials.",
+    "In May, Dashboard operators can edit local or inherited WiFi configuration through the location details or manage locations pages, choose security type, set credentials and apply changes. Newly registered readers prompt to connect, and an existing reader's list may take up to 10 minutes to show the configured network.",
+    "Stripe pushes profile updates and the reader remains connected if credentials are valid. Stripe does not validate them at configuration time. Wrong passwords, expired EAP-TLS certificates or other invalid credentials prevent connection. May documents WPA/WPA2 Personal PSK and Enterprise EAP-PEAP or EAP-TLS.",
+    "For May API configuration, create or update WiFi on a Configuration object, matching type and field; EAP-TLS uses Files API PEM client/CA certificates and private key with the respective file purposes and resulting file IDs."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "Preserve the full May 1 raw despite the filename suffix, including initial connection, user selection, credential validation, registration prompt, ten-minute appearance qualification and the Dashboard/API variant instructions.",
+    "Keep the EAP-TLS distinction of terminal_wifi_certificate for client and CA certificates and terminal_wifi_private_key for private key. The Node samples illustrate Personal PSK and are not a general schema for all security types."
+  ],
+  "conflicts": [
+    "The source summary's 'appears automatically on reader without user input' needs the explicit subsequent selection step to avoid implying autonomous connection. May says additional information is unnecessary once selected.",
+    "The summary's 'silent connection failure' exceeds the pin, which only says the reader will not connect; no user-visible diagnostic behavior is stated. Neither summary correction is a documented November behavior change."
+  ],
+  "unresolved_questions": [
+    "The November index does not verify variant implementation, current supported security modes, or eligibility. The May pin does not specify UI feedback for invalid credentials."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-terminal-hardware-orders.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-terminal-wifi-config.md",
+      "proposed_disposition": "raw_reference",
+      "update_needed": true,
+      "findings": [
+        "Add the November navigation raw and preserve the May full raw as behavioral evidence.",
+        "Separate configuration appearance, user network selection, and no credential reentry, and remove the unsupported 'silent' error characterization. Keep the reciprocal Hardware Orders concept route, including its no-credential-validation and EAP-TLS context."
+      ],
+      "conflicts": [
+        "The mapped wording may imply no user action to connect and guarantees silence on invalid credentials. May requires selecting the network and only establishes failure to connect."
+      ],
+      "reason": "The new raw is useful for navigation. The dated prior raw independently supports correcting the existing summary's connection-step and failure wording."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/terminal/fleet/wifi, source-stripe-terminal-wifi-config should use the November 7 capture as a Dashboard/API variant index. It states the remote configuration purpose without describing smart-reader prerequisites or any connection transition (new raw lines 5-14). The full May 1 guide says a smart reader must first connect to local WiFi so it can fetch the remote profile. After the configured network appears on the reader, the user selects it, and the reader connects without additional information. Stripe pushes changes and the reader stays connected if credentials are valid. Stripe does not validate at configuration time, so invalid credentials prevent connection without a stated UI failure mode (old raw lines 8-20). A Dashboard operator chooses security and credentials for a local or inherited location profile and applies changes. On registration the reader prompts, and the network may take up to ten minutes to appear for already registered readers. An API integrator creates or updates a Configuration with the matching WiFi type and field. For EAP-TLS, the integrator first uploads the PEM certificates and private key with their respective purposes, then uses the resulting file IDs (old raw lines 26-47, old raw lines 49-73). The current summary retains most May details but needs to distinguish displaying the network, user selection and later credential-free connection, and remove the unsupported word silent.",
+    "Q2": "At https://docs.stripe.com/terminal/fleet/wifi, source-stripe-terminal-wifi-config should add a raw_reference for the November 7 navigation index and retain the May 1 full guide. The two links replace bundled Dashboard/API text at the base capture and establish no functional removal or change (old raw lines 22-26, old raw lines 49-55, new raw lines 9-14). Preserve May's documented Personal PSK, Enterprise EAP-PEAP and Enterprise EAP-TLS types, initial local connection, separate selection step, invalid-credentials failure, registration prompt, and ten-minute possible list appearance for existing registrations. Keep the EAP-TLS Files upload and PEM qualifications (old raw lines 8-20, old raw lines 26-47, old raw lines 49-55). Preserve the reciprocal stripe-terminal-hardware-orders route and scope any summary corrections to that May evidence. The November index supplies variant discovery without validating current deployment or scope."
+  }
+}

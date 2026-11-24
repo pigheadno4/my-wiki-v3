@@ -70,8 +70,8 @@ Digital voucher → customer pays in-person at local stores.
 
 Fast checkout with saved cards or stored balances.
 
-- **Global**: Apple Pay (not India), Google Pay (not India), Link, Secure Remote Commerce, Stablecoins/crypto
-- **US**: Cash App Pay
+- **Global**: Apple Pay (not India), Google Pay (not India), Link, Stablecoins/crypto
+- **US**: Cash App Pay. The May 8 and November 7, 2026 Stripe Secure Remote Commerce guides describe US-only availability for Stripe SRC. See [[source-stripe-secure-remote-commerce]].
 - **EU**: PayPal, MobilePay, Revolut Pay, Satispay
 - **APAC**: Alipay, WeChat Pay, GrabPay, Kakao Pay, Naver Pay, Samsung Pay, PayCo
 
@@ -97,12 +97,12 @@ See [[stripe-dynamic-payment-methods]] for the AI-driven dynamic selection syste
 - [[source-stripe-payment-methods]] — April and November Payment Methods API guides on PaymentMethod roles, customer actions, immediate versus delayed outcomes, and verified webhook handling
 - [[source-stripe-payment-method-integration-options]] — Dated web comparison, Dashboard and code boundaries, versioned allowlists, compatibility, order and wallet registration
 - [[source-stripe-automatic-payment-methods]] — Aug 2023 API change: omit payment_method_types → Dashboard methods; allow_redirects: never option; Elements migration
-- [[source-stripe-legacy-apis]] — April and November 2026 legacy Sources, Cards and Tokens migration scopes. The paired transition guides cover April local methods and November's planned Sources card and legacy Cards cutoff. The detailed November legacy card migration is separate.
+- [[source-stripe-legacy-apis]] — Dedicated April and November 2026 Sources notices and historical payment mechanics. The separate paired transition guides cover April local-method migration and November’s planned Sources card and legacy Cards cutoff. See the distinct detailed legacy card migration for that procedure.
 - [[source-stripe-cards]] — May and November 2026 cards guide: account-country and customer-country brand matrix, conditional SCA/3DS, EU co-badged choice, and November's qualified UnionPay Apple Pay on the web, eftpos Apple Pay in AUD without manual capture, and Payment Element brand/funding filter
 - [[source-stripe-how-cards-work]] — How cards work: 4-step flow, manual update limits, change default payment method, automatic card updates + fingerprint change
 - [[source-stripe-card-product-codes]] — Card product codes: brand_product field, Visa (41 codes) + Mastercard (200+ codes) reference tables, test cards
 - [[source-stripe-bank-debits]] — Bank debits: 6 methods (ACH/Bacs/AU-BECS/NZ-BECS/ACSS/SEPA), API enums, product/API support matrices, caveats
 - [[source-stripe-ach-direct-debit]] — ACH Direct Debit: T+4/T+2 settlement, mandates, disputes (final), blocked accounts, 180-day refunds, Connect cloning
-- [[source-stripe-secure-remote-commerce]] — SRC/Click to Pay: US only, replaces Visa Checkout + Masterpass, card.masterpass PM type, Masterpass deprecated
+- [[source-stripe-secure-remote-commerce]] — May and November 2026 US-only Stripe SRC guide, Masterpass onboarding limits and a dated Confirm example with type `card` and nested `card.masterpass` data.
 - [[source-stripe-payment-method-support]] — May and November 2026 matrices for geography and currency, product and Checkout modes, and Intent, capture, saving and redirect support. Compare method-specific qualifications and documented disagreements.
 - [[source-stripe-payment-method-connect-support]] — May and November 2026 Connect reference for method-specific activation, charge types, descriptors and mandates. See dated BLIK, SEPA, ACH and PayPal qualifications.

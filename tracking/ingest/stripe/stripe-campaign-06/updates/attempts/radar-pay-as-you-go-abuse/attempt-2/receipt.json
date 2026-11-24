@@ -1,0 +1,155 @@
+{
+  "job_id": "radar-pay-as-you-go-abuse",
+  "attempt": 2,
+  "source_page": "---\ntitle: \"Stripe \u2014 Pay-As-You-Go Abuse Evaluation\"\ntype: source\ndate_ingested: 2026-05-10\ndate_updated: 2026-11-24\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/radar/pay-as-you-go-abuse\"\nraw_files:\n  - \"stripe-radar-pay-as-you-go-abuse-2026-11-07.md\"\n  - \"stripe-radar-payg-abuse-2026.md\"\ntags: [stripe, radar, payg, usage-based, subscriptions, non-payment-abuse, payment-evaluation]\n---\n\n## Summary\n\n[[stripe|Stripe]] [[stripe-radar|Radar]] documents a signal for intentional non-payment on post-paid or usage-based subscription invoices. The merchant server simulates an upcoming invoice payment outside checkout. Stripe returns `signals.non_payment_abuse.risk_level`, and the merchant chooses whether to review, invoice early, request prepayment or limit or pause usage. The May 2026 guide documents Payment Evaluation for this use case. The November guide documents Billing Evaluation in preview.\n\n## When to Evaluate\n\n- **Signup or card save before usage** \u2014 The November guide routes this stage to [[source-stripe-radar-free-trial-abuse|free-trial abuse prevention]] because there is no accrued usage or invoice amount for the non-payment abuse signal.\n- **Mid-cycle** \u2014 Send the actual or estimated accrued usage amount. The guide recommends reevaluating as usage accrues with the latest projected amount, which is more useful when close to the final invoice amount.\n- **Subsequent cycles** \u2014 Evaluate before each recurring invoice finalizes using the upcoming invoice amount, and again as usage accrues. The guide lists merchant actions such as flagging a renewal for manual review or requiring a credit top-up before further usage.\n\n## Billing Evaluation Preview \u2014 2026-11-07\n\nThe November guide's Customers v1 and Accounts v2 examples call `POST /v1/radar/billing_evaluations` with `Stripe-Version: 2026-10-28.preview`. They show `payment_details.currency` alongside the expected invoice amount and tokenized card PaymentMethod.\n\nEach request uses exactly one customer field: `customer_details.customer` for a Customer ID, `customer_details.customer_account` for a customer-configured Account ID, or `customer_details.data` for inline attributes when the customer has neither a Customer nor an Account representation. The referenced Customer or Account must have an email address. For inline attributes, supply `data.email`. A missing email returns HTTP `400`.\n\nThe example returns a `radar.billing_evaluation` object. Within `signals`, the guide documents only `non_payment_abuse`, which contains `risk_level` and `evaluated_at`. The example's `livemode` value illustrates the response.\n\nThe separate [2026-09-30 Endive preview changelog](https://docs.stripe.com/changelog/endive/2026-09-30/adds-billing-evaluations-for-assessing-non-payment-abuse-risk) describes Radar Pro scope for usage-based or post-paid billing, optional client device metadata, and unavailable retrieval or listing for its `2026-09-30.preview` version.\n\n## Payment Evaluation \u2014 2026-05-10\n\nThe May guide shows `POST /v1/radar/payment_evaluations` with `Stripe-Version: 2026-03-25.dahlia`, a Customer ID, payment method and expected invoice amount. Its `money_movement_details` example specifies card, `customer_presence=off_session` and `payment_type=recurring`. The May guide says a Radar Session is unnecessary for this use case, so `client_device_metadata_details` is optional.\n\nIts example `radar.payment_evaluation` response includes default `signals.fraudulent_payment` values such as a `-1.0` score, plus an evaluation-level `recommended_action` that reflects the overall evaluation. The May guide uses `signals.non_payment_abuse.risk_level` for merchant decisions and explicitly says this use case requires no outcome or event reporting.\n\n> [!warning] Dated contract scope\n> Use the inputs and response fields from the relevant guide. November's different endpoint and response leave continued signal support on the May endpoint and billing-evaluation outcome reporting unresolved.\n\n## Risk Levels and Shared Behavior\n\n| Level | Documented meaning or suggested action |\n| --- | --- |\n| `normal` / `low` | Low risk. No action required. |\n| `elevated` | Consider manual review or usage limits. |\n| `highest` | Consider pausing usage or requiring prepayment. |\n| `not_assessed` | Stripe did not assess the signal. |\n| `unknown` | Risk level unknown. |\n\n- **Stripe Billing** \u2014 Both guides retrieve the subscription or Customer default payment method and the upcoming invoice's `amount_due`.\n- **Fail-open** \u2014 In both guides, a Stripe `4xx` or `5xx` leaves the subscription or billing flow unaffected. The merchant can retry or continue without the signal.\n- **Sandbox** \u2014 May names `pm_card_riskLevelHighest` and test card `4000000000004954` for `highest`. November lists `pm_card_radarBlock` and `pm_card_riskLevelHighest` for `highest`, plus `pm_card_riskLevelElevated` for `elevated`. It documents `not_assessed` for other test cards, including general fraud-testing fixtures. See the November **Sandbox behavior** tables for card numbers.\n\n## Related Pages\n\n- [[stripe-radar]] \u2014 Radar concept and adjacent risk controls\n- [[source-stripe-radar-free-trial-abuse]] \u2014 separate risk control at signup or card save\n\n## Raw Sources\n\n- [[raw/stripe-radar-pay-as-you-go-abuse-2026-11-07|2026-11-07 Stripe pay-as-you-go abuse evaluation guide]] \u2014 full capture with Billing Evaluation, lifecycle guidance and sandbox fixtures\n- [[raw/stripe-radar-payg-abuse-2026|2026-05-10 Stripe pay-as-you-go abuse evaluation guide]] \u2014 full earlier capture with Payment Evaluation and outcome reporting scope\n",
+  "quotes": {
+    "radar-pay-as-you-go-abuse": [
+      {
+        "text": "These fields are mutually exclusive, and every request must include one of them.",
+        "location": "raw/stripe-radar-pay-as-you-go-abuse-2026-11-07.md:65"
+      },
+      {
+        "text": "An email address is also required.",
+        "location": "raw/stripe-radar-pay-as-you-go-abuse-2026-11-07.md:67"
+      },
+      {
+        "text": "The response includes only the `non_payment_abuse` signal.",
+        "location": "raw/stripe-radar-pay-as-you-go-abuse-2026-11-07.md:111"
+      },
+      {
+        "text": "Instead of evaluating risk only at the beginning of a billing cycle, re-evaluate it as usage accrues and pass the latest projected amount each time.",
+        "location": "raw/stripe-radar-pay-as-you-go-abuse-2026-11-07.md:53"
+      },
+      {
+        "text": "This endpoint fails open.",
+        "location": "raw/stripe-radar-pay-as-you-go-abuse-2026-11-07.md:171"
+      }
+    ]
+  },
+  "old_evidence": {
+    "radar-pay-as-you-go-abuse": [
+      {
+        "text": "A Radar Session isn\u2019t required, so the `client_device_metadata_details` field is optional for this use case.",
+        "location": "raw/stripe-radar-payg-abuse-2026.md:16"
+      },
+      {
+        "text": "No outcome or event reporting is required for this use case.",
+        "location": "raw/stripe-radar-payg-abuse-2026.md:104"
+      },
+      {
+        "text": "Call `POST /v1/radar/payment_evaluations`",
+        "location": "raw/stripe-radar-payg-abuse-2026.md:20"
+      },
+      {
+        "text": "The `recommended_action` field is at the evaluation level, not the signal level",
+        "location": "raw/stripe-radar-payg-abuse-2026.md:59"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-radar-pay-as-you-go-abuse-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 58
+      },
+      {
+        "start": 59,
+        "end": 116
+      },
+      {
+        "start": 117,
+        "end": 171
+      }
+    ],
+    "raw/stripe-radar-payg-abuse-2026.md": [
+      {
+        "start": 1,
+        "end": 58
+      },
+      {
+        "start": 59,
+        "end": 118
+      }
+    ],
+    "wiki/sources/source-stripe-radar-payg-abuse.md": [
+      {
+        "start": 1,
+        "end": 53
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/cd7e6c412eadbb809926c266/content.diff": [
+      {
+        "start": 1,
+        "end": 70
+      },
+      {
+        "start": 71,
+        "end": 140
+      },
+      {
+        "start": 141,
+        "end": 213
+      }
+    ],
+    "wiki/concepts/stripe-radar.md": [
+      {
+        "start": 194,
+        "end": 224
+      },
+      {
+        "start": 243,
+        "end": 257
+      }
+    ],
+    "raw/stripe-changelog-endive-2026-09-30-adds-billing-evaluations-for-assessing-non-payment-abuse-risk-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      },
+      {
+        "start": 99,
+        "end": 106
+      }
+    ]
+  },
+  "answers": {
+    "radar-pay-as-you-go-abuse": {
+      "Q1": "At https://docs.stripe.com/radar/pay-as-you-go-abuse, the revised source-stripe-radar-payg-abuse describes the November 7, 2026 workflow as a merchant-server simulation of an upcoming invoice payment outside checkout. The customer saves a payment method, uses the service, and accrues an amount before invoicing and payment. At signup before usage and an invoice amount exist, the guide directs readers to free-trial abuse prevention. During the cycle it uses actual or estimated accrued amount, and in subsequent cycles it evaluates before recurring invoice finalization and again as usage accrues, with the latest projected amount. The merchant can choose review, early invoicing, prepayment, a credit top-up, usage limits or pausing as applicable. See new raw lines 9-25 and new raw lines 27-53. The Billing Evaluation preview uses a tokenized card, expected invoice amount and exactly one customer designation, a Customer ID, a customer-configured Account ID, or inline attributes for a customer with neither representation. The referenced record must have an email address, or the inline attributes must include `data.email`, with HTTP 400 if the email is missing. The Customers v1 and Accounts v2 examples show `POST /v1/radar/billing_evaluations`, currency and `2026-10-28.preview`, and Stripe returns `signals.non_payment_abuse.risk_level`. See new raw lines 55-111. The former source summary relied on the May 10, 2026 capture, which describes `POST /v1/radar/payment_evaluations` with `2026-03-25.dahlia`, recurring off-session card details, default `fraudulent_payment` signal fields and evaluation-level `recommended_action`. The May guide says a Radar Session is unnecessary for this use case and `client_device_metadata_details` is optional. See old raw lines 14-32 and old raw lines 35-59. Both use Stripe Billing subscription/customer default payment method and upcoming invoice amount_due, publish the same risk levels, and describe failing open so the merchant can retry or proceed after 4xx or 5xx. See old raw lines 61-100, old raw line 118, new raw lines 113-145 and new raw line 171.",
+      "Q2": "For https://docs.stripe.com/radar/pay-as-you-go-abuse, the revised source-stripe-radar-payg-abuse retains both dated captures. The May 10, 2026 Payment Evaluation example uses `POST /v1/radar/payment_evaluations`, `2026-03-25.dahlia` and the recurring off-session card fields. Its response includes evaluation-level recommended_action and the unused default fraudulent-payment fields. See old raw lines 20-32 and old raw lines 35-59. The November 7, 2026 Customers v1 and Accounts v2 examples use `POST /v1/radar/billing_evaluations` and `2026-10-28.preview`. The guide requires exactly one customer designation and an email on the referenced Customer or Account or in `data.email`. It describes inline attributes for customers with neither a Customer nor an Account representation. The response includes only the non-payment abuse signal. See new raw lines 55-67, new raw lines 69-91 and new raw lines 93-111. November adds lifecycle stage selection and re-evaluation as usage accrues, with a separate free-trial control at card save, and defines highest/elevated fixtures and `not_assessed` for other sandbox cards, including the generic fraud-testing examples. See old raw lines 106-114, new raw lines 27-53 and new raw lines 147-167. The revised source preserves May's no-outcome/event-reporting statement as dated because November's omission does not establish any change in that rule. See old raw lines 102-104 and new raw lines 169-171. Both captures describe a Stripe error as fail-open. The separately captured Endive changelog links `2026-09-30.preview` and documents Radar Pro for usage-based or post-paid billing, optional client_device_metadata_details and no current retrieval or listing. See the Endive changelog's lines 7\u201315 and 101\u2013105. The revised source attributes these conditions to that preview version. Formatting, heading style and Node-to-cURL subscription retrieval are presentation. See old raw lines 61-89 and new raw lines 113-134. The source retains the reciprocal stripe-radar route and directs the earlier card-save stage to source-stripe-radar-free-trial-abuse. The endpoint and changelog routes retain their version qualifications."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "radar-pay-as-you-go-abuse-dated-payg-contract",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "durable_fact",
+      "anchor": "For usage-based / post-paid billing: detect intentional non-payment risk mid-billing cycle (background worker, not checkout). API: `POST /v1/radar/payment_evaluations` with `customer_presence=off_session`, `payment_type=recurring` + payment method + customer + invoice amount. No Radar Session needed. Read `signals.non_payment_abuse.risk_level` \u2014 ignore `fraudulent_payment` defaults. Fail-open (4xx/5xx doesn't affect billing). No outcome reporting required. See [[source-stripe-radar-payg-abuse]].",
+      "proposed_markdown": "For post-paid and usage-based billing, the merchant server estimates non-payment abuse risk outside checkout. The May 2026 guide uses Payment Evaluation. The November guide uses Billing Evaluation in preview and describes evaluation as usage accrues and before invoice finalization. Both use `signals.non_payment_abuse.risk_level` and describe a fail-open request. See [[source-stripe-radar-payg-abuse]] for the dated contracts, and [[source-stripe-radar-free-trial-abuse]] for the card-save stage before there is accrued usage.",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The May Payment Evaluation endpoint and no-outcome-reporting statement are dated to raw/stripe-radar-payg-abuse-2026.md:16-32 and :102-104."
+      ]
+    },
+    {
+      "update_id": "radar-pay-as-you-go-abuse-source-route",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-radar-payg-abuse]] \u2014 PAYG abuse: non_payment_abuse signal, fail-open Payment Evaluation API, mid-cycle background evaluation",
+      "proposed_markdown": "- [[source-stripe-radar-payg-abuse]] \u2014 May 2026 Payment Evaluation and November 2026 Billing Evaluation preview guidance for post-paid non-payment abuse, with lifecycle, response and sandbox qualifiers.",
+      "quote_indexes": [
+        0,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "The selected Stripe company and index rows still foreground the May Payment Evaluation route."
+      ]
+    }
+  ]
+}

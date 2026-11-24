@@ -1,0 +1,171 @@
+{
+  "job_id": "terminal-features-apps-on-devices-build",
+  "attempt": 1,
+  "raw_path": "raw/stripe-terminal-features-apps-on-devices-build-2026-11-07.md",
+  "raw_sha256": "a4ff13a6502b795dacf1b11253d6464d2dfc37502dc958f38f28c21f205b45a5",
+  "prior_raw_path": "raw/stripe-terminal-apps-on-devices-build-2025.md",
+  "prior_raw_sha256": "369408475273723f8ee4d3092f9e4926810f1101d6cd6281b5f544cedcc5174d",
+  "source_targets": [
+    "wiki/sources/source-stripe-terminal-apps-on-devices-build.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-terminal-apps-on-devices-build.md": "f5c471c594c3a0a5bb1fc69823f0b19b31cf9e9c4c070ede16e10019480a65da"
+  },
+  "read_ranges": {
+    "raw/stripe-terminal-features-apps-on-devices-build-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 115
+      },
+      {
+        "start": 116,
+        "end": 235
+      },
+      {
+        "start": 236,
+        "end": 350
+      },
+      {
+        "start": 351,
+        "end": 465
+      },
+      {
+        "start": 466,
+        "end": 575
+      },
+      {
+        "start": 576,
+        "end": 690
+      }
+    ],
+    "raw/stripe-terminal-apps-on-devices-build-2025.md": [
+      {
+        "start": 1,
+        "end": 105
+      },
+      {
+        "start": 106,
+        "end": 220
+      },
+      {
+        "start": 221,
+        "end": 335
+      },
+      {
+        "start": 336,
+        "end": 450
+      },
+      {
+        "start": 451,
+        "end": 506
+      }
+    ],
+    "wiki/sources/source-stripe-terminal-apps-on-devices-build.md": [
+      {
+        "start": 1,
+        "end": 49
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/b85cb35717d7630d3a03dfa7/content.diff": [
+      {
+        "start": 1,
+        "end": 95
+      },
+      {
+        "start": 96,
+        "end": 197
+      },
+      {
+        "start": 198,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 413
+      },
+      {
+        "start": 414,
+        "end": 524
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Terminal Android SDK `6.0.0` and later require your app to set `compileSdk` to 35 (Android 15) or higher:",
+      "location": "raw/stripe-terminal-features-apps-on-devices-build-2026-11-07.md:66"
+    },
+    {
+      "text": "Custom transition animations require reader software version 2.42 or later.",
+      "location": "raw/stripe-terminal-features-apps-on-devices-build-2026-11-07.md:299"
+    },
+    {
+      "text": "All settings, network, advanced, and registration code screens always require the PIN regardless of this flag.",
+      "location": "raw/stripe-terminal-features-apps-on-devices-build-2026-11-07.md:532"
+    },
+    {
+      "text": "When a transaction completes, the DevKit always returns to the default Stripe reader app.",
+      "location": "raw/stripe-terminal-features-apps-on-devices-build-2026-11-07.md:630"
+    },
+    {
+      "text": "The Stripe reader launches this app when it turns on and after each transaction.",
+      "location": "raw/stripe-terminal-features-apps-on-devices-build-2026-11-07.md:667"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "implementation(\"com.stripe:stripeterminal-core:5.4.1\")",
+      "location": "raw/stripe-terminal-apps-on-devices-build-2025.md:54"
+    },
+    {
+      "text": "This is the default app that launches when the Stripe reader turns on.",
+      "location": "raw/stripe-terminal-apps-on-devices-build-2025.md:483"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Both captures cover registering, connecting to a network, applying updates, and iterating on a sandbox-only SmartPOS DevKit, separate from production payment options. Client Android or React Native uses Apps on Devices discovery and connection on the registered reader. A React Native app can initialize with an on-device connection token provider.",
+    "After handoff connection, the Stripe Reader app handles payment operations and foregrounds full screen, then returns control to the integration on completion or cancellation and continues in background. Offline payment collection is supported. The explicit DevKit kiosk destination depends on deployment route in the November capture.",
+    "The existing summary covers much of the May client, device and testing flow. It presents the 5.4.1 example without its historical date, omits the required compile setting and reader software version, and only describes root settings and direct adb testing at a basic level. The existing Apps on Devices concept already points back to the build guide and repeats the undated dependency example."
+  ],
+  "substantive_changes": [
+    "November adds documented production-reader alternatives for payment acceptance (server-driven integration or supported standalone mode) for users with no DevKit and replaces the broad May Verifone notice with dated model-country availability and a Sales requirement for ordering or joining a preview.",
+    "Android Gradle dependency examples become 6.0.0 (May used 5.4.1). The documented Apps on Devices minimum stays Terminal Android SDK 2.22.0. Android SDK 6.0.0+ newly requires compileSdk \u2265 35, separate from retained targetSdkVersion \u2265 24 guidance for Android 15 device support.",
+    "Reader software 2.42+ is required for custom transition animations. The new React Native configuration documents preset/custom/disabled/system-default transitions. Debug invalid animation resource IDs can cause the SDK to throw at connection; release uses the system default.",
+    "Device settings gain documented destination-specific deep links and PIN rules. All settings, network, advanced, and registration code always require the PIN. Appearance, language, and bug report prompt by default and may be configured for no prompt. The SDK payment transition and separate Android settings animation use different configuration.",
+    "November adds T600 landscape guidance via nosensor and UX700 DevKit same-Wi-Fi adb. It documents the directly installed DevKit app's default Stripe Reader return after a completed transaction and the Dashboard deploy-group preferred kiosk choice at boot and after each transaction."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep the May 1, 2026 capture (despite its 2025 basename), including the original availability notice and 5.4.1 example as dated history. The Terminal Android SDK 2.22.0 baseline, targetSdkVersion \u2265 24 advice for Android 15, sandbox-only DevKit prerequisites, matching lifecycle and payment-handoff statements, docking and system-UI behavior, sideload uninstall before Dashboard redeploy, and physical sandbox test-card guidance continue in November."
+  ],
+  "conflicts": [
+    "The mapped summary and Apps on Devices concept give undated Android 5.4.1 dependencies. May's example remains historical; November illustrates 6.0.0 while retaining the 2.22.0 Terminal SDK minimum. Do not collapse compileSdk \u2265 35 for SDK 6.0.0+ into the separate targetSdkVersion guidance.",
+    "The concept's generic POS return after transaction needs its kiosk/deploy context to avoid implying that a directly installed DevKit app becomes the preferred kiosk. Distinguish the general SDK payment handoff control from the explicit direct-install and Dashboard kiosk statements.",
+    "The summary says root admin settings is accessible from any app without mentioning the always-required PIN. Retain the deep-link navigation while qualifying access and distinguishing the limited default-prompt exceptions."
+  ],
+  "unresolved_questions": [],
+  "affected_concepts": [
+    "wiki/concepts/stripe-terminal-apps-on-devices.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-terminal-apps-on-devices-build.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Both captures cover registering, connecting to a network, applying updates, and iterating on a sandbox-only SmartPOS DevKit, separate from production payment options. Client Android or React Native uses Apps on Devices discovery and connection on the registered reader. A React Native app can initialize with an on-device connection token provider.",
+        "After handoff connection, the Stripe Reader app handles payment operations and foregrounds full screen, then returns control to the integration on completion or cancellation and continues in background. Offline payment collection is supported. The explicit DevKit kiosk destination depends on deployment route in the November capture.",
+        "The existing summary covers much of the May client, device and testing flow. It presents the 5.4.1 example without its historical date, omits the required compile setting and reader software version, and only describes root settings and direct adb testing at a basic level. The existing Apps on Devices concept already points back to the build guide and repeats the undated dependency example."
+      ],
+      "conflicts": [
+        "The mapped summary and Apps on Devices concept give undated Android 5.4.1 dependencies. May's example remains historical; November illustrates 6.0.0 while retaining the 2.22.0 Terminal SDK minimum. Do not collapse compileSdk \u2265 35 for SDK 6.0.0+ into the separate targetSdkVersion guidance.",
+        "The concept's generic POS return after transaction needs its kiosk/deploy context to avoid implying that a directly installed DevKit app becomes the preferred kiosk. Distinguish the general SDK payment handoff control from the explicit direct-install and Dashboard kiosk statements.",
+        "The summary says root admin settings is accessible from any app without mentioning the always-required PIN. Retain the deep-link navigation while qualifying access and distinguishing the limited default-prompt exceptions."
+      ],
+      "reason": "Preserve both captures; date the dependency example, distinguish SDK and reader prerequisites, add searchable settings/transition and test-route qualifications, and link back to the already-linking Apps on Devices concept."
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/terminal/features/apps-on-devices/build, the November 7, 2026 snapshot documents a developer iterating on a network-connected, registered, updated SmartPOS DevKit in a sandbox. With only a production reader, the documented alternatives are server-driven payment acceptance or standalone mode on supported hardware. See new raw lines 9-37 and old raw lines 8-34 for the May 1, 2026 DevKit baseline. The Android app uses the terminal-core and appsondevices dependencies (2.22.0 minimum for Terminal Android SDK, 6.0.0 example, compileSdk \u2265 35 for Android SDK 6.0.0+) and application lifecycle/manifest setup. The targetSdkVersion \u2265 24 Android 15 advice is separate. React Native can initialize with the Apps on Devices connection token provider. See new raw lines 47-93 and new raw lines 105-155, compared with the 5.4.1 example and prior setup at old raw lines 42-81 and old raw lines 92-141. The app discovers and connects to a registered Reader using Android or React Native Apps on Devices mode, with easyConnect optional as documented for Android 5.0.0 and React Native 0.0.1-beta.29. In a payment operation the Stripe Reader app foregrounds and guides the customer; control returns to the integration after success, failure, or cancellation; the Reader app remains in background. Offline collection is documented. See new raw lines 162-174 and new raw lines 233-293, compared with old raw lines 148-160 and old raw lines 217-277. The explicit DevKit kiosk destination is separate: direct installation returns to the default Stripe Reader app after a completed transaction; the Dashboard deploy group can select the preferred kiosk at startup and after each transaction (new raw lines 628-630 and new raw lines 656-669, old raw lines 472-485). source-stripe-terminal-apps-on-devices-build summarizes the prior setup and basic adb tests but needs the dated SDK, transition, settings, and DevKit deployment qualifications.",
+    "Q2": "For https://docs.stripe.com/terminal/features/apps-on-devices/build, update source-stripe-terminal-apps-on-devices-build while retaining the factual May 1, 2026 raw and the November 7, 2026 raw. November adds payment alternatives for production-only users and model-specific Verifone availability (US P630/UX700 GA, V660p/M425 US and Canada public preview, further model-specific markets in the dated notice, and Sales required to order or join a preview). Preserve the full dated availability locator and keep the May preview notice as history (new raw lines 11-19, old raw lines 10-16). Date the Android dependency example rather than turning 6.0.0 into the minimum, and add compileSdk \u2265 35 for Android SDK 6.0.0+ without weakening the separate targetSdkVersion guidance (new raw lines 49-93, old raw lines 46-81). Add the reader software 2.42+ threshold, React Native transition choices, and distinguish payment UI animations from Android settings intents. Document the settings destination/PIN distinctions: root, network, advanced and registration code always require the PIN; appearance, language and bug report prompt by default and can be configured to omit it (new raw lines 295-303 and new raw lines 374-441 and new raw lines 476-532, compared to old raw lines 279-287 and old raw lines 351-365). Preserve T600 landscape-specific guidance, UX700 DevKit Wi-Fi adb, and post-transaction kiosk behavior by deployment path (new raw line 548 and new raw lines 609-630 and new raw lines 656-685, versus old raw lines 376-388 and old raw lines 438-501). Mark markup, list numbering and fence-language changes as presentational, and the Readers shop, SDK migration/API and sample links as navigation updates (new raw line 13 and new raw lines 164-174 and new raw lines 233-245, versus old raw line 12 and old raw lines 150-160 and old raw lines 217-229). Preserve the existing stripe-terminal-apps-on-devices concept backlink, add a reciprocal concept link from the summary, and date that concept's 5.4.1 example and qualify its generic post-transaction POS return for direct-installed DevKits."
+  }
+}

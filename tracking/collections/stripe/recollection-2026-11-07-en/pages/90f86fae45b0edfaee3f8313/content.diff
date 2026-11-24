@@ -1,0 +1,338 @@
+--- raw/stripe-terminal-order-and-return-readers-2025.md
++++ raw/stripe-terminal-fleet-order-and-return-readers-2026-11-07.md
+@@ -16,7 +16,7 @@
+ 
+ You can order up to 10000 of each item in a single order. If you’re interested in volume discounts, you can [contact us](https://stripe.com/contact/sales).
+ 
+-### Pricing
++### Pricing 
+ 
+ The price for each reader varies by country. You can view the most updated pricing in the [Dashboard](https://dashboard.stripe.com/terminal/shop) or our device [pricing page](https://stripe.com/terminal/devices).
+ 
+@@ -24,16 +24,34 @@
+ 
+ After placing an order, check its status in the Dashboard:
+ 
+-| Status            | Definition                                                                                                                                                                                                     |
+-| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+-| **Pending**       | We’ve received your order and will fulfill it soon. If needed, you can cancel this order in the Dashboard. Orders remain pending for at least 30 minutes.                                                      |
++| Status | Definition |
++| --- | --- |
++| **Pending** | We’ve received your order and will fulfill it soon. If needed, you can cancel this order in the Dashboard. Orders remain pending for at least 30 minutes. |
+ | **Ready to ship** | Your order is being prepared to ship and can no longer be canceled. After the order ships, you must initiate a return to cancel the order. The order becomes **Shipped** after a tracking number is available. |
+-| **Shipped**       | Order placed with our distributor. Tracking information is available on the Order details page.                                                                                                                |
+-| **Delivered**     | Items have been delivered.                                                                                                                                                                                     |
+-| **Canceled**      | The order is canceled.                                                                                                                                                                                         |
+-| **Undeliverable** | One or more of the order’s items couldn’t be delivered.                                                                                                                                                        |
++| **Shipped** | Order placed with our distributor. Tracking information is available on the Order details page. |
++| **Delivered** | Items have been delivered. |
++| **Canceled** | The order is canceled. |
++| **Undeliverable** | One or more of the order’s items couldn’t be delivered. |
+ 
+ v4 order status diagram (See full diagram at https://docs.stripe.com/terminal/fleet/order-and-return-readers)
++
++```text
++[Shipped] --> [Undeliverable]
++[Pending] --> [Canceled]
++[Pending] --> [Ready to ship]
++[Ready to ship] --> [Shipped]
++[Shipped] --> [Delivered]
++```
++
++## Pre-register smart readers
++
++When placing a hardware order, you can pre-register eligible smart readers by selecting a Terminal location. When serial numbers become available, Stripe automatically registers each eligible smart reader to the selected location. You don’t need to register the readers manually after placing the order.
++
++If your account has access to the [Terminal Hardware Orders API](https://docs.stripe.com/terminal/fleet/order-and-return-readers.md#use-the-hardware-orders-api) preview, Stripe can emit device-level outcome events after automatic registration attempts: `terminal.hardware_order_device.registered` when a device is successfully registered to the selected location, or `terminal.hardware_order_device.registration_failed` when Stripe reports that a device failed to be registered. Each event’s `data.object` is the relevant [Terminal hardware order device](https://docs.stripe.com/api/terminal/hardware_order_devices/object.md), so you can correlate the result using its device ID, serial number, and hardware order relationship.
++
++You can change the selected Terminal location on the hardware order details page until serial numbers become available.
++
++You can pre-register each order to only one location. To register readers from the same order to multiple locations, wait until serial numbers become available, then register each reader individually by serial number.
+ 
+ ## Self service returns
+ 
+@@ -61,7 +79,6 @@
+ - FI
+ - FR
+ - GB
+-- GI
+ - GR
+ - HR
+ - HU
+@@ -83,13 +100,13 @@
+ 
+ ## Selecting the Return items Button
+ 
+-To initiate a Dashboard Return, go to your Hardware Orders and select the order you want to return. After you select the order, click **Return items** to start the process. The **Return items** button is available on the Terminal order details page if the hardware order has a status of `Shipped` or `Delivered`.
+-![Self Service Returns - Step 1](assets/stripe-terminal-returns-step1.png)
++To initiate a Dashboard Return, go to your Hardware Orders and select the order you want to return. After you select the order, click **Return items** to start the process. The **Return items**  button is available on the Terminal order details page if the hardware order has a status of `Shipped`  or `Delivered`.
++![Self Service Returns - Step 1](https://b.stripecdn.com/docs-statics-srv/assets/returns-step1.9346efe2a1f1a81856654b99566f5a0b.png)
+ 
+ ## Confirming the number of units to be returned
+ 
+ When the popup opens, select the number of items you’d like to return for each product in the order (if you have more than one item). We’ll only show the number of items eligible for return. So, if you previously purchased three items and returned one, you’ll only be able to select up to two units to return.
+-![Self Service Returns - Step 2](assets/stripe-terminal-returns-step2.png)
++![Self Service Returns - Step 2](https://b.stripecdn.com/docs-statics-srv/assets/returns-step2.18d56b1b58d3126dc3174bc2583d3d7b.png)
+ 
+ ## Calculating the refund amount
+ 
+@@ -100,7 +117,7 @@
+ ## Selecting a reason for the return
+ 
+ Next, you need to select a reason for the return from the dropdown menu.
+-![Self Service Returns - Step 4](assets/stripe-terminal-returns-step4.png)
++![Self Service Returns - Step 4](https://b.stripecdn.com/docs-statics-srv/assets/returns-step4.d3e033266dc193ff0b4c666ad6fe48cf.png)
+ 
+ - **Items arrived defective or broken**—Select this option if any of the items received were damaged or defective.
+ - **I ordered too many devices**—Select this option if you ordered too many devices.
+@@ -110,7 +127,7 @@
+ ## Confirming and exporting the shipping label
+ 
+ After you’ve confirmed the information is correct, select **Submit return’**—the option to download the shipping label appears after you select it. You can select **View UPS Locations** to find the nearest drop off location.
+-![Self Service Returns - Step 5](assets/stripe-terminal-returns-step5.png)
++![Self Service Returns - Step 5](https://b.stripecdn.com/docs-statics-srv/assets/returns-step5.bd0eff6b670cad01b97216f4a32ad627.png)
+ 
+ ## Refunds
+ 
+@@ -125,53 +142,53 @@
+ Stripe works with a distribution partner to fulfill Terminal orders. You can choose standard, express, or priority shipping, depending on the destination country. Hardware must be shipped to physical addresses (not PO boxes).
+ 
+ > #### Large quantity orders
+->
++> 
+ > Stripe automatically selects freight shipping for large quantity orders.
+ 
+ If you’re a [Connect platform using Terminal](https://docs.stripe.com/terminal/features/connect.md), you can ship readers directly to your connected accounts by specifying the destination address during checkout.
+ 
+-| Destination country | Orders cutoff time              | Order amount above which signature is required | Excluded regions and territories for shipping (all P.O. boxes are excluded)                                                     |
+-| ------------------- | ------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+-| US                  | 11:00am Eastern Time            | 500 USD                                        | Virgin Islands and military addresses                                                                                           |
+-| CA                  | 1:00pm Pacific Time             | 400 CAD                                        | –                                                                                                                               |
+-| AT                  | 11:00am Central European Time   | 400 EUR                                        | –                                                                                                                               |
+-| BE                  | 11:00am Central European Time   | 400 EUR                                        | –                                                                                                                               |
+-| BG                  | 11:00am Central European Time   | 400 EUR                                        | –                                                                                                                               |
+-| HR                  | 11:00am Central European Time   | 400 EUR                                        | –                                                                                                                               |
+-| CY                  | 11:00am Central European Time   | 400 EUR                                        | –                                                                                                                               |
+-| CZ                  | 11:00am Central European Time   | 9900 CZK                                       | –                                                                                                                               |
+-| DK                  | 11:00am Central European Time   | 2975 DKK                                       | –                                                                                                                               |
+-| EE                  | 11:00am Central European Time   | 400 EUR                                        | –                                                                                                                               |
+-| FI                  | 11:00am Central European Time   | 400 EUR                                        | –                                                                                                                               |
+-| FR                  | 11:00am Central European Time   | 400 EUR                                        | Saint-Pierre and Miquelon, Saint Barthélemy, French Southern Territories, Wallis and Futuna, French Polynesia and New Caledonia |
+-| DE                  | 11:00am Central European Time   | 400 EUR                                        | –                                                                                                                               |
+-| GI                  | 11:00am Central European Time   | 400 EUR                                        | –                                                                                                                               |
+-| GR                  | 11:00am Central European Time   | 400 EUR                                        | –                                                                                                                               |
+-| HU                  | 11:00am Central European Time   | 155908 HUF                                     | –                                                                                                                               |
+-| IE                  | 11:00am Central European Time   | 400 EUR                                        | –                                                                                                                               |
+-| IT                  | 11:00am Central European Time   | 400 EUR                                        | –                                                                                                                               |
+-| LV                  | 11:00am Central European Time   | 400 EUR                                        | –                                                                                                                               |
+-| LI                  | 11:00am Central European Time   | 415 CHF                                        | –                                                                                                                               |
+-| LT                  | 11:00am Central European Time   | 400 EUR                                        | –                                                                                                                               |
+-| LU                  | 11:00am Central European Time   | 400 EUR                                        | –                                                                                                                               |
+-| MT                  | 11:00am Central European Time   | 400 EUR                                        | –                                                                                                                               |
+-| NL                  | 11:00am Central European Time   | 400 EUR                                        | Aruba, Curaçao, Sint Maarten, Bonaire, Sint Eustatius, and Saba                                                                 |
+-| NO                  | 11:00am Central European Time   | 400 EUR                                        | Svalbard and Jan Mayen                                                                                                          |
+-| PT                  | 11:00am Central European Time   | 400 EUR                                        | –                                                                                                                               |
+-| RO                  | 11:00am Central European Time   | 1930 RON                                       | –                                                                                                                               |
+-| SK                  | 11:00am Central European Time   | 400 EUR                                        | –                                                                                                                               |
+-| SI                  | 11:00am Central European Time   | 400 EUR                                        | –                                                                                                                               |
+-| ES                  | 11:00am Central European Time   | 400 EUR                                        | –                                                                                                                               |
+-| SE                  | 11:00am Central European Time   | 4315 SEK                                       | –                                                                                                                               |
+-| CH                  | 11:00am Central European Time   | 400 EUR                                        | –                                                                                                                               |
+-| GB                  | 11:00am Central European Time   | 400 GBP                                        | Jersey, Guernsey, Isle of Man, and the British Virgin Islands                                                                   |
+-| AU                  | 11:00am Australian Eastern Time | 400 AUD                                        | –                                                                                                                               |
+-| HK                  | 11:00am Australian Eastern Time | 2200 HKD                                       | –                                                                                                                               |
+-| MY                  | 11:00am Australian Eastern Time | 1200 MYR                                       | –                                                                                                                               |
+-| NZ                  | 11:00am Australian Eastern Time | 400 NZD                                        | –                                                                                                                               |
+-| SG                  | 11:00am Australian Eastern Time | 400 SGD                                        | –                                                                                                                               |
+-| PL                  | 11:30am Central European Time   | 2100 PLN                                       | –                                                                                                                               |
+-| JP                  | 03:30pm Japan Standard Time     | 79000 JPY                                      | –                                                                                                                               |
++| Destination country | Orders cutoff time | Order amount above which signature is required | Excluded regions and territories for shipping (all P.O. boxes are excluded) |
++| --- | --- | --- | --- |
++| US | 11:00am Eastern Time | 500 USD | Virgin Islands and military addresses |
++| CA | 1:00pm Pacific Time | 400 CAD | – |
++| AT | 11:00am Central European Time | 400 EUR | – |
++| BE | 11:00am Central European Time | 400 EUR | – |
++| BG | 11:00am Central European Time | 400 EUR | – |
++| HR | 11:00am Central European Time | 400 EUR | – |
++| CY | 11:00am Central European Time | 400 EUR | – |
++| CZ | 11:00am Central European Time | 9900 CZK | – |
++| DK | 11:00am Central European Time | 2975 DKK | – |
++| EE | 11:00am Central European Time | 400 EUR | – |
++| FI | 11:00am Central European Time | 400 EUR | – |
++| FR | 11:00am Central European Time | 400 EUR | Saint-Pierre and Miquelon, Saint Barthélemy, French Southern Territories, Wallis and Futuna, French Polynesia and New Caledonia |
++| DE | 11:00am Central European Time | 400 EUR | – |
++| GI | 11:00am Central European Time | 400 EUR | – |
++| GR | 11:00am Central European Time | 400 EUR | – |
++| HU | 11:00am Central European Time | 155908 HUF | – |
++| IE | 11:00am Central European Time | 400 EUR | – |
++| IT | 11:00am Central European Time | 400 EUR | – |
++| LV | 11:00am Central European Time | 400 EUR | – |
++| LI | 11:00am Central European Time | 415 CHF | – |
++| LT | 11:00am Central European Time | 400 EUR | – |
++| LU | 11:00am Central European Time | 400 EUR | – |
++| MT | 11:00am Central European Time | 400 EUR | – |
++| NL | 11:00am Central European Time | 400 EUR | Aruba, Curaçao, Sint Maarten, Bonaire, Sint Eustatius, and Saba |
++| NO | 11:00am Central European Time | 400 EUR | Svalbard and Jan Mayen |
++| PT | 11:00am Central European Time | 400 EUR | – |
++| RO | 11:00am Central European Time | 1930 RON | – |
++| SK | 11:00am Central European Time | 400 EUR | – |
++| SI | 11:00am Central European Time | 400 EUR | – |
++| ES | 11:00am Central European Time | 400 EUR | – |
++| SE | 11:00am Central European Time | 4315 SEK | – |
++| CH | 11:00am Central European Time | 400 EUR | – |
++| GB | 11:00am Central European Time | 400 GBP | Jersey, Guernsey, Isle of Man, and the British Virgin Islands |
++| AU | 11:00am Australian Eastern Time | 400 AUD | – |
++| HK | 11:00am Australian Eastern Time | 2200 HKD | – |
++| MY | 11:00am Australian Eastern Time | 1200 MYR | – |
++| NZ | 11:00am Australian Eastern Time | 400 NZD | – |
++| SG | 11:00am Australian Eastern Time | 400 SGD | – |
++| PL | 11:30am Central European Time | 2100 PLN | – |
++| JP | 03:30pm Japan Standard Time | 79000 JPY | – |
+ 
+ ## Add tax identification numbers
+ 
+@@ -179,14 +196,14 @@
+ 
+ ## User roles and permissions
+ 
+-The following table shows which [user roles](https://docs.stripe.com/get-started/account/teams/roles.md) can place orders on behalf of their account through the dashboard:
+-
+-|                     | Administrator | Developer     | Analyst       | Terminal Specialist | Support Specialist | View Only     |
+-| ------------------- | ------------- | ------------- | ------------- | ------------------- | ------------------ | ------------- |
+-| Place new orders    | :check: Check | :check: Check | :check: Check | :check: Check       | ❌ Cancel          | ❌ Cancel     |
+-| View list of orders | :check: Check | :check: Check | :check: Check | :check: Check       | :check: Check      | :check: Check |
+-| Cancel an order     | :check: Check | :check: Check | :check: Check | :check: Check       | ❌ Cancel          | ❌ Cancel     |
+-| Self service return | :check: Check | :check: Check | :check: Check | :check: Check       | :check: Check      | ❌ Cancel     |
++The following table shows which [user roles](https://docs.stripe.com/get-started/account/teams/roles.md) can place orders on behalf of their account through the Dashboard:
++
++|  | Administrator | Developer | Analyst | Terminal Specialist | Support Specialist | View Only |
++| --- | --- | --- | --- | --- | --- | --- |
++| Place new orders | :check: Check | :check: Check | :check: Check | :check: Check | ❌ Cancel | ❌ Cancel |
++| View list of orders | :check: Check | :check: Check | :check: Check | :check: Check | :check: Check | :check: Check |
++| Cancel an order | :check: Check | :check: Check | :check: Check | :check: Check | ❌ Cancel | ❌ Cancel |
++| Self service return | :check: Check | :check: Check | :check: Check | :check: Check | :check: Check | ❌ Cancel |
+ 
+ ## Use the Hardware Orders API (Preview)
+ 
+@@ -206,11 +223,11 @@
+ To create a hardware order using the API, follow these steps:
+ 
+ 1. Retrieve available SKUs
+-1. Retrieve available Shipping Methods
+-1. (Optional) Preview the order
+-1. Create the order
+-
+-> You must include a beta header in your API requests with your API version and the current version of the terminal hardware order preview: `Stripe-Version: 2026-04-22.dahlia;terminal_hardware_orders_beta=v5`
++2. Retrieve available Shipping Methods
++3. (Optional) Preview the order
++4. Create the order
++
++> You must include a beta header in your API requests with your API version and the current version of the terminal hardware order preview: `Stripe-Version: 2026-10-28.endive;terminal_hardware_orders_beta=v5`
+ 
+ ### Retrieve SKUs
+ 
+@@ -221,7 +238,7 @@
+ ```bash
+ curl https://api.stripe.com/v1/terminal/hardware_skus?country=US \
+   -u <<YOUR_SECRET_KEY>>: \
+-  -H "Stripe-Version: 2026-04-22.dahlia;terminal_hardware_orders_beta=v5"
++  -H "Stripe-Version: 2026-10-28.endive;terminal_hardware_orders_beta=v5"
+ ```
+ 
+ Each SKU is also associated with a [Hardware Product](https://docs.stripe.com/api/terminal/hardware_products/object.md). Products represent different categories of devices. If you’re building an e-commerce ordering system for your customers, make sure you only show the SKUs for the products that apply for your Terminal integration. For example, if your Terminal integration only uses the [BBPOS WisePOS E](https://docs.stripe.com/terminal/readers/bbpos-wisepos-e.md), don’t make the [BBPOS Chipper 2X BT](https://docs.stripe.com/terminal/readers/bbpos-chipper2xbt.md) reader available for purchase. To retrieve all [BBPOS WisePOS E](https://docs.stripe.com/terminal/readers/bbpos-wisepos-e.md) SKUs, you can specify the optional `product` parameter when making a request to the [Hardware Order SKUs](https://docs.stripe.com/api/terminal/hardware_skus/list.md) endpoint:
+@@ -229,7 +246,7 @@
+ ```bash
+ curl 'https://api.stripe.com/v1/terminal/hardware_skus?country=US&product={{TERMINAL_HARDWARE_PRODUCT_ID}}' \
+   -u <<YOUR_SECRET_KEY>>: \
+-  -H "Stripe-Version: 2026-04-22.dahlia;terminal_hardware_orders_beta=v5"
++  -H "Stripe-Version: 2026-10-28.endive;terminal_hardware_orders_beta=v5"
+ ```
+ 
+ Finally, each SKU is also associated with a [Provider](https://docs.stripe.com/api/terminal/hardware_skus/object.md#terminal_hardware_sku_object-provider). By default this value is set to `stripe` but you filter for SKUs from a different provider by specifying the optional `provider` parameter when making a request to the [Hardware Order SKUs](https://docs.stripe.com/api/terminal/hardware_skus/list.md) endpoint. All SKUs and Shipping Methods in an Order must share the same `provider`.
+@@ -242,7 +259,7 @@
+ 
+ We don’t recommend hardcoding the tokens for these objects because such an integration requires code changes when a shipping method becomes `unavailable`. If you don’t perform these changes in time, you might attempt to place orders with `unavailable` objects, causing errors.
+ 
+-### Retrieve Shipping Methods
++### Retrieve shipping methods
+ 
+ Another required object used as an input for creating an order is the [Hardware Shipping Method](https://docs.stripe.com/api/terminal/hardware_shipping_methods/object.md). This object determines the estimated shipping time for your order as well as a portion of the price. You must use a Shipping Method available in country of the shipping address when creating an order.
+ 
+@@ -251,7 +268,7 @@
+ ```bash
+ curl https://api.stripe.com/v1/terminal/hardware_shipping_methods?country=US \
+   -u <<YOUR_SECRET_KEY>>: \
+-  -H "Stripe-Version: 2026-04-22.dahlia;terminal_hardware_orders_beta=v5"
++  -H "Stripe-Version: 2026-10-28.endive;terminal_hardware_orders_beta=v5"
+ ```
+ 
+ Like SKUs and Products, Shipping Methods might change over time. To help you manage these changes, each Shipping Method has a [status](https://docs.stripe.com/api/terminal/hardware_skus/object.md#terminal_hardware_sku_object-status) that indicates whether it’s currently `available` or `unavailable`. This mechanism works the same way as it does for SKUs and Products, as described above. As with SKUs and Products, we recommend fetching Shipping Methods periodically so your integration doesn’t become out of date.
+@@ -263,7 +280,7 @@
+ ```bash
+ curl https://api.stripe.com/v1/terminal/hardware_orders/preview \
+   -u <<YOUR_SECRET_KEY>>: \
+-  -H "Stripe-Version: 2026-04-22.dahlia;terminal_hardware_orders_beta=v5" \
++  -H "Stripe-Version: 2026-10-28.endive;terminal_hardware_orders_beta=v5" \
+   --data-urlencode "shipping[name]"="Jenny Rosen" \
+   --data-urlencode "shipping[address][line1]"="1234 Main Street" \
+   --data-urlencode "shipping[address][city]"="San Francisco" \
+@@ -291,7 +308,7 @@
+ ```bash
+ curl https://api.stripe.com/v1/terminal/hardware_orders \
+   -u <<YOUR_SECRET_KEY>>: \
+-  -H "Stripe-Version: 2026-04-22.dahlia;terminal_hardware_orders_beta=v5" \
++  -H "Stripe-Version: 2026-10-28.endive;terminal_hardware_orders_beta=v5" \
+   -d "shipping[name]"="Jenny Rosen" \
+   -d "shipping[address][line1]"="1234 Main Street" \
+   -d "shipping[address][city]"="San Francisco" \
+@@ -318,7 +335,7 @@
+ ```bash
+ curl https://api.stripe.com/v1/terminal/hardware_orders/{{TERMINAL_HARDWARE_ORDER_ID}} \
+   -u <<YOUR_SECRET_KEY>>: \
+-  -H "Stripe-Version: 2026-04-22.dahlia;terminal_hardware_orders_beta=v5"
++  -H "Stripe-Version: 2026-10-28.endive;terminal_hardware_orders_beta=v5"
+ ```
+ 
+ You can also [List all Terminal Hardware Orders](https://docs.stripe.com/api/terminal/hardware_orders/list.md).
+@@ -326,12 +343,12 @@
+ ```bash
+ curl https://api.stripe.com/v1/terminal/hardware_orders \
+   -u <<YOUR_SECRET_KEY>>: \
+-  -H "Stripe-Version: 2026-04-22.dahlia;terminal_hardware_orders_beta=v5"
++  -H "Stripe-Version: 2026-10-28.endive;terminal_hardware_orders_beta=v5"
+ ```
+ 
+ ### Webhooks
+ 
+-You can [set up webhook events](https://docs.stripe.com/webhooks.md) to be updated about order state transitions. You must add a header version (for example, `Stripe-Version: 2026-04-22.dahlia;terminal_hardware_orders_beta=v5`) to your webhook endpoints to receive events properly. We support the following webhook events:
++You can [set up webhook events](https://docs.stripe.com/webhooks.md) to receive updates about order state transitions and smart reader preregistration outcomes. You must add a header version (for example, `Stripe-Version: 2026-10-28.endive;terminal_hardware_orders_beta=v5`) to your webhook endpoints to receive events properly. We support the following webhook events:
+ 
+ - `terminal.hardware_order.created`
+ - `terminal.hardware_order.canceled`
+@@ -339,6 +356,8 @@
+ - `terminal.hardware_order.shipped`
+ - `terminal.hardware_order.delivered`
+ - `terminal.hardware_order.undeliverable`
++- `terminal.hardware_order_device.registered`
++- `terminal.hardware_order_device.registration_failed`
+ 
+ ### Update a sandbox order status
+ 
+@@ -349,7 +368,7 @@
+ - `/v1/test_helpers/terminal/hardware_orders/:hardware_order/deliver`
+ - `/v1/test_helpers/terminal/hardware_orders/:hardware_order/mark_undeliverable`
+ 
+-You can only update the status for terminal hardware orders in a _sandbox_ (A sandbox is an isolated test environment that allows you to test Stripe functionality in your account without affecting your live integration. Use sandboxes to safely experiment with new features and changes).
++You can only update the status for terminal hardware orders in a *sandbox* (A sandbox is an isolated test environment that allows you to test Stripe functionality in your account without affecting your live integration. Use sandboxes to safely experiment with new features and changes).
+ 
+ ### Taxes
+ 
+@@ -361,7 +380,7 @@
+ 
+ During preview, Stripe sends monthly invoices for any orders created with the API. You can change the email that receives invoices in the [Dashboard](https://dashboard.stripe.com/settings/terminal).
+ 
+-### Shipment Tracking
++### Shipment tracking
+ 
+ As mentioned in the [Shipping](https://docs.stripe.com/terminal/fleet/order-and-return-readers.md#shipping) section, Stripe works with a distribution partner to fulfill Terminal orders. When our distribution partner gets tracking information for the order it transions to the `shipped` state. You can set up a webhook endpoint for the `terminal.hardware_order.shipped` notification to be notified when an order has a tracking number.
+ 

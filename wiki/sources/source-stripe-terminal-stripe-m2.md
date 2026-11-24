@@ -2,34 +2,62 @@
 title: "Stripe Terminal: Stripe Reader M2"
 type: source
 date_ingested: 2026-05-01
+date_updated: 2026-11-24
 original_format: webpage
+canonical_url: "https://docs.stripe.com/terminal/readers/stripe-m2"
 raw_files:
+  - "stripe-terminal-readers-stripe-m2-2026-11-07.md"
   - "stripe-terminal-stripe-m2-2025.md"
 tags: [stripe, stripe-terminal, m2, mobile-readers, firmware, bluetooth]
 ---
 
 ## Summary
 
-Detailed reference for the Stripe Reader M2 — small screenless reader for US only. BLE or USB (Android only). iOS/Android/React Native SDKs. LED status indicators.
+[[stripe]]'s [[stripe-terminal|Terminal]] reader reference lists the Stripe Reader M2 for the US. This screenless mobile reader connects to the iOS, Android, or React Native Terminal SDK via Bluetooth Low Energy, with USB limited to Android. See the separate [[source-stripe-terminal-setup-reader-m2|setup guide]] for setup, charging, and regional detail.
 
-## Key Details
+## Software Versions
 
-**Latest version**: `2.01.01.00-SZZZ_Prod_US_v12-480001` (2026-02-11)
+The software version contains the firmware version, configuration name, and key identifier. The captures report these exact strings in the field labeled **Latest Version**.
 
-**Software version format**: `{firmware}-{config}-{key_identifier}` (hyphens, unlike WisePad 3 which uses underscores).
+| Capture date | Listed software string |
+| --- | --- |
+| 2026-05-01 | `2.01.01.00-SZZZ_Prod_US_v12-480001` |
+| 2026-11-07 | `2.01.04.00-SZZZ_Prod_US_v12-481001` |
 
-**Power button** (updated in 2.01.01.00): hold 4s to power off; hold 14s to reset.
+> [!note] November software field, firmware changelog, and key history
+> The November software field contains firmware `2.01.04.00` and key token `481001`. The newest dated firmware changelog entry is `2.01.07.01` (2026-10-21). The separate key table in both captures lists only the initial identifier `480001`, dated 2021-07-01. The captures leave rollout, installed versions, and use of `481001` beyond the software field unresolved.
 
-**NFC UID collectData**: added in `2.01.00.31` (2025-04-30).
+> [!note] Software string separators in both captures
+> The prose describes underscore separators. Both listed strings use hyphens between the three components and underscores within the configuration token. The general format remains unresolved.
 
-**LED states**: 4 LEDs for battery (full/75%/50%/25%/charging); 6 connectivity states including tampered (flashing 0.1s/30s) and integrity check failed (30s solid).
+The configuration history in both captures lists `SZZZ_Prod_US_v12` (2025-04-30) and earlier production and test entries. The guides route to `deviceSoftwareVersion` on iOS and `softwareVersion` on Android.
 
-**Key identifier**: `480001` (single identifier for US).
+**PCI note**. The firmware ID suffix `ABCDD` maps to `AA.BB.CC.DD`. The published example `CHB3x.01-21021` maps to `2.01.00.21`.
 
-**Accessories**: dock (countertop) + mount (roaming) available; mechanical design files under license.
+## Firmware Changelog
 
-**PCI note**: firmware ID `ABCDD` = `AA.BB.CC.DD` (e.g., `CHB3x.01-21021` = `2.01.00.21`).
+| Firmware | Release date | Documented change |
+| --- | --- | --- |
+| `2.01.07.01` | 2026-10-21 | General bug fixes and improvements |
+| `2.01.06.00` | 2026-09-08 | General bug fixes and improvements |
+| `2.01.05.00` | 2026-08-03 | General bug fixes and improvements |
+| `2.01.04.00` | 2026-06-30 | General bug fixes and improvements |
+| `2.01.01.00` | 2026-02-11 | Hold the power button for four seconds and release to power off, or hold for 14 seconds and release to reset |
+| `2.01.00.38` | 2025-09-10 | Updated the LEDs to scan while awaiting a Bluetooth or USB connection and reliably clear when connected |
+| `2.01.00.31` | 2025-04-30 | Added an NFC UID configuration to `Terminal.collectData` for reading an NFC instrument's UID |
+
+## LED Status
+
+On a powered reader, press and release the power button once to check the battery. The captured table lists full, 75%, 50%, 25%, and flashing while charging. The connection table describes a back-and-forth scan while awaiting Bluetooth or USB, and separate bootloader and standby states. It lists a tamper indication flashing every 0.1 seconds for 30 seconds and a failed integrity check indication lasting 30 seconds. The captured icon cells are blank.
+
+> [!note] Bluetooth connection flashes
+> The May 1 and November 7, 2026 firmware-reference tables describe three flashes for a Bluetooth or USB connection. The April 24 and November 7, 2026 [[source-stripe-terminal-setup-reader-m2|setup guides]] describe four flashes when the reader connects over Bluetooth to the app device, then the first LED flashes every five seconds. The documents leave the overlapping Bluetooth count unresolved.
+
+## Accessories
+
+The reference lists an optional dock for countertop checkout and a mount for roaming checkout. Stripe requires reviewing and accepting the Terminal Design File License Agreement before downloading mechanical design files (.STP). Downloading indicates agreement to the license.
 
 ## Raw Sources
 
-- [[stripe-terminal-stripe-m2-2025]] — verbatim webpage content (LED tables, firmware changelog, configurations)
+- [[raw/stripe-terminal-readers-stripe-m2-2026-11-07|2026-11-07 reader reference]]
+- [[raw/stripe-terminal-stripe-m2-2025|2026-05-01 reader reference]]

@@ -1,0 +1,48 @@
+<!-- Source URL: https://docs.stripe.com/radar/rules/disputes -->
+<!-- Fetched: 2026-11-07 -->
+<!-- Discovery: reconciled llms.txt,sitemap.xml -->
+
+# Dispute resolution rules
+
+Learn about writing dispute resolution rules in Radar.
+
+You can use Radar to automatically resolve specific disputes. If [your plan](https://docs.stripe.com/radar/how-radar-works.md#compare-plans) supports [dispute prevention](https://docs.stripe.com/disputes/prevention-preview.md), you can write resolution rules to refund a dispute. Radar evaluates each incoming dispute against the dispute resolution rules you create. If a dispute matches the criteria for any rule, we automatically resolve it.
+
+## Rule structure
+
+Dispute resolution rules follow the same rules structure as other Radar rules. The rule structure has two components—the *action* to take and the *condition* to evaluate:
+
+`{action} if {condition}`
+
+Together they represent the *predicate*. A rule to automatically resolve all incoming disputes with a disputed amount of 10 USD or less appears as:
+
+`Resolve dispute if :amount_in_usd: <= 10.00`
+
+- The *action* is `Resolve dispute`
+- The *condition* is `:amount_in_usd: < 10.00`
+
+For all dispute resolution rules, the action is `Resolve dispute`. Learn more about writing effective [rules](https://docs.stripe.com/radar/rules/reference.md) in Radar.
+
+## Supported attributes
+
+Use the following attributes within Radar to write dispute rules.
+
+| **Attribute** | **Type** | **Example Value** | **Description** |
+| --- | --- | --- | --- |
+| **account** | *Case Sensitive String* | acct_19KCB9AlaaEw6AgR | For Connect users creating [destination charges](https://docs.stripe.com/connect/destination-charges.md) or [on_behalf_of charges](https://docs.stripe.com/connect/charges.md#on_behalf_of), the account on whose behalf the charge is made. For destination charges with `on_behalf_of` set, `on_behalf_of` takes precedence. |
+| **amount\_in\_xyz** | *Numeric* | 50 | The amount of the dispute, which could be different than the amount of the payment, converted to the currency specified by **xyz** (for example, **amount\_in\_usd**). Specify one of the following supported currencies and Stripe automatically calculates a [converted amount](https://docs.stripe.com/radar/rules/disputes.md#supported-attributes) to use: **aed**, **ars**, **aud**, **brl**, **cad**, **chf**, **clp**, **cop**, **czk**, **dkk**, **eur**, **gbp**, **hkd**, **huf**, **idr**, **ils**, **inr**, **jpy**, **khr**, **krw**, **mxn**, **myr**, **nok**, **nzd**, **php**, **pln**, **ron**, **rub**, **sek**, **sgd**, **thb**, **try**, **twd**, or **usd**. For decimal currencies (for example, **usd**), rules use the base currency unit rather than sub units (for example, dollars, not cents). |
+| **card\_brand** | *Case Insensitive String* | visa | The brand of the card associated with the dispute. The supported values are: **visa** (Visa) and **mc** (Mastercard) |
+| **card\_bin** | *Case Insensitive String* | 483312 | The Bank Identification Number (BIN) of the card associated with the dispute. The BIN is the first six digits of the card number. |
+| **card\_country** | *Case Insensitive Country* | US | The two-letter code corresponding to the country where the card was issued. |
+| **currency** | *Case Insensitive String* | usd | The 3-digit currency code representing the currency in which the customer paid for the transaction. |
+| **is\_fraudulent** | *Boolean* | true | Identifies whether the dispute was filed as fraudulent or non-fraudulent. Non-fraudulent disputes include disputes that were filed for [reason code categories](https://docs.stripe.com/disputes/categories.md#network-code-map) such as **Product not received**, **Product unacceptable**, and **Subscription canceled**. |
+| **network\_reason\_code** | *Case Insensitive String* | 10.4 | The [reason code](https://docs.stripe.com/disputes/categories.md#network-code-map) from the network. Currently, only Visa dispute network reason codes are supported. |
+| **statement\_descriptor** | *Case Insensitive String* | example descriptor | The [statement descriptor](https://docs.stripe.com/get-started/account/statement-descriptors.md) provided on a payment. |
+
+## See also
+
+- [Query disputes and fraud data](https://docs.stripe.com/data/query-disputes-and-fraud-data.md)
+- [Dispute prevention](https://docs.stripe.com/disputes/prevention-preview.md)
+- [Radar 101 Guide](https://stripe.com/guides/radar-rules-101)
+- [Fraud prevention rules](https://docs.stripe.com/radar/rules.md)
+- [Rules reference](https://docs.stripe.com/radar/rules/reference.md)

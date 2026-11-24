@@ -2,40 +2,70 @@
 title: "Stripe — Receipts and Paid Invoices"
 type: source
 date_ingested: 2026-05-11
+date_updated: 2026-11-24
 original_format: webpage
+canonical_url: "https://docs.stripe.com/receipts"
 raw_files:
+  - "stripe-receipts-2026-11-07.md"
   - "stripe-receipts-2026.md"
 tags: [stripe, receipts, refunds, invoices, connect, payment-links, checkout]
 ---
 
 ## Summary
 
-Stripe receipt mechanics: auto-send, manual send, customization, refund receipts, invoice receipts, test mode behavior, and Connect considerations.
+The 2026-11-07 [[stripe|Stripe]] guide distinguishes creating a receipt, delivering it by email, and optionally creating an itemized paid invoice for a one-time purchase. Stripe creates receipts for all successful payments and refunds, including invoice and subscription payments. Email delivery has separate conditions.
 
-## Key Details
+## Automatic and Manual Receipts
 
-- **Receipt URL**: `Charge.receipt_url` — always reflects latest status; expires in **30 days** (expired links require original email)
-- **Not downloadable**: browser-only (except Mexico refund receipts)
-- **Auto-send**: Payment Links, Checkout Sessions (hosted/embedded/Elements), advanced integrations
-- **Manual send**: Dashboard → Payment details → Receipt history; comma-separated emails; last 10 tracked
-- **Refund receipts**: enable in Dashboard → Customer emails settings → Refunds toggle; Mexico: downloadable
-- **Invoice/subscription**: itemized (line items, discounts, taxes); Hosted Invoice Page includes download link
-- **Test mode**: auto-receipts only for verified account emails; others require manual Dashboard send
+- **Automatic email** — In the November guide, the payment needs a recipient and live-mode success, and the business needs the required public contact details. In Customer emails settings, enable **Successful payments** or **Refunds** as applicable. For delayed methods, Stripe waits for confirmation of success.
+- **Explicit recipient** — The November overview uses the payment's receipt email when supplied, otherwise the payment's Customer email. A Customer object is optional. At PaymentIntent creation, an explicit `receipt_email` sends on live-mode success even with **Successful payments** disabled. For Checkout Sessions, set `payment_intent_data.receipt_email`.
+- **Manual email** — For successful payments or refunds, use **Send receipt** in the Dashboard payment's **Receipt history**. Multiple recipients can be entered as a comma-separated list. The payment page shows up to 10 receipts. The May guide also documents a customer-page send shortcut.
+- **Refund recipient** — The May guide describes automatic refund receipts to the original charge email when **Refunds** is enabled, along with manual Dashboard sends. Both captures describe a separate Mexico Dashboard refund-receipt download that includes refund status and type.
+
+> [!warning] Dated automatic-email guidance
+> The 2026-05-11 guide describes a possible automatic test receipt when the email belongs to the operator or a verified user with testing-environment access. The 2026-11-07 guide says test payments do not trigger automatic receipt email and directs users to manual Dashboard sends.
+> The separate 2026-04-22 [[source-stripe-email-receipts|advanced Payment Intents guide]] says `receipt_email` is additional to the Customer email and any additional recipients configured for that Customer. The November general overview describes receipt-address precedence. The dates and integration scopes leave recipient multiplicity across integrations unresolved.
+
+## Receipt URLs and Downloads
+
+Use `Charge.receipt_url` from the related Charge. The May guide says the browser receipt shows the Charge's latest state, including refunds, and has a unique receipt number. November distinguishes a persistent receipt from its link, which expires after 30 days. After expiry, the customer supplies the original transaction email and Stripe emails a new link to that same address.
+
+> [!warning] Dated PDF guidance
+> The 2026-05-11 guide says Stripe-hosted browser receipts have no direct download. The 2026-11-07 overview says customers can optionally download receipts as PDFs. The captures leave the scope of PDF availability unresolved. Separately, May documents a downloadable receipt from the Hosted Invoice Page after invoice or subscription payment and describes those receipts as itemized with line items, discounts and taxes. The Mexico Dashboard refund download is a distinct path.
+
+## Paid Invoices for One-Time Purchases
+
+- **Payment Links** — Under **After payment**, enable **Create an invoice PDF** on the link. Stripe creates the paid invoice after each successful one-time payment. Enable automatic receipts to email it.
+- **Checkout** — Enable automatic receipts and set `invoice_creation[enabled]=true` on the one-time Checkout Session. After success, including delayed confirmations, Stripe sends an invoice summary with invoice and receipt PDF links. The guide points to `invoice.paid` for programmatic access and `invoice_creation.invoice_data` for customization. It describes Checkout Sessions API paid-invoice creation as separately priced from Stripe Invoicing.
+- **Manual capture** — The 2026-04-20 [[source-stripe-checkout-receipts|Checkout companion]] excludes enabling `invoice_creation` with `payment_intent_data[capture_method]=manual`. The 2026-11-07 general walkthrough leaves that condition unstated.
+
+## Receipt Settings and Language
+
+The November **Email receipts** branding settings list PNG or JPG for the logo and icon. The 2026-04-20 Checkout companion lists JPG, PNG and GIF for the Checkout receipt logo. Each list applies to its documented context. November requires the public legal business name, support address, support email and privacy policy URL.
+
+| Surface | November locale rules |
+| --- | --- |
+| Browser receipt | For Checkout, use the recorded browser locale, then the Session locale if absent. Otherwise fall through to the payment Customer's `preferred_locales`, then the default language in Customer emails settings. |
+| Receipt email | With a Customer, use `preferred_locales` or the default language. Without a Customer, a Checkout payment receipt can use the browser or explicit Session locale, then the default. Guest refund email uses the default. |
+| Checkout paid invoice | Use Accounts v2 `defaults.locales` or Customer `preferred_locales`. If customer information exists without locale data, use the default language. When customer information is absent, use the browser locale when the Session opens. |
 
 ## Connect Behavior
 
-| Charge type | Branding source |
+| Charge type | Owner of Customer emails, Branding and Public details settings |
 | --- | --- |
-| Destination + separate charges | Platform account settings |
-| Direct charges | Connected account settings |
+| Destination charges and separate charges and transfers | Platform account |
+| Direct charges | Connected account |
 
-Pass `receipt_email` to send receipt on behalf of connected account. Standard accounts: configure via Dashboard Branding. Express/Custom: platform sets via `settings.branding` API.
+The November guide shows a platform passing `receipt_email` at PaymentIntent creation for a connected account. Connected accounts with the Stripe Dashboard, such as Standard accounts, configure appearance in Branding. For accounts without it, such as Express and Custom, the platform uses `settings.branding`. Branding controls appearance only.
 
 ## Related Pages
 
-- [[stripe-payment-intents]] — concept page (receipts accessed via Charge.receipt_url within PaymentIntent flow)
+- [[stripe-payment-intents]] — PaymentIntent receipt recipient and Charge receipt URL
+- [[stripe-checkout]] — one-time paid invoices and Checkout receipt delivery
+- [[source-stripe-terminal-receipts]] — separate Terminal path for in-person receipts
 - [[stripe]] — Stripe company page
 
 ## Raw Sources
 
-- [[stripe-receipts-2026]] — verbatim receipts guide
+- [[raw/stripe-receipts-2026-11-07|2026-11-07 Stripe receipts and paid invoices guide]] — full capture with receipt eligibility, paid invoices, language and settings
+- [[raw/stripe-receipts-2026|2026-05-11 Stripe receipts and paid invoices guide]] — full earlier capture with Charge, invoice, refund, test and Connect guidance

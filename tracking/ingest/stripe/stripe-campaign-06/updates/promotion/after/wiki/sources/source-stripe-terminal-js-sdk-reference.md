@@ -1,0 +1,75 @@
+---
+title: "Stripe Terminal: JavaScript SDK API Reference"
+type: source
+date_ingested: 2026-05-01
+date_updated: 2026-11-24
+original_format: webpage
+canonical_url: "https://docs.stripe.com/terminal/references/api/js-sdk"
+raw_files:
+  - "stripe-terminal-references-api-js-sdk-2026-11-07.md"
+  - "stripe-terminal-js-sdk-reference-2025.md"
+tags: [stripe, stripe-terminal, javascript, sdk, api-reference]
+---
+
+## Summary
+
+Complete API reference for the Stripe Terminal JavaScript SDK. The method index covers reader discovery and connection, payment collection and processing, saving payment methods, refunds, reader display, inputs, printing, and testing.
+
+## Method Groups
+
+**Lifecycle**: `StripeTerminal.create()` (options: `onFetchConnectionToken`, `onUnexpectedReaderDisconnect`, `onConnectionStatusChange`, `onPaymentStatusChange`, `readerBehavior`), `clearCachedCredentials()`
+
+`onFetchConnectionToken` obtains a ConnectionToken from the integration’s backend. To switch accounts, disconnect any connected reader, point the handler at the new account, call `clearCachedCredentials()`, and reconnect.
+
+**Reader connection**: `discoverReaders()`, `connectReader()` (`fail_if_in_use` option), `disconnectReader()`, `getConnectionStatus()`, `getPaymentStatus()`
+
+The November 7, 2026 reference says to [register a smart reader to the account](https://docs.stripe.com/terminal/payments/connect-reader.md?terminal-sdk-platform=js&reader-type=internet#register-reader) before discovering it in the JavaScript app. The May 1, 2026 capture names the Verifone P400 in the same prerequisite. The reference advises against caching the returned `Reader` because its IP address can change.
+
+**Payment collection**: `collectPaymentMethod()` (config_override: `skip_tipping`, `tipping.eligible_amount`, `update_payment_intent`, `enable_customer_cancellation`, `allow_redisplay`, `moto`), `cancelCollectPaymentMethod()`, `processPayment()` (config_override: `return_url`), `cancelProcessPayment()`
+
+Collect using the client secret of a backend-created PaymentIntent, then pass the successfully collected Intent to `processPayment()`. Set `allow_redisplay` on collection when `setup_future_usage` is set. The May 1 and November 7, 2026 captures say SDK-wide `readerBehavior.allowCustomerCancel` defaults to `false`, was restricted, and was accepting no new users at capture time. The per-call `enable_customer_cancellation` option can show a cancel button on Android-based smart readers.
+
+**Save payment methods**: `collectSetupIntentPaymentMethod()`, `cancelCollectSetupIntentPaymentMethod()`, `confirmSetupIntent()`, `cancelConfirmSetupIntent()`, `readReusableCard()`, `cancelReadReusableCard()`
+
+SetupIntent collection takes the backend-created SetupIntent’s `clientSecret` and `allowRedisplay`, and `confirmSetupIntent()` takes the successfully collected SetupIntent. The `readReusableCard()` section describes online reuse without standard Terminal pricing and liability shift.
+
+> [!NOTE]
+> The May 1 and November 7, 2026 captures place a warning against saving contactless cards and mobile wallets for later reuse in the `readReusableCard()` section. The separate May 1, 2026 SetupIntent guide describes mobile-wallet saving for off-session reuse. See [[stripe-terminal-save-payment-details]] for the SetupIntent flow.
+
+**Reader display**: `setReaderDisplay()`, `clearReaderDisplay()`
+
+**Refunds**: `collectRefundPaymentMethod()` (Connect: `refund_application_fee`, `reverse_transfer`), `cancelCollectRefundPaymentMethod()`, `processRefund()`, `cancelProcessRefund()`
+
+Call `processRefund()` after successful `collectRefundPaymentMethod()`. Both captures describe two required parameters for collection while listing `charge_id`, `amount`, and `currency` in the signature and describing `currency` without an optional marker. The reference wording leaves currency requiredness unresolved.
+
+**Collect inputs**: `collectInputs()`, `cancelCollectInputs()`
+
+**Printing** (V660p only): `print()` (takes `HTMLCanvasElement`)
+
+**Simulator**: `setSimulatorConfiguration()`, `getSimulatorConfiguration()`
+
+The November 7, 2026 capture explains that Terminal SDKs and server-driven integrations have a built-in test reader. The `simulated` discovery option defaults to `false`, and discovery ignores `location` for simulated readers. Setting simulator configuration applies only while connected to the simulated reader, replaces active configuration, and lasts until `processPayment()` completes.
+
+## Error Codes
+
+The error table contains 21 code rows in each capture. These include `no_established_connection`, `canceled`, `network_error`, `network_timeout`, `already_connected`, `failed_fetch_connection_token`, `discovery_too_many_readers`, `command_already_in_progress`, and 7 printer-specific codes (`printer_busy`, `printer_paperjam`, `printer_cover_open`, `printer_out_of_paper`, `printer_absent`, `printer_unavailable`, `printer_error`).
+
+Both dated captures list `cancelReadReusableCard()` in the method index and heading. The `no_active_read_reusable_card_attempt` row instead names `cancelCollectReusableCard`.
+
+## Changelog Highlights
+
+Both captures retain these dated entries.
+
+- 2025-10-30: Surcharge consent collection in `processPayment`, with a custom message up to 220 characters
+- 2025-10-06: `print()` method (V660p, preview)
+- 2025-06-02: `cancelProcessPayment`, `cancelConfirmSetupIntent`, `cancelProcessRefund` added; simulated reader supports input collection
+
+## Related
+
+- [[stripe-terminal]] — Stripe Terminal integration paths and SDKs
+- [[stripe-terminal-save-payment-details]] — separate SetupIntent and PaymentIntent saving flows
+
+## Raw Sources
+
+- [[raw/stripe-terminal-references-api-js-sdk-2026-11-07|JavaScript API reference (November 7, 2026 capture)]]
+- [[raw/stripe-terminal-js-sdk-reference-2025|JavaScript API reference (May 1, 2026 capture)]]

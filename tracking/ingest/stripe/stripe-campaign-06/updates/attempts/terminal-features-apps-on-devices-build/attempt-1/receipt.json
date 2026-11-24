@@ -1,0 +1,170 @@
+{
+  "job_id": "terminal-features-apps-on-devices-build",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Terminal: Apps on Devices \u2014 Build and Test\"\ntype: source\ndate_ingested: 2026-05-01\ndate_updated: 2026-11-24\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/terminal/features/apps-on-devices/build\"\nraw_files:\n  - \"stripe-terminal-features-apps-on-devices-build-2026-11-07.md\"\n  - \"stripe-terminal-apps-on-devices-build-2025.md\"\ntags: [stripe, stripe-terminal, apps-on-devices, android, devkit, adb, react-native]\n---\n\n## Summary\n\nGuide to building and testing a custom Android POS app on Stripe smart readers with Apps on Devices. Connect the SmartPOS DevKit to a network, register it to your Stripe account and install all available updates. The DevKit runs only in sandboxes, ships with adb and developer options enabled, and displays a test watermark. Stripe documents ordering up to five per user. For users with only a production reader, the 2026-11-07 guide points to server-driven payment acceptance or standalone mode on supported hardware.\n\n## Key Details\n\n**Android dependencies.** Use the `com.stripe:stripeterminal-core` and `com.stripe:stripeterminal-appsondevices` artifacts without the top-level `com.stripe:stripeterminal` dependency. The 2026-05-01 guide uses `5.4.1` in its example. The 2026-11-07 guide uses `6.0.0` and retains Terminal Android SDK `2.22.0` as the Apps on Devices minimum. Terminal Android SDK 6.0.0 or later requires `compileSdk` 35 or higher. The guide separately advises `targetSdkVersion` 24 or higher to support Android 15 devices.\n\n**App initialization.** Call `TerminalApplicationDelegate.onCreate(this)` in `Application.onCreate()` and declare the Application subclass in the manifest. React Native can use `AppsOnDevicesConnectionTokenProvider` to initialize without a backend issuing connection tokens.\n\n**Discovery and connection.** Run the app on the registered reader and use `AppsOnDevicesDiscoveryConfiguration` on Android or `discoveryMethod: 'appsOnDevices'` on React Native before connecting. The Android example selects the single discovered reader. The guide documents `easyConnect` as an option to combine the steps, from Android SDK 5.0.0 and in React Native SDK 0.0.1-beta.29.\n\n**Payment handoff.** After the app connects in Apps on Devices mode, the Stripe Reader app handles payment operations and foregrounds full screen to guide the customer. It returns control on success, failure or customer cancellation and continues running in the background. Apps on Devices supports offline payment collection. For the DevKit kiosk destination, see Test routes below.\n\n**Payment transition animations.** Custom animations require reader software 2.42 or later per the November guide. Android supports a preset, custom `res/anim/` resources, or disabling animations via `AppTransitionAnimation.Custom.NO_ANIMATION`. React Native documents preset, custom, disabled and system-default choices. Invalid animation resource IDs throw during connection in debug builds and fall back to the system default in release builds. Settings screens are opened by a separate Android activity transition that can be customized with `ActivityOptions`.\n\n**Admin settings.** The root deep link is `stripe://settings/`. The November guide documents destination-specific links. All settings, network, advanced, and registration code always require the admin PIN. Appearance, language and bug report prompt by default and can be configured to omit that prompt. See the November raw under **Available deep links** for the destination table.\n\n**Device behavior.** Stripe Android devices omit the back button and status bar. Docking and undocking trigger an Android configuration change. Use `android:configChanges=\"uiMode\"` to suppress automatic activity recreation for that change. For T600 landscape orientation, the November guide specifies `android:screenOrientation=\"nosensor\"`.\n\n## Test routes\n\n- **Direct adb installation.** The guide shows `adb install myapp.apk` and launching the app with `adb shell am start com.example.myapp/.MainActivity`. It also covers adb on the same Wi-Fi network for a UX700 DevKit. A directly installed app cannot be set as the preferred kiosk, and the DevKit returns to the default Stripe Reader app after a completed transaction.\n- **Dashboard testing.** Use a sandbox deploy group to choose the preferred DevKit kiosk app. The reader launches it at boot and after each transaction. Uninstall a sideloaded app before redeploying it through the Dashboard.\n- **Test payments.** Use a Stripe physical test card in the sandbox. Decimal amounts can select test outcomes.\n\n## Dated Verifone support\n\nThe 2026-05-01 guide describes US and Canada public preview and selected model-specific private previews. The 2026-11-07 guide lists P630 and UX700 as generally available in the US and V660p and M425 in US and Canada public preview. Further model and country combinations are listed in the November **Verifone reader support** notice, which requires contacting Sales to order a Verifone reader or join a preview.\n\n## Related\n\n- [[stripe]]\n- [[stripe-terminal-apps-on-devices]]\n\n## Raw Sources\n\n- [[raw/stripe-terminal-features-apps-on-devices-build-2026-11-07|2026-11-07 Apps on Devices build and test guide]]\n- [[stripe-terminal-apps-on-devices-build-2025]] \u2014 2026-05-01 build and test guide, including the historical dependency example and Verifone preview notice\n",
+  "quotes": {
+    "terminal-features-apps-on-devices-build": [
+      {
+        "text": "Terminal Android SDK `6.0.0` and later require your app to set `compileSdk` to 35 (Android 15) or higher:",
+        "location": "raw/stripe-terminal-features-apps-on-devices-build-2026-11-07.md:66"
+      },
+      {
+        "text": "When control returns to your app, the Stripe Reader app continues to run in the background.",
+        "location": "raw/stripe-terminal-features-apps-on-devices-build-2026-11-07.md:287"
+      },
+      {
+        "text": "Custom transition animations require reader software version 2.42 or later.",
+        "location": "raw/stripe-terminal-features-apps-on-devices-build-2026-11-07.md:299"
+      },
+      {
+        "text": "When a transaction completes, the DevKit always returns to the default Stripe reader app.",
+        "location": "raw/stripe-terminal-features-apps-on-devices-build-2026-11-07.md:630"
+      },
+      {
+        "text": "The Stripe reader launches this app when it turns on and after each transaction.",
+        "location": "raw/stripe-terminal-features-apps-on-devices-build-2026-11-07.md:667"
+      }
+    ]
+  },
+  "old_evidence": {
+    "terminal-features-apps-on-devices-build": [
+      {
+        "text": "implementation(\"com.stripe:stripeterminal-core:5.4.1\")",
+        "location": "raw/stripe-terminal-apps-on-devices-build-2025.md:54"
+      },
+      {
+        "text": "This is the default app that launches when the Stripe reader turns on.",
+        "location": "raw/stripe-terminal-apps-on-devices-build-2025.md:483"
+      },
+      {
+        "text": "Verifone reader support is in public preview for the United States and Canada.",
+        "location": "raw/stripe-terminal-apps-on-devices-build-2025.md:16"
+      },
+      {
+        "text": "When control returns to your app, the Stripe Reader app continues to run in the background.",
+        "location": "raw/stripe-terminal-apps-on-devices-build-2025.md:271"
+      },
+      {
+        "text": "set the `targetSdkVersion` to `24` or later.",
+        "location": "raw/stripe-terminal-apps-on-devices-build-2025.md:81"
+      },
+      {
+        "text": "In release builds, the SDK uses the system default transition.",
+        "location": "raw/stripe-terminal-apps-on-devices-build-2025.md:351"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-terminal-features-apps-on-devices-build-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 145
+      },
+      {
+        "start": 146,
+        "end": 291
+      },
+      {
+        "start": 292,
+        "end": 460
+      },
+      {
+        "start": 461,
+        "end": 575
+      },
+      {
+        "start": 576,
+        "end": 690
+      }
+    ],
+    "raw/stripe-terminal-apps-on-devices-build-2025.md": [
+      {
+        "start": 1,
+        "end": 110
+      },
+      {
+        "start": 111,
+        "end": 271
+      },
+      {
+        "start": 272,
+        "end": 421
+      },
+      {
+        "start": 422,
+        "end": 506
+      }
+    ],
+    "wiki/sources/source-stripe-terminal-apps-on-devices-build.md": [
+      {
+        "start": 1,
+        "end": 49
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/b85cb35717d7630d3a03dfa7/content.diff": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 260
+      },
+      {
+        "start": 261,
+        "end": 390
+      },
+      {
+        "start": 391,
+        "end": 524
+      }
+    ]
+  },
+  "answers": {
+    "terminal-features-apps-on-devices-build": {
+      "Q1": "For https://docs.stripe.com/terminal/features/apps-on-devices/build, the November 7, 2026 snapshot documents a developer iterating on a network-connected, registered, updated SmartPOS DevKit in a sandbox. With only a production reader, the documented alternatives are server-driven payment acceptance or standalone mode on supported hardware. See new raw lines 9-37 and old raw lines 8-34 for the May 1, 2026 DevKit baseline. The Android app uses the terminal-core and appsondevices dependencies (2.22.0 minimum for Terminal Android SDK, 6.0.0 example, compileSdk \u2265 35 for Android SDK 6.0.0+) and application lifecycle/manifest setup. The targetSdkVersion \u2265 24 Android 15 advice is separate. React Native can initialize with the Apps on Devices connection token provider. See new raw lines 47-93 and new raw lines 105-155, compared with the 5.4.1 example and prior setup at old raw lines 42-81 and old raw lines 92-141. The app discovers and connects to a registered Reader using Android or React Native Apps on Devices mode, with easyConnect optional as documented for Android 5.0.0 and React Native 0.0.1-beta.29. In a payment operation the Stripe Reader app foregrounds and guides the customer; control returns to the integration after success, failure, or cancellation; the Reader app remains in background. Offline collection is documented. See new raw lines 162-174 and new raw lines 233-293, compared with old raw lines 148-160 and old raw lines 217-277. The explicit DevKit kiosk destination is separate: direct installation returns to the default Stripe Reader app after a completed transaction; the Dashboard deploy group can select the preferred kiosk at startup and after each transaction (new raw lines 628-630 and new raw lines 656-669, old raw lines 472-485). source-stripe-terminal-apps-on-devices-build now preserves the prior setup and basic adb tests alongside the dated SDK, transition, settings, and DevKit deployment qualifications.",
+      "Q2": "For https://docs.stripe.com/terminal/features/apps-on-devices/build, update source-stripe-terminal-apps-on-devices-build while retaining the factual May 1, 2026 raw and the November 7, 2026 raw. November adds payment alternatives for production-only users and model-specific Verifone availability (US P630/UX700 GA, V660p/M425 US and Canada public preview, further model-specific markets in the dated notice, and Sales required to order or join a preview). The dated availability locator and May preview notice preserve the history (new raw lines 11-19, old raw lines 10-16). The Android example is dated, the 2.22.0 SDK minimum is retained, and the compileSdk \u2265 35 requirement for Android SDK 6.0.0+ is distinct from the targetSdkVersion guidance (new raw lines 49-93, old raw lines 46-81). The revised source includes the reader software 2.42+ threshold and React Native choices, and distinguishes payment UI animations from Android settings intents. The settings rules depend on destination: root, network, advanced and registration code always require the PIN; appearance, language and bug report prompt by default and can be configured to omit it (new raw lines 295-303 and new raw lines 374-441 and new raw lines 476-532, compared to old raw lines 279-287 and old raw lines 351-365). The source records T600 landscape-specific guidance, UX700 DevKit Wi-Fi adb, and post-transaction kiosk behavior by deployment path (new raw lines 542-548 and new raw lines 609-630 and new raw lines 656-685, versus old raw lines 376-388 and old raw lines 438-501). Markup, list numbering and fence-language changes are presentational. The Readers shop, SDK migration/API and sample links are navigation updates (new raw lines 11-13 and new raw lines 164-174 and new raw lines 233-245, versus old raw line 12 and old raw lines 150-160 and old raw lines 217-229). The source reciprocates the existing stripe-terminal-apps-on-devices concept backlink. The proposed concept changes date the 5.4.1 example, qualify post-transaction return for directly installed DevKits, and correct the separate Stripe Reader app lifecycle claim at wiki/concepts/stripe-terminal-apps-on-devices.md:22-24. During payment handoff it takes the foreground, then leaves the foreground and continues running in the background after returning control to the app (new raw lines 283-287, old raw lines 267-271). The deployment-specific DevKit kiosk destination is a separate qualification."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "terminal-features-apps-on-devices-build-handoff",
+      "target_path": "wiki/concepts/stripe-terminal-apps-on-devices.md",
+      "update_kind": "durable_fact",
+      "anchor": "- Device boots into the merchant POS app (replaces Stripe Reader app as default launcher)\n- When a payment is initiated, Stripe Reader app takes the foreground\n- After transaction completes, Stripe Reader app exits and the POS app becomes primary again",
+      "proposed_markdown": "- On payment initiation, the Stripe Reader app takes the foreground. It returns control to the POS after success, failure, or customer cancellation and continues running in the background.\n- On a DevKit, the deployment route determines the kiosk destination. After a completed transaction, a directly installed app returns to the default Stripe Reader app. A Dashboard deploy group can select the preferred kiosk app, which launches at boot and after each transaction. See [[source-stripe-terminal-apps-on-devices-build]].",
+      "quote_indexes": [
+        1,
+        3,
+        4
+      ],
+      "warnings": [
+        "The 2026-05-01 guide also documents the Stripe Reader app continuing in the background (old raw lines 267-271) and describes the Dashboard kiosk choice at boot (old raw lines 472-483)."
+      ]
+    },
+    {
+      "update_id": "terminal-features-apps-on-devices-build-dependencies",
+      "target_path": "wiki/concepts/stripe-terminal-apps-on-devices.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Android Gradle dependencies** (do NOT use `com.stripe:stripeterminal`):\n\n```groovy\ncom.stripe:stripeterminal-core:5.4.1\ncom.stripe:stripeterminal-appsondevices:5.4.1\n```\n\nMin SDK version: `2.22.0`. Set `targetSdkVersion \u2265 24` for Android 15 support.",
+      "proposed_markdown": "Use `com.stripe:stripeterminal-core` and `com.stripe:stripeterminal-appsondevices` without the top-level `com.stripe:stripeterminal` dependency. The 2026-05-01 guide illustrates `5.4.1`; the 2026-11-07 guide illustrates `6.0.0`. The documented Terminal Android SDK minimum remains `2.22.0`.\n\nFor Terminal Android SDK 6.0.0 or later, use `compileSdk` 35 or higher. The guide separately advises `targetSdkVersion` 24 or higher for Android 15 device support. See [[source-stripe-terminal-apps-on-devices-build]].",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Dated Gradle examples are at old raw lines 46-59 and new raw lines 49-66; targetSdkVersion is at old raw lines 75-81 and new raw lines 75-93."
+      ]
+    },
+    {
+      "update_id": "terminal-features-apps-on-devices-build-transition",
+      "target_path": "wiki/concepts/stripe-terminal-apps-on-devices.md",
+      "update_kind": "durable_fact",
+      "anchor": "When a payment starts, Stripe Reader app takes the foreground. Customize the transition via `appTransitionAnimation` in `AppsOnDevicesConnectionConfiguration`:",
+      "proposed_markdown": "When a payment starts, the Stripe Reader app takes the foreground. Custom transition animations require reader software 2.42 or later per the 2026-11-07 guide. On Android, configure the transition via `appTransitionAnimation` in `AppsOnDevicesConnectionConfiguration`.",
+      "quote_indexes": [
+        2
+      ],
+      "warnings": []
+    }
+  ]
+}

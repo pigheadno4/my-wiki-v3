@@ -1,0 +1,113 @@
+{
+  "job_id": "subscriptions-pricing-models-per-seat-pricing",
+  "attempt": 1,
+  "raw_path": "raw/stripe-subscriptions-pricing-models-per-seat-pricing-2026-11-07.md",
+  "raw_sha256": "e6ab9d8f82bae60b2523ce8bd1fe1511509e436ee88e459ccd04a524627eb85b",
+  "prior_raw_path": "raw/stripe-per-seat-pricing-2026.md",
+  "prior_raw_sha256": "23c09262428b0454dcf86c44226f2f597c7ffd07ec7d52bc5e9bcfb0be4a2679",
+  "source_targets": [
+    "wiki/sources/source-stripe-per-seat-pricing.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-per-seat-pricing.md": "190ed77f296fd3c72cff2838451dbb8ab37851b74e7a2f56e64a9ec83d291bfc"
+  },
+  "read_ranges": {
+    "raw/stripe-subscriptions-pricing-models-per-seat-pricing-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 65
+      }
+    ],
+    "raw/stripe-per-seat-pricing-2026.md": [
+      {
+        "start": 1,
+        "end": 87
+      }
+    ],
+    "wiki/sources/source-stripe-per-seat-pricing.md": [
+      {
+        "start": 1,
+        "end": 31
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/f911ba38af56f87d74a8611d/content.diff": [
+      {
+        "start": 1,
+        "end": 113
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Per-seat pricing is a linear pricing model where the number of seats (for example, software licenses) maps to the number of units (for example, users).",
+      "location": "raw/stripe-subscriptions-pricing-models-per-seat-pricing-2026-11-07.md:9"
+    },
+    {
+      "text": "Click **Start subscription** to start it immediately or **Schedule subscription** to start it on another schedule.",
+      "location": "raw/stripe-subscriptions-pricing-models-per-seat-pricing-2026-11-07.md:39"
+    },
+    {
+      "text": "When you create the [subscription](https://docs.stripe.com/api/subscriptions.md), specify a `quantity` to charge for the number of seats.",
+      "location": "raw/stripe-subscriptions-pricing-models-per-seat-pricing-2026-11-07.md:58"
+    },
+    {
+      "text": "-d \"items[0][quantity]=12\"",
+      "location": "raw/stripe-subscriptions-pricing-models-per-seat-pricing-2026-11-07.md:64"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "To schedule a subscription, switch to the classic editor, and click **Schedule subscription**.",
+      "location": "raw/stripe-per-seat-pricing-2026.md:38"
+    },
+    {
+      "text": "You can only edit the product and price until you create a subscription with them.",
+      "location": "raw/stripe-per-seat-pricing-2026.md:29"
+    },
+    {
+      "text": "quantity: 12,",
+      "location": "raw/stripe-per-seat-pricing-2026.md:83"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "May 12 and November 7, 2026 document a linear subscription pricing model. The customer selects seats, and the merchant creates a Product and recurring fixed-per-unit Price, then creates the customer's Subscription with the selected Price and seat count in item quantity. The monthly cadence, USD 1000 minor-unit example and 12 seats are examples, not model restrictions.",
+    "Both show a Dashboard flow with optional product description and Stripe Tax, and distinguish immediate from scheduled starts. November\u2019s documented scheduling action no longer includes May\u2019s classic-editor step. It does not name the Dashboard quantity control, raw subscription statuses, or a current rollout state.",
+    "The existing source accurately covers the stable API item-quantity distinction and only cites May. A dated Dashboard schedule note and two raw links would answer when an operator should look for the classic-editor instruction and where to find the scheduling details."
+  ],
+  "substantive_changes": [
+    "The Dashboard instructions change from May's explicit instruction to switch to the classic editor before selecting Schedule subscription to November's Start subscription or Schedule subscription choices. The May sentence also links Subscription schedules and November drops that outbound link. Evidence supports a guide-level workflow instruction change and does not establish that the classic editor is discontinued.",
+    "Node SDK examples become REST cURL examples with the same Product, recurring Price and customer/subscription-item intent. Image URL and ordered list numbering are presentational."
+  ],
+  "historical_claims_to_preserve": [
+    "Retain May's dated classic-editor instruction and subscription schedules route, both guides' per-unit pricing plus item-level quantity, and optional Stripe Tax in the Dashboard example.",
+    "Both per-seat guides restrict product and price editing in their Dashboard walkthrough after use in a subscription. Keep that sentence scoped to its illustrated flow or route to Products and Prices rather than treating it as global object immutability."
+  ],
+  "conflicts": [
+    "Both per-seat Dashboard walkthroughs say product and price can only be edited until a subscription is created. The separate November Products and Prices guide says in its create-product flow that both may be edited later (line 61) and documents mutable price properties but no API amount change (lines 176 and 422\u2013426). Preserve the distinction between editing attributes, changing an amount and replacing a Price, without extending the per-seat line to all operations."
+  ],
+  "unresolved_questions": [
+    "The November per-seat capture does not establish whether the classic editor remains available, whether scheduling availability depends on account or rollout, or the current Dashboard steps for entering seat quantity. Both example paths are documentary evidence."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-subscriptions.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-per-seat-pricing.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Keep the stable API summary, add the dated Dashboard scheduling wording and both raw links. Keep the reciprocal stripe-subscriptions and flat-rate comparison routes. Route schedule mechanics to source-stripe-subscriptions-schedules and editability to source-stripe-products-prices."
+      ],
+      "conflicts": [
+        "May specifies the classic editor as a precondition in the guide, while November omits it. Avoid a universal claim that existing Product or Price objects become wholly uneditable."
+      ],
+      "reason": "The changed Dashboard instructions alter the documented path for future subscription starts and are not discoverable from the API-only summary."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/subscriptions/pricing-models/per-seat-pricing, source-stripe-per-seat-pricing describes a linear pricing model where a customer selects user or license seats, and the merchant creates a Product, a recurring flat rate per unit and a Subscription for that customer. The API example pairs the Price ID with the seat count in the Subscription item, showing 12 seats with a monthly USD Price. See old raw lines 8-13, old raw lines 42-87, new raw lines 9-14 and new raw lines 41-65. The Dashboard example illustrates product and monthly price setup, selecting or adding a customer and choosing the Price, optional automatic tax, and a choice between an immediate and scheduled start. May 12, 2026 instructs operators to switch to the classic editor to schedule, while November 7, 2026 names Start subscription and Schedule subscription as alternative actions. See old raw lines 15-38 and new raw lines 16-39. The current summary correctly covers the stable API item-quantity behavior from May and does not cover the changed Dashboard instructions. The values and timing are worked examples without an asserted payment, enrollment or status outcome.",
+    "Q2": "For https://docs.stripe.com/subscriptions/pricing-models/per-seat-pricing, update source-stripe-per-seat-pricing with both dated captures. May 12, 2026 says to switch to the classic editor to select Schedule subscription and links to Subscription schedules. November 7, 2026 lists Start subscription and Schedule subscription as alternative actions, with no classic-editor instruction and no schedules link in that step. See old raw lines 31-38 and new raw lines 32-39. This is a substantive difference in documented Dashboard instructions. It leaves actual editor availability and rollout unresolved. Retain the outbound route to source-stripe-subscriptions-schedules and the reciprocal stripe-subscriptions route and flat-rate comparison. The list numbering, local versus CDN image and Node SDK versus REST cURL sample are presentation. Their Product\u2013Price\u2013Subscription order and item-level quantity align. See old raw lines 8-13, old raw lines 42-87, new raw lines 9-14 and new raw lines 41-65. Both walkthroughs say product and price are editable until used on a subscription (old raw lines 24-29 and new raw lines 25-30). Keep that wording scoped and route to source-stripe-products-prices. The separate November product/price guide at lines 61, 176 and 422\u2013426 distinguishes later edits of permitted properties from changing an existing price amount through the API."
+  }
+}

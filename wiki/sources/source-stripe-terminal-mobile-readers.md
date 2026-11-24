@@ -2,25 +2,39 @@
 title: "Stripe Terminal: Mobile Readers Overview"
 type: source
 date_ingested: 2026-05-01
+date_updated: 2026-11-24
 original_format: webpage
+canonical_url: "https://docs.stripe.com/terminal/mobile-readers"
 raw_files:
+  - "stripe-terminal-mobile-readers-2026-11-07.md"
   - "stripe-terminal-mobile-readers-2025.md"
 tags: [stripe, stripe-terminal, mobile-readers, m2, wisepad3, chipper, bluetooth]
 ---
 
 ## Summary
 
-Overview of Stripe Terminal's pre-certified mobile readers. Connect via BLE or USB (Android only) to iOS/Android/React Native SDKs.
+Stripe Terminal's pre-certified mobile readers connect to the iOS, Android or React Native Terminal SDK via Bluetooth Low Energy (BLE), or via USB on Android only.
 
-**Readers**:
-- Stripe Reader M2: US only
-- BBPOS Chipper 2X BT: US only
-- BBPOS WisePad 3: 25 non-US countries (CA, GB, IE, SG, AU, NZ, FR, DE, NL, BE, AT, ES, DK, SE, NO, CH, IT, LU, PT, FI, MY, CZ, PL, JP)
+## Reader availability by capture
 
-**Software updates**: auto-install on POS connection; must be supported in the app; failing a required update blocks payments.
+Both the May 1 and November 7, 2026 overviews list the US for the [[source-stripe-terminal-stripe-m2|Stripe Reader M2]] and BBPOS Chipper 2X BT.
 
-**24-hour reboot**: mobile readers force reboot and disconnect from POS app 24 hours after last boot.
+- **M2.** The [[raw/stripe-terminal-payments-setup-reader-stripe-m2-2026-11-07|November setup guide]] specifies all 50 US states and Puerto Rico. See also the [[source-stripe-terminal-setup-reader-m2|M2 setup summary]].
+- **Chipper 2X BT.** The November [[raw/stripe-terminal-readers-bbpos-chipper2xbt-2026-11-07|device reference]] and [[raw/stripe-terminal-payments-setup-reader-bbpos-chipper2xbt-2026-11-07|setup guide]] both use the heading **No longer supported** and separately state that the reader is no longer available for purchase. The dated overview row and the two notices leave the effective date, deployed-reader behavior and payment outcomes unresolved.
+- **BBPOS WisePad 3, May 1, 2026 (24 listed markets).** CA, GB, IE, SG, AU, NZ, FR, DE, NL, BE, AT, ES, DK, SE, NO, CH, IT, LU, PT, FI, MY, CZ, PL, JP.
+- **BBPOS WisePad 3, November 7, 2026 (37 listed markets).** CA, GB, IE, SG, AU, NZ, FR, DE, NL, BE, AT, ES, DK, SE, NO, CH, IT, LU, PT, FI, HK, MY, CZ, PL, JP, BG, HR, CY, EE, HU, LV, LI, LT, MT, RO, SK, SI. The [[raw/stripe-terminal-payments-setup-reader-bbpos-wisepad3-2026-11-07|November setup capture]] and [[source-stripe-terminal-bbpos-wisepad3|device reference]] give the November list. The device reference's separate Mexico firmware, configuration and key entries leave Mexico availability unresolved. The overview provides no rollout dates or per-market preview or merchant eligibility details. See the [[source-stripe-terminal-setup-wisepad3|WisePad 3 setup summary]] for setup context.
+
+## Reader software updates and reboots
+
+Both overviews say Stripe and its hardware partners issue periodic software updates, which can include required security updates. Mobile readers update automatically when connecting to the POS, and the app must support reader updates. Failing to install a required update can prevent a reader from accepting payments.
+
+A mobile reader forces a reboot and disconnects from the POS app 24 hours after its last boot.
+
+## Related Pages
+
+- [[stripe-terminal#Reader Hardware|Stripe Terminal reader hardware]] — reader comparison and overview routes
 
 ## Raw Sources
 
-- [[stripe-terminal-mobile-readers-2025]] — verbatim webpage content
+- [[raw/stripe-terminal-mobile-readers-2026-11-07|November 7, 2026 Stripe Terminal mobile readers overview]] — expanded WisePad 3 market list and reader lifecycle
+- [[raw/stripe-terminal-mobile-readers-2025|May 1, 2026 Stripe Terminal mobile readers overview]] — earlier market list and reader lifecycle

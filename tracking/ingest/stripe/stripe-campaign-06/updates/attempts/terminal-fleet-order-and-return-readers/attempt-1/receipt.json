@@ -1,0 +1,270 @@
+{
+  "job_id": "terminal-fleet-order-and-return-readers",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Terminal: Place Hardware Orders\"\ntype: source\ndate_ingested: 2026-05-01\ndate_updated: 2026-11-24\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/terminal/fleet/order-and-return-readers\"\nraw_files:\n  - \"stripe-terminal-fleet-order-and-return-readers-2026-11-07.md\"\n  - \"stripe-terminal-order-and-return-readers-2025.md\"\ntags: [stripe, stripe-terminal, hardware, fleet, orders, returns, api, shipping]\n---\n\n## Summary\n\nThe May and November 2026 [[stripe|Stripe]] Terminal guide covers Dashboard ordering, tracking and eligible returns, plus order creation, retrieval and listing through the Hardware Orders API preview. The 2026-11-07 capture adds preregistration for eligible smart readers and device-level webhook outcomes. See [[stripe-terminal-hardware-orders]] for the fleet workflow.\n\n## Key Details\n\n**Ordering** \u2014 Buy pre-certified readers and accessories in Dashboard \u2192 Terminal \u2192 Shop or through the Hardware Orders API preview. Both guides state a limit of 10,000 of each item in a single order. Contact Stripe sales for volume discounts.\n\n**Order statuses** \u2014 Pending lasts at least 30 minutes and allows Dashboard cancellation. Ready to ship ends cancellation. The order becomes Shipped when tracking is available. The November capture includes the v4 state diagram with branches from Pending to Canceled and from Shipped to Delivered or Undeliverable.\n\n**Shipping** \u2014 Stripe lists eligible destinations, excluded territories, cutoff times and signature thresholds. Hardware ships to physical addresses. Destination determines available standard, express or priority options. Stripe selects freight for large orders. Terminal Connect platforms can specify a connected account's eligible physical destination address. The chart lists 40 destinations in both captures, with example signature thresholds above 500 USD in the US and 400 EUR at many European destinations.\n\n**Permissions** \u2014 Support Specialist and View Only cannot place or cancel Dashboard orders. View Only cannot initiate self-service returns.\n\n## Preregister Smart Readers\n\nThe 2026-11-07 guide describes selecting one Terminal location per order when ordering eligible smart readers. Edit that location on the hardware order details page until serial numbers are available. Stripe then automatically registers eligible readers to the selected location. For an order spanning multiple locations, wait for serial numbers and register each reader individually by serial number. Other registration methods are covered by [[source-stripe-terminal-register-readers]].\n\n## Returns\n\nEligible Dashboard users can start self-service returns from **Return items** for Dashboard orders placed and shipped within the guide's listed countries when the order is Shipped or Delivered. The 30-day window starts at purchase and requires original packaging and accessories. The first initiated return refunds shipping fees. Stripe issues a refund when the distribution facility receives the package. Credit card funds can take up to 10 days to return.\n\n> [!warning] Dated self-service scope\n> The 2026-05-01 guide lists 33 self-service countries, including Gibraltar (`GI`). The 2026-11-07 guide lists 32 and omits `GI`, which remains in both shipping tables. The captures leave the effective date and account-specific eligibility unresolved. When self-service is unavailable, use **Contact support** on the Dashboard order and keep the original packaging and accessories within the 30-day window. The guide directs returns past 30 days to Stripe Support.\n\n## Hardware Orders API Preview\n\nSales assesses preview eligibility. The guide requires a Stripe Account manager, agreement to monthly invoice billing and acknowledgment that timely integration updates may be needed. Retrieve available SKUs and shipping methods with the `country` filter. The shipping method must be available for the shipping address's country, and all SKUs and shipping methods must share a provider. Query availability dynamically. The optional order preview validates and estimates taxes without creating an order. The guide then shows order creation, retrieval and listing.\n\n- **2026-11-07** \u2014 `Stripe-Version: 2026-10-28.endive;terminal_hardware_orders_beta=v5`.\n- **2026-05-01** \u2014 `Stripe-Version: 2026-04-22.dahlia;terminal_hardware_orders_beta=v5`.\n\nThe guide also requires version configuration for webhook endpoints and gives the matching dated header as its example. Both captures list six `terminal.hardware_order.*` events for order states. November adds `terminal.hardware_order_device.registered` and `terminal.hardware_order_device.registration_failed` for automatic registration attempts on eligible devices when the account has API preview access. Each event's `data.object` is the Hardware Order Device. Use its device ID, serial number and hardware order relationship to correlate the result.\n\nStatus update helpers are sandbox-only. The changelog documents a historical duplicate `terminal.hardware_order.shipped` event when v3 and v4 webhooks are enabled in the same mode, and maps v4 `ready_to_ship` to v3 `shipped`. Both captures pair their API version with beta v5 and mark v1\u2013v3 deprecated.\n\n## Related\n\n- [[stripe-terminal-hardware-orders]] \u2014 ordering, shipping, returns and the Hardware Orders API preview\n- [[stripe-terminal]] \u2014 Terminal fleet management\n\n## Raw Sources\n\n- [[raw/stripe-terminal-fleet-order-and-return-readers-2026-11-07|2026-11-07 Stripe Terminal hardware orders guide]] \u2014 full guide with preregistration, device webhooks and updated return list\n- [[raw/stripe-terminal-order-and-return-readers-2025|2026-05-01 Stripe Terminal hardware orders guide]] \u2014 full earlier guide with shipping table, prior preview header and historical return list\n",
+  "quotes": {
+    "terminal-fleet-order-and-return-readers": [
+      {
+        "text": "You can order up to 10000 of each item in a single order.",
+        "location": "raw/stripe-terminal-fleet-order-and-return-readers-2026-11-07.md:21"
+      },
+      {
+        "text": "When serial numbers become available, Stripe automatically registers each eligible smart reader to the selected location.",
+        "location": "raw/stripe-terminal-fleet-order-and-return-readers-2026-11-07.md:52"
+      },
+      {
+        "text": "`terminal.hardware_order_device.registered` when a device is successfully registered to the selected location",
+        "location": "raw/stripe-terminal-fleet-order-and-return-readers-2026-11-07.md:54"
+      },
+      {
+        "text": "Stripe-Version: 2026-10-28.endive;terminal_hardware_orders_beta=v5",
+        "location": "raw/stripe-terminal-fleet-order-and-return-readers-2026-11-07.md:234"
+      },
+      {
+        "text": "Self service returns are for orders placed and shipped within specific countries",
+        "location": "raw/stripe-terminal-fleet-order-and-return-readers-2026-11-07.md:62"
+      }
+    ]
+  },
+  "old_evidence": {
+    "terminal-fleet-order-and-return-readers": [
+      {
+        "text": "- GI",
+        "location": "raw/stripe-terminal-order-and-return-readers-2025.md:67"
+      },
+      {
+        "text": "Stripe-Version: 2026-04-22.dahlia;terminal_hardware_orders_beta=v5",
+        "location": "raw/stripe-terminal-order-and-return-readers-2025.md:216"
+      },
+      {
+        "text": "to be updated about order state transitions.",
+        "location": "raw/stripe-terminal-order-and-return-readers-2025.md:337"
+      },
+      {
+        "text": "You can order up to 10000 of each item in a single order.",
+        "location": "raw/stripe-terminal-order-and-return-readers-2025.md:20"
+      },
+      {
+        "text": "click **Contact support** to automatically send us your order details.",
+        "location": "raw/stripe-terminal-order-and-return-readers-2025.md:124"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-terminal-fleet-order-and-return-readers-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 145
+      },
+      {
+        "start": 146,
+        "end": 285
+      },
+      {
+        "start": 286,
+        "end": 426
+      }
+    ],
+    "raw/stripe-terminal-order-and-return-readers-2025.md": [
+      {
+        "start": 1,
+        "end": 145
+      },
+      {
+        "start": 146,
+        "end": 275
+      },
+      {
+        "start": 276,
+        "end": 406
+      }
+    ],
+    "wiki/sources/source-stripe-terminal-order-and-return-readers.md": [
+      {
+        "start": 1,
+        "end": 31
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/90f86fae45b0edfaee3f8313/content.diff": [
+      {
+        "start": 1,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 220
+      },
+      {
+        "start": 221,
+        "end": 338
+      }
+    ]
+  },
+  "answers": {
+    "terminal-fleet-order-and-return-readers": {
+      "Q1": "For https://docs.stripe.com/terminal/fleet/order-and-return-readers, the captures document Dashboard purchase of pre-certified hardware and accessories and up to 10,000 of each item in a single order (old raw line 20 and new raw line 21). Pending orders are cancelable in the Dashboard and remain pending at least 30 minutes. Ready to ship ends cancellation, tracking advances the order to Shipped, and the November retained v4 diagram shows Pending also branching to Canceled and Shipped branching to Delivered or Undeliverable (old raw lines 26-39 and new raw lines 27-48). The Hardware Orders API is preview for sales-assessed eligible accounts, with a Stripe Account manager and agreement to monthly invoice billing (old raw lines 194-216 and new raw lines 212-234). API order creation uses matching country- and provider-compatible SKUs and shipping methods, with the country filter required, optional validation and tax estimation without creation, then order creation and retrieval (old raw line 222 and old raw lines 238-264 and old raw lines 286-292 and old raw lines 317-333, new raw line 240 and new raw lines 256-282 and new raw lines 304-310 and new raw lines 335-351). November adds selecting one editable Terminal location per order until serial numbers appear. Stripe then automatically registers eligible smart readers, with individual serial registration for orders split across locations and preview-access-dependent per-device outcomes (old raw lines 39-45 and old raw lines 335-344, new raw lines 50-58 and new raw lines 353-364). Eligible self-service returns are documented in Dashboard for Dashboard orders placed and shipped within the listed-country scope, with appropriate permissions and Shipped or Delivered status. For devices outside self-service, the Dashboard order's Contact support action sends details to Support. The 30-day original-packaging and accessories qualifications apply, receipt triggers the refund, and shipping fees are refunded for the first initiated return (old raw lines 41-49 and old raw lines 87-101 and old raw lines 122-124, new raw lines 60-68 and new raw lines 105-119 and new raw lines 140-142). November's self-service list has 32 entries and omits GI, versus 33 in May (old raw lines 51-85 and new raw lines 70-103). The former source-stripe-terminal-order-and-return-readers used the May header, six-event and return-country detail without dates, omitted preregistration, implied API returns, and overgeneralized the quantity cap. The revised source distinguishes API ordering from Dashboard returns and Support, corrects the per-item cap, and records both dated snapshots.",
+      "Q2": "For https://docs.stripe.com/terminal/fleet/order-and-return-readers, the revised source-stripe-terminal-order-and-return-readers retains both full captures. The 2026-05-01 capture uses 2026-04-22.dahlia with terminal_hardware_orders_beta=v5 and lists six order webhooks. The 2026-11-07 capture uses 2026-10-28.endive with the same preview v5 and retains those six while adding terminal.hardware_order_device.registered and terminal.hardware_order_device.registration_failed. The latter concern automatic attempts on eligible devices and use the Hardware Order Device payload, rather than an order-wide outcome (old raw line 216 and old raw lines 335-344, new raw lines 50-58 and new raw line 234 and new raw lines 353-364). The May self-service list contains GI and the November list omits it (old raw lines 51-85 and new raw lines 70-103), while the separate shipping table retains GI (old raw line 151 and new raw line 169). Preserve the November Support route for orders outside self-service and the existing return conditions (old raw lines 122-128 and new raw lines 140-146). Formatting, numbered markers and screenshot destinations are presentational or navigation changes. The inline diagram is newly retained state-transition representation, with no evidence of a lifecycle change (old raw lines 26-39 and new raw lines 27-48). Keep the older full raw, sandbox-only status helpers and dated same-mode v3/v4 migration warning (old raw lines 346-355 and old raw lines 382-392, new raw lines 366-375 and new raw lines 402-412). Preserve the reciprocal stripe-terminal-hardware-orders route, its parent stripe-terminal fleet route and the Stripe company and index source routes. Date their old return and header claims and keep manual registration discoverable through source-stripe-terminal-register-readers. The revised summary and proposed concept wording distinguish the documented API creation/retrieval from eligible Dashboard self-service for Dashboard orders placed and shipped within listed countries with proper permissions, and Dashboard-to-Support when self-service is unavailable (old raw lines 41-49 and old raw lines 122-124 and old raw lines 290-311 and old raw lines 317-333, new raw lines 60-68 and new raw lines 140-142 and new raw lines 308-329 and new raw lines 335-351). The corrected order limit is 10,000 per item per order (old raw line 20 and new raw line 21). The proposed dedicated concept wording scopes preview access to sales-assessed eligibility with an Account manager and monthly invoice agreement (new raw lines 212-220). The index already dates its 33-country entry May 1, 2026 (wiki/stripe-index.md:194); refresh the retrieval label for November while preserving that May count as historical evidence."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "terminal-fleet-order-and-return-readers-api-and-returns",
+      "target_path": "wiki/concepts/stripe-terminal-hardware-orders.md",
+      "update_kind": "durable_fact",
+      "anchor": "Stripe sells pre-certified Terminal readers directly via the Dashboard or Hardware Orders API. Readers come loaded with Stripe payment applications and encryption keys. Orders can be placed, tracked, and returned through the Dashboard or API.",
+      "proposed_markdown": "Stripe sells pre-certified Terminal readers loaded with its payment applications and encryption keys. Use the Dashboard to place and track orders or initiate eligible returns. The Hardware Orders API preview documents ordering and retrieval. The Dashboard order routes to Stripe Support when self-service returns are unavailable.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "raw/stripe-terminal-fleet-order-and-return-readers-2026-11-07.md:60-68, :140-142 and :308-351 distinguish the order and return channels."
+      ]
+    },
+    {
+      "update_id": "terminal-fleet-order-and-return-readers-item-cap",
+      "target_path": "wiki/concepts/stripe-terminal-hardware-orders.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Dashboard**: Terminal \u2192 Shop; up to **10,000 units per order**",
+      "proposed_markdown": "- **Dashboard** \u2014 Terminal \u2192 Shop. The guides specify up to **10,000 of each item in a single order**.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "terminal-fleet-order-and-return-readers-preview-scope",
+      "target_path": "wiki/concepts/stripe-terminal-hardware-orders.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Hardware Orders API**: preview, in public preview (requires Account Manager + monthly invoice billing)",
+      "proposed_markdown": "- **Hardware Orders API** \u2014 The guides describe sales-assessed preview access. Required conditions include a Stripe Account manager, agreement to monthly invoice billing and acknowledgment of possible timely integration updates.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "Eligibility requirements are at raw/stripe-terminal-fleet-order-and-return-readers-2026-11-07.md:212-220."
+      ]
+    },
+    {
+      "update_id": "terminal-fleet-order-and-return-readers-return-heading",
+      "target_path": "wiki/concepts/stripe-terminal-hardware-orders.md",
+      "update_kind": "durable_fact",
+      "anchor": "## Self-Service Returns (33 countries)",
+      "proposed_markdown": "## Self-Service Returns",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "terminal-fleet-order-and-return-readers-return-countries",
+      "target_path": "wiki/concepts/stripe-terminal-hardware-orders.md",
+      "update_kind": "durable_fact",
+      "anchor": "Available in: AT, AU, BE, BG, CA, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GI, GR, HR, HU, IE, IT, LI, LT, LU, LV, MT, NL, PL, PT, RO, SE, SI, SK, US.",
+      "proposed_markdown": "The 2026-11-07 Dashboard self-service list covers 32 countries: AT, AU, BE, BG, CA, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GR, HR, HU, IE, IT, LI, LT, LU, LV, MT, NL, PL, PT, RO, SE, SI, SK, US. It covers eligible Dashboard orders placed and shipped within the listed scope. The 2026-05-01 list had 33 and included `GI`, which remains in the shipping table. Follow the Dashboard order's **Contact support** route when self-service is unavailable.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "raw/stripe-terminal-order-and-return-readers-2025.md:51-85 and :151; raw/stripe-terminal-fleet-order-and-return-readers-2026-11-07.md:70-103 and :169. The guide omits an effective date for the list change."
+      ]
+    },
+    {
+      "update_id": "terminal-fleet-order-and-return-readers-preview-headers",
+      "target_path": "wiki/concepts/stripe-terminal-hardware-orders.md",
+      "update_kind": "durable_fact",
+      "anchor": "Beta header required: `Stripe-Version: 2026-04-22.dahlia;terminal_hardware_orders_beta=v5`",
+      "proposed_markdown": "The 2026-11-07 guide documents `Stripe-Version: 2026-10-28.endive;terminal_hardware_orders_beta=v5`. The 2026-05-01 guide used `Stripe-Version: 2026-04-22.dahlia;terminal_hardware_orders_beta=v5`. Configure the matching version on webhook endpoints as described by each guide.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "terminal-fleet-order-and-return-readers-provider-and-country",
+      "target_path": "wiki/concepts/stripe-terminal-hardware-orders.md",
+      "update_kind": "durable_fact",
+      "anchor": "- SKUs and shipping methods are country-specific and can become `unavailable` \u2014 query dynamically, don't hardcode",
+      "proposed_markdown": "- Use the `country` filter to retrieve available SKUs and shipping methods, and query availability dynamically. The shipping method must be available in the destination country. All SKUs and shipping methods in an order share a provider.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "raw/stripe-terminal-fleet-order-and-return-readers-2026-11-07.md:236-278 grounds the country and provider rules."
+      ]
+    },
+    {
+      "update_id": "terminal-fleet-order-and-return-readers-device-webhooks",
+      "target_path": "wiki/concepts/stripe-terminal-hardware-orders.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Webhooks**: `terminal.hardware_order.created`, `.canceled`, `.ready_to_ship`, `.shipped`, `.delivered`, `.undeliverable`",
+      "proposed_markdown": "Both guides list six order-state webhooks: `terminal.hardware_order.created`, `.canceled`, `.ready_to_ship`, `.shipped`, `.delivered`, `.undeliverable`. For accounts with Hardware Orders API preview access, the November guide adds `terminal.hardware_order_device.registered` and `terminal.hardware_order_device.registration_failed` after automatic registration attempts. Their `data.object` is a Hardware Order Device, with device ID, serial number and hardware order relationship for correlation.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "terminal-fleet-order-and-return-readers-dated-preview-version",
+      "target_path": "wiki/concepts/stripe-terminal-hardware-orders.md",
+      "update_kind": "durable_fact",
+      "anchor": "**API version**: v5 (current); v1\u2013v3 deprecated. v4 added `ready_to_ship` status and preview endpoint.",
+      "proposed_markdown": "**Preview version** \u2014 Both captured guides pair their API version with beta v5 and mark v1\u2013v3 deprecated. The v4 changelog adds `ready_to_ship` and the preview endpoint. It warns of duplicate shipped events when v3 and v4 webhooks run in the same mode and maps v4 `ready_to_ship` to v3 `shipped`.",
+      "quote_indexes": [
+        3
+      ],
+      "warnings": [
+        "raw/stripe-terminal-fleet-order-and-return-readers-2026-11-07.md:397-426 preserves the version-specific migration warning."
+      ]
+    },
+    {
+      "update_id": "terminal-fleet-order-and-return-readers-preregister",
+      "target_path": "wiki/concepts/stripe-terminal-hardware-orders.md",
+      "update_kind": "durable_fact",
+      "anchor": "See [[source-stripe-terminal-register-readers]] for full Dashboard flows and code samples.",
+      "proposed_markdown": "See [[source-stripe-terminal-register-readers]] for full Dashboard flows and code samples.\n\nThe 2026-11-07 [[source-stripe-terminal-order-and-return-readers|hardware orders guide]] describes preregistering eligible smart readers to one Terminal location per order. The location remains editable until serial numbers are available. Stripe then registers eligible readers automatically. To split an order across locations, register each reader individually by serial number after numbers become available.",
+      "quote_indexes": [
+        1,
+        2
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "terminal-fleet-order-and-return-readers-fleet-cap",
+      "target_path": "wiki/concepts/stripe-terminal.md",
+      "update_kind": "durable_fact",
+      "anchor": "- Order pre-certified readers and accessories from the Stripe Dashboard; up to 10,000 units per order",
+      "proposed_markdown": "- Order pre-certified readers and accessories from the Stripe Dashboard. The guides specify up to 10,000 of each item in a single order.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "terminal-fleet-order-and-return-readers-fleet-destination",
+      "target_path": "wiki/concepts/stripe-terminal.md",
+      "update_kind": "durable_fact",
+      "anchor": "- Ship to any location; Connect platforms can route readers to connected accounts' business locations",
+      "proposed_markdown": "- Ship to eligible physical addresses according to the destination table and territory exclusions. Terminal Connect platforms can specify connected account addresses during checkout.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "raw/stripe-terminal-fleet-order-and-return-readers-2026-11-07.md:144-195 documents destination eligibility and physical addresses."
+      ]
+    },
+    {
+      "update_id": "terminal-fleet-order-and-return-readers-fleet-returns",
+      "target_path": "wiki/concepts/stripe-terminal.md",
+      "update_kind": "durable_fact",
+      "anchor": "- Self-service returns (33 countries): 30-day window, original packaging, first-return shipping fee refund",
+      "proposed_markdown": "- The November 2026 guide lists 32 countries for eligible Dashboard self-service returns, down from 33 in May. Gibraltar remains in the shipping table. The returns flow requires original packaging and accessories within 30 days and refunds shipping fees on the first initiated return. Use **Contact support** on the Dashboard order when self-service is unavailable.",
+      "quote_indexes": [
+        4
+      ],
+      "warnings": [
+        "raw/stripe-terminal-order-and-return-readers-2025.md:51-85 and raw/stripe-terminal-fleet-order-and-return-readers-2026-11-07.md:70-103 provide the dated self-service lists. The company row retains the May count without its date, while the Stripe index labels its count May 1, 2026."
+      ]
+    }
+  ]
+}

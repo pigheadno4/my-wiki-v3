@@ -1,0 +1,136 @@
+{
+  "job_id": "strong-customer-authentication",
+  "attempt": 2,
+  "raw_path": "raw/stripe-strong-customer-authentication-2026-11-07.md",
+  "raw_sha256": "ffcb01e24b1ec9726c36805ed7916d6ae669914c9152035fd8429873bc9a84af",
+  "prior_raw_path": "raw/stripe-sca-readiness-2025.md",
+  "prior_raw_sha256": "f995060cae70d4d7a8d26de0a1f4908d866534f14de09c387dc96dfca5a34950",
+  "source_targets": [
+    "wiki/sources/source-stripe-sca-readiness.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-sca-readiness.md": "3b7512890a2e883f50a8dd13d4d688f27c986cbba2fda86ba04d89fefc75c008"
+  },
+  "read_ranges": {
+    "raw/stripe-strong-customer-authentication-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 177
+      }
+    ],
+    "raw/stripe-sca-readiness-2025.md": [
+      {
+        "start": 1,
+        "end": 90
+      },
+      {
+        "start": 91,
+        "end": 175
+      }
+    ],
+    "wiki/sources/source-stripe-sca-readiness.md": [
+      {
+        "start": 1,
+        "end": 63
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/6ee7a0a5bf5991bb281c8592/content.diff": [
+      {
+        "start": 1,
+        "end": 95
+      },
+      {
+        "start": 96,
+        "end": 183
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "or you [create payments on behalf of connected accounts based in the EEA]",
+      "location": "raw/stripe-strong-customer-authentication-2026-11-07.md:27"
+    },
+    {
+      "text": "Cards from EU customers saved before December 31, 2020",
+      "location": "raw/stripe-strong-customer-authentication-2026-11-07.md:96"
+    },
+    {
+      "text": "Exemptions aren\u2019t guaranteed, and off-session payments might still require authentication by the bank.",
+      "location": "raw/stripe-strong-customer-authentication-2026-11-07.md:146"
+    },
+    {
+      "text": "[incomplete statuses](https://docs.stripe.com/api/subscriptions/object.md#subscription_object-status)",
+      "location": "raw/stripe-strong-customer-authentication-2026-11-07.md:128"
+    },
+    {
+      "text": "These transactions require an agreement",
+      "location": "raw/stripe-strong-customer-authentication-2026-11-07.md:167"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "or you [create payments on behalf of connected accounts based in the EEA]",
+      "location": "raw/stripe-sca-readiness-2025.md:26"
+    },
+    {
+      "text": "[incomplete statuses](https://docs.stripe.com/billing/subscriptions/overview.md#payment-behavior)",
+      "location": "raw/stripe-sca-readiness-2025.md:127"
+    },
+    {
+      "text": "These transactions require an agreement",
+      "location": "raw/stripe-sca-readiness-2025.md:165"
+    }
+  ],
+  "proposed_disposition": "raw_reference",
+  "findings": [
+    "The November 7 full guide corroborates May 8 behavior and adds no new functional rule, product or state transition. Its only changed link target routes Billing incomplete status to the Subscription object status reference.",
+    "The pinned source already covers the main guide topics but omits the EEA-connected-account alternative and adds broader statements about mandate form and incomplete-payment handling. These are independent historical-summary corrections, not newly documented November changes."
+  ],
+  "substantive_changes": [
+    "No functional difference observed. New Billing Subscription object URL is navigation only, with unchanged guidance to handle incomplete statuses for subscriptions or invoices. Numbering, italics, underscores, whitespace and the final sample mandate's blank are presentational. Neither sample names the authorizing business and neither supplies complete reusable mandate copy."
+  ],
+  "historical_claims_to_preserve": [
+    "The 2026-05-08 header is the prior date despite filename. The guide describes September 14, 2019 as the regulation's effective date and points to country-varying enforcement, distinct from the before-December-31-2020 EU and before-September-14-2021 UK grandfathering cutoffs.",
+    "Grandfathering is a flagged off-session PaymentIntent pathway. Stripe looks up eligible older card transactions and attempts the agreement; bank acceptance allows out-of-scope processing without more authentication. Bank decline sets requires_payment_method (requires_source before API version 2019-02-11), and the merchant must notify the customer to complete payment.",
+    "Preserve both one-time and payment-method-saving product pathways, differentiation of Billing subscription status and PaymentIntent next actions, and the separate payment/setup/save/charge flags. Keep bank discretion, mandating permission/frequency/amount determination, and conditional liability treatment."
+  ],
+  "conflicts": [
+    "Source line 17 and concept line 16 omit the alternate first criterion in both captures: businesses based outside the EEA that create payments on behalf of EEA-based connected accounts are within the guide's three-part screening test when EEA customers and credit/debit card acceptance also apply. Phrase as Stripe's guide rather than exhaustive legal coverage.",
+    "Source line 44 adds an 'in writing' requirement absent from these captures. They require merchant/customer agreement or mandate with permission, frequency, amount determination and checkout terms; neither capture provides final copy or independently establishes permitted legal form.",
+    "Source line 52 could read as setting off_session to true for any incomplete payment. Both captures reserve the flag for off-session creation, while incomplete Dashboard or requires_action API warrants checking active/abandoned authentication and handling next actions. The legacy requires_source name applies before API version 2019-02-11 in the declined previous-agreement path.",
+    "Retain the distinction between Checkout as described in the one-time guide (prebuilt/hosted), the plugin section (embedded or hosted), and the chosen flow. The plugin identification/testing/release recommendations apply to builders of the plugins or libraries described, while the merchants using third-party providers should ask their partner.",
+    "The source's terse liability sentence should remain scoped to the issuer-applied exemption described here, with successful 3DS typically shifting fraud-dispute liability. Separate out-of-scope qualifying MIT from the general bank-exemption statement and preserve possible reauthentication."
+  ],
+  "unresolved_questions": [
+    "These dated documents give neither a complete regulatory applicability decision for any merchant nor proof that an issuer will accept grandfathering, an exemption, or later off-session usage. The new linked Subscription object is navigation; its status definitions are outside the pins."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-3d-secure.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-sca-readiness.md",
+      "proposed_disposition": "raw_reference",
+      "update_needed": true,
+      "findings": [
+        "Retain May functional evidence and add the November corroborating raw/direct Subscription status route as useful navigation. Independently correct the lost Connect branch and overbroad mandate form and off-session wording. Retain the reciprocal stripe-3d-secure and sibling SCA exemptions links."
+      ],
+      "conflicts": [
+        "Source line 17 and concept line 16 omit the alternate first criterion in both captures: businesses based outside the EEA that create payments on behalf of EEA-based connected accounts are within the guide's three-part screening test when EEA customers and credit/debit card acceptance also apply. Phrase as Stripe's guide rather than exhaustive legal coverage.",
+        "Source line 44 adds an 'in writing' requirement absent from these captures. They require merchant/customer agreement or mandate with permission, frequency, amount determination and checkout terms; neither capture provides final copy or independently establishes permitted legal form.",
+        "Source line 52 could read as setting off_session to true for any incomplete payment. Both captures reserve the flag for off-session creation, while incomplete Dashboard or requires_action API warrants checking active/abandoned authentication and handling next actions. The legacy requires_source name applies before API version 2019-02-11 in the declined previous-agreement path.",
+        "Retain the distinction between Checkout as described in the one-time guide (prebuilt/hosted), the plugin section (embedded or hosted), and the chosen flow. The plugin identification/testing/release recommendations apply to builders of the plugins or libraries described, while the merchants using third-party providers should ask their partner.",
+        "The source's terse liability sentence should remain scoped to the issuer-applied exemption described here, with successful 3DS typically shifting fraud-dispute liability. Separate out-of-scope qualifying MIT from the general bank-exemption statement and preserve possible reauthentication."
+      ],
+      "reason": "The capture adds no behavior but changes a useful documentation route, and the existing summary needs small factual scope repairs already supported by both captures."
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/strong-customer-authentication, the May 8 and November 7 captures advise updating when an EEA-based business or an integration creating payments on behalf of EEA-based connected accounts also serves EEA customers and accepts credit or debit cards. An issuer can request authentication despite low risk. The guide describes Payment Intents and Checkout for one-time payments, Payment Intents or Setup Intents for saving cards, and Checkout and Billing for the described SCA flows. It describes the legacy Charges API as not SCA-ready (old raw lines 22-52; new raw lines 23-53). For eligible prior agreements the merchant flags the PaymentIntent as off-session, Stripe looks for older transactions, and the bank can accept and proceed without further authentication or decline, producing requires_payment_method (requires_source before API version 2019-02-11). After a decline the merchant must notify the customer to complete payment (old raw lines 89-114; new raw lines 90-114). Billing integrations for subscriptions or invoices need to handle incomplete statuses. Separately, for a payment marked incomplete in Dashboard or requires_action in the API, check whether the customer is still authenticating an on-session payment or has abandoned the checkout, and verify that the integration handles next actions. Set off_session=true only when creating an actually off-session payment (old raw lines 121-136; new raw lines 122-137). When preparing a saved card for off-session use, authenticate it at save time, set setup_future_usage=off_session if saving during payment or SetupIntent usage=off_session if saving without payment, and flag the subsequent charge. The guide says Stripe marks subsequent off-session payments from the described Intent-based save flow as MIT. The merchant/customer mandate must minimally address permission to initiate charges, anticipated frequency and how the amount is determined, with the payment terms referenced at checkout. Neither exemption nor MIT qualification is guaranteed for every payment, and the issuer may still request authentication (old raw lines 139-145, old raw lines 163-175; new raw lines 140-146, new raw lines 165-177). source-stripe-sca-readiness covers the main flow but omits the EEA-connected-account alternative, adds an in-writing requirement beyond this guide, and compresses the next-action and off-session conditions.",
+    "Q2": "For https://docs.stripe.com/strong-customer-authentication, use the November 7 capture as a raw reference for source-stripe-sca-readiness. The dated May 8 and November 7 captures have matching behavior. The Billing incomplete-status link replacement is navigation-only: it retargets the subscription overview's payment-behavior section to the Subscription object's status reference. The guide's Billing guidance and its separate troubleshooting instructions for payment states are unchanged. It gives no evidence of an invoice or Subscription behavior change. Numbering, emphasis and the sample mandate whitespace are presentational (old raw lines 121-131, old raw lines 163-175; new raw lines 122-132, new raw lines 165-177). Preserve regulatory date versus country enforcement and the prior-agreement cutoffs, strictly cards saved before December 31, 2020 for EU customers and before September 14, 2021 for UK customers, regardless of amount/frequency and subject to the issuer. Restore the EEA connected-account branch, limit off_session to actually off-session creation, and state the mandate agreement rather than adding its legal format. Successful 3DS typically shifts fraud liability and the issuer-applied exemption described does not (old raw line 12, old raw lines 24-30, old raw lines 93-100, old raw line 117, old raw lines 129-171; new raw line 13, new raw lines 25-31, new raw lines 94-101, new raw line 118, new raw lines 130-173). Keep the reciprocal stripe-3d-secure route, the separate exemptions guide and the new Subscription state navigation."
+  }
+}

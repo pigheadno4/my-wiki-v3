@@ -1,0 +1,80 @@
+---
+title: "Stripe Terminal: Collect On-Reader Tips"
+type: source
+date_ingested: 2026-04-27
+date_updated: 2026-11-24
+original_format: webpage
+canonical_url: "https://docs.stripe.com/terminal/features/collecting-tips/on-reader"
+raw_files:
+  - "stripe-terminal-features-collecting-tips-on-reader-2026-11-07.md"
+  - "stripe-terminal-on-reader-tipping-2025.md"
+tags: [stripe, stripe-terminal, tipping, on-reader, in-person-payments, payment-intents, configuration]
+---
+
+## Summary
+
+This [[stripe]] Terminal integration guide covers configuring tip suggestions, collecting voluntary tips before card presentment, skipping tipping, and setting an alternate base for percentage tips. The 2026-11-07 capture adds Hong Kong (HK) and Mexico (MX) to the guide’s country list. The 2026-04-27 and 2026-11-07 captures document the same configuration and collection flow.
+
+## Key Takeaways
+
+- **Configuration**. Set tip suggestions through the `Configuration` API or Dashboard and assign the configuration to an account or location. The guide documents three options.
+  - **Smart tips** show three fixed amounts below the `smart_tip_threshold` and three percentages at or above it.
+  - **Percentages** show three suggestions calculated post-tax by default. A tip-eligible amount can supply a different base.
+  - **Fixed amounts** show three suggestions in the currency’s smallest unit.
+- **Multi-currency constraint**. Use the same configuration keys for every currency in the same `Configuration`.
+- **Configuration propagation**. BBPOS WisePad 3 receives updates when it connects to the POS application. BBPOS WisePOS E can take up to five minutes.
+- **WisePad 3 SDK minimums**. Android SDK 2.8.1+ or iOS SDK 2.16.1+ for the named platforms.
+
+## Tip Amount Lifecycle
+
+When a configured, eligible reader prompts for a tip, the customer can choose a suggestion, enter a custom amount, or leave no tip, depending on configuration. The reader then waits for the card and adds the chosen tip when the payment is processed.
+
+- **Before PaymentIntent confirmation**, `amount_tip` holds the tip and `amount` excludes it.
+- **After confirmation**, `amount_tip` is zero and the PaymentIntent returns the tip in `amount_details.tip.amount`. When the payment succeeds, the PaymentIntent and Charge `amount` each include the tip.
+
+| Scenario | `amount_details.tip.amount` |
+| --- | --- |
+| On-reader tipping disabled | `null` |
+| Enabled, no tip selected | `0` |
+| Enabled, tip selected | The selected amount |
+
+When using Stripe test cards, the decimal value of the total including the tip can trigger a test decline.
+
+## When the Tip Screen Is Skipped
+
+1. The `Configuration` object lacks a tipping configuration.
+2. `skipTipping` is enabled in the tipping configuration.
+3. The reader is in an unsupported country.
+4. The tipping configuration does not apply to the payment currency.
+
+## Skip Tipping and Tip-Eligible Amount
+
+**Skip tipping**. The guide covers hiding the tip prompt for individual transactions or temporarily for all transactions. It gives skip examples for server-driven, JavaScript, iOS, Android, and React Native integrations.
+
+**Tip-eligible amount**. Sets the base for percentage tips and is displayed alongside the pre-tip amount. The guide uses `amount_eligible` for server-driven, `eligible_amount` for JavaScript, `setEligibleAmount` for iOS and Android, and `tipEligibleAmount` for React Native.
+
+- A supplied eligible amount must be zero or higher.
+- Zero skips tipping regardless of the skip flag.
+- If a positive eligible amount equals the PaymentIntent amount, the override is ignored and percentage tips use the full amount.
+- A positive eligible amount combined with a true skip flag produces an error.
+
+## Country Availability
+
+The detailed guide names Stripe Reader S700/S710, BBPOS WisePOS E, and BBPOS WisePad 3. Its Availability section gives an aggregate country list.
+
+- **2026-11-07, 40 markets**. AT, AU, BE, BG, CA, CH, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GI, HK, HR, HU, IE, IT, JP, LI, LT, LU, LV, MT, MX, MY, NL, NO, NZ, PL, PT, RO, SE, SG, SI, SK, US
+- **2026-04-27, 38 markets**. AT, AU, BE, BG, CA, CH, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GI, HR, HU, IE, IT, JP, LI, LT, LU, LV, MT, MY, NL, NO, NZ, PL, PT, RO, SE, SG, SI, SK, US
+
+The separate [[raw/stripe-terminal-features-collecting-tips-overview-2026-11-07|2026-11-07 tipping overview]], lines 22–25, assigns HK and MX to S700/S710 and WisePOS E. Both dated overviews list the same nine markets for WisePad 3 (AU, CA, FR, DE, IE, NL, NZ, SG, GB). See also the [[raw/stripe-terminal-collect-tips-2025|2026-04-27 tipping overview]], lines 21–24.
+
+> **Dated capture-method difference.** The [[raw/stripe-terminal-collect-tips-2025|2026-04-27 tipping overview]] (line 47) and its [[source-stripe-terminal-collect-tips|wiki summary]] say both tipping methods require manual capture. The [[raw/stripe-terminal-features-collecting-tips-overview-2026-11-07|2026-11-07 tipping overview]] (line 44) documents automatic or manual capture for on-reader tipping and manual capture for on-receipt tipping.
+
+## See Also
+
+- [[stripe-terminal-tipping]] — concept page covering both on-reader and on-receipt methods
+- [[source-stripe-terminal-collect-tips]] — historical overview comparing on-reader and on-receipt methods
+
+## Raw Sources
+
+- [[raw/stripe-terminal-features-collecting-tips-on-reader-2026-11-07|Stripe Terminal on-reader tipping guide captured 2026-11-07]]
+- [[raw/stripe-terminal-on-reader-tipping-2025|Stripe Terminal on-reader tipping guide captured 2026-04-27]] — includes screenshots

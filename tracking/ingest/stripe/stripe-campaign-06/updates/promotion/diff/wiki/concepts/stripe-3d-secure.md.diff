@@ -1,0 +1,30 @@
+--- wiki/concepts/stripe-3d-secure.md
++++ wiki/concepts/stripe-3d-secure.md
+@@ -13,22 +13,22 @@
+ 
+ ## SCA Readiness
+ 
+-**SCA applies if**: EEA business + EEA customers + card payments. Charges API is NOT SCA-ready.
++Stripe’s SCA readiness guide advises updating when all three criteria apply. First, the business is based in the EEA or creates payments on behalf of EEA-based connected accounts. In either case, it must also serve EEA customers and accept credit or debit cards. The guide identifies the legacy Charges API as unprepared for SCA. See [[source-stripe-sca-readiness]].
+ 
+ **SCA-ready products**: Payment Intents API, Setup Intents API, Checkout, Billing.
+ 
+-**Grandfathering** (previous authorization agreements): EU cards saved before Dec 31 2020; UK cards saved before Sep 14 2021 — Stripe checks automatically; bank can still decline → `requires_payment_method`.
++**Grandfathering** applies to the guide's off-session path for cards saved before December 31, 2020 for EU customers or September 14, 2021 for UK customers. Stripe checks for eligible older transactions. If the bank declines the prior agreement, the PaymentIntent moves to `requires_payment_method` (`requires_source` before API version 2019-02-11), and the customer needs to complete payment.
+ 
+ **Off-session readiness checklist**:
+ 
+ - Authenticate at card save time
+ - `setup_future_usage: 'off_session'` when saving during payment
+ - SetupIntent `usage: 'off_session'` when saving without payment
+-- Set `off_session: true` on PaymentIntent when charging
++- Set `off_session: true` when creating an off-session PaymentIntent.
+ 
+-**MIT mandate**: require customer permission + frequency + amount determination language at checkout. Liability shift does NOT apply when bank uses an exemption (payment not authenticated via 3DS).
++**MIT mandate.** The merchant and customer need an agreement or mandate that covers permission to initiate payments, anticipated frequency and how the amount is determined. Reference the payment terms at checkout. An issuer can still request later off-session authentication. Successful 3DS typically shifts fraud-dispute liability to the card issuer. The issuer-applied exemption described in the guide does not shift liability because the payment has no 3DS authentication.
+ 
+-**Platforms**: use `setAppInfo`; notify Stripe + customers when SCA-ready update released.
++**Plugin and developer-library builders.** The guide asks builders to identify their integration with `setAppInfo`, test successful and unsuccessful authentication, and notify customers and Stripe when releasing an SCA-ready update. Merchants relying on a third-party plugin, platform or extension should ask their partner whether changes are needed.
+ 
+ ## When 3DS Triggers
+ 

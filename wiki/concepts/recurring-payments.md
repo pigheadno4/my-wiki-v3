@@ -121,4 +121,4 @@ See platform-specific concept pages for integration details:
 
 - [[source-braintree-subscription-update-node]] - Braintree Node.js route for existing-subscription updates, add-on and discount changes, qualified 3DS-enriched nonce use for the next transaction, and removal of all existing add-ons and discounts
 
-- [[source-stripe-recurring-payments-overview]] — Stripe recurring payments guide: 5 use cases, 3 payment types, 6-product comparison table, subscription creation via Dashboard/Payment Links/Checkout/Elements, flexible billing mode
+- [[source-stripe-recurring-payments-overview]] — April and November 2026 Stripe guide covering four payment types, six products and subscription creation. See [[stripe-subscriptions-schedules]] for finite Billing plans and [[stripe-installments]] for card eligibility.

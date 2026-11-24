@@ -1,0 +1,227 @@
+{
+  "job_id": "terminal-references-api-js-sdk",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Terminal: JavaScript SDK API Reference\"\ntype: source\ndate_ingested: 2026-05-01\ndate_updated: 2026-11-24\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/terminal/references/api/js-sdk\"\nraw_files:\n  - \"stripe-terminal-references-api-js-sdk-2026-11-07.md\"\n  - \"stripe-terminal-js-sdk-reference-2025.md\"\ntags: [stripe, stripe-terminal, javascript, sdk, api-reference]\n---\n\n## Summary\n\nComplete API reference for the Stripe Terminal JavaScript SDK. The method index covers reader discovery and connection, payment collection and processing, saving payment methods, refunds, reader display, inputs, printing, and testing.\n\n## Method Groups\n\n**Lifecycle**: `StripeTerminal.create()` (options: `onFetchConnectionToken`, `onUnexpectedReaderDisconnect`, `onConnectionStatusChange`, `onPaymentStatusChange`, `readerBehavior`), `clearCachedCredentials()`\n\n`onFetchConnectionToken` obtains a ConnectionToken from the integration\u2019s backend. To switch accounts, disconnect any connected reader, point the handler at the new account, call `clearCachedCredentials()`, and reconnect.\n\n**Reader connection**: `discoverReaders()`, `connectReader()` (`fail_if_in_use` option), `disconnectReader()`, `getConnectionStatus()`, `getPaymentStatus()`\n\nThe November 7, 2026 reference says to [register a smart reader to the account](https://docs.stripe.com/terminal/payments/connect-reader.md?terminal-sdk-platform=js&reader-type=internet#register-reader) before discovering it in the JavaScript app. The May 1, 2026 capture names the Verifone P400 in the same prerequisite. The reference advises against caching the returned `Reader` because its IP address can change.\n\n**Payment collection**: `collectPaymentMethod()` (config_override: `skip_tipping`, `tipping.eligible_amount`, `update_payment_intent`, `enable_customer_cancellation`, `allow_redisplay`, `moto`), `cancelCollectPaymentMethod()`, `processPayment()` (config_override: `return_url`), `cancelProcessPayment()`\n\nCollect using the client secret of a backend-created PaymentIntent, then pass the successfully collected Intent to `processPayment()`. Set `allow_redisplay` on collection when `setup_future_usage` is set. The May 1 and November 7, 2026 captures say SDK-wide `readerBehavior.allowCustomerCancel` defaults to `false`, was restricted, and was accepting no new users at capture time. The per-call `enable_customer_cancellation` option can show a cancel button on Android-based smart readers.\n\n**Save payment methods**: `collectSetupIntentPaymentMethod()`, `cancelCollectSetupIntentPaymentMethod()`, `confirmSetupIntent()`, `cancelConfirmSetupIntent()`, `readReusableCard()`, `cancelReadReusableCard()`\n\nSetupIntent collection takes the backend-created SetupIntent\u2019s `clientSecret` and `allowRedisplay`, and `confirmSetupIntent()` takes the successfully collected SetupIntent. The `readReusableCard()` section describes online reuse without standard Terminal pricing and liability shift.\n\n> [!NOTE]\n> The May 1 and November 7, 2026 captures place a warning against saving contactless cards and mobile wallets for later reuse in the `readReusableCard()` section. The separate May 1, 2026 SetupIntent guide describes mobile-wallet saving for off-session reuse. See [[stripe-terminal-save-payment-details]] for the SetupIntent flow.\n\n**Reader display**: `setReaderDisplay()`, `clearReaderDisplay()`\n\n**Refunds**: `collectRefundPaymentMethod()` (Connect: `refund_application_fee`, `reverse_transfer`), `cancelCollectRefundPaymentMethod()`, `processRefund()`, `cancelProcessRefund()`\n\nCall `processRefund()` after successful `collectRefundPaymentMethod()`. Both captures describe two required parameters for collection while listing `charge_id`, `amount`, and `currency` in the signature and describing `currency` without an optional marker. The reference wording leaves currency requiredness unresolved.\n\n**Collect inputs**: `collectInputs()`, `cancelCollectInputs()`\n\n**Printing** (V660p only): `print()` (takes `HTMLCanvasElement`)\n\n**Simulator**: `setSimulatorConfiguration()`, `getSimulatorConfiguration()`\n\nThe November 7, 2026 capture explains that Terminal SDKs and server-driven integrations have a built-in test reader. The `simulated` discovery option defaults to `false`, and discovery ignores `location` for simulated readers. Setting simulator configuration applies only while connected to the simulated reader, replaces active configuration, and lasts until `processPayment()` completes.\n\n## Error Codes\n\nThe error table contains 21 code rows in each capture. These include `no_established_connection`, `canceled`, `network_error`, `network_timeout`, `already_connected`, `failed_fetch_connection_token`, `discovery_too_many_readers`, `command_already_in_progress`, and 7 printer-specific codes (`printer_busy`, `printer_paperjam`, `printer_cover_open`, `printer_out_of_paper`, `printer_absent`, `printer_unavailable`, `printer_error`).\n\nBoth dated captures list `cancelReadReusableCard()` in the method index and heading. The `no_active_read_reusable_card_attempt` row instead names `cancelCollectReusableCard`.\n\n## Changelog Highlights\n\nBoth captures retain these dated entries.\n\n- 2025-10-30: Surcharge consent collection in `processPayment`, with a custom message up to 220 characters\n- 2025-10-06: `print()` method (V660p, preview)\n- 2025-06-02: `cancelProcessPayment`, `cancelConfirmSetupIntent`, `cancelProcessRefund` added; simulated reader supports input collection\n\n## Related\n\n- [[stripe-terminal]] \u2014 Stripe Terminal integration paths and SDKs\n- [[stripe-terminal-save-payment-details]] \u2014 separate SetupIntent and PaymentIntent saving flows\n\n## Raw Sources\n\n- [[raw/stripe-terminal-references-api-js-sdk-2026-11-07|JavaScript API reference (November 7, 2026 capture)]]\n- [[raw/stripe-terminal-js-sdk-reference-2025|JavaScript API reference (May 1, 2026 capture)]]\n",
+  "quotes": {
+    "terminal-references-api-js-sdk": [
+      {
+        "text": "Before you can discover a smart reader in your application",
+        "location": "raw/stripe-terminal-references-api-js-sdk-2026-11-07.md:78"
+      },
+      {
+        "text": "the reader to your account.",
+        "location": "raw/stripe-terminal-references-api-js-sdk-2026-11-07.md:78"
+      },
+      {
+        "text": "Currently, you can\u2019t use Stripe Terminal to save contactless cards and mobile wallets (for example, Apple Pay, Google Pay) for later reuse.",
+        "location": "raw/stripe-terminal-references-api-js-sdk-2026-11-07.md:294"
+      },
+      {
+        "text": "Errors returned by the JavaScript SDK include an error `code`, as well as a human-readable `message`.",
+        "location": "raw/stripe-terminal-references-api-js-sdk-2026-11-07.md:450"
+      },
+      {
+        "text": "The method takes two required parameters:",
+        "location": "raw/stripe-terminal-references-api-js-sdk-2026-11-07.md:236"
+      }
+    ]
+  },
+  "old_evidence": {
+    "terminal-references-api-js-sdk": [
+      {
+        "text": "Before you can discover the Verifone P400 in your application",
+        "location": "raw/stripe-terminal-js-sdk-reference-2025.md:77"
+      },
+      {
+        "text": "If left empty, this value defaults to `false`.",
+        "location": "raw/stripe-terminal-js-sdk-reference-2025.md:67"
+      },
+      {
+        "text": "Preview: Added a `print` method to enable printing images on the Verifone V660p reader.",
+        "location": "raw/stripe-terminal-js-sdk-reference-2025.md:496"
+      },
+      {
+        "text": "the reader to your account.",
+        "location": "raw/stripe-terminal-js-sdk-reference-2025.md:77"
+      },
+      {
+        "text": "Currently, you can\u2019t use Stripe Terminal to save contactless cards and mobile wallets (for example, Apple Pay, Google Pay) for later reuse.",
+        "location": "raw/stripe-terminal-js-sdk-reference-2025.md:293"
+      },
+      {
+        "text": "`cancelCollectReusableCard` can only be called when `readReusableCard` is in progress.",
+        "location": "raw/stripe-terminal-js-sdk-reference-2025.md:460"
+      },
+      {
+        "text": "The method takes two required parameters:",
+        "location": "raw/stripe-terminal-js-sdk-reference-2025.md:370"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-terminal-references-api-js-sdk-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 75
+      },
+      {
+        "start": 76,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 225
+      },
+      {
+        "start": 226,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 375
+      },
+      {
+        "start": 376,
+        "end": 450
+      },
+      {
+        "start": 451,
+        "end": 514
+      }
+    ],
+    "raw/stripe-terminal-js-sdk-reference-2025.md": [
+      {
+        "start": 1,
+        "end": 75
+      },
+      {
+        "start": 76,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 225
+      },
+      {
+        "start": 226,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 375
+      },
+      {
+        "start": 376,
+        "end": 450
+      },
+      {
+        "start": 451,
+        "end": 514
+      }
+    ],
+    "wiki/sources/source-stripe-terminal-js-sdk-reference.md": [
+      {
+        "start": 1,
+        "end": 47
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/9d34bc972e69ad9964a60b12/content.diff": [
+      {
+        "start": 1,
+        "end": 50
+      },
+      {
+        "start": 51,
+        "end": 100
+      },
+      {
+        "start": 101,
+        "end": 150
+      },
+      {
+        "start": 151,
+        "end": 200
+      },
+      {
+        "start": 201,
+        "end": 250
+      },
+      {
+        "start": 251,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 350
+      },
+      {
+        "start": 351,
+        "end": 400
+      },
+      {
+        "start": 401,
+        "end": 450
+      },
+      {
+        "start": 451,
+        "end": 500
+      },
+      {
+        "start": 501,
+        "end": 550
+      },
+      {
+        "start": 551,
+        "end": 552
+      }
+    ]
+  },
+  "answers": {
+    "terminal-references-api-js-sdk": {
+      "Q1": "For https://docs.stripe.com/terminal/references/api/js-sdk, source-stripe-terminal-js-sdk-reference describes a JavaScript app fetching a backend ConnectionToken and reacting to reader state. The reader reports connecting, connected or not_connected and not_ready, ready, waiting_for_input or processing for payments. Account switching disconnects any reader, changes token sourcing, clears credentials and reconnects. Both captures describe this sequence, but the registration prerequisite moves from the Verifone P400 on 2026-05-01 to a smart reader on 2026-11-07 (old raw lines 39-119 and new raw lines 40-120). The app supplies a backend PaymentIntent client secret to collect and passes the returned PaymentIntent into processPayment for confirmation; return_url is used only with redirect-based methods and allow_redisplay is required at collection when setup_future_usage is set. SetupIntent collection requires the backend client secret and allowRedisplay, then confirmation consumes the collected SetupIntent (old raw lines 121-280 and new raw lines 122-281). Refund processing follows successful refund-method collection and the reference separately describes display, simulator, collection, cancellation and V660p printing (old raw lines 301-446 and new raw lines 302-446). The revised summary preserves those method groups and the changelog themes, removes its former unqualified method count, and records the error-table extent. Both captures list 28 method links and 21 error rows (old raw lines 10-37 and old raw lines 458-478, new raw lines 11-38 and new raw lines 458-478).",
+      "Q2": "For https://docs.stripe.com/terminal/references/api/js-sdk, the revised source-stripe-terminal-js-sdk-reference distinguishes the dated generalization of account registration from Verifone P400 to smart-reader discovery, with JavaScript internet-reader links (old raw lines 67-92 and new raw lines 68-93). The November inline simulator explanation supplies test context for the existing feature; the default, location exception and simulated-only configuration/reset are retained (old raw lines 67-68 and old raw lines 333-366, new raw lines 68-69 and new raw lines 334-366). JS-specific documentation query parameters and the PaymentIntent creation guide link are navigation changes, while table formatting, code fences and number markers are presentational (old raw lines 114-130 and new raw lines 115-131). The summary preserves restricted readerBehavior cancellation availability (old raw lines 51-59 and new raw lines 52-60), the readReusableCard reuse warning as a dated note in that JS method context (old raw lines 282-299 and new raw lines 283-300), and the October 2025 V660p preview attribution (old raw lines 438-446 and old raw lines 490-497, new raw lines 438-446 and new raw lines 490-497). The summary keeps both full dated captures and the reciprocal stripe-terminal route. The provider index and company routes still need the same count correction. The summary links the separate SetupIntent-saving authority via stripe-terminal-save-payment-details. Both captures use cancelReadReusableCard() as the method heading and cancelCollectReusableCard in the corresponding error-code prose (old raw lines 282-299 and old raw lines 458-462, new raw lines 283-300 and new raw lines 458-462). The repeated two-required-parameters wording and the unmarked currency item leave refund currency requiredness unsettled (old raw lines 368-375 and new raw lines 368-375)."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "terminal-references-api-js-sdk-terminal-source",
+      "target_path": "wiki/concepts/stripe-terminal.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-terminal-js-sdk-reference]] \u2014 JS SDK API reference: 29 methods (create, discoverReaders, collectPaymentMethod, processPayment, print, etc.), 17 error codes, changelog",
+      "proposed_markdown": "- [[source-stripe-terminal-js-sdk-reference]] \u2014 JavaScript SDK API reference: reader discovery, payment operations, errors, and changelog",
+      "quote_indexes": [
+        0,
+        3
+      ],
+      "warnings": [
+        "The provider index and Stripe company entry still carry the previous 29/17 counts. Both captures have 28 top-level method links (old raw lines 10-37, new raw lines 11-38) and 21 error-code rows (old raw lines 458-478, new raw lines 458-478)."
+      ]
+    },
+    {
+      "update_id": "terminal-references-api-js-sdk-discovery",
+      "target_path": "wiki/concepts/stripe-terminal.md",
+      "update_kind": "durable_fact",
+      "anchor": "JavaScript SDK requires same-network LAN when used with smart readers.",
+      "proposed_markdown": "JavaScript SDK requires same-network LAN when used with smart readers. The November 7, 2026 JavaScript API reference also says to register a smart reader to the account before discovery in the app. The May 1, 2026 capture names the Verifone P400. See [[source-stripe-terminal-js-sdk-reference]].",
+      "quote_indexes": [
+        0,
+        1
+      ],
+      "warnings": []
+    },
+    {
+      "update_id": "terminal-references-api-js-sdk-saving-source",
+      "target_path": "wiki/concepts/stripe-terminal-save-payment-details.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-terminal-save-directly]] \u2014 SetupIntent flow detail: CNP caveat, card networks, allow_redisplay, SDK compatibility matrix, mobile wallet caveats",
+      "proposed_markdown": "- [[source-stripe-terminal-save-directly]] \u2014 SetupIntent flow detail: CNP caveat, card networks, allow_redisplay, SDK compatibility matrix, mobile wallet caveats\n- [[source-stripe-terminal-js-sdk-reference]] \u2014 JavaScript SDK SetupIntent methods and the separate `readReusableCard()` warning",
+      "quote_indexes": [
+        2,
+        4
+      ],
+      "warnings": [
+        "The May 1 and November 7, 2026 JavaScript API reference warnings are located under readReusableCard. The separately captured May 1, 2026 save-directly JavaScript guidance documents off-session wallet reuse and limited redisplay (raw/stripe-terminal-save-directly-2025.md:338-342)."
+      ]
+    }
+  ]
+}

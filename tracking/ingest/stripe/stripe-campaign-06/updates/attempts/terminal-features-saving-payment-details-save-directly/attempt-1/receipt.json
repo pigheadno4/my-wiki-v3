@@ -1,0 +1,238 @@
+{
+  "job_id": "terminal-features-saving-payment-details-save-directly",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Terminal: Save Directly Without Charging\"\ntype: source\ndate_ingested: 2026-05-01\ndate_updated: 2026-11-24\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/terminal/features/saving-payment-details/save-directly\"\nraw_files:\n  - \"stripe-terminal-save-directly-2025.md\"\ntags: [stripe, stripe-terminal, saved-payment-methods, generated-card, setup-intents, allow-redisplay, compliance]\n---\n\n## Summary\n\nThe 2026-05-01 [[stripe]] Terminal guide describes saving details from a present card or mobile wallet for online reuse without charging, using a SetupIntent. The 2026-11-07 capture retains that purpose and indexes the Server-driven, JavaScript, iOS, Android, and React Native variants. The variant bodies are outside that capture. The integration details below come from the 2026-05-01 guide.\n\n## Key Takeaways\n\n- **CNP reuse**. Charges using a reusable `generated_card` are card-not-present (CNP). Card-present liability shift and pricing do not apply.\n- **Card networks**. The guide lists Visa, Mastercard, Amex, Discover, and co-branded Interac, eftpos, and girocard. Co-branded Interac must be inserted into a reader and is unsupported by Tap to Pay. The guide excludes single-branded Interac, eftpos, and girocard.\n- **Setup flow**. Create or retrieve the customer. Server-driven and JavaScript integrations create the SetupIntent on the server with `card_present` in `payment_method_types`. JavaScript passes its client secret to the client. iOS, Android, and React Native can create through the SDK or create on the server and retrieve through the SDK using the client secret. Obtain the customer\u2019s explicit consent before collecting encrypted payment details through the reader and confirming the SetupIntent.\n- **Consent and `allow_redisplay`**. The historical deadlines for replacing `customer_consent_collected` were March 31, 2025 for non-React Native integrations and September 30, 2025 for React Native. Use the consent-appropriate value, `always` for display in any checkout flow or `limited` for restricted display. The guide calls for opt-in terms, written agreement records, and use only for the agreed purpose. See the Compliance section of the 2026-05-01 guide for off-session terms.\n- **`usage=on_session`**. The guide specifies this setting for checkout-only reuse.\n- **Accounts v2**. At the 2026-05-01 capture, Stripe recommended customer-configured Account objects for most use cases. Accounts v2 was generally available for Connect users and in public preview for other Stripe users, with a preview version required for preview users.\n\n## SDK Compatibility\n\n| Integration | Reader models named for this variant | Collection and confirmation in the 2026-05-01 guide |\n| --- | --- | --- |\n| Server-driven | BBPOS WisePOS E, Stripe Reader S700/S710 | The `process_setup_intent` endpoint handles both steps |\n| JavaScript | Unspecified | Separate `collectSetupIntentPaymentMethod` and `confirmSetupIntent` calls |\n| iOS | Unspecified | SDK 5.0.0 combines both steps in `processSetupIntent` |\n| Android | Unspecified | SDK 5.0.0 combines both steps in `processSetupIntent` |\n| React Native | Unspecified | SDK 0.0.1-beta.29 offers combined `processSetupIntent`. The guide also documents separate collection and confirmation |\n\nThe platform sections of the 2026-05-01 guide contain their respective cancellation examples. For separately documented iOS and Android SDK 6.0.0 consent and model migrations, see [[stripe-terminal-save-payment-details]].\n\n## Retrieving the generated_card\n\nAfter successful setup, the SetupIntent status is `succeeded`. Check `SetupAttempt.payment_method_details.card_present.generated_card` for the reusable `card` PaymentMethod. The value can be empty for unsupported methods. The `card_present` PaymentMethod in `SetupIntent.payment_method` represents the physically presented instrument and cannot be charged online.\n\nAttach an available `generated_card` to the Customer before reuse. It attaches automatically after successful setup when the Customer was supplied at SetupIntent creation. Otherwise, attach it in a separate call. Expand `latest_attempt` on the SetupIntent or list the Customer\u2019s attached PaymentMethods with `type: 'card'`.\n\n## Mobile Wallets\n\n- Saved mobile wallets are off-session only and their `generated_card` has `allow_redisplay=limited`.\n- Pass `off_session=true` at PaymentIntent confirmation for a saved mobile wallet charge.\n- If the customer is present in the checkout flow, use Apple Pay or Google Pay to prompt for payment method presentment.\n\n## See Also\n\n- [[stripe-terminal-save-payment-details]] \u2014 concept page\n- [[source-stripe-terminal-save-payment-details]] \u2014 overview source\n\n## Raw Sources\n\n- [[raw/stripe-terminal-save-directly-2025|Stripe Terminal integration guide captured 2026-05-01]] \u2014 five platform bodies\n\n## Related raw API references\n\n- [[raw/stripe-terminal-features-saving-payment-details-save-directly-2026-11-07|Stripe Terminal save-directly platform variant index captured 2026-11-07]]\n",
+  "quotes": {
+    "terminal-features-saving-payment-details-save-directly": [
+      {
+        "text": "Save directly without charging",
+        "location": "raw/stripe-terminal-features-saving-payment-details-save-directly-2026-11-07.md:5"
+      },
+      {
+        "text": "Collect details of a present card and save them for online use.",
+        "location": "raw/stripe-terminal-features-saving-payment-details-save-directly-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants.",
+        "location": "raw/stripe-terminal-features-saving-payment-details-save-directly-2026-11-07.md:11"
+      },
+      {
+        "text": "terminal-sdk-platform=server-driven",
+        "location": "raw/stripe-terminal-features-saving-payment-details-save-directly-2026-11-07.md:13"
+      },
+      {
+        "text": "terminal-sdk-platform=react-native",
+        "location": "raw/stripe-terminal-features-saving-payment-details-save-directly-2026-11-07.md:17"
+      }
+    ]
+  },
+  "old_evidence": {
+    "terminal-features-saving-payment-details-save-directly": [
+      {
+        "text": "co-branded Interac cards must be inserted to a reader.",
+        "location": "raw/stripe-terminal-save-directly-2025.md:20"
+      },
+      {
+        "text": "After you collect the customer\u2019s consent, collect the payment method and submit the details to Stripe.",
+        "location": "raw/stripe-terminal-save-directly-2025.md:28"
+      },
+      {
+        "text": "for payment methods that don\u2019t allow generated cards, the value is empty.",
+        "location": "raw/stripe-terminal-save-directly-2025.md:122"
+      },
+      {
+        "text": "The server-driven-based SetupIntents API is compatible with BBPOS WisePOS E and Stripe Reader S700/S710.",
+        "location": "raw/stripe-terminal-save-directly-2025.md:36"
+      },
+      {
+        "text": "You must create the SetupIntent on your server and include `card_present` on the `payment_method_types` parameter.",
+        "location": "raw/stripe-terminal-save-directly-2025.md:62"
+      },
+      {
+        "text": "You must create the SetupIntent on your server and include `card_present` on the `payment_method_types` parameter.",
+        "location": "raw/stripe-terminal-save-directly-2025.md:218"
+      },
+      {
+        "text": "Use the client secret to call `retrieveSetupIntent`",
+        "location": "raw/stripe-terminal-save-directly-2025.md:417"
+      },
+      {
+        "text": "Use the client secret to call `retrieveSetupIntent`",
+        "location": "raw/stripe-terminal-save-directly-2025.md:649"
+      },
+      {
+        "text": "Use the client secret to call `retrieveSetupIntent`",
+        "location": "raw/stripe-terminal-save-directly-2025.md:840"
+      },
+      {
+        "text": "the collect and confirm integration steps are now combined into a single `processSetupIntent` step.",
+        "location": "raw/stripe-terminal-save-directly-2025.md:363"
+      },
+      {
+        "text": "the collect and confirm integration steps are now combined into a single `processSetupIntent` step.",
+        "location": "raw/stripe-terminal-save-directly-2025.md:601"
+      },
+      {
+        "text": "you can use the [processSetupIntent]",
+        "location": "raw/stripe-terminal-save-directly-2025.md:797"
+      },
+      {
+        "text": "Use `confirmSetupIntent` to complete the setup.",
+        "location": "raw/stripe-terminal-save-directly-2025.md:899"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-terminal-features-saving-payment-details-save-directly-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "raw/stripe-terminal-save-directly-2025.md": [
+      {
+        "start": 1,
+        "end": 160
+      },
+      {
+        "start": 161,
+        "end": 325
+      },
+      {
+        "start": 326,
+        "end": 490
+      },
+      {
+        "start": 491,
+        "end": 655
+      },
+      {
+        "start": 656,
+        "end": 820
+      },
+      {
+        "start": 821,
+        "end": 984
+      }
+    ],
+    "wiki/sources/source-stripe-terminal-save-directly.md": [
+      {
+        "start": 1,
+        "end": 58
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/48bc71a9d9b37ce27b0ce518/content.diff": [
+      {
+        "start": 1,
+        "end": 160
+      },
+      {
+        "start": 161,
+        "end": 330
+      },
+      {
+        "start": 331,
+        "end": 500
+      },
+      {
+        "start": 501,
+        "end": 665
+      },
+      {
+        "start": 666,
+        "end": 829
+      },
+      {
+        "start": 830,
+        "end": 989
+      }
+    ]
+  },
+  "answers": {
+    "terminal-features-saving-payment-details-save-directly": {
+      "Q1": "For https://docs.stripe.com/terminal/features/saving-payment-details/save-directly, the 2026-11-07 capture states the no-charge present-card collection purpose for online reuse (new raw lines 5-7) and lists Server-driven, JavaScript, iOS, Android and React Native variant URLs (new raw lines 9-17). It establishes no additional SetupIntent prerequisites, actor responsibilities, or transitions. The 2026-05-01 capture describes a merchant integration setting up the Customer and SetupIntent and collecting the customer's consent before collecting and submitting payment details (old raw lines 16-30). In the server-driven example the merchant server creates a card_present SetupIntent, passes consent-appropriate redisplay and triggers reader collection/confirmation; Stripe's successful setup status is succeeded and any supported generated_card is a separate reusable online card PaymentMethod, automatically attached with the supplied Customer or attachable separately (old raw lines 54-62, old raw lines 78-104, old raw lines 114-122, old raw lines 137-152). source-stripe-terminal-save-directly summarizes that earlier evidence, including CNP treatment, consent, SDK routes and wallet constraints, and now distinguishes the variant-specific creation paths and reader evidence (old raw lines 32-62, old raw lines 210-220, old raw lines 381-417, old raw lines 619-649, old raw lines 815-840).",
+      "Q2": "For https://docs.stripe.com/terminal/features/saving-payment-details/save-directly, route the 2026-11-07 capture as navigation from source-stripe-terminal-save-directly. Its unchanged purpose and five platform links are the evidence (new raw lines 5-17); the missing variant bodies are a capture-format difference, with no documented functional delta. Keep the functional 2026-05-01 raw and the reciprocal Stripe Terminal save-payment-details concept route. Preserve the dated Accounts v2 Connect/public-preview distinction and recommendation (old raw lines 8-14), consent change deadlines (old raw lines 24-30), the Interac-specific insertion rule and single-brand exclusions (old raw lines 18-22), and the saved-wallet off-session limitation (old raw lines 169-173). Keep the documented server-driven reader models (old raw lines 32-36), iOS/Android 5.0.0 and React Native 0.0.1-beta.29 processing conditions (old raw lines 359-363, old raw lines 597-601, old raw lines 793-797), and the missing-generated-card qualification (old raw lines 118-122). The revised summary and proposed concept edits narrow the insertion and reader claims, distinguish platform-specific creation and consent, and keep React Native's separate collection and confirmation route alongside the combined option (old raw lines 840-851, old raw lines 895-901). The concept's separate iOS and Android 6.0.0 release routes remain the evidence for those migrations."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "terminal-features-saving-payment-details-save-directly-conditional-generated-card-definition",
+      "target_path": "wiki/concepts/stripe-terminal-save-payment-details.md",
+      "update_kind": "durable_fact",
+      "anchor": "Stripe Terminal can collect card-present payment methods and save them for future online reuse. Because card-present PaymentMethods can't be saved directly, Stripe creates a `generated_card` PaymentMethod representing the same card \u2014 usable for online charges, subscriptions, and off-session payments.",
+      "proposed_markdown": "Stripe Terminal can collect card-present payment methods for future online reuse. Where supported, Stripe creates a separate `generated_card` PaymentMethod representing the same card for online charges, subscriptions, or off-session payments, subject to the saved method\u2019s usage constraints.",
+      "quote_indexes": [],
+      "warnings": [
+        "The 2026-05-01 functional capture says in most cases and documents an empty value for unsupported methods (old raw lines 16-18 and 118-122)."
+      ]
+    },
+    {
+      "update_id": "terminal-features-saving-payment-details-save-directly-conditional-generated-card-step",
+      "target_path": "wiki/concepts/stripe-terminal-save-payment-details.md",
+      "update_kind": "durable_fact",
+      "anchor": "2. Stripe automatically creates a `generated_card` PaymentMethod linked to the same underlying card",
+      "proposed_markdown": "2. Stripe creates a `generated_card` PaymentMethod linked to the same underlying card when supported. Check that the value is present before reuse.",
+      "quote_indexes": [],
+      "warnings": [
+        "The fallback for an absent value is preserved separately in the existing save-after-payment subsection. For SetupIntents see old raw lines 118-122."
+      ]
+    },
+    {
+      "update_id": "terminal-features-saving-payment-details-save-directly-network-specific-insertion",
+      "target_path": "wiki/concepts/stripe-terminal-save-payment-details.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Card networks supported**: Visa, Mastercard, Amex, Discover, co-branded Interac/eftpos/girocard (must be inserted \u2014 Tap to Pay doesn't support co-branded Interac). Single-branded Interac, eftpos, girocard are NOT supported.",
+      "proposed_markdown": "**Card networks in the 2026-05-01 SetupIntent guide**. Visa, Mastercard, Amex, Discover, and co-branded Interac, eftpos, and girocard are supported. Co-branded Interac must be inserted into a reader and is unsupported by Tap to Pay. Single-branded Interac, eftpos, and girocard are unsupported.",
+      "quote_indexes": [],
+      "warnings": [
+        "The named insertion condition applies specifically to co-branded Interac (old raw lines 18-22)."
+      ]
+    },
+    {
+      "update_id": "terminal-features-saving-payment-details-save-directly-creation-and-consent",
+      "target_path": "wiki/concepts/stripe-terminal-save-payment-details.md",
+      "update_kind": "durable_fact",
+      "anchor": "**3-step flow**:\n\n1. Create or retrieve a `Customer` (or customer-configured `Account` in Accounts v2)\n2. Create a `SetupIntent` with `payment_method_types: ['card_present']`; optionally set `usage=on_session` if only reusing when customer is present\n3. Collect payment method + confirm (combined in newer SDK versions)",
+      "proposed_markdown": "**SetupIntent flow in the 2026-05-01 guide**\n\n1. Create or retrieve a `Customer`. The guide separately recommends customer-configured Accounts for most uses of Accounts v2.\n2. For server-driven and JavaScript integrations, create the SetupIntent on the server with `card_present` in `payment_method_types`. JavaScript passes the client secret to the client. iOS, Android, and React Native can create through the SDK or retrieve a server-created SetupIntent using its client secret. Use `usage=on_session` for checkout-only reuse.\n3. Obtain the customer\u2019s explicit consent before collecting the payment method and confirming the SetupIntent. The collection and confirmation calls depend on the integration and SDK version.",
+      "quote_indexes": [],
+      "warnings": [
+        "Old raw lines 24-30, 54-62, 210-220, 381-417, 619-649 and 815-840 establish the variant-specific creation and consent conditions."
+      ]
+    },
+    {
+      "update_id": "terminal-features-saving-payment-details-save-directly-historical-integration-matrix",
+      "target_path": "wiki/concepts/stripe-terminal-save-payment-details.md",
+      "update_kind": "durable_fact",
+      "anchor": "**SDK compatibility**:\n\n| SDK | Compatible readers | Notes |\n| --- | --- | --- |\n| Server-driven | WisePOS E, S700/S710 only | Uses `process_setup_intent` API |\n| JavaScript | All | Separate `collectSetupIntentPaymentMethod` + `confirmSetupIntent` calls |\n| iOS 5.0.0+ | All | `processSetupIntent` combines collect + confirm |\n| Android 5.0.0+ | All | `processSetupIntent` combines collect + confirm |\n| React Native 0.0.1-beta.29+ | All | `processSetupIntent` available |",
+      "proposed_markdown": "**Collection and confirmation in the 2026-05-01 guide**\n\n| Integration | Reader models named for this variant | SDK/API path |\n| --- | --- | --- |\n| Server-driven | BBPOS WisePOS E, Stripe Reader S700/S710 | The `process_setup_intent` endpoint handles both steps |\n| JavaScript | Unspecified | Separate `collectSetupIntentPaymentMethod` and `confirmSetupIntent` calls |\n| iOS | Unspecified | SDK 5.0.0 combines both steps in `processSetupIntent` |\n| Android | Unspecified | SDK 5.0.0 combines both steps in `processSetupIntent` |\n| React Native | Unspecified | SDK 0.0.1-beta.29 offers combined `processSetupIntent`. The guide also documents separate collection and confirmation |\n\nSee the separate iOS and Android 6.0.0 sections below for the consent and model migrations.",
+      "quote_indexes": [],
+      "warnings": [
+        "The 2026-05-01 reader list is specific to the server-driven variant (old raw lines 32-36). See old raw lines 359-363, 597-601, 793-797, 840-847 and 895-901 for the version and sequence boundaries."
+      ]
+    },
+    {
+      "update_id": "terminal-features-saving-payment-details-save-directly-generated-card-retrieval",
+      "target_path": "wiki/concepts/stripe-terminal-save-payment-details.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Retrieving `generated_card`**: expand `latest_attempt` on the SetupIntent, or list Customer's `card` payment methods. `SetupIntent.payment_method` is the `card_present` PaymentMethod (not chargeable online) \u2014 the `generated_card` is a separate `card` PaymentMethod that attaches to the Customer automatically if Customer was provided during SetupIntent creation.",
+      "proposed_markdown": "**Retrieving `generated_card`**. Check for the reusable `card` PaymentMethod on the latest SetupAttempt or list the Customer\u2019s attached `card` PaymentMethods. `SetupIntent.payment_method` is a `card_present` PaymentMethod and cannot be charged online. An available `generated_card` automatically attaches to the Customer supplied at SetupIntent creation upon successful setup. Otherwise, attach it to the Customer separately before reuse.",
+      "quote_indexes": [],
+      "warnings": [
+        "See old raw lines 114-152 for the conditional result, object distinction, retrieval paths and attachment."
+      ]
+    },
+    {
+      "update_id": "terminal-features-saving-payment-details-save-directly-reciprocal-source-route",
+      "target_path": "wiki/concepts/stripe-terminal-save-payment-details.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-terminal-save-directly]] \u2014 SetupIntent flow detail: CNP caveat, card networks, allow_redisplay, SDK compatibility matrix, mobile wallet caveats",
+      "proposed_markdown": "- [[source-stripe-terminal-save-directly]] \u2014 SetupIntent guide captured 2026-05-01, with the 2026-11-07 platform variant index linked for navigation.",
+      "quote_indexes": [
+        0,
+        1,
+        2
+      ],
+      "warnings": []
+    }
+  ]
+}

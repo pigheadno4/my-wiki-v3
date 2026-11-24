@@ -1,0 +1,64 @@
+--- wiki/sources/source-stripe-secure-remote-commerce.md
++++ wiki/sources/source-stripe-secure-remote-commerce.md
+@@ -2,7 +2,9 @@
+ title: "Stripe: Secure Remote Commerce Program Guide"
+ type: source
+ date_ingested: 2026-05-08
++date_updated: 2026-11-24
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/secure-remote-commerce"
+ raw_files:
+   - "stripe-secure-remote-commerce-2025.md"
+ tags: [stripe, src, click-to-pay, masterpass, visa-checkout, card-networks, checkout]
+@@ -10,30 +12,36 @@
+ 
+ ## Summary
+ 
+-Guide to accepting payments via Secure Remote Commerce (SRC) / Click to Pay through Stripe. SRC is a card network industry standard replacing Visa Checkout and Masterpass, supporting Visa, Mastercard, American Express, and Discover.
++The 2026-05-08 [[stripe]] program guide covers accepting Secure Remote Commerce (SRC), or Click to Pay, in an existing Stripe integration. It describes US-only Stripe availability and recommends that existing Visa Checkout or Masterpass integrations migrate to SRC. Users can enroll Visa, Mastercard, American Express and Discover cards for Click to Pay. The 2026-11-07 capture corroborates the guide and reformats its examples.
+ 
+ ## Key Details
+ 
+-**US only** at this time.
++> **Masterpass deprecation and onboarding.** Both dated guides say Mastercard deprecated Masterpass, the Dashboard cannot generate new Masterpass Checkout IDs, and Stripe was working to re-enable SRC onboarding. The same guides retain a legacy instruction to generate a Checkout ID. The documented flow below assumes an existing ID. The guides establish no new-account onboarding path or reopening date.
+ 
+-**Masterpass deprecation**: Mastercard deprecated Masterpass. New Masterpass Checkout IDs can't be generated in the Dashboard. Stripe is working to re-enable SRC onboarding.
++## Existing Checkout ID Flow
+ 
+-**SRC replaces** both Visa Checkout and Masterpass with a unified checkout supporting multiple card brands.
++1. Use the existing Masterpass Checkout ID and the configured sandbox and production callback URLs. Load the corresponding Mastercard `merchant.js` script.
++2. The browser button invokes `masterpass.checkout` with `checkoutId`, the merchant’s `allowedCardTypes`, the decimal `amount`, `currency`, and a unique `cartId`. The optional `callbackUrl` overrides the configured default. See [Mastercard’s checkout parameters](https://developer.mastercard.com/documentation/masterpass-merchant-integration-v7/7#standard-checkout1).
++3. The customer selects or enters a payment method on the Mastercard site. Mastercard redirects to the merchant’s callback and appends the `oauth_verifier` query parameter.
++4. In the legacy example, the merchant confirms the PaymentIntent created at the start of checkout. The example sets `payment_method_data.type` to `card` and places `cart_id` and `transaction_id` in `payment_method_data.card.masterpass`, using `oauth_verifier` for `transaction_id`. The callback’s success text is example output.
+ 
+-**Integration**:
+-1. Generate Masterpass Checkout ID in Stripe Dashboard
+-2. Configure sandbox and production callback URLs
+-3. Include Mastercard's `merchant.js` script (sandbox or production URL)
+-4. Display SRC button image (black or white text variants)
+-5. Attach click handler → `masterpass.checkout({ checkoutId, allowedCardTypes, amount, currency, cartId, callbackUrl })`
+-6. Handle callback: extract `oauth_verifier` query param → confirm PaymentIntent with `payment_method_data.type: 'card'` + `card.masterpass.transaction_id`
++The parameter tables use `en_US`, while the HTML snippets use `en_us`. Both snippets labeled as black and white button variants use the same `src_mark_hor_blk.svg` asset. The captures leave runtime locale casing and any distinct white-mark asset unresolved.
+ 
+-**Payment method type**: `card` (not a separate enum) — SRC data passed as nested `card.masterpass` object.
++> **Dated Confirm payload difference.** Both SRC examples also send top-level `amount` and `currency`. The separately captured [[raw/stripe-api-payment-intents-confirm-2026-11-07|November PaymentIntents Confirm reference]] lists optional `amount_to_confirm` and `payment_method_data` (lines 403–410 and 621–625) and omits top-level `amount` and `currency` from its parameter list. The captures leave acceptance of the legacy inputs and any required migration unresolved.
+ 
+-**`masterpass.checkout` parameters**: `checkoutId`, `allowedCardTypes` (master/amex/visa/etc.), `amount` (decimal), `currency`, `cartId` (unique ID), `callbackUrl` (optional override).
++## Testing
+ 
+-**Testing**: Mastercard sandbox with [test cards](https://developer.mastercard.com/masterpass/documentation/migration/masterpass_to_src_migration/#mastercard-test-cards). Must serve from http/https (filesystem not supported).
++The guides describe a Mastercard sandbox checkout with an SRC test user and a [Mastercard test card](https://developer.mastercard.com/masterpass/documentation/migration/masterpass_to_src_migration/#mastercard-test-cards). Serve the page over HTTP or HTTPS. Filesystem serving is unsupported, including during testing.
++
++## Related
++
++- [[stripe-payment-methods]] — payment method families and dated availability
++- [[source-stripe-payment-intents]] — PaymentIntent lifecycle and confirmation context
+ 
+ ## Raw Sources
+ 
+-- [[stripe-secure-remote-commerce-2025]] — verbatim SRC program guide (137 lines); 1 italic fix
++- [[raw/stripe-secure-remote-commerce-2025|Stripe Secure Remote Commerce program guide captured 2026-05-08]]
++
++## Related raw API references
++
++- [[raw/stripe-secure-remote-commerce-2026-11-07|Stripe Secure Remote Commerce program guide captured 2026-11-07, corroborating reference]]

@@ -1,0 +1,222 @@
+{
+  "job_id": "terminal-features-saving-payment-details-save-after-payment",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Terminal: Save Payment Details After Payment\"\ntype: source\ndate_ingested: 2026-05-01\ndate_updated: 2026-11-24\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/terminal/features/saving-payment-details/save-after-payment\"\nraw_files:\n  - \"stripe-terminal-save-after-payment-2025.md\"\ntags: [stripe, stripe-terminal, saved-payment-methods, generated-card, setup-future-usage, allow-redisplay, compliance]\n---\n\n## Summary\n\nThe full 2026-05-01 [[stripe|Stripe]] Terminal guide explains how to request a reusable payment method as part of an in-person payment. It covers Server-driven, JavaScript, iOS, Android and React Native variants, including customer consent, `generated_card` retrieval and conditional fallback. The 2026-11-07 capture is a navigation index for those five variants. The implementation guidance below comes from the May capture.\n\n## Key Takeaways\n\n- **One-flow save** \u2014 Create the `card_present` PaymentIntent with `setup_future_usage` to request a `generated_card`. Use `on_session` for reuse only with the customer present and `off_session` otherwise.\n- **Initial payment and follow-up charges** \u2014 The in-person payment is card-present. Subsequent `generated_card` charges are card-not-present and lack card-present liability-shift and pricing benefits.\n- **Consent and `allow_redisplay`** \u2014 After the customer consents to saving, pass `always` or `limited` at collection or processing. The guide dates the requirement to March 31, 2025 for non-React Native integrations and September 30, 2025 for React Native.\n- **`generated_card` retrieval** \u2014 A successful payment with a future-use-capable method returns a PaymentIntent in `requires_capture` or `succeeded`. Expand `latest_charge` and check `payment_method_details.card_present.generated_card` for the distinct reusable `card` PaymentMethod. The method attaches automatically if the customer ID was supplied at creation. Otherwise, attach it separately.\n- **Availability** \u2014 Verify that `generated_card` is present. Some digital-wallet and single-branded Interac, eftpos or girocard payments might produce none.\n- **Saved mobile wallets** \u2014 The May guide restricts them to off-session reuse. Their `generated_card` has `allow_redisplay=limited`. Pass `off_session=true` when confirming the later PaymentIntent. When the customer is present, the guide directs you to re-prompt with the Apple Pay or Google Pay integration.\n\n## Supported Card Networks\n\nVisa, Mastercard, Amex, Discover, co-branded eftpos, co-branded Interac, co-branded girocard.\n\n## When generated_card Is Absent (Fallback)\n\nIf a reusable payment method is required, the May guide offers two options.\n\n- Ask the customer to save a different method via the [save directly (SetupIntent) flow](https://docs.stripe.com/terminal/features/saving-payment-details/save-directly.md).\n- Refund the in-person payment, indicate the transaction failed, and ask the customer to use a different method.\n\n## SDK Notes\n\n| SDK | Notes |\n| --- | --- |\n| Server-driven | The May guide specifies `Stripe-Version: 2024-09-30.acacia` for this feature. Use `process_payment_intent`, or use Preview `collect_payment_method` to access card brand or funding before separately calling `confirm_payment_intent`. |\n| JavaScript | `collectPaymentMethod` with `config_override: { allow_redisplay }` |\n| iOS | `collectPaymentMethod` \u2014 requires iOS SDK v4.3.0+ |\n| Android | `collectPaymentMethod` \u2014 requires Android SDK v4.0.0+ |\n| React Native | `collectPaymentMethod` with `allowRedisplay` |\n\n## Customer/Account Creation\n\nThe May guide recommends `stripe.v2.core.accounts.create()` with `configuration.customer` for most use cases. It describes Accounts v2 as generally available for Connect users and in public preview for other Stripe users, with a preview API version required for preview participants.\n\nCustomers v1: `stripe.customers.create()` \u2014 returns a `Customer` object with an `id` to store for later.\n\n## See Also\n\n- [[stripe-terminal-save-payment-details]] \u2014 concept page\n- [[source-stripe-terminal-save-directly]] \u2014 companion source: save without charging (SetupIntent flow)\n\n## Raw Sources\n\n- [[raw/stripe-terminal-save-after-payment-2025|2026-05-01 Stripe Terminal save-after-payment guide]] \u2014 full implementation guide for five variants\n\n## Related raw API references\n\n- [[raw/stripe-terminal-features-saving-payment-details-save-after-payment-2026-11-07|2026-11-07 save-after-payment variant index]] \u2014 navigation to Server-driven, JavaScript, iOS, Android and React Native\n",
+  "quotes": {
+    "terminal-features-saving-payment-details-save-after-payment": [
+      {
+        "text": "Accept an in-person payment and save payment details to use later, when the customer isn't present.",
+        "location": "raw/stripe-terminal-features-saving-payment-details-save-after-payment-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants.",
+        "location": "raw/stripe-terminal-features-saving-payment-details-save-after-payment-2026-11-07.md:11"
+      },
+      {
+        "text": "terminal-sdk-platform=server-driven",
+        "location": "raw/stripe-terminal-features-saving-payment-details-save-after-payment-2026-11-07.md:13"
+      },
+      {
+        "text": "terminal-sdk-platform=ios",
+        "location": "raw/stripe-terminal-features-saving-payment-details-save-after-payment-2026-11-07.md:15"
+      },
+      {
+        "text": "terminal-sdk-platform=react-native",
+        "location": "raw/stripe-terminal-features-saving-payment-details-save-after-payment-2026-11-07.md:17"
+      }
+    ]
+  },
+  "old_evidence": {
+    "terminal-features-saving-payment-details-save-after-payment": [
+      {
+        "text": "Accept an in-person payment and save payment details to use later, when the customer is not present.",
+        "location": "raw/stripe-terminal-save-after-payment-2025.md:6"
+      },
+      {
+        "text": "might not create a generated card",
+        "location": "raw/stripe-terminal-save-after-payment-2025.md:157"
+      },
+      {
+        "text": "the `generated_card` has `allow_redisplay=limited`",
+        "location": "raw/stripe-terminal-save-after-payment-2025.md:164"
+      },
+      {
+        "text": "`collect_payment_method`(Preview)",
+        "location": "raw/stripe-terminal-save-after-payment-2025.md:102"
+      },
+      {
+        "text": "All subsequent charges made using the `generated_card` are card-not-present (CNP) transactions",
+        "location": "raw/stripe-terminal-save-after-payment-2025.md:21"
+      },
+      {
+        "text": "`Stripe-Version: 2024-09-30.acacia`",
+        "location": "raw/stripe-terminal-save-after-payment-2025.md:96"
+      },
+      {
+        "text": "you must also separately confirm the PaymentIntent.",
+        "location": "raw/stripe-terminal-save-after-payment-2025.md:138"
+      },
+      {
+        "text": "and you require a reusable payment method",
+        "location": "raw/stripe-terminal-save-after-payment-2025.md:157"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-terminal-features-saving-payment-details-save-after-payment-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ],
+    "raw/stripe-terminal-save-after-payment-2025.md": [
+      {
+        "start": 1,
+        "end": 185
+      },
+      {
+        "start": 186,
+        "end": 330
+      },
+      {
+        "start": 331,
+        "end": 500
+      },
+      {
+        "start": 501,
+        "end": 590
+      },
+      {
+        "start": 591,
+        "end": 699
+      }
+    ],
+    "wiki/sources/source-stripe-terminal-save-after-payment.md": [
+      {
+        "start": 1,
+        "end": 55
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/af3e5255dc60ace3499266a2/content.diff": [
+      {
+        "start": 1,
+        "end": 120
+      },
+      {
+        "start": 121,
+        "end": 300
+      },
+      {
+        "start": 301,
+        "end": 460
+      },
+      {
+        "start": 461,
+        "end": 590
+      },
+      {
+        "start": 591,
+        "end": 706
+      }
+    ]
+  },
+  "answers": {
+    "terminal-features-saving-payment-details-save-after-payment": {
+      "Q1": "The 2026-11-07 capture at https://docs.stripe.com/terminal/features/saving-payment-details/save-after-payment says the merchant can accept an in-person payment and save payment details for later customer-absent use and directs integrators to five implementations (new raw lines 1-17). The index itself supplies no consent terms, generated-card state transition, object assignment or API/SDK prerequisite. The 2026-05-01 details retained by source-stripe-terminal-save-after-payment document a customer represented by a Customer or customer-configured Account, the PaymentIntent setup_future_usage distinction, and passing consent-appropriate allow_redisplay after customer consent at processing or collection (old raw lines 29-31, old raw lines 69-73 and old raw lines 94-102). The PaymentIntent following a successful future-use-capable payment is requires_capture or succeeded, and the reusable card is retrieved from the expanded latest charge and automatically attached if the Customer ID was provided at creation (old raw lines 153-157). The former summary overstated absence from wallets. The revised summary says some digital-wallet payments might not generate a card and preserves the guide\u2019s saved-wallet off-session use with limited redisplay (old raw lines 153-166).",
+      "Q2": "At https://docs.stripe.com/terminal/features/saving-payment-details/save-after-payment, the 2026-11-07 change from \u201cis not\u201d to \u201cisn't\u201d is presentational (old raw line 6 and new raw line 7), and the explicit Server-driven, JavaScript, iOS, Android and React Native links are navigation (new raw lines 9-17). The 2026-05-01 full text and source-stripe-terminal-save-after-payment remain the historical implementation route, with the 2026-11-07 index as a dated raw_reference and the reciprocal stripe-terminal-save-payment-details concept link, Stripe index route and save-directly companion retained. No substantive behavior change follows from the missing bodies. Preserve the 2026-05-01 Accounts v2 GA/preview scope (old raw lines 8-14), mandatory allow_redisplay dates of March 31, 2025 for non-React Native and September 30, 2025 for React Native (old raw line 23), the historical Server-driven 2024-09-30.acacia header and collect_payment_method Preview with separate confirmation (old raw lines 94-102 and old raw lines 136-138), and iOS/Android SDK minimums of 4.3.0+/4.0.0+ (old raw lines 371-377 and old raw lines 522-528). The revised summary and proposed concept corrections distinguish potentially missing generated cards from off-session-only saved wallet reuse (old raw lines 153-166) and limit the lost liability-shift/pricing benefits to card-present ones (old raw lines 16-23)."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "terminal-features-saving-payment-details-save-after-payment-definition",
+      "target_path": "wiki/concepts/stripe-terminal-save-payment-details.md",
+      "update_kind": "durable_fact",
+      "anchor": "Stripe Terminal can collect card-present payment methods and save them for future online reuse. Because card-present PaymentMethods can't be saved directly, Stripe creates a `generated_card` PaymentMethod representing the same card \u2014 usable for online charges, subscriptions, and off-session payments.",
+      "proposed_markdown": "Stripe Terminal can collect payment details in person for future online reuse. Stripe can generate a separate reusable `generated_card` PaymentMethod for the same card, subject to the payment method and flow. Reuse depends on the payment method and the customer's consent.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The November capture states the purpose and links to variants. Historical implementation evidence: raw/stripe-terminal-save-after-payment-2025.md:153-166 and raw/stripe-terminal-save-directly-2025.md:16-18."
+      ]
+    },
+    {
+      "update_id": "terminal-features-saving-payment-details-save-after-payment-creation",
+      "target_path": "wiki/concepts/stripe-terminal-save-payment-details.md",
+      "update_kind": "durable_fact",
+      "anchor": "2. Stripe automatically creates a `generated_card` PaymentMethod linked to the same underlying card",
+      "proposed_markdown": "2. Check for the `generated_card` PaymentMethod linked to the same underlying card.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The November capture states the purpose and links to variants. Historical implementation evidence: raw/stripe-terminal-save-after-payment-2025.md:153-157."
+      ]
+    },
+    {
+      "update_id": "terminal-features-saving-payment-details-save-after-payment-flow-route",
+      "target_path": "wiki/concepts/stripe-terminal-save-payment-details.md",
+      "update_kind": "durable_fact",
+      "anchor": "- **Save after payment**: save as part of a Terminal PaymentIntent \u2014 card is charged and saved in one flow",
+      "proposed_markdown": "- **Save after payment** \u2014 Request a reusable `generated_card` as part of a Terminal PaymentIntent that charges the card.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The November capture states the purpose and links to variants. Historical implementation evidence: raw/stripe-terminal-save-after-payment-2025.md:69-73 and :153-157."
+      ]
+    },
+    {
+      "update_id": "terminal-features-saving-payment-details-save-after-payment-setup-cnp",
+      "target_path": "wiki/concepts/stripe-terminal-save-payment-details.md",
+      "update_kind": "durable_fact",
+      "anchor": "**`generated_card` is CNP**: all charges via `generated_card` are card-not-present \u2014 no liability shift, no card-present pricing applies.",
+      "proposed_markdown": "**`generated_card` is CNP** \u2014 Charges via `generated_card` are card-not-present. Card-present liability-shift and pricing benefits do not apply.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The November capture states the purpose and links to variants. Historical implementation evidence: raw/stripe-terminal-save-after-payment-2025.md:21 and raw/stripe-terminal-save-directly-2025.md:18."
+      ]
+    },
+    {
+      "update_id": "terminal-features-saving-payment-details-save-after-payment-payment-cnp",
+      "target_path": "wiki/concepts/stripe-terminal-save-payment-details.md",
+      "update_kind": "durable_fact",
+      "anchor": "Card is charged and saved in one in-person transaction. The initial payment is card-present; all subsequent `generated_card` charges are CNP (no liability shift, no card-present pricing).",
+      "proposed_markdown": "The in-person transaction charges the card and requests a reusable payment method. Follow-up `generated_card` charges are card-not-present and do not receive card-present liability-shift or pricing benefits.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The November capture states the purpose and links to variants. Historical implementation evidence: raw/stripe-terminal-save-after-payment-2025.md:21, :69-73 and :153-157."
+      ]
+    },
+    {
+      "update_id": "terminal-features-saving-payment-details-save-after-payment-server-preview",
+      "target_path": "wiki/concepts/stripe-terminal-save-payment-details.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Server-driven options**: `process_payment_intent` (one-step) or `collect_payment_method` + `confirm_payment_intent` (two-step \u2014 gives access to card brand/funding before confirming).",
+      "proposed_markdown": "**Server-driven options in the 2026-05-01 guide** \u2014 The feature requires `Stripe-Version: 2024-09-30.acacia`. Use `process_payment_intent`, or use Preview `collect_payment_method` to access card brand or funding before separately calling `confirm_payment_intent`.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The November capture states the purpose and links to variants. Historical implementation evidence: raw/stripe-terminal-save-after-payment-2025.md:94-102 and :136-138."
+      ]
+    },
+    {
+      "update_id": "terminal-features-saving-payment-details-save-after-payment-wallet-fallback",
+      "target_path": "wiki/concepts/stripe-terminal-save-payment-details.md",
+      "update_kind": "durable_fact",
+      "anchor": "**When `generated_card` is absent**: digital wallets and single-branded Interac/eftpos/girocard don't produce one. Fallback: prompt customer to use the save-directly (SetupIntent) flow, or refund and restart with a different card.",
+      "proposed_markdown": "**Verify `generated_card`** \u2014 Some digital-wallet and single-branded Interac, eftpos or girocard payments might produce none. If a reusable method is needed, ask the customer to use the save-directly flow with a different method, or refund and retry with a different method. The May 2026 guide scopes saved mobile wallet reuse to off-session confirmation with `off_session=true` and `allow_redisplay=limited` on the generated card. Re-prompt through Apple Pay or Google Pay when the customer is present.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "The November capture states the purpose and links to variants. Historical implementation evidence: raw/stripe-terminal-save-after-payment-2025.md:153-166."
+      ]
+    }
+  ]
+}

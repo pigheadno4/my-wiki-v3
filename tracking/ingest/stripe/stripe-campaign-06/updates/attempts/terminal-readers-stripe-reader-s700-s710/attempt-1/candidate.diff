@@ -1,0 +1,104 @@
+--- wiki/sources/source-stripe-terminal-s700-s710.md
++++ wiki/sources/source-stripe-terminal-s700-s710.md (candidate)
+@@ -2,54 +2,77 @@
+ title: "Stripe Terminal: Stripe Reader S700/S710"
+ type: source
+ date_ingested: 2026-05-01
++date_updated: 2026-11-24
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/terminal/readers/stripe-reader-s700-s710"
+ raw_files:
++  - "stripe-terminal-readers-stripe-reader-s700-s710-2026-11-07.md"
+   - "stripe-terminal-s700-s710-2025.md"
+ tags: [stripe, stripe-terminal, s700, s710, smart-readers, firmware, android]
+ ---
+ 
+ ## Summary
+ 
+-Detailed reference for the Stripe Reader S700/S710 — Android-based smart reader for countertop and handheld use. Connects via internet/LAN/handoff mode. All 5 SDKs + server-driven.
++[[stripe]]'s [[stripe-terminal|Terminal]] reference describes an Android-based smart reader for countertop and handheld use, with customizable checkout UI and internet, LAN, or handoff connectivity. It lists four Terminal SDKs (JavaScript, iOS, Android, and React Native) plus a server-driven integration. The reader reference recommends server-driven when the POS runs on a separate device and offline card collection is unnecessary.
+ 
+ ## Software Components (4)
+ 
+-S700/S710 has 4 software components (vs 3 for mobile readers): reader app, firmware, configuration, key identifier.
++Stripe maintains the reader application, firmware, configuration, and key identifier. The regional tables report reader application, firmware, configuration, and ROM versions. ROM is a separate value, and the rows provide no key identifier.
+ 
+-**Latest versions** (2026-04-20): reader `2.41.2.0`, firmware `1.00.03.00`, ROM `2.2.22`.
++| Capture | Reader app | Firmware | ROM |
++| --- | --- | --- | --- |
++| 2026-11-07 | `2.46.4.0` | `1.00.08.01` | `2.2.24.1002` |
++| 2026-05-01 | `2.41.2.0` | `1.00.03.00` | `2.2.22` |
+ 
+ **Configuration by region**:
+ 
+-| Region | Config |
+-| --- | --- |
+-| US | `szzz_us_v11` |
+-| CA | `szzz_ca_v4` |
+-| AU | `szzz_prod_au_v11` |
+-| MY/NZ/SG | `szzz_prod_apac_on_v5` |
+-| GB/IE/FI | `szzz_prod_eu_off_v3` |
+-| AT/BE/DK/FR/IT/DE/NL/ES/SE/CZ/LU/PT/CH/NO | `szzz_prod_eu_on_v5` |
++| Region | Configuration | Capture |
++| --- | --- | --- |
++| US | `szzz_us_v11` | May and November |
++| CA | `szzz_ca_v4` | May and November |
++| AU | `szzz_prod_au_v11` | May and November |
++| MY/NZ and SG (separate table rows) | `szzz_prod_apac_on_v5` | May and November |
++| GB/IE/FI | `szzz_prod_eu_off_v3` | May and November |
++| AT/BE/DK/FR/IT/DE/NL/ES/SE/CZ/LU/PT/CH/NO | `szzz_prod_eu_on_v5` | May and November |
++| MX | `szzz_mx_off_v1` | Added in November |
++| HK | `szzz_hk_v1` | Added in November |
++| BG/HR/CY/EE/HU/LV/LI/LT/MT/RO/SK/SI | `szzz_prod_roeu_on_v2` | Added in November |
+ 
+-**PCI firmware format**: `STR7x-11-WXYZZ-ABCDD` → ROM `W.X.Y.ZZ`, firmware `AA.BB.CC.DD.SZZZ.07`.
++> [!note] Regional tables and firmware history
++> November's regional table lists firmware `1.00.08.01`. The captured firmware changelog ends at `1.00.07.00` dated 2026-09-08, so the release date for `1.00.08.01` is unresolved. The 2026-10-20 changelog entry is for reader app `2.46.4.0`. The combined regional configuration rows do not establish availability of individual models, account eligibility, or S710 cellular deployment. See the [[source-stripe-terminal-setup-reader-s700-s710|separate setup guide]] for model-specific eligibility.
++
++**PCI firmware format**: `STR7x-11-WXYZZ-ABCDD` maps to ROM `W.X.Y.ZZ` and firmware `AA.BB.CC.DD.SZZZ.07`. Both captures give the mapping under Reader software version.
++
++## Updates and Diagnostics
++
++Stripe sends software updates automatically when the reader is idle. Leave the reader on and connected to power for updates at midnight in its assigned location's time zone. The reader restarts at midnight daily for PCI compliance and disconnects from the POS app every morning. An unplugged reader could start updating when switched back on. Reboot to check manually. Missing a required update can prevent payment acceptance.
++
++**Diagnostics**: Settings → admin passcode → Diagnostics. It covers DNS resolution, Stripe connectivity, Terminal events connectivity, Wi-Fi information, and battery and hardware status. In the connectivity troubleshooting guidance, Stripe says the Stripe connectivity test must pass for processing payments and receiving updates.
+ 
+ ## Hardware Notes
+ 
+-**Battery**: 5 LED states; requires 12W (USB-A insufficient); slow-charge recovery ≤30 min for deeply discharged; stops charging below 0°C or above 60°C.
++**Charging and handling**: Stripe recommends 12 W and the supplied adapter. A computer USB-C port must support that level. The guide warns against charging the reader from USB-A. During recovery from deep discharge the LED can be on with the display off for up to 30 minutes. Charging slows outside 15–45°C and stops below 0°C or above 60°C. After liquid ingress, Stripe advises stopping use and letting the reader dry thoroughly before reuse or charging, then replacing it if it still fails to operate or charge.
+ 
+-**Payment sounds**: tap success = 1 long high beep; tap failure = 2 short low beeps; chip = silent; swipe failure = 2 short beeps.
++**LED status**: Both captures list fully charged with power connected, flashing while charging, low (10–20%), critically low (1–9%) or drained (1%), and the reader off or on with power disconnected. The captured tables give the meanings without the LED icons or colors.
+ 
+-**Diagnostics**: Settings → admin passcode (07139) → Diagnostics. Tests: DNS resolution, Stripe connectivity, Terminal events connectivity, WiFi info, battery/hardware status.
++**Payment sounds**: Tap success gives one long, high-pitched beep and tap failure gives two short, low-pitched beeps. Chip has no sound. Swipe failure gives two short beeps.
++
++**November device specifications**: Android 10, 5.5-inch display, 4 GB RAM, 64 GB storage, and a 4,950 mAh rechargeable battery. Stripe lists 2.5 hours to charge and estimates 140 hours standby and 15 hours active use, with battery life dependent on settings and deployed features. The table lists USB-C or an accessory dock for charging, Wi-Fi and optional-hub Ethernet, and 4G/LTE for S710 only. Front and rear cameras and microphones are present and unsupported. The audio jack is supported. The security row lists end-to-end encryption, P2PE readiness, and mail order/telephone order (MO/TO) P2PE. See [[source-stripe-terminal-s700-s710-accessories|the separate accessories reference]] for the dock, hub, and case.
+ 
+ ## Notable Changelog Items
+ 
+-- `2.41.2.0` / `1.00.03.00` (2026-04-20): general fixes
+-- `2.39.3.0` (2026-02-24): PIN failure UI improved
+-- `2.38.5.0` (2026-01-13): audio tone volume fix
+-- `2.33.3.0` / `1.00.00.29` (2025-06-30): girocard + CB cobranded card choice support
+-- `2.31.6.0` / `1.00.00.25` (2025-04-28/29): NFC UID collectData added; Cartes Bancaires support
+-- `2.29.6.0` (2025-03-12): offline mode SDI fix; PIN sounds; server-driven poor-network improvements
+-- `2.28.3.0` (2025-01-29): Doze mode IoT fix; pre-insert card support; handoff mode bug fixes
+-- `2.22.3.0` (2024-04-18): hidden Enterprise WPA/WPA2-EAP; 50% battery for config/key updates
++- Reader app `2.46.4.0` (2026-10-20) lists general fixes. App `2.45.7.0` (2026-09-08) fixes clipped long translated tip text and occasional auto-disconnects in countertop mode. November also adds reader app entries for 2026-05-26, 2026-06-29, and 2026-08-04.
++- The November firmware changelog adds `1.00.04.00`, `1.00.05.00`, `1.00.06.00`, and `1.00.07.00` with general fixes. The May reference retains the 2026-04-20 app `2.41.2.0` and firmware `1.00.03.00` entries.
++- Reader app `2.39.3.0` (2026-02-24) improves the failed-PIN UI. App `2.38.5.0` (2026-01-13) fixes payment tone volume.
++- Reader app `2.33.3.0` (2025-06-30) adds girocard and Cartes Bancaires co-branded card choice on S700. The firmware changelog lists `1.00.00.29` on the same day.
++- Reader app `2.31.6.0` (2025-04-29) improves the Cartes Bancaires UI on S700. Firmware `1.00.00.25` (2025-04-28) adds the NFC UID configuration for `Terminal.collectData` and adds Cartes Bancaires support.
++- Reader app `2.29.6.0` (2025-03-12) includes an offline SDI fix, PIN sounds, and improvements for server-driven integrations on poor networks.
++- Reader app `2.28.3.0` (2025-01-29) includes Doze-mode IoT and handoff fixes. Its pre-insert card entry requires version 2.28 and a Stripe-controlled feature flag.
++- Reader app `2.22.3.0` (2024-04-18) adds hidden Enterprise WPA/WPA2-EAP support. The 50% battery requirement entry applies to configuration or key updates while running on battery.
++
++The May capture routes software-acceptance users to the [Terminal bundle release notes](https://docs.stripe.com/terminal/fleet/software-acceptance/release-notes.md). November omits that pointer. The two captures leave the status of that separate process unresolved.
+ 
+ ## Raw Sources
+ 
+-- [[stripe-terminal-s700-s710-2025]] — verbatim webpage content (battery LEDs, sounds, diagnostics, full changelog, firmware table)
++- [[raw/stripe-terminal-readers-stripe-reader-s700-s710-2026-11-07|2026-11-07 reader reference]]
++- [[raw/stripe-terminal-s700-s710-2025|2026-05-01 reader reference]]

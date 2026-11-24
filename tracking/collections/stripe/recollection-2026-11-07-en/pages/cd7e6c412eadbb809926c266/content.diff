@@ -1,0 +1,213 @@
+--- raw/stripe-radar-payg-abuse-2026.md
++++ raw/stripe-radar-pay-as-you-go-abuse-2026-11-07.md
+@@ -8,70 +8,114 @@
+ 
+ ## How it works
+ 
+-Instead of evaluating a payment at checkout, you simulate a future invoice payment to receive a non-payment abuse risk signal. The risk signal indicates whether the customer’s upcoming invoice is at risk of abuse.
++To receive a non-payment abuse risk signal, simulate a future invoice payment instead of evaluating a payment at checkout. The risk signal indicates whether the customer’s upcoming invoice is at risk of abuse.
++
+ A diagram showing the non-payment abuse evaluation flow for a subscription. (See full diagram at https://docs.stripe.com/radar/pay-as-you-go-abuse)
+-Use the [Payment Evaluation](https://docs.stripe.com/api/radar/payment-evaluation.md) endpoint for evaluation outside of a checkout flow, such as a background worker that evaluates subscriptions mid-billing cycle. A Radar Session isn’t required, so the `client_device_metadata_details` field is optional for this use case.
+ 
+-## Create a payment evaluation
++```text
++[Your server] -- POST billing_evaluations (simulated invoice) --> [Stripe API]
++[Stripe API] -- signals.non_payment_abuse.risk_level --> [Your server]
++[Your server] -- Take action (review, limit usage, or issue an early invoice) --> [Your server]
++```
+ 
+-To request a non-payment abuse risk level, you need a payment method, customer, and the expected invoice amount. Call `POST /v1/radar/payment_evaluations` with the `money_movement_details` set to indicate a recurring off-session charge:
++Use the [Create a Billing Evaluation](https://docs.stripe.com/api/radar/billing-evaluation/create.md?api-version=preview) endpoint to evaluate subscriptions outside of a checkout flow, such as from a background worker during a billing cycle.
++
++### When to evaluate a customer 
++
++Non-payment abuse risk changes throughout a customer’s billing lifecycle. The signal becomes more accurate as you learn more about the invoice amount and payment method. You can predict non-payment at three points in the lifecycle, each requiring a different control.
++
++The subscription billing lifecycle, from saving a customer's card to paying an invoice. The diagram shows three points for predicting non-payment: Case 1 during the first billing cycle, Case 2 when usage accrues mid-cycle, and Case 3 during the next billing cycle. (See full diagram at https://docs.stripe.com/radar/pay-as-you-go-abuse)
++
++```text
++[User saves card] --> [Subscription created]
++[Subscription created] --> [Usage accrues]
++[Usage accrues] --> [Invoice created]
++[Invoice created] --> [PaymentIntent created]
++[PaymentIntent created] --> [Payment succeeds]
++[PaymentIntent created] --> [Payment fails]
++[Payment succeeds] --> [Next billing cycle]
++[Next billing cycle] --> [Usage accrues]
++[Case 3: Subsequent cycles]
++[Case 1: First billing cycle]
++[Case 2: Mid-cycle]
++```
++
++| Billing stage | When to evaluate | Risk signal | Recommended action |
++| --- | --- | --- | --- |
++| Case 1: First billing cycle | When a customer signs up and saves a payment method, such as when you confirm a [SetupIntent](https://docs.stripe.com/api/setup_intents.md) or create a subscription | Non-payment abuse isn’t available at this stage because no usage has accrued and there’s no invoice amount to evaluate. Instead, use [free trial abuse prevention](https://docs.stripe.com/radar/free-trial-abuse.md), which evaluates the customer when they save a payment method. | Block the payment method setup if the risk is high. |
++| Case 2: Mid-cycle | During the billing cycle, as usage accrues | Non-payment abuse, with the actual or estimated amount accrued so far passed as `payment_details.amount`. | Issue an early invoice, request a prepayment, or pause the service. |
++| Case 3: Subsequent cycles | Before each recurring invoice finalizes, and again as usage accrues mid-cycle | Non-payment abuse, with the upcoming invoice amount passed as `payment_details.amount`. | Flag the renewal for manual review or require a credit top-up before allowing usage to continue. |
++
++The signal is most accurate when `payment_details.amount` is close to the final invoice amount. Instead of evaluating risk only at the beginning of a billing cycle, re-evaluate it as usage accrues and pass the latest projected amount each time.
++
++## Create a billing evaluation 
++
++To request a non-payment abuse risk level, provide a tokenized card payment method, customer reference or inline customer attributes, and an expected invoice amount.
++
++Identify the customer using exactly one of the following fields:
++
++- `customer_details.customer`: Pass a Customer ID.
++- `customer_details.customer_account`: Pass the ID of a customer-configured [Account](https://docs.stripe.com/api/v2/core/accounts/object.md#v2_account_object-configuration-customer).
++- `customer_details.data`: Pass the customer’s attributes inline if the customer isn’t represented by a [Customer](https://docs.stripe.com/api/customers/object.md) or an Account.
++
++These fields are mutually exclusive, and every request must include one of them.
++
++An email address is also required. If you pass `customer_details.data`, include `data.email`. If you reference a Customer or an Account, the referenced object must have an email address. Otherwise, the request returns a `400` error.
++
++#### Customers v1
+ 
+ ```curl
+-curl https://api.stripe.com/v1/radar/payment_evaluations \
++curl https://api.stripe.com/v1/radar/billing_evaluations \
+   -u "<<YOUR_SECRET_KEY>>:" \
+-  -H "Stripe-Version: 2026-03-25.dahlia" \
++  -H "Stripe-Version: 2026-10-28.preview" \
+   -d "payment_details[amount]=2500" \
+   -d "payment_details[currency]=usd" \
+   --data-urlencode "payment_details[payment_method_details][payment_method]=pm_****" \
+-  -d "payment_details[money_movement_details][money_movement_type]=card" \
+-  -d "payment_details[money_movement_details][card][customer_presence]=off_session" \
+-  -d "payment_details[money_movement_details][card][payment_type]=recurring" \
+   --data-urlencode "customer_details[customer]=cus_****"
++```
++
++#### Accounts v2
++
++```curl
++curl https://api.stripe.com/v1/radar/billing_evaluations \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -H "Stripe-Version: 2026-10-28.preview" \
++  -d "payment_details[amount]=2500" \
++  -d "payment_details[currency]=usd" \
++  --data-urlencode "payment_details[payment_method_details][payment_method]=pm_****" \
++  --data-urlencode "customer_details[customer_account]=acct_****"
+ ```
+ 
+ Stripe returns a `signals.non_payment_abuse` object in the response:
+ 
+ ```json
+ {
+-  "id": "peval_***",
+-  "object": "radar.payment_evaluation",
+-  "created_at": 1773177872,
+-  "livemode": false,
++  "id": "beval_***",
++  "object": "radar.billing_evaluation",
++  "created_at": 1704067200,
++  "livemode": true,
+   "metadata": {},
+-  "recommended_action": "continue",
+   "signals": {
+-    "fraudulent_payment": {
+-      "evaluated_at": 1773177872,
+-      "risk_level": "not_assessed",
+-      "score": -1.0
+-    },
+     "non_payment_abuse": {
+-      "evaluated_at": 1773177872,
+-      "risk_level": "highest"
++      "evaluated_at": 1704067200,
++      "risk_level": "normal"
+     }
+   }
+ }
+ ```
+ 
+-The `signals.fraudulent_payment` fields return default values (`-1.0` for scores) because they don’t apply to the subscription invoice use case. The `recommended_action` field is at the evaluation level, not the signal level, so its value reflects the overall evaluation outcome and won’t always be `continue`. Use `signals.non_payment_abuse.risk_level` for your evaluation logic.
++The response includes only the `non_payment_abuse` signal. Use `signals.non_payment_abuse.risk_level` in your evaluation logic.
+ 
+ ### Retrieve payment details from a subscription
+ 
+-If you’re evaluating a Stripe Billing subscription, you can retrieve the necessary inputs by fetching the subscription and upcoming invoice.
++To evaluate a Stripe Billing subscription, retrieve the required inputs from the subscription and its upcoming invoice.
+ 
+-Retrieve the payment method and customer from the subscription:
++First, retrieve the payment method and customer from the subscription:
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require("stripe")("<<YOUR_SECRET_KEY>>");
+-
+-const subscription = await stripe.subscriptions.retrieve(
+-  "{{SUBSCRIPTION_ID}}",
+-  {
+-    expand: ["customer"],
+-  },
+-);
++```curl
++curl -G https://api.stripe.com/v1/subscriptions/{{SUBSCRIPTION_ID}} \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "expand[]=customer"
+ ```
+ 
+ Get the invoice amount:
+@@ -83,33 +127,41 @@
+   -d "subscription={{SUBSCRIPTION_ID}}"
+ ```
+ 
+-Use `default_payment_method` from the subscription (or alternatively `customer.invoice_settings.default_payment_method`) and `amount_due` from the upcoming invoice.
++Use the subscription’s `default_payment_method`, or the customer’s `invoice_settings.default_payment_method`), and `amount_due` from the upcoming invoice.
+ 
+-## Risk levels
++## Risk levels 
+ 
+-| Value          | Description                                                              |
+-| -------------- | ------------------------------------------------------------------------ |
+-| `normal`       | This level is low risk. No action is required.                           |
+-| `elevated`     | This level is moderate risk. Consider manual review or usage limits.     |
+-| `highest`      | This level is high risk. Consider pausing usage or requiring prepayment. |
+-| `low`          | This level is low risk. No action is required.                           |
+-| `not_assessed` | This signal wasn’t assessed.                                             |
+-| `unknown`      | The risk level is unknown.                                               |
+-
+-## Outcome labeling
+-
+-No outcome or event reporting is required for this use case.
++| Value | Description |
++| --- | --- |
++| `normal` | This level is low risk. No action is required. |
++| `elevated` | This level is moderate risk. Consider manual review or usage limits. |
++| `highest` | This level is high risk. Consider pausing usage or requiring prepayment. |
++| `low` | This level is low risk. No action is required. |
++| `not_assessed` | This signal wasn’t assessed. |
++| `unknown` | The risk level is unknown. |
+ 
+ ## Sandbox behavior
+ 
+-In a sandbox, `signals.non_payment_abuse.risk_level` returns a simulated `risk_level` that can vary based on the input data. To test a specific risk level, use the following test payment method:
++In a sandbox, the following test cards return a predefined `signals.non_payment_abuse.risk_level`. Pass a test `PaymentMethod` ID in `payment_details.payment_method_details.payment_method`, or create a `PaymentMethod` using one of the card numbers and pass the resulting `pm_...` ID.
+ 
+-| Payment method             | Card number      | Risk level |
+-| -------------------------- | ---------------- | ---------- |
+-| `pm_card_riskLevelHighest` | 4000000000004954 | `highest`  |
++#### PaymentMethods
+ 
+-For more test payment methods, see [fraud prevention testing](https://docs.stripe.com/testing.md?testing-method=payment-methods#fraud-prevention).
++| PaymentMethod | Risk level |
++| --- | --- |
++| `pm_card_radarBlock` | `highest` |
++| `pm_card_riskLevelHighest` | `highest` |
++| `pm_card_riskLevelElevated` | `elevated` |
++
++#### Card numbers
++
++| Card number | Risk level |
++| --- | --- |
++| 4100000000000019 | `highest` |
++| 4000000000004954 | `highest` |
++| 4000000000009235 | `elevated` |
++
++All other test cards, including those listed on the [fraud prevention testing](https://docs.stripe.com/testing.md?testing-method=payment-methods#fraud-prevention) page, return a `risk_level` of `not_assessed`.
+ 
+ ## API behavior
+ 
+-This endpoint is fail-open. A `4xx` or `5xx` response from Stripe won’t affect your subscription or billing flow. You can retry the call or proceed without the signal.+This endpoint fails open. A `4xx` or `5xx` response from Stripe doesn’t affect your subscription or billing flow. You can retry the request or proceed without the risk signal.

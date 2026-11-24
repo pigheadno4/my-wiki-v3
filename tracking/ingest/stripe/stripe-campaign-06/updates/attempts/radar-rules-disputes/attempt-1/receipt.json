@@ -1,0 +1,141 @@
+{
+  "job_id": "radar-rules-disputes",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe \u2014 Dispute Resolution Rules\"\ntype: source\ndate_ingested: 2026-05-10\ndate_updated: 2026-11-24\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/radar/rules/disputes\"\nraw_files:\n  - \"stripe-radar-rules-disputes-2026-11-07.md\"\n  - \"stripe-radar-rules-disputes-2026.md\"\ntags: [stripe, radar, rules, disputes, dispute-resolution, dispute-prevention]\n---\n\n## Summary\n\nA merchant configures dispute resolution rules in [[stripe-radar|Radar]]. Radar evaluates each incoming dispute and automatically resolves it by refund if any configured rule matches. These rules share the transaction rule syntax and use a dispute-specific attribute set.\n\n## Eligibility and Enrollment\n\n- **2026-05-10 rules guide** \u2014 Merchants using Stripe Radar or Radar for Fraud Teams could write resolution rules after signing up for dispute prevention.\n- **2026-11-07 rules guide** \u2014 Merchants can write these rules if their [plan](https://docs.stripe.com/radar/how-radar-works.md#compare-plans) supports [dispute prevention](https://docs.stripe.com/disputes/prevention-preview.md). The capture leaves the tier mapping open. The separately captured November [Dispute prevention preview](https://docs.stripe.com/disputes/prevention-preview) directs merchants to sign up in [Dispute settings](https://dashboard.stripe.com/settings/disputes).\n\n## Rule Structure\n\n```\nResolve dispute if {condition}\n```\n\nThe action is always `Resolve dispute`. See [[source-stripe-radar-rules-reference|Rules reference]] for the shared syntax.\n\n> [!warning] USD 10 example in both captures\n> The May and November guides describe a disputed amount of 10 USD or less and show `Resolve dispute if :amount_in_usd: <= 10.00`. The explanation below the example gives `:amount_in_usd: < 10.00`. The guides therefore give conflicting conditions at exactly 10 USD.\n\n## Dispute-Specific Attributes\n\n| Attribute | Type | Notes |\n| --- | --- | --- |\n| `amount_in_xyz` | Numeric | Converts the disputed amount, which can differ from the payment amount, to the specified supported currency. For decimal currencies, use base units such as dollars instead of cents. |\n| `card_brand` | String (case-insensitive) | `visa` or `mc` only |\n| `card_bin` | String (case-insensitive) | First 6 digits of card |\n| `card_country` | Country (case-insensitive) | Two-letter code of the card's issuing country |\n| `currency` | String (case-insensitive) | Three-character code for the currency in which the customer paid |\n| `is_fraudulent` | Boolean | `true` for a dispute filed as fraudulent. `false` covers non-fraud disputes, such as product not received, product unacceptable or subscription canceled. |\n| `network_reason_code` | String (case-insensitive) | Visa dispute network reason codes only in both captures |\n| `statement_descriptor` | String (case-insensitive) | Statement descriptor on payment |\n| `account` | String (case-sensitive) | Connect account on whose behalf a destination or `on_behalf_of` charge is made. If a destination charge sets `on_behalf_of`, that account takes precedence. |\n\n## Related Pages\n\n- [[stripe-radar]] \u2014 concept page (updated with dispute resolution rules)\n- [[source-stripe-disputes-prevention]] \u2014 dispute prevention overview (RDR/Ethoca)\n- [[source-stripe-radar-rules]] \u2014 transaction rule structure\n- [[source-stripe-radar-rules-reference]] \u2014 shared Radar rule syntax\n\n## Raw Sources\n\n- [[raw/stripe-radar-rules-disputes-2026-11-07|2026-11-07 Stripe dispute resolution rules]] \u2014 full capture with the plan-support condition, incoming dispute handling and attribute scope\n- [[stripe-radar-rules-disputes-2026]] \u2014 verbatim dispute resolution rules reference\n",
+  "quotes": {
+    "radar-rules-disputes": [
+      {
+        "text": "Radar evaluates each incoming dispute against the dispute resolution rules you create. If a dispute matches the criteria for any rule, we automatically resolve it.",
+        "location": "raw/stripe-radar-rules-disputes-2026-11-07.md:9"
+      },
+      {
+        "text": "For all dispute resolution rules, the action is `Resolve dispute`.",
+        "location": "raw/stripe-radar-rules-disputes-2026-11-07.md:24"
+      },
+      {
+        "text": "`Resolve dispute if :amount_in_usd: <= 10.00`",
+        "location": "raw/stripe-radar-rules-disputes-2026-11-07.md:19"
+      },
+      {
+        "text": "For destination charges with `on_behalf_of` set, `on_behalf_of` takes precedence.",
+        "location": "raw/stripe-radar-rules-disputes-2026-11-07.md:32"
+      },
+      {
+        "text": "For decimal currencies (for example, **usd**), rules use the base currency unit rather than sub units (for example, dollars, not cents).",
+        "location": "raw/stripe-radar-rules-disputes-2026-11-07.md:33"
+      }
+    ]
+  },
+  "old_evidence": {
+    "radar-rules-disputes": [
+      {
+        "text": "Radar evaluates each incoming dispute against the dispute resolution rules you create.",
+        "location": "raw/stripe-radar-rules-disputes-2026.md:8"
+      },
+      {
+        "text": "`Resolve dispute if :amount_in_usd: <= 10.00`",
+        "location": "raw/stripe-radar-rules-disputes-2026.md:18"
+      },
+      {
+        "text": "`:amount_in_usd: < 10.00`",
+        "location": "raw/stripe-radar-rules-disputes-2026.md:21"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-radar-rules-disputes-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 48
+      }
+    ],
+    "raw/stripe-radar-rules-disputes-2026.md": [
+      {
+        "start": 1,
+        "end": 29
+      },
+      {
+        "start": 30,
+        "end": 46
+      }
+    ],
+    "wiki/sources/source-stripe-radar-rules-disputes.md": [
+      {
+        "start": 1,
+        "end": 47
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/6b8f3979c81b90495fcca462/content.diff": [
+      {
+        "start": 1,
+        "end": 32
+      },
+      {
+        "start": 33,
+        "end": 64
+      }
+    ],
+    "wiki/concepts/stripe-radar.md": [
+      {
+        "start": 27,
+        "end": 54
+      },
+      {
+        "start": 79,
+        "end": 102
+      },
+      {
+        "start": 258,
+        "end": 269
+      }
+    ],
+    "raw/stripe-disputes-prevention-preview-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 17
+      }
+    ]
+  },
+  "answers": {
+    "radar-rules-disputes": {
+      "Q1": "For https://docs.stripe.com/radar/rules/disputes, November 7, 2026 documents an eligible merchant creating dispute resolution rules when its plan supports dispute prevention. Radar evaluates each incoming dispute and automatically resolves it by refund if any configured rule matches. The action is Resolve dispute and the conditions use a dedicated attribute set (new raw line 9 and new raw lines 11-24). May 10, 2026 describes the same engine and action while naming Stripe Radar or Radar for Fraud Teams plus dispute-prevention signup (old raw line 8 and old raw lines 10-23). The separate November Dispute prevention preview describes signup via Dispute settings (raw/stripe-disputes-prevention-preview-2026-11-07.md:9). Both capture attributes distinguish disputed from original payment amount, convert it with base units such as dollars, and prioritize the on_behalf_of account for destination charges when present. Card brand only lists visa and mc; network reason codes are Visa only (new raw lines 26-40, old raw lines 25-39). source-stripe-radar-rules-disputes reflects the core May mechanics, but lacks the newer plan qualification, the Connect precedence and decimal-currency unit semantics, and a warning about the inconsistent threshold explanation. The revised source records those qualifications and the disputed amount boundary.",
+      "Q2": "For https://docs.stripe.com/radar/rules/disputes, the revised source-stripe-radar-rules-disputes retains both dated factual captures. November 7, 2026 changes eligibility wording to plan support for dispute prevention, compared with May 10, 2026 naming Stripe Radar or Radar for Fraud Teams plus signup (new raw line 9, old raw line 8). The connected November prevention guide still directs merchants to sign up from Dispute settings (raw/stripe-disputes-prevention-preview-2026-11-07.md:9). No exact tier assignment, entitlement change or end to signup follows from this wording. Both sources show an inclusive <= 10.00 rule and say 10 USD or less, then separately call the condition < 10.00. Preserve the conflict at the 10 USD boundary (new raw lines 17-22, old raw lines 16-21). The underlying matching/refund behavior and exact dispute-amount and Connect account boundaries persist (new raw lines 26-40, old raw lines 25-39). Table formatting and emphasis are presentational, while the Query Disputes and Dispute Prevention retargets and added Rules Reference are navigation (new raw lines 42-48, old raw lines 41-46). Keep the reciprocal stripe-radar route with the plan qualification, and retain the separate dispute-prevention and transaction-rules context plus a Rules Reference syntax route. Do not infer dispute eligibility from generic transaction rules."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "radar-rules-disputes-plan-and-enrollment",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "durable_fact",
+      "anchor": "**Dispute resolution rules**: `Resolve dispute if {condition}` \u2014 auto-refunds matching disputes (requires dispute prevention signup). Dispute-specific attributes: `amount_in_xyz` (disputed amount), `is_fraudulent`, `card_brand` (visa/mc only), `network_reason_code` (Visa only). See [[source-stripe-radar-rules-disputes]].",
+      "proposed_markdown": "**Dispute resolution rules** automatically refund incoming disputes that match any configured `Resolve dispute if {condition}` rule. The May 2026 guide names Stripe Radar or Radar for Fraud Teams with dispute-prevention signup. The November guide requires plan support for dispute prevention, and the separate November prevention preview directs merchants to sign up in Dispute settings. See [[source-stripe-radar-rules-disputes]] for the dated eligibility wording, disputed-amount units, Connect account precedence and conflicting USD 10 example.",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "November's plan-support condition is in raw/stripe-radar-rules-disputes-2026-11-07.md:9. Plan mapping is unresolved. Signup is independently documented in raw/stripe-disputes-prevention-preview-2026-11-07.md:9."
+      ]
+    },
+    {
+      "update_id": "radar-rules-disputes-updated-source-route",
+      "target_path": "wiki/concepts/stripe-radar.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-radar-rules-disputes]] \u2014 Dispute resolution rules: Resolve dispute action, dispute-specific attributes (is_fraudulent, network_reason_code)",
+      "proposed_markdown": "- [[source-stripe-radar-rules-disputes]] \u2014 Dispute resolution rules with dated plan and enrollment guidance, automatic refunds on a match, dispute-specific attributes and the USD 10 example conflict",
+      "quote_indexes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "warnings": [
+        "Both captures show the inclusive USD 10 example and the conflicting strict-inequality explanation."
+      ]
+    }
+  ]
+}

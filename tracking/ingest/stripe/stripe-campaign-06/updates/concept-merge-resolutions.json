@@ -1,0 +1,125 @@
+{
+  "wiki/concepts/stripe-radar.md:0": {
+    "approved_update_ids": [
+      "radar-rules-actions",
+      "radar-rules-reference-payment-order"
+    ],
+    "replacement": "Transaction actions**. Custom rules depend on plan. Where supported, Request 3DS asks the issuer to authenticate for Checkout, Payment Intents and Setup Intents. Radar continues to Allow, Block and Review whether or not the 3DS rule matches. Stripe also handles issuer-required 3DS and regulatory SCA when needed. Contact Stripe to create Allow rules. An Allow match skips later Radar Block and Review rules. The issuer can still decline. A Review match preserves normal payment processing and sends only successful payments to the queue. Platforms can review accounts or pause payouts and raise a review. See [[source-stripe-radar-rules]] and [[source-stripe-radar-rules-reference]]",
+    "rationale": "Preserves approved plan scope, issuer role, order/short-circuit, review queue timing and distinct account operations from both Radar evidence routes."
+  },
+  "wiki/concepts/stripe-radar.md:1": {
+    "approved_update_ids": [
+      "radar-rules-account-attributes",
+      "radar-rules-supported-attributes-account-rule-names"
+    ],
+    "replacement": " rules**. The legacy default `Block if :risk_level: = 'highest'` rule is being retired as accounts migrate to risk settings. The guides describe elevated-risk review and legacy or risk-score-based CVC and AVS Dashboard rules, with the latter change dated December 2024. The May account rules list `account_risk_level`. The November Rules guide lists `account_fraud_risk_level` for the two account-level risk predicates without assigning actions. The [[source-stripe-radar-rules-supported-attributes|November attributes reference]] separately lists `account_fraud_risk_level` and `account_fraud_risk_score` for account rules and `account_risk_level` for private-preview Treasury transaction rules",
+    "rationale": "Preserves the three evidence scopes and does not infer actions for unnamed examples or general account-risk entitlement."
+  },
+  "wiki/concepts/stripe-radar.md:2": {
+    "approved_update_ids": [
+      "radar-rules-traffic-allocation",
+      "radar-testing-rule-syntax-lookback-attribution"
+    ],
+    "replacement": "The Radar rules guide documents a six-month simulation of charges in its Review rules section. The separate testing guide describes historical live-mode payments without giving a duration.\n\n**Traffic allocation**. November documents staged rollout or rollback for custom transaction rules. 100% is the default. At 0% shadow, Radar evaluates and reports outcomes without enforcing the action. Retries for the same transaction stay in the same bucket. See [[source-stripe-radar-rules#Traffic Allocation|the rules guide]] for card grouping",
+    "rationale": "Attributes the six-month period to the actual rules guide while retaining the exact approved rollout, shadow and retry facts."
+  },
+  "wiki/concepts/stripe-radar.md:12": {
+    "approved_update_ids": [
+      "radar-risk-settings-dated-risk-controls-and-scores",
+      "radar-rules-supported-attributes-bot-score-row",
+      "radar-rules-supported-attributes-classic-score-row",
+      "radar-rules-supported-attributes-dashboard-overall-risk"
+    ],
+    "replacement": "The 2026-11-07 risk-settings guide describes three presets and a plan-qualified custom Fraudulent dispute threshold with backtesting. A threshold that matches no preset displays Manual mode. First enabling a risk setting disables the default classic high-risk block rule permanently. Existing custom rules continue to apply. The 2026-05-10 guide dates the transition for existing Radar for Fraud Teams users to March 1, 2026.\n\nNovember adds Fraudulent card payments on Standard and above and card-only dynamic thresholds that temporarily tighten blocking and revert when detected fraud pressure ends. The separate November plan matrix lists dynamic thresholds on Pro and risk preferences, transaction scores, custom rules and Adaptive 3DS on Plus and Pro. Early fraud warning extends from the May Maximize protection-only statement to November\u2019s Balanced and Maximize protection. Non-card control scope follows the dated supported-method guide. See [[source-stripe-radar-risk-settings]].\n\nThe November 7, 2026 Risk Settings guide says the Dashboard overall risk level takes the maximum of the fraudulent dispute, early fraud warning and classic risk scores that contributed to the payment decision. The Dashboard displays Normal, Elevated or Highest. The `:risk_level:` rules attribute reflects classic risk alone. Classic `:risk_score:` remains usable in eligible custom rules after the default block rule is disabled. November also introduces the separate card-only fraudulent payment score. The November Supported Attributes guide lists the card-only 0\u201399 `:bot_score:` rule attribute with Radar Pro. See **Bot Abuse Prevention** below for the dated integration scope",
+    "rationale": "Preserves the Risk Settings rewrite, all three Attributes score suggestions, and the separate documented Dashboard, classic and Radar Pro scopes."
+  },
+  "wiki/concepts/stripe-radar.md:13": {
+    "approved_update_ids": [
+      "radar-risk-settings-dated-classic-score-route",
+      "radar-rules-supported-attributes-classic-ranges"
+    ],
+    "replacement": "The May 2026 [[source-stripe-radar-risk-evaluation|risk evaluations guide]] describes a 0\u201399 classic score with Radar for Fraud Teams, and November Risk Settings describes the classic model as 0\u201399. Both dated [[source-stripe-radar-rules-supported-attributes|Supported Attributes captures]] list a 0\u2013100 classic rule attribute, with default thresholds of at least 65 for elevated and at least 75 for highest that can be adjusted. Whether the model emits 100 remains unresolved. See [[source-stripe-radar-risk-settings]] for the November plan scope, Dashboard overall risk level and retirement of the default classic high-risk block rule",
+    "rationale": "Keeps the dated 0\u201399 model and 0\u2013100 predicate references, adjustable thresholds, unresolved endpoint and plan route."
+  },
+  "wiki/concepts/stripe-radar.md:15": {
+    "approved_update_ids": [
+      "radar-risk-settings-charge-outcome-classic-default",
+      "radar-rules-supported-attributes-legacy-highest-action"
+    ],
+    "replacement": "by default in the May 10, 2026 Risk evaluations example. The legacy rule applies while enabled. See [[source-stripe-radar-risk-settings]] for accounts using risk settings. | `blocked` when blocked",
+    "rationale": "Keeps the dated example, account migration qualification and state-specific Charge outcome."
+  },
+  "wiki/concepts/stripe-radar.md:16": {
+    "approved_update_ids": [
+      "radar-risk-settings-bot-scope",
+      "radar-rules-supported-attributes-bot-integrations"
+    ],
+    "replacement": "The [[source-stripe-radar-bot-abuse|May 10, 2026 Bot Abuse guide]] names Stripe Checkout, with Dashboard payment Risk scores, custom rules and Sigma access via `radar_abuse_prevention_attributes.bot_score`. The [[raw/stripe-radar-bot-abuse-2026-11-07|November 7, 2026 Bot Abuse capture]] documents Stripe Checkout, Custom Checkout, Radar Sessions and Web Elements, with a 0\u201399 score in Radar Pro. November [[source-stripe-radar-rules-supported-attributes|Supported Attributes]] scopes the `:bot_score:` rule predicate to cards. A high score indicates likely bot activity and does not establish fraud or malice. Stripe advises using the score for anti-scripting or anti-bot policies rather than as a standalone fraud signal. The November guide describes viewing the score in the Dashboard, writing custom rules and using the bot risk control",
+    "rationale": "Keeps May source eligibility and access, separate November integrations and plan, card-only predicate, and interpretation boundary."
+  },
+  "wiki/concepts/stripe-radar.md:20": {
+    "approved_update_ids": [
+      "radar-rules-supported-attributes-bot-source-route",
+      "radar-risk-settings-bot-source-route"
+    ],
+    "replacement": "May 10, 2026 Bot Abuse guide on Checkout scoring, anti-bot policies, Sigma and rules. The [[raw/stripe-radar-bot-abuse-2026-11-07|November 2026 capture]] gives the Radar Pro and integration scope.",
+    "rationale": "Uses the May source summary for May claims and a directly labeled raw route for November."
+  },
+  "wiki/concepts/stripe-radar.md:21": {
+    "approved_update_ids": [
+      "radar-risk-settings-reciprocal-source-route",
+      "radar-rules-supported-attributes-risk-settings-source-route"
+    ],
+    "replacement": "May and November 2026 Risk Settings guides to plan-qualified controls, separate classic and Dashboard risk signals, and direct-charge settings.",
+    "rationale": "Provides exact reciprocal scope and date context for both approved labels."
+  },
+  "wiki/concepts/stripe-terminal-apps-on-devices.md:5": {
+    "approved_update_ids": [
+      "terminal-features-apps-on-devices-overview-lifecycle-submit",
+      "terminal-features-apps-on-devices-submit-lifecycle-route",
+      "terminal-features-apps-on-devices-overview-lifecycle-deploy"
+    ],
+    "replacement": "the APK in the Dashboard and submit it to Stripe for review. The standard limit is 200 MB. See the standard API upload requirements and separately scoped private-preview size limit above.\n4. **Deploy** \u2014 after approval, deploy to selected devices. The May overview links the Deploy API. November links [[source-stripe-terminal-apps-on-devices-deploy-dashboard|Dashboard deployment]], and the separate [[source-stripe-terminal-apps-on-devices-deploy-api|API guide]] documents private-preview access.",
+    "rationale": "Keeps Dashboard submission, the dated API and Dashboard routes, upload and preview boundaries, and approval before deployment."
+  },
+  "wiki/concepts/stripe-terminal-hardware-orders.md:9": {
+    "approved_update_ids": [
+      "terminal-fleet-configurations-overview-dated-propagation",
+      "terminal-fleet-splash-screen-timing"
+    ],
+    "replacement": "The May 2026 configuration guide describes setting-level inheritance from the Stripe-provisioned account default. Dashboard or API changes can take up to ten minutes. The May guide lists zone configuration as private preview. In its Dashboard workflow, deleting a local configuration returns readers to their account defaults within ten minutes. The 2026-05-01 [[source-stripe-terminal-splash-screen|splash-screen guide]] scopes splash updates to SDK connection for mobile readers and up to ten minutes for smart readers",
+    "rationale": "Keeps the general inheritance and propagation rules separate from per-device splash timing and the documented Dashboard deletion behavior."
+  },
+  "wiki/concepts/stripe-terminal-save-payment-details.md:0": {
+    "approved_update_ids": [
+      "terminal-features-saving-payment-details-save-after-payment-definition",
+      "terminal-features-saving-payment-details-save-directly-conditional-generated-card-definition"
+    ],
+    "replacement": "payment details in person for future online reuse. Stripe can generate a separate reusable `generated_card` PaymentMethod representing the same card when the payment method and flow support it. Its use for online charges, subscriptions, or off-session payments depends on the saved method\u2019s usage restrictions and the customer\u2019s consent",
+    "rationale": "Preserves conditional creation and both usage and consent qualifications from the approved SetupIntent and PaymentIntent comparisons."
+  },
+  "wiki/concepts/stripe-terminal-save-payment-details.md:1": {
+    "approved_update_ids": [
+      "terminal-features-saving-payment-details-save-after-payment-creation",
+      "terminal-features-saving-payment-details-save-directly-conditional-generated-card-step"
+    ],
+    "replacement": "Stripe can create a `generated_card` PaymentMethod linked to the same underlying card where supported. Check that the generated method exists before reuse.",
+    "rationale": "Preserves conditional creation and requires verification of the result before reuse."
+  },
+  "wiki/concepts/stripe-terminal.md:14": {
+    "approved_update_ids": [
+      "terminal-readers-bbpos-wisepad3-hardware-availability",
+      "terminal-mobile-readers-wisepad-market-scope"
+    ],
+    "replacement": " or Android-only USB; physical PIN pad for PIN-auth markets; auto-off 5min disconnected; ~600 contact/~800 contactless tx per charge. The [[source-stripe-terminal-bbpos-wisepad3|reader reference]] and mobile-reader overview list 24 non-US markets in May 2026 and 37 in November 2026.",
+    "rationale": "Preserves the revised reader scope, actual historical and November market counts entirely separate from firmware or setup eligibility, and affected source route."
+  },
+  "wiki/concepts/stripe-terminal.md:24": {
+    "approved_update_ids": [
+      "terminal-smart-readers-dated-regional-hardware",
+      "terminal-tap-to-pay-readers-regional-availability"
+    ],
+    "replacement": "gional reader listings.** The 2026-04-24 [[source-stripe-terminal-regional|regional guide]] lists WisePOS E and S700 as smart readers for Germany and S700 for Japan, with WisePad 3 as a mobile reader for both. It lists iPhone Tap to Pay for Japan and Android Tap to Pay for Gibraltar. The May 1 readers overview also omits Android for Japan. The November 7 [[source-stripe-terminal-tap-to-pay-readers|Tap to Pay reader overview]] lists both platforms for Japan and Android alone for Gibraltar. The November S710 overview and setup badge differ in their lists for Germany and Japan. See [[source-stripe-terminal-smart-readers]] for the dated comparison. A Tap to Pay market listing leaves GA or preview status, account or device eligibility, and physical reader availability to separate evidence",
+    "rationale": "Retains regional smart and mobile models, separately dated Tap to Pay platform evidence and the unresolved S710 setup and overview differences."
+  }
+}

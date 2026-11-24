@@ -1,0 +1,52 @@
+---
+title: "Stripe Terminal: Apps on Devices — Submit Your App"
+type: source
+date_ingested: 2026-05-01
+date_updated: 2026-11-24
+original_format: webpage
+canonical_url: "https://docs.stripe.com/terminal/features/apps-on-devices/submit"
+raw_files:
+  - "stripe-terminal-apps-on-devices-submit-2025.md"
+tags: [stripe, stripe-terminal, apps-on-devices, app-review, dashboard, webhooks]
+---
+
+## Summary
+
+The 2026-05-01 and 2026-11-07 [[stripe]] Terminal captures describe submitting a finalized Apps on Devices APK through the Stripe Dashboard and monitoring its review status.
+
+## Upload Flow (Dashboard)
+
+In **Terminal → Software**, select **Create app**, enter the app name and package name, and open the APK upload window.
+
+1. Choose compatible device types.
+2. Upload the APK file.
+3. Add instructions for the Stripe reviewer if the app requires review. See [[source-stripe-terminal-apps-on-devices-app-review]] for review eligibility and guidelines.
+4. Enter one or more notification email addresses.
+5. Select **Submit for review**.
+
+## Monitor Status
+
+| Channel | What it provides |
+| --- | --- |
+| Email | Stripe sends the review result to the addresses entered at submission. |
+| Dashboard | The app details page shows review status. The Events page lists webhook events. |
+| Webhook | Stripe sends the review outcome to the configured webhook endpoint. |
+
+- `terminal.device_asset_version.app_review_approved` means Stripe has approved the app for deployment.
+- `terminal.device_asset_version.app_review_rejected` means the developer must fix the issue and resubmit the app for review.
+
+## Next Steps
+
+After approval, deployment is a separate step. See [[source-stripe-terminal-apps-on-devices-deploy-dashboard]] for the Dashboard path. The November submission capture links to the [API deployment guide](https://docs.stripe.com/terminal/features/apps-on-devices/deploy-with-api.md). The separate November API guide describes access as private preview. See [[source-stripe-terminal-apps-on-devices-deploy-api]].
+
+## Related
+
+- [[stripe-terminal-apps-on-devices]] — app lifecycle and device deployment routes
+
+## Raw Sources
+
+- [[raw/stripe-terminal-apps-on-devices-submit-2025|Stripe Terminal app submission guide captured 2026-05-01]]
+
+## Related raw API references
+
+- [[raw/stripe-terminal-features-apps-on-devices-submit-2026-11-07|Stripe Terminal app submission guide captured 2026-11-07, including corrected deployment navigation]]

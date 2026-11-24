@@ -1,0 +1,119 @@
+{
+  "job_id": "subscriptions-pricing-models-flat-rate-pricing",
+  "attempt": 1,
+  "raw_path": "raw/stripe-subscriptions-pricing-models-flat-rate-pricing-2026-11-07.md",
+  "raw_sha256": "25e5c7616dc82da535f67ef60434f067599e84f8036f1aa7702e9e58bce66c9c",
+  "prior_raw_path": "raw/stripe-flat-rate-pricing-2026.md",
+  "prior_raw_sha256": "82711983db4c2d27c9579872d9c92b43df0a244b96381a0c6f2eeccde4912252",
+  "source_targets": [
+    "wiki/sources/source-stripe-flat-rate-pricing.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-flat-rate-pricing.md": "f1f7af78bafceed68af41f95be7696626777c8385cc8e3f172b2b4c6c42ec96c"
+  },
+  "read_ranges": {
+    "raw/stripe-subscriptions-pricing-models-flat-rate-pricing-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 44
+      },
+      {
+        "start": 45,
+        "end": 78
+      }
+    ],
+    "raw/stripe-flat-rate-pricing-2026.md": [
+      {
+        "start": 1,
+        "end": 57
+      },
+      {
+        "start": 58,
+        "end": 106
+      }
+    ],
+    "wiki/sources/source-stripe-flat-rate-pricing.md": [
+      {
+        "start": 1,
+        "end": 40
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/5b1815c8aaf744a6faf28eaf/content.diff": [
+      {
+        "start": 1,
+        "end": 71
+      },
+      {
+        "start": 72,
+        "end": 141
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Customers choose a service tier and pay a flat rate for it.",
+      "location": "raw/stripe-subscriptions-pricing-models-flat-rate-pricing-2026-11-07.md:9"
+    },
+    {
+      "text": "Both prices are for the same `Basic` product, so they share the same product description on the customer\u2019s receipt and invoice.",
+      "location": "raw/stripe-subscriptions-pricing-models-flat-rate-pricing-2026-11-07.md:14"
+    },
+    {
+      "text": "You can only edit the product and price until you create a subscription with them.",
+      "location": "raw/stripe-subscriptions-pricing-models-flat-rate-pricing-2026-11-07.md:42"
+    },
+    {
+      "text": "\"items[0][price]={{RECURRING_PRICE_ID}}\"",
+      "location": "raw/stripe-subscriptions-pricing-models-flat-rate-pricing-2026-11-07.md:77"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "You can only edit the product and price until you create a subscription with them.",
+      "location": "raw/stripe-flat-rate-pricing-2026.md:41"
+    },
+    {
+      "text": "price: \"{{RECURRING_PRICE_ID}}\",",
+      "location": "raw/stripe-flat-rate-pricing-2026.md:102"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Both captures describe a customer selecting a service level with flat pricing, with each distinct level modeled as its own Product and the same Product reused for different billing intervals. The examples give the Basic Product $10 monthly and $100 yearly recurring Prices that share the Product description on receipts and invoices.",
+    "Both document the Dashboard product/recurring price setup and an API flow from creation of Product and its two Prices to creating a Subscription with a Customer ID and a selected recurring Price ID. The document's three service levels and amounts are illustrative.",
+    "The current summary matches the core setup and retains a compact API pattern but turns the Dashboard setup sentence into an unqualified rule that Products cannot be edited after Subscription creation."
+  ],
+  "substantive_changes": [],
+  "historical_claims_to_preserve": [
+    "The May 12, 2026 capture remains factual for monthly/yearly Product reuse, sharing the Product description, the Dashboard setup and the historical Node examples. November 7, 2026 confirms the same API semantics in cURL. Keep the editability statement explicitly attributed and scoped if surfaced."
+  ],
+  "conflicts": [
+    "Mapped line 31 says Products cannot be edited after subscription creation. Both flat-rate raws say Product and Price can only be edited until subscription creation in the specific Dashboard setup passages (new raw line 42, old raw line 41). The separate catalog management guides describe editing an existing Product in the Dashboard/API and give distinct constraints for Price from creation (raw/stripe-products-prices-manage-prices-2026-11-07.md:90-111 and :172-176; raw/stripe-manage-products-prices-2025.md:102-127 and :199-203). Remove the blanket sentence or make the documentation tension explicit without inferring broad editability before/after subscription."
+  ],
+  "unresolved_questions": [
+    "The two flat-rate guides do not give itemized Product or Price editability once a subscription uses them, and the catalog management guides use different wording. No universal runtime cutoff is established."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-subscriptions.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-flat-rate-pricing.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Both captures describe a customer selecting a service level with flat pricing, with each distinct level modeled as its own Product and the same Product reused for different billing intervals. The examples give the Basic Product $10 monthly and $100 yearly recurring Prices that share the Product description on receipts and invoices.",
+        "Both document the Dashboard product/recurring price setup and an API flow from creation of Product and its two Prices to creating a Subscription with a Customer ID and a selected recurring Price ID. The document's three service levels and amounts are illustrative.",
+        "The current summary matches the core setup and retains a compact API pattern but turns the Dashboard setup sentence into an unqualified rule that Products cannot be edited after Subscription creation."
+      ],
+      "conflicts": [
+        "Mapped line 31 says Products cannot be edited after subscription creation. Both flat-rate raws say Product and Price can only be edited until subscription creation in the specific Dashboard setup passages (new raw line 42, old raw line 41). The separate catalog management guides describe editing an existing Product in the Dashboard/API and give distinct constraints for Price from creation (raw/stripe-products-prices-manage-prices-2026-11-07.md:90-111 and :172-176; raw/stripe-manage-products-prices-2025.md:102-127 and :199-203). Remove the blanket sentence or make the documentation tension explicit without inferring broad editability before/after subscription."
+      ],
+      "reason": "No substantive behavior delta in November. An independent mapped-source correction is required because the current generalization misstates Product editability; retain both dated factual guides and route detailed catalog edits to source-stripe-products-prices."
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/subscriptions/pricing-models/flat-rate-pricing, the November 7, 2026 guide documents customer choice of a flat-price service level and illustrates distinct Basic, Starter, and Enterprise Products with a monthly and yearly Price per Product. For Basic, $10 per month and $100 per year share the same Product description on the customer's receipt and invoice (new raw lines 9-14, old raw lines 8-13). The merchant uses the Dashboard Product catalog to create a named Product, optionally describe it and add monthly and yearly recurring flat-rate Prices, then save it (new raw lines 16-42, old raw lines 15-41). The API examples create Basic and its two recurring USD Prices for that Product, then use a Customer ID and a chosen recurring Price ID in Subscription Create (new raw lines 44-78, old raw lines 43-106). The May 12, 2026 guide and source-stripe-flat-rate-pricing preserve the same setup pattern and sample amounts. The source's standalone prohibition on Product edits overgeneralizes the dated Dashboard step in both captures.",
+    "Q2": "For https://docs.stripe.com/subscriptions/pricing-models/flat-rate-pricing, both the May 12, 2026 and November 7, 2026 captures are factual. Numbering, formatting, the switch from a local image path to a remote image reference and the Node-to-cURL representation are presentational. Product/Price/Subscription construction and the examples' parameters are unchanged; the same prices and subscriptions links provide navigation (new raw lines 9-18 and new raw lines 44-78, old raw lines 8-17 and old raw lines 43-106). The required change in source-stripe-flat-rate-pricing is independent of the capture delta: remove or qualify its assertion that Products cannot be edited after a subscription is created. Both flat-rate captures state a Product/Price edit cutoff in the Dashboard setup (new raw line 42, old raw line 41), whereas the catalog management guide separately describes existing Product edits and Price update restrictions from creation. The catalog evidence leaves a universal subscription-time cutoff unestablished. Preserve the related recurring pricing overview and reciprocal stripe-subscriptions route, and give the existing source-stripe-products-prices lifecycle route for catalog edits."
+  }
+}

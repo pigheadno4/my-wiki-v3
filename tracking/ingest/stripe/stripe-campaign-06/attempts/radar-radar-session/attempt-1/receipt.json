@@ -1,0 +1,139 @@
+{
+  "job_id": "radar-radar-session",
+  "attempt": 1,
+  "raw_path": "raw/stripe-radar-radar-session-2026-11-07.md",
+  "raw_sha256": "8cf0a747a289f9b7e10a5edd34795dd422ed0c9c44ccbac693239caca80c389b",
+  "prior_raw_path": "raw/stripe-radar-sessions-2026.md",
+  "prior_raw_sha256": "656b4ef0b0ad5ad2f7a73556691098c8d4e2c30f17905813641340bf7d7752ee",
+  "source_targets": [
+    "wiki/sources/source-stripe-radar-sessions.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-radar-sessions.md": "e230337dfb90a1654429ca9b166f7ab9001140c786d4b5dc8469b46520b0fc74"
+  },
+  "read_ranges": {
+    "raw/stripe-radar-radar-session-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 61
+      },
+      {
+        "start": 62,
+        "end": 123
+      }
+    ],
+    "raw/stripe-radar-sessions-2026.md": [
+      {
+        "start": 1,
+        "end": 74
+      },
+      {
+        "start": 75,
+        "end": 153
+      }
+    ],
+    "wiki/sources/source-stripe-radar-sessions.md": [
+      {
+        "start": 1,
+        "end": 58
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/c3fd24386a912d8a92f4c40d/content.diff": [
+      {
+        "start": 1,
+        "end": 60
+      },
+      {
+        "start": 61,
+        "end": 118
+      },
+      {
+        "start": 119,
+        "end": 172
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "Include [Stripe.js](https://docs.stripe.com/js/including) on your website.",
+      "location": "raw/stripe-radar-radar-session-2026-11-07.md:24"
+    },
+    {
+      "text": "Therefore, when you create a PaymentIntent and are providing a Radar Session you must also specify `confirm=true`.",
+      "location": "raw/stripe-radar-radar-session-2026-11-07.md:61"
+    },
+    {
+      "text": "\"allowed_payment_method_types[]=card\"",
+      "location": "raw/stripe-radar-radar-session-2026-11-07.md:68"
+    },
+    {
+      "text": "Any charges created using a Payment Method with a Radar Session use the client information associated with that Radar Session.",
+      "location": "raw/stripe-radar-radar-session-2026-11-07.md:83"
+    },
+    {
+      "text": "You can separately issue a `GET` for each of those resources and see the `radar_options` field when Radar Sessions were successfully attached.",
+      "location": "raw/stripe-radar-radar-session-2026-11-07.md:115"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "payment_method_types: [\"card\"],",
+      "location": "raw/stripe-radar-sessions-2026.md:70"
+    },
+    {
+      "text": "You need to create a Radar Session in your checkout flow or when saving card details.",
+      "location": "raw/stripe-radar-sessions-2026.md:27"
+    },
+    {
+      "text": "Any charges created using a Payment Method with a Radar Session use the client information associated with that Radar Session.",
+      "location": "raw/stripe-radar-sessions-2026.md:97"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "Both captures describe a client-side Radar Session snapshot of browser/device signals for self/third-party tokenization or server-side card submission where these details are not automatically collected. Preferred Stripe integrations already send sufficient information; the Radar Session client still loads Stripe.js on web or uses supported mobile SDKs (iOS 21.6.0+, Android 16.9.0+).",
+    "Client creates a session late in checkout or while saving card details and passes the ID to the merchant server; continue on client error is typical guidance. The server attaches via radar_options.session. On-session dual attachment is recommended for comparing save-time and payment-time signals; PaymentIntent Create must attempt a charge with confirm=true. An existing Intent can receive the ID on its separate Confirm request. Off-session uses PaymentMethod creation and carries its associated client data to subsequent payments.",
+    "The guide says to verify attachment in the API response or by GET on PaymentIntent or PaymentMethod. This check is documentation for attachment, not proof a payment succeeds or that the fraud model acted on it.",
+    "November's cURL PaymentIntent Create example uses allowed_payment_method_types[]=card where May's Node example used payment_method_types: [card]. The related November API labels allowed_payment_method_types optional and payment_method_types a computed response field; the exact-version changelog supplies separate authority for rejecting the old writable input."
+  ],
+  "substantive_changes": [
+    "November PaymentIntent Create example changes the request field used to restrict the card type. The other on-session, off-session and verification instructions are materially continuous. The guide's example has no API version header; retain the separate exact-version API/changelog evidence and do not derive a universal requirement from the example."
+  ],
+  "historical_claims_to_preserve": [
+    "Keep May 10, 2026 historical Server Node examples and the established preferred-integration exception, client/server boundary, charge-attempt prerequisite, on-session optional dual attachment, off-session PaymentMethod association and verification route."
+  ],
+  "conflicts": [
+    "The mapped source (lines 13, 17-23) and Radar concept (lines 230-237) define the use case as absence of Stripe.js and broadly exclude Stripe mobile SDKs. Both snapshots distinguish missing automatic collection during tokenization from using Stripe.js or eligible mobile SDKs to create the Radar Session. Keep the exclusion tied to preferred integrations already collecting sufficient data, including when using those SDKs as the preferred tokenization flow.",
+    "The mapped table and Radar concept attach confirm=true wording to both create and existing-Intent confirm. Both raws require confirm=true when creating a PaymentIntent with a Radar Session; the separate /confirm endpoint receives the Radar Session without that option. Dual attachment is a recommendation, not a requirement.",
+    "The mapped client step makes error continuation sound universal; the raw's sample says typically do not abort checkout. Preserve the guidance's qualification and the explicit first-party/self-tokenization use case."
+  ],
+  "unresolved_questions": [
+    "The November guide sample does not declare a Stripe API version. The separate Endive changelog lists 2026-09-30.endive endpoints and also names 2026-08-26.preview in Impact, so the Radar Session guide does not establish the first affected API version."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-radar.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-radar-sessions.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Both captures describe a client-side Radar Session snapshot of browser/device signals for self/third-party tokenization or server-side card submission where these details are not automatically collected. Preferred Stripe integrations already send sufficient information; the Radar Session client still loads Stripe.js on web or uses supported mobile SDKs (iOS 21.6.0+, Android 16.9.0+).",
+        "Client creates a session late in checkout or while saving card details and passes the ID to the merchant server; continue on client error is typical guidance. The server attaches via radar_options.session. On-session dual attachment is recommended for comparing save-time and payment-time signals; PaymentIntent Create must attempt a charge with confirm=true. An existing Intent can receive the ID on its separate Confirm request. Off-session uses PaymentMethod creation and carries its associated client data to subsequent payments.",
+        "The guide says to verify attachment in the API response or by GET on PaymentIntent or PaymentMethod. This check is documentation for attachment, not proof a payment succeeds or that the fraud model acted on it.",
+        "November's cURL PaymentIntent Create example uses allowed_payment_method_types[]=card where May's Node example used payment_method_types: [card]. The related November API labels allowed_payment_method_types optional and payment_method_types a computed response field; the exact-version changelog supplies separate authority for rejecting the old writable input."
+      ],
+      "conflicts": [
+        "The mapped source (lines 13, 17-23) and Radar concept (lines 230-237) define the use case as absence of Stripe.js and broadly exclude Stripe mobile SDKs. Both snapshots distinguish missing automatic collection during tokenization from using Stripe.js or eligible mobile SDKs to create the Radar Session. Keep the exclusion tied to preferred integrations already collecting sufficient data, including when using those SDKs as the preferred tokenization flow.",
+        "The mapped table and Radar concept attach confirm=true wording to both create and existing-Intent confirm. Both raws require confirm=true when creating a PaymentIntent with a Radar Session; the separate /confirm endpoint receives the Radar Session without that option. Dual attachment is a recommendation, not a requirement.",
+        "The mapped client step makes error continuation sound universal; the raw's sample says typically do not abort checkout. Preserve the guidance's qualification and the explicit first-party/self-tokenization use case."
+      ],
+      "reason": "Repair eligibility and attach timing scope in the existing guide, preserve and date both parameter examples, keep reciprocal Radar and optimize-risk-factors routes, and link to the separate exact-version PaymentIntent guidance."
+    }
+  ],
+  "answers": {
+    "Q1": "For https://docs.stripe.com/radar/radar-session, the November 7, 2026 guide describes adding browser/device signals when the developer tokenizes cards itself or through a third party, or submits raw card numbers from the merchant server and critical details are not automatically captured. Preferred Stripe checkout integrations already send sufficient information. For the separate session path, the browser uses Stripe.js and supported mobile SDKs include iOS 21.6.0+ or Android 16.9.0+. Create the session late in checkout or when saving details and pass its ID to the merchant server; the example typically continues checkout if session creation errors. See new raw lines 9-28 and new raw lines 32-48, versus old raw lines 8-27 and old raw lines 31-47. The server submits radar_options.session; for customer-present payments, use on PaymentMethod creation and PaymentIntent creation or confirmation when available so Radar can compare save-time and payment-time context. A new Intent accepting the session must attempt a charge with confirm=true; an existing Intent can instead receive the ID on its separate confirmation. Dual attachment is recommended. For customer-absent payment, attach at PaymentMethod creation so its subsequent payments use the associated signals (new raw lines 54-100 and new raw lines 102-110, old raw lines 53-98 and old raw lines 118-140). Verify attachment in API response or retrieval via radar_options.session (new raw lines 113-123, old raw lines 143-153). The mapped source-stripe-radar-sessions covers the flow but loosely turns absence of Stripe.js and mobile use into eligibility rules and merges confirm=true with the separate confirm endpoint. May 10, 2026 uses the older request field payment_method_types and November shows allowed_payment_method_types in its create example (new raw lines 63-71, old raw lines 67-75).",
+    "Q2": "For https://docs.stripe.com/radar/radar-session, update source-stripe-radar-sessions and retain both the factual May 10, 2026 and November 7, 2026 raws. Switching Node to cURL, JavaScript spacing/quote style, lists and table alignment are presentational, except for the substantive example change from payment_method_types to allowed_payment_method_types on PaymentIntent Create (new raw lines 63-71, old raw lines 67-75). The November cURL has no explicit API version. The separately captured PaymentIntent Create reference lists allowed_payment_method_types as optional and payment_method_types as the computed response field; the Endive changelog documents rejection of the old writable input on the linked 2026-09-30.endive endpoint, while naming 2026-08-26.preview in Impact. Keep this version issue on the dedicated PaymentIntent route. Preserve the linked Radar and Optimize Risk Factors reciprocal routes; URLs inside the assigned guide are navigation and carry no new behavioral claims. Repair the conflicting absence-of-Stripe.js and blanket mobile wording in the summary and Radar concept. The predicate is missing automatic fraud data from a nonpreferred tokenization flow. Use Stripe.js or supported mobile SDK to create the session in those flows, and skip supplemental sessions for preferred integrations that already send sufficient information (new raw lines 9-28, old raw lines 8-27). Preserve the different create/confirm request conditions, dual attachment as recommendation for on-session, PaymentMethod association for off-session, and response/GET verification (new raw lines 54-83 and new raw lines 96-115, old raw lines 53-97 and old raw lines 118-145)."
+  }
+}

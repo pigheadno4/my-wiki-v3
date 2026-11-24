@@ -21,7 +21,7 @@ Operations history: [[stripe-log]]
 - [[source-stripe-payment-methods]] — PaymentMethod, Intent and Charge roles, customer action, notification timing, reuse and dated API qualifications.
 - [[source-stripe-checkout-sessions]] — The April and November 2026 Stripe overviews recommend the Checkout Sessions API for most payments integrations. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.)
 - [[source-stripe-payment-intents]] — PaymentIntents and SetupIntents lifecycle, status and cancellation. See the November full lifecycle and asynchronous capture guides and dated API-version conditions.
-- [[source-stripe-legacy-apis]] — Legacy Charges, Tokens and Sources APIs. The dated sources distinguish migration, ACH onboarding and read-side authentication evidence.
+- [[source-stripe-legacy-apis]] — Legacy Charges, Tokens and Sources APIs with dated Sources migration and checkable shutdown guidance.
 - [[source-stripe-glossary]] — Dated Stripe terminology reference. (S02 reviewed update, 2026-11-09; dated source qualifications apply.)
 - [[source-stripe-building-with-ai]] — Stripe AI developer tools: MCP server, agent skills (npx/Claude Code/Cursor), AI coding platforms, VS Code AI assistant (webpage, 2026-04-20)
 - [[source-github-ai]] — `stripe/ai` exact-SHA baselines: hosted MCP, active skills/plugins, checkout benchmarks and retired LLM/toolkit packages (github-repo, updated 2026-11-23)
@@ -136,8 +136,8 @@ Operations history: [[stripe-log]]
 - [[source-stripe-managed-payments-update-checkout]] — Update a Checkout Integration to Use Managed Payments. Dated documentation and November 2026 changes.
 - [[source-stripe-managed-payments-mobile]] — Managed Payments for digital goods in mobile apps. See the dated storefront, hosted Checkout, and external purchase flow guidance.
 - [[source-stripe-managed-payments-payment-links]] — Use Payment Links with Managed Payments. Dated documentation and November 2026 changes.
-- [[source-stripe-recurring-payments-overview]] — Stripe recurring payments: 3 types, 6-product comparison, subscription creation patterns, flexible billing_mode, Accounts v2 (webpage, 2026-04-23)
-- [[source-stripe-terminal-overview]] — Stripe Terminal: 5 integration paths, 4 SDKs, Tap to Pay, offline payments, Connect-compatible (webpage, 2026-04-23)
+- [[source-stripe-recurring-payments-overview]] — Recurring payment models and November installment schedules, with dated Checkout, Billing and network scope.
+- [[source-stripe-terminal-overview]] — Stripe Terminal integration options, including the dated November no-code route and its eligibility boundaries.
 - [[source-stripe-terminal-how-it-works]] — Stripe Terminal architecture (4 components), connection types, E2EE vs P2PE encryption, fleet management, integration scope (webpage, 2026-04-23)
 - [[source-stripe-terminal-global-availability]] — Stripe Terminal: 23 GA countries, 15 preview, payment method × reader matrix, Maestro sunset (webpage, 2026-04-23)
 - [[source-stripe-terminal-select-reader]] — Stripe Terminal reader lineup, SDK/payment/feature matrices, device specs, operational rules (webpage, 2026-04-23)
@@ -170,51 +170,51 @@ Operations history: [[stripe-log]]
 - [[source-stripe-terminal-moto-save-card]] — MOTO save-card: SetupIntent + allow_redisplay, written consent required, compliance disclosure (webpage, 2026-04-24)
 - [[source-stripe-terminal-regional]] — Regional considerations (29 countries): same-country rule, CA Interac, AU eftpos, DE/JP restrictions, EEA SCA (webpage, 2026-04-24)
 - [[source-stripe-terminal-collect-tips]] — Terminal tipping: on-reader (reader-prompted, wide countries) vs on-receipt (US only, tip at capture); mandatory tips in original amount (webpage, 2026-04-27)
-- [[source-stripe-terminal-on-receipt-tipping]] — On-receipt tipping: overcapture flow, 50%/50 USD limit, eligible MCCs (restaurants/taxicabs/beauty), fallback options (webpage, 2026-04-27)
-- [[source-stripe-terminal-on-reader-tipping]] — On-reader tipping: Configuration API (smart/pct/fixed), tip lifecycle, skip tipping, tip-eligible amounts, 38-country list (webpage, 2026-04-27)
+- [[source-stripe-terminal-on-receipt-tipping]] — US on-receipt tipping through overcapture, including the iOS and Android SDK 6.0.0 manual-capture requirement.
+- [[source-stripe-terminal-on-reader-tipping]] — On-reader tipping with dated reader-market availability, capture and amount conditions.
 - [[source-stripe-terminal-save-payment-details]] — Save payment details: generated_card for online reuse, off-session charging, card fingerprints, compliance (webpage, 2026-05-01)
-- [[source-stripe-terminal-save-directly]] — Save directly (SetupIntent): CNP caveat, card networks, allow_redisplay consent, SDK compatibility, mobile wallet caveats (webpage, 2026-05-01)
-- [[source-stripe-terminal-save-after-payment]] — Save after payment (PaymentIntent): setup_future_usage, allow_redisplay at collect, generated_card retrieval, fallback when absent (webpage, 2026-05-01)
-- [[source-stripe-terminal-incremental-authorizations]] — Incremental authorizations: Visa/MC/Amex all MCCs, Discover restricted, max 10 attempts, setup, API, auto-increment at capture (webpage, 2026-05-01)
-- [[source-stripe-terminal-extended-authorizations]] — Extended authorizations: capture up to 30 days, card/MCC eligibility, capture_before field, Amex caveat (webpage, 2026-05-01)
-- [[source-stripe-terminal-refunds]] — Refunds and cancellations: cancel pre-capture, online vs in-person refunds, Interac mandatory in-person (webpage, 2026-05-01)
-- [[source-stripe-terminal-receipts]] — Receipts: prebuilt email receipts via receipt_email, custom receipt EMV fields, cardholder preferred_locales (webpage, 2026-05-01)
-- [[source-stripe-terminal-display-cart]] — Display cart details: setReaderDisplay, display-only amounts, pre-dip US only (webpage, 2026-05-01)
-- [[source-stripe-terminal-collect-inputs]] — Collect on-screen inputs: 6 input types, up to 5 per call, webhooks, 7-day signature storage (webpage, 2026-05-01)
-- [[source-stripe-terminal-collect-data]] — Collect swiped data (private preview): magstripe non-PCI, gift cards, token + server retrieval, 24h storage (webpage, 2026-05-01)
-- [[source-stripe-terminal-collect-nfc-data]] — Collect NFC tapped data (private preview): NFC UID, offline-capable, S700/S710/M2 only, no card payments (webpage, 2026-05-01)
-- [[source-stripe-terminal-apps-on-devices]] — Apps on Devices: Android POS on smart readers, two integration modes, AOSP, permissions allowlist (webpage, 2026-05-01)
-- [[source-stripe-terminal-apps-on-devices-build]] — Apps on Devices build/test: DevKit, SDK deps, serverless init, discovery, animations, adb (webpage, 2026-05-01)
-- [[source-stripe-terminal-apps-on-devices-app-review]] — Apps on Devices app review: automated vs manual, 2-5 day timeline, review guidelines (webpage, 2026-05-01)
-- [[source-stripe-terminal-apps-on-devices-submit]] — Apps on Devices submit: Dashboard upload flow, device type selection, status monitoring via webhook (webpage, 2026-05-01)
+- [[source-stripe-terminal-save-directly]] — Terminal payment-detail saving with SetupIntents, dated card and platform limits and November variant navigation.
+- [[source-stripe-terminal-save-after-payment]] — Terminal payment-detail saving after payment, dated generated-card caveats and November variant navigation.
+- [[source-stripe-terminal-incremental-authorizations]] — Terminal incremental authorization eligibility, version-specific manual capture and scoped UnionPay preview.
+- [[source-stripe-terminal-extended-authorizations]] — Terminal extended capture windows, eligibility, actual capture deadline and version-specific manual capture.
+- [[source-stripe-terminal-refunds]] — Terminal cancellation and refund routes, with dated Interac and amount-unit requirements.
+- [[source-stripe-terminal-receipts]] — Terminal receipts, test-key handling and confirmation and capture timing.
+- [[source-stripe-terminal-display-cart]] — Terminal cart display, clearing and pre-dip scope by integration, with November variant navigation.
+- [[source-stripe-terminal-collect-inputs]] — Terminal on-screen inputs, device and SDK scope, and November integration-route navigation.
+- [[source-stripe-terminal-collect-data]] — Terminal customer data collection, reader and preview limits, retention and November SDK route selection.
+- [[source-stripe-terminal-collect-nfc-data]] — Terminal NFC collection preview, compatibility and result scope, with November route selection.
+- [[source-stripe-terminal-apps-on-devices]] — Apps on Devices requirements, file-size limits, devkit and device capability qualifications.
+- [[source-stripe-terminal-apps-on-devices-build]] — Build and test on Terminal devices, with dated supported versions, devkit and kiosk behavior.
+- [[source-stripe-terminal-apps-on-devices-app-review]] — Apps on Devices review and card-data boundaries, with November reviewer setup guidance.
+- [[source-stripe-terminal-apps-on-devices-submit]] — App submission, review and deployment status, with separately scoped API preview navigation.
 - [[source-stripe-terminal-apps-on-devices-deploy-dashboard]] — Apps on Devices deploy: deploy groups, progressive rollout, Alpha/Beta/General best practice (webpage, 2026-05-01)
 - [[source-stripe-terminal-apps-on-devices-deploy-api]] — Apps on Devices deploy via API (private preview): device deploy groups + locations (webpage, 2026-05-01)
-- [[source-stripe-terminal-apps-on-devices-monitor]] — Apps on Devices monitor: Dashboard deployment status per release version, 4 statuses (webpage, 2026-05-01)
-- [[source-stripe-terminal-apps-on-devices-troubleshooting]] — Apps on Devices troubleshooting: upload timeout, sandbox/live, admin settings, IPC limit, crash loops (webpage, 2026-05-01)
-- [[source-stripe-terminal-order-and-return-readers]] — Hardware orders: ordering, statuses, self-service returns 33 countries, shipping table, permissions, Hardware Orders API (webpage, 2026-05-01)
+- [[source-stripe-terminal-apps-on-devices-monitor]] — Dashboard app deployment monitoring, with dated status and installation-attempt distinctions.
+- [[source-stripe-terminal-apps-on-devices-troubleshooting]] — Terminal app troubleshooting, protected settings, multi-app behavior and Dashboard deployment boundaries.
+- [[source-stripe-terminal-order-and-return-readers]] — Terminal hardware ordering, preregistration, returns and dated API preview and country scope.
 - [[source-stripe-terminal-warranty-claims]] — Warranty claims: 1-year coverage on readers, Dashboard claim flow, 48h review, min 3-month replacement warranty (webpage, 2026-05-01)
-- [[source-stripe-terminal-register-readers]] — Register readers: pairing code/serial/order number methods, mobile readers at connect time (webpage, 2026-05-01)
-- [[source-stripe-terminal-locations-and-zones]] — Locations and zones: address requirements by country, zone hierarchy, connection token scoping, Connect patterns (webpage, 2026-05-01)
-- [[source-stripe-terminal-configurations]] — Terminal configurations: account→location hierarchy, 10-min propagation, API CRUD (webpage, 2026-05-01)
-- [[source-stripe-terminal-admin-menu-passcode]] — Admin menu passcode: default 07139, 5-digit numeric, account→location hierarchy, permission tiers (webpage, 2026-05-01)
-- [[source-stripe-terminal-splash-screen]] — Splash screen: per-reader-type, image specs, resolutions table, WisePad 3 PNG/B&W, Files API upload flow (webpage, 2026-05-01)
-- [[source-stripe-terminal-offline-mode-config]] — Offline mode configuration: enable/disable toggle via Configuration object, 10-min propagation (webpage, 2026-05-01)
-- [[source-stripe-terminal-reboot-time]] — Reboot time window: default midnight, custom window, staggered reboots, location timezone, midnight-crossing logic (webpage, 2026-05-01)
-- [[source-stripe-terminal-tipping-config]] — On-reader tips fleet config: 3 tip types, tipping.{currency} Configuration API, smart_tip_threshold (webpage, 2026-05-01)
-- [[source-stripe-terminal-wifi-config]] — WiFi network config: remote push, PSK/EAP-PEAP/EAP-TLS, no credential validation, EAP-TLS via Files API (webpage, 2026-05-01)
-- [[source-stripe-terminal-cellular-config]] — Cellular config: S710 only, WiFi fallback, monthly billing if enabled any time during month (webpage, 2026-05-01)
+- [[source-stripe-terminal-register-readers]] — Terminal reader registration, including November Connect delegation and order preregistration.
+- [[source-stripe-terminal-locations-and-zones]] — Terminal Locations and zones, reader discovery and dated country and address requirements.
+- [[source-stripe-terminal-configurations]] — Terminal configurations and inheritance, with dated Dashboard and API limits and November route selection.
+- [[source-stripe-terminal-admin-menu-passcode]] — Terminal admin menu passcode settings, inheritance and timing, with November Dashboard and API navigation.
+- [[source-stripe-terminal-splash-screen]] — Terminal splash screen configuration by model and connection path, with November Dashboard and API navigation.
+- [[source-stripe-terminal-offline-mode-config]] — Fleet offline configuration, device forwarding and propagation, with November Dashboard and API navigation.
+- [[source-stripe-terminal-reboot-time]] — Terminal reboot configuration, timezone and timing, with November Dashboard and API navigation.
+- [[source-stripe-terminal-tipping-config]] — Terminal fleet tipping configuration and propagation, with November Dashboard and API navigation.
+- [[source-stripe-terminal-wifi-config]] — Terminal fleet Wi-Fi configuration, user selection and credential behavior, with November route navigation.
+- [[source-stripe-terminal-cellular-config]] — Terminal fleet cellular setup, dated activation and network scope, with November Dashboard and API navigation.
 - [[source-stripe-terminal-monitor-readers]] — Monitor readers: readers list, smart reader health/connectivity, 30-day event log public preview (webpage, 2026-05-01)
-- [[source-stripe-terminal-js-sdk-reference]] — JS SDK API reference: 29 methods, 17 error codes, changelog (webpage, 2026-05-01)
-- [[source-stripe-terminal-mobile-readers]] — Mobile readers overview: M2/Chipper 2X BT US only, WisePad 3 25 non-US countries, BLE/USB, 24h reboot (webpage, 2026-05-01)
-- [[source-stripe-terminal-bbpos-wisepad3]] — WisePad 3 firmware reference: software version format, latest 4.01.03.00, config regions, key identifiers (webpage, 2026-05-01)
-- [[source-stripe-terminal-stripe-m2]] — M2 firmware reference: latest 2.01.01.00, power button logic, NFC UID, LED status tables (webpage, 2026-05-01)
-- [[source-stripe-terminal-smart-readers]] — Smart readers overview: availability table, server-driven compat, midnight PCI restart (webpage, 2026-05-01)
-- [[source-stripe-terminal-s700-s710]] — S700/S710 firmware reference: 4-component software, latest versions, diagnostics, payment sounds, changelog (webpage, 2026-05-01)
-- [[source-stripe-terminal-bbpos-wisepos-e]] — WisePOS E firmware reference: 4-component, latest 2.41.2.0/5.01.03.00, tap sounds, Ethernet dock rule (webpage, 2026-05-01)
-- [[source-stripe-terminal-tap-to-pay-readers]] — Tap to Pay overview: iPhone/Android country lists, MPoC compliance (iPhone certified, Android in progress) (webpage, 2026-05-01)
-- [[source-stripe-terminal-sdk-migration-guide]] — SDK v5 migration guide: unified process methods, easyConnect, iOS 15 min, Handoff→AppsOnDevices (webpage, 2026-05-01)
-- [[source-stripe-terminal-sdk-v4-migration-guide]] — SDK v4 migration guide: consolidated connectReader, auto-reconnect default, allow_redisplay, unified disconnect (webpage, 2026-05-01)
-- [[source-stripe-terminal-sdk-v3-migration-guide]] — SDK v3 migration guide: confirmPaymentIntent rename, readReusableCard removed, per-type DiscoveryConfig (webpage, 2026-05-01)
+- [[source-stripe-terminal-js-sdk-reference]] — Terminal JavaScript SDK methods and errors, with November smart-reader registration scope.
+- [[source-stripe-terminal-mobile-readers]] — Terminal mobile-reader lineup and dated market and Chipper support guidance.
+- [[source-stripe-terminal-bbpos-wisepad3]] — WisePad 3 availability, firmware, localization and region-specific key and configuration evidence.
+- [[source-stripe-terminal-stripe-m2]] — Stripe Reader M2 connection and status indications, with dated firmware and setup discrepancies.
+- [[source-stripe-terminal-smart-readers]] — Terminal smart-reader availability and integration modes, including the November T600 and dated S710 lists.
+- [[source-stripe-terminal-s700-s710]] — S700 and S710 specs, device capabilities, regional firmware and separate changelog evidence.
+- [[source-stripe-terminal-bbpos-wisepos-e]] — WisePOS E setup scope and dated firmware and market tables, with qualified tipping support.
+- [[source-stripe-terminal-tap-to-pay-readers]] — Tap to Pay reader market lists and platform-specific MPoC statements as documented in November 2026.
+- [[source-stripe-terminal-sdk-migration-guide]] — Historical Terminal SDK v5 migration guidance and November v6 iOS and Android route selection.
+- [[source-stripe-terminal-sdk-v4-migration-guide]] — Historical Terminal SDK v4 consent, reconnect and SDK migration details, with November platform navigation.
+- [[source-stripe-terminal-sdk-v3-migration-guide]] — Historical Terminal SDK v3 behavior by platform, with November iOS and Android navigation.
 - [[source-stripe-terminal-deployment-checklist]] — Deployment checklist: 10 items covering ConnectionToken, capture, receipts, reconcile, reader registration, Locations (webpage, 2026-05-01)
 - [[source-stripe-terminal-reader-product-sheets]] — Reader product sheets index: S700/S710/M2/BBPOS/Verifone PDF links (webpage, 2026-05-01)
 - [[source-stripe-payment-methods-overview]] — Payment-method categories and separately dated merchant, customer, currency and integration-surface tables.
@@ -418,7 +418,7 @@ Operations history: [[stripe-log]]
 - [[source-stripe-paypay-accept-payment]] — PayPay acceptance across six variant routes, with dated Checkout mode, return and payment-outcome guidance.
 - [[source-stripe-satispay]] — Satispay, with dated customer and business locations, capture, recurring guidance and disputes.
 - [[source-stripe-satispay-accept-payment]] — Satispay acceptance, with dated variant coverage, confirmation, capture and test limitations.
-- [[source-stripe-secure-remote-commerce]] — SRC/Click to Pay: US only, replaces Visa Checkout + Masterpass, card.masterpass PM type, Masterpass deprecated (webpage, 2026-05-08)
+- [[source-stripe-secure-remote-commerce]] — Dated Click to Pay enrollment and confirmation guidance, with the card payment-method type and nested card.masterpass details.
 - [[source-stripe-vipps]] — Vipps wallet, with dated preview, card routing, business requirements, fees and authorization outcomes.
 - [[source-stripe-vipps-accept-payment]] — Vipps acceptance, with Checkout, Elements and Direct API examples, authorization timing and capture limits.
 - [[source-stripe-wechat-pay]] — WeChat Pay, with dated currency, merchant, integration, refund and Connect qualifications.
@@ -469,9 +469,9 @@ Operations history: [[stripe-log]]
 - [[source-stripe-standalone-3ds]] — Stripe's standalone 3DS API runs EMV 3D Secure authentication separately from payment authorization. (S02 reviewed update, 2026-11-09; dated source qualifications apply.)
 - [[source-stripe-3ds-import]] — External 3DS import to PaymentIntents and SetupIntents, with dated availability, exemption and raw-card access conditions.
 - [[source-stripe-3ds-sigma-query]] — Sigma authentication_report_attempts: is_final_attempt dedup, auth rate calc, SCA exemption columns, 3 example queries (webpage, 2026-05-08)
-- [[source-stripe-sca-readiness]] — SCA readiness: EEA scope, grandfathering (EU Dec 2020/UK Sep 2021), off-session checklist, MIT mandate (webpage, 2026-05-08)
+- [[source-stripe-sca-readiness]] — Stripe SCA readiness, with Billing states, mandate handling and issuer and off-session qualifications.
 - [[source-stripe-currencies]] — Stripe's supported-currencies guide describes 135+ charge currencies, payment-method/presentment/settlement currencies, API amount formatting, special currency rules, charge minima and maxima, and its EEA card-pricing grouping. (S02 reviewed update, 2026-11-09; dated source qualifications apply.)
-- [[source-stripe-react-stripejs]] — React Stripe.js: CheckoutElementsProvider + useCheckoutElements (Checkout path), Elements + useStripe/useElements/ElementsConsumer (advanced) (webpage, 2026-05-08)
+- [[source-stripe-react-stripejs]] — React Stripe.js Elements and Checkout providers with navigation to the November documentation variants.
 - [[source-github-stripe-node]] — cumulative `stripe` Node SDK through `23.0.0`: Node20/Endive migration, callback context fix, webhook tolerance and checkout/Billing contracts; v22 retained (github-repo, updated 2026-10-18)
 - [[changelog-github-stripe-node]] — package-qualified stripe-node history through `23.0.0`; additive full Endive baseline preserves every earlier v22 entry (github-repo, updated 2026-10-18)
 - [[source-github-stripe-cli]] — Stripe CLI history through `1.55.3`: account grouping/stale contexts, multipart fixes, cleanup/telemetry and preserved OAuth/path history (github-repo, updated 2026-10-30)
@@ -513,26 +513,26 @@ Operations history: [[stripe-log]]
 - [[source-stripe-smart-disputes-auto-respond]] — Smart Disputes auto-respond: direct/Connect config, preference API field (on/off/inherit) (webpage, 2026-05-10)
 - [[source-stripe-radar-how-it-works]] — Radar tiers and screened payment methods, with dated pricing and risk controls.
 - [[source-stripe-radar-optimize-risk-factors]] — Radar risk signals and dated Stripe.js hosting guidance by integration.
-- [[source-stripe-radar-sessions]] — Radar Sessions: device snapshot for direct API flows, on/off-session attachment, iOS/Android SDK versions (webpage, 2026-05-10)
+- [[source-stripe-radar-sessions]] — Radar Sessions for integration signals, with dated SDK and PaymentIntent creation scopes.
 - [[source-stripe-radar-risk-evaluation]] — Risk levels/scores, outcome fields, object support matrix, feedback loop (webpage, 2026-05-10)
 - [[source-stripe-radar-custom-fraud-models]] — Custom fraud models, with structured payment metadata and volume review before training, and dated preview access.
 - [[source-stripe-radar-customer-evaluation]] — Customer Evaluation API: multi_accounting + account_sharing, upfunnel risk before payment (webpage, 2026-05-10)
 - [[source-stripe-radar-free-trial-abuse]] — Free trial abuse prevention: blocks high-risk trial starts, Checkout Sessions auto-detect, Sigma query (webpage, 2026-05-10)
-- [[source-stripe-radar-payg-abuse]] — PAYG abuse: non_payment_abuse signal, Payment Evaluation API, fail-open, usage-based billing (webpage, 2026-05-10)
+- [[source-stripe-radar-payg-abuse]] — Radar abuse insights for pay-as-you-go billing, with the November preview Billing Evaluation workflow and historical Payment Evaluation evidence.
 - [[source-stripe-radar-bot-abuse]] — Bot score (0-99, Checkout only): anti-scripting policy enforcement (webpage, 2026-05-10)
 - [[source-stripe-radar-multiprocessor]] — Radar risk evaluation across processors, with separate input conditions for external payments and Stripe-stage evaluations.
 - [[source-stripe-radar-issuing]] — Radar for Issuing: IssuingAuthorizationEvaluation API, pre-authorization fraud scoring (webpage, 2026-05-10)
-- [[source-stripe-radar-risk-settings]] — Risk settings (3 presets), 4 controls, 5 scores, risk_score deprecation (webpage, 2026-05-10)
-- [[source-stripe-radar-supported-payment-methods]] — Radar PM coverage: cards+ACH+SEPA fully supported; BNPL/wallets/stablecoin preview (webpage, 2026-05-10)
+- [[source-stripe-radar-risk-settings]] — Radar scores, controls, plan tiers and connected-account direct-charge settings, with dated classic-rule qualifications.
+- [[source-stripe-radar-supported-payment-methods]] — Radar payment-method coverage by plan, default controls and the dated Bacs predicate example.
 - [[source-stripe-radar-reviews]] — Review queue: Smart Refunds confidence table, actions, assignments, webhooks (webpage, 2026-05-10)
-- [[source-stripe-radar-risk-insights]] — Risk insights: fraud factor numbers, top factors, customer signals, related payments (webpage, 2026-05-10)
-- [[source-stripe-radar-reviews-auth-capture]] — Auth-capture review flow: approve ≠ capture, Cancel vs Refund, review.closed webhook (webpage, 2026-05-10)
+- [[source-stripe-radar-risk-insights]] — Radar review risk insights and related payments, with dated views and lookup boundaries.
+- [[source-stripe-radar-reviews-auth-capture]] — Radar review and capture, including the November Workflows template and separate manual or API capture routes.
 - [[source-stripe-radar-lists]] — Radar default and custom list types, dated product entitlement and list limits.
-- [[source-stripe-radar-rules]] — Rules: 4 actions, built-in rules, syntax, 3DS attributes, Radar Assistant, 200 rule limit (webpage, 2026-05-10)
-- [[source-stripe-radar-rules-reference]] — Rules reference: processing order, attribute types, operators, velocity buckets, metadata scopes (webpage, 2026-05-10)
-- [[source-stripe-radar-rules-supported-attributes]] — Supported attributes: 5 categories, risk/IP/email/distance/fingerprint/time/crypto (webpage, 2026-05-10)
-- [[source-stripe-radar-testing]] — Test cards (highest/elevated), rule backtesting (6-month), when to implement each rule type (webpage, 2026-05-10)
-- [[source-stripe-radar-rules-disputes]] — Dispute resolution rules: Resolve dispute action, dispute-specific attributes (webpage, 2026-05-10)
+- [[source-stripe-radar-rules]] — Radar transaction and account rules, with dated plan controls, custom rule allocations and shadow mode.
+- [[source-stripe-radar-rules-reference]] — Radar rule syntax, operators, precedence and dated account and Treasury rule scope.
+- [[source-stripe-radar-rules-supported-attributes]] — Radar attribute families, new score recommendations, Pro and Treasury attributes, and dated predicate discrepancies.
+- [[source-stripe-radar-testing]] — Radar sandbox fixtures and live-history rule backtesting, with November payment-method and evaluation coverage.
+- [[source-stripe-radar-rules-disputes]] — Radar dispute prevention rules, signup and refund criteria, with the documented threshold discrepancy.
 - [[source-stripe-radar-analytics]] — Radar analytics center: fraud/dispute/block charts, benchmarks, rule matches, legacy overview (webpage, 2026-05-10)
 - [[source-stripe-radar-fraud-alerts]] — Fraud alerts: auto-detected attack patterns, investigation page, email+bell notification (webpage, 2026-05-10)
 - [[source-stripe-radar-fraud-insights]] — Fraud insights: Insights tab, default filters, pivot chart, drill-down, payment status filter (webpage, 2026-05-10)
@@ -555,8 +555,8 @@ Operations history: [[stripe-log]]
 - [[source-stripe-payouts-instant]] — Instant Payout eligibility, balance and fees, with separate dated country, institution and rail lookups.
 - [[source-stripe-payouts-start-of-day]] — Customized start of day, with separate direct and Connect scopes, settlement grouping and payout timing.
 - [[source-stripe-payouts-minimum-balance]] — Minimum balances for eligible payouts, with country limitations and separate Connect setup.
-- [[source-stripe-receipts]] — Receipts: 30-day expiry, auto/manual, refund toggle, invoice itemized, Connect branding rules (webpage, 2026-05-11)
-- [[source-stripe-refunds]] — Refunds: reversal vs refund, ARN tracing, 7 failed reasons, cancel rules, Connect (webpage, 2026-05-11)
+- [[source-stripe-receipts]] — Stripe receipt delivery, PDF and expiry behavior, test-mode handling and Connect configuration.
+- [[source-stripe-refunds]] — Stripe refund lifecycle, corrected bank-detail action, dispute overlap and payment-method scope.
 - [[source-stripe-payments-existing-customers]] — Stripe's 2026-11-07 canonical capture identifies charging an existing payment method while the customer is on-session and lists five web variants. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.) November capture is variant navigation; detailed behavior remains dated to earlier full captures.
 - [[source-stripe-two-step-confirmation]] — The 2026-11-07 full capture describes a two-step web payment checkout: collect details in the Payment Element before creating a PaymentIntent, create a ConfirmationToken, optionally show a review page or run validation and tax calculation, then create the PaymentIntent on the server and confirm it from the client with the token. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.)
 - [[source-stripe-surcharge]] — The public-preview PaymentIntent surcharge guide describes how merchants, and connected accounts on platforms that set and collect payment fees, can offset some card acceptance costs. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.)
@@ -614,10 +614,10 @@ Operations history: [[stripe-log]]
 - [[source-stripe-subscriptions-design-integration]] — Stripe's subscriptions design guide helps choose a pricing model, checkout interface, and payment timing, then routes six example combinations to deeper implementation guides. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
 - [[source-stripe-build-subscriptions]] — Full subscriptions integration: 3 UI paths (hosted/embedded/Elements), billing_mode:flexible (API 2025-06-30.basil), provision access (webpage, 2026-05-12)
 - [[source-stripe-recurring-pricing-models]] — Flat-rate, per-seat, tiered and usage-based pricing, with separately scoped tier calculations.
-- [[source-stripe-flat-rate-pricing]] — Flat rate pricing setup: Product + monthly/yearly Price + Subscription API, immutable after subscription created (webpage, 2026-05-12)
-- [[source-stripe-per-seat-pricing]] — Per-seat pricing: flat rate API + quantity in subscription items; seats = units (webpage, 2026-05-12)
+- [[source-stripe-flat-rate-pricing]] — Flat-rate subscription setup and price selection, with dated product catalog editability guidance.
+- [[source-stripe-per-seat-pricing]] — Per-seat subscription quantity and dated Dashboard start and schedule guidance.
 - [[source-stripe-usage-based-pricing]] — Usage-based pricing: fixed fee+overage, pay-as-you-go, credit burndown; licensed vs metered usage_type, billing.creditGrants (webpage, 2026-05-12)
-- [[source-stripe-tiered-pricing]] — Tiered pricing: volume (qty × one tier) vs graduated (sum tiers), flat_amount per tier, quantity=0 edge case (webpage, 2026-05-12)
+- [[source-stripe-tiered-pricing]] — Volume and graduated tiers, with dated licensed and metered pricing examples.
 - [[source-stripe-pricing-table]] — The May 12 and November 7, 2026 captures describe a Dashboard-created embeddable subscription pricing table. (S03 reviewed update, 2026-11-15; capture-dated qualifications apply.)
 - [[stripe-pricing-table]] — Stripe Pricing Table; reviewed source routes and dated qualifications (S03, 2026-11-15).
 - [[source-stripe-subscriptions-setup-intents]] — SetupIntents for zero-payment subs: auto-created, requires_action/requires_payment_method, doesn't auto-cancel (webpage, 2026-05-12)
@@ -722,7 +722,7 @@ Operations history: [[stripe-log]]
 - [[stripe-surcharge]] — Stripe Surcharge; reviewed source routes and dated qualifications (S03, 2026-11-15).
 - [[stripe-refunds]] — Stripe Refunds: cancel vs refund, reversal, ARN, failed reasons, Connect, key events
 - [[stripe-payouts]] — Stripe Payouts: schedule options, country coverage, multi-currency settlement, supported account types
-- [[stripe-radar]] — Stripe Radar — reviewed source routes and dated qualifications (S02, 2026-11-09)
+- [[stripe-radar]] — Stripe Radar scores, rules, plan coverage, review, supported payment methods and connected-account controls, with dated source routes.
 - [[stripe-dispute-monitoring-programs]] — Stripe — Dispute & Fraud Monitoring Programs — reviewed source routes and dated qualifications (S02, 2026-11-09)
 - [[stripe-high-risk-merchant-lists]] — MATCH/VMSS TMF databases: qualitative + quantitative criteria, removal rules, Stripe position
 - [[stripe-node-sdk]] — Stripe Node.js SDK through `22.6.2`: notification handlers/context limits, request/upload hardening, query coercion, retries/idempotency and checkout contracts
@@ -782,15 +782,15 @@ Operations history: [[stripe-log]]
 - [[stripe-tax-id-element]] — Stripe Tax ID Element; reviewed source routes and dated qualifications (S03, 2026-11-15).
 - [[stripe-saved-payment-methods]] — Stripe Saved Payment Methods; reviewed source routes and dated qualifications (S03, 2026-11-15).
 - [[stripe-inapp-payments]] — Stripe In-App Payments — reviewed source routes and dated qualifications (S02, 2026-11-09)
-- [[stripe-terminal]] — Stripe Terminal: in-person card readers, 5 integration paths, 4 SDKs, Tap to Pay, offline payments, Connect-compatible
-- [[stripe-terminal-tipping]] — Stripe Terminal Tipping: on-reader (reader-prompted, WisePad3/WisePOS E/S700/S710) vs on-receipt (US only, any reader, tip at capture)
-- [[stripe-terminal-save-payment-details]] — Stripe Terminal Save Payment Details: generated_card for online reuse, off-session charging, fingerprints, compliance
-- [[stripe-terminal-incremental-authorizations]] — Stripe Terminal Incremental Authorizations: increase authorized amount before capture, card/MCC eligibility, 10-attempt limit
-- [[stripe-terminal-extended-authorizations]] — Stripe Terminal Extended Authorizations: capture window up to 30 days, card/MCC eligibility table, capture_before field
-- [[stripe-terminal-refunds]] — Stripe Terminal Refunds and Cancellations: cancel pre-capture, online vs in-person refunds, Interac mandatory in-person
-- [[stripe-terminal-collect-inputs]] — Stripe Terminal Collect On-Screen Inputs: 6 input types, S700/S710+WisePOS E only, signature 7-day storage, webhooks
-- [[stripe-terminal-apps-on-devices]] — Stripe Terminal Apps on Devices: custom Android POS on smart readers, two integration modes, AOSP, Connect single-platform
-- [[stripe-terminal-hardware-orders]] — Stripe Terminal Hardware Orders: ordering, statuses, self-service returns, shipping thresholds, permissions, Hardware Orders API
+- [[stripe-terminal]] — Stripe Terminal deployment paths, SDKs, readers, fleet management, Tap to Pay, offline payments and Connect, with dated availability guidance.
+- [[stripe-terminal-tipping]] — Stripe Terminal on-reader tipping and US on-receipt overcapture, with dated device and capture qualifications.
+- [[stripe-terminal-save-payment-details]] — Stripe Terminal card saving through PaymentIntents and SetupIntents, with generated-card, consent and supported-method qualifications.
+- [[stripe-terminal-incremental-authorizations]] — Stripe Terminal incremental authorization eligibility, timing and SDK-specific capture prerequisites.
+- [[stripe-terminal-extended-authorizations]] — Stripe Terminal extended authorization eligibility and the Charge capture deadline, with SDK-specific capture prerequisites.
+- [[stripe-terminal-refunds]] — Stripe Terminal cancellation and refund routes, with dated Interac and reader qualifications.
+- [[stripe-terminal-collect-inputs]] — Stripe Terminal on-screen inputs, scoped by reader and SDK, with consent, webhook and data retention guidance.
+- [[stripe-terminal-apps-on-devices]] — Stripe Terminal Apps on Devices, with build, review, deployment, app transitions and dated device capabilities.
+- [[stripe-terminal-hardware-orders]] — Stripe Terminal ordering, returns, preregistration, fleet configuration and versioned hardware API guidance.
 - [[stripe-managed-payments]] — Stripe as merchant of record. See the dated Checkout, Payment Links and mobile flows, product and regional scope, and migration requirements.
 - [[stripe-nigeria-payment-methods]] — Nigerian Payment Methods (Stripe); reviewed source routes and dated qualifications (S03, 2026-11-15).
 - [[stripe-korea-payment-methods]] — South Korean Payment Methods (Stripe); reviewed source routes and dated qualifications (S03, 2026-11-15).

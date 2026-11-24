@@ -1,0 +1,119 @@
+--- wiki/sources/source-stripe-recurring-payments-overview.md
++++ wiki/sources/source-stripe-recurring-payments-overview.md (candidate)
+@@ -2,15 +2,18 @@
+ title: "Stripe Recurring Payments Overview"
+ type: source
+ date_ingested: 2026-04-23
++date_updated: 2026-11-24
+ original_format: webpage
++canonical_url: "https://docs.stripe.com/recurring-payments"
+ raw_files:
++  - "stripe-recurring-payments-2026-11-07.md"
+   - "stripe-recurring-payments-overview-2025.md"
+ tags: [stripe, recurring-payments, subscriptions, invoices, installments, billing, checkout, elements, payment-links]
+ ---
+ 
+ ## Summary
+ 
+-Stripe's comprehensive guide to recurring payment options. Covers use cases, payment types (subscriptions, invoices, saved PM charges), product comparison (Payment Links → API), and detailed subscription creation via Dashboard, Payment Links, Checkout, and Elements.
++[[stripe|Stripe]]'s guide compares four recurring payment types and six products, then shows subscription creation via Dashboard, Payment Links, Checkout, and Elements. The 2026-11-07 capture expands the Installments tab already present on 2026-04-23 and adds a finite installment plan using Stripe Billing's Subscription Schedules API.
+ 
+ ## Use Cases
+ 
+@@ -20,15 +23,25 @@
+ 4. Accept recurring donations
+ 5. Migrate existing subscriptions to Stripe
+ 
+-## Three Payment Types
++## Four Payment Types
+ 
+ | Type | Key Feature |
+ | --- | --- |
+ | **Subscriptions** (Stripe Billing) | Full lifecycle management, Dashboard + API, Connect support |
+-| **Recurring invoices** | Hosted by Stripe, no website required, Stripe Tax support |
++| **Installments** | Finite Stripe Billing schedule, buy now, pay later (BNPL), or eligible Mexico card installments |
++| **Recurring invoices** | A subscription generates invoices each cycle. Send the invoice under configured terms or automatically charge a saved method. |
+ | **Charges on saved PMs** | PaymentIntents API, `save_during_payment` or `save_and_reuse` patterns |
+ 
+-**Installments caveat**: some markets prohibit subscription schedules for installment plans (may be mistaken for ongoing subscriptions).
++### Billing installment plans
++
++The 2026-11-07 guide uses a reusable recurring Price or inline `price_data` for the installment amount and cadence. The examples create a schedule through `POST /v1/subscription_schedules` for a customer-configured Account or Customer, set the phase to six monthly iterations, and use `end_behavior=cancel` to cancel the subscription after the final iteration. See [[stripe-subscriptions-schedules]].
++
++> [!warning] Dated network-rule guidance
++> The 2026-04-23 capture says some markets' network rules prohibit subscription schedules for installment plans because the charges might be mistaken for an ongoing subscription (April raw lines 52–54 and 1445–1447). The 2026-11-07 capture omits that warning and shows the workflow (November raw lines 1356–1437). The captures leave the affected markets and current applicability unresolved.
++
++### BNPL and Mexico card installments
++
++BNPL allows the buyer to pay over time while the guide describes the merchant as paid immediately and in full. Mexico card installments (*meses sin intereses*) require a Stripe Mexico account, MXN above the plan minimum, and a Mexico-issued consumer credit card from a supported issuer. Stripe determines eligibility and adds a fee to the standard card fee. The separate 2026-05-01 [[source-stripe-mx-installments-accept-payment|Mexico integration guide]] scopes hosted Checkout to `payment` mode and Invoicing to individual `send_invoice` invoices. See [[stripe-installments]] for card-installment eligibility and integration details.
+ 
+ ## Product Comparison
+ 
+@@ -44,22 +57,30 @@
+ ## Subscription Creation Patterns
+ 
+ ### Dashboard
+-Create via Dashboard → Subscriptions → +Create subscription.
++Create via Dashboard → Subscriptions → +Create subscription. Organizations can view and filter subscriptions across accounts. Creation and analysis are account-level. The billing-cycle date determines when Stripe generates the next invoice and can trigger a saved-method charge, depending on settings.
+ 
+ ### Payment Links
+ Select "Sell a subscription" when creating the payment link.
+ 
+ ### Checkout
++Create a `mode=subscription` Checkout Session on the backend. After payment succeeds, the guide says the subscription becomes active and the Session references the Account or Customer and Subscription.
++
++Node.js example based on the 2026-04-23 capture. The 2026-11-07 capture illustrates this path in Ruby.
++
+ ```javascript
+ stripe.checkout.sessions.create({
+     mode: 'subscription',
+-    line_items: [{ price: priceId, quantity: 1 }],
++    line_items: [{ price: priceId, quantity: 1 }], // Omit quantity for usage-based billing
+     subscription_data: { billing_mode: { type: 'flexible' } },
+     success_url: 'https://example.com/success?session_id={CHECKOUT_SESSION_ID}',
+ })
+ ```
+ 
+ ### Elements (Subscriptions API)
++Send the selected Price ID and customer record ID to the backend. The illustrated `default_incomplete` subscription has API status `incomplete` while awaiting payment.
++
++Node.js example based on the 2026-04-23 capture. The 2026-11-07 capture illustrates both customer models in cURL.
++
+ ```javascript
+ // Accounts v2
+ stripe.subscriptions.create({
+@@ -74,20 +95,28 @@
+ // Customers v1: use customer: customerId instead
+ ```
+ 
+-Key: `payment_behavior: 'default_incomplete'` creates inactive subscription awaiting payment; `expand: ['latest_invoice.confirmation_secret']` returns client_secret for frontend confirmation.
++Expand `latest_invoice.confirmation_secret` and pass `subscription.latest_invoice.confirmation_secret.client_secret` to the frontend for payment confirmation. April already illustrates the expansion. November names the full client-secret path, and both November invoice response examples contain `confirmation_secret` and `payment_intent`.
+ 
+ ## Key Facts
+ 
+-- `billing_mode: { type: 'flexible' }` — new flexible billing mode on subscriptions
+-- Accounts v2 uses `customer_account` instead of `customer`
+-- `expand: ['latest_invoice.confirmation_secret']` replaces older `expand: ['latest_invoice.payment_intent']` pattern
+-- Hosted invoice scheduled payments: US only
++- The illustrated subscription requests select `billing_mode: { type: 'flexible' }`. The examples pass `customer_account` for Accounts v2 or `customer` for Customers v1.
++- For a merchant-managed recurring charge, the guide shows an initial on-session PaymentIntent with `setup_future_usage` (generally `off_session` for recurring use) and association of the saved method with the customer. The outside-checkout route uses a server-created SetupIntent attached to the customer. The later charge attempt uses a separate PaymentIntent with that saved method. The during-checkout save-and-reuse example specifies `off_session=true` and `confirm=true` on the later attempt.
++- The guide limits customer scheduling of a future payment on the hosted invoice page to the US. Subscription-generated recurring invoices have their own collection settings.
++- The merchant activates, configures and shares Stripe's hosted customer portal for customer self-service. Recurring donation Payment Links use a recurring product. The guide routes existing-subscription migrations to a separate Billing guide.
++
++## Detail Locators
++
++- The November guide's **Stripe products for recurring payments** section compares the six products. Its **Save and reuse payment information for recurring charges** and **Create an invoice through the API** sections give cURL and collection details.
++- In both captures, the examples under **Create subscriptions with the Subscription Schedules API** create a Subscription. For the actual schedule endpoint, use November's **Create an installment plan with Subscription Schedules** section.
+ 
+ ## Related Pages
+ 
+ - [[recurring-payments]] — generic recurring payments concept page
+ - [[stripe-subscriptions]] — Stripe subscriptions concept page
++- [[stripe-subscriptions-schedules]] — phases, end behavior and finite Billing installment plans
++- [[stripe-installments]] — card installment products and regional eligibility
+ 
+ ## Raw Sources
+ 
+-- [[stripe-recurring-payments-overview-2025]] — verbatim guide (~1500+ lines, full product comparison + code examples)
++- [[raw/stripe-recurring-payments-2026-11-07|2026-11-07 Stripe recurring payments guide]] — full November capture with the Billing installment workflow, Ruby Checkout and cURL API examples
++- [[raw/stripe-recurring-payments-overview-2025|2026-04-23 Stripe recurring payments guide]] — full April capture with the network-rule warning, product comparison and Node.js examples

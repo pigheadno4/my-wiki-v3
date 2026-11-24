@@ -1,0 +1,156 @@
+{
+  "job_id": "refunds",
+  "contribution": {
+    "job_id": "refunds",
+    "queue_id": 464,
+    "canonical_url": "https://docs.stripe.com/refunds",
+    "attempt": 1,
+    "raw_path": "raw/stripe-refunds-2026-11-07.md",
+    "raw_sha256": "37a3a90937f8722bc8c422b74efba9673f63a8df65aad200193abd8cda1e51f7",
+    "prior_raw_path": "raw/stripe-refunds-2026.md",
+    "prior_raw_sha256": "b532d16c0bff00c5471b52d60f65cedfdc72d410a54e560a9d06a2140e6a748e",
+    "receipt_path": "tracking/ingest/stripe/stripe-campaign-06/attempts/refunds/attempt-1/receipt.json",
+    "receipt_sha256": "445c75f5bc345f1a201ba55bb21cf5860302b10eea79f99ceca6bf6b6ec79573",
+    "review_path": "tracking/ingest/stripe/stripe-campaign-06/attempts/refunds/attempt-1/review.json",
+    "review_sha256": "73fa5eab0cb0e9f825d24c6635fa32feddd62d20405a32238aa42ff667c91646",
+    "new_capture_role": "full_captured_page",
+    "proposed_disposition": "source_required_update",
+    "source_assessments": [
+      {
+        "source_target": "wiki/sources/source-stripe-refunds.md",
+        "proposed_disposition": "source_required_update",
+        "update_needed": true,
+        "findings": [
+          "Add the November lifecycle and bank-debit warning and correct cancellation, tracing, IC+ and dated dispute language. Retain May as historical authority, keep the two-way stripe-refunds source/concept route, and preserve disputes and separate receipts navigation with November\u2019s method-specific links."
+        ],
+        "conflicts": [
+          "The May capture expressly says disputes and chargebacks are impossible for fully refunded credit card charges (old raw line 14); the November counterpart omits that sentence (new raw lines 13\u201317). Date the historical claim in source lines 21/70 and concept line 20, and preserve the separate partially refunded and pending-dispute paths. The omission alone does not establish changed policy.",
+          "Source and concept describe card refund cancellation too broadly and the bank-information flow too narrowly. Only some card refunds qualify for a short Dashboard window before reaching the customer, excluding charge reversals. The API or Dashboard can cancel applicable refunds while bank information is uncollected, and November's workflow names examples beyond bank transfers.",
+          "Source line 29 and concept line 28 generalize the 7-business-day and reversal conditions to all references. Both guides apply those particulars to ARN, which is conditional on partner support, and distinguish STAN/RRN fallbacks and selected local references.",
+          "Source line 25 and concept line 24 state lower IC+ network fees categorically. Both guides say reversals usually incur lower network fees and IC+ users might see a difference; refund itself might incur a fee and original processing fees are not returned.",
+          "Both captures use two timing anchors for return of failed refund funds: up to 30 days from the post date in failure handling and from the request in tracing. Do not turn the two sections into a single exact deadline. Both also say statement appearance depends on network/issuer and separately give approximate 5\u201310 business days for a refund credit.",
+          "The pending-refund dispute guidance is Stripe's recommendation to accept/challenge the dispute to avoid duplicate reimbursement, not a guarantee of duplicate credits. November separately warns of possible duplicate credits when a bank debit is proactively refunded concurrently with the customer's bank initiating a dispute."
+        ],
+        "reason": "These are actionable, materially newly documented state and duplicate-credit behaviors absent from the summary, and the retained article wording needs qualifiers."
+      }
+    ],
+    "affected_concepts": [
+      "wiki/concepts/stripe-refunds.md"
+    ],
+    "unresolved_questions": [
+      "The captures do not explain why the fully refunded credit-card dispute sentence and alternate Dashboard issuance/receipt guidance disappeared or establish current status from omission.",
+      "The two 30-day wording anchors are not reconciled by these captures. The approximate 5\u201310-business-day credit estimate is conditional and should not be treated as issuer settlement proof."
+    ],
+    "mapped_source_assessment": {
+      "source_target": "wiki/sources/source-stripe-refunds.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add the November lifecycle and bank-debit warning and correct cancellation, tracing, IC+ and dated dispute language. Retain May as historical authority, keep the two-way stripe-refunds source/concept route, and preserve disputes and separate receipts navigation with November\u2019s method-specific links."
+      ],
+      "conflicts": [
+        "The May capture expressly says disputes and chargebacks are impossible for fully refunded credit card charges (old raw line 14); the November counterpart omits that sentence (new raw lines 13\u201317). Date the historical claim in source lines 21/70 and concept line 20, and preserve the separate partially refunded and pending-dispute paths. The omission alone does not establish changed policy.",
+        "Source and concept describe card refund cancellation too broadly and the bank-information flow too narrowly. Only some card refunds qualify for a short Dashboard window before reaching the customer, excluding charge reversals. The API or Dashboard can cancel applicable refunds while bank information is uncollected, and November's workflow names examples beyond bank transfers.",
+        "Source line 29 and concept line 28 generalize the 7-business-day and reversal conditions to all references. Both guides apply those particulars to ARN, which is conditional on partner support, and distinguish STAN/RRN fallbacks and selected local references.",
+        "Source line 25 and concept line 24 state lower IC+ network fees categorically. Both guides say reversals usually incur lower network fees and IC+ users might see a difference; refund itself might incur a fee and original processing fees are not returned.",
+        "Both captures use two timing anchors for return of failed refund funds: up to 30 days from the post date in failure handling and from the request in tracing. Do not turn the two sections into a single exact deadline. Both also say statement appearance depends on network/issuer and separately give approximate 5\u201310 business days for a refund credit.",
+        "The pending-refund dispute guidance is Stripe's recommendation to accept/challenge the dispute to avoid duplicate reimbursement, not a guarantee of duplicate credits. November separately warns of possible duplicate credits when a bank debit is proactively refunded concurrently with the customer's bank initiating a dispute."
+      ],
+      "reason": "These are actionable, materially newly documented state and duplicate-credit behaviors absent from the summary, and the retained article wording needs qualifiers."
+    },
+    "findings": [
+      "Both captures document the merchant creating a post-success Refund via API or Dashboard, Stripe using available balance and submitting to the customer's bank/issuer, and prior cancellation before completion. They retain original-destination, part/full amount and Connect charge-type boundaries.",
+      "The mapped summary has the general May rules but omits the November bank-debit overlap warning and the consequential requires_action workflow, and overgeneralizes cancellation, tracing and reversal details.",
+      "The reciprocal concept should route the new workflow, clarify dated dispute evidence, and retain the generic disputes and separate receipt documentation links."
+    ],
+    "substantive_changes": [
+      "November adds a bank debit overlap warning for SEPA, Bacs, ACH, ACSS/Canadian PADs, AU BECS and NZ bank debits: merchant proactive refund plus a bank-initiated dispute can give the customer two credits. The guide routes to each payment method\u2019s refund guidance.",
+      "November adds a Refund state and customer email workflow for some methods without native refunds, e.g. Konbini, PromptPay, Boleto and bank transfers. Creation/email requires_action, submission and processing pending, expected arrival succeeded, returned funds requires_action and another email for corrected details, no response by expiration failed, cancellation while requires_action canceled. `next_action` exposes type, email metadata and expiration. May described banking-information collection/cancellation in general.",
+      "November omits May\u2019s fully-refunded credit card dispute sentence, alternate refund issuance from the payment details page and automatic/manual refund-receipt wording. Retain date and avoid inferring removal. November still describes cancellation from the payment details page and conditional refund notification email, which are distinct actions.",
+      "Replacing Node SDK examples with equivalent cURL requests, numbering/Markdown and editorial changes are presentational. API object/create and events links, action-section cross-reference and the added bank transfer refund link are navigation."
+    ],
+    "historical_claims_to_preserve": [
+      "May-dated full-credit-card refund dispute language and details-page/receipt instructions. The November bank-debit warning addresses different payment methods and concurrent actions.",
+      "Preserve no-cost cancellation before completion, original processing fees not returned and possible refund fee, available-balance/insufficient-balance mechanics, original destination with issuer-handled expired-card fallback, and Connect direct versus destination/separate charge and transfer responsibility, including separate transfer reversal to recover funds.",
+      "Preserve Refund failure/cancellation attributes and `refund.failed`, PaymentIntent status distinction (processing is limited to US Bank Account in these guide captures), cancel uncaptured requires_capture instead of refund, and partner-specific reference availability and time limits."
+    ],
+    "conflicts": [
+      "The May capture expressly says disputes and chargebacks are impossible for fully refunded credit card charges (old raw line 14); the November counterpart omits that sentence (new raw lines 13\u201317). Date the historical claim in source lines 21/70 and concept line 20, and preserve the separate partially refunded and pending-dispute paths. The omission alone does not establish changed policy.",
+      "Source and concept describe card refund cancellation too broadly and the bank-information flow too narrowly. Only some card refunds qualify for a short Dashboard window before reaching the customer, excluding charge reversals. The API or Dashboard can cancel applicable refunds while bank information is uncollected, and November's workflow names examples beyond bank transfers.",
+      "Source line 29 and concept line 28 generalize the 7-business-day and reversal conditions to all references. Both guides apply those particulars to ARN, which is conditional on partner support, and distinguish STAN/RRN fallbacks and selected local references.",
+      "Source line 25 and concept line 24 state lower IC+ network fees categorically. Both guides say reversals usually incur lower network fees and IC+ users might see a difference; refund itself might incur a fee and original processing fees are not returned.",
+      "Both captures use two timing anchors for return of failed refund funds: up to 30 days from the post date in failure handling and from the request in tracing. Do not turn the two sections into a single exact deadline. Both also say statement appearance depends on network/issuer and separately give approximate 5\u201310 business days for a refund credit.",
+      "The pending-refund dispute guidance is Stripe's recommendation to accept/challenge the dispute to avoid duplicate reimbursement, not a guarantee of duplicate credits. November separately warns of possible duplicate credits when a bank debit is proactively refunded concurrently with the customer's bank initiating a dispute."
+    ],
+    "expected_read_files": [
+      {
+        "path": "raw/stripe-refunds-2026-11-07.md",
+        "sha256": "37a3a90937f8722bc8c422b74efba9673f63a8df65aad200193abd8cda1e51f7",
+        "lines": 313
+      },
+      {
+        "path": "raw/stripe-refunds-2026.md",
+        "sha256": "b532d16c0bff00c5471b52d60f65cedfdc72d410a54e560a9d06a2140e6a748e",
+        "lines": 295
+      },
+      {
+        "path": "wiki/sources/source-stripe-refunds.md",
+        "sha256": "a1fd108545f5e44573fea5e48248d7fac8ec270d1eedc1157e831476d01abef9",
+        "lines": 75
+      },
+      {
+        "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/8029cd9ca5006236a121d708/content.diff",
+        "sha256": "d7a77e7cb5a623d2c5fc0d8f655f4df198c193fa0bc3dd07092d34beba9aceb7",
+        "lines": 391
+      }
+    ],
+    "original_query_prompts_path": "tracking/ingest/stripe/stripe-campaign-06/proposed-queries.md"
+  },
+  "source_target": "wiki/sources/source-stripe-refunds.md",
+  "source_before_sha256": "a1fd108545f5e44573fea5e48248d7fac8ec270d1eedc1157e831476d01abef9",
+  "expected_read_files": [
+    {
+      "path": "raw/stripe-refunds-2026-11-07.md",
+      "sha256": "37a3a90937f8722bc8c422b74efba9673f63a8df65aad200193abd8cda1e51f7",
+      "lines": 313
+    },
+    {
+      "path": "raw/stripe-refunds-2026.md",
+      "sha256": "b532d16c0bff00c5471b52d60f65cedfdc72d410a54e560a9d06a2140e6a748e",
+      "lines": 295
+    },
+    {
+      "path": "wiki/sources/source-stripe-refunds.md",
+      "sha256": "a1fd108545f5e44573fea5e48248d7fac8ec270d1eedc1157e831476d01abef9",
+      "lines": 75
+    },
+    {
+      "path": "tracking/collections/stripe/recollection-2026-11-07-en/pages/8029cd9ca5006236a121d708/content.diff",
+      "sha256": "d7a77e7cb5a623d2c5fc0d8f655f4df198c193fa0bc3dd07092d34beba9aceb7",
+      "lines": 391
+    }
+  ],
+  "concept_targets": [
+    {
+      "path": "wiki/concepts/stripe-refunds.md",
+      "sha256": "26aaacb65ee3f4cdf0467be3b72e452f8213163e268b6474d241c546e71cf3ab"
+    }
+  ],
+  "fixed_queries": "New raw `raw/stripe-refunds-2026-11-07.md`. Prior raw `raw/stripe-refunds-2026.md`. Current summaries `wiki/sources/source-stripe-refunds.md`.\n\n- Q1. For `https://docs.stripe.com/refunds`, what documented behavior, prerequisites, actors and state transitions does the complete new capture establish? How do these compare with the matched prior capture and each mapped summary?\n\n- Q2. Which changes are substantive, presentational or navigation-only? Identify the exact dated qualifications, conflicts and reciprocal routes that the proposed disposition should preserve.",
+  "state": "review_running",
+  "attempt": 2,
+  "review_scope": "targeted",
+  "worker_agent": "/root/s6iw4",
+  "reviewer_agent": "/root/s6ir2",
+  "receipt_path": "tracking/ingest/stripe/stripe-campaign-06/updates/attempts/refunds/attempt-2/receipt.json",
+  "receipt_sha256": "25835d2912b0d53ae3a567342aab8b9679c6053c24ef12bc2b1b4607afd204cf",
+  "review_path": "tracking/ingest/stripe/stripe-campaign-06/updates/attempts/refunds/attempt-1/review.json",
+  "review_sha256": "583b9931e0b1a5f5bd6e6d9d2de7c1b41fbf96dbf096babd9b11b0c126f18fc0",
+  "role": "reviewer",
+  "role_notes": "tracking/ingest/stripe/stripe-campaign-06/updates/role-notes.md",
+  "approved_scope": "tracking/ingest/stripe/stripe-campaign-06/updates/approved-proposal.json",
+  "attempt_dir": "tracking/ingest/stripe/stripe-campaign-06/updates/attempts/refunds/attempt-2",
+  "worker_output": "/tmp/stripe-s06-ingest/refunds-worker.json",
+  "reviewer_output": "/tmp/stripe-s06-ingest/refunds-reviewer.json",
+  "prior_attempt_dir": "tracking/ingest/stripe/stripe-campaign-06/updates/attempts/refunds/attempt-1"
+}

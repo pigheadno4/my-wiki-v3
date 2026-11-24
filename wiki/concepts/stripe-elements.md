@@ -152,7 +152,7 @@ const error = await actions.confirm();
 ### Checkout Sessions path (from `@stripe/react-stripe-js/checkout`)
 
 - `CheckoutElementsProvider` → wraps app; `clientSecret` from Checkout Session; `stripe` prop immutable
-- `useCheckoutElements()` → returns `{ type: 'loading'|'error'|'success', checkout }` object; `checkout.confirm()` submits
+- `useCheckoutElements()` returns loading, error, or success. The success state supplies `checkout`, which the example uses to call `checkout.confirm()` after handling loading and error. See [[source-stripe-react-stripejs]].
 - `useCheckout()` has been deprecated since v6.3.0; its historical planned v7 removal did not occur in the retained 7.0.0 source. Prefer the provider-specific hook; see the contradiction below.
 - `CheckoutFormProvider` + `useCheckoutForm()` expose the narrower beta Checkout Form SDK, while `CheckoutElementsProvider` + `useCheckoutElements()` expose the Elements SDK
 - Checkout exports include Billing Address, Shipping Address, Currency Selector, Payment, Express Checkout, Tax ID, Contact Details, Checkout Form, and beta-gated Terms components

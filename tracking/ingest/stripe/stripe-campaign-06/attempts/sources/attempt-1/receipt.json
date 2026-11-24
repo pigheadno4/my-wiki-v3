@@ -1,0 +1,143 @@
+{
+  "job_id": "sources",
+  "attempt": 1,
+  "raw_path": "raw/stripe-sources-2026-11-07.md",
+  "raw_sha256": "68a04305f31008fa84751accb730a5e177f798d43150d2e30fd840896c026d6c",
+  "prior_raw_path": "raw/stripe-sources-api-2025.md",
+  "prior_raw_sha256": "34784356ab5a64f7544c682c827fe8925b6dd079f5cfc8db1bab79b9084e862d",
+  "source_targets": [
+    "wiki/sources/source-stripe-legacy-apis.md"
+  ],
+  "source_before_sha256": {
+    "wiki/sources/source-stripe-legacy-apis.md": "8544282c9e61a901588798faf819fda3b5e39005ab7cde1cab3adb8da3c27cc8"
+  },
+  "read_ranges": {
+    "raw/stripe-sources-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 57
+      },
+      {
+        "start": 58,
+        "end": 103
+      }
+    ],
+    "raw/stripe-sources-api-2025.md": [
+      {
+        "start": 1,
+        "end": 52
+      },
+      {
+        "start": 53,
+        "end": 96
+      }
+    ],
+    "wiki/sources/source-stripe-legacy-apis.md": [
+      {
+        "start": 1,
+        "end": 69
+      },
+      {
+        "start": 70,
+        "end": 125
+      },
+      {
+        "start": 126,
+        "end": 168
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/0d813765a0f31b7c6fc8b40d/content.diff": [
+      {
+        "start": 1,
+        "end": 53
+      },
+      {
+        "start": 54,
+        "end": 107
+      }
+    ]
+  },
+  "quotes": [
+    {
+      "text": "We\u2019ve deprecated the Sources API and plan to remove support.",
+      "location": "raw/stripe-sources-2026-11-07.md:16"
+    },
+    {
+      "text": "New integrations can\u2019t use the Sources API.",
+      "location": "raw/stripe-sources-2026-11-07.md:18"
+    },
+    {
+      "text": "After the required flow has been completed and a source becomes chargeable, the source must be used to make a charge request for the payment to be completed.",
+      "location": "raw/stripe-sources-2026-11-07.md:80"
+    },
+    {
+      "text": "Reusable sources must be attached to a [Customer](https://docs.stripe.com/api.md#customers) to be reused.",
+      "location": "raw/stripe-sources-2026-11-07.md:88"
+    },
+    {
+      "text": "The status of the payment\u2019s `Charge` object is initially set to `pending`, until the payment has been confirmed as successful or failed.",
+      "location": "raw/stripe-sources-2026-11-07.md:96"
+    }
+  ],
+  "old_evidence": [
+    {
+      "text": "We deprecated the Sources API and plan to remove support for local payment methods.",
+      "location": "raw/stripe-sources-api-2025.md:8"
+    },
+    {
+      "text": "While we don\u2019t plan to remove support for card payments",
+      "location": "raw/stripe-sources-api-2025.md:10"
+    },
+    {
+      "text": "If not fully charged, funds received by Receiver sources are charged on your behalf and credited to your balance after 60 days.",
+      "location": "raw/stripe-sources-api-2025.md:70"
+    }
+  ],
+  "proposed_disposition": "source_required_update",
+  "findings": [
+    "The dedicated November Sources guide still documents a historical stateful Source and its four method characteristics: pull or push, customer-action flow, usage, and Charge confirmation timing. A merchant initiates pull after consent or a customer pushes funds. Depending on the method, no additional action (excluding 3DS cards in the illustration), redirect approval, code verification posted by the merchant, or a payment into the provided receiver account can make the Source chargeable. The merchant must still create a Charge to complete the payment.",
+    "A Source is a payment method representation. The capture distinguishes Source state from Charge state: a single_use Source is directly charged once and becomes consumed. A reusable one must be attached to a Customer to reuse and becomes consumed if charged directly. A synchronous Charge reports succeeded or failed immediately. An asynchronous Charge starts pending and Stripe sends a status-change webhook. The merchant integration must receive webhooks to establish success or failure.",
+    "The Receiver-specific passage says Stripe charges any funds received by Receiver Sources that are not fully charged on the merchant's behalf and credits the balance after 60 days. The general passage says that failing to charge the chargeable Source causes cancellation and an automatic refund of the authenticated payment. Keep both scoped formulations and do not assume the general refund passage resolves every Receiver case."
+  ],
+  "substantive_changes": [
+    "The dedicated November banner broadly deprecates Sources and plans to remove support, requires existing Sources users to move to Payment Intents and Payment Methods, and expressly bars new integrations from using Sources. April instead earmarked local-method support for removal and required local-method migration to Payment Methods, while recommending migration from Sources cards with no then-current card-removal plan.",
+    "The November page is explicitly superseded by the transition guide and Payment Methods reference and routes new integrations to current payment-method integration options. The legacy documentation body remains evidence of prior workflows."
+  ],
+  "historical_claims_to_preserve": [
+    "Pin the April 20, 2026 capture date despite the 2025 filename and date its local-method removal plan and no-card-removal statement. Preserve the historical legacy flow and table without inferring live local payment method support in the current APIs.",
+    "The dedicated Sources November page is a separate evidence route inside the shared legacy source, whose primary URL is the Charges guide. Keep the separate transition, Older APIs, Charges and detailed card-migration scopes."
+  ],
+  "conflicts": [
+    "The Older APIs overview captured November 7 still says Sources card support was deprecated with no current turn-off plan (its line 19), while the card-oriented transition guide of the same date plans to stop Sources card support and legacy Cards support (its lines 9-13). The dedicated Sources notice broadly requires migration and bars new integrations. Date and attribute all three, with no shutdown date or evidence of enforcement or email delivery.",
+    "The dedicated Sources legacy table shows ACH-debit authentication and microdeposit entries linked to ACH with Charges, while the separate November transition explicitly says ACH Direct Debit was supported on Tokens and unsupported on Sources. Its own table alignment is malformed in both captures, so the relevant links and historical example cannot prove a Sources ACH Direct Debit onboarding path. Keep ACH Credit Transfers (a push-flow example) separate from ACH Direct Debit.",
+    "The mapped summary has the correct cross-page November warning in Key Takeaways but its Sources API Concepts section and Raw Sources still cover only the dedicated April capture. Also qualify its shorthand that async webhook is required for fulfillment: source says status confirmation for the asynchronous Charge, with a pending Charge not constituting successful payment."
+  ],
+  "unresolved_questions": [
+    "The snapshots do not give a Sources shutdown date, reconcile November's contradictory card-route intent, or establish account-level enforcement, availability or email delivery.",
+    "The legacy Sources table and separate November ACH Direct Debit matrix do not resolve all historic account/routing scopes. Route the modern integration question to the current ACH Direct Debit authority."
+  ],
+  "affected_concepts": [
+    "wiki/concepts/stripe-payment-methods.md",
+    "wiki/concepts/stripe-payment-intents.md",
+    "wiki/concepts/stripe-ach-direct-debit.md"
+  ],
+  "source_assessments": [
+    {
+      "source_target": "wiki/sources/source-stripe-legacy-apis.md",
+      "proposed_disposition": "source_required_update",
+      "update_needed": true,
+      "findings": [
+        "Add the pinned dedicated November Sources capture to Raw Sources and provenance, and reconcile its broader notice with the April wording in the actual Sources section. Keep the shared Charges canonical URL and distinct guide scopes.",
+        "Retain reciprocal Payment Methods, Payment Intents and ACH routes. Update Payment Methods' source description so the dedicated Sources pair is discoverable, while preserving current APIs and card migration routes."
+      ],
+      "conflicts": [
+        "Explicitly carry the November Older APIs versus transition card-plan contradiction, and qualify the historical ACH-debit table links, Charge pending/status confirmation, and Receiver-specific funds behavior."
+      ],
+      "reason": "The mapped source already mentions the new notice in Key Takeaways. Its dedicated Sources mechanics and raw routes still stop at April, obscuring the evidence for readers deciding whether a new Sources integration is permitted or whether existing card users are included."
+    }
+  ],
+  "answers": {
+    "Q1": "At https://docs.stripe.com/sources, source-stripe-legacy-apis should present the dated historical Sources workflow and November deprecation together. The 2026-11-07 dedicated guide plans to remove Sources support, requires existing users to migrate to Payment Intents and Payment Methods and bars new integrations. The 2026-04-20 guide required migration for local methods but then said card payments were not planned for removal, and recommended migration from Sources card use (old raw lines 4-12, new raw lines 5-20). Both bodies explain the merchant's pull after consent or the customer's push, then customer authentication or funding as needed: no extra action for illustrated non-3DS cards, redirect approval, verification code sent by the merchant, or funds pushed to a receiver account. A chargeable Source still requires a Charge request, with general cancellation and automatic refund if not charged. For Receiver, the guide separately states that Stripe charges received funds that were not fully charged on the merchant's behalf and credits the balance after 60 days (old raw lines 42-73, new raw lines 49-80). The merchant directly charges single_use once, changing Source status to consumed, or attaches a reusable Source to the Customer for repeat use. Directly charging a reusable Source consumes it. A synchronous Charge gets an immediate success/failure status. An asynchronous Charge begins pending and requires webhooks to confirm the later status (old raw lines 75-91, new raw lines 82-98). The mapped summary already notes broad November deprecation elsewhere, but its dedicated Sources section and primary evidence routes still use April only.",
+    "Q2": "At https://docs.stripe.com/sources, source-stripe-legacy-apis needs a scoped source_required_update. The April 20, 2026 dedicated guide planned local-method removal and recommended replacing Sources cards without a then-current removal plan. November 7 labels the dedicated content superseded, broadly plans support removal, requires existing Sources users to migrate and bars new integrations (old raw lines 8-10, new raw lines 9-18). The separate 2026-11-07 Older APIs overview at raw/stripe-payments-older-apis-2026-11-07.md lines 15-19 continues to say card acceptance has no current turn-off plan, while the separate 2026-11-07 transition guide at raw/stripe-payments-payment-methods-transitioning-2026-11-07.md lines 9-13 plans to stop Sources card and legacy Cards support. Preserve this as a dated documentary conflict and keep the dedicated Sources notice\u2019s new-integration bar. There is no shutdown date or enforcement proof. Table spacing, emphasis, diagram assets and wording are presentational, leaving legacy flows and status behavior in place. The migration, Payment Methods API and current integration-options links are navigation supporting the new notice (old raw lines 23-40, old raw lines 53-96, new raw lines 9-18, new raw lines 31-47, new raw lines 60-103). Preserve the Receiver-specific 60-day treatment and scope legacy method deprecations to the Sources path. The historical ACH-debit table links lead to the older ACH guide, while the November transition matrix explicitly lists Tokens support and Sources non-support for ACH Direct Debit. Avoid treating the distinct ACH Credit Transfer push example as proof of a Sources ACH Direct Debit route (old raw lines 29-32, old raw line 47, new raw lines 37-40, new raw line 54, and the November transition raw lines 76-85). Add the dedicated November raw in the shared legacy source and preserve reciprocal stripe-payment-methods, stripe-payment-intents and stripe-ach-direct-debit routes, with the Charges gateway and other migration guides retaining their separate authority."
+  }
+}

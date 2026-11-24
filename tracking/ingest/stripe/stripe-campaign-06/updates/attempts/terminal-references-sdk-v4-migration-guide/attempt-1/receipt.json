@@ -1,0 +1,162 @@
+{
+  "job_id": "terminal-references-sdk-v4-migration-guide",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Terminal: SDK Migration Guide (v4.0.0)\"\ntype: source\ndate_ingested: 2026-05-01\ndate_updated: 2026-11-24\noriginal_format: webpage\ncanonical_url: \"https://docs.stripe.com/terminal/references/sdk-v4-migration-guide\"\nraw_files:\n  - \"stripe-terminal-sdk-v4-migration-guide-2025.md\"\ntags: [stripe, stripe-terminal, sdk, ios, android, migration, v4]\n---\n\n## Summary\n\nThe May 1, 2026 capture documents breaking changes for existing [[stripe-terminal|Stripe Terminal]] iOS and Android integrations migrating to SDK 4.0.0.\n\n## Breaking Changes Summary\n\n**Save after payment**: The v4 guide documents saving payment details outside the US. For the in-person PaymentIntent flow, pass `setup_future_usage` at creation and `allow_redisplay` at collection.\n\n**Save without payment**: `collectSetupIntentPaymentMethod` replaces the direct SetupIntent flow\u2019s `customerConsentCollected` parameter with `allowRedisplay`.\n\n**Consolidated `connectReader`**: all platform-specific methods (`connectBluetoothReader`, `connectInternetReader`, `connectLocalMobileReader`, etc.) unified into `connectReader`. Reader delegate/listener moved into ConnectionConfiguration instead of method parameter.\n\n**Auto-reconnection**: v4 enables auto-reconnection by default after an unexpected disconnect for mobile and Tap to Pay readers. iOS removed `SCPReconnectionDelegate` and moved its callbacks into the respective reader delegates. Android replaced the separate `ReaderReconnectionListener` configuration parameter with the relevant reader listener, which inherits reconnection events. Set the platform\u2019s `autoReconnectOnUnexpectedDisconnect` option to `false` to disable the behavior.\n\n**New `discovering`/`DISCOVERING` ConnectionStatus**: Represents when discovery is running. A new `discoverReaders` request cancels the in-progress discovery with the platform\u2019s integration-cancellation error and starts immediately. Smart and Tap to Pay reader discovery invokes its completion callback when the operation ends.\n\n**Disconnect callbacks consolidated**: `terminal:didReportUnexpectedReaderDisconnect` (iOS) / `TerminalListener::onUnexpectedReaderDisconnect` (Android) removed. Use `reader:didDisconnect:` / `onDisconnect` in the per-reader-type delegate/listener instead.\n\nIf enabled auto-reconnection fails and the reader disconnects, the reader delegate or listener receives both the reconnection-failure and disconnect callbacks.\n\n**Cancelable confirms**: `confirmPaymentIntent`, `confirmSetupIntent`, and `confirmRefund` return a `Cancelable` in the v4 guide. Calling `cancelPaymentIntent` or `cancelSetupIntent` also stops any ongoing payment processing, including collection.\n\n## iOS-Specific Changes\n\n- Terminal iOS SDK 4.0.0 requires iOS 14 or higher. Existing Terminal iOS SDK 3.x versions continue to support iOS 13 and later.\n- `BluetoothReaderDelegate` \u2192 `MobileReaderDelegate`\n- `collectedAt` \u2192 `storedAt` in `SCPOfflineDetails`\n- \"local mobile\" / \"apple built in\" \u2192 \"Tap To Pay\" in all names and error codes\n- `paymentMethodTypes` now uses `SCPPaymentMethodType` enum (not strings)\n- `SCPSetupIntent.stripeId` now nullable\n\n## Android-Specific Changes\n\n- `TerminalException.TerminalErrorCode` moved to standalone `TerminalErrorCode` enum\n- `ReaderListener` \u2192 `MobileReaderListener`\n- `LocalMobile` \u2192 `TapToPay` everywhere (`LocalMobileDiscoveryConfiguration` \u2192 `TapToPayDiscoveryConfiguration`, etc.)\n- Tap to Pay moves to Maven coordinate `com.stripe:stripeterminal-taptopay:4.0.0`. The predecessor artifact stops receiving updates.\n- `java.util.Date` \u2192 millisecond timestamps in `ReaderSoftwareUpdate::requiredAt`, `OfflineDetails::storedAt`\n- For Tap to Pay on Android, `collectPaymentMethod` and `collectSetupIntentPaymentMethod` time out after 60 seconds with `CARD_READ_TIMED_OUT`.\n- `Location` fields become immutable.\n\n## Detail Locators\n\n- The May 1, 2026 full guide\u2019s **Migrate to version 4.0.0** section records smart-reader MOTO preview and the access-request route at that date.\n\n## Raw Sources\n\n- [[raw/stripe-terminal-sdk-v4-migration-guide-2025|May 1, 2026 full iOS and Android v4 migration guide with before-and-after examples]]\n\n## Related raw API references\n\n- [[raw/stripe-terminal-references-sdk-v4-migration-guide-2026-11-07|November 7, 2026 v4 migration index with iOS and Android variant links]]\n",
+  "quotes": {
+    "terminal-references-sdk-v4-migration-guide": [
+      {
+        "text": "Learn how to migrate to version 4.0.0 of the Stripe Terminal SDK.",
+        "location": "raw/stripe-terminal-references-sdk-v4-migration-guide-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants.",
+        "location": "raw/stripe-terminal-references-sdk-v4-migration-guide-2026-11-07.md:11"
+      },
+      {
+        "text": "[iOS](https://docs.stripe.com/terminal/references/sdk-v4-migration-guide.md?terminal-sdk-platform=ios)",
+        "location": "raw/stripe-terminal-references-sdk-v4-migration-guide-2026-11-07.md:13"
+      },
+      {
+        "text": "[Android](https://docs.stripe.com/terminal/references/sdk-v4-migration-guide.md?terminal-sdk-platform=android)",
+        "location": "raw/stripe-terminal-references-sdk-v4-migration-guide-2026-11-07.md:14"
+      }
+    ]
+  },
+  "old_evidence": {
+    "terminal-references-sdk-v4-migration-guide": [
+      {
+        "text": "Update your minimum supported version to iOS 14 or higher",
+        "location": "raw/stripe-terminal-sdk-v4-migration-guide-2025.md:30"
+      },
+      {
+        "text": "Auto reconnection is now enabled by default for mobile and Tap to Pay readers",
+        "location": "raw/stripe-terminal-sdk-v4-migration-guide-2025.md:123"
+      },
+      {
+        "text": "the `ReaderReconnectionListener` has been inherited by the respective ReaderListeners.",
+        "location": "raw/stripe-terminal-sdk-v4-migration-guide-2025.md:351"
+      },
+      {
+        "text": "now also cancels any ongoing payment processing.",
+        "location": "raw/stripe-terminal-sdk-v4-migration-guide-2025.md:451"
+      },
+      {
+        "text": "and replaced it with the `allowRedisplay` parameter.",
+        "location": "raw/stripe-terminal-sdk-v4-migration-guide-2025.md:48"
+      },
+      {
+        "text": "The new discoverReaders operation then starts immediately.",
+        "location": "raw/stripe-terminal-sdk-v4-migration-guide-2025.md:56"
+      },
+      {
+        "text": "The old one will no longer be updated.",
+        "location": "raw/stripe-terminal-sdk-v4-migration-guide-2025.md:471"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-terminal-references-sdk-v4-migration-guide-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-terminal-sdk-v4-migration-guide-2025.md": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 130
+      },
+      {
+        "start": 131,
+        "end": 195
+      },
+      {
+        "start": 196,
+        "end": 260
+      },
+      {
+        "start": 261,
+        "end": 325
+      },
+      {
+        "start": 326,
+        "end": 390
+      },
+      {
+        "start": 391,
+        "end": 455
+      },
+      {
+        "start": 456,
+        "end": 474
+      }
+    ],
+    "wiki/sources/source-stripe-terminal-sdk-v4-migration-guide.md": [
+      {
+        "start": 1,
+        "end": 49
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/90be96dd389ae4a696600ffb/content.diff": [
+      {
+        "start": 1,
+        "end": 65
+      },
+      {
+        "start": 66,
+        "end": 130
+      },
+      {
+        "start": 131,
+        "end": 195
+      },
+      {
+        "start": 196,
+        "end": 260
+      },
+      {
+        "start": 261,
+        "end": 325
+      },
+      {
+        "start": 326,
+        "end": 390
+      },
+      {
+        "start": 391,
+        "end": 455
+      },
+      {
+        "start": 456,
+        "end": 476
+      }
+    ]
+  },
+  "answers": {
+    "terminal-references-sdk-v4-migration-guide": {
+      "Q1": "For https://docs.stripe.com/terminal/references/sdk-v4-migration-guide, source-stripe-terminal-sdk-v4-migration-guide distinguishes the 2026-11-07 iOS and Android navigation index (new raw lines 5-14) from the 2026-05-01 guide for applications upgrading from prior iOS/Android SDKs to 4.0.0 (old raw lines 24-34 and old raw lines 250-254). The index gives platform routes without stating migration prerequisites, SDK actors or transitions. The full May guide requires iOS 14+ for v4 and describes PaymentIntent saving with setup_future_usage at creation plus allow_redisplay at collection, compared with the direct SetupIntent replacement of customerConsentCollected by allowRedisplay (old raw lines 30-50 and old raw lines 256-269). It adds the discovering state; a second discovery cancels the old operation and begins immediately. connectReader takes the reader type's configuration, and unexpected disconnect triggers default reconnection for mobile and Tap to Pay readers (old raw lines 52-72 and old raw lines 123-129 and old raw lines 271-291 and old raw lines 348-354). With auto-reconnection enabled, if reconnection fails and the reader disconnects, the per-reader listener or delegate receives both failure and disconnect callbacks (old raw lines 184-188 and old raw lines 408-412). The SDK provides cancelable confirmations. Its cancelPaymentIntent and cancelSetupIntent methods also stop ongoing payment processing (old raw lines 236-241 and old raw lines 448-452). The prior summary compressed the consent paths, generalized the reconnect default and called the Android listener removed. The revised summary distinguishes the flows and describes the Android listener\u2019s inherited events.",
+      "Q2": "For https://docs.stripe.com/terminal/references/sdk-v4-migration-guide, source-stripe-terminal-sdk-v4-migration-guide records the November date and routes to the iOS and Android .md variant URLs (new raw lines 9-14). The format and routing change from combined implementation detail and embedded platform entry points (old raw lines 24-28 and old raw lines 250-254). The omitted details remain sourced to the 2026-05-01 capture (old raw lines 1-2 and new raw lines 1-3). The revised source preserves v4-specific iOS 14+ versus earlier SDK 3.x iOS 13+ and the earlier smart-reader MOTO preview (old raw lines 16-22 and old raw lines 28-34). It scopes reconnect to unexpected disconnects for mobile and Tap to Pay, and distinguishes the removed iOS delegate from Android's inherited reconnection interfaces and replaced configuration parameter (old raw lines 123-129 and old raw lines 348-354 and old raw lines 469-474). It scopes Android's 60-second timeout to the two Tap to Pay collection methods (old raw lines 454-459). The May Android section names the required v4 Maven coordinate com.stripe:stripeterminal-taptopay:4.0.0 and says the predecessor artifact will stop receiving updates. It does not name the predecessor, so the specific stripeterminal-localmobile name in the summary needs separate evidence. See old raw lines 469-474. The source retains May as its behavioral raw, adds the November index under Related raw API references, and links back to the stripe-terminal concept. The concept routing label qualifies the historical v4 behavior, and the provider index and company routes still need mobile and Tap to Pay scope if their excerpts retain auto-reconnect. Later SDK migration and SetupIntent consent-policy routes retain their separate version and flow scope. These pins do not establish the current SDK release."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "terminal-references-sdk-v4-migration-guide-concept-route",
+      "target_path": "wiki/concepts/stripe-terminal.md",
+      "update_kind": "reciprocal_source_link",
+      "anchor": "- [[source-stripe-terminal-sdk-v4-migration-guide]] \u2014 SDK v4 migration guide: consolidated connectReader, auto-reconnect default on, allow_redisplay, unified disconnect callbacks, iOS 14 min",
+      "proposed_markdown": "- [[source-stripe-terminal-sdk-v4-migration-guide]] \u2014 historical iOS and Android v4 migration, including default reconnection after unexpected disconnects for mobile and Tap to Pay readers",
+      "quote_indexes": [
+        0,
+        2,
+        3
+      ],
+      "warnings": [
+        "The May behavioral guide establishes the reconnect scope (old raw lines 123-129 and 348-354). Qualify any remaining default-reconnect wording in the Stripe provider-index and company routes with the same scope. The November raw is the iOS/Android navigation index only."
+      ]
+    }
+  ]
+}

@@ -2,45 +2,89 @@
 title: "Stripe Terminal: BBPOS WisePad 3"
 type: source
 date_ingested: 2026-05-01
+date_updated: 2026-11-24
 original_format: webpage
+canonical_url: "https://docs.stripe.com/terminal/readers/bbpos-wisepad3"
 raw_files:
+  - "stripe-terminal-readers-bbpos-wisepad3-2026-11-07.md"
   - "stripe-terminal-bbpos-wisepad3-2025.md"
 tags: [stripe, stripe-terminal, wisepad3, mobile-readers, firmware, bluetooth]
 ---
 
 ## Summary
 
-Detailed reference for the BBPOS WisePad 3 — handheld mobile reader with display and PIN pad. Available in 25 non-US countries. BLE or USB (Android only). Compatible with iOS, Android, React Native SDKs.
+[[stripe]]'s [[stripe-terminal|Terminal]] reference describes the BBPOS WisePad 3, a handheld reader with a display and PIN pad for PIN-authenticated payments. It connects to the iOS, Android, or React Native Terminal SDK by Bluetooth Low Energy, with USB limited to Android.
+
+## Availability
+
+The 2026-05-01 reference banner contains 24 country codes. The 2026-11-07 banner contains 37 codes, adding HK, BG, HR, CY, EE, HU, LV, LI, LT, MT, RO, SK, and SI. The 2026-11-07 [[raw/stripe-terminal-payments-setup-reader-bbpos-wisepad3-2026-11-07|WisePad 3 setup capture]] (line 8) and [[raw/stripe-terminal-mobile-readers-2026-11-07|mobile-reader overview capture]] (line 16) display the same 37 codes. The country lists describe this reader and do not establish feature-specific eligibility such as on-reader tipping.
+
+> [!note] Mexico configuration and reader availability
+> November lists Mexico in its country-version, configuration-history, and key-identifier tables. The November reader banner and both linked November availability lists omit Mexico. Reader availability for Mexico remains unresolved from these documents. For setup and integration navigation, see [[source-stripe-terminal-setup-wisepad3|WisePad 3 setup]] and [[source-stripe-terminal-mobile-readers|mobile-reader overview]].
 
 ## Software Version Format
 
-`{firmware_version}_{config_name}_{key_identifier}` — three components joined with underscores.
+The reader software version joins three components with underscores: `{firmware_version}_{config_name}_{key_identifier}`. Both captures route to `deviceSoftwareVersion` for iOS and `softwareVersion` for Android.
 
-**Latest firmware**: `4.01.03.00` (4/21/2026) — Cartes Bancaires card network switching fix.
+**Versions by region as printed in the captures**:
 
-**Latest versions by region**:
+| Country group | 2026-05-01 | 2026-11-07 |
+| --- | --- | --- |
+| AUMYNZ | `4.01.03.00_Prod_APAC1_on_v28_491001` | `4.01.07.00_Prod_APAC1_on_v28_491001` |
+| HK | — | `4.01.07.00_SZZZ_HK_v1_491001` |
+| SG | `4.01.03.00_Prod_APAC1_off_v17_491001` | `4.01.07.00_Prod_APAC1_off_v17_491001` |
+| ATBEDEITLUNLCH | `4.01.03.00_Prod_EU_W1_on_v28_510001` | `4.01.07.00_Prod_EU_W1_on_v28_510001` |
+| FR | `4.01.03.00_FR_v26_511001` | `4.01.07.00_FR_v26_511001` |
+| DE | `4.01.03.00_DE_v31_511001` | `4.01.07.00_DE_v31_511001` |
+| DKNOSE | `4.01.03.00_Prod_EU_W2_on_v21_510001` | `4.01.07.00_Prod_EU_W2_on_v21_510001` |
+| ESPT | `4.01.03.00_Prod_EU_W3_on_v13_510001` | `4.01.07.00_Prod_EU_W3_on_v13_510001` |
+| CZ | `4.01.03.00_Prod_EU_E1_on_v9_51001` | `4.01.07.00_Prod_EU_E1_on_v9_51001` |
+| BGHRRO | — | `4.01.07.00_SZZZ_EU_BG_HR_RO_v3_511001` |
+| CYMT | — | `4.01.07.00_SZZZ_EU_CY_MT_v2_511001` |
+| EELV | — | `4.01.07.00_SZZZ_EU_EE_LV_v3_511001` |
+| CHHULI | — | `4.01.07.00_SZZZ_EU_CH_HU_LI_v4_511001` |
+| LT | — | `4.01.07.00_SZZZ_EU_LT_v2_511001` |
+| SK | — | `4.01.07.00_SZZZ_EU_RU_SK_v3_511001` |
+| SI | — | `4.01.07.00_SZZZ_EU_SI_v2_511001` |
+| IEGBFI | `4.01.03.00_Prod_EU_W1_off_v23_510001` | `4.01.07.00_Prod_EU_W1_off_v23_510001` |
+| CA | `4.01.03.00_Prod_NA_off_v30_480001` | `4.01.07.00_Prod_NA_off_v30_480001` |
+| MX | — | `4.01.07.00_SZZZ_MX_v6_481001` |
 
-| Country group | Latest version string |
-| --- | --- |
-| AU/MY/NZ | `4.01.03.00_Prod_APAC1_on_v28_491001` |
-| SG | `4.01.03.00_Prod_APAC1_off_v17_491001` |
-| AT/BE/DE/IT/LU/NL/CH | `4.01.03.00_Prod_EU_W1_on_v28_510001` |
-| FR | `4.01.03.00_FR_v26_511001` |
-| DE | `4.01.03.00_DE_v31_511001` |
-| DK/NO/SE | `4.01.03.00_Prod_EU_W2_on_v21_510001` |
-| ES/PT | `4.01.03.00_Prod_EU_W3_on_v13_510001` |
-| CZ | `4.01.03.00_Prod_EU_E1_on_v9_51001` |
-| IE/GB/FI | `4.01.03.00_Prod_EU_W1_off_v23_510001` |
-| CA | `4.01.03.00_Prod_NA_off_v30_480001` |
+> [!note] Firmware table and changelog
+> May lists firmware `4.01.03.00` in both the country-version table and the newest changelog entry. November's country-version rows all use `4.01.07.00`, while its newest firmware changelog entry is `4.01.08.01` dated 2026-10-21. Country rollout for the changelog release and installed firmware remain unresolved.
 
-**Key identifiers**: `490001` (APAC), `510001` (Europe), `480001` (North America/CA).
+The country-version table lists DE both individually and in `ATBEDEITLUNLCH`. November lists CH both in `ATBEDEITLUNLCH` and `CHHULI`. The documents give no rule for picking a row. Both captures print the CZ suffix as `51001`. The APAC version rows for `AUMYNZ` and `SG` end in `491001`, while the separate key table lists `490001` as the initial identifier for `AUMYNZSG` and November also lists `491001` for HK. The relationship between those version suffixes and the separately labelled identifiers is unresolved.
 
-**PCI note**: PCI firmware ID `ABCDD` maps to version `AA.BB.CC.DD` (e.g., `WPC3x.01-41041` = `4.01.00.41`).
+## Firmware Changelog
+
+| Firmware | Release date | Change |
+| --- | --- | --- |
+| `4.01.08.01` | 2026-10-21 | General bug fixes and code improvements |
+| `4.01.07.00` | 2026-09-08 | General bug fixes and code improvements |
+| `4.01.06.00` | 2026-08-03 | General bug fixes and code improvements |
+| `4.01.05.00` | 2026-06-30 | General bug fixes and code improvements |
+| `4.01.04.00` | 2026-05-26 | General fixes and support for Croatian, Turkish, Estonian, Hungarian, Latvian, Lithuanian, Maltese, Slovak, Slovenian, Romanian, and Bulgarian |
+| `4.01.03.00` | 2026-04-21 | Fix for Cartes Bancaires manual network switching during PIN entry with an inserted card, allowing the payment flow to continue |
+
+**PCI note**: PCI firmware ID `ABCDD` maps to version `AA.BB.CC.DD`. The published example `WPC3x.01-41041` maps to `4.01.00.41`.
+
+## Configuration and Key History
+
+The November configuration history adds initial entries for HK (`SZZZ_HK_v1`, 2026-10-12) and MX (`SZZZ_MX_v6`, 2026-10-02). See the captures' Configurations sections for historical PIN-type and country labels.
+
+| Identifier | Country group as printed | Scope in key table |
+| --- | --- | --- |
+| `490001` | AUMYNZSG | Initial APAC identifier in both captures |
+| `491001` | HK | Hong Kong identifier added in November |
+| `510001` | ATBEDKFRDEIENLNOSEESCHGB | Initial European identifier in both captures |
+| `480001` | CA | Initial North American identifier in both captures |
+| `481001` | MX | Mexico identifier added in November |
 
 ## Accessories
 
-Mechanical design files (.STP) available under Terminal Design File License Agreement.
+For mechanical design files (.STP), Stripe requires reviewing and accepting the Terminal Design File License Agreement before downloading. The guide states that downloading indicates agreement to its terms.
 
 ## Raw Sources
 
-- [[stripe-terminal-bbpos-wisepad3-2025]] — verbatim webpage content (firmware changelog, configuration tables, key identifiers)
+- [[raw/stripe-terminal-readers-bbpos-wisepad3-2026-11-07|2026-11-07 reader reference]]
+- [[raw/stripe-terminal-bbpos-wisepad3-2025|2026-05-01 reader reference]]

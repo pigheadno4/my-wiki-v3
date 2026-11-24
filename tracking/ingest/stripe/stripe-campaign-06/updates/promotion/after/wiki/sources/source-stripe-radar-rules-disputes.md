@@ -1,0 +1,58 @@
+---
+title: "Stripe — Dispute Resolution Rules"
+type: source
+date_ingested: 2026-05-10
+date_updated: 2026-11-24
+original_format: webpage
+canonical_url: "https://docs.stripe.com/radar/rules/disputes"
+raw_files:
+  - "stripe-radar-rules-disputes-2026-11-07.md"
+  - "stripe-radar-rules-disputes-2026.md"
+tags: [stripe, radar, rules, disputes, dispute-resolution, dispute-prevention]
+---
+
+## Summary
+
+A merchant configures dispute resolution rules in [[stripe-radar|Radar]]. Radar evaluates each incoming dispute and automatically resolves it by refund if any configured rule matches. These rules share the transaction rule syntax and use a dispute-specific attribute set.
+
+## Eligibility and Enrollment
+
+- **2026-05-10 rules guide** — Merchants using Stripe Radar or Radar for Fraud Teams could write resolution rules after signing up for dispute prevention.
+- **2026-11-07 rules guide** — Merchants can write these rules if their [plan](https://docs.stripe.com/radar/how-radar-works.md#compare-plans) supports [dispute prevention](https://docs.stripe.com/disputes/prevention-preview.md). The capture leaves the tier mapping open. The separately captured November [Dispute prevention preview](https://docs.stripe.com/disputes/prevention-preview) directs merchants to sign up in [Dispute settings](https://dashboard.stripe.com/settings/disputes).
+
+## Rule Structure
+
+```
+Resolve dispute if {condition}
+```
+
+The action is always `Resolve dispute`. See [[source-stripe-radar-rules-reference|Rules reference]] for the shared syntax.
+
+> [!warning] USD 10 example in both captures
+> The May and November guides describe a disputed amount of 10 USD or less and show `Resolve dispute if :amount_in_usd: <= 10.00`. The explanation below the example gives `:amount_in_usd: < 10.00`. The guides therefore give conflicting conditions at exactly 10 USD.
+
+## Dispute-Specific Attributes
+
+| Attribute | Type | Notes |
+| --- | --- | --- |
+| `amount_in_xyz` | Numeric | Converts the disputed amount, which can differ from the payment amount, to the specified supported currency. For decimal currencies, use base units such as dollars instead of cents. |
+| `card_brand` | String (case-insensitive) | `visa` or `mc` only |
+| `card_bin` | String (case-insensitive) | First 6 digits of card |
+| `card_country` | Country (case-insensitive) | Two-letter code of the card's issuing country |
+| `currency` | String (case-insensitive) | Three-character code for the currency in which the customer paid |
+| `is_fraudulent` | Boolean | `true` for a dispute filed as fraudulent. `false` covers non-fraud disputes, such as product not received, product unacceptable or subscription canceled. |
+| `network_reason_code` | String (case-insensitive) | Visa dispute network reason codes only in both captures |
+| `statement_descriptor` | String (case-insensitive) | Statement descriptor on payment |
+| `account` | String (case-sensitive) | Connect account on whose behalf a destination or `on_behalf_of` charge is made. If a destination charge sets `on_behalf_of`, that account takes precedence. |
+
+## Related Pages
+
+- [[stripe-radar]] — concept page (updated with dispute resolution rules)
+- [[source-stripe-disputes-prevention]] — dispute prevention overview (RDR/Ethoca)
+- [[source-stripe-radar-rules]] — transaction rule structure
+- [[source-stripe-radar-rules-reference]] — shared Radar rule syntax
+
+## Raw Sources
+
+- [[raw/stripe-radar-rules-disputes-2026-11-07|2026-11-07 Stripe dispute resolution rules]] — full capture with the plan-support condition, incoming dispute handling and attribute scope
+- [[stripe-radar-rules-disputes-2026]] — verbatim dispute resolution rules reference

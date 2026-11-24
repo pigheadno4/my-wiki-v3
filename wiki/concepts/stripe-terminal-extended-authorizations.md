@@ -7,7 +7,7 @@ tags: [stripe, stripe-terminal, extended-authorization, payment-intents, card-pr
 
 ## Definition
 
-Extended authorizations allow merchants to capture a confirmed Terminal PaymentIntent beyond the standard window (48 hours for most cards, 5 days for Visa), up to 30 days depending on card brand and merchant category.
+Extended authorizations allow later capture of a successfully authorized, confirmed card-present Terminal PaymentIntent. The May and November guides give a typical baseline of 48 hours, or five days for Visa, and an extension of up to 30 days depending on card brand and merchant category. The Charge gives the payment's actual deadline.
 
 **Canonical use case**: a hotel authorizes in full at check-in, captures at check-out.
 
@@ -31,7 +31,9 @@ For iOS `StripeTerminal@6.0.0`, SDK-side `PaymentIntentParametersBuilder` now de
 
 For Android `stripeterminal@6.0.0`, explicitly choose `CaptureMethod.Manual` for extended authorization because SDK-side creation defaults to `AutomaticAsync`. The changed Java/Kotlin examples select Manual for this option; the server-side example and capture-window checks below remain necessary. See [[source-github-stripe-terminal-android]] and [[changelog-github-stripe-terminal-android]].
 
-Set at PaymentIntent creation:
+The November webpage explicitly requires manual capture for iOS and Android SDK 6.0.0 creation. Its Swift and Kotlin samples omit the corresponding setter. The separately captured SDK examples above set it explicitly. The November React Native example adds `captureMethod: 'manual'` and specifies no React Native version threshold.
+
+Set `payment_method_options.card_present.request_extended_authorization` to `true` and `capture_method` to `manual` when creating the PaymentIntent. The historical Node create example below is from the May 2026 guide. The November guide uses `allowed_payment_method_types[]=card_present` in its cURL example. See [[stripe-payment-intents|PaymentIntent request version notes]] for the separate `stripe@23.0.0` boundary.
 
 ```javascript
 const paymentIntent = await stripe.paymentIntents.create({
@@ -64,4 +66,4 @@ For online (non-Terminal) extended authorizations, see [[stripe-extended-authori
 
 ## Sources
 
-- [[source-stripe-terminal-extended-authorizations]] — primary source: availability table, setup, capture_before field behavior
+- [[source-stripe-terminal-extended-authorizations]] — May and November 2026 Terminal guides covering eligibility, SDK and server setup, and the Charge-based capture deadline.

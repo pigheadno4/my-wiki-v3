@@ -1,0 +1,308 @@
+--- raw/stripe-terminal-on-reader-tipping-2025.md
++++ raw/stripe-terminal-features-collecting-tips-on-reader-2026-11-07.md
+@@ -1,16 +1,16 @@
+ # Collect on-reader tips
+ 
+-With on-reader tipping, you can display suggested tip amounts on the reader before the customer presents their payment method. The reader shows the customer three suggestions based on the [tipping option](https://docs.stripe.com/terminal/features/collecting-tips/on-reader.md#customize-tips-reader) that you set up. The reader automatically shows a tipping selection screen on every call to collect a payment. When you [confirm the payment](https://docs.stripe.com/terminal/payments/collect-card-payment.md#confirm-payment), the `PaymentIntent` is confirmed for an amount inclusive of the selected tip.
+-![Payment screen](assets/stripe-terminal-on-reader-tipping-payment-screen.png)
++With on-reader tipping, you can display suggested tip amounts on the reader before the customer presents their payment method. The reader shows the customer three suggestions based on the [tipping option](https://docs.stripe.com/terminal/features/collecting-tips/on-reader.md#customize-tips-reader) that you set up. The reader automatically shows a tipping selection screen on every call to collect a payment. When you [confirm the payment](https://docs.stripe.com/terminal/payments/collect-card-payment.md?process=inspect#confirm-payment), the `PaymentIntent` is confirmed for an amount inclusive of the selected tip.
++![](https://b.stripecdn.com/docs-statics-srv/assets/wpe-darkmode-pay.fdf5e2100ca53b54e100a28b8589b1d1.png)
+ 
+ Payment screen
+-![Tipping selection screen (percentage)](assets/stripe-terminal-on-reader-tipping-selection-screen.png)
++![](https://b.stripecdn.com/docs-statics-srv/assets/wpe-darkmode-subtotal.50779461be74aa98f600aef3e7715a16.png)
+ 
+ Tipping selection screen (percentage)
+-![Total screen](assets/stripe-terminal-on-reader-tipping-total-screen.png)
++![](https://b.stripecdn.com/docs-statics-srv/assets/wpe-darkmode-total.eb4f25263c136bed268f68a6f5e82933.png)
+ 
+ Total screen
+-![Approved screen](assets/stripe-terminal-on-reader-tipping-approved-screen.png)
++![](https://b.stripecdn.com/docs-statics-srv/assets/wpe-darkmode-approved.6eb33af4ca019de7621d07363e24dd8e.png)
+ 
+ Approved screen
+ 
+@@ -32,6 +32,7 @@
+ - FR
+ - GB
+ - GI
++- HK
+ - HR
+ - HU
+ - IE
+@@ -42,6 +43,7 @@
+ - LU
+ - LV
+ - MT
++- MX
+ - MY
+ - NL
+ - NO
+@@ -57,7 +59,7 @@
+ 
+ **Readers**: [Stripe Reader S700/S710](https://docs.stripe.com/terminal/readers/stripe-reader-s700-s710.md), [BBPOS WisePOS E](https://docs.stripe.com/terminal/readers/bbpos-wisepos-e.md), [BBPOS WisePad 3](https://docs.stripe.com/terminal/readers/bbpos-wisepad3.md)
+ 
+-## Enable and customize on-reader tipping
++## Enable and customize on-reader tipping 
+ 
+ Use a [Configuration](https://docs.stripe.com/api/terminal/configuration.md) object or the [Dashboard](https://docs.stripe.com/terminal/fleet/configurations-overview.md?dashboard-or-api=dashboard#update-the-default-configuration-for-the-account) to set the tipping configuration for your reader:
+ 
+@@ -74,20 +76,16 @@
+ 
+ You can suggest three tip percentages or three tip amounts on the reader. The reader dynamically displays either of these smart tips, depending on a pre-tip amount threshold. Create or update a `Configuration` object as follows. By default, the percentage-based tips are calculated post-tax. To suggest pre-tax tips, you can specify an alternative [tip-eligible amount](https://docs.stripe.com/terminal/features/collecting-tips/on-reader.md#tip-eligible).
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require('stripe')('<<YOUR_SECRET_KEY>>');
+-
+-const configuration = await stripe.terminal.configurations.create({
+-  tipping: {
+-    usd: {
+-      percentages: [15, 20, 25],
+-      fixed_amounts: [100, 200, 300],
+-      smart_tip_threshold: 1000,
+-    },
+-  },
+-});
++```curl
++curl https://api.stripe.com/v1/terminal/configurations \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "tipping[usd][percentages][]=15" \
++  -d "tipping[usd][percentages][]=20" \
++  -d "tipping[usd][percentages][]=25" \
++  -d "tipping[usd][fixed_amounts][]=100" \
++  -d "tipping[usd][fixed_amounts][]=200" \
++  -d "tipping[usd][fixed_amounts][]=300" \
++  -d "tipping[usd][smart_tip_threshold]=1000"
+ ```
+ 
+ With the above example, the reader dynamically chooses what to suggest:
+@@ -99,18 +97,12 @@
+ 
+ You can suggest three tip percentages on the reader. The reader displays these percentage-based tip amounts in the order provided when creating or updating the `Configuration` object. By default, these tips are calculated post-tax. To suggest pre-tax tips, you can specify an alternative [tip-eligible amount](https://docs.stripe.com/terminal/features/collecting-tips/on-reader.md#tip-eligible).
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require('stripe')('<<YOUR_SECRET_KEY>>');
+-
+-const configuration = await stripe.terminal.configurations.create({
+-  tipping: {
+-    usd: {
+-      percentages: [15, 20, 25],
+-    },
+-  },
+-});
++```curl
++curl https://api.stripe.com/v1/terminal/configurations \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "tipping[usd][percentages][]=15" \
++  -d "tipping[usd][percentages][]=20" \
++  -d "tipping[usd][percentages][]=25"
+ ```
+ 
+ With the above example, the reader suggests three tips that are 15%, 20%, or 25% of the pre-tip total from top to bottom.
+@@ -119,18 +111,12 @@
+ 
+ You can suggest three tip amounts on the reader. For payments in USD, the reader displays these tip amounts in the order provided when creating or updating the `Configuration` object.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require('stripe')('<<YOUR_SECRET_KEY>>');
+-
+-const configuration = await stripe.terminal.configurations.create({
+-  tipping: {
+-    usd: {
+-      fixed_amounts: [100, 200, 300],
+-    },
+-  },
+-});
++```curl
++curl https://api.stripe.com/v1/terminal/configurations \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "tipping[usd][fixed_amounts][]=100" \
++  -d "tipping[usd][fixed_amounts][]=200" \
++  -d "tipping[usd][fixed_amounts][]=300"
+ ```
+ 
+ With the above example, the reader suggests 1 USD, 2 USD, or 3 USD tips from top to bottom.
+@@ -139,11 +125,11 @@
+ 
+ After you create a `Configuration` object with your tipping configuration, you can [assign the configuration](https://docs.stripe.com/terminal/fleet/configurations-overview.md?dashboard-or-api=api#create-a-configuration-for-an-individual-location) to your account or a location. BBPOS WisePad 3 readers receive new or updated configurations when they connect to your POS application. BBPOS WisePOS E readers can take up to 5 minutes to receive new or updated configurations.
+ 
+-## Collect payment
++## Collect payment 
+ 
+ For on-reader tipping, follow the instructions for [collecting payments](https://docs.stripe.com/terminal/payments/collect-card-payment.md).
+ 
+-When you [collect a payment method](https://docs.stripe.com/terminal/payments/collect-card-payment.md#collect-payment), your customer sees a tip selection screen on the reader that prompts them to select a tip before asking for their payment method.
++When you [collect a payment method](https://docs.stripe.com/terminal/payments/collect-card-payment.md?process=inspect#collect-payment), your customer sees a tip selection screen on the reader that prompts them to select a tip before asking for their payment method.
+ 
+ Depending on your [tipping configuration](https://docs.stripe.com/terminal/features/collecting-tips/on-reader.md#customize-tips-reader), the customer can choose a suggested tip, specify a custom tip, or leave no tip.
+ 
+@@ -153,22 +139,22 @@
+ 
+ Before a PaymentIntent confirmation, the tip amount returns in the `amount_tip` field but not in the `amount`. After PaymentIntent confirmation, the `amount_tip` field is set to zero, the `amount` includes the tip amount, and the tip amount returns in the [amount_details](https://docs.stripe.com/api/payment_intents/object.md#payment_intent_object-amount_details) object:
+ 
+-| Scenario                                          | [amount_details.tip.amount](https://docs.stripe.com/api/payment_intents/object.md#payment_intent_object-amount_details-tip-amount) return value |
+-| ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+-| On-reader tipping is disabled                     | `null`                                                                                                                                          |
+-| On-reader tipping is enabled, no tip selected     | `0`                                                                                                                                             |
+-| On-reader tipping is enabled, tip amount selected | The amount selected                                                                                                                             |
++| Scenario | [amount_details.tip.amount](https://docs.stripe.com/api/payment_intents/object.md#payment_intent_object-amount_details-tip-amount) return value |
++| --- | --- |
++| On-reader tipping is disabled | `null` |
++| On-reader tipping is enabled, no tip selected | `0` |
++| On-reader tipping is enabled, tip amount selected | The amount selected |
+ 
+ Customers won’t see a tipping selection screen in these cases:
+ 
+ 1. The `Configuration` object is missing a tipping configuration.
+-1. You enabled `skipTipping` in your tipping configuration.
+-1. The reader is in an unsupported country.
+-1. A tipping configuration can’t be applied to the current payment currency. For example, if the payment is in EUR but the `Configuration` object only specifies a tipping configuration for USD.
++2. You enabled `skipTipping` in your tipping configuration.
++3. The reader is in an unsupported country.
++4. A tipping configuration can’t be applied to the current payment currency. For example, if the payment is in EUR but the `Configuration` object only specifies a tipping configuration for USD.
+ 
+ When [testing payments](https://docs.stripe.com/terminal/references/testing.md#physical-test-cards) with the Stripe reader, the total amount (inclusive of any tip) might trigger decline responses depending on the decimal value of the total amount.
+ 
+-## Skip tipping
++## Skip tipping 
+ 
+ You can ignore the tipping configuration, which allows you to hide the tip selection screen on your reader when collecting payments.
+ 
+@@ -180,25 +166,16 @@
+ 
+ #### Server-driven
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require('stripe')('<<YOUR_SECRET_KEY>>');
+-
+-const reader = await stripe.terminal.readers.processPaymentIntent(
+-  'tmr_xxx',
+-  {
+-    payment_intent: '<payment_intent>',
+-    process_config: {
+-      skip_tipping: true,
+-    },
+-  }
+-);
++```curl
++curl https://api.stripe.com/v1/terminal/readers/tmr_xxx/process_payment_intent \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "payment_intent=<payment_intent>" \
++  -d "process_config[skip_tipping]=true"
+ ```
+ 
+ #### JavaScript
+ 
+-```js
++```tsx
+ const result = await terminal.collectPaymentMethod(
+   paymentIntent.secret,
+   {
+@@ -218,6 +195,8 @@
+ ```
+ 
+ #### iOS
++
++#### Swift
+ 
+ ```swift
+ let collectConfig = try CollectPaymentIntentConfigurationBuilder().setSkipTipping(true).build()
+@@ -233,6 +212,8 @@
+ 
+ #### Android
+ 
++#### Kotlin
++
+ ```kotlin
+ val cancelable = Terminal.getInstance().collectPaymentMethod(
+     paymentIntent,
+@@ -253,7 +234,7 @@
+ 
+ #### React Native
+ 
+-```js
++```tsx
+ const { paymentIntent, error } = await collectPaymentMethod({
+   paymentIntent: paymentIntent,
+   skipTipping: true,
+@@ -268,9 +249,8 @@
+ console.log('collectPayment succeeded');
+ ```
+ 
+-## Tip-eligible amounts
+-
+-![Tip-eligible amount screen](assets/stripe-terminal-on-reader-tipping-tip-eligible-amount.png)
++## Tip-eligible amounts 
++![](https://b.stripecdn.com/docs-statics-srv/assets/wpe-tip-eligible-amount.4c189af877d87bd89aaf405409f16548.png)
+ 
+ When collecting a payment, you can set a tip-eligible amount that’s different from the pre-tip amount. Setting a tip-eligible amount changes the value that percentage-based tips are calculated from. The customer is also shown the tip-eligible amount alongside the pre-tip amount on the tip selection screen.
+ 
+@@ -278,27 +258,16 @@
+ 
+ #### Server-driven
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require('stripe')('<<YOUR_SECRET_KEY>>');
+-
+-const reader = await stripe.terminal.readers.processPaymentIntent(
+-  'tmr_xxx',
+-  {
+-    payment_intent: '<payment_intent>',
+-    process_config: {
+-      tipping: {
+-        amount_eligible: 1500,
+-      },
+-    },
+-  }
+-);
++```curl
++curl https://api.stripe.com/v1/terminal/readers/tmr_xxx/process_payment_intent \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d "payment_intent=<payment_intent>" \
++  -d "process_config[tipping][amount_eligible]=1500"
+ ```
+ 
+ #### JavaScript
+ 
+-```js
++```tsx
+ const result = await terminal.collectPaymentMethod(
+   paymentIntent.secret,
+   {
+@@ -321,6 +290,8 @@
+ 
+ #### iOS
+ 
++#### Swift
++
+ ```swift
+ let tippingConfig = try TippingConfigurationBuilder().setEligibleAmount(1500).build()
+ let collectConfig = try CollectPaymentIntentConfigurationBuilder().setTippingConfiguration(tippingConfig).build()
+@@ -335,6 +306,8 @@
+ ```
+ 
+ #### Android
++
++#### Kotlin
+ 
+ ```kotlin
+ val cancelable = Terminal.getInstance().collectPaymentMethod(
+@@ -360,7 +333,7 @@
+ 
+ #### React Native
+ 
+-```js
++```tsx
+ const { paymentIntent, error } = await collectPaymentMethod({
+   paymentIntentId: paymentIntentId,
+   skipTipping: false,

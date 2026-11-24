@@ -2,6 +2,8 @@
 title: "Stripe Terminal: Configure Offline Mode"
 type: source
 date_ingested: 2026-05-01
+date_updated: 2026-11-24
+canonical_url: "https://docs.stripe.com/terminal/fleet/offline-mode"
 original_format: webpage
 raw_files:
   - "stripe-terminal-offline-mode-config-2025.md"
@@ -10,12 +12,24 @@ tags: [stripe, stripe-terminal, configurations, fleet, offline]
 
 ## Summary
 
-Enable or disable offline mode via the Configuration object (same account→location hierarchy as other configurations). Propagation: 10 minutes.
+The May 1, 2026 guide describes configuring offline mode for Terminal readers. With offline mode, the POS device can store payments locally during intermittent, limited, or absent connectivity. When a network connection returns, the Terminal SDK automatically forwards the stored payments to Stripe for processing.
 
-**API**: `configurations.create/update({ offline: { enabled: true } })`
+## Dashboard and API
 
-See [[source-stripe-terminal-offline-payments]] and [[source-stripe-terminal-offline-collect-card-payments]] for offline payment behavior and integration details.
+- From location details, edit **Offline mode** under **Local configurations** or **Inherited configurations**. From **Manage locations**, choose **Edit configuration** from the location's overflow menu, then choose **Edit** or **Override** beside **Offline mode**. Create a configuration first if you need a new one. Set the toggle, choose **Update**, then choose **Apply changes**.
+- The May Dashboard guide says the offline-mode setting updates on the reader within 10 minutes.
+- Create or update a Configuration object to set offline mode. The May guide uses `offline: { enabled: true }` to enable it. The separate November 7, 2026 Configuration API [create](https://docs.stripe.com/api/terminal/configuration/create.md?query=offline) and [update](https://docs.stripe.com/api/terminal/configuration/update.md?query=offline) references list the optional `offline` object for offline transaction settings.
+
+## Related Pages
+
+- [[stripe-terminal-hardware-orders]] — fleet settings and reader management
+- [[source-stripe-terminal-configurations]] — account and location configuration hierarchy
+- [[source-stripe-terminal-offline-payments]] and [[source-stripe-terminal-offline-collect-card-payments]] — offline payment behavior and integration details
 
 ## Raw Sources
 
-- [[stripe-terminal-offline-mode-config-2025]] — verbatim webpage content
+- [[stripe-terminal-offline-mode-config-2025]] — full Dashboard and API guide captured May 1, 2026
+
+## Related raw API references
+
+- [[raw/stripe-terminal-fleet-offline-mode-2026-11-07]] — November 7, 2026 navigation index for the [Dashboard](https://docs.stripe.com/terminal/fleet/offline-mode.md?dashboard-or-api=dashboard) and [API](https://docs.stripe.com/terminal/fleet/offline-mode.md?dashboard-or-api=api) variants

@@ -1,0 +1,191 @@
+--- raw/stripe-terminal-incremental-authorizations-2025.md
++++ raw/stripe-terminal-features-incremental-authorizations-2026-11-07.md
+@@ -6,11 +6,11 @@
+ 
+ Depending on the issuing bank, cardholders might see the amount of the original pending authorization increase in place, or they might see each increment as an additional pending authorization. After capture, the total captured amount appears as one entry.
+ 
+-## Availability
++## Availability 
+ 
+ When using incremental authorizations, be aware of the following restrictions:
+ 
+-- They’re only available with Visa, Mastercard, American Express, or Discover.
++- They’re only available with Visa, Mastercard, American Express, Discover, or UnionPay.
+ - Certain card brands have merchant category restrictions (see below).
+ - You can only increment a transaction made with the POS and reader fully online.
+ - You have a maximum of 10 attempts per payment.
+@@ -21,35 +21,34 @@
+ 
+ Attempting to perform an incremental authorization on a payment that doesn’t fulfill the below criteria results in an error.
+ 
+-| Card brand           | Merchant category                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+-| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+-| **Visa**             | All user categories                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+-| **Mastercard**       | All user categories                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+-| **American Express** | All user categories                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+-| **Discover**         | Car rental, hotels, local/suburban commuter, passenger transportation, including ferries, passenger railways, bus lines-charter, tour, steamship/cruise lines, boat rentals & lease, grocery stores and supermarkets, electric vehicle charging, eating places and restaurants, drinking places (alcoholic beverages), hotels, motels, resorts, trailer parks & campgrounds, equip/tool/furn/appl rental & leasing, automobile rental agency, truck and utility trailer rentals, motor home and rec vehicle rentals, parking lots, parking meters, and garages, amusement parks, circuses, fortune tell, recreation services (not classified) |
++| Card brand | Merchant category |
++| --- | --- |
++| **Visa** | All user categories |
++| **Mastercard** | All user categories |
++| **American Express** | All user categories |
++| **Discover** | Car rental, hotels, local/suburban commuter, passenger transportation, including ferries, passenger railways, bus lines-charter, tour, steamship/cruise lines, boat rentals & lease, grocery stores and supermarkets, electric vehicle charging, eating places and restaurants, drinking places (alcoholic beverages), hotels, motels, resorts, trailer parks & campgrounds, equip/tool/furn/appl rental & leasing, automobile rental agency, truck and utility trailer rentals, motor home and rec vehicle rentals, parking lots, parking meters, and garages, amusement parks, circuses, fortune tell, recreation services (not classified) |
++| **UnionPay**\* (Private preview) | Car rental, automobile rental agency, hotels, motels, resorts, steamship/cruise lines |
++
++\* Stripe Terminal for China UnionPay is in private preview in select Asia-Pacific countries (Australia, Hong Kong, Malaysia, New Zealand, and Singapore) and European countries (Austria, Belgium, Czech Republic, Denmark, Finland, France, Germany, Ireland, Italy, Luxembourg, Netherlands, Norway, Poland, Portugal, Spain, Sweden, Switzerland, and the United Kingdom). To request access, [contact Stripe Sales](https://stripe.com/contact/sales).
+ 
+ ## Request incremental authorization support [Server-side] [Client-side]
+ 
+ When you create a `PaymentIntent`, you can request the ability to capture increments of the payment. Set the [request_incremental_authorization_support](https://docs.stripe.com/api/payment_intents/create.md#create_payment_intent-payment_method_options-card_present-request_incremental_authorization_support) field to `true` and the [capture_method](https://docs.stripe.com/api/payment_intents/create.md#create_payment_intent-capture_method) to `manual`. This updates the text from `Total` to `Pre-authorization` in the payment collection screen.
+ 
++> If you create the PaymentIntent with the iOS or Android SDK, set the capture method to manual explicitly. As of SDK 6.0.0, `captureMethod` defaults to automatic-asynchronous, so a PaymentIntent that doesn’t set it isn’t eligible for this feature. See the capture method migration guidance for [iOS](https://docs.stripe.com/terminal/references/sdk-migration-guide.md#ios-capture-method) or [Android](https://docs.stripe.com/terminal/references/sdk-migration-guide.md#android-capture-method).
++> 
++> For React Native SDK `0.0.1-beta.34` and later, explicitly set `captureMethod: 'manual'` for the same reason.
++
+ #### Server-side
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require('stripe')('<<YOUR_SECRET_KEY>>');
+-
+-const paymentIntent = await stripe.paymentIntents.create({
+-  amount: 1000,
+-  currency: 'usd',
+-  payment_method_types: ['card_present'],
+-  capture_method: 'manual',
+-  payment_method_options: {
+-    card_present: {
+-      request_incremental_authorization_support: true,
+-    },
+-  },
+-});
++```curl
++curl https://api.stripe.com/v1/payment_intents \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d amount=1000 \
++  -d currency=usd \
++  -d "allowed_payment_method_types[]=card_present" \
++  -d capture_method=manual \
++  -d "payment_method_options[card_present][request_incremental_authorization_support]=true"
+ ```
+ 
+ #### iOS
+@@ -107,10 +106,11 @@
+ 
+ #### React Native
+ 
+-```js
++```tsx
+ const { paymentIntent, error } = await createPaymentIntent({
+   amount: 1000,
+   currency: 'usd',
++  captureMethod: 'manual',
+   paymentMethodOptions: {
+     requestIncrementalAuthorizationSupport: true,
+   }
+@@ -140,7 +140,7 @@
+   } else if (result.paymentIntent) {
+     // Now you're ready to increment the authorization using your backend
+   }
+-};
++}
+ ```
+ 
+ #### iOS
+@@ -152,7 +152,7 @@
+ 
+ // Action for a "Checkout" button
+ func checkoutAction() throws {
+-  let params = PaymentIntentParametersBuilder(amount: 1000, currency: "sgd").build()
++  let params = PaymentIntentParametersBuilder(amount: 1000, currency: "jpy").build()
+   Terminal.shared.createPaymentIntent(params) { createResult, createError in
+       if let error = createError {
+           print("createPaymentIntent failed: \(error)")
+@@ -200,10 +200,11 @@
+ 
+ #### React Native
+ 
+-```js
++```tsx
+ const { paymentIntent, error } = await createPaymentIntent({
+   amount: 1000,
+   currency: 'usd',
++  captureMethod: 'manual',
+ });
+ 
+ if (error) {
+@@ -213,7 +214,7 @@
+ 
+ console.log('createPaymentIntent succeeded');
+ 
+-const { paymentIntent: collectedPI, error: paymentIntentError } = await collectPaymentMethod({ paymentIntent: paymentIntent.id });
++const { paymentIntent: collectedPI, error: paymentIntentError } = await collectPaymentMethod({ paymentIntent });
+ 
+ if (paymentIntentError) {
+   console.log(`collectPaymentMethod failed: ${paymentIntentError.message}`);
+@@ -222,15 +223,15 @@
+ 
+ console.log('collectPaymentMethod succeeded');
+ 
+-const { paymentIntent: processedPI, error: processError } = await processPayment(paymentIntent.id);
+-
+-if (processError) {
+-  console.log(`processPayment failed: ${processError.message}`);
++const { paymentIntent: confirmedPI, error: confirmError } = await confirmPaymentIntent({ paymentIntent: collectedPI });
++
++if (confirmError) {
++  console.log(`confirmPaymentIntent failed: ${confirmError.message}`);
+   return;
+ }
+ 
+ // Now you're ready to increment the authorization using your backend
+-console.log('processPayment succeeded');
++console.log('confirmPaymentIntent succeeded');
+ ```
+ 
+ Not all PaymentIntents are eligible for incremental authorizations. To determine whether a PaymentIntent is eligible based on the restrictions listed in the [Availability](https://docs.stripe.com/terminal/features/incremental-authorizations.md#availability) section, check the [incremental_authorization_supported](https://docs.stripe.com/api/charges/object.md#charge_object-payment_method_details-card_present-incremental_authorization_supported) field on the PaymentIntent’s latest charge after a successful confirmation.
+@@ -241,17 +242,10 @@
+ 
+ A single `PaymentIntent` can call this endpoint multiple times to further increase the authorized amount.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require('stripe')('<<YOUR_SECRET_KEY>>');
+-
+-const paymentIntent = await stripe.paymentIntents.incrementAuthorization(
+-  '{{PAYMENT_INTENT_ID}}',
+-  {
+-    amount: 1500,
+-  }
+-);
++```curl
++curl https://api.stripe.com/v1/payment_intents/{{PAYMENT_INTENT_ID}}/increment_authorization \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d amount=1500
+ ```
+ 
+ An authorization can either:
+@@ -267,17 +261,10 @@
+ 
+ > If you’re eligible to [collect on-receipt tips](https://docs.stripe.com/terminal/features/collecting-tips/on-receipt.md), using an `amount_to_capture` that’s higher than the currently authorized amount won’t result in an automatic incremental authorization attempt. Capture requests always succeed.
+ 
+-```node
+-// Don't put any keys in code. See https://docs.stripe.com/keys-best-practices.
+-// Find your keys at https://dashboard.stripe.com/apikeys.
+-const stripe = require('stripe')('<<YOUR_SECRET_KEY>>');
+-
+-const paymentIntent = await stripe.paymentIntents.capture(
+-  '{{PAYMENT_INTENT_ID}}',
+-  {
+-    amount_to_capture: 2000,
+-  }
+-);
++```curl
++curl https://api.stripe.com/v1/payment_intents/{{PAYMENT_INTENT_ID}}/capture \
++  -u "<<YOUR_SECRET_KEY>>:" \
++  -d amount_to_capture=2000
+ ```
+ 
+ The possible outcomes of an incremental authorization attempt are:

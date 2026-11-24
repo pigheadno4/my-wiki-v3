@@ -1,0 +1,102 @@
+{
+  "job_id": "terminal-fleet-reboot-time",
+  "attempt": 1,
+  "source_page": "---\ntitle: \"Stripe Terminal: Configure Reboot Time Window\"\ntype: source\ndate_ingested: 2026-05-01\ndate_updated: 2026-11-24\ncanonical_url: \"https://docs.stripe.com/terminal/fleet/reboot-time\"\noriginal_format: webpage\nraw_files:\n  - \"stripe-terminal-reboot-time-2025.md\"\ntags: [stripe, stripe-terminal, configurations, fleet, reboot]\n---\n\n## Summary\n\nThe May 1, 2026 guide documents a default midnight reboot every 24 hours for smart readers. A custom window uses the reader's registered location time zone. Readers reboot at random times within the configured window to stagger disruptions.\n\n## Dashboard and API\n\n- From the location details page, edit **Reboot time** under **Local configurations** or **Inherited configurations**. From **Manage locations**, choose **Edit configuration** from the location's overflow menu, then choose **Edit** or **Override** for **Reboot time**. Create a configuration first if one does not exist. Select the start and end times, then choose **Update** and **Apply changes**.\n- To set the window through the API, create or update a Configuration with `reboot_window`. Supply two distinct integers from 0 through 23 as `start_hour` and `end_hour`. If the start is lower than the end, both are on the same day. If the start is higher, the window crosses midnight. For example, 15 to 3 means 3 p.m. to 3 a.m.\n- The May Dashboard guide says Stripe sets the window within 10 minutes. If the reader has already rebooted that day, the window takes effect during the next period.\n\nThe separate November 7, 2026 Configuration API [create](https://docs.stripe.com/api/terminal/configuration/create.md?query=reboot_window) and [update](https://docs.stripe.com/api/terminal/configuration/update.md?query=reboot_window) references list `reboot_window` as optional for readers that support customized reboot times.\n\n## Related Pages\n\n- [[stripe-terminal-hardware-orders]] \u2014 Terminal fleet and reader settings\n- [[source-stripe-terminal-configurations]] \u2014 account and location configuration hierarchy\n\n## Raw Sources\n\n- [[stripe-terminal-reboot-time-2025]] \u2014 full Dashboard and API guide captured May 1, 2026\n\n## Related raw API references\n\n- [[raw/stripe-terminal-fleet-reboot-time-2026-11-07]] \u2014 November 7, 2026 navigation index for the [Dashboard](https://docs.stripe.com/terminal/fleet/reboot-time.md?dashboard-or-api=dashboard) and [API](https://docs.stripe.com/terminal/fleet/reboot-time.md?dashboard-or-api=api) variants\n",
+  "quotes": {
+    "terminal-fleet-reboot-time": [
+      {
+        "text": "Customize the reboot time window for your readers.",
+        "location": "raw/stripe-terminal-fleet-reboot-time-2026-11-07.md:7"
+      },
+      {
+        "text": "This article has multiple variants. Fetch one of the following URLs to view specific content for your use case:",
+        "location": "raw/stripe-terminal-fleet-reboot-time-2026-11-07.md:11"
+      },
+      {
+        "text": "[Dashboard](https://docs.stripe.com/terminal/fleet/reboot-time.md?dashboard-or-api=dashboard)",
+        "location": "raw/stripe-terminal-fleet-reboot-time-2026-11-07.md:13"
+      },
+      {
+        "text": "[API](https://docs.stripe.com/terminal/fleet/reboot-time.md?dashboard-or-api=api)",
+        "location": "raw/stripe-terminal-fleet-reboot-time-2026-11-07.md:14"
+      }
+    ]
+  },
+  "old_evidence": {
+    "terminal-fleet-reboot-time": [
+      {
+        "text": "reboot every 24 hours at midnight.",
+        "location": "raw/stripe-terminal-reboot-time-2025.md:8"
+      },
+      {
+        "text": "Instead, the readers reboot randomly within the configured time period.",
+        "location": "raw/stripe-terminal-reboot-time-2025.md:12"
+      },
+      {
+        "text": "Stripe sets the new reboot window within 10 minutes.",
+        "location": "raw/stripe-terminal-reboot-time-2025.md:39"
+      },
+      {
+        "text": "The value must be different than the `start_hour`.",
+        "location": "raw/stripe-terminal-reboot-time-2025.md:81"
+      }
+    ]
+  },
+  "read_ranges": {
+    "raw/stripe-terminal-fleet-reboot-time-2026-11-07.md": [
+      {
+        "start": 1,
+        "end": 14
+      }
+    ],
+    "raw/stripe-terminal-reboot-time-2025.md": [
+      {
+        "start": 1,
+        "end": 83
+      }
+    ],
+    "wiki/sources/source-stripe-terminal-reboot-time.md": [
+      {
+        "start": 1,
+        "end": 25
+      }
+    ],
+    "tracking/collections/stripe/recollection-2026-11-07-en/pages/58bc0e5b917cc5e18bddf754/content.diff": [
+      {
+        "start": 1,
+        "end": 85
+      }
+    ],
+    "wiki/concepts/stripe-terminal-hardware-orders.md": [
+      {
+        "start": 77,
+        "end": 112
+      },
+      {
+        "start": 119,
+        "end": 134
+      }
+    ]
+  },
+  "answers": {
+    "terminal-fleet-reboot-time": {
+      "Q1": "At https://docs.stripe.com/terminal/fleet/reboot-time, source-stripe-terminal-reboot-time describes the November 7, 2026 capture as a reboot-window introduction with separate Dashboard and API routes. See new raw lines 5-14. The operational detail comes from the May guide. The May 1, 2026 full guide says smart readers default to a midnight reboot every 24 hours, interpret the window in the registered location's local time and randomly stagger reboots within the configured period. In Dashboard the merchant edits or overrides the relevant configuration for a location, selects start/end, updates and applies the changes. Stripe sets the new window within 10 minutes. A reader that already rebooted that day uses the next period. See old raw lines 8-12 and old raw lines 18-39. API callers can create or update Configuration with reboot_window. Each hour is an integer 0\u201323 and end_hour must differ from start_hour. A lower start is same-day and a greater start crosses midnight. See old raw lines 45-83. The revised summary states the unequal-hour guard and records within ten minutes as the documented setting bound.",
+      "Q2": "For https://docs.stripe.com/terminal/fleet/reboot-time, November 7, 2026 is a navigation raw reference for source-stripe-terminal-reboot-time. It retains the introduction and lists Dashboard and API Markdown routes. The May 1, 2026 capture contains the expanded bodies. See old raw lines 4-16, old raw lines 18-43 and old raw lines 45-83, plus new raw lines 5-14. The presentation becomes a variant index, with no functional delta established. The revised source preserves the May midnight default, location timezone, random staggering, Update then Apply changes, ten-minute bound and next-period condition together. It retains distinct integers 0\u201323 and same-day versus next-day semantics. See old raw lines 8-12, old raw lines 20-39 and old raw lines 80-83. The location workflow in old raw lines 20-27 identifies the Reboot time row and controls. The isolated passcode wording does not describe a prerequisite for that workflow. The revised source adds a reciprocal stripe-terminal-hardware-orders route and links source-stripe-terminal-configurations for context. Separate November Configuration create and update references corroborate the optional reboot_window for compatible readers (raw/stripe-api-terminal-configuration-create-2026-11-07.md:50-51, raw/stripe-api-terminal-configuration-update-2026-11-07.md:64-65). The November index itself supplies no timing or hour validation evidence, and omissions do not show removal."
+    }
+  },
+  "concept_suggestions": [
+    {
+      "update_id": "terminal-fleet-reboot-time-location-window",
+      "target_path": "wiki/concepts/stripe-terminal-hardware-orders.md",
+      "update_kind": "durable_fact",
+      "anchor": "- [[source-stripe-terminal-reboot-time]] \u2014 reboot time window: default midnight, custom window via `reboot_window`, staggered reboots, crosses-midnight logic",
+      "proposed_markdown": "- [[source-stripe-terminal-reboot-time]] \u2014 May 2026 guide for the midnight default, staggered reboots within the registered location's local window, and distinct `reboot_window` hours from 0 through 23. A higher start hour schedules the end on the next day.",
+      "quote_indexes": [
+        0
+      ],
+      "warnings": [
+        "Details come from the May 1, 2026 full reboot guide, lines 8\u201312 and 80\u201383. November provides Dashboard and API navigation."
+      ]
+    }
+  ]
+}
