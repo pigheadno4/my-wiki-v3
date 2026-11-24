@@ -1,0 +1,277 @@
+# GitHub package comparison
+
+- Repository: `stripe/stripe-ios`
+- Package: `stripe-ios`
+- From: `26.15.1` (`2f4547639a5aed18d39e4ba44c0ba684dab3161b`)
+- To: `26.16.0` (`186341f22dd898f01786efefdf2454e1672a4c05`)
+- Patch: [diff.patch](diff.patch)
+
+## Changed paths
+
+- `CHANGELOG.md`
+- `Package.swift`
+- `StripeApplePay.podspec`
+- `StripeApplePay/StripeApplePay/Source/ApplePayContext/STPAPIClient+ApplePay.swift`
+- `StripeApplePay/StripeApplePay/Source/ApplePayContext/STPApplePayContext+LegacySupport.swift`
+- `StripeApplePay/StripeApplePay/Source/ApplePayContext/STPApplePayContext.swift`
+- `StripeConnect.podspec`
+- `StripeConnect/StripeConnect/Source/EmbeddedComponentManager.swift`
+- `StripeCryptoOnramp.podspec`
+- `StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift`
+- `StripeFinancialConnections.podspec`
+- `StripeFinancialConnections/StripeFinancialConnections/Source/FinancialConnectionsSheet.swift`
+- `StripeFinancialConnections/StripeFinancialConnections/Source/FinancialConnectionsSheetError.swift`
+- `StripeIdentity.podspec`
+- `StripeIdentity/StripeIdentity/Source/IdentityVerificationSheet.swift`
+- `StripeIdentity/StripeIdentity/Source/IdentityVerificationSheetError.swift`
+- `StripeIssuing.podspec`
+- `StripeIssuing/StripeIssuing/Source/STPPinManagementService.swift`
+- `StripeIssuing/StripeIssuing/Source/STPPushProvisioningContext.swift`
+- `StripePaymentSheet.podspec`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm+Link.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/CheckoutElementsController+Confirm+Link.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/CheckoutElementsController+Confirm.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerAddPaymentMethodViewController.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSavedPaymentMethodsCollectionViewController.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSavedPaymentMethodsViewController.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheet+API.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheet+PaymentMethodAvailability.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheet+SwiftUI.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheet.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheetConfiguration.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheetError.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedFormViewController.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+SwiftUI.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElementConfiguration.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentMethodsView.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedViewRepresentable.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/MandateTextProvider.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/InstantBankPaymentsController.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkConfiguration.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkController.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkFlowControllerHelpers.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithLinkController.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithNativeLinkController.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PaymentSheet-LinkConfirmOption.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentElementConfiguration.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+API.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+DeferredAPI.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+SwiftUI.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetAppearance.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetConfiguration.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetError.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController+AsyncPublicAPIs.swift`
+- `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift`
+- `StripePayments.podspec`
+- `StripePayments/StripePayments/Source/API Bindings/Models/ACH/LinkAccountSession.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/ACH/STPCollectBankAccountParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/ConfirmationTokens/STPConfirmationTokenClientContext.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/ConfirmationTokens/STPConfirmationTokenParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPConfirmAlipayOptions.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPConfirmLinkOptions.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPConfirmPaymentMethodOptions.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntent.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntentConfirmParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntentEnums.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/LinkPaymentDetails.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethod.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodAllowRedisplay.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodBillingDetails.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodEnums.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPRadarOptions.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodCard.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodCardArt.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodGCash.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodGCashParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodGoPay.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodGoPayParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodKrCard.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodLinkParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodMomo.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodMomoParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodMondu.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodMonduParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNaverPay.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgBankTransfer.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgBankTransferParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgCard.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgCardParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgUSSD.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgUSSDParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgWallet.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgWalletParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodQRIS.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodQRISParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodScalapay.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodScalapayParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodShopeePay.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodShopeePayParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodTouchNGo.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodTouchNGoParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodTrueMoney.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodTrueMoneyParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodUSBankAccountParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/STPAddress.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/STPCustomer.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/STPFPXBankBrand.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/STPFile.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/SetupIntents/STPSetupIntent.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/SetupIntents/STPSetupIntentConfirmParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/Shared/LinkSettings.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentActionRedirectToURL.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentAutomaticPaymentMethods.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPMandateCustomerAcceptanceParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPMandateDataParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPMandateOnlineParams.swift`
+- `StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPPaymentMethodOptions.swift`
+- `StripePayments/StripePayments/Source/API Bindings/STPAPIClient+ApplePay.swift`
+- `StripePayments/StripePayments/Source/API Bindings/STPAPIClient+LinkAccountSession.swift`
+- `StripePayments/StripePayments/Source/API Bindings/STPAPIClient+Payments.swift`
+- `StripePayments/StripePayments/Source/API Bindings/STPAPIClient+Radar.swift`
+- `StripePayments/StripePayments/Source/API Bindings/STPClientAttributionMetadata+Payments.swift`
+- `StripePayments/StripePayments/Source/PaymentHandler/PollingBudget.swift`
+- `StripePayments/StripePayments/Source/PaymentHandler/STPAnalyticsClient+STPPaymentHandler.swift`
+- `StripePayments/StripePayments/Source/PaymentHandler/STPAuthenticationContext.swift`
+- `StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift`
+- `StripePayments/StripePayments/Source/PaymentHandler/STPThreeDSNavigationBarCustomization.swift`
+- `VERSION`
+- `modules.yaml`
+
+## Upstream changes
+
+- `modified`: `CHANGELOG.md`
+- `modified`: `Package.swift`
+- `modified`: `StripeApplePay.podspec`
+- `modified`: `StripeApplePay/StripeApplePay/Source/ApplePayContext/STPAPIClient+ApplePay.swift`
+- `modified`: `StripeApplePay/StripeApplePay/Source/ApplePayContext/STPApplePayContext+LegacySupport.swift`
+- `modified`: `StripeApplePay/StripeApplePay/Source/ApplePayContext/STPApplePayContext.swift`
+- `modified`: `StripeConnect.podspec`
+- `modified`: `StripeConnect/StripeConnect/Source/EmbeddedComponentManager.swift`
+- `modified`: `StripeCryptoOnramp.podspec`
+- `modified`: `StripeCryptoOnramp/StripeCryptoOnramp/Source/Components/CryptoOnrampCoordinator.swift`
+- `modified`: `StripeFinancialConnections.podspec`
+- `modified`: `StripeFinancialConnections/StripeFinancialConnections/Source/FinancialConnectionsSheet.swift`
+- `modified`: `StripeFinancialConnections/StripeFinancialConnections/Source/FinancialConnectionsSheetError.swift`
+- `modified`: `StripeIdentity.podspec`
+- `modified`: `StripeIdentity/StripeIdentity/Source/IdentityVerificationSheet.swift`
+- `modified`: `StripeIdentity/StripeIdentity/Source/IdentityVerificationSheetError.swift`
+- `modified`: `StripeIssuing.podspec`
+- `modified`: `StripeIssuing/StripeIssuing/Source/STPPinManagementService.swift`
+- `modified`: `StripeIssuing/StripeIssuing/Source/STPPushProvisioningContext.swift`
+- `modified`: `StripePaymentSheet.podspec`
+- `renamed`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm+Link.swift` -> `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/CheckoutElementsController+Confirm+Link.swift`
+- `renamed`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/Checkout+Confirm.swift` -> `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/CheckoutElementsController+Confirm.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerAddPaymentMethodViewController.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSavedPaymentMethodsCollectionViewController.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSavedPaymentMethodsViewController.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheet+API.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheet+PaymentMethodAvailability.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheet+SwiftUI.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheet.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheetConfiguration.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheetError.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedFormViewController.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+Internal.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement+SwiftUI.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElement.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentElementConfiguration.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedPaymentMethodsView.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedViewRepresentable.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/MandateTextProvider.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/InstantBankPaymentsController.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkConfiguration.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkController.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkFlowControllerHelpers.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithLinkController.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PayWithNativeLinkController.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/PaymentSheet-LinkConfirmOption.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentElementConfiguration.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+API.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+DeferredAPI.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet+SwiftUI.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetAppearance.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetConfiguration.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetError.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController+AsyncPublicAPIs.swift`
+- `modified`: `StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheetFlowController.swift`
+- `modified`: `StripePayments.podspec`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/ACH/LinkAccountSession.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/ACH/STPCollectBankAccountParams.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/ConfirmationTokens/STPConfirmationTokenClientContext.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/ConfirmationTokens/STPConfirmationTokenParams.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPConfirmAlipayOptions.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPConfirmLinkOptions.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPConfirmPaymentMethodOptions.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntent.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntentConfirmParams.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentIntents/STPPaymentIntentEnums.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/LinkPaymentDetails.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethod.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodAllowRedisplay.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodBillingDetails.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodEnums.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodParams.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPRadarOptions.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodCard.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodCardArt.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodGCash.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodGCashParams.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodGoPay.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodGoPayParams.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodKrCard.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodLinkParams.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodMomo.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodMomoParams.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodMondu.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodMonduParams.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNaverPay.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgBankTransfer.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgBankTransferParams.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgCard.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgCardParams.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgUSSD.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgUSSDParams.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgWallet.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodNgWalletParams.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodQRIS.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodQRISParams.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodScalapay.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodScalapayParams.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodShopeePay.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodShopeePayParams.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodTouchNGo.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodTouchNGoParams.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodTrueMoney.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodTrueMoneyParams.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/Types/STPPaymentMethodUSBankAccountParams.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/STPAddress.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/STPCustomer.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/STPFPXBankBrand.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/STPFile.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/SetupIntents/STPSetupIntent.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/SetupIntents/STPSetupIntentConfirmParams.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/Shared/LinkSettings.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentActionRedirectToURL.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPIntentAutomaticPaymentMethods.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPMandateCustomerAcceptanceParams.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPMandateDataParams.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPMandateOnlineParams.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/Models/Shared/STPPaymentMethodOptions.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/STPAPIClient+ApplePay.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/STPAPIClient+LinkAccountSession.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/STPAPIClient+Payments.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/STPAPIClient+Radar.swift`
+- `modified`: `StripePayments/StripePayments/Source/API Bindings/STPClientAttributionMetadata+Payments.swift`
+- `modified`: `StripePayments/StripePayments/Source/PaymentHandler/PollingBudget.swift`
+- `modified`: `StripePayments/StripePayments/Source/PaymentHandler/STPAnalyticsClient+STPPaymentHandler.swift`
+- `modified`: `StripePayments/StripePayments/Source/PaymentHandler/STPAuthenticationContext.swift`
+- `modified`: `StripePayments/StripePayments/Source/PaymentHandler/STPPaymentHandler.swift`
+- `modified`: `StripePayments/StripePayments/Source/PaymentHandler/STPThreeDSNavigationBarCustomization.swift`
+- `modified`: `VERSION`
+- `modified`: `modules.yaml`

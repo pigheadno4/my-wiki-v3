@@ -2,9 +2,11 @@
 title: "GitHub changelog: stripe/stripe-ios"
 type: source
 date_ingested: 2026-07-31
-date_updated: 2026-10-29
+date_updated: 2026-11-24
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-ios/snapshots/2026-11-24-4de377e/manifest.json"
+  - "github/stripe/stripe-ios/snapshots/2026-11-24-186341f/manifest.json"
   - "github/stripe/stripe-ios/snapshots/2026-10-29-2f45476/manifest.json"
   - "github/stripe/stripe-ios/supplements/2026-10-29-2f45476-65a4022e/manifest.json"
   - "github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/manifest.json"
@@ -33,6 +35,45 @@ tags: [stripe, ios, swift, mobile, sdk, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `stripe/stripe-ios`. Durable architecture and integration knowledge belongs in [[source-github-stripe-ios]] and the linked immutable evidence.
+
+## `stripe-ios@26.16.1` - Change Set `4de377e`
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `stripe-ios` | `stripe-ios@26.16.0` | `stripe-ios@26.16.1` | 2026-11-09 UTC | `4de377e6c82b17d2e3aca819bc7155c67c3373e6` | Delta, approved focused reading |
+
+**Release notes vs source:** The notes announce the “Add a card” heading. In retained code, Checkout's Payment Element Apple Pay flow requires enabled display and a merchant ID, and no-method confirmation forwards optional session shipping. PaymentSheet customer reset delegates to Link context; customer providers reach Instant Bank Payments Link brand lookup and a separate CustomerSheet adapter caller. Selected declarations gain React Native SPI; no shipped JS API is implied. SPM adds `StripeCore` to `Stripe3DS2` dependencies; retained podspecs only bump versions.
+
+**Historical correction:** The tagged cumulative changelog places the two Identity packaging bullets under 26.16.0 rather than 26.15.1 and adds the 3D face-capture bullet there. It now agrees with the published 26.16.0 release notes on placement; keep the earlier snapshot and recorded discrepancy. No new Identity feature is attributed to 26.16.1.
+
+**Evidence boundary:** Both 300-file snapshots verified; 19 modified, 281 unchanged, no retained additions or removals. The 28-path assignment uses approved focused reading; generated inventories and unchanged source/history checked mechanically. All 465 dispositions recorded (19 retained, 446 excluded). Checkout/Link server behavior, card-entry rendering and native 3DS execution are not verified. All prior history preserved.
+
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.16.1/2026-11-24/manifest.json` - identity and publication
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.16.1/2026-11-24/release-notes.md` - upstream announcement
+- `raw/github/stripe/stripe-ios/snapshots/2026-11-24-4de377e/manifest.json` - exact retained source
+- `tracking/github/repos/stripe/stripe-ios/comparisons/stripe-ios/26.16.0--26.16.1/comparison.json` - exact-SHA comparison
+- [[source-github-stripe-ios]] - durable findings and source locations
+
+## `stripe-ios@26.16.0` - Change Set `186341f`
+
+| Package | From | To | Release date | SHA | Ingest mode |
+| --- | --- | --- | --- | --- | --- |
+| `stripe-ios` | `stripe-ios@26.15.1` | `stripe-ios@26.16.0` | 2026-11-03 UTC; notes heading 2026-11-02 | `186341f22dd898f01786efefdf2454e1672a4c05` | Full additive, approved focused reading |
+
+**Checkout and Link:** The confirmation owner moves to `CheckoutElementsController`. A required Intent action uses its client secret; polling preserves server Session/payment status, even on client completion after timeout. Link forwards an optional preview-only bank return URL, and settings decode the MFA flag. Native email OTP/MFA, sheet-freeze and native Link 3DS interaction fixes are release announcements, not runtime verification. Affected `STP` SPI shifts to `InternalOnlyAPI`; ordinary PaymentSheet does not gain public Checkout confirmation.
+
+**Identity and build:** Swift tools 6.1, optional Identity MediaPipe product, additional resources and public brand color configuration. The release notes announce 3D face capture and simulator architecture limits; the retained manifest corroborates packaging, not runtime. CocoaPods references do not prove resumed distribution.
+
+> [!warning] Conflicting raw heading
+> The published 26.16.0 notes include Identity under this release, but the tagged cumulative changelog inserts two packaging bullets below 26.15.1. All 2,246 existing raw changelog lines remain byte-identical; 11 lines were inserted. Do not backdate those bullets to the earlier SHA.
+
+**Evidence boundary:** Both 300-file manifests verified; two added, 129 modified, two removed by retained path, 169 unchanged. The 311-path full assignment was handled with approved focused reading; generated inventories, unchanged source/history and duplicated diff checked mechanically. The packet disposes of 9,137 upstream changes (133 retained, 9,004 excluded); this is not whole-tree semantic review. Earlier wiki knowledge preserved. No build, device or payment test.
+
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.16.0/2026-11-24/manifest.json` - identity and publication
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.16.0/2026-11-24/release-notes.md` - upstream announcements
+- `raw/github/stripe/stripe-ios/snapshots/2026-11-24-186341f/manifest.json` - exact retained source
+- `tracking/github/repos/stripe/stripe-ios/comparisons/stripe-ios/26.15.1--26.16.0/comparison.json` - exact-SHA comparison
+- [[source-github-stripe-ios]] - durable findings and source locations
 
 ## `stripe-ios@26.15.1` - Change Set `2f45476`
 

@@ -1,0 +1,324 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 5165d6b..cd1ab91 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,6 +3,10 @@ PATCH
+ 
+ ## X.Y.Z - changes pending release
+ 
++## 26.16.1 2026-11-09
++### PaymentSheet
++* [Changed] Changed the title shown above the card entry form from "Add card" to "Add a card".
++
+ ## 26.16.0 2026-11-02
+ ### PaymentSheet
+ * [Added] The Link auth flow now natively supports email OTP and multi-factor authentication (MFA) enabled accounts.
+@@ -10,15 +14,16 @@ PATCH
+ * [Fixed] Fixed a horizontal layout bug that caused the sheet to freeze when the bottom form insets were less than the bottom safe area.
+ * [Fixed] Fixed an issue introduced in 26.14.0 where customers couldn't interact with 3D Secure authentication challenges shown in the native Link sheet.
+ 
++### Identity
++* [Added] Added support for 3D face capture in StripeIdentity.
++* [Fixed] Fixed release archives failing to link MediaPipe for x86_64 simulators. Prebuilt `StripeIdentity` and `StripeCryptoOnramp` frameworks support arm64 simulators only; other SDK frameworks retain arm64 and x86_64 simulator support. Swift Package Manager integrations with the `Identity` trait enabled also require arm64 simulators.
++* [Added] Added the `Identity` package trait for Swift Package Manager. It links MediaPipe from [stripe/identity-ios-mediapipe](https://github.com/stripe/identity-ios-mediapipe), which StripeIdentity uses for 3D face capture. To enable it, check `Identity` in the **Traits** menu for `stripe-ios-spm` under your project's **Package Dependencies** (Xcode 26.4 or later), or add `traits: [.defaults, "Identity"]` to the `stripe-ios-spm` dependency in your `Package.swift`. Without the trait, StripeIdentity works as before. CocoaPods installs include MediaPipe through the `StripeMediaPipe` pod.
++
+ ## 26.15.1 2026-10-26
+ ### General
+ * [Removed] CocoaPods support. Migrate your integration to Swift Package Manager. For more information and help migrating, see [MIGRATING-COCOAPODS.md](https://github.com/stripe/stripe-ios/blob/master/MIGRATING-COCOAPODS.md). 
+ * [Fixed] Fixed an issue where slow Apple Pay availability checks could cause React Native apps to hang during SDK initialization. See [stripe-react-native#2567](https://github.com/stripe/stripe-react-native/issues/2567).
+ 
+-### Identity
+-* [Fixed] Fixed release archives failing to link MediaPipe for x86_64 simulators. Prebuilt `StripeIdentity` and `StripeCryptoOnramp` frameworks support arm64 simulators only; other SDK frameworks retain arm64 and x86_64 simulator support. Swift Package Manager integrations with the `Identity` trait enabled also require arm64 simulators.
+-* [Added] Added the `Identity` package trait for Swift Package Manager. It links MediaPipe from [stripe/identity-ios-mediapipe](https://github.com/stripe/identity-ios-mediapipe), which StripeIdentity uses for 3D face capture. To enable it, check `Identity` in the **Traits** menu for `stripe-ios-spm` under your project's **Package Dependencies** (Xcode 26.4 or later), or add `traits: [.defaults, "Identity"]` to the `stripe-ios-spm` dependency in your `Package.swift`. Without the trait, StripeIdentity works as before. CocoaPods installs include MediaPipe through the `StripeMediaPipe` pod.
+-
+ ## 26.15.0 2026-10-19
+ 
+ ### CryptoOnramp (Alpha)
+diff --git a/Package.swift b/Package.swift
+index 9f8a105..89a53ba 100644
+--- a/Package.swift
++++ b/Package.swift
+@@ -82,6 +82,7 @@ let package = Package(
+         ),
+         .target(
+             name: "Stripe3DS2",
++            dependencies: ["StripeCore"],
+             path: "Stripe3DS2/Stripe3DS2",
+             exclude: ["Info.plist", "Resources/CertificateFiles", "include/Stripe3DS2-Prefix.pch"],
+             resources: [
+diff --git a/StripeApplePay.podspec b/StripeApplePay.podspec
+index dccea18..e72fdef 100644
+--- a/StripeApplePay.podspec
++++ b/StripeApplePay.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly. 
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh 
+-  s.version                        = '26.16.0'
++  s.version                        = '26.16.1'
+ 
+   s.summary                        = 'StripeApplePay is a lightweight Apple Pay SDK intended for building App Clips '\
+                                      'or other size-constrained apps.' 
+diff --git a/StripeConnect.podspec b/StripeConnect.podspec
+index 604ff73..409bfe0 100644
+--- a/StripeConnect.podspec
++++ b/StripeConnect.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.16.0'
++  s.version                        = '26.16.1'
+ 
+   s.summary                        = 'Use Connect embedded components to add connected account dashboard functionality to your app.'
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripeCryptoOnramp.podspec b/StripeCryptoOnramp.podspec
+index 0e43e09..a237a8f 100644
+--- a/StripeCryptoOnramp.podspec
++++ b/StripeCryptoOnramp.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.16.0'
++  s.version                        = '26.16.1'
+ 
+   s.summary                        = 'Facilitates crypto onramp transactions with built-in KYC and identity verification.'
+   s.license                        = { :type => 'MIT', :file => 'LICENSE' }
+diff --git a/StripeFinancialConnections.podspec b/StripeFinancialConnections.podspec
+index 1006a70..c434e1d 100644
+--- a/StripeFinancialConnections.podspec
++++ b/StripeFinancialConnections.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+     # Do not update s.version directly.
+     # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-    s.version                        = '26.16.0'
++    s.version                        = '26.16.1'
+ 
+     s.summary                        = 'Securely connect financial accounts to Stripe\'s merchant account.'
+     s.license                        = { :type => 'MIT', :file => 'LICENSE' }
+diff --git a/StripeIdentity.podspec b/StripeIdentity.podspec
+index f3fbf91..c8acaf5 100644
+--- a/StripeIdentity.podspec
++++ b/StripeIdentity.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.16.0'
++  s.version                        = '26.16.1'
+ 
+   s.summary                        = 'Securely capture ID documents and selfies on iOS for use with Stripe\'s Identity API to confirm the identity of global users.'
+   s.license                        = { :type => 'MIT', :file => 'LICENSE' }
+diff --git a/StripeIssuing.podspec b/StripeIssuing.podspec
+index e723a29..fe5c5e4 100644
+--- a/StripeIssuing.podspec
++++ b/StripeIssuing.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.16.0'
++  s.version                        = '26.16.1'
+ 
+   s.summary                        = 'Use to setup ios integration for Issuing Token Push Provision'
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripePaymentSheet.podspec b/StripePaymentSheet.podspec
+index a5b6b16..af8d870 100644
+--- a/StripePaymentSheet.podspec
++++ b/StripePaymentSheet.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.16.0'
++  s.version                        = '26.16.1'
+ 
+   s.summary                        = "Stripe's prebuilt payment UI."
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/CheckoutElementsController+Confirm.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/CheckoutElementsController+Confirm.swift
+index 26f4f5c..80255bc 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/CheckoutElementsController+Confirm.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/CheckoutElementsController+Confirm.swift
+@@ -41,7 +41,7 @@ extension CheckoutElementsController {
+             CheckoutSessionConfirmationRequestParameters
+         ) async -> InternalConfirmResult
+ 
+-        let applePayConfiguration: any CheckoutApplePayConfiguration
++        let merchantId: String
+         let apiClient: STPAPIClient
+         let returnURL: String
+         let merchantDisplayName: String
+@@ -200,11 +200,12 @@ extension CheckoutElementsController {
+         switch paymentOption {
+         case .applePay:
+             guard let paymentElementConfiguration = self.configuration.paymentElement,
+-                  let applePayConfiguration = paymentElementConfiguration.applePayConfiguration else {
++                  paymentElementConfiguration.applePayConfiguration.display != .never,
++                  let merchantId = self.configuration.applePayMerchantId else {
+                 return nil
+             }
+             return .applePay(.init(
+-                applePayConfiguration: applePayConfiguration,
++                merchantId: merchantId,
+                 apiClient: apiClient,
+                 returnURL: self.configuration.returnURL,
+                 merchantDisplayName: effectiveMerchantDisplayName,
+@@ -310,6 +311,7 @@ extension CheckoutElementsController {
+                         confirmationSource: .paymentElement,
+                         expectedAmount: self.session.amount,
+                         returnURL: self.configuration.returnURL,
++                        shipping: self.session.shippingAddress?.shippingDetailsParams,
+                         clientAttributionMetadata: STPClientAttributionMetadata.makeClientAttributionMetadata(
+                             checkoutSession: self.session,
+                             attribution: .init(confirmingElement: .paymentElement, configuredElements: self.configuration.configuredElements)
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerAddPaymentMethodViewController.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerAddPaymentMethodViewController.swift
+index bead640..8892bb5 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerAddPaymentMethodViewController.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerAddPaymentMethodViewController.swift
+@@ -272,8 +272,7 @@ class CustomerAddPaymentMethodViewController: UIViewController {
+ 
+     // MARK: - Autocomplete Methods
+ 
+-    /// Sets up the autocomplete button callback for any AddressSectionElement in the form
+-    /// TODO(porter) Make this more generic for when we have shipping address section in here too
++    /// Sets up the autocomplete button callback for the billing address section in the form
+     private func setupAddressSectionAutocompleteCallback(for formElement: PaymentMethodElement) {
+         let unwrappedFormElement = (formElement as? PaymentMethodElementWrapper<FormElement>)?.element ?? formElement
+         if let addressSection = unwrappedFormElement.getAllUnwrappedSubElements()
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheetConfiguration.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheetConfiguration.swift
+index 128e669..60ed496 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheetConfiguration.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheetConfiguration.swift
+@@ -72,7 +72,7 @@ extension CustomerSheet {
+         /// This is an experimental feature that may be removed at any time.
+         /// If true (the default), the customer can delete all saved payment methods.
+         /// If false, the customer can't delete if they only have one saved payment method remaining.
+-        @_spi(InternalOnlyAPI) public var allowsRemovalOfLastSavedPaymentMethod = true
++        @_spi(InternalOnlyAPI) @_spi(ReactNativeSDK) public var allowsRemovalOfLastSavedPaymentMethod = true
+ 
+         /// By default, CustomerSheet will accept all supported cards by Stripe.
+         /// You can specify card brands CustomerSheet should block disallow or allow payment for by providing an array of those card brands.
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheetDataSource.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheetDataSource.swift
+index 3c6de1e..75952ad 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheetDataSource.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/CustomerSheet/CustomerSheetDataSource.swift
+@@ -139,7 +139,8 @@ extension CustomerSheetDataSource {
+         case .customerAdapter:
+             return try await configuration.apiClient.retrieveElementsSession(setupIntentClientSecret: setupIntentClientSecret,
+                                                                                               clientDefaultPaymentMethod: nil,
+-                                                                                              configuration: PaymentSheet.Configuration.init())
++                                                                                              configuration: PaymentSheet.Configuration.init(),
++                                                                                              customerProvider: CustomerProvider(customer: nil))
+         case .customerSession(let customerSessionAdapter):
+            return try await customerSessionAdapter.elementsSession(setupIntentClientSecret: setupIntentClientSecret)
+         }
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedFormViewController.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedFormViewController.swift
+index 0e9b8f9..24350fd 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedFormViewController.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Embedded/EmbeddedFormViewController.swift
+@@ -241,7 +241,6 @@ class EmbeddedFormViewController: UIViewController {
+         animateHeightChange({ [self] in
+             errorLabel.setHiddenIfNecessary(error == nil)
+             if error != nil {
+-                // TODO(porter) Don't think we need this
+                 // Without this, setting `contentOffsetPercentage = 1` uses the height of the scroll view without accounting for the error label
+                 errorLabel.setNeedsLayout()
+                 errorLabel.layoutIfNeeded()
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/InstantBankPaymentsController.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/InstantBankPaymentsController.swift
+index e16db0a..37f834b 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/InstantBankPaymentsController.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/InstantBankPaymentsController.swift
+@@ -411,27 +411,31 @@ import UIKit
+         }
+ 
+         do {
++            let customerProvider = CustomerProvider(customer: configuration.customer)
+             let linkBrand: LinkBrand?
+             switch mode {
+             case .paymentIntentClientSecret(let clientSecret):
+                 let (_, elementsSession) = try await configuration.apiClient.retrieveElementsSession(
+                     paymentIntentClientSecret: clientSecret,
+                     clientDefaultPaymentMethod: nil,
+-                    configuration: configuration
++                    configuration: configuration,
++                    customerProvider: customerProvider
+                 )
+                 linkBrand = elementsSession.linkBrand
+             case .setupIntentClientSecret(let clientSecret):
+                 let (_, elementsSession) = try await configuration.apiClient.retrieveElementsSession(
+                     setupIntentClientSecret: clientSecret,
+                     clientDefaultPaymentMethod: nil,
+-                    configuration: configuration
++                    configuration: configuration,
++                    customerProvider: customerProvider
+                 )
+                 linkBrand = elementsSession.linkBrand
+             case .deferredIntent(let intentConfiguration):
+                 let elementsSession = try await configuration.apiClient.retrieveDeferredElementsSession(
+                     withIntentConfig: intentConfiguration,
+                     clientDefaultPaymentMethod: nil,
+-                    configuration: configuration
++                    configuration: configuration,
++                    customerProvider: customerProvider
+                 )
+                 linkBrand = elementsSession.linkBrand
+             case .checkout:
+diff --git a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet.swift b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet.swift
+index 3711551..2f33d7f 100644
+--- a/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet.swift
++++ b/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet.swift
+@@ -261,7 +261,7 @@ public class PaymentSheet {
+     /// This will ensure that any persisted authentication state in PaymentSheet
+     /// is also cleared during logout.
+     public static func resetCustomer() {
+-        UserDefaults.standard.clearLinkDefaults()
++        LinkAccountContext.shared.resetCustomer()
+     }
+ 
+     // MARK: - Internal Properties
+diff --git a/StripePayments.podspec b/StripePayments.podspec
+index 7ad837d..42fd25b 100644
+--- a/StripePayments.podspec
++++ b/StripePayments.podspec
+@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
+ 
+   # Do not update s.version directly.
+   # Instead, update the VERSION file and run ./ci_scripts/update_version.sh
+-  s.version                        = '26.16.0'
++  s.version                        = '26.16.1'
+ 
+   s.summary                        = 'Bindings for the Stripe Payments API.'
+   s.license                        = { type: 'MIT', file: 'LICENSE' }
+diff --git a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodEnums.swift b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodEnums.swift
+index 5ab9712..2df4f9c 100644
+--- a/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodEnums.swift	
++++ b/StripePayments/StripePayments/Source/API Bindings/Models/PaymentMethods/STPPaymentMethodEnums.swift	
+@@ -144,7 +144,7 @@ import Foundation
+     case unknown
+ 
+     /// Localized display name for this payment method type
+-    @_spi(InternalOnlyAPI) public var displayName: String {
++    @_spi(InternalOnlyAPI) @_spi(ReactNativeSDK) public var displayName: String {
+         switch self {
+         case .alipay:
+             return STPLocalizedString("Alipay", "Payment Method type brand name")
+@@ -422,7 +422,7 @@ import Foundation
+         }
+     }
+ 
+-    @_spi(InternalOnlyAPI) public static func fromIdentifier(_ identifier: String) -> STPPaymentMethodType {
++    @_spi(InternalOnlyAPI) @_spi(ReactNativeSDK) public static func fromIdentifier(_ identifier: String) -> STPPaymentMethodType {
+         return allCases.first(where: { $0.identifier == identifier }) ?? .unknown
+     }
+ 
+diff --git a/VERSION b/VERSION
+index 33fc1a5..16f70b7 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-26.16.0
+\ No newline at end of file
++26.16.1
+\ No newline at end of file

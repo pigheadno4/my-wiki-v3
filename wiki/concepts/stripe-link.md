@@ -125,6 +125,12 @@ The May and November 2026 guides describe a default Link prompt in the card form
 
 **Sandbox OTP**. The mobile guide says to enter `000000` when prompted. The separate web Payment Element sandbox table reserves `000001` for invalid, `000002` for expired, and `000003` for maximum attempts. Other six-digit web sandbox values succeed, including `000000`. See [[source-stripe-mobile-payment-element-link]] and [[source-stripe-payment-element-link]] for the separate scopes.
 
+### iOS `26.16.0` Native Authentication
+
+Stripe's iOS release notes announce native Link email OTP/MFA and a fix for interaction with native Link 3DS challenges. Source corroborates the MFA flag decoder and OTP-based FlowController caller logic, not end-to-end verification or availability. Standalone `LinkController` forwards an optional `LinkConfiguration.returnURL` under `LinkControllerPreview` SPI. The source documents a supported bank-app return when provided and in-app secure web authentication otherwise. This is not a general PaymentSheet, Android, React Native or web configuration change. See [[source-github-stripe-ios]].
+
+At `26.16.1`, `PaymentSheet.resetCustomer()` delegates to the shared Link account context rather than clearing defaults directly. Instant Bank Payments passes a customer provider into Elements Session requests when looking up the Link brand. These retained callers do not establish the exact state cleared, what customer data is sent, or a change to bank collection or payment confirmation. See [[source-github-stripe-ios]].
+
 ### Android `23.19.0` Wallet Entry Contract
 
 `PaymentSheet.LinkConfiguration.Display.WalletButtonHidden` remains Link-enabled but now documents showing its button/row for a detected existing Link user and hiding it otherwise, with automatic verification and inline sign-up retained. In the earlier 23.16.0 through retained 23.18.0 evidence, the documented button/row was hidden regardless; both histories remain version-qualified in [[source-github-stripe-android]] and [[changelog-github-stripe-android]]. This is native Android source evidence, not a change to the web integration paths above. Detection/rendering code and device verification are outside the capsule. `Never` remains distinct from hiding a wallet entry.

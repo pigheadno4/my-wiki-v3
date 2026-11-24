@@ -1696,6 +1696,31 @@
   Release: [manifest](../../raw/github/paypal/paypal-sdk-release/releases/sdk-release/5.0.588/2026-11-19/manifest.json)
   Comparison: [manifest](repos/paypal/paypal-sdk-release/comparisons/sdk-release/5.0.587--5.0.588/comparison.json)
 
+## `github-3fef05186a5c685f403c`
+
+- Repository: `stripe/stripe-ios`
+- SHA: `4de377e6c82b17d2e3aca819bc7155c67c3373e6`
+- Collection date: `2026-11-24`
+- State: `ingested`
+- Recommended mode: `delta`
+- Evidence revision: `initial`
+- Approved mode: `delta`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-ios/snapshots/2026-11-24-4de377e/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-ios/ingest-packets/github-3fef05186a5c685f403c/packet.md)
+- Review priority: `high`
+- Required reading: `28` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-ios@26.16.1` (recommended `delta`)
+  Release: [manifest](../../raw/github/stripe/stripe-ios/releases/stripe-ios/26.16.1/2026-11-24/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-ios/comparisons/stripe-ios/26.16.0--26.16.1/comparison.json)
+
 ## `github-4108c3990b081a22a6e2`
 
 - Repository: `paypal-examples/v6-web-sdk-sample-integration`
@@ -6302,6 +6327,31 @@
   From SHA: `baseline`
   To SHA: `93321ab3644d5460213725abe0595247c403eb46`
   Comparison: Not applicable
+
+## `github-d7c6a6373584e690bd73`
+
+- Repository: `stripe/stripe-ios`
+- SHA: `186341f22dd898f01786efefdf2454e1672a4c05`
+- Collection date: `2026-11-24`
+- State: `ingested`
+- Recommended mode: `full`
+- Evidence revision: `initial`
+- Approved mode: `full`
+- Attempts in run: `0`
+- Consecutive failed runs: `0`
+- Last error: None
+- Snapshot: [manifest](../../raw/github/stripe/stripe-ios/snapshots/2026-11-24-186341f/manifest.json)
+- Packet: [review packet](repos/stripe/stripe-ios/ingest-packets/github-d7c6a6373584e690bd73/packet.md)
+- Review priority: `high`
+- Required reading: `142` files
+- Unclassified changes: `0`
+- Evidence gaps: `0`
+
+### Package releases
+
+- `stripe-ios@26.16.0` (recommended `full`)
+  Release: [manifest](../../raw/github/stripe/stripe-ios/releases/stripe-ios/26.16.0/2026-11-24/manifest.json)
+  Comparison: [manifest](repos/stripe/stripe-ios/comparisons/stripe-ios/26.15.1--26.16.0/comparison.json)
 
 ## `github-d83a391d04b7021d0ef7`
 

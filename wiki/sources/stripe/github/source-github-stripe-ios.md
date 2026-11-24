@@ -2,9 +2,11 @@
 title: "GitHub: stripe/stripe-ios"
 type: source
 date_ingested: 2026-05-13
-date_updated: 2026-10-29
+date_updated: 2026-11-24
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-ios/snapshots/2026-11-24-4de377e/manifest.json"
+  - "github/stripe/stripe-ios/snapshots/2026-11-24-186341f/manifest.json"
   - "github/stripe/stripe-ios/snapshots/2026-10-29-2f45476/manifest.json"
   - "github/stripe/stripe-ios/supplements/2026-10-29-2f45476-65a4022e/manifest.json"
   - "github/stripe/stripe-ios/snapshots/2026-10-20-19c1d05/manifest.json"
@@ -39,6 +41,10 @@ Repository: <https://github.com/stripe/stripe-ios>
 The approved `stripe-ios@26.5.0` delta at `a1ea788163dee511239e2cfefe27cad576f045d3` adds the version-qualified findings below without replacing the `26.4.1` baseline or legacy knowledge.
 
 ## Evidence Boundary
+
+- The `26.16.1` delta uses approved focused reading of all 19 changed retained files (changed sections for cumulative raw changelog), affected 26.16.0 code and both cumulative wiki pages. The packet assigns 28 paths; 281 unchanged files and generated evidence were verified mechanically. Both 300-file snapshots passed size, SHA-256 and Git blob checks. The packet classifies 19 retained and 446 policy-excluded changes. Link context, wallet, serializer, card-entry rendering and 3DS internals are not established by retained callers. No build, device or payment execution.
+
+- The `26.16.0` full additive ingest uses approved focused reading of 131 new/changed retained files (changed sections for cumulative raw changelog), affected prior code, and both cumulative wiki pages. The 311-path full assignment remains intact; 169 unchanged files, generated inventories and duplicated diff were verified mechanically. Both 300-file snapshots passed size, SHA-256 and Git blob checks. The packet classifies 133 retained and 9,004 policy-excluded upstream changes, not a semantic review of excluded code. No SDK build, device, payment or eligibility testing.
 
 - The approved `26.15.1` full additive ingest uses the release-specific focused-reading exception: changed retained content, affected prior code, migration supplement, release/comparison content and cumulative wiki history read semantically; 277 unchanged files, generated inventories, unchanged raw changelog history and duplicated diff checked mechanically. Both 300-file snapshots pass size/SHA-256/Git blob checks; 23 modified, none added/removed. The effective full assignment remains 312 paths, including the canonical supplement attachment. All 6,759 upstream changes have dispositions (23 retained, 6,736 policy exclusions), not semantic review of excluded code. Current request serialization/API, assertion-release internals, outer Checkout/Apple Pay, mandate presenter and availability-check fix implementation remain excluded. No SDK/device/payment testing or full-repository reading claim.
 
@@ -101,7 +107,7 @@ The approved `stripe-ios@26.5.0` delta at `a1ea788163dee511239e2cfefe27cad576f04
 
 | Package | Latest ingested release | Exact SHA | Evidence status |
 | --- | --- | --- | --- |
-| `stripe-ios` | `26.15.1` | `2f4547639a5aed18d39e4ba44c0ba684dab3161b` | Approved full additive ingest with focused reading and migration supplement; all 26.15.0 and earlier history retained |
+| `stripe-ios` | `26.16.1` | `4de377e6c82b17d2e3aca819bc7155c67c3373e6` | Approved delta with focused reading; 26.16.0 and earlier history retained |
 
 This table reports wiki ingest progress, not the latest release published upstream.
 
@@ -770,6 +776,89 @@ Embedded and FlowController extract internal `applyLoadResult` helpers while ret
 >
 > `raw/github/stripe/stripe-ios/snapshots/2026-10-29-2f45476/files/StripePayments/StripePayments/Source/API Bindings/STPAPIClient+ApplePay.swift:92` - SPI visibility, not availability implementation
 
+## `stripe-ios@26.16.0` Additive Baseline
+
+### Checkout confirmation and server state
+
+The retained confirmation extensions move from `Checkout+Confirm*` to `CheckoutElementsController+Confirm*`. This is more than a rename. The engine reads a Checkout client API response, handles a referenced PaymentIntent or SetupIntent by client secret only when its payment response requires action, and polls an open Checkout Session with its client secret. A timeout still returns internal completion, but preserves the last reported session/payment state, or the original confirm response when no poll response arrived, instead of reconstructing it from the Intent. An open or unpaid state can therefore accompany completion; wait for authoritative server-side payment success before fulfillment.
+
+On failed polling, the caller tries one session retrieval with a five-second configured timeout and retries disabled; if retrieval fails it preserves the polling state with a dedicated error. Unexpected `not_started` logs an error and fails. Removal of earlier explicit guards from this method is not evidence that manual approval, orchestration, or failed submissions are supported. Typed attribution carries the confirming/configured elements; the retained form mapping adds `checkout_config_id` and `merchant_integration_additional_elements`, without proving server consumption. Link can carry the latest session response through a final canceled/failed wallet result. The outer controller, serializer, polling internals and Apple Pay context are outside this capsule; this is not a public Checkout integration recipe.
+
+### Native Link and Swift SPI
+
+The top-level `StripePaymentSheet.LinkConfiguration.returnURL` is optional `LinkControllerPreview` SPI. Both retained LinkController factory paths forward it. The source documents an in-app secure web view without it, and a return to the merchant app for supported app-to-app bank authentication with it. The factory checks for available funding sources before the native capability/attestation check. The retained Link settings model decodes `link_mobile_enable_mfa_auth_flow` with a false default. Stripe announces native email OTP/MFA, a horizontal layout freeze fix and a native Link 3DS challenge interaction fix; the complete UI and verification implementations are not captured. This does not establish rollout, bank eligibility or a tested bank-app round trip.
+
+The native Link confirmation wrapper accepts a caller-supplied payment handler; Checkout passes its existing handler. Link also threads analytics and the session-derived presentation resolver through selection and confirmation-related presentation. Many affected declarations and imports move from `STP` to `InternalOnlyAPI` SPI, a compile-time change for SPI users, not ordinary public API removal or a rewrite of payment-method models and intent logic.
+
+Embedded Payment Element now uses the loaded customer provider to resolve and persist defaults and to wire saved-method management. Complete PaymentSheet and FlowController use the loaded customer ID in selected cancellation/default paths. FlowController checks general OTP verification state rather than SMS-only state for returning-user analytics and wallet reopening. Standard PaymentSheet confirmation still rejects Checkout intents.
+
+### Identity and packaging
+
+`Package.swift` raises the Swift tools version from 5.7 to 6.1, keeping Swift 5 language mode and the iOS 15 floor. Its optional `Identity` trait gates the `MediaPipeSPM` link from `identity-ios-mediapipe@1.0.0`; the Identity target also declares new audio/model resources outside that trait condition. The release notes announce 3D face capture and arm64-only simulator support for the prebuilt Identity and CryptoOnramp frameworks and for SwiftPM when the Identity trait is enabled. Retained archive configuration corroborates the prebuilt architecture declarations, not a tested link or capture flow. The public Identity configuration adds optional `brandColor` and a two-argument initializer without removing the older logo-only initializer; retained code chooses contrasting button text, not device-verified rendering.
+
+> [!warning] Packaging and historical attribution
+> The published release notes place the Identity items under 26.16.0; the cumulative changelog at the same tag inserts two Identity packaging bullets below 26.15.1. The prior 26.15.1 raw file lacks both. The CocoaPods wording in the new notes and podspecs does not establish restored distribution: the retained migration guide still identifies 26.15.0 as the last supported CocoaPods release. Preserve each dated observation.
+
+### Grounding excerpts
+
+> `return .completed(applyingPollResponse(lastResponse, to: response))`
+>
+> `raw/github/stripe/stripe-ios/snapshots/2026-11-24-186341f/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/CheckoutElementsController+Confirm.swift:604`
+
+> `@_spi(LinkControllerPreview) public let returnURL: String?`
+>
+> `raw/github/stripe/stripe-ios/snapshots/2026-11-24-186341f/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/LinkConfiguration.swift:40`
+
+> `let mfaAuthFlowEnabled = response["link_mobile_enable_mfa_auth_flow"] as? Bool ?? false`
+>
+> `raw/github/stripe/stripe-ios/snapshots/2026-11-24-186341f/files/StripePayments/StripePayments/Source/API Bindings/Models/Shared/LinkSettings.swift:123`
+
+> `condition: .when(traits: ["Identity"])`
+>
+> `raw/github/stripe/stripe-ios/snapshots/2026-11-24-186341f/files/Package.swift:124`
+
+> `public var brandColor: UIColor?`
+>
+> `raw/github/stripe/stripe-ios/snapshots/2026-11-24-186341f/files/StripeIdentity/StripeIdentity/Source/IdentityVerificationSheet.swift:75`
+
+## `stripe-ios@26.16.1` Integration Delta
+
+### Checkout Apple Pay and shipping
+
+The released PaymentSheet note changes the heading above the card entry form to “Add a card.” The exact-SHA source diff is not copy-only. For the retained Checkout Payment Element confirmation builder, Apple Pay now requires a configured payment element, a display value other than `.never`, and a non-nil Checkout Apple Pay merchant ID. The internal parameters carry that ID instead of the prior Apple Pay configuration object. That guard does not establish device, merchant or funding eligibility; the wallet presenter and request internals are excluded.
+
+The no-selected-payment-method Checkout confirmation path forwards the session's optional shipping address as shipping details. New and saved method paths still use Payment Element shipping configuration and the collected local-state email, while the no-method branch keeps its session-email customer data. This is not a global shipping-collection requirement or proof of server acceptance. The 26.16.0 server-state/completion caveat still applies to fulfillment.
+
+### Customer state and build wiring
+
+`PaymentSheet.resetCustomer()` delegates to the shared Link account context instead of directly clearing Link defaults. The context implementation is excluded, so do not infer that this clears every credential, remote session, or saved method. Instant Bank Payments creates a provider from the configured customer and passes it into the Link brand lookup's Elements Session requests for PaymentIntent, SetupIntent and deferred Intent modes, not into this controller's bank collection or confirmation. The CustomerSheet adapter path passes an explicitly nil customer provider; the Customer Session adapter uses its separate method. These are routing changes, not proof of backend behavior.
+
+CustomerSheet's existing last-saved-method removal flag and the payment-method type's display name and identifier converter gain `ReactNativeSDK` SPI in addition to `InternalOnlyAPI`. This does not establish a new stable public API or a shipped React Native bridge change. The SwiftPM `Stripe3DS2` target now declares a `StripeCore` dependency. It does not establish a 3DS runtime change; the module internals are excluded. The eight podspecs and VERSION change only their version values. Two retained view-controller edits change comments only.
+
+The new cumulative changelog moves the earlier Identity packaging bullets into its 26.16.0 section and adds the 3D capture bullet there, aligning the heading with the published 26.16.0 notes. Preserve the earlier conflicting raw heading as evidence for that specific snapshot. This is an attribution correction, not new Identity behavior in 26.16.1.
+
+### Grounding excerpts
+
+> `let merchantId = self.configuration.applePayMerchantId else {`
+>
+> `raw/github/stripe/stripe-ios/snapshots/2026-11-24-4de377e/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/CheckoutElementsController+Confirm.swift:204`
+
+> `shipping: self.session.shippingAddress?.shippingDetailsParams,`
+>
+> `raw/github/stripe/stripe-ios/snapshots/2026-11-24-4de377e/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Checkout/CheckoutElementsController+Confirm.swift:314`
+
+> `LinkAccountContext.shared.resetCustomer()`
+>
+> `raw/github/stripe/stripe-ios/snapshots/2026-11-24-4de377e/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/PaymentSheet.swift:264`
+
+> `let customerProvider = CustomerProvider(customer: configuration.customer)`
+>
+> `raw/github/stripe/stripe-ios/snapshots/2026-11-24-4de377e/files/StripePaymentSheet/StripePaymentSheet/Source/PaymentSheet/Link/InstantBankPaymentsController.swift:414`
+
+> `dependencies: ["StripeCore"],`
+>
+> `raw/github/stripe/stripe-ios/snapshots/2026-11-24-4de377e/files/Package.swift:85`
+
 ## Completion and Delayed Methods
 
 `PaymentSheetResult` returns `completed`, `canceled`, or `failed`. `completed` is the end of the SDK interaction, not settlement proof. The source explicitly directs merchants to transition to a generic receipt and fulfill only after receiving a successful Stripe payment event.
@@ -828,6 +917,14 @@ The alpha `CryptoOnrampCoordinator` covers Link account discovery and authentica
 Version 26 raises the deployment target from iOS 13 to iOS 15. Version 25 broadly adopts async APIs and strict-concurrency annotations, makes Customer Sessions and Confirmation Tokens generally available, renames several payment APIs, and removes deprecated Source-era behaviors. Applications crossing either major version must follow `MIGRATING.md` and regression-test payment completion, redirects, 3DS, delayed methods, saved methods, Apple Pay, and Swift concurrency.
 
 ## Version History
+
+### `stripe-ios@26.16.1`
+
+Published 2026-11-09 UTC; delta ingest on 2026-11-24. Adds bounded Apple Pay/shipping, customer-state, React Native SPI and package-wiring findings to the `26.16.0` baseline, plus a changelog heading correction. See [[changelog-github-stripe-ios]].
+
+### `stripe-ios@26.16.0`
+
+Published 2026-11-03 UTC (notes heading 2026-11-02); full additive ingest on 2026-11-24. Checkout confirmation state, Link preview/OTP, Swift SPI and Identity packaging findings extend the `26.15.1` baseline. See [[changelog-github-stripe-ios]] for the exact release and comparison evidence.
 
 ### `stripe-ios@26.13.0`
 
@@ -909,6 +1006,16 @@ The May 2026 manual capsule established the modular SDK, PaymentSheet, FlowContr
 - History: [[changelog-github-stripe-ios]]
 
 ## Raw Sources
+
+- `raw/github/stripe/stripe-ios/snapshots/2026-11-24-4de377e/manifest.json` - exact-SHA 26.16.1 capsule
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.16.1/2026-11-24/manifest.json` - release identity and publication
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.16.1/2026-11-24/release-notes.md` - announced card-entry copy change
+- `tracking/github/repos/stripe/stripe-ios/comparisons/stripe-ios/26.16.0--26.16.1/comparison.json` - exact-SHA comparison
+
+- `raw/github/stripe/stripe-ios/snapshots/2026-11-24-186341f/manifest.json` - exact-SHA 26.16.0 capsule
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.16.0/2026-11-24/manifest.json` - release identity and publication
+- `raw/github/stripe/stripe-ios/releases/stripe-ios/26.16.0/2026-11-24/release-notes.md` - Link, PaymentSheet and Identity announcements
+- `tracking/github/repos/stripe/stripe-ios/comparisons/stripe-ios/26.15.1--26.16.0/comparison.json` - exact tree comparison including retained path replacement
 
 - `raw/github/stripe/stripe-ios/snapshots/2026-10-29-2f45476/manifest.json` - exact-SHA 26.15.1 capsule
 - `raw/github/stripe/stripe-ios/supplements/2026-10-29-2f45476-65a4022e/manifest.json` - approved migration supplement

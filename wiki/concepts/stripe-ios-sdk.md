@@ -198,6 +198,20 @@ Checkout adds a saved-SEPA mandate prompt when neither the element nor the conti
 
 The approved full additive ingest uses release-specific focused reading and includes the migration supplement. All older versions remain in [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]]. No SDK/device/payment testing was performed; client completion still is not settlement evidence.
 
+### Version-qualified `26.16.0` additive baseline
+
+Checkout confirmation moves to `CheckoutElementsController` internals. It handles required Intent actions, then uses reported Checkout Session state. Polling timeout can still return completion with the last open or unpaid state; server-side success remains the fulfillment authority. Ordinary PaymentSheet confirmation does not gain a public Checkout Session route. The `STP` to `InternalOnlyAPI` SPI rename affects affected internal imports/declarations, not ordinary public API access.
+
+Link adds optional preview SPI `returnURL` for supported bank-app authentication and return. Release notes announce native email OTP/MFA and fixes for native Link 3DS interaction and a horizontal sheet freeze; retained flag and caller changes corroborate only part of that behavior. See [[stripe-link]] for the versioned native boundary.
+
+SwiftPM moves to tools version 6.1 while keeping Swift 5 language mode and iOS 15. The optional `Identity` trait gates MediaPipe linking for announced 3D face capture; the notes specify arm64 simulators for this trait and the prebuilt Identity/CryptoOnramp frameworks. Identity also adds public branding color configuration. Two raw changelog bullets appear under 26.15.1 despite the published 26.16.0 notes. Retained podspecs and the new notes' CocoaPods wording do not establish restored distribution. See [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]] for exact evidence and earlier history.
+
+### Version-qualified `26.16.1` delta
+
+The release notes announce a card-entry title change. The retained Checkout Payment Element confirmation builder also guards Apple Pay on enabled display and a merchant ID, and the no-payment-method branch forwards optional session shipping details. These are internal caller changes, not Wallet availability, public Checkout readiness, or verified settlement behavior.
+
+PaymentSheet logout cleanup delegates to the shared Link context; Instant Bank Payments passes the configured customer provider to Link brand lookup. Selected existing CustomerSheet and method-type declarations gain React Native SPI. SwiftPM adds a `StripeCore` dependency to `Stripe3DS2`; 3DS runtime is outside this patch capsule. The new raw changelog puts Identity packaging back under 26.16.0, without changing the preserved older observation. See [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]].
+
 ## Apple Pay
 
 `STPApplePayContext` creates a Stripe PaymentMethod from a `PKPayment`, asks the delegate for confirmation details, and reports completion. It supports UIKit, SwiftUI-compatible presentation, async delegate methods, request customization, shipping and coupon changes, and explicit dismissal.
@@ -240,6 +254,8 @@ The alpha `CryptoOnrampCoordinator` supports Link account discovery and authenti
 
 | Version | Important boundary |
 | --- | --- |
+| `26.16.1` | Card-entry copy announcement; Checkout Apple Pay/shipping and Link customer routing; 3DS package dependency |
+| `26.16.0` | Checkout Session polling/state and SPI changes; Link return URL preview and native auth announcements; Swift tools 6.1 and Identity trait |
 | `26.15.1` | CocoaPods removed after 26.15.0; SPM/XCFramework migration; announced React Native initialization fix; internal Checkout confirmation, SEPA and SPI lifecycle changes |
 | `26.15.0` | Alpha plural KYC API; funding-label forwarding; Identity test-mode placeholder uploads; flow-stable presentation plumbing and saved-method Radar SPI removal |
 | `26.14.0` | Nine method bindings/support announcements; processing and mandate distinctions; container presentation; alpha Apple Pay/KYC-region recollection |

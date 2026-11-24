@@ -643,9 +643,9 @@ Operations history: [[stripe-log]]
 - [[source-github-stripe-android]] — cumulative Android SDK through v23.25.1: method/display declarations, Link error-display announcement and qualified dependency/history findings; older knowledge retained (github-repo, updated 2026-10-27)
 - [[changelog-github-stripe-android]] — package-qualified Android ledger through v23.25.1; contracts, announcements and retrospective attribution (github-repo, updated 2026-10-27)
 - [[stripe-android-sdk]] — Stripe Android SDK: v23.13.1 requirements, builder-first PaymentSheet, Embedded Payment Element, Google Pay, low-level Intent APIs, specialized modules, and fulfillment boundary
-- [[source-github-stripe-ios]] — cumulative SDK through v26.15.1: CocoaPods-to-SPM/XCFramework migration, announced initialization fix and internal Checkout/SPI changes; all earlier history retained (github-repo, updated 2026-10-29)
-- [[changelog-github-stripe-ios]] — package-qualified iOS ledger through v26.15.1; migration, compatibility, evidence limits and preserved historical attribution (github-repo, updated 2026-10-29)
-- [[stripe-ios-sdk]] — Stripe iOS SDK through v26.15.1: CocoaPods migration, payment UI, Apple Pay and specialized modules; older baselines and fulfillment/SPI boundaries retained
+- [[source-github-stripe-ios]] — cumulative SDK through v26.16.1: Checkout Session state, Apple Pay/shipping, Link customer routing and SwiftPM (github-repo, updated 2026-11-24)
+- [[changelog-github-stripe-ios]] — package-qualified iOS ledger through v26.16.1, including Identity heading correction (github-repo, updated 2026-11-24)
+- [[stripe-ios-sdk]] — Stripe iOS SDK through v26.16.1: Checkout, payment UI, Link, Apple Pay and specialized modules; fulfillment and SPI boundaries
 - [[source-github-stripe-terminal-ios]] — `StripeTerminal@6.0.0` additive full major: SPM/iOS 16, capture/consent/models/delegates; 5.8.0/5.8.1 preserved (github-repo, updated 2026-10-25)
 - [[changelog-github-stripe-terminal-ios]] — package-qualified v5/v6 history, previews, capture contradiction and divergent-branch/runtime limits (github-repo, updated 2026-10-25)
 - [[source-github-stripe-terminal-android]] — `stripeterminal@6.0.0` additive full: capture/consent/models/listeners and Android build migration; all v5 history retained (github-repo, updated 2026-10-26)

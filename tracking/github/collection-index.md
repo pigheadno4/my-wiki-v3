@@ -1,6 +1,6 @@
 # GitHub repository collection index
 
-Generated: `2026-11-22`
+Generated: `2026-11-24`
 
 | Company | Repository | Priority | Strategy | Frequency | Last checked | Queue | Next due | Next action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -26,7 +26,7 @@ Generated: `2026-11-22`
 | braintree | `braintree/braintree-web-drop-in` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-11-15 | ingested | 2026-11-22 | `collect-baseline` |
 | braintree | `braintree/braintree_android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-25 | ingested | 2026-11-01 | `collect-baseline` |
 | braintree | `braintree/braintree_ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-30 | ingested | 2026-11-06 | `collect-baseline` |
-| braintree | `braintree/graphql-api` | tier1 | commit / commit-tree-v1 | monthly | 2026-10-23 | ingested | 2026-11-23 | `wait` |
+| braintree | `braintree/graphql-api` | tier1 | commit / commit-tree-v1 | monthly | 2026-10-23 | ingested | 2026-11-23 | `collect-baseline` |
 | braintree | `braintree/braintree_node` | tier2 | semver-tags / npm-tracked-source-v1 | monthly | 2026-10-30 | ingested | 2026-11-30 | `wait` |
 | braintree | `braintree/braintree_php` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-29 | ingested | 2026-11-29 | `wait` |
 | braintree | `braintree/braintree_ruby` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-29 | ingested | 2026-11-29 | `wait` |
@@ -58,11 +58,11 @@ Generated: `2026-11-22`
 | paypal | `paypal/paypal-php-server-sdk` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-10-07 | ingested | 2026-11-07 | `collect-baseline` |
 | paypal | `paypal/paypal-sdk-logos` | tier2 | commit / commit-tree-v1 | monthly | 2026-10-06 | ingested | 2026-11-06 | `collect-baseline` |
 | paypal | `paypal/paypal-sdk-release` | tier2 | semver-tags / tagged-tree-v1 | monthly | 2026-11-19 | ingested | 2026-12-19 | `wait` |
-| paypal | `paypal/paypal-typescript-server-sdk` | tier2 | semver-tags / npm-tracked-source-v1 | monthly | 2026-10-23 | ingested | 2026-11-23 | `wait` |
+| paypal | `paypal/paypal-typescript-server-sdk` | tier2 | semver-tags / npm-tracked-source-v1 | monthly | 2026-10-23 | ingested | 2026-11-23 | `collect-baseline` |
 | paypal | `paypal/postman-collections` | tier2 | commit / commit-tree-v1 | monthly | 2026-10-04 | ingested | 2026-11-04 | `collect-baseline` |
 | stripe | `stripe/react-stripe-js` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-10-25 | ingested | 2026-11-01 | `collect-baseline` |
 | stripe | `stripe/stripe-android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-27 | ingested | 2026-11-03 | `collect-baseline` |
-| stripe | `stripe/stripe-ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-29 | ingested | 2026-11-05 | `collect-baseline` |
+| stripe | `stripe/stripe-ios` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-11-24 | ingested | 2026-12-01 | `wait` |
 | stripe | `stripe/stripe-js` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-10-25 | ingested | 2026-11-01 | `collect-baseline` |
 | stripe | `stripe/stripe-react-native` | tier1 | semver-tags / npm-tracked-source-v1 | weekly | 2026-10-29 | ingested | 2026-11-05 | `collect-baseline` |
 | stripe | `stripe/stripe-terminal-android` | tier1 | semver-tags / tagged-tree-v1 | weekly | 2026-10-26 | ingested | 2026-11-02 | `collect-baseline` |

@@ -6,6 +6,14 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-11-24] ingest | Stripe iOS `26.16.1`
+
+Delta at `4de377e` after the completed `26.16.0` ingest. Approved focused review covers the card-entry title announcement, retained Apple Pay and no-method shipping callers, customer reset and Link brand lookup, React Native SPI and SwiftPM dependency. Recorded the correction to the older Identity heading without rewriting history. No SDK or payment execution. See [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]].
+
+## [2026-11-24] ingest | Stripe iOS `26.16.0`
+
+Full additive ingest at `186341f` with approved focused reading. Added Checkout Session state and polling, native Link/OTP preview, Swift SPI and Identity packaging/branding findings; recorded the conflicting raw changelog heading and retained all earlier evidence. No SDK or payment execution. See [[source-github-stripe-ios]] and [[changelog-github-stripe-ios]].
+
 ## [2026-11-23] ingest | Stripe AI `default-branch@1bb4869`
 
 Full additive ingest of the 2026-11-22 exact-SHA snapshot. Reviewed 95 current retained files and relevant August source; mechanically verified generated inventories, duplicated diff, and unchanged historical evidence. Added hosted MCP configuration, package deprecations, active skills/plugins, and selected checkout benchmarks. Preserved `1953b6c` history. No hooks, Stripe calls, or benchmarks were executed. See [[source-github-ai]] and [[changelog-github-ai]].

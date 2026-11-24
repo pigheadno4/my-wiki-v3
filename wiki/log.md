@@ -1,5 +1,13 @@
 # Wiki Log
 
+## [2026-11-24] ingest | Stripe iOS `26.16.1`
+
+Delta ingest: card-entry title announcement plus retained Checkout Apple Pay/shipping, customer routing and SwiftPM changes. Preserved the earlier baseline and recorded the Identity heading correction. Details in [[stripe-log]].
+
+## [2026-11-24] ingest | Stripe iOS `26.16.0`
+
+Full additive ingest: Checkout polling and Session state, native Link preview and SwiftPM Identity changes. Preserved `26.15.1` and earlier history. Details in [[stripe-log]].
+
 ## [2026-11-23] ingest | Stripe AI `default-branch@1bb4869`
 
 Added the full November baseline for hosted MCP, active skills/plugins and checkout benchmarks. Recorded the five package deprecations and preserved the August baseline. Details in [[stripe-log]].
