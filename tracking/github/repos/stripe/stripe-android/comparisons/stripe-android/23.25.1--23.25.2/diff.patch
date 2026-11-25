@@ -1,0 +1,120 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 5e36a2d..dea2578 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,6 +3,11 @@
+ NEXT_VERSION_BUMP: PATCH
+ ## XX.XX.XX - 20XX-XX-XX
+ 
++## 23.25.2 - 2026-11-04
++
++### PaymentSheet
++* [FIXED][15254](https://github.com/stripe/stripe-android/pull/15254) Fixed an ANR during passive CAPTCHA warm-up in PaymentSheet.
++
+ ## 23.25.1 - 2026-10-26
+ 
+ ### PaymentSheet
+diff --git a/README.md b/README.md
+index f19dcff..52cfbc1 100644
+--- a/README.md
++++ b/README.md
+@@ -67,7 +67,7 @@ Add `stripe-android` to your `build.gradle` dependencies.
+ 
+ ```
+ dependencies {
+-    implementation 'com.stripe:stripe-android:23.25.1'
++    implementation 'com.stripe:stripe-android:23.25.2'
+ }
+ ```
+ 
+diff --git a/VERSION b/VERSION
+index 49fca09..f9b66a8 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-23.25.1
++23.25.2
+diff --git a/crypto-onramp/build.gradle b/crypto-onramp/build.gradle
+index e03d79b..f9e1df0 100644
+--- a/crypto-onramp/build.gradle
++++ b/crypto-onramp/build.gradle
+@@ -42,6 +42,7 @@ dependencies {
+     testImplementation testLibs.mockito.kotlin
+     testImplementation testLibs.robolectric
+     testImplementation testLibs.truth
++    testImplementation testLibs.testParameterInjector
+     testImplementation testLibs.turbine
+ 
+     androidTestImplementation testLibs.androidx.junit
+diff --git a/crypto-onramp/src/main/java/com/stripe/android/crypto/onramp/OnrampCoordinator.kt b/crypto-onramp/src/main/java/com/stripe/android/crypto/onramp/OnrampCoordinator.kt
+index 7c642fd..f23f72d 100644
+--- a/crypto-onramp/src/main/java/com/stripe/android/crypto/onramp/OnrampCoordinator.kt
++++ b/crypto-onramp/src/main/java/com/stripe/android/crypto/onramp/OnrampCoordinator.kt
+@@ -202,6 +202,7 @@ class OnrampCoordinator @Inject internal constructor(
+ 
+     /**
+      * Create a presenter for handling Link UI interactions.
++     * Call [configure] successfully before creating the presenter.
+      *
+      * @param activity The activity that will host the Link flows.
+      * @return A presenter instance for handling Link UI operations.
+@@ -209,9 +210,6 @@ class OnrampCoordinator @Inject internal constructor(
+     fun createPresenter(
+         activity: ComponentActivity
+     ): Presenter {
+-        // A finished host removes the global registration. Restore it before
+-        // constructing launchers, which can synchronously deliver pending results.
+-        callbackStore.restore()
+         return presenterComponentFactory
+             .build(
+                 activity = activity,
+diff --git a/gradle.properties b/gradle.properties
+index c66953b..ac36688 100644
+--- a/gradle.properties
++++ b/gradle.properties
+@@ -24,4 +24,4 @@ org.gradle.configuration-cache=true
+ org.gradle.configuration-cache.problems=warn
+ 
+ # Update StripeSdkVersion.VERSION_NAME when publishing a new release
+-VERSION_NAME=23.25.1
++VERSION_NAME=23.25.2
+diff --git a/identity/build.gradle b/identity/build.gradle
+index a184cef..6a68717 100644
+--- a/identity/build.gradle
++++ b/identity/build.gradle
+@@ -21,9 +21,6 @@ dependencies {
+     implementation libs.androidx.lifecycle
+     implementation libs.androidx.lifecycleCompose
+     implementation libs.androidx.liveDataKtx
+-    implementation libs.androidx.legacySupport
+-    implementation libs.androidx.navigationFragment
+-    implementation libs.androidx.navigationUi
+     implementation libs.androidx.viewModel
+     implementation libs.compose.activity
+     implementation libs.compose.liveData
+@@ -83,7 +80,6 @@ android {
+     }
+ 
+     buildFeatures {
+-        viewBinding true
+         compose true
+     }
+ }
+diff --git a/paymentsheet/api/paymentsheet.api b/paymentsheet/api/paymentsheet.api
+index 8561e6d..cc39a91 100644
+--- a/paymentsheet/api/paymentsheet.api
++++ b/paymentsheet/api/paymentsheet.api
+@@ -480,6 +480,13 @@ public final class com/stripe/android/link/ui/inline/ComposableSingletons$LinkOp
+ 	public final fun getLambda$1832128909$paymentsheet_release ()Lkotlin/jvm/functions/Function2;
+ }
+ 
++public final class com/stripe/android/link/ui/nofundingsources/ComposableSingletons$NoFundingSourcesScreenKt {
++	public static final field INSTANCE Lcom/stripe/android/link/ui/nofundingsources/ComposableSingletons$NoFundingSourcesScreenKt;
++	public fun <init> ()V
++	public final fun getLambda$-1616419435$paymentsheet_release ()Lkotlin/jvm/functions/Function2;
++	public final fun getLambda$913975993$paymentsheet_release ()Lkotlin/jvm/functions/Function2;
++}
++
+ public final class com/stripe/android/link/ui/oauth/ComposableSingletons$OAuthConsentScreenKt {
+ 	public static final field INSTANCE Lcom/stripe/android/link/ui/oauth/ComposableSingletons$OAuthConsentScreenKt;
+ 	public fun <init> ()V

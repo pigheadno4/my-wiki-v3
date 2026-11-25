@@ -172,6 +172,10 @@ The additive `stripe-android@23.25.0` delta adds Touch 'n Go/TrueMoney API decla
 
 The following `23.25.1` delta announces a Link-return PaymentSheet error-display fix and adds a retained AndroidX WebKit dependency declaration, not a new payment/authentication API. The relevant fix implementation and exact resolved WebKit version remain outside the capsule; all earlier Android history is preserved. [[source-github-stripe-android]] [[changelog-github-stripe-android]]
 
+The `23.25.2` Android delta records Stripe's PaymentSheet warm-up freeze fix announcement and the retained experimental Onramp presenter change: successful configuration is documented and restoration is no longer called by `createPresenter()`. The patch also adjusts Identity build declarations. [[source-github-stripe-android]] [[changelog-github-stripe-android]]
+
+The `23.26.0` Android delta moves PaymentSheet/FlowController's builder API configuration to public preview and preserves beta settings when copying it. Klarna confirmation token options are private-preview declarations and release notes, not source-verified serialization. Bank visibility and PaymentSheet Activity retention fixes remain announcements. [[source-github-stripe-android]] [[changelog-github-stripe-android]]
+
 ## API Deprecations
 
 | API | Dated documentation |
@@ -231,8 +235,8 @@ The `@stripe/react-stripe-js@6.12.0` delta adds standalone `TreasuryDisclosure` 
 - [[source-metronome-guides-pricing-packaging-apply-credits-and-commits-manual-payment-gated-commits]] — Stripe product mapping, invoice voiding, and retry boundary for a Metronome-gated commit
 - [[source-metronome-guides-customers-billing-manage-customers-schedule-billing-provider-change]] — contract invoice-routing transitions between Stripe, NetSuite, and marketplaces
 - [[source-github-stripe-postman]] — Stripe API Postman collection: 107 endpoint groups, 4 versioned collections in public workspace, fork/import setup, 2024-04-15 changelog
-- [[source-github-stripe-android]] — cumulative Android SDK through v23.25.1: method/display declarations, Link error-display announcement, dependency and historical attribution limits; older knowledge retained
-- [[changelog-github-stripe-android]] — package-qualified Android history through v23.25.1; contracts, announcements and retrospective attribution distinguished
+- [[source-github-stripe-android]] — cumulative Android SDK through v23.26.0: PaymentSheet public-preview API configuration, Klarna private-preview declarations and published fix boundaries
+- [[changelog-github-stripe-android]] — package-qualified Android history through v23.26.0; contracts, announcements and retrospective attribution distinguished
 - [[source-github-stripe-ios]] — cumulative SDK through v26.16.1: Checkout confirmation, Apple Pay and shipping, native Link, SwiftPM and historical CocoaPods migration
 - [[changelog-github-stripe-ios]] — package-qualified iOS history through v26.16.1; migration, compatibility, release announcements and preserved historical attribution
 - [[source-github-stripe-terminal-ios]] — `StripeTerminal@6.0.0` additive major: SPM, iOS 16, capture/consent/model/delegate migration; v5.8.0/5.8.1 retained

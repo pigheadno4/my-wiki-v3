@@ -217,6 +217,16 @@ Release notes announce a fix for PaymentSheet error messages disappearing after 
 
 The retained payments-core build adds `implementation libs.androidx.webkit`. The alias's resolved version is outside the retained catalog, so no exact WebKit version, minimum-device change or security/runtime claim follows. All retained compiled API inventories, launcher/example source and other dependency declarations remain unchanged. All 23.25.0 and older findings remain preserved in [[changelog-github-stripe-android]]. No build/device/payment tests.
 
+## `23.25.2` Delta
+
+Stripe announces a fix for PaymentSheet becoming unresponsive during passive CAPTCHA warm-up. The warm-up implementation is outside the retained snapshot. Experimental Onramp documents successful `configure()` before `createPresenter()`, which no longer restores callbacks itself. Identity removes several direct legacy/navigation dependencies and view binding without changing its retained API 24 floor. See [[source-github-stripe-android]] and [[changelog-github-stripe-android]].
+
+## `23.26.0` Delta
+
+`PaymentSheet.Configuration.Builder.apiConfiguration(ApiConfiguration)` moves from library-only to public preview for PaymentSheet and FlowController. The documented fallback remains `PaymentConfiguration` when the setter is unused. The internal copy path retains beta values alongside the publishable key and connected-account ID. Historical limitations above apply to their respective versions. Request header serialization and tenant isolation are not verified.
+
+The Klarna confirmation options are private preview. Retained signatures show the new options type, not token serialization or eligibility. Bank method visibility and Activity retention during CAPTCHA warm-up are release-note fixes; their implementations are outside this snapshot. See [[source-github-stripe-android]] and [[changelog-github-stripe-android]].
+
 ## Related
 
 - Source: [[source-github-stripe-android]]

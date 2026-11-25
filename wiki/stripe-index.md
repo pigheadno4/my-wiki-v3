@@ -640,8 +640,8 @@ Operations history: [[stripe-log]]
 - [[source-stripe-subscriptions-change-price]] — Stripe's Subscriptions API guide describes changing a subscription item's price to upgrade or downgrade an existing subscription. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
 - [[source-stripe-subscriptions-prorations]] — Stripe's same-URL May and November 2026 guides explain proration invoice items for subscription changes, discount treatment, credit calculation in classic versus flexible billing mode, preview, and `proration_behavior`. (S01 reviewed update, 2026-11-08; dated source qualifications apply.)
 - [[source-github-stripe-postman]] — Stripe API Postman collection: 107 endpoint groups, 4 versioned collections, public workspace postman.com/stripedev (github-repo, 2026-05-13)
-- [[source-github-stripe-android]] — cumulative Android SDK through v23.25.1: method/display declarations, Link error-display announcement and qualified dependency/history findings; older knowledge retained (github-repo, updated 2026-10-27)
-- [[changelog-github-stripe-android]] — package-qualified Android ledger through v23.25.1; contracts, announcements and retrospective attribution (github-repo, updated 2026-10-27)
+- [[source-github-stripe-android]] — cumulative Android SDK through v23.26.0: PaymentSheet public-preview API configuration, Klarna private-preview declarations and published fix boundaries (github-repo, updated 2026-11-25)
+- [[changelog-github-stripe-android]] — package-qualified Android ledger through v23.26.0; contracts, announcements and retrospective attribution (github-repo, updated 2026-11-25)
 - [[stripe-android-sdk]] — Stripe Android SDK: v23.13.1 requirements, builder-first PaymentSheet, Embedded Payment Element, Google Pay, low-level Intent APIs, specialized modules, and fulfillment boundary
 - [[source-github-stripe-ios]] — cumulative SDK through v26.16.1: Checkout Session state, Apple Pay/shipping, Link customer routing and SwiftPM (github-repo, updated 2026-11-24)
 - [[changelog-github-stripe-ios]] — package-qualified iOS ledger through v26.16.1, including Identity heading correction (github-repo, updated 2026-11-24)

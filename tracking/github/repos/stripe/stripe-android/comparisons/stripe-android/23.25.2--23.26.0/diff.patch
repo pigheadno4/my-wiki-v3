@@ -1,0 +1,158 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index dea2578..fb5e508 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -3,6 +3,17 @@
+ NEXT_VERSION_BUMP: PATCH
+ ## XX.XX.XX - 20XX-XX-XX
+ 
++## 23.26.0 - 2026-11-09
++
++### Payments
++* [ADDED][15314](https://github.com/stripe/stripe-android/pull/15314) Klarna confirmation options for passing SDK-generated interoperability and partner confirmation tokens (private preview).
++
++### PaymentSheet
++* [ADDED][15326](https://github.com/stripe/stripe-android/pull/15326) Added `ApiConfiguration.betas` in public preview to configure beta API version headers for Payment Element.
++* [ADDED][15327](https://github.com/stripe/stripe-android/pull/15327) Added `PaymentSheet.Configuration.Builder.apiConfiguration` in public preview to configure API credentials for PaymentSheet and FlowController.
++* [FIXED][15315](https://github.com/stripe/stripe-android/pull/15315) Fixed an issue that caused the Bank payment method to be hidden unnecessarily.
++* [FIXED][15317](https://github.com/stripe/stripe-android/pull/15317) Fixed a memory leak where PaymentSheet could retain its Activity when closed before passive CAPTCHA warm-up finished.
++
+ ## 23.25.2 - 2026-11-04
+ 
+ ### PaymentSheet
+diff --git a/README.md b/README.md
+index 52cfbc1..fb7a9c7 100644
+--- a/README.md
++++ b/README.md
+@@ -67,7 +67,7 @@ Add `stripe-android` to your `build.gradle` dependencies.
+ 
+ ```
+ dependencies {
+-    implementation 'com.stripe:stripe-android:23.25.2'
++    implementation 'com.stripe:stripe-android:23.26.0'
+ }
+ ```
+ 
+diff --git a/VERSION b/VERSION
+index f9b66a8..251d5e9 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-23.25.2
++23.26.0
+diff --git a/dependencies.gradle b/dependencies.gradle
+index 1139546..47e2ec6 100644
+--- a/dependencies.gradle
++++ b/dependencies.gradle
+@@ -196,7 +196,7 @@ ext.libs = [
+         showkaseAnnotation                  : "com.airbnb.android:showkase-annotation:${versions.showkase}",
+         showkaseProcessor                   : "com.airbnb.android:showkase-processor:${versions.showkase}",
+         litert                              : "com.google.ai.edge.litert:litert:${versions.litert}",
+-        litertSupport                       : "com.google.ai.edge.litert:litert-support:${versions.litert}",
++        litertSupportApi                    : "com.google.ai.edge.litert:litert-support-api:${versions.litert}",
+         tensorflowLitePlayServices          : "com.google.android.gms:play-services-tflite-java:${versions.playServicesTfLite}",
+         tensorflowLitePlayServicesSupport   : "com.google.android.gms:play-services-tflite-support:${versions.playServicesTfLite}",
+         mlKitTextRecognition                : "com.google.android.gms:play-services-mlkit-text-recognition:${versions.playServicesMlKitTextRecognition}",
+diff --git a/financial-connections/src/main/java/com/stripe/android/financialconnections/FinancialConnectionsSheet.kt b/financial-connections/src/main/java/com/stripe/android/financialconnections/FinancialConnectionsSheet.kt
+index 82d9d8c..750f0e5 100644
+--- a/financial-connections/src/main/java/com/stripe/android/financialconnections/FinancialConnectionsSheet.kt
++++ b/financial-connections/src/main/java/com/stripe/android/financialconnections/FinancialConnectionsSheet.kt
+@@ -77,6 +77,7 @@ class FinancialConnectionsSheet internal constructor(
+                 stripeAccountId = stripeAccountId,
+             ),
+             preCollectedConsent = preCollectedConsent,
++            themeMode = ThemeMode.Automatic,
+         )
+     }
+ 
+diff --git a/gradle.properties b/gradle.properties
+index ac36688..1fcb53a 100644
+--- a/gradle.properties
++++ b/gradle.properties
+@@ -24,4 +24,4 @@ org.gradle.configuration-cache=true
+ org.gradle.configuration-cache.problems=warn
+ 
+ # Update StripeSdkVersion.VERSION_NAME when publishing a new release
+-VERSION_NAME=23.25.2
++VERSION_NAME=23.26.0
+diff --git a/payments-core/api/payments-core.api b/payments-core/api/payments-core.api
+index 1695642..9a42b92 100644
+--- a/payments-core/api/payments-core.api
++++ b/payments-core/api/payments-core.api
+@@ -192,6 +192,9 @@ public abstract interface class com/stripe/android/IssuingCardPinService$Listene
+ 	public abstract fun onError (Lcom/stripe/android/IssuingCardPinService$CardPinActionError;Ljava/lang/String;Ljava/lang/Throwable;)V
+ }
+ 
++public abstract interface annotation class com/stripe/android/KlarnaSdkPrivatePreview : java/lang/annotation/Annotation {
++}
++
+ public abstract interface annotation class com/stripe/android/LinkDisallowFundingSourceCreationPreview : java/lang/annotation/Annotation {
+ }
+ 
+@@ -3014,6 +3017,22 @@ public final class com/stripe/android/model/PaymentMethodOptionsParams$Card : co
+ 	public final fun writeToParcel (Landroid/os/Parcel;I)V
+ }
+ 
++public final class com/stripe/android/model/PaymentMethodOptionsParams$Klarna : com/stripe/android/model/PaymentMethodOptionsParams {
++	public static final field $stable I
++	public static final field CREATOR Landroid/os/Parcelable$Creator;
++	public fun <init> (Lcom/stripe/android/model/ConfirmPaymentIntentParams$SetupFutureUsage;)V
++	public synthetic fun <init> (Lcom/stripe/android/model/ConfirmPaymentIntentParams$SetupFutureUsage;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
++	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lcom/stripe/android/model/ConfirmPaymentIntentParams$SetupFutureUsage;)V
++	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lcom/stripe/android/model/ConfirmPaymentIntentParams$SetupFutureUsage;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
++	public final fun describeContents ()I
++	public fun equals (Ljava/lang/Object;)Z
++	public final fun getSetupFutureUsage ()Lcom/stripe/android/model/ConfirmPaymentIntentParams$SetupFutureUsage;
++	public fun hashCode ()I
++	public final fun setSetupFutureUsage (Lcom/stripe/android/model/ConfirmPaymentIntentParams$SetupFutureUsage;)V
++	public fun toString ()Ljava/lang/String;
++	public final fun writeToParcel (Landroid/os/Parcel;I)V
++}
++
+ public final class com/stripe/android/model/PaymentMethodOptionsParams$USBankAccount : com/stripe/android/model/PaymentMethodOptionsParams {
+ 	public static final field $stable I
+ 	public static final field CREATOR Landroid/os/Parcelable$Creator;
+diff --git a/paymentsheet/api/paymentsheet.api b/paymentsheet/api/paymentsheet.api
+index cc39a91..77e3357 100644
+--- a/paymentsheet/api/paymentsheet.api
++++ b/paymentsheet/api/paymentsheet.api
+@@ -1435,6 +1435,7 @@ public final class com/stripe/android/paymentsheet/PaymentSheet$Configuration$Bu
+ 	public final fun allowsDelayedPaymentMethods (Z)Lcom/stripe/android/paymentsheet/PaymentSheet$Configuration$Builder;
+ 	public final fun allowsPaymentMethodsRequiringShippingAddress (Z)Lcom/stripe/android/paymentsheet/PaymentSheet$Configuration$Builder;
+ 	public final fun allowsRemovalOfLastSavedPaymentMethod (Z)Lcom/stripe/android/paymentsheet/PaymentSheet$Configuration$Builder;
++	public final fun apiConfiguration (Lcom/stripe/android/core/ApiConfiguration;)Lcom/stripe/android/paymentsheet/PaymentSheet$Configuration$Builder;
+ 	public final fun appearance (Lcom/stripe/android/paymentsheet/PaymentSheet$Appearance;)Lcom/stripe/android/paymentsheet/PaymentSheet$Configuration$Builder;
+ 	public final fun billingDetailsCollectionConfiguration (Lcom/stripe/android/paymentsheet/PaymentSheet$BillingDetailsCollectionConfiguration;)Lcom/stripe/android/paymentsheet/PaymentSheet$Configuration$Builder;
+ 	public final fun build ()Lcom/stripe/android/paymentsheet/PaymentSheet$Configuration;
+diff --git a/paymentsheet/src/main/java/com/stripe/android/paymentsheet/PaymentSheet.kt b/paymentsheet/src/main/java/com/stripe/android/paymentsheet/PaymentSheet.kt
+index 16d9963..f5407da 100644
+--- a/paymentsheet/src/main/java/com/stripe/android/paymentsheet/PaymentSheet.kt
++++ b/paymentsheet/src/main/java/com/stripe/android/paymentsheet/PaymentSheet.kt
+@@ -27,6 +27,7 @@ import com.stripe.android.LinkDisallowFundingSourceCreationPreview
+ import com.stripe.android.SharedPaymentTokenSessionPreview
+ import com.stripe.android.common.configuration.ConfigurationDefaults
+ import com.stripe.android.core.ApiConfiguration
++import com.stripe.android.core.ApiConfigurationPreview
+ import com.stripe.android.core.reactnative.ReactNativeSdkInternal
+ import com.stripe.android.core.reactnative.UnregisterSignal
+ import com.stripe.android.core.strings.ResolvableString
+@@ -1275,7 +1276,7 @@ class PaymentSheet internal constructor(
+              * When not set, the payment element uses the credentials initialized through
+              * [com.stripe.android.PaymentConfiguration].
+              */
+-            @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
++            @ApiConfigurationPreview
+             fun apiConfiguration(apiConfiguration: ApiConfiguration) = apply {
+                 this.apiConfiguration = apiConfiguration.build()
+             }
+@@ -1350,7 +1351,9 @@ class PaymentSheet internal constructor(
+                 userOverrideCountry?.let { userOverrideCountry(it) }
+                 apiConfiguration?.let {
+                     apiConfiguration(
+-                        ApiConfiguration(it.publishableKey).stripeAccountId(it.stripeAccountId)
++                        ApiConfiguration(it.publishableKey)
++                            .stripeAccountId(it.stripeAccountId)
++                            .betas(it.betas)
+                     )
+                 }
+             }

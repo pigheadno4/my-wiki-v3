@@ -2,9 +2,11 @@
 title: "GitHub: stripe/stripe-android"
 type: source
 date_ingested: 2026-05-13
-date_updated: 2026-10-27
+date_updated: 2026-11-25
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-android/snapshots/2026-11-24-e65b11a/manifest.json"
+  - "github/stripe/stripe-android/snapshots/2026-11-24-ecd20c3/manifest.json"
   - "github/stripe/stripe-android/snapshots/2026-10-27-bb0d8d0/manifest.json"
   - "github/stripe/stripe-android/snapshots/2026-10-27-b792b5d/manifest.json"
   - "github/stripe/stripe-android/snapshots/2026-10-20-51f27a7/manifest.json"
@@ -31,6 +33,10 @@ tags: [stripe, android, kotlin, mobile, sdk, payments, payment-sheet, embedded-p
 Repository: <https://github.com/stripe/stripe-android>
 
 ## Evidence Boundary
+
+- The `23.26.0` focused delta verifies both 52-file snapshots (9 modified, 43 unchanged) and the packet/comparison hashes. Reviewed changed authored code, affected prior source, API declaration blocks and release/patch content; checked unchanged inventory and raw history mechanically. The raw changelog retains all 4,931 older lines and inserts 11. The packet classifies 9 retained and 424 excluded upstream changes. No SDK build, device or payment testing.
+
+- The `23.25.2` focused delta verifies both 52-file snapshots (8 modified, 44 unchanged) and the packet/comparison hashes. Reviewed changed authored files and affected prior code, API declarations in context and the release/patch; checked unchanged inventories and raw history mechanically. All 4,926 earlier raw changelog lines remain with five new lines. The packet classifies 8 retained and 998 excluded upstream changes. No SDK build, device or payment testing.
 
 - `23.24.0` uses approved additive full mode with a one-release focused-reading exception for the preview annotation's package migration. All 104 prior/current hashes/sizes match across two 52-file capsules: fifteen modified/37 unchanged, 602 upstream dispositions (15 retained, 587 policy exclusions), no packet gaps/unclassified changes. Changed implementation/API sections, affected prior code, short content/builds, release/comparison and complete cumulative wiki pages read; unchanged expanded inventory/source/API/history mechanically checked. Effective full list is 61 paths, not a claim of 61 complete semantic file reads. Core annotation definition, method routing/serialization, autofill, Identity test-mode upload and Onramp KYC/label internals remain excluded. No supplemental collection, build/device/payment tests or replacement of older history.
 - `23.23.0` uses approved additive full mode with focused reading because security impact is not bounded by this capsule. All 104 hashes/sizes match across two 52-file snapshots: sixteen modified/36 unchanged, 3,521 classified upstream dispositions. Changed caller implementations, affected prior code/API blocks, builds and content reviewed; unchanged expanded inventory/history checked mechanically. Payment controller/client-secret models/intent resolver, new-method routing, address/header UI and Onramp callback store remain excluded. Security/error announcements are not independent implementation proof. No build/device/payment tests; older knowledge retained.
@@ -76,9 +82,42 @@ Repository: <https://github.com/stripe/stripe-android>
 
 | Package | Latest ingested release | Exact SHA | Evidence status |
 | --- | --- | --- | --- |
-| `stripe-android` | `23.25.1` | `bb0d8d09289cec10d303557e7300f6f5d58b9c06` | Approved delta with focused reading; all older baselines/deltas retained |
+| `stripe-android` | `23.26.0` | `e65b11abde0b3e19124c605d77b6a5bcdb91e836` | Approved delta with focused reading; all older baselines/deltas retained |
 
 This table reports wiki ingest progress, not the latest release published upstream.
+
+## `stripe-android@23.26.0` Integration Delta
+
+### Public-preview API configuration
+
+`PaymentSheet.Configuration.Builder.apiConfiguration(ApiConfiguration)` changes from `LIBRARY_GROUP` restriction to `@ApiConfigurationPreview` and is added to the retained compiled API inventory. It builds/stores the supplied configuration and is documented for PaymentSheet and FlowController. When not supplied, the documented fallback remains the credentials initialized via `PaymentConfiguration`. This extends the earlier Embedded Payment Element preview rather than reclassifying older releases. The internal `newBuilder()` path copies stored beta values along with the publishable key and connected-account ID. The underlying API configuration/network implementation is excluded, so this does not establish exact header encoding, request-wide coverage, or tenant isolation.
+
+### Klarna, fixes and build wiring
+
+The retained payments-core API adds `PaymentMethodOptionsParams.Klarna` with overloads taking SetupFutureUsage or two strings plus SetupFutureUsage, and includes the `KlarnaSdkPrivatePreview` marker. Stripe's release notes identify interoperability and partner confirmation tokens as private preview. The token parameter handling and serialization are outside the capsule; this is not an integration recipe or proof of merchant access.
+
+The announced bank-payment-method visibility and Activity retention fixes are distinct from the `23.25.2` application-not-responding fix. The changed implementation is not retained; no eligibility rule, memory-leak mechanism or device behavior is established here. Financial Connections' internal configuration now explicitly passes `ThemeMode.Automatic` without changing the public signature, not proof of how dark mode renders. The dependency catalog replaces `litert-support` with `litert-support-api` at the same declared LiteRT 1.4.1; no resolved build or runtime claim follows.
+
+Located evidence:
+
+- `raw/github/stripe/stripe-android/snapshots/2026-11-24-e65b11a/files/paymentsheet/src/main/java/com/stripe/android/paymentsheet/PaymentSheet.kt:1279`: `@ApiConfigurationPreview`.
+- `raw/github/stripe/stripe-android/snapshots/2026-11-24-e65b11a/files/paymentsheet/src/main/java/com/stripe/android/paymentsheet/PaymentSheet.kt:1356`: `.betas(it.betas)`.
+- `raw/github/stripe/stripe-android/snapshots/2026-11-24-e65b11a/files/payments-core/api/payments-core.api:3020`: `public final class com/stripe/android/model/PaymentMethodOptionsParams$Klarna : com/stripe/android/model/PaymentMethodOptionsParams {`.
+- `raw/github/stripe/stripe-android/snapshots/2026-11-24-e65b11a/files/financial-connections/src/main/java/com/stripe/android/financialconnections/FinancialConnectionsSheet.kt:80`: `themeMode = ThemeMode.Automatic,`.
+
+## `stripe-android@23.25.2` Integration Delta
+
+Stripe announces a fix for an application-not-responding (ANR) condition during passive CAPTCHA warm-up in PaymentSheet. The changed warm-up implementation is outside the retained capsule. This is not a verified root cause or a device-tested fix.
+
+The experimental Onramp coordinator's `createPresenter(activity)` now documents calling `configure()` successfully first, and no longer calls `callbackStore.restore()` before building the presenter. The builder still updates the callback store. Preserve the earlier restore path as historical code; the retained caller does not show whether restoration happens elsewhere or verify redelivery on host recreation.
+
+Identity removes direct AndroidX legacy support, Navigation Fragment and Navigation UI dependencies and disables its explicit view-binding setting; Compose and the API 24 floor remain. Onramp adds a test-only parameter-injector dependency, not a runtime requirement. The generated PaymentSheet API inventory adds a no-funding-sources Compose singleton with generated lambdas; it does not establish a new merchant API or user-visible behavior. The README, VERSION and gradle.properties otherwise advance the release number.
+
+Located evidence:
+
+- `raw/github/stripe/stripe-android/releases/stripe-android/23.25.2/2026-11-24/release-notes.md:2`: “Fixed an ANR during passive CAPTCHA warm-up in PaymentSheet.”
+- `raw/github/stripe/stripe-android/snapshots/2026-11-24-ecd20c3/files/crypto-onramp/src/main/java/com/stripe/android/crypto/onramp/OnrampCoordinator.kt:205`: `Call [configure] successfully before creating the presenter.`
+- `raw/github/stripe/stripe-android/snapshots/2026-11-24-ecd20c3/files/paymentsheet/api/paymentsheet.api:483`: `public final class com/stripe/android/link/ui/nofundingsources/ComposableSingletons$NoFundingSourcesScreenKt {`
 
 ## `stripe-android@23.25.1` Integration Delta
 
@@ -790,6 +829,16 @@ The May 2026 manual capsule established PaymentSheet, FlowController, CustomerSh
 - History: [[changelog-github-stripe-android]]
 
 ## Raw Sources
+
+- `raw/github/stripe/stripe-android/snapshots/2026-11-24-e65b11a/manifest.json` - exact-SHA 23.26.0 capsule
+- `raw/github/stripe/stripe-android/releases/stripe-android/23.26.0/2026-11-24/manifest.json` - package release identity and date
+- `raw/github/stripe/stripe-android/releases/stripe-android/23.26.0/2026-11-24/release-notes.md` - release announcements
+- `tracking/github/repos/stripe/stripe-android/comparisons/stripe-android/23.25.2--23.26.0/comparison.json` - exact-SHA comparison
+
+- `raw/github/stripe/stripe-android/snapshots/2026-11-24-ecd20c3/manifest.json` - exact-SHA 23.25.2 capsule
+- `raw/github/stripe/stripe-android/releases/stripe-android/23.25.2/2026-11-24/manifest.json` - package release identity and date
+- `raw/github/stripe/stripe-android/releases/stripe-android/23.25.2/2026-11-24/release-notes.md` - release announcements
+- `tracking/github/repos/stripe/stripe-android/comparisons/stripe-android/23.25.1--23.25.2/comparison.json` - exact-SHA comparison
 
 - `raw/github/stripe/stripe-android/snapshots/2026-10-27-bb0d8d0/manifest.json` - 23.25.1 exact-SHA capsule; all identities checked against 23.25.0
 - `raw/github/stripe/stripe-android/releases/stripe-android/23.25.1/2026-10-27/manifest.json` - package-qualified publication identity

@@ -2,9 +2,11 @@
 title: "GitHub changelog: stripe/stripe-android"
 type: source
 date_ingested: 2026-07-31
-date_updated: 2026-10-27
+date_updated: 2026-11-25
 original_format: github-repo
 raw_files:
+  - "github/stripe/stripe-android/snapshots/2026-11-24-e65b11a/manifest.json"
+  - "github/stripe/stripe-android/snapshots/2026-11-24-ecd20c3/manifest.json"
   - "github/stripe/stripe-android/snapshots/2026-10-27-bb0d8d0/manifest.json"
   - "github/stripe/stripe-android/snapshots/2026-10-27-b792b5d/manifest.json"
   - "github/stripe/stripe-android/snapshots/2026-10-20-51f27a7/manifest.json"
@@ -27,6 +29,26 @@ tags: [stripe, android, kotlin, mobile, sdk, changelog, github-repository]
 ## Overview
 
 Chronological release synthesis for `stripe/stripe-android`. Durable architecture and integration knowledge belongs in [[source-github-stripe-android]] and the linked immutable evidence.
+
+## `stripe-android@23.26.0` - Change Set `e65b11a` (changelog date 2026-11-09)
+
+Approved delta from `stripe-android@23.25.2` to `stripe-android@23.26.0`, SHA `e65b11abde0b3e19124c605d77b6a5bcdb91e836`, ingested 2026-11-25. Published 2026-11-09 UTC.
+
+**Changes:** The PaymentSheet/FlowController builder moves from library restriction to `ApiConfigurationPreview`; the internal copy path preserves betas. The generated inventory adds Klarna options and a private-preview marker, not verified token serialization. The bank visibility and warm-up Activity retention fixes are announcements. Financial Connections explicitly supplies automatic theme internally; LiteRT changes declaration without a version bump.
+
+The `23.26.0` focused delta verifies both 52-file snapshots (9 modified, 43 unchanged) and the packet/comparison hashes. Reviewed changed authored code, affected prior source, API declaration blocks and release/patch content; checked unchanged inventory and raw history mechanically. The raw changelog retains all 4,931 older lines and inserts 11. The packet classifies 9 retained and 424 excluded upstream changes. No SDK build, device or payment testing.
+
+Evidence: [snapshot](raw/github/stripe/stripe-android/snapshots/2026-11-24-e65b11a/manifest.json), [release](raw/github/stripe/stripe-android/releases/stripe-android/23.26.0/2026-11-24/manifest.json), [notes](raw/github/stripe/stripe-android/releases/stripe-android/23.26.0/2026-11-24/release-notes.md), [comparison](tracking/github/repos/stripe/stripe-android/comparisons/stripe-android/23.25.2--23.26.0/comparison.json). See [[source-github-stripe-android]].
+
+## `stripe-android@23.25.2` - Change Set `ecd20c3` (changelog date 2026-11-04)
+
+Approved delta from `stripe-android@23.25.1` to `stripe-android@23.25.2`, SHA `ecd20c389efea8869be1420ae69577dd4f8d2a71`, ingested 2026-11-25. Published 2026-11-04 UTC.
+
+**Changes:** PaymentSheet warm-up freeze fix is release-note evidence only in this capsule. Onramp `createPresenter()` stops calling `callbackStore.restore()` and documents successful `configure()` first; the builder still registers the callbacks. Identity removes direct legacy/navigation declarations and view binding but retains its API floor. The generated Link API addition is not a supported merchant API.
+
+The `23.25.2` focused delta verifies both 52-file snapshots (8 modified, 44 unchanged) and the packet/comparison hashes. Reviewed changed authored files and affected prior code, API declarations in context and the release/patch; checked unchanged inventories and raw history mechanically. All 4,926 earlier raw changelog lines remain with five new lines. The packet classifies 8 retained and 998 excluded upstream changes. No SDK build, device or payment testing.
+
+Evidence: [snapshot](raw/github/stripe/stripe-android/snapshots/2026-11-24-ecd20c3/manifest.json), [release](raw/github/stripe/stripe-android/releases/stripe-android/23.25.2/2026-11-24/manifest.json), [notes](raw/github/stripe/stripe-android/releases/stripe-android/23.25.2/2026-11-24/release-notes.md), [comparison](tracking/github/repos/stripe/stripe-android/comparisons/stripe-android/23.25.1--23.25.2/comparison.json). See [[source-github-stripe-android]].
 
 ## `stripe-android@23.25.1` - Change Set `bb0d8d0` (changelog date 2026-10-26)
 

@@ -6,6 +6,14 @@ tags: [stripe, github-repository, operations]
 
 > Stripe-specific collection and ingest history. The root [[log]] keeps a concise cross-provider chronology.
 
+## [2026-11-25] ingest | Stripe Android `23.26.0`
+
+Delta at `e65b11a` with approved focused reading after `23.25.2`. Recorded public-preview PaymentSheet API configuration and beta copying, private-preview Klarna declarations, and the bank visibility and warm-up lifecycle announcements. Preserved all earlier history. See [[source-github-stripe-android]] and [[changelog-github-stripe-android]].
+
+## [2026-11-25] ingest | Stripe Android `23.25.2`
+
+Delta at `ecd20c3` with approved focused reading after `23.25.1`. Recorded the PaymentSheet warm-up fix announcement, Onramp presenter setup, and scoped Identity build changes. Preserved all earlier history. See [[source-github-stripe-android]] and [[changelog-github-stripe-android]].
+
 ## [2026-11-24] ingest | Stripe S06 approved documentation updates
 
 Updated 62 existing summaries. Attached 38 November captures as dated factual evidence and linked 24 as references. Audited 21 existing concepts and updated 20. The recorded source count is 666. The campaign verified 124 query answers and three coordinator audits.

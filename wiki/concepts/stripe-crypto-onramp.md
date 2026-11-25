@@ -199,6 +199,10 @@ Release notes announce Google Pay/Samsung Pay card sublabels including Credit, D
 
 The compiled `PaymentMethodDisplayData` surface adds `getCardFunding(): CardFunding` alongside its existing label, sublabel, icon and type getters. This is display-model API evidence, not proof of its nullability, default value, parsing/formatting behavior, availability on each wallet or a new funding authorization. The model implementation is excluded and retained OnrampCoordinator/build are unchanged. Keep the `23.24.0` wallet-label announcement separate; no new React Native binding or payment capability is inferred. [[source-github-stripe-android]] [[changelog-github-stripe-android]]
 
+### Android `23.25.2` Presenter Setup
+
+The experimental coordinator now documents calling `configure()` successfully before `createPresenter(activity)`. Unlike the older retained caller, presenter creation no longer calls `callbackStore.restore()`; `Builder.build()` still updates the store with the configured callbacks. This establishes changed ordering at the caller, not whether callbacks are restored elsewhere or how they behave on host recreation. See [[source-github-stripe-android]].
+
 ## iOS `26.13.0` Alpha Delta
 
 This version-qualified native alpha flow is distinct from the older web/headless setup sequence above. `CryptoOnrampCoordinator.collectPaymentMethod(type:from:)` can present Apple Pay before Link authentication: its platform-client resolver now forwards an optional crypto customer ID instead of rejecting an absent one. Card/bank collection still checks verified Link state, and `createCryptoPaymentToken()` still requires a crypto customer ID. Collection creates a payment source; it does not perform checkout or prove payment success.
